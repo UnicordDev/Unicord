@@ -240,7 +240,7 @@ namespace Unicord.Universal.Pages
                     if (message == null)
                         message = messagesPanel.Children.LastOrDefault();
 
-                    message.StartBringIntoView();
+                    message?.StartBringIntoView();
                 });
             }
             catch (Exception ex)
