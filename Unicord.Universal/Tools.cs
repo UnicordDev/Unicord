@@ -162,7 +162,7 @@ namespace Unicord.Universal
             if (_member == null || _current == null)
                 return false;
 
-            return _member.Roles?.OrderBy(r => r.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r.Position).FirstOrDefault()?.Position;
+            return _member.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position;
         }
 
         public static Storyboard GetStoryboard(this FrameworkElement element, string name, string message = null)
