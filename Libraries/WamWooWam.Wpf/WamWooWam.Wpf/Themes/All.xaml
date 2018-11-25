@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="./Buttons.xaml"/>
+        <ResourceDictionary Source="./Text.xaml"/>
+        <ResourceDictionary Source="./Tabs.xaml"/>
+        <ResourceDictionary Source="./TextBoxes.xaml"/>
+        <ResourceDictionary Source="./ScrollBars.xaml"/>
+        <ResourceDictionary Source="./CheckBoxes.xaml"/>
+        <ResourceDictionary Source="./ProgressBars.xaml"/>
+        <ResourceDictionary Source="./Misc.xaml"/>
+        <ResourceDictionary Source="./Lists.xaml"/>
+        <ResourceDictionary Source="./Trees.xaml"/>
+        <ResourceDictionary Source="./ComboBoxes.xaml"/>
+        <ResourceDictionary Source="./Windows.xaml"/>
+        <ResourceDictionary Source="./Slider.xaml"/>
+        <ResourceDictionary Source="./Menus.xaml"/>
+    </ResourceDictionary.MergedDictionaries>    
+</ResourceDictionary>

@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Subpages.DMChannelsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:discord="using:DSharpPlus.Entities"
+    xmlns:media="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" Tag="Direct Messages">
+
+    <Grid>
+        <ListView x:Name="dmsList" Grid.Row="1" ShowsScrollingPlaceholders="False" SelectionChanged="dmsList_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="discord:DiscordDmChannel">
+                    <Grid Margin="-12,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Canvas Margin="15,0,0,0" Width="28" Height="28" DataContext="{x:Bind}">
+                            <media:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
+                            <Ellipse Canvas.Left="15" Canvas.Top="15" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="{x:Bind Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Canvas>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{x:Bind Converter={StaticResource DMNameConverter}}"/>
+
+                        <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                            <TextBlock Text="{x:Bind ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
+                        </Grid>
+
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

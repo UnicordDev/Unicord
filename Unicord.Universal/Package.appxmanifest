@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.2.6.0" />
+  <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>Unicord</DisplayName>
+    <PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
+    <Logo>Assets\Store\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
+      <uap:VisualElements DisplayName="Unicord" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="A Discord client for Windows 10 and Windows 10 Mobile." BackgroundColor="transparent">
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" Square310x310Logo="Assets\Store\LargeTile.png" Square71x71Logo="Assets\Store\SmallTile.png" ShortName="Unicord">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\Store\SplashScreen.png" BackgroundColor="#7289DA" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+        </uap:InitialRotationPreference>
+      </uap:VisualElements>
+      <Extensions>
+        <!--<uap5:Extension Category="windows.startupTask" StartPage="EntryPage">
+          <uap5:StartupTask TaskId="UnicordStartup" DisplayName="Unicord" />
+        </uap5:Extension>-->
+        <uap4:Extension Category="windows.contactPanel">
+          <uap4:ContactPanel />
+        </uap4:Extension>
+        <uap:Extension Category="windows.shareTarget">
+          <uap:ShareTarget Description="Share to Discord">
+            <uap:SupportedFileTypes>
+              <uap:SupportsAnyFileType />
+            </uap:SupportedFileTypes>
+            <uap:DataFormat>StorageItem</uap:DataFormat>
+            <uap:DataFormat>Bitmap</uap:DataFormat>
+            <uap:DataFormat>Text</uap:DataFormat>
+            <uap:DataFormat>WebLink</uap:DataFormat>
+          </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="ms-contact-profile">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="ms-ipmessaging">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <uap:Capability Name="videosLibrary" />
+    <uap:Capability Name="picturesLibrary" />
+    <uap:Capability Name="contacts" />
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="webcam" />
+  </Capabilities>
+</Package>

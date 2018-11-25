@@ -1,0 +1,30 @@
+﻿<ContentDialog
+    x:Class="Unicord.Universal.Dialogs.UploadFileDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    PrimaryButtonStyle="{StaticResource ButtonRevealStyle}"
+    SecondaryButtonStyle="{StaticResource ButtonRevealStyle}"
+    PrimaryButtonText="Upload"
+    SecondaryButtonText="Cancel"
+    Loaded="ContentDialog_Loaded">
+
+    <Grid MaxWidth="450">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="thumbnailImage" Width="96" Height="96"/>
+        <Grid Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="titleTextBox" Margin="0,10" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Text="Uploading image.png"/>
+            <TextBox x:Name="commentTextBox" Grid.Row="1" AcceptsReturn="True" PlaceholderText="Add a caption (optional)" TextWrapping="Wrap"/>
+        </Grid>
+    </Grid>
+</ContentDialog>

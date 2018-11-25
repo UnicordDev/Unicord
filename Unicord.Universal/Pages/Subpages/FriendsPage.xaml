@@ -1,0 +1,128 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Subpages.FriendsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
+    xmlns:b="using:Unicord.Universal.Behaviours"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+    xmlns:commands="using:Unicord.Universal.Commands"
+    xmlns:discord="using:DSharpPlus.Entities"
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    <Page.Resources>
+        <Style x:Key="itemContainerStyle" BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+
+        <DataTemplate x:Key="userTemplate" x:DataType="discord:DiscordRelationship">
+            <Grid Padding="10" HorizontalAlignment="Stretch" Background="#00FFFFFF" PointerCanceled="Grid_PointerCanceled" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
+                <Grid.Resources>
+                    <Storyboard x:Key="pointerEntered" Duration="00:00:00.20">
+                        <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
+                        <DoubleAnimation Storyboard.TargetName="overlayContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="1"/>
+                    </Storyboard>
+                    <Storyboard x:Key="pointerLeft" Duration="00:00:00.20">
+                        <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="1"/>
+                        <DoubleAnimation Storyboard.TargetName="overlayContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
+                    </Storyboard>
+                    <commands:MessageUserCommand x:Key="messageUserCommand" />
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Canvas Width="64" Height="64" Margin="0,0,10,0">
+                    <Ellipse Width="64" Height="64">
+                        <Ellipse.Fill>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage UriSource="{x:Bind User.NonAnimatedAvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Ellipse Width="18" Height="18" Canvas.Left="44" Canvas.Top="44" StrokeThickness="2" Stroke="#FF171717">
+                        <Ellipse.Fill>
+                            <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Canvas>
+                <Grid Grid.Column="1" HorizontalAlignment="Stretch">
+                    <Grid x:Name="mainContent" VerticalAlignment="Center" Opacity="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="text" Text="{x:Bind User.Username}" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" FontSize="12" x:Name="presenceActivity" x:Load="{x:Bind User.Presence.Activity.Name, Converter={StaticResource BoolConverter}, FallbackValue=False}">
+                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
+                        </TextBlock>
+                    </Grid>
+                    <StackPanel x:Name="overlayContent" x:Phase="10" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="5,0">
+                            <SymbolIcon Symbol="VideoChat"/>
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="5,0">
+                            <SymbolIcon Symbol="Phone"/>
+                        </Button>
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="5,0">
+                            <SymbolIcon Symbol="Message"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!--<TextBlock Text="Recent Places" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10,0,10,10"/>
+        <TextBlock Grid.Row="1" Margin="10" Text="You've not been anywhere yet! Go have some fun, and we'll show you recent places here!" TextWrapping="Wrap"/>-->
+
+        <TextBlock Text="Friends" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10" Grid.Row="2"/>
+        <Pivot IsHeaderItemsCarouselEnabled="False" ManipulationMode="None" SelectedIndex="1" Grid.Row="3">
+            <Pivot.Items>
+                <PivotItem Header="All">
+                    <GridView x:Name="all"
+                              SelectionChanged="ListView_SelectionChanged"
+                              ItemTemplate="{StaticResource userTemplate}"
+                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              b:ListViewBehaviour.MinItemWidth="250"
+                              animations:ReorderGridAnimation.Duration="300"/>
+                </PivotItem>
+                <PivotItem Header="Online">
+                    <GridView x:Name="online"
+                              SelectionChanged="ListView_SelectionChanged" 
+                              ItemTemplate="{StaticResource userTemplate}"
+                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              b:ListViewBehaviour.MinItemWidth="250"
+                              animations:ReorderGridAnimation.Duration="300"/>
+                </PivotItem>
+                <PivotItem Header="Pending">
+                    <GridView x:Name="pending"
+                              SelectionChanged="ListView_SelectionChanged" 
+                              ItemTemplate="{StaticResource userTemplate}"
+                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              b:ListViewBehaviour.MinItemWidth="250"
+                              animations:ReorderGridAnimation.Duration="300"/>
+                </PivotItem>
+                <PivotItem Header="Blocked">
+                    <GridView x:Name="blocked"
+                              SelectionChanged="ListView_SelectionChanged" 
+                              ItemTemplate="{StaticResource userTemplate}"
+                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              b:ListViewBehaviour.MinItemWidth="250"
+                              animations:ReorderGridAnimation.Duration="300"/>
+                </PivotItem>
+            </Pivot.Items>
+        </Pivot>
+    </Grid>
+</Page>

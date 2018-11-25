@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="PageStyle" BasedOn="{StaticResource {x:Type Page}}" TargetType="{x:Type Page}">
+        <Setter Property="Foreground" Value="{DynamicResource SystemBaseHighBrush}"/>
+        <Setter Property="TextElement.FontSize" Value="{DynamicResource SystemFontSize}"/>
+        <Setter Property="TextElement.FontFamily" Value="{DynamicResource SystemFontFamily}"/>
+    </Style>
+
+    <Style x:Key="FullPageStyle" BasedOn="{StaticResource {x:Type Page}}" TargetType="{x:Type Page}">
+        <Setter Property="Foreground" Value="{DynamicResource SystemBaseHighBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SystemChromeLowBrush}"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemBaseHighBrush}"/>
+        <Setter Property="TextElement.FontSize" Value="{DynamicResource SystemFontSize}"/>
+        <Setter Property="TextElement.FontFamily" Value="{DynamicResource SystemFontFamily}"/>
+    </Style>
+
+    <Style x:Key="WindowStyle" BasedOn="{StaticResource {x:Type Window}}" TargetType="{x:Type Window}">
+        <Setter Property="Foreground" Value="{DynamicResource SystemBaseHighBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SystemChromeLowBrush}"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemBaseHighBrush}"/>
+        <Setter Property="TextElement.FontSize" Value="{DynamicResource SystemFontSize}"/>
+        <Setter Property="TextElement.FontFamily" Value="{DynamicResource SystemFontFamily}"/>
+    </Style>
+
+</ResourceDictionary>

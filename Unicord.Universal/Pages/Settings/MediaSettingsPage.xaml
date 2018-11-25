@@ -1,0 +1,45 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Settings.MediaSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <local:MediaSettingsModel/>
+    </Page.DataContext>
+
+    <StackPanel Margin="10">
+        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Audio and Video" Margin="0,0,0,10"/>
+        
+        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Media Compression"/>
+        <TextBlock TextWrapping="Wrap">
+            This feature allows me to automatically shrink down audio and video files to fit within your upload limit!
+        </TextBlock>
+        <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AutoTranscodeMedia, Mode=TwoWay}" Margin="0,10">
+            <ComboBox.Items>
+                <ComboBoxItem Content="Always compress before sending"/>
+                <ComboBoxItem Content="Compress if the file is above your upload limit"/>
+                <ComboBoxItem Content="Never compress media"/>
+            </ComboBox.Items>
+        </ComboBox>
+
+        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Video Options"/>
+        <TextBlock TextWrapping="Wrap">
+            If you need to, you can adjust the output resolution and quality of the compressed video here.
+        </TextBlock>
+        <ComboBox Margin="0,10" Header="Resolution" ItemsSource="{Binding AvailableResolutions}" SelectedValue="{Binding Resolution}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch"/>
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Slider x:Name="bitrateSlider" Header="Bitrate" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="5,20,0,0">
+                <Run Text="{Binding Value, ElementName=bitrateSlider}"/>kbps
+            </TextBlock>
+        </Grid>
+    </StackPanel>
+</Page>

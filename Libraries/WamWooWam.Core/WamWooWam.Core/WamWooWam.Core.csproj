@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.4;netstandard1.6;netstandard2.0;net45;net461;</TargetFrameworks>
+    <Configurations>Debug;Release;</Configurations>
+    <LangVersion>latest</LangVersion>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="CoreCompat.System.Drawing.v2">
+      <Version>5.2.0-preview1-r131</Version>
+    </PackageReference>
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' AND '$(TargetFramework)' != 'netstandard1.6' AND '$(TargetFramework)' != 'netstandard1.4'">
+    <Reference Include="PresentationCore.dll" />
+    <Reference Include="PresentationFramework.dll" />
+    <Reference Include="WindowsBase.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.10" />
+  </ItemGroup>
+</Project>

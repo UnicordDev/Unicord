@@ -1,0 +1,14 @@
+﻿<Application x:Class="WamWooWam.Wpf.Test.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WamWooWam.Wpf.Test"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WamWooWam.Wpf;component/Themes/DarkColours.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WamWooWam.Wpf;component/Themes/All.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

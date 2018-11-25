@@ -1,0 +1,37 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Settings.AccountsSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <lib:PersonPicture ProfilePicture="{Binding AvatarUrl}" Width="96" Height="96" Margin="0,0,15,0"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                        <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username, Mode=OneWay}"/>#<Run Text="{Binding Discriminator, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Text="{Binding Email}"/>
+                </StackPanel>
+            </Grid>
+            <Button Grid.Column="1" Style="{StaticResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
+        </Grid>
+    </Grid>
+</Page>
