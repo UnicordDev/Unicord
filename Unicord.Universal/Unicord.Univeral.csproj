@@ -139,6 +139,82 @@
     </Compile>
     <Compile Include="Controls\FileViewer.cs" />
     <Compile Include="Controls\ImageElement.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\CodeBlockResolvingEventArgs.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Extensions\StringExtensions.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Extensions\VisualTree.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Helpers\ThemeListener.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\ImageResolvingEventArgs.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\LinkClickedEventArgs.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownRenderedEventArgs.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownTextBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownTextBlock.Dimensions.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownTextBlock.Events.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownTextBlock.Methods.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\MarkdownTextBlock.Properties.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Core\IParser.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Core\ParseHelpers.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Core\SchemaBase.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Core\StringValueAttribute.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\CodeBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\HeaderBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\HorizontalRuleBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\LinkReferenceBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\ListBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\List\ListItemBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\List\ListItemBuilder.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\List\ListItemPreamble.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\List\NestedListInfo.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\ParagraphBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\QuoteBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Blocks\TableBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\ColumnAlignment.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\HyperlinkType.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\InlineParseMethod.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\ListStyle.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\MarkdownBlockType.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Enums\MarkdownInlineType.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Helpers\Common.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Helpers\DebuggingReporter.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Helpers\InlineParseResult.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Helpers\InlineTripCharHelper.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Helpers\LineInfo.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\BoldItalicTextInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\BoldTextInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\CodeInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\DiscordInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\EmojiInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\EmojiInline.EmojiCodes.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\HyperlinkInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\IInlineContainer.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\IInlineLeaf.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\ILinkElement.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\ImageInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\ItalicTextInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\LinkAnchorInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\MarkdownLinkInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\StrikethroughTextInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\TextRunInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownBlock.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownDocument.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownElement.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Render\IRenderContext.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Render\MarkdownRendererBase.Blocks.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Render\MarkdownRendererBase.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Render\MarkdownRendererBase.Inlines.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\ICodeBlockResolver.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\IImageResolver.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\ILinkRegister.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\InlineRenderContext.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownRenderer.Blocks.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownRenderer.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownRenderer.Dimensions.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownRenderer.Inlines.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownRenderer.Properties.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\MarkdownTable.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\RenderContext.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\RenderContextIncorrectException.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Render\UIElementCollectionRenderContext.cs" />
     <Compile Include="Controls\MediaPlayerControl.xaml.cs">
       <DependentUpon>MediaPlayerControl.xaml</DependentUpon>
     </Compile>
@@ -304,6 +380,7 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Controls\MarkdownTextBlock\About.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -469,10 +546,6 @@
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\MarkdownTextBlock\MarkdownTextBlock.csproj">
-      <Project>{82aa688f-5f86-45a8-a127-f22dcc007b89}</Project>
-      <Name>MarkdownTextBlock</Name>
     </ProjectReference>
     <ProjectReference Include="..\Shared\Unicord.Shared\Unicord.csproj">
       <Project>{57e3d333-e860-462d-9d54-306b99496973}</Project>
