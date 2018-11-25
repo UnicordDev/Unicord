@@ -113,18 +113,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Unicord.Desktop\Abstractions\UwpMediaAbstractions.cs">
-      <Link>Abstractions\UwpMediaAbstractions.cs</Link>
-    </Compile>
-    <Compile Include="..\Unicord.Desktop\Controls\ProfilePicture.cs">
-      <Link>Controls\ProfilePicture.cs</Link>
-    </Compile>
-    <Compile Include="..\Unicord.Desktop\Models\ChannelViewModel.cs">
-      <Link>Models\ChannelViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Unicord.Desktop\SharedTools.cs">
-      <Link>SharedTools.cs</Link>
-    </Compile>
+    <Compile Include="Abstractions\UwpMediaAbstractions.cs" />
     <Compile Include="Abstractions\UwpUIAbstractions.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -156,6 +145,7 @@
     <Compile Include="Controls\MessageViewer.xaml.cs">
       <DependentUpon>MessageViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ProfilePicture.cs" />
     <Compile Include="Controls\SwipeableSplitView.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
@@ -189,6 +179,7 @@
     <Compile Include="Controls\MessageViewerFactory.cs" />
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
+    <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\MainPageEventArgs.cs" />
     <Compile Include="Models\RecentServerModel.cs" />
@@ -240,6 +231,7 @@
       <DependentUpon>PinsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharedTools.cs" />
     <Compile Include="Tools.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -477,7 +469,7 @@
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MarkdownTextBlock\MarkdownTextBlock.csproj">
+    <ProjectReference Include="..\Libraries\MarkdownTextBlock\MarkdownTextBlock.csproj">
       <Project>{82aa688f-5f86-45a8-a127-f22dcc007b89}</Project>
       <Name>MarkdownTextBlock</Name>
     </ProjectReference>
@@ -485,6 +477,14 @@
       <Project>{57e3d333-e860-462d-9d54-306b99496973}</Project>
       <Name>Unicord</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsDesktop, Version=10.0.17763.0">
+      <Name>Windows Desktop Extensions for the UWP</Name>
+    </SDKReference>
+    <SDKReference Include="WindowsMobile, Version=10.0.17763.0">
+      <Name>Windows Mobile Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

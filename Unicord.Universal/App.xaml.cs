@@ -66,7 +66,7 @@ namespace Unicord.Universal
             UIAbstractions.SetAbstractions<UwpUIAbstractions>();
             MediaAbstractions.SetAbstractions<UwpMediaAbstractions>();
             HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
-            AppCenter.Start("b87a8458-e7a2-4a68-8e6c-3a2d11d08657", typeof(Push));
+            AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push));
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
