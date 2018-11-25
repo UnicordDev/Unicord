@@ -159,6 +159,9 @@ namespace Unicord.Universal
 
         public static bool CheckRoleHeirarchy(DiscordMember _member, DiscordMember _current)
         {
+            if (_member == null || _current == null)
+                return false;
+
             return _member.Roles?.OrderBy(r => r.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r.Position).FirstOrDefault()?.Position;
         }
 
