@@ -1,0 +1,6 @@
+[submodule "Libraries/DSharpPlus"]
+	path = Libraries/DSharpPlus
+	url = https://github.com/WamWooWam/DSharpPlus
+[submodule "Libraries/WamWooWam.Core"]
+	path = Libraries/WamWooWam.Core
+	url = https://github.com/WamWooWam/WamWooWam.Core

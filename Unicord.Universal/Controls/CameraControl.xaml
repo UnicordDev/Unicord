@@ -1,0 +1,20 @@
+﻿<UserControl
+    x:Class="Unicord.Universal.Controls.CameraControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="UserControl_Loaded"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid Width="42">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="captureButton" Style="{StaticResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE722;" Click="popoutButton_Click"/>
+        <Button x:Name="openLocalButton" Style="{StaticResource StretchyIconButtonStyle}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE8DA;" Click="openLocalButton_Click"/>
+    </Grid>
+</UserControl>

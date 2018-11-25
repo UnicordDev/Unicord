@@ -1,0 +1,1 @@
+(1,7) : error : Unexpected character 'X' while parsing a string. Expecting only hexadecimals [0-9a-fA-F] after escape \u

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>A single file JSON parser/serializer for .NET</Description>
+    <Copyright>Alexandre Mutel</Copyright>
+    <AssemblyTitle>Jsonite</AssemblyTitle>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>Alexandre Mutel</Authors>
+    <TargetFrameworks>netstandard1.1</TargetFrameworks>
+    <AssemblyName>Jsonite</AssemblyName>
+    <PackageId>Jsonite</PackageId>
+    <PackageIconUrl>https://raw.githubusercontent.com/xoofx/jsonite/master/jsonite.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/xoofx/jsonite</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/xoofx/jsonite/blob/master/license.txt</PackageLicenseUrl>
+    <DefineConstants>$(DefineConstants);JSONITE_PUBLIC</DefineConstants>
+  </PropertyGroup>
+
+    <!--<PropertyGroup Condition=" '$(TargetFramework)' == 'net20' ">
+        <DefineConstants>$(DefineConstants);NETPRE45</DefineConstants>
+    </PropertyGroup>-->
+
+    <!--<ItemGroup Condition=" '$(TargetFramework)' == 'net20' ">
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>-->
+
+  <!--<ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>-->
+</Project>

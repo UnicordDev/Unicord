@@ -1,0 +1,1 @@
+(1,8) : error : Unexpected character '}' while parsing an object. Expecting a STRING after a comma ','

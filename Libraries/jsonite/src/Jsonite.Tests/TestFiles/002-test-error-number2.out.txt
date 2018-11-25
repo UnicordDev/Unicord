@@ -1,0 +1,1 @@
+(1,2) : error : Unexpected character '1' while parsing a number. The number '0' must followed by '.' or by an exponent or nothing

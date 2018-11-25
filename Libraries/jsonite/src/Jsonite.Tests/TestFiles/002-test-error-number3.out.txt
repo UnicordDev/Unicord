@@ -1,0 +1,1 @@
+(1,3) : error : Unexpected character 'X' while parsing the floating part of a number. Expecting a digit 0-9 after a period '.'

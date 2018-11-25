@@ -1,0 +1,1 @@
+(1,6) : error : Unexpected character ']' while parsing an array. Expecting a STRING, NUMBER, OBJECT, ARRAY, true, false or null after a comma ','

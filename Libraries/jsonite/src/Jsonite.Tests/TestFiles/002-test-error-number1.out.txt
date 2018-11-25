@@ -1,0 +1,1 @@
+(1,2) : error : Unexpected character 'X' while parsing a number after a '-'. Expecting a digit 0-9

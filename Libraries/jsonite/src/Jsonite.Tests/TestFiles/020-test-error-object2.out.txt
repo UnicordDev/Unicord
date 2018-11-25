@@ -1,0 +1,1 @@
+(1,7) : error : Unexpected character '@' while parsing an object. Expecting a colon ':' after a member

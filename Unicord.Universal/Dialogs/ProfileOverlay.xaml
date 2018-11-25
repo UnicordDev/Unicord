@@ -1,0 +1,116 @@
+﻿<UserControl
+    x:Class="Unicord.Universal.Dialogs.ProfileOverlay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d" MaxWidth="550">
+
+    <StackPanel VerticalAlignment="Center">
+        <Grid Padding="20">
+            <Grid.Background>
+                <media:AcrylicBrush TintOpacity="0.75" TintColor="{ThemeResource SystemChromeLowColor}"/>
+            </Grid.Background>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Ellipse x:Name="ellipse" Width="96" Height="96">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{x:Bind User.AvatarUrl}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
+                        <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Row="1" Margin="0,0,5,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}"
+                           Style="{ThemeResource SubtitleTextBlockStyle}">
+                        <Run Text="{x:Bind _member.DisplayName}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Row="2" Visibility="{x:Bind User.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}}">
+                        <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
+                    </TextBlock>
+                </StackPanel>
+                <Grid Grid.Column="2" Margin="10,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Style="{StaticResource StretchyIconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand}" CommandParameter="{x:Bind _user}" />
+                    <Button Style="{StaticResource StretchyIconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Height="205" Padding="0,0,0,20">
+            <Grid.Background>
+                <media:AcrylicBrush TintOpacity="0.75" TintColor="{ThemeResource SystemChromeMediumColor}"/>
+            </Grid.Background>
+            <Pivot>
+                <Pivot.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    </DataTemplate>
+                </Pivot.HeaderTemplate>
+                <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}">
+                    <StackPanel>
+                        <StackPanel x:Name="rolesList">
+                            <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>
+                            <ItemsControl ItemsSource="{x:Bind _member.Roles}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <controls1:WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="2.5" BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" Padding="5,2,5,4">
+                                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center" LineHeight="15"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>
+                        <TextBlock Text="{x:Bind _member.JoinedAt}"/>
+                    </StackPanel>
+                </PivotItem>
+                <PivotItem>
+                    <PivotItem.Header>
+                        Mutual Servers
+                    </PivotItem.Header>
+                    <PivotItem.Content>
+                        <ListView x:Name="mutualServers" SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <lib:PersonPicture ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}" Width="36" Height="36" Margin="0,5"/>
+                                        <TextBlock Grid.Column="1" Margin="10,0" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </PivotItem.Content>
+                </PivotItem>
+                <PivotItem>
+                    <PivotItem.Header>
+                        Social Connections
+                    </PivotItem.Header>
+                </PivotItem>
+            </Pivot>
+        </Grid>
+    </StackPanel>
+</UserControl>
