@@ -14,7 +14,6 @@ namespace Unicord
 #else
         public const string MAIN_URL = "https://dwpf.wankerr.com/";
 #endif
-
         public const string APP_USER_MODEL_ID = "com.wankerr.Unicord";
         public const string PLUGIN_IPC_URI = "net.pipe://localhost/org.wamwoowam.unicord/plugins";
 
@@ -40,6 +39,16 @@ namespace Unicord
 
         public const string AUDIOPHILE_MODE = "AudiophileMode";
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
+
+        public const string VIDEO_BITRATE = "VideoBitrate";
+        public const string VIDEO_WIDTH = "VideoWidth";
+        public const string VIDEO_HEIGHT = "VideoHeight";
+
+        public const string VERIFY_LOGIN = "HelloForLogin";
+        public const string VERIFY_NSFW = "HelloForNSFW";
+        public const string VERIFY_SETTINGS = "HelloForSettings";
+        public const string AUTHENTICATION_TIME = "AuthenticationTime";
+
     }
 
     public enum MediaTranscodeOptions

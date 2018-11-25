@@ -133,16 +133,6 @@ namespace Unicord.Universal
 
                 if (result != null)
                 {
-                    //var available = await UserConsentVerifier.CheckAvailabilityAsync();
-                    //if (available == UserConsentVerifierAvailability.Available)
-                    //{
-                    //    var consentResult = await UserConsentVerifier.RequestVerificationAsync("Logging in to Unicord");
-                    //    if(consentResult != UserConsentVerificationResult.Verified)
-                    //    {
-                    //        return;
-                    //    }
-                    //}
-
                     connectingOverlay.Visibility = Visibility.Visible;
                     connectingOverlay.Opacity = 1;
                     connectingScale.ScaleX = 1;
@@ -155,7 +145,7 @@ namespace Unicord.Universal
 
                     result.RetrievePassword();
 
-                    await App.LoginAsync(result.Password, Discord_Ready, App.LoginError);
+                    await App.LoginAsync(result.Password, Discord_Ready, App.LoginError, false);
                 }
                 else
                 {

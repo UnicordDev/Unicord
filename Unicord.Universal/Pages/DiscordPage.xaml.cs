@@ -87,7 +87,7 @@ namespace Unicord.Universal.Pages
         {
             try
             {
-                if(AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
+                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
                 {
                     SettingsContainer.Width = 450;
                     SettingsPaneTransform.X = 450;
@@ -214,7 +214,7 @@ namespace Unicord.Universal.Pages
             //sidebarFrame.GoBack();
         }
 
-        internal void Navigate(DiscordChannel channel, NavigationTransitionInfo info)
+        internal async void Navigate(DiscordChannel channel, NavigationTransitionInfo info)
         {
             if (splitView.DisplayMode == SplitViewDisplayMode.Overlay)
                 splitView.IsPaneOpen = false;
@@ -227,10 +227,19 @@ namespace Unicord.Universal.Pages
             {
                 sidebarFrame.Navigate(typeof(GuildChannelsPage), channel.Guild, new DrillInNavigationTransitionInfo());
             }
-
-            if (channel.IsNSFW && (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false)))
+            if (channel.IsNSFW)
             {
-                Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
+                if (await WindowsHello.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
+                {
+                    if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
+                    {
+                        Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
+                    }
+                    else
+                    {
+                        Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                    }
+                }
             }
             else
             {
@@ -276,17 +285,20 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            SettingsOverlayGrid.Visibility = Visibility.Visible;
+            if(await WindowsHello.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
+            {
+                SettingsOverlayGrid.Visibility = Visibility.Visible;
 
-            if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
-            {
-                OpenSettingsDesktopStoryboard.Begin();
-            }
-            else
-            {
-                OpenSettingsMobileStoryboard.Begin();
+                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
+                {
+                    OpenSettingsDesktopStoryboard.Begin();
+                }
+                else
+                {
+                    OpenSettingsMobileStoryboard.Begin();
+                }
             }
 
             //SettingsGrid.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());

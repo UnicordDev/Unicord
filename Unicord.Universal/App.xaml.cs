@@ -193,6 +193,7 @@ namespace Unicord.Universal
                             await LoginAsync(result.Password,
                                 async r => await rootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => rootFrame.Navigate(typeof(MainPage))),
                                 ex => Task.CompletedTask,
+                                true,
                                 UserStatus.Idle);
                         }
                     }
@@ -245,7 +246,7 @@ namespace Unicord.Universal
             deferral.Complete();
         }
 
-        internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, UserStatus status = UserStatus.Online)
+        internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
         {
             Exception taskEx = null;
             //try
@@ -264,31 +265,39 @@ namespace Unicord.Universal
 
             await _connectSemaphore.WaitAsync();
 
+
             if (Discord == null)
             {
-                try
+                if (background || await WindowsHello.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))
                 {
-                    async Task ReadyHandler(ReadyEventArgs e)
+                    try
                     {
-                        e.Client.Ready -= ReadyHandler;
-                        ReadySource.TrySetResult(e);
-                        if (onReady != null)
-                            await onReady(e);
+                        async Task ReadyHandler(ReadyEventArgs e)
+                        {
+                            e.Client.Ready -= ReadyHandler;
+                            ReadySource.TrySetResult(e);
+                            if (onReady != null)
+                                await onReady(e);
+                        }
+
+                        Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });
+                        Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
+                        Discord.Ready += ReadyHandler;
+
+                        _connectSemaphore.Release();
+
+                        await Discord.ConnectAsync(status: status);
                     }
-
-                    Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });
-                    Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
-                    Discord.Ready += ReadyHandler;
-
-                    _connectSemaphore.Release();
-
-                    await Discord.ConnectAsync(status: status);
+                    catch (Exception ex)
+                    {
+                        Tools.ResetPasswordVault();
+                        ReadySource.TrySetException(ex);
+                        await onError(ex);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Tools.ResetPasswordVault();
-                    ReadySource.TrySetException(ex);
-                    await onError(ex);
+                    await onError(null);
                 }
             }
             else
@@ -309,13 +318,18 @@ namespace Unicord.Universal
 
         internal static async Task LoginError(Exception ex)
         {
-            var dialog = new ErrorDialog()
+            if (ex != null)
             {
-                Title = "Unable to login!",
-                Text = "Something went wrong logging you in! Check your details and try again!",
-                AdditionalText = ex.Message
-            };
-            await dialog.ShowAsync();
+                var dialog = new ErrorDialog()
+                {
+                    Title = "Unable to login!",
+                    Text = "Something went wrong logging you in! Check your details and try again!",
+                    AdditionalText = ex.Message
+                };
+                await dialog.ShowAsync();
+
+                RoamingSettings.Save(VERIFY_LOGIN, false);
+            }
 
             var mainPage = Window.Current.Content.FindChild<MainPage>();
 

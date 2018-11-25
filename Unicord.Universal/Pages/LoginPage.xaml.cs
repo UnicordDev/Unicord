@@ -29,17 +29,17 @@ namespace Unicord.Universal.Pages
             this.FindParent<MainPage>().ShowConnectingOverlay();
 
             _token = tokenTextBox.Password.Trim('"');
-            await App.LoginAsync(_token, Discord_Ready, App.LoginError);
+            await App.LoginAsync(_token, Discord_Ready, App.LoginError, false);
         }
 
         private async Task Discord_Ready(DSharpPlus.EventArgs.ReadyEventArgs e)
         {
-            App.Discord.Ready -= Discord_Ready;
+            var vault = new PasswordVault();
+            vault.Add(new PasswordCredential("Unicord_Token", "Default", _token));
+            _token = null;
+
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                var vault = new PasswordVault();
-                vault.Add(new PasswordCredential("Unicord_Token", "Default", _token));
-                _token = null;
                 Frame.Navigate(typeof(DiscordPage));
             });
         }
@@ -63,7 +63,7 @@ namespace Unicord.Universal.Pages
             {
                 var text = await FileIO.ReadTextAsync(file);
                 _token = text.Trim('"');
-                await App.LoginAsync(_token, Discord_Ready, App.LoginError);
+                await App.LoginAsync(_token, Discord_Ready, App.LoginError, false);
             }
             else
             {

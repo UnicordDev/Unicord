@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    mc:Ignorable="d" Loaded="Page_Loaded" x:DefaultBindMode="TwoWay">
     <Page.DataContext>
         <local:SecuritySettingsModel/>
     </Page.DataContext>
@@ -36,16 +36,21 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
 
-                    <TextBlock Text="Change settings" VerticalAlignment="Center"/>
-                    <ToggleSwitch Grid.Column="1" IsOn="{Binding HelloForSettings}" />
-                    
-                    <TextBlock Grid.Row="1" Text="Access NSFW channels" VerticalAlignment="Center"/>
-                    <ToggleSwitch Grid.Row="1"  Grid.Column="1" IsOn="{Binding HelloForNSFW}" />
+                    <TextBlock Text="Login" VerticalAlignment="Center"/>
+                    <ToggleSwitch Grid.Column="1" IsOn="{Binding HelloForLogin, Mode=TwoWay}" />
 
-                </Grid>                
+                    <TextBlock Grid.Row="1" Text="Change settings" VerticalAlignment="Center"/>
+                    <ToggleSwitch Grid.Row="1"  Grid.Column="1" IsOn="{Binding HelloForSettings, Mode=TwoWay}" />
+
+                    <TextBlock Grid.Row="2" Text="Access NSFW channels" VerticalAlignment="Center"/>
+                    <ToggleSwitch Grid.Row="2"  Grid.Column="1" IsOn="{Binding HelloForNSFW, Mode=TwoWay}" />
+
+                </Grid>
+
+                <TimePicker Time="{Binding AuthenticationTime, Mode=TwoWay}" Header="Keep me authenticated for" HorizontalAlignment="Stretch" />
             </StackPanel>
         </ContentControl>
     </Grid>
