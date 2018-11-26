@@ -191,7 +191,7 @@ namespace Unicord.Universal.Pages
                         _messageViewerFactory.RequeueViewer(viewer);
                     }
                 });
-                
+
                 var messages = await ViewModel.Channel.GetMessagesAsync(50).ConfigureAwait(false);
                 if (messages.Any())
                 {
@@ -217,10 +217,15 @@ namespace Unicord.Universal.Pages
                 await Dispatcher.RunIdleAsync(d =>
                 {
                     var message = (UIElement)messagesPanel.Children.OfType<MessageViewer>().LastOrDefault(m => m.Id == ViewModel.Channel.ReadState?.LastMessageId);
-                    if (message == null)
-                        message = messagesPanel.Children.LastOrDefault();
+                    if (message != null)
+                    {
+                        message?.StartBringIntoView();
+                    }
+                    else
+                    {
+                        messagesScroll.ChangeView(null, messagesScroll.ScrollableHeight, null, true);
+                    }
 
-                    message?.StartBringIntoView();
                 });
             }
             catch (Exception ex)

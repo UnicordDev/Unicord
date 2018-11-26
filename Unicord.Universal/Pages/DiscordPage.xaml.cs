@@ -135,7 +135,7 @@ namespace Unicord.Universal.Pages
 
                 if (_args != null)
                 {
-                    var channel = await App.Discord.GetChannelAsync(_args.UserId);
+                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
                     Navigate(channel, new DrillInNavigationTransitionInfo());
                 }
                 else
@@ -215,9 +215,10 @@ namespace Unicord.Universal.Pages
                 }
                 else
                 {
-                    var title = Tools.GetMessageTitle(e.Message);
-                    var content = Tools.GetMessageContent(e.Message);
-                    var notification = Tools.GetWindows10Toast(e.Message, title, content);
+                    var notification = Tools.GetWindows10Toast(e.Message,
+                        Tools.GetMessageTitle(e.Message), 
+                        Tools.GetMessageContent(e.Message));
+
                     var toastNotifier = ToastNotificationManager.CreateToastNotifier();
                     toastNotifier.Show(notification);
                 }
@@ -226,7 +227,7 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            notification.Content = new MessageViewer() { Message = message };
+            notification.Content = new MessageViewer() { Message = message, IsEnabled = false };
             notification.Show(7_000);
         }
 

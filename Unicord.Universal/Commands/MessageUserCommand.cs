@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,17 @@ namespace Unicord.Universal.Commands
             {
                 return true;
             }
-            else if (parameter is DiscordUser u && u.Id != App.Discord.CurrentUser.Id && App.Discord.Guilds.ToArray().Any(g => g.Value.Members.ToArray().Any(gm => gm.Id == u.Id)))
+            else if (parameter is DiscordUser u && u.Id != App.Discord.CurrentUser.Id)
             {
-                return true;
+                if (App.Discord.Relationships.Any(r => r.RelationshipType == DiscordRelationshipType.Friend && r.Id == u.Id))
+                {
+                    return true;
+                }
+
+                if (App.Discord.Guilds.ToArray().Any(g => g.Value.Members.ToArray().Any(gm => gm.Id == u.Id)))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -38,9 +47,10 @@ namespace Unicord.Universal.Commands
                 var channel = App.Discord.PrivateChannels.FirstOrDefault(c => c.Recipient?.Id == user.Id);
                 if (channel == null)
                 {
-                    var member = user as DiscordMember ?? App.Discord.Guilds.Values.Select(g => g.Members.FirstOrDefault(m => m.Id == user.Id)).FirstOrDefault(m => m != null);
-                    if (member != null)
-                        channel = await member.CreateDmChannelAsync();
+                    if (App.Discord.Relationships.Any(r => r.RelationshipType == DiscordRelationshipType.Friend && r.Id == user.Id) || App.Discord.Guilds.ToArray().Any(g => g.Value.Members.ToArray().Any(gm => gm.Id == user.Id)))
+                    {
+                        channel = await App.Discord.CreateDmChannelAsync(user.Id);
+                    }
                 }
 
                 if (channel != null)
