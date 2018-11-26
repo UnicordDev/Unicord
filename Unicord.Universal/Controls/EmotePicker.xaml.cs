@@ -106,11 +106,6 @@ namespace Unicord.Universal.Controls
         {
             InputPane.GetForCurrentView()?.TryHide();
             await Load();
-        }
-
-        private void SemanticZoom_ViewChangeStarted(object sender, SemanticZoomViewChangedEventArgs e)
-        {
-
-        }
+        }        
     }
 }

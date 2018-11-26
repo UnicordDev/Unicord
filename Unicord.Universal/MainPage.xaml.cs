@@ -55,7 +55,7 @@ namespace Unicord.Universal
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
 
-        private async void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
+        private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
         {
             _visibility = e.Visible;
         }
@@ -170,9 +170,9 @@ namespace Unicord.Universal
                 await list.SaveAsync();
             }
 
-            if(ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
             {
-                await Contacts.ClearContactsAsync(); 
+                await Contacts.ClearContactsAsync();
             }
         }
 
@@ -187,15 +187,14 @@ namespace Unicord.Universal
 
         internal void ShowGuildOverlay(DiscordGuild guild, bool animate)
         {
-            //var guildInfo = new GuildDialog { Guild = guild };
-            //fullscreenOverlay.Content = guildInfo;
-            //fullscreenOverlay.Visibility = Visibility.Visible;
+            // TODO: Guild Overlay
         }
 
         private async Task Discord_Ready(ReadyEventArgs e)
         {
             _isReady = true;
 
+            // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
             if (_args != null)
@@ -351,16 +350,6 @@ namespace Unicord.Universal
         private void contentOverlay_Tapped(object sender, TappedRoutedEventArgs e)
         {
             HideOverlay();
-        }
-
-        private void showContent_Completed(object sender, object e)
-        {
-
-        }
-
-        private void showUserOverlay_Completed(object sender, object e)
-        {
-
         }
 
         private void hideUserOverlay_Completed(object sender, object e)

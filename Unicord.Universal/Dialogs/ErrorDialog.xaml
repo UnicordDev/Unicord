@@ -8,8 +8,8 @@
     mc:Ignorable="d"
     Title="TITLE"
     PrimaryButtonText="OK"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" Opened="ContentDialog_Opened">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" 
+    Opened="ContentDialog_Opened">
 
     <Grid>
         <Grid.RowDefinitions>

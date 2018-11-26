@@ -175,10 +175,15 @@ namespace Unicord.Universal.Pages
 
             try
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     loadingProgress.Visibility = Visibility.Visible;
                     loadingProgress.IsIndeterminate = true;
+
+                    if (!ViewModel.FileUploads.Any())
+                    {
+                        uploadItems.Visibility = Visibility.Collapsed;
+                    }
 
                     _emotePicker.Channel = ViewModel.Channel;
                     noMessages.Visibility = Visibility.Collapsed;
@@ -396,10 +401,10 @@ namespace Unicord.Universal.Pages
                 {
                     e.Handled = true;
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
-                    uploadGrid.Visibility = Visibility.Visible;
+                    uploadItems.Visibility = Visibility.Visible;
                     foreach (var item in items)
                     {
-                        await uploadGrid.AddStorageFileAsync(item);
+                        await uploadItems.AddStorageFileAsync(item);
                     }
                 }
 
@@ -420,8 +425,8 @@ namespace Unicord.Universal.Pages
                         }
                     }
 
-                    uploadGrid.Visibility = Visibility.Visible;
-                    await uploadGrid.AddStorageFileAsync(file, true);
+                    uploadItems.Visibility = Visibility.Visible;
+                    await uploadItems.AddStorageFileAsync(file, true);
                 }
             }
             catch (Exception ex)
@@ -444,7 +449,7 @@ namespace Unicord.Universal.Pages
         {
             if (ViewModel.FileUploads.Any())
             {
-                uploadGrid.Visibility = Visibility.Collapsed;
+                uploadItems.Visibility = Visibility.Collapsed;
                 uploadProgress.Visibility = Visibility.Visible;
                 var progress = new Progress<double?>(d =>
                 {
@@ -507,8 +512,8 @@ namespace Unicord.Universal.Pages
                 cameraPreview.FileChosen -= FileHandler;
                 hidePhotoPicker.Begin();
 
-                uploadGrid.Visibility = Visibility.Visible;
-                await uploadGrid.AddStorageFileAsync(ev.AddedItems.First() as IStorageFile);
+                uploadItems.Visibility = Visibility.Visible;
+                await uploadItems.AddStorageFileAsync(ev.AddedItems.First() as IStorageFile);
             }
 
             async void FileHandler(object o, StorageFile file)
@@ -517,8 +522,8 @@ namespace Unicord.Universal.Pages
                 cameraPreview.FileChosen -= FileHandler;
                 hidePhotoPicker.Begin();
 
-                uploadGrid.Visibility = Visibility.Visible;
-                await uploadGrid.AddStorageFileAsync(file);
+                uploadItems.Visibility = Visibility.Visible;
+                await uploadItems.AddStorageFileAsync(file);
             }
 
             cameraPreview.FileChosen += FileHandler;
@@ -537,6 +542,7 @@ namespace Unicord.Universal.Pages
             loadingImagesRing.IsActive = false;
         }
 
+        // TODO: Refactor and componentize
         private async Task AddToJumpListAsync()
         {
             try

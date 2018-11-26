@@ -221,7 +221,6 @@
     <Compile Include="Controls\MessageViewer.xaml.cs">
       <DependentUpon>MessageViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ProfilePicture.cs" />
     <Compile Include="Controls\SwipeableSplitView.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
@@ -246,9 +245,6 @@
     <Compile Include="Dialogs\ProfileOverlay.xaml.cs">
       <DependentUpon>ProfileOverlay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\UploadFileDialog.xaml.cs">
-      <DependentUpon>UploadFileDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Integration\Contacts.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -259,7 +255,6 @@
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\MainPageEventArgs.cs" />
-    <Compile Include="Models\RecentServerModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
@@ -433,10 +428,6 @@
     <Page Include="Dialogs\ProfileOverlay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\UploadFileDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>

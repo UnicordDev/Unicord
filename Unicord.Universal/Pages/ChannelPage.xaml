@@ -185,7 +185,7 @@
             <!--</controls:DropSkhadowPanel>-->
 
 
-            <controls1:UploadItemsControl x:Name="uploadGrid" Visibility="Collapsed" Grid.Row="2">
+            <controls1:UploadItemsControl x:Name="uploadItems" Visibility="Collapsed" Grid.Row="2">
                 <controls1:UploadItemsControl.RenderTransform>
                     <TranslateTransform x:Name="uploadsTransform" Y="0"/>
                 </controls1:UploadItemsControl.RenderTransform>
