@@ -147,7 +147,13 @@ namespace Unicord.Universal.Pages
                             navigation.BackRequested += Navigation_BackRequested;
                         }
 
-                        _emotePicker = new EmotePicker() { Height = 275, VerticalAlignment = VerticalAlignment.Stretch, Visibility = Visibility.Collapsed, Padding = new Thickness(10, 0, 10, 0) };
+                        _emotePicker = new EmotePicker()
+                        {
+                            Height = 275,
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                            Visibility = Visibility.Collapsed,
+                            Padding = new Thickness(10, 0, 10, 0)
+                        };
                         Grid.SetRow(_emotePicker, 4);
                         footerGrid.Children.Add(_emotePicker);
                     }
@@ -174,32 +180,6 @@ namespace Unicord.Universal.Pages
                     loadingProgress.Visibility = Visibility.Visible;
                     loadingProgress.IsIndeterminate = true;
 
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5) && ViewModel.Channel is DiscordDmChannel dm && dm.IsPrivate & App.CanAccessContacts)
-                    {
-                        try
-                        {
-                            var store = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                            var annotations = await Tools.GetAnnotationlistAsync(store);
-                            var list = await annotations.FindAnnotationsByRemoteIdAsync("Unicord_" + dm.Recipient.Id);
-                            if (list.Any())
-                            {
-                                contactButton.Visibility = Visibility.Collapsed;
-                            }
-                            else
-                            {
-                                contactButton.Visibility = Visibility.Visible;
-                            }
-                        }
-                        catch
-                        {
-                            contactButton.Visibility = Visibility.Collapsed;
-                        }
-                    }
-                    else
-                    {
-                        contactButton.Visibility = Visibility.Collapsed;
-                    }
-
                     _emotePicker.Channel = ViewModel.Channel;
                     noMessages.Visibility = Visibility.Collapsed;
                     splitView.IsPaneOpen = false;
@@ -211,8 +191,8 @@ namespace Unicord.Universal.Pages
                         _messageViewerFactory.RequeueViewer(viewer);
                     }
                 });
-
-                var messages = await ViewModel.Channel.GetMessagesAsync(75).ConfigureAwait(false);
+                
+                var messages = await ViewModel.Channel.GetMessagesAsync(50).ConfigureAwait(false);
                 if (messages.Any())
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -656,97 +636,6 @@ namespace Unicord.Universal.Pages
             splitView.IsPaneOpen = !splitView.IsPaneOpen;
             if (splitView.IsPaneOpen)
                 splitViewPane.Navigate(typeof(PinsPage), ViewModel.Channel);
-        }
-
-        private async void addContact_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                var contacts = await store.GetMeContactAsync(); // requests contact permissions
-                if (store != null)
-                {
-                    var user = (ViewModel.Channel as DiscordDmChannel).Recipient;
-                    var lists = await store.FindContactListsAsync();
-                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-
-                    var tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Strings.RandomString(12)}.png", CreationCollisionOption.GenerateUniqueName);
-
-                    using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(user.NonAnimatedAvatarUrl)))
-                    using (var fileStream = await tempFile.OpenAsync(FileAccessMode.ReadWrite))
-                    {
-                        await stream.AsStreamForRead().CopyToAsync(fileStream.AsStreamForWrite());
-                    }
-
-                    var reference = RandomAccessStreamReference.CreateFromFile(tempFile);
-
-                    var contact = new Contact
-                    {
-                        DisplayNameOverride = user.Username,
-                        SourceDisplayPicture = reference,
-                        RemoteId = "Unicord_" + user.Id.ToString()
-                    };
-
-                    await list.SaveContactAsync(contact);
-                    await AddAnnotationToContactAsync(contact);
-
-                    ContactManager.ShowContactCard(contact, Rect.Empty, Placement.Default);
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                await UIAbstractions.Current.ShowFailureDialogAsync(
-                    "Unable to add to contacts.",
-                    "Unable to add to contacts.",
-                    "I don't have permission to add people to contacts, sorry!");
-            }
-            catch { }
-        }
-
-        private async void addExistingContact_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var pick = new ContactPicker();
-                var contact = await pick.PickContactAsync();
-                if (contact != null)
-                {
-                    var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                    var lists = await store.FindContactListsAsync();
-                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-
-                    await AddAnnotationToContactAsync(contact);
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                await UIAbstractions.Current.ShowFailureDialogAsync(
-                    "Unable to add to contacts.",
-                    "Unable to add to contacts.",
-                    "I don't have permission to add people to contacts, sorry!");
-            }
-            catch { }
-        }
-
-        private async Task AddAnnotationToContactAsync(Contact contact)
-        {
-            var store = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-
-            if (store != null)
-            {
-                var list = await Tools.GetAnnotationlistAsync(store);
-
-                var annotation = new ContactAnnotation()
-                {
-                    ContactId = contact.Id,
-                    RemoteId = "Unicord_" + ViewModel.Channel.Id.ToString(),
-                    SupportedOperations = ContactAnnotationOperations.Share | ContactAnnotationOperations.AudioCall | ContactAnnotationOperations.Message | ContactAnnotationOperations.ContactProfile | ContactAnnotationOperations.SocialFeeds | ContactAnnotationOperations.VideoCall
-                };
-
-                annotation.ProviderProperties.Add("ContactPanelAppID", "24101WamWooWamRD.Unicord_g9xp2jqbzr3wg!App");
-
-                await list.TrySaveAnnotationAsync(annotation);
-            }
         }
     }
 }

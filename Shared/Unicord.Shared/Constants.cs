@@ -37,6 +37,7 @@ namespace Unicord
 
         public const string DISABLE_TELEMETRY = "DisableTelemetry";
 
+        public const string SYNC_CONTACTS = "SyncContacts";
         public const string AUDIOPHILE_MODE = "AudiophileMode";
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
 

@@ -5,6 +5,7 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using WamWooWam.Core;
@@ -168,6 +169,11 @@ namespace Unicord.Universal
                 list.Items.Clear();
                 await list.SaveAsync();
             }
+
+            if(ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+            {
+                await Contacts.ClearContactsAsync(); 
+            }
         }
 
         internal void ShowUserOverlay(DiscordUser user, bool animate)
@@ -223,7 +229,12 @@ namespace Unicord.Universal
 
             var dm = e.PrivateChannels
                 .Concat(guildChannels)
-                .FirstOrDefault(c => c.Id == _args.ChannelId);
+                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == _args.UserId || c.Id == _args.ChannelId : c.Id == _args.ChannelId);
+
+            if (dm == null && _args.UserId != 0)
+            {
+                dm = await App.Discord.CreateDmChannelAsync(_args.UserId);
+            }
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {

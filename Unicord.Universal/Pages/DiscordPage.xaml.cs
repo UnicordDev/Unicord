@@ -1,10 +1,14 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Unicord.Universal.Controls;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
@@ -61,7 +65,7 @@ namespace Unicord.Universal.Pages
 
                 if (_loaded)
                 {
-                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
+                    var channel = await App.Discord.GetChannelAsync(_args.UserId);
                     Navigate(channel, new DrillInNavigationTransitionInfo());
                 }
             }
@@ -111,22 +115,27 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
-                try
+                if (App.RoamingSettings.Read(Constants.SYNC_CONTACTS, true))
                 {
-                    var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                    if (contacts != null)
+                    try
                     {
-                        App.CanAccessContacts = true;
+                        var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
+                        if (contacts != null)
+                        {
+                            App.Discord.RelationshipAdded += Discord_RelationshipAdded;
+                            App.Discord.RelationshipRemoved += Discord_RelationshipRemoved;
+                            App.CanAccessContacts = true;
+                        }
                     }
-                }
-                catch
-                {
-                    App.CanAccessContacts = false;
+                    catch
+                    {
+                        App.CanAccessContacts = false;
+                    }
                 }
 
                 if (_args != null)
                 {
-                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
+                    var channel = await App.Discord.GetChannelAsync(_args.UserId);
                     Navigate(channel, new DrillInNavigationTransitionInfo());
                 }
                 else
@@ -137,6 +146,38 @@ namespace Unicord.Universal.Pages
 
             }
             catch { }
+        }
+
+        private async Task Discord_RelationshipAdded(RelationshipEventArgs e)
+        {
+            if (e.Relationship.RelationshipType == DiscordRelationshipType.Friend)
+            {
+                var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
+                var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
+                if (store != null)
+                {
+                    var lists = await store.FindContactListsAsync();
+                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
+                    var annotationList = await Tools.GetAnnotationlistAsync(annotationStore);
+                    await Contacts.AddOrUpdateContactForRelationship(list, annotationList, e.Relationship);
+                }
+            }
+        }
+
+        private async Task Discord_RelationshipRemoved(RelationshipEventArgs e)
+        {
+            var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
+            if (store != null)
+            {
+                var lists = await store.FindContactListsAsync();
+                var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
+
+                var contact = await list.GetContactFromRemoteIdAsync($"Unicord_{e.Relationship.Id}");
+                if (contact != null)
+                {
+                    await list.DeleteContactAsync(contact);
+                }
+            }
         }
 
         private async Task Discord_UserSettingsUpdated(UserSettingsUpdateEventArgs e)
@@ -185,13 +226,15 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            notification.Content = new Controls.MessageViewer() { Message = message };
+            notification.Content = new MessageViewer() { Message = message };
             notification.Show(7_000);
         }
 
         private void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-
+            var message = ((sender as InAppNotification).Content as MessageViewer)?.Message;
+            if (message != null)
+                Navigate(message.Channel, new DrillInNavigationTransitionInfo());
         }
 
         private void guildsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -287,7 +330,7 @@ namespace Unicord.Universal.Pages
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if(await WindowsHello.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
+            if (await WindowsHello.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
             {
                 SettingsOverlayGrid.Visibility = Visibility.Visible;
 

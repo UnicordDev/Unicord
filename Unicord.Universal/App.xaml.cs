@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Unicord.Abstractions;
 using Unicord.Universal.Abstractions;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using WamWooWam.Core;
@@ -23,7 +24,10 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
+using Windows.System.Threading;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -107,7 +111,7 @@ namespace Unicord.Universal
 
                     if (ulong.TryParse(annotation.RemoteId.Split('_').Last(), out var id))
                     {
-                        rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { ChannelId = id, FullFrame = true });
+                        rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { UserId = id, FullFrame = true });
                     }
                 }
                 catch
@@ -278,6 +282,12 @@ namespace Unicord.Universal
                             ReadySource.TrySetResult(e);
                             if (onReady != null)
                                 await onReady(e);
+
+                            if (RoamingSettings.Read(SYNC_CONTACTS, true) && ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+                            {
+                                var t = new Task(async () => await Contacts.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
+                                t.Start();
+                            }
                         }
 
                         Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });
