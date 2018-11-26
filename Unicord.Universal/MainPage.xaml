@@ -190,7 +190,7 @@
                         </ScrollViewer>
                         <Grid x:Name="contentContainerOverlay" Visibility="Collapsed">
                             <Grid.Background>
-                                <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.66" />
+                                <SolidColorBrush Color="{ThemeResource SystemAltMediumHighColor}" />
                             </Grid.Background>
                             <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>

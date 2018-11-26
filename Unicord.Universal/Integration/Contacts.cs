@@ -18,6 +18,7 @@ namespace Unicord.Universal.Integration
         {
             try
             {
+                var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
                 var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
                 var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
                 if (store != null)
@@ -44,20 +45,25 @@ namespace Unicord.Universal.Integration
 
                     foreach (var relationship in App.Discord.Relationships.Where(r => r.RelationshipType == DiscordRelationshipType.Friend))
                     {
-                        await AddOrUpdateContactForRelationship(list, annotationList, relationship);
+                        await AddOrUpdateContactForRelationship(list, annotationList, relationship, folder);
                     }
                 }
             }
             catch { }
         }
 
-        public static async Task AddOrUpdateContactForRelationship(ContactList list, ContactAnnotationList annotationList, DiscordRelationship relationship)
+        public static async Task AddOrUpdateContactForRelationship(ContactList list, ContactAnnotationList annotationList, DiscordRelationship relationship, StorageFolder folder = null)
         {
             Contact contact = null;
 
+            if(folder == null)
+            {
+                folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
+            }
+
             if ((contact = await list.GetContactFromRemoteIdAsync($"Unicord_{relationship.User.Id}")) == null)
             {
-                var reference = await GetAvatarReferenceAsync(relationship);
+                var reference = await GetAvatarReferenceAsync(relationship, folder);
 
                 contact = new Contact
                 {
@@ -76,7 +82,7 @@ namespace Unicord.Universal.Integration
                 {
                     if (relationship.User.AvatarHash != str)
                     {
-                        var reference = await GetAvatarReferenceAsync(relationship);
+                        var reference = await GetAvatarReferenceAsync(relationship, folder);
                         contact.SourceDisplayPicture = reference;
                         contact.ProviderProperties["AvatarHash"] = relationship.User.AvatarHash;
 
@@ -112,23 +118,23 @@ namespace Unicord.Universal.Integration
             catch { }
         }
 
-        private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DSharpPlus.Entities.DiscordRelationship relationship)
+        private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DiscordRelationship relationship, StorageFolder folder)
         {
             StorageFile tempFile = null;
 
             try
             {
-                tempFile = await ApplicationData.Current.LocalFolder.CreateFileAsync($"{relationship.User.AvatarHash}.png", CreationCollisionOption.FailIfExists);
+                tempFile = await folder.CreateFileAsync($"{relationship.User.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
 
-                using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(relationship.User.NonAnimatedAvatarUrl)))
                 using (var fileStream = await tempFile.OpenAsync(FileAccessMode.ReadWrite))
+                using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(relationship.User.GetAvatarUrl(ImageFormat.Jpeg, 256))))
                 {
-                    await stream.AsStreamForRead().CopyToAsync(fileStream.AsStreamForWrite());
+                    await RandomAccessStream.CopyAndCloseAsync(stream, fileStream);
                 }
             }
             catch
             {
-                tempFile = await ApplicationData.Current.LocalFolder.GetFileAsync($"{relationship.User.AvatarHash}.png");
+                tempFile = await ApplicationData.Current.LocalFolder.GetFileAsync($"{relationship.User.AvatarHash}.jpeg");
             }
 
             var reference = RandomAccessStreamReference.CreateFromFile(tempFile);

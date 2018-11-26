@@ -65,7 +65,7 @@ namespace Unicord.Universal.Pages
 
                 if (_loaded)
                 {
-                    var channel = await App.Discord.GetChannelAsync(_args.UserId);
+                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
                     Navigate(channel, new DrillInNavigationTransitionInfo());
                 }
             }

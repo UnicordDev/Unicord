@@ -47,10 +47,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="contactsUnavailable" Grid.ColumnSpan="2" Visibility="Collapsed" Text="Contact syncing is not supported on this device" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+            <TextBlock x:Name="contactsUnavailable" Grid.ColumnSpan="2" Visibility="Collapsed" Text="Contact syncing is not supported on this device" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
 
             <ProgressBar Grid.Row="1" x:Name="syncingProgressBar" Visibility="Collapsed" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-            <TextBlock Grid.Row="1" VerticalAlignment="Center">
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" TextWrapping="WrapWholeWords">
                 <Run Text="Sync my friends with" />
                 <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
             </TextBlock>
