@@ -48,7 +48,7 @@ namespace Unicord.Universal.Pages.Subpages
 
                         foreach (var message in pins.Reverse())
                         {
-                            var viewer = messageViewerFactory.GetViewerForMessage(message);
+                            var viewer = messageViewerFactory.GetViewerForMessage(message, channel);
                             //viewer.AutoSize = false;
                             messages.Children.Add(viewer);
                         }

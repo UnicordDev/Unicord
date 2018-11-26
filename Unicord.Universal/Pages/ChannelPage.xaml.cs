@@ -199,7 +199,7 @@ namespace Unicord.Universal.Pages
                     {
                         foreach (var message in messages.Reverse())
                         {
-                            var viewer = _messageViewerFactory.GetViewerForMessage(message);
+                            var viewer = _messageViewerFactory.GetViewerForMessage(message, ViewModel.Channel);
                             messagesPanel.Children.Add(viewer);
                         }
                     });
@@ -276,7 +276,7 @@ namespace Unicord.Universal.Pages
                                 _messageViewerFactory.RequeueViewer(v);
                             }
 
-                            msgv = _messageViewerFactory.GetViewerForMessage(e.Message);
+                            msgv = _messageViewerFactory.GetViewerForMessage(e.Message, ViewModel.Channel);
                             messagesPanel.Children.Add(msgv);
                         }
                     });
@@ -357,7 +357,7 @@ namespace Unicord.Universal.Pages
                         {
                             foreach (var m in messages)
                             {
-                                var viewer = _messageViewerFactory.GetViewerForMessage(m);
+                                var viewer = _messageViewerFactory.GetViewerForMessage(m, ViewModel.Channel);
                                 messagesPanel.Children.Insert(0, viewer);
                             }
 

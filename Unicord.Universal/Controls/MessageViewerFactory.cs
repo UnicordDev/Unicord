@@ -37,13 +37,13 @@ namespace Unicord.Universal
 #endif
         }
 
-        public MessageViewer GetViewerForMessage(DiscordMessage message)
+        public MessageViewer GetViewerForMessage(DiscordMessage message, DiscordChannel channel)
         {
             try
             {
-                if (_messageViewerCache.TryGetValue(message.Channel.Id, out var channel))
+                if (_messageViewerCache.TryGetValue(channel.Id, out var channelCache))
                 {
-                    if (channel.TryGetValue(message.Id, out var viewer))
+                    if (channelCache.TryGetValue(message.Id, out var viewer))
                     {
                         if (viewer.Parent is Panel p)
                             p.Children.Remove(viewer);
@@ -53,7 +53,7 @@ namespace Unicord.Universal
                 }
                 else
                 {
-                    _messageViewerCache[message.Channel.Id] = new ConcurrentDictionary<ulong, MessageViewer>();
+                    _messageViewerCache[channel.Id] = new ConcurrentDictionary<ulong, MessageViewer>();
                 }
 
                 if (ViewerQueue.TryDequeue(out var newv))
@@ -70,7 +70,7 @@ namespace Unicord.Universal
                         p.Children.Remove(newv);
 
                     newv.Message = message;
-                    _messageViewerCache[message.Channel.Id][message.Id] = newv;
+                    _messageViewerCache[channel.Id][message.Id] = newv;
 
                     return newv;
                 }
