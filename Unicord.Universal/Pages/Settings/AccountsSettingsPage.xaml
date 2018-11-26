@@ -11,6 +11,8 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
@@ -32,6 +34,28 @@
                 </StackPanel>
             </Grid>
             <Button Grid.Column="1" Style="{StaticResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
+        </Grid>
+        <TextBlock Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}" Text="Friends" Margin="0,10,0,0"/>
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="contactsUnavailable" Grid.ColumnSpan="2" Visibility="Collapsed" Text="Contact syncing is not supported on this device" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+
+            <ProgressBar Grid.Row="1" x:Name="syncingProgressBar" Visibility="Collapsed" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" TextWrapping="WrapWholeWords">
+                <Run Text="Sync my friends with" />
+                <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
+            </TextBlock>
+            <ToggleSwitch x:Name="syncContactsSwitch" Grid.Row="1" Grid.Column="1" />
+            
         </Grid>
     </Grid>
 </Page>

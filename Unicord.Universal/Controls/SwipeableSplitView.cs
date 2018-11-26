@@ -31,13 +31,6 @@ namespace Unicord.Universal.Controls
         Storyboard _openSwipeablePane;
         Storyboard _closeSwipeablePane;
 
-        //Selector _menuHost;
-        //IList<SelectorItem> _menuItems = new List<SelectorItem>();
-        //int _toBeSelectedIndex;
-        //static double TOTAL_PANNING_DISTANCE = 160d;
-        //double _distancePerItem;
-        //double _startingDistance;
-
         #endregion
 
         public SwipeableSplitView()

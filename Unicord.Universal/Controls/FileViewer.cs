@@ -1,31 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
-
-#if WINDOWS_UWP
-
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Controls
 {
-
-#elif WINDOWS_WPF
-
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-
-namespace Unicord.Desktop.Controls
-{
-
-#endif
     public sealed class FileViewer : Control
     {
         private SemaphoreSlim _semaphore;
@@ -42,11 +28,7 @@ namespace Unicord.Desktop.Controls
             _semaphore = new SemaphoreSlim(1, 1);
         }
 
-#if WINDOWS_UWP
         protected override void OnApplyTemplate()
-#elif WINDOWS_WPF
-        public override void OnApplyTemplate()
-#endif
         {
             base.OnApplyTemplate();
             _appliedTemplate = true;
@@ -73,11 +55,7 @@ namespace Unicord.Desktop.Controls
                 {
                     var thumb = await f.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);
                     if (thumb != null)
-#if WINDOWS_UWP
                         await source.SetSourceAsync(thumb);
-#elif WINDOWS_WPF
-                        source.StreamSource = thumb.AsStreamForRead();
-#endif
                 }
                 catch (Exception ex)
                 {

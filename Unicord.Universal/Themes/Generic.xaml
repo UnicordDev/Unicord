@@ -549,7 +549,6 @@
         </Setter>
     </Style>
 
-
     <Style TargetType="local:FileViewer">
         <Setter Property="Template">
             <Setter.Value>
@@ -559,29 +558,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style TargetType="local:ProfilePicture">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:ProfilePicture">
-                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-                        <Ellipse 
-                            x:Name="PART_ProfilePicture"
-                            Width="{TemplateBinding Width}"
-                            Height="{TemplateBinding Height}"/>
-                        <Ellipse
-                            x:Name="PART_Status"
-                            Margin="1"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Width="{TemplateBinding StatusSize}"
-                            Height="{TemplateBinding StatusSize}"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
+   
     <Style TargetType="local:ImageElement">
         <Setter Property="Template">
             <Setter.Value>

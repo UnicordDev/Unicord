@@ -78,8 +78,7 @@
                              EasingFunction="{StaticResource ease}"/>
         </Storyboard>
 
-        <Storyboard x:Name="showContent" x:Key="showContent"
-                    Completed="showContent_Completed">
+        <Storyboard x:Name="showContent" x:Key="showContent">
 
             <DoubleAnimation From="0" To="1"
                              Storyboard.TargetName="contentOverlay"
@@ -119,8 +118,7 @@
                              EasingFunction="{StaticResource ease}"/>
         </Storyboard>
 
-        <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay"
-                    Completed="showUserOverlay_Completed">
+        <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay">
 
             <DoubleAnimation From="0" To="1"
                              Storyboard.TargetName="userInfoPopup"
@@ -192,7 +190,7 @@
                         </ScrollViewer>
                         <Grid x:Name="contentContainerOverlay" Visibility="Collapsed">
                             <Grid.Background>
-                                <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.66" />
+                                <SolidColorBrush Color="{ThemeResource SystemAltMediumHighColor}" />
                             </Grid.Background>
                             <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>

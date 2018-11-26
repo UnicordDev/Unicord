@@ -5,6 +5,7 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using WamWooWam.Core;
@@ -54,7 +55,7 @@ namespace Unicord.Universal
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
 
-        private async void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
+        private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
         {
             _visibility = e.Visible;
         }
@@ -168,6 +169,11 @@ namespace Unicord.Universal
                 list.Items.Clear();
                 await list.SaveAsync();
             }
+
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+            {
+                await Contacts.ClearContactsAsync();
+            }
         }
 
         internal void ShowUserOverlay(DiscordUser user, bool animate)
@@ -181,15 +187,14 @@ namespace Unicord.Universal
 
         internal void ShowGuildOverlay(DiscordGuild guild, bool animate)
         {
-            //var guildInfo = new GuildDialog { Guild = guild };
-            //fullscreenOverlay.Content = guildInfo;
-            //fullscreenOverlay.Visibility = Visibility.Visible;
+            // TODO: Guild Overlay
         }
 
         private async Task Discord_Ready(ReadyEventArgs e)
         {
             _isReady = true;
 
+            // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
             if (_args != null)
@@ -223,7 +228,12 @@ namespace Unicord.Universal
 
             var dm = e.PrivateChannels
                 .Concat(guildChannels)
-                .FirstOrDefault(c => c.Id == _args.ChannelId);
+                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == _args.UserId || c.Id == _args.ChannelId : c.Id == _args.ChannelId);
+
+            if (dm == null && _args.UserId != 0)
+            {
+                dm = await App.Discord.CreateDmChannelAsync(_args.UserId);
+            }
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -340,16 +350,6 @@ namespace Unicord.Universal
         private void contentOverlay_Tapped(object sender, TappedRoutedEventArgs e)
         {
             HideOverlay();
-        }
-
-        private void showContent_Completed(object sender, object e)
-        {
-
-        }
-
-        private void showUserOverlay_Completed(object sender, object e)
-        {
-
         }
 
         private void hideUserOverlay_Completed(object sender, object e)

@@ -8,7 +8,8 @@ namespace Unicord.Universal.Models
 {
     internal class MainPageEventArgs
     {
-        internal ulong ChannelId { get; set; }
+        public ulong ChannelId { get; internal set; }
+        internal ulong UserId { get; set; }
         internal bool FullFrame { get; set; }
     }
 }

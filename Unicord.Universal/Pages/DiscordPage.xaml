@@ -112,8 +112,6 @@
             x:Name="splitView"
             CompactPaneLength="56"
             OpenPaneLength="275"
-            DisplayMode="Inline"
-            IsPaneOpen="True"
             PaneBackground="Transparent">
             <controls:SwipeableSplitView.Pane>
                 <Grid x:Name="splitPane">

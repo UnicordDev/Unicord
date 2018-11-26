@@ -185,7 +185,7 @@
             <!--</controls:DropSkhadowPanel>-->
 
 
-            <controls1:UploadItemsControl x:Name="uploadGrid" Visibility="Collapsed" Grid.Row="2">
+            <controls1:UploadItemsControl x:Name="uploadItems" Visibility="Collapsed" Grid.Row="2">
                 <controls1:UploadItemsControl.RenderTransform>
                     <TranslateTransform x:Name="uploadsTransform" Y="0"/>
                 </controls1:UploadItemsControl.RenderTransform>
@@ -222,14 +222,7 @@
 
                     <wam:MarkdownTextBlock Grid.Column="2" Text="{x:Bind ViewModel.Topic}" Channel="{x:Bind ViewModel.Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
 
-                    <ui:DropDownButton x:Name="contactButton" Content="&#xE77B;" Style="{StaticResource IconButtonStyle}" Grid.Column="3">
-                        <ui:DropDownButton.Flyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem x:Name="addFriend" Icon="AddFriend" Text="Create new contact" Click="addContact_Click"/>
-                                <MenuFlyoutItem x:Name="addExistingContext" Icon="ContactPresence" Text="Add to existing contact" Click="addExistingContact_Click"/>
-                            </MenuFlyout>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
+                   
                     <!--<Button x:Name="addToContactsButton" Grid.Column="3" IsEnabled="True" Style="{StaticResource IconButtonStyle}" Content="&#xE779;" Click="addToContactsButton_Click" ToolTipService.ToolTip="Add to Contacts"/>-->
                     <ToggleButton x:Name="muteButton" Grid.Column="4" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
 
