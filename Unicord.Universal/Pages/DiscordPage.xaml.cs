@@ -202,7 +202,10 @@ namespace Unicord.Universal.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
+            if(App.Discord != null)
+            {
+                App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
+            }
         }
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)

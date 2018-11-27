@@ -188,7 +188,7 @@ namespace Unicord.Universal
                     try
                     {
                         var vault = new PasswordVault();
-                        var result = vault.FindAllByResource("Unicord_Token").FirstOrDefault(t => t.UserName == "Default");
+                        var result = vault.FindAllByResource(TOKEN_IDENTIFIER).FirstOrDefault(t => t.UserName == "Default");
 
                         if (result != null)
                         {
@@ -340,6 +340,8 @@ namespace Unicord.Universal
 
                 RoamingSettings.Save(VERIFY_LOGIN, false);
             }
+
+            Discord = null;
 
             var mainPage = Window.Current.Content.FindChild<MainPage>();
 

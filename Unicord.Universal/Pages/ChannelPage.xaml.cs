@@ -255,9 +255,13 @@ namespace Unicord.Universal.Pages
                 _messageViewerFactory.RequeueViewer(viewer);
             }
 
-            App.Discord.MessageCreated -= Discord_MessageCreated;
-            App.Discord.MessageUpdated -= Discord_MessageUpdated;
-            App.Discord.MessageDeleted -= Discord_MessageDeleted;
+            if (App.Discord != null)
+            {
+
+                App.Discord.MessageCreated -= Discord_MessageCreated;
+                App.Discord.MessageUpdated -= Discord_MessageUpdated;
+                App.Discord.MessageDeleted -= Discord_MessageDeleted;
+            }
         }
 
         private async Task Discord_MessageCreated(MessageCreateEventArgs e)

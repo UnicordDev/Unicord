@@ -13,6 +13,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
@@ -36,7 +38,7 @@
             <Button Grid.Column="1" Style="{StaticResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
         </Grid>
         <TextBlock Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}" Text="Friends" Margin="0,10,0,0"/>
-        <Grid Grid.Row="2" >
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -56,8 +58,8 @@
                 <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
             </TextBlock>
             <ToggleSwitch x:Name="syncContactsSwitch" Grid.Row="1" Grid.Column="1" />
-            <Button x:Name="logoutButton" Style="{StaticResource AccentButtonStyle}" Grid.Row="3" ToolTipService.ToolTip="Logout" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Logout" Click="LogoutButton_Click"/>
-
         </Grid>
+
+        <Button x:Name="logoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Content="Logout" Click="LogoutButton_Click"/>
     </Grid>
 </Page>

@@ -14,6 +14,7 @@ namespace Unicord
 #else
         public const string MAIN_URL = "https://dwpf.wankerr.com/";
 #endif
+        public const string TOKEN_IDENTIFIER = "Unicord_Token";
         public const string APP_USER_MODEL_ID = "com.wankerr.Unicord";
         public const string PLUGIN_IPC_URI = "net.pipe://localhost/org.wamwoowam.unicord/plugins";
 
@@ -49,7 +50,6 @@ namespace Unicord
         public const string VERIFY_NSFW = "HelloForNSFW";
         public const string VERIFY_SETTINGS = "HelloForSettings";
         public const string AUTHENTICATION_TIME = "AuthenticationTime";
-
     }
 
     public enum MediaTranscodeOptions

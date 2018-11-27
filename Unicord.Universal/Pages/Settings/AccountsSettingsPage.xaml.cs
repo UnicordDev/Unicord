@@ -7,6 +7,7 @@ using Unicord.Universal.Integration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.Security.Credentials;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,7 +26,6 @@ namespace Unicord.Universal.Pages.Settings
     /// </summary>
     public sealed partial class AccountsSettingsPage : Page
     {
-
         public AccountsSettingsPage()
         {
             this.InitializeComponent();
@@ -69,16 +69,24 @@ namespace Unicord.Universal.Pages.Settings
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             await App.Discord.DisconnectAsync();
+            App.Discord.Dispose();
+            App.Discord = null;
+
             try
             {
-                var passwordVault = new Windows.Security.Credentials.PasswordVault();
-                foreach (var c in passwordVault.FindAllByResource("Unicord_Token"))
+                var passwordVault = new PasswordVault();
+                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER))
                 {
                     passwordVault.Remove(c);
                 }
             }
             catch { }
-            this.FindParent<MainPage>().RootFrame.Navigate(typeof(MainPage));
+
+            var frame = (Window.Current.Content as Frame);
+            frame.Navigate(typeof(Page));
+            frame.BackStack.Clear();
+            frame.ForwardStack.Clear();
+            frame.Navigate(typeof(MainPage));
         }
     }
 }

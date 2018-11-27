@@ -80,9 +80,12 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
-            App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
-            App.Discord.MessageCreated -= Discord_MessageCreated;
+            if(App.Discord != null)
+            {
+                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
+                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
+                App.Discord.MessageCreated -= Discord_MessageCreated;
+            }
         }
 
         private void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

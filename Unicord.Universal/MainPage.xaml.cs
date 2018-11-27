@@ -52,7 +52,7 @@ namespace Unicord.Universal
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Required;
+            NavigationCacheMode = NavigationCacheMode.Disabled;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
 
@@ -131,7 +131,7 @@ namespace Unicord.Universal
             try
             {
                 var vault = new PasswordVault();
-                var result = vault.FindAllByResource("Unicord_Token").FirstOrDefault(t => t.UserName == "Default");
+                var result = vault.FindAllByResource(Constants.TOKEN_IDENTIFIER).FirstOrDefault(t => t.UserName == "Default");
 
                 if (result != null)
                 {

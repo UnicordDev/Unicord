@@ -35,7 +35,7 @@ namespace Unicord.Universal.Pages
         private async Task Discord_Ready(DSharpPlus.EventArgs.ReadyEventArgs e)
         {
             var vault = new PasswordVault();
-            vault.Add(new PasswordCredential("Unicord_Token", "Default", _token));
+            vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, "Default", _token));
             _token = null;
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

@@ -44,7 +44,7 @@ namespace Unicord.Universal
             try
             {
                 var passwordVault = new PasswordVault();
-                foreach (var c in passwordVault.FindAllByResource("Unicord_Token"))
+                foreach (var c in passwordVault.FindAllByResource(Constants.TOKEN_IDENTIFIER))
                 {
                     passwordVault.Remove(c);
                 }

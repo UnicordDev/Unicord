@@ -137,9 +137,12 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.ChannelCreated -= Discord_ChannelCreated;
-            App.Discord.ChannelUpdated -= Discord_ChannelUpdated;
-            App.Discord.ChannelDeleted -= Discord_ChannelDeleted;
+            if(App.Discord != null)
+            {
+                App.Discord.ChannelCreated -= Discord_ChannelCreated;
+                App.Discord.ChannelUpdated -= Discord_ChannelUpdated;
+                App.Discord.ChannelDeleted -= Discord_ChannelDeleted;
+            }
 
             cvs.Source = null;
             cvs.IsSourceGrouped = false;

@@ -128,9 +128,12 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.RelationshipAdded -= Discord_RelationshipAdded;
-            App.Discord.RelationshipRemoved -= Discord_RelationshipRemoved;
-            App.Discord.PresenceUpdated -= Discord_PresenceUpdated;
+            if(App.Discord != null)
+            {
+                App.Discord.RelationshipAdded -= Discord_RelationshipAdded;
+                App.Discord.RelationshipRemoved -= Discord_RelationshipRemoved;
+                App.Discord.PresenceUpdated -= Discord_PresenceUpdated;
+            }
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
