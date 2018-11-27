@@ -45,6 +45,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock x:Name="contactsUnavailable" Grid.ColumnSpan="2" Visibility="Collapsed" Text="Contact syncing is not supported on this device" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
@@ -55,7 +56,8 @@
                 <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
             </TextBlock>
             <ToggleSwitch x:Name="syncContactsSwitch" Grid.Row="1" Grid.Column="1" />
-            
+            <Button x:Name="logoutButton" Style="{StaticResource AccentButtonStyle}" Grid.Row="3" ToolTipService.ToolTip="Logout" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Logout" Click="LogoutButton_Click"/>
+
         </Grid>
     </Grid>
 </Page>
