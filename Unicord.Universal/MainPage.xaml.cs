@@ -38,6 +38,7 @@ namespace Unicord.Universal
     public sealed partial class MainPage : Page
     {
         public bool IsOverlayShown { get; internal set; }
+        public Frame RootFrame => rootFrame;
 
         private ShareOperation _shareOperation;
         private MainPageEventArgs _args;

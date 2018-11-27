@@ -65,5 +65,20 @@ namespace Unicord.Universal.Pages.Settings
             syncingProgressBar.Visibility = Visibility.Collapsed;
             syncingProgressBar.IsIndeterminate = false;
         }
+
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            await App.Discord.DisconnectAsync();
+            try
+            {
+                var passwordVault = new Windows.Security.Credentials.PasswordVault();
+                foreach (var c in passwordVault.FindAllByResource("Unicord_Token"))
+                {
+                    passwordVault.Remove(c);
+                }
+            }
+            catch { }
+            this.FindParent<MainPage>().RootFrame.Navigate(typeof(MainPage));
+        }
     }
 }
