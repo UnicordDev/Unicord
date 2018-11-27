@@ -304,10 +304,17 @@
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHello.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Release'">
+    <AppxManifest Include="Package.Debug.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Assets\DiscordClyde.Dark.svg" />
     <Content Include="Assets\DiscordClyde.Light.svg" />
     <Content Include="Assets\FiraCode-Regular.ttf" />
