@@ -26,20 +26,41 @@
             </ComboBox.Items>
         </ComboBox>
 
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Video Options"/>
-        <TextBlock TextWrapping="Wrap">
-            If you need to, you can adjust the output resolution and quality of the compressed video here.
-        </TextBlock>
-        <ComboBox Margin="0,10" Header="Resolution" ItemsSource="{Binding AvailableResolutions}" SelectedValue="{Binding Resolution}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch"/>
-        <Grid Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Slider x:Name="bitrateSlider" Header="Bitrate" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="5,20,0,0">
-                <Run Text="{Binding Value, ElementName=bitrateSlider}"/>kbps
-            </TextBlock>
-        </Grid>
+        <controls:Expander Style="{StaticResource TransparentExpanderStyle}" Header="Advanced" Background="Transparent">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Video Options" Margin="0,5"/>
+                <TextBlock TextWrapping="Wrap">
+                    If you need to, you can adjust the output resolution and quality of the compressed video here.
+                </TextBlock>
+                <ComboBox Margin="0,10" Header="Resolution" ItemsSource="{Binding AvailableResolutions}" SelectedValue="{Binding Resolution}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Slider x:Name="bitrateSlider" Header="Video Bitrate" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="5,20,0,0">
+                        <Run Text="{Binding VideoBitrate}"/>kbps
+                    </TextBlock>
+                </Grid>
+                <ComboBox HorizontalAlignment="Stretch" Header="Encoder Priority" SelectedIndex="{Binding ProcessingAlgorithm, Mode=TwoWay}" Margin="0,10">
+                    <ComboBox.Items>
+                        <ComboBoxItem Content="Prioritise speed, larger file sizes"/>
+                        <ComboBoxItem Content="Prioritise quality, smaller file sizes"/>
+                    </ComboBox.Items>
+                </ComboBox>
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Audio Options" Margin="0,0,0,5"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Slider x:Name="audioBitrateSlider" Header="Audio Bitrate" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="5,20,0,0">
+                        <Run Text="{Binding AudioBitrate}"/>kbps
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
+        </controls:Expander>
     </StackPanel>
 </Page>

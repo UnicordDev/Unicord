@@ -115,23 +115,23 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
-                if (App.RoamingSettings.Read(Constants.SYNC_CONTACTS, true))
-                {
-                    try
-                    {
-                        var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                        if (contacts != null)
-                        {
-                            App.Discord.RelationshipAdded += Discord_RelationshipAdded;
-                            App.Discord.RelationshipRemoved += Discord_RelationshipRemoved;
-                            App.CanAccessContacts = true;
-                        }
-                    }
-                    catch
-                    {
-                        App.CanAccessContacts = false;
-                    }
-                }
+                //if (App.RoamingSettings.Read(Constants.SYNC_CONTACTS, true))
+                //{
+                //    try
+                //    {
+                //        var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
+                //        if (contacts != null)
+                //        {
+                //            App.Discord.RelationshipAdded += Discord_RelationshipAdded;
+                //            App.Discord.RelationshipRemoved += Discord_RelationshipRemoved;
+                //            App.CanAccessContacts = true;
+                //        }
+                //    }
+                //    catch
+                //    {
+                //        App.CanAccessContacts = false;
+                //    }
+                //}
 
                 if (_args != null)
                 {

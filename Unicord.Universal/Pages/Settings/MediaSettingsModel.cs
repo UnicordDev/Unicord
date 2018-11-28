@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Transcoding;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Pages.Settings
@@ -16,10 +17,22 @@ namespace Unicord.Universal.Pages.Settings
             set => App.RoamingSettings.Save(AUTO_TRANSCODE_MEDIA, (MediaTranscodeOptions)value);
         }
 
-        public double VideoBitrate
+        public int ProcessingAlgorithm
+        {
+            get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.MrfCrf444);
+            set => App.RoamingSettings.Save(VIDEO_PROCESSING, value);
+        }
+
+        public int VideoBitrate
         {
             get => App.RoamingSettings.Read(VIDEO_BITRATE, 1_150_000) / 1000;
             set => App.RoamingSettings.Save(VIDEO_BITRATE, value * 1000);
+        }
+
+        public int AudioBitrate
+        {
+            get => App.RoamingSettings.Read(AUDIO_BITRATE, 192);
+            set => App.RoamingSettings.Save(AUDIO_BITRATE, value);
         }
 
         public List<string> AvailableResolutions => new List<string> { "256x144", "426x240", "640x360", "854x480", "1280x720", "1920x1080" };

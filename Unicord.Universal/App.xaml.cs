@@ -47,14 +47,14 @@ namespace Unicord.Universal
         internal static ulong _currentChannelId = 0;
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
 
-        public static TaskCompletionSource<ReadyEventArgs> ReadySource { get; } = new TaskCompletionSource<ReadyEventArgs>();
+        internal static TaskCompletionSource<ReadyEventArgs> ReadySource { get; } = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
         internal static Thickness StatusBarFill { get; set; }
 
         internal static RoamingObjectStorageHelper RoamingSettings { get; private set; } = new RoamingObjectStorageHelper();
         internal static ConcurrentDictionary<ulong, DiscordRestClient> AdditionalUserClients { get; private set; } = new ConcurrentDictionary<ulong, DiscordRestClient>();
-        internal static bool CanAccessContacts { get; set; } = false;
+        internal static UwpMediaAbstractions MediaAbstractions { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -67,8 +67,9 @@ namespace Unicord.Universal
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
 
+            MediaAbstractions = new UwpMediaAbstractions();
             UIAbstractions.SetAbstractions<UwpUIAbstractions>();
-            MediaAbstractions.SetAbstractions<UwpMediaAbstractions>();
+
             HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
             AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push));
         }

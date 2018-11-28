@@ -74,13 +74,13 @@ namespace Unicord.Universal.Controls
                         transcodeOverlay.Visibility = Visibility.Visible;
 
                         var newFile = await TryTranscodeMediaAsync(file, MediaType.Video, progress, _cancellationToken.Token);
-                        if(newFile != null)
+                        if (newFile != null)
                         {
                             temporary = true;
                             file = newFile;
                         }
                     }
-                    
+
                     props = await file.GetBasicPropertiesAsync();
 
                     transcodeProgress.IsIndeterminate = false;
@@ -178,24 +178,19 @@ namespace Unicord.Universal.Controls
                 var channelViewModel = (DataContext as ChannelViewModel);
                 tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
 
-                using (var str = await tempFile.OpenAsync(FileAccessMode.ReadWrite))
+                if (type == MediaType.Audio)
                 {
-                    var media = MediaAbstractions.Current as UwpMediaAbstractions;
+                    success = await App.MediaAbstractions.TryTranscodeAudioAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
+                }
 
-                    if (type == MediaType.Audio)
-                    {
-                        success = await media.TryTranscodeAudioAsync(file, str.AsStream(), channelViewModel.HasNitro, progress, token);
-                    }
-
-                    if (type == MediaType.Video)
-                    {
-                        success = await media.TryTranscodeVideoAsync(file, str.AsStream(), channelViewModel.HasNitro, progress, token);
-                    }
+                if (type == MediaType.Video)
+                {
+                    success = await App.MediaAbstractions.TryTranscodeVideoAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
                 }
             }
             catch (Exception ex)
             {
-                if(!(ex is TaskCanceledException))
+                if (!(ex is TaskCanceledException))
                 {
                     HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
                     await UIAbstractions.Current.ShowFailureDialogAsync(

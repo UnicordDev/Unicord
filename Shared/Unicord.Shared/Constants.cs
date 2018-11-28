@@ -46,6 +46,10 @@ namespace Unicord
         public const string VIDEO_WIDTH = "VideoWidth";
         public const string VIDEO_HEIGHT = "VideoHeight";
 
+        public const string AUDIO_BITRATE = "AudioBitrate";
+        public const string AUDIO_SAMPLERATE = "AudioSampleRate";
+        public const string VIDEO_PROCESSING = "VideoProcessingAlgorithm";
+
         public const string VERIFY_LOGIN = "HelloForLogin";
         public const string VERIFY_NSFW = "HelloForNSFW";
         public const string VERIFY_SETTINGS = "HelloForSettings";
