@@ -298,11 +298,7 @@ namespace Unicord.Universal.Models
             if (Channel.Type == ChannelType.Voice)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(textBox.Text)
-#if WINDOWS_UWP
-                || FileUploads.Any()
-#endif
-                )
+            if ((!string.IsNullOrWhiteSpace(textBox.Text) || FileUploads.Any()) && CanSend)
             {
                 var str = textBox.Text;
                 if (str.Length < 2000)

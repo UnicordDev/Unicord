@@ -74,12 +74,14 @@
 
         </controls:DockPanel>
 
-        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Margin="0,0,0,-48" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
-            <StackPanel VerticalAlignment="Center" Margin="10">
-                <TextBlock Text="Transcoding" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Margin="10" />
-                <ProgressBar x:Name="transcodeProgress" IsIndeterminate="False" MaxWidth="350"/>
-                <Button Style="{StaticResource TextBlockButtonStyle}" Content="Cancel" HorizontalAlignment="Center" Click="Button_Click"/>
-            </StackPanel>
+        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Margin="0,0,0,-1000" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
+            <Grid VerticalAlignment="Top" Height="198">
+                <StackPanel VerticalAlignment="Center" Margin="10">
+                    <TextBlock Text="Transcoding" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Margin="10" />
+                    <ProgressBar x:Name="transcodeProgress" IsIndeterminate="False" MaxWidth="350"/>
+                    <Button Style="{StaticResource TextBlockButtonStyle}" Content="Cancel" HorizontalAlignment="Center" Click="Button_Click"/>
+                </StackPanel>
+            </Grid>
         </Grid>
 
     </Grid>

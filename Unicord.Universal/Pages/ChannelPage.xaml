@@ -68,7 +68,7 @@
 
             <Grid Grid.Row="1">
                 <ScrollViewer x:Name="messagesScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ViewChanged="messagesScroll_ViewChanged" insider:CanContentRenderOutsideBounds="True">
-                    <StackPanel x:Name="messagesPanel" Padding="0,0,0,20"/>
+                    <StackPanel x:Name="messagesPanel" Padding="0,0,0,30"/>
                 </ScrollViewer>
                 <StackPanel x:Name="noMessages" Visibility="Collapsed" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text=":(" FontSize="110"/>
