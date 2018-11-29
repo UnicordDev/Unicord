@@ -128,7 +128,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="entities:DiscordReaction">
-                            <Border Padding="2" Margin="0,0,5,0" Background="{ThemeResource SystemControlPageBackgroundChromeMediumLowBrush}">
+                            <Border Padding="2" Margin="0,0,5,0" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
