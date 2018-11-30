@@ -57,7 +57,7 @@
                 <Run Text="Sync my friends with" />
                 <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
             </TextBlock>
-            <ToggleSwitch x:Name="syncContactsSwitch" Grid.Row="1" Grid.Column="1" />
+            <ToggleSwitch x:Name="syncContactsSwitch" Style="{StaticResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
         </Grid>
 
         <Button x:Name="logoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Content="Logout" Click="LogoutButton_Click"/>

@@ -27,6 +27,12 @@ namespace Unicord.Universal.Pages.Settings
             set => App.RoamingSettings.Save(VERIFY_SETTINGS, value);
         }
 
+        public bool EnableAnalytics
+        {
+            get => App.RoamingSettings.Read(ENABLE_ANALYTICS, true);
+            set => App.RoamingSettings.Save(ENABLE_ANALYTICS, value);
+        }
+
         public TimeSpan AuthenticationTime
         {
             get => App.RoamingSettings.Read(AUTHENTICATION_TIME, TimeSpan.FromMinutes(5));

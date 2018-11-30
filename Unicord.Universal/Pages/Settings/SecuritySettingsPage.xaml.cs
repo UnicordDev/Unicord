@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AppCenter;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,6 +43,11 @@ namespace Unicord.Universal.Pages.Settings
                 unavailableText.Visibility = Visibility.Collapsed;
                 settingsContent.IsEnabled = true;
             }
+        }
+
+        private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            await AppCenter.SetEnabledAsync((sender as ToggleSwitch).IsOn);
         }
     }
 }

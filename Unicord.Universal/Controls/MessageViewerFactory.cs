@@ -46,7 +46,14 @@ namespace Unicord.Universal
                     if (channelCache.TryGetValue(message.Id, out var viewer))
                     {
                         if (viewer.Parent is Panel p)
+                        {
                             p.Children.Remove(viewer);
+                        }
+
+                        if (viewer.Parent is ContentControl c)
+                        {
+                            c.Content = null;
+                        }
 
                         return viewer;
                     }
@@ -67,7 +74,14 @@ namespace Unicord.Universal
                     }
 
                     if (newv.Parent is Panel p)
+                    {
                         p.Children.Remove(newv);
+                    }
+
+                    if (newv.Parent is ContentControl c)
+                    {
+                        c.Content = null;
+                    }
 
                     newv.Message = message;
                     _messageViewerCache[channel.Id][message.Id] = newv;

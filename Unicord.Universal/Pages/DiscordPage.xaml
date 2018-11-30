@@ -131,10 +131,10 @@
                             <Image Source="{StaticResource DiscordClyde}" Width="22" Height="22" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Grid>
 
-                        <ListView x:Name="guildsList" Grid.Row="1" ShowsScrollingPlaceholders="False" Padding="0,-6,0,0" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
+                        <ListView x:Name="guildsList" Grid.Row="1" ShowsScrollingPlaceholders="False" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
                             <ListView.Header>
-                                <ListViewItem x:Name="friendsItem" Tapped="friendsItem_Tapped" Margin="-12,6" HorizontalContentAlignment="Stretch">
-                                    <SymbolIcon Margin="-10,0,0,0" Width="36" Height="36" Symbol="People"></SymbolIcon>
+                                <ListViewItem x:Name="friendsItem" Tapped="friendsItem_Tapped" Margin="0,10" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                                    <SymbolIcon Width="36" Height="36" Symbol="People"></SymbolIcon>
                                 </ListViewItem>
                             </ListView.Header>
                             <ListView.ItemTemplate>
@@ -148,9 +148,16 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                             <ListView.Footer>
-                                <ListViewItem x:Name="settingsItem" Tapped="SettingsItem_Tapped" Margin="-12,6" HorizontalContentAlignment="Stretch">
-                                    <SymbolIcon Margin="-10,0,0,0" Width="36" Height="36" Symbol="Setting"></SymbolIcon>
-                                </ListViewItem>
+                                <StackPanel Margin="0,10">
+                                    <ListViewItem x:Name="settingsItem" Tapped="SettingsItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                                        <SymbolIcon Width="36" Height="36" Symbol="Setting"></SymbolIcon>
+                                    </ListViewItem>
+                                    <!--
+                                        <ListViewItem x:Name="feedbackItem" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                                            <FontIcon Width="36" Height="36" Glyph="&#xED15;"></FontIcon>
+                                        </ListViewItem>
+                                    -->
+                                </StackPanel>
                             </ListView.Footer>
                         </ListView>
                     </Grid>
