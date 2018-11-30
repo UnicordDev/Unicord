@@ -2,7 +2,9 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Push;
+using Microsoft.AppCenter.Crashes;
 
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
@@ -52,7 +54,9 @@ namespace Unicord.Universal
         internal static DiscordClient Discord { get; set; }
         internal static Thickness StatusBarFill { get; set; }
 
-        internal static RoamingObjectStorageHelper RoamingSettings { get; private set; } = new RoamingObjectStorageHelper();
+        internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
+        internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
+
         internal static ConcurrentDictionary<ulong, DiscordRestClient> AdditionalUserClients { get; private set; } = new ConcurrentDictionary<ulong, DiscordRestClient>();
         internal static UwpMediaAbstractions MediaAbstractions { get; private set; }
 
@@ -70,8 +74,11 @@ namespace Unicord.Universal
             MediaAbstractions = new UwpMediaAbstractions();
             UIAbstractions.SetAbstractions<UwpUIAbstractions>();
 
-            HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
-            AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push));
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
+            {
+                HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+            }
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -140,6 +147,8 @@ namespace Unicord.Universal
 
         private async Task OnLaunchedAsync(bool preLaunch, string arguments)
         {
+            Analytics.TrackEvent("Launch");
+
             var rawArgs = Strings.SplitCommandLine(arguments);
 
             var args = new Dictionary<string, string>();
@@ -196,7 +205,7 @@ namespace Unicord.Universal
                             result.RetrievePassword();
 
                             await LoginAsync(result.Password,
-                                async r => await rootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => rootFrame.Navigate(typeof(MainPage))),
+                                r => rootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => rootFrame.Navigate(typeof(MainPage))).AsTask(),
                                 ex => Task.CompletedTask,
                                 true,
                                 UserStatus.Idle);
@@ -247,6 +256,7 @@ namespace Unicord.Universal
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
+            Analytics.TrackEvent("Suspend");
 
             deferral.Complete();
         }

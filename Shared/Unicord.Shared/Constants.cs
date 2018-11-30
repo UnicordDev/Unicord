@@ -36,8 +36,8 @@ namespace Unicord
         public const string MINI_MODE_POSITIONS = "MiniModePositions";
         public const string MINI_MODE_SNAP_ENABLED = "MiniModeSnap";
 
-        public const string DISABLE_TELEMETRY = "DisableTelemetry";
-
+        public const string ENABLE_ANALYTICS = "EnableAnalytics";
+        
         public const string SYNC_CONTACTS = "SyncContacts";
         public const string AUDIOPHILE_MODE = "AudiophileMode";
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";

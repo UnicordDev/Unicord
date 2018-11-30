@@ -41,9 +41,9 @@
                     <FontIcon Glyph="&#xE720;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Security" ToolTipService.ToolTip="Security and Login">
+            <lib:NavigationViewItem Tag="Security" ToolTipService.ToolTip="Security and Privacy">
                 <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE8D7;" />
+                    <FontIcon Glyph="&#xE72E;"/>
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
             <lib:NavigationViewItem Tag="About" ToolTipService.ToolTip="About Unicord">
