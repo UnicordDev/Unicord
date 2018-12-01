@@ -47,7 +47,13 @@ namespace Unicord.Universal.Pages.Settings
         {
             get => App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
             set => App.RoamingSettings.Save(VIDEO_HEIGHT, value);
-        }        
+        }
+
+        public bool SavePhotos
+        {
+            get => App.RoamingSettings.Read("SavePhotos", true);
+            set => App.RoamingSettings.Save("SavePhotos", value);
+        }
 
         public string Resolution
         {

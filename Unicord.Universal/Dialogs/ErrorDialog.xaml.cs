@@ -19,35 +19,12 @@ namespace Unicord.Universal.Dialogs
 {
     public sealed partial class ErrorDialog : ContentDialog
     {
-        public string Text { get => errorText.Text; set => errorText.Text = value; }
-        public string AdditionalText { get => errorInfoText.Text; set => errorInfoText.Text = value; }
+        public new string Title { get => errorTitle.Text; set => errorTitle.Text = value; }
+        public new string Content { get => errorContent.Text; set => errorContent.Text = value; }
 
         public ErrorDialog()
         {
             InitializeComponent();
-        }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            args.Cancel = true;
-            if(errorInfoPanel.Visibility == Visibility.Visible)
-            {
-                SecondaryButtonText = "Show details";
-                errorInfoPanel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                SecondaryButtonText = "Hide details";
-                errorInfoPanel.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
-        {
-            if(!string.IsNullOrWhiteSpace(AdditionalText))
-            {
-                SecondaryButtonText = "Show details";
-            }
         }
     }
 }

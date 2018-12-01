@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WamWooWam.Core;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
@@ -19,15 +20,17 @@ namespace Unicord.Universal.Models
         public string FileName { get; private set; }
         public ulong Length { get; private set; }
         public bool IsTemporary { get; private set; }
-        public string DisplayLength => (Length / (1024d * 1024d)).ToString("F2");
+        public bool TranscodeFailed { get; private set; }
+        public string DisplayLength => Files.SizeSuffix((long)Length);
 
-        public static async Task<FileUploadModel> FromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false)
+        public static async Task<FileUploadModel> FromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
             var model = new FileUploadModel
             {
                 File = await file.OpenReadAsync(),
                 FileName = file.Name,
-                IsTemporary = isTemporary
+                IsTemporary = isTemporary,
+                TranscodeFailed = transcodeFailed
             };
 
             prop = prop ?? await file.GetBasicPropertiesAsync();

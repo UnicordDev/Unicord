@@ -50,11 +50,17 @@ namespace Unicord.Universal.Controls
         {
             var cameraUi = new CameraCaptureUI();
             var file = await cameraUi.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
+
+            if (App.RoamingSettings.Read("SavePhotos", true))
+            {
+                await file.MoveAsync(KnownFolders.CameraRoll, DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss") + Path.GetExtension(file.Path));
+            }
+
             if (file != null)
             {
                 FileChosen?.Invoke(this, file);
             }
-        }       
+        }
 
         private async void openLocalButton_Click(object sender, RoutedEventArgs e)
         {
@@ -70,7 +76,7 @@ namespace Unicord.Universal.Controls
                 picker.FileTypeFilter.Add("*");
 
                 var files = await picker.PickMultipleFilesAsync();
-                foreach(var file in files)
+                foreach (var file in files)
                 {
                     FileChosen?.Invoke(this, file);
                 }

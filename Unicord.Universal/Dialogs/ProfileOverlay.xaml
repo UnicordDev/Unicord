@@ -9,6 +9,7 @@
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:entities="using:DSharpPlus.Entities"
     mc:Ignorable="d" MaxWidth="550">
 
     <StackPanel VerticalAlignment="Center">
@@ -64,19 +65,12 @@
                     <StackPanel>
                         <StackPanel x:Name="rolesList">
                             <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>
-                            <ItemsControl ItemsSource="{x:Bind _member.Roles}">
+                            <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <controls1:WrapPanel/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Margin="2.5" BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" Padding="5,2,5,4">
-                                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center" LineHeight="15"/>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
                         <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>

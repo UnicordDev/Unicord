@@ -1,49 +1,39 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WamWooWam.Core;
 using DSharpPlus.EventArgs;
 using System.Threading;
 using System.Collections.Concurrent;
-using Unicord.Abstractions;
 using Windows.UI.Core;
-#if WINDOWS_WPF
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Threading;
-#elif WINDOWS_UWP
+using Unicord.Universal.Utilities;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-#endif
 
-#if WINDOWS_WPF
-namespace Unicord.Desktop.Models
-#elif WINDOWS_UWP
 namespace Unicord.Universal.Models
-#endif
 {
     public class ChannelViewModel : PropertyChangedBase, IDisposable
     {
         private DiscordChannel _channel;
         private DiscordUser _currentUser;
 
-        private ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
+        private ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation;
         private DateTime _typingLastSent;
+        private SynchronizationContext _context;
 
         public ChannelViewModel(DiscordChannel channel)
         {
-            Channel = channel;
-            CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
+            _context = SynchronizationContext.Current;
+            _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
 
+            Channel = channel;
+            CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
             if (channel.Type != ChannelType.Voice)
             {
                 App.Discord.TypingStarted += Discord_TypingStarted;
@@ -59,8 +49,7 @@ namespace Unicord.Universal.Models
                 Permissions = Permissions.Administrator;
 
             AvailableUsers = new ObservableCollection<DiscordUser> { CurrentUser };
-
-#if WINDOWS_UWP
+            
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
             {
@@ -70,7 +59,6 @@ namespace Unicord.Universal.Models
                 InvokePropertyChanged(nameof(UploadInfoForeground));
                 InvokePropertyChanged(nameof(CanUpload));
             };
-#endif
         }
 
         private Task OnChannelUpdated(ChannelUpdateEventArgs e)
@@ -84,25 +72,6 @@ namespace Unicord.Universal.Models
             return Task.CompletedTask;
         }
 
-#if WINDOWS_UWP
-
-        private CoreDispatcher _dispatcher;
-        public ChannelViewModel(DiscordChannel channel, CoreDispatcher dispatcher) : this(channel)
-        {
-            _dispatcher = dispatcher;
-        }
-
-        public ObservableCollection<FileUploadModel> FileUploads { get; set; }
-
-#elif WINDOWS_WPF
-
-        private Dispatcher _dispatcher;
-        public ChannelViewModel(DiscordChannel channel, Dispatcher dispatcher) : this(channel)
-        {
-            _dispatcher = dispatcher;
-        }
-#endif
-
         public DiscordChannel Channel
         {
             get => _channel;
@@ -115,10 +84,7 @@ namespace Unicord.Universal.Models
                 else
                     Permissions = Permissions.Administrator;
 
-                InvokePropertyChanged(nameof(ChannelPrefix));
-                InvokePropertyChanged(nameof(ChannelName));
-                InvokePropertyChanged(nameof(ChannelSuffix));
-                InvokePropertyChanged(nameof(ShowUsersButton));
+                InvokePropertyChanged(string.Empty);
             }
         }
 
@@ -134,12 +100,17 @@ namespace Unicord.Universal.Models
                 else
                     Permissions = Permissions.Administrator;
 
-                InvokePropertyChanged(nameof(HasNitro));
-                InvokePropertyChanged(nameof(CanUpload));
+                InvokePropertyChanged(string.Empty);
             }
         }
 
+        public Permissions Permissions { get; set; }
+
         public ObservableCollection<DiscordUser> AvailableUsers { get; set; }
+
+        public ObservableCollection<FileUploadModel> FileUploads { get; set; }
+
+        public ObservableCollection<DiscordUser> TypingUsers { get; set; }
 
         public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r", "\n" }, " ") : string.Empty;
 
@@ -213,10 +184,8 @@ namespace Unicord.Universal.Models
         {
             get
             {
-#if WINDOWS_UWP
                 if (UploadSize > (ulong)UploadLimit)
                     return false;
-#endif
 
                 if (Channel.Type == ChannelType.Voice)
                     return false;
@@ -237,10 +206,10 @@ namespace Unicord.Universal.Models
         {
             get
             {
-#if WINDOWS_UWP
+
                 if (UploadSize > (ulong)UploadLimit)
                     return false;
-#endif
+
                 if (Channel.Type == ChannelType.Voice)
                     return false;
 
@@ -259,17 +228,13 @@ namespace Unicord.Universal.Models
 
         public int UploadLimit => HasNitro ? 50 * 1024 * 1024 : 8 * 1024 * 1024;
 
-#if WINDOWS_UWP
-
         public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
 
         public string DisplayUploadSize => (UploadSize / (1024d * 1024d)).ToString("F2");
 
         public double UploadProgressBarValue => Math.Min(UploadSize, (ulong)UploadLimit);
 
-        public Windows.UI.Xaml.Media.Brush UploadInfoForeground => !CanSend ? new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red) : null;
-
-#endif
+        public Brush UploadInfoForeground => !CanSend ? new SolidColorBrush(Colors.Red) : null;
 
         public string DisplayUploadLimit => (UploadLimit / (1024d * 1024d)).ToString("F2");
 
@@ -307,9 +272,8 @@ namespace Unicord.Universal.Models
 
                     try
                     {
-
                         var client = GetClient();
-#if WINDOWS_UWP
+
                         if (FileUploads.Any())
                         {
                             var models = FileUploads.ToArray();
@@ -329,7 +293,7 @@ namespace Unicord.Universal.Models
 
                             return;
                         }
-#endif
+
                         if (client is DiscordRestClient rest)
                         {
                             await rest.CreateMessageAsync(Channel.Id, str, false, null);
@@ -340,8 +304,7 @@ namespace Unicord.Universal.Models
                     }
                     catch
                     {
-                        await UIAbstractions.Current.ShowFailureDialogAsync(
-                            "Failed to send!",
+                        await UIUtilities.ShowErrorDialogAsync(
                             "Failed to send message!",
                             "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
                     }
@@ -392,28 +355,22 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private async Task OnMessageCreated(MessageCreateEventArgs e)
-        {
+        private Task OnMessageCreated(MessageCreateEventArgs e)
+        {   
             if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
                 src.Cancel();
 
             var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
             if (usr != null)
             {
-#if WINDOWS_UWP
-                await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                _context.Post(a =>
                 {
                     TypingUsers.Remove(usr);
                     UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#elif WINDOWS_WPF
-                await _dispatcher.InvokeAsync(() =>
-                {
-                    TypingUsers.Remove(usr);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#endif
+                }, null);
             }
+
+            return Task.CompletedTask;
         }
 
         #region Typing
@@ -441,32 +398,23 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public ObservableCollection<DiscordUser> TypingUsers { get; set; }
-        public Permissions Permissions { get; set; }
-
-        private async Task Discord_TypingStarted(TypingStartEventArgs e)
+        private Task Discord_TypingStarted(TypingStartEventArgs e)
         {
             if (e.Channel.Id == Channel.Id && e.User.Id != CurrentUser.Id)
             {
                 if (_typingCancellation.TryRemove(e.User.Id, out var src))
                     src.Cancel();
 
-#if WINDOWS_UWP
-                await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                _context.Post(o =>
                 {
                     TypingUsers.Add(e.User);
                     UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#elif WINDOWS_WPF
-                await _dispatcher.InvokeAsync(() =>
-                {
-                    TypingUsers.Add(e.User);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#endif
+                }, null);
 
                 new Task(async () => await HandleTypingStartAsync(e)).Start();
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task HandleTypingStartAsync(TypingStartEventArgs e)
@@ -474,21 +422,13 @@ namespace Unicord.Universal.Models
             var source = new CancellationTokenSource();
             _typingCancellation[e.User.Id] = source;
 
-            await Task.Delay(10_000, source.Token).ContinueWith(async t =>
+            await Task.Delay(10_000, source.Token).ContinueWith(t =>
             {
-#if WINDOWS_UWP
-                await _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                _context.Post(o =>
                 {
                     TypingUsers.Remove(e.User);
                     UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#elif WINDOWS_WPF
-                await _dispatcher.InvokeAsync(() =>
-                {
-                    TypingUsers.Remove(e.User);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                });
-#endif
+                }, null);
             });
         }
 

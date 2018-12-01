@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Unicord.Abstractions;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Pages.Subpages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
@@ -130,16 +130,7 @@ namespace Unicord.Universal.Pages
                     var props = await _file.GetBasicPropertiesAsync();
                     if (props.Size >= maxSize)
                     {
-                        var dialog = new ErrorDialog()
-                        {
-                            Title = "This file is too big!",
-                            Text = $"We're gonna need something under {(App.Discord.CurrentUser.HasNitro ? "50MB" : "8MB")} please!"
-                        };
-
-                        dialog.PrimaryButtonClick += (o, ev) => _shareOperation.DismissUI();
-
-                        await dialog.ShowAsync();
-
+                        await UIUtilities.ShowErrorDialogAsync("This file is too big!", $"We're gonna need something under {(App.Discord.CurrentUser.HasNitro ? "50MB" : "8MB")} please!");
                         Window.Current.Close();
                     }
                 }

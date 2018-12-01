@@ -6,19 +6,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="TITLE"
-    PrimaryButtonText="OK"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" 
-    Opened="ContentDialog_Opened">
+    PrimaryButtonText="OK">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TextBlock x:Name="errorText" TextWrapping="Wrap"></TextBlock>
-        <StackPanel x:Name="errorInfoPanel" Visibility="Collapsed" Grid.Row="1" Margin="0,5,0,0">
-            <TextBlock x:Name="errorInfoText" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextWrapping="Wrap"></TextBlock>
-        </StackPanel>
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="48"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="&#xE783;" FontSize="48" FontFamily="Segoe MDL2 Assets"/>
+
+        <Grid Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="errorTitle" FontSize="16" FontWeight="Bold" Text="Whoops!" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1"></TextBlock>
+            <TextBlock x:Name="errorContent" Grid.Row="1" Text="This is what went wrong, maybe stop being big dumb" TextWrapping="Wrap" />
+        </Grid>
     </Grid>
 </ContentDialog>

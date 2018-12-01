@@ -44,57 +44,26 @@ namespace Unicord.Universal.Controls
 
             if (_mediaExtensions.Value.Contains(fileExtension))
             {
-                if (_attachment.Width != 0 && _attachment.Height != 0)
-                {
-                    AddVideoElement();
-                }
-                else
-                {
-                    var mediaPlayer = new MediaPlayerControl(_attachment, true) { VerticalContentAlignment = VerticalAlignment.Top };
-                    mainGrid.Content = mediaPlayer;
-                }
+                var mediaPlayer = new MediaPlayerControl(_attachment, !(_attachment.Width != 0 && _attachment.Height != 0)) { VerticalContentAlignment = VerticalAlignment.Top };
+                mainGrid.Content = mediaPlayer;
             }
             else if (_attachment.Height != 0 && _attachment.Width != 0)
             {
-                var width = _attachment.Width;
-                var height = _attachment.Height;
-                Drawing.ScaleProportions(ref width, ref height, 640, 480);
-
-                var bitmapImage = new BitmapImage(new Uri(_attachment.ProxyUrl + $"?width={width}&height={height}"))
+                var imageElement = new ImageElement()
                 {
-                    DecodePixelWidth = width,
-                    DecodePixelHeight = height,
-                    AutoPlay = false
+                    ImageWidth = _attachment.Width,
+                    ImageHeight = _attachment.Height,
+                    ImageUri = new Uri(_attachment.ProxyUrl)
                 };
 
-                var image = new Image()
-                {
-                    Source = bitmapImage,
-                    MaxWidth = width,
-                    MaxHeight = height,
-                    Stretch = Stretch.Uniform
-                };
-
-                if (bitmapImage.IsAnimatedBitmap)
-                {
-                    image.PointerEntered += (o, ev) => bitmapImage.Play();
-                    image.PointerExited += (o, ev) => bitmapImage.Stop();
-                }
-
-                image.Tapped += Image_Tapped;
-                mainGrid.Content = image;
+                imageElement.Tapped += Image_Tapped;
+                mainGrid.Content = imageElement;
             }
             else
             {
                 _loadDetails = true;
                 Bindings.Update();
             }
-        }
-
-        private void AddVideoElement()
-        {
-            var mediaPlayer = new MediaPlayerControl(_attachment, false) { VerticalContentAlignment = VerticalAlignment.Top };
-            mainGrid.Content = mediaPlayer;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -155,7 +124,6 @@ namespace Unicord.Universal.Controls
 
         private async void shareMenuItem_Click(object sender, RoutedEventArgs e)
         {
-
             downloadProgressBar.Visibility = Visibility.Visible;
             _dataTransferManager = DataTransferManager.GetForCurrentView();
             _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(_attachment.Url)}");
@@ -187,9 +155,8 @@ namespace Unicord.Universal.Controls
                 downloadProgressBar.Value = p.BytesReceived;
             });
 
-            var client = new HttpClient();
             var message = new HttpRequestMessage(HttpMethod.Get, new Uri(_attachment.Url));
-            var resp = await client.SendRequestAsync(message).AsTask(progress);
+            var resp = await Tools.HttpClient.SendRequestAsync(message).AsTask(progress);
 
             var content = await resp.Content.ReadAsInputStreamAsync();
             var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
@@ -198,7 +165,6 @@ namespace Unicord.Universal.Controls
 
             content.Dispose();
             fileStream.Dispose();
-            client.Dispose();
 
             await CachedFileManager.CompleteUpdatesAsync(file);
 

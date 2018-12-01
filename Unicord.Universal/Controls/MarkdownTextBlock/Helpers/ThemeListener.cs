@@ -22,15 +22,13 @@ namespace WamWooWam.Uwp.UI.Helpers
     /// and Signals an Event when they occur.
     /// </summary>
     [AllowForWeb]
+    [DebuggerNonUserCode]
     public sealed class ThemeListener : IDisposable
     {
         /// <summary>
         /// Gets the Name of the Current Theme.
         /// </summary>
-        public string CurrentThemeName
-        {
-            get { return this.CurrentTheme.ToString(); }
-        }
+        public string CurrentThemeName => this.CurrentTheme.ToString();
 
         /// <summary>
         /// Gets or sets the Current Theme.

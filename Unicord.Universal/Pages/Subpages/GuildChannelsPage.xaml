@@ -29,6 +29,7 @@
                 <Style TargetType="ListViewItem">
                     <Style.Setters>
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                         <Setter Property="Padding" Value="0,0"/>
                     </Style.Setters>
                 </Style>

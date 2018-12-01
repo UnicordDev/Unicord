@@ -8,11 +8,11 @@
     xmlns:c="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Background="Transparent"
+    mc:Ignorable="d"
     d:DesignHeight="300" MaxWidth="640" MaxHeight="480"
     d:DesignWidth="400" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
-    <Grid Margin="5">
+    <Grid Margin="10,5" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>
@@ -25,16 +25,18 @@
         <ContentControl x:Name="mainGrid">
 
         </ContentControl>
-        <Grid Padding="10" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
+        <Grid Padding="10" MinWidth="300" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="&#xE7C3;" FontSize="28" FontFamily="Segoe MDL2 Assets"/>
-            <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                <TextBlock Text="{x:Bind _attachment.FileName}" FontWeight="Bold" Margin="0,0,0,5"/>
-                <Button Content="Download Attachment" Style="{ThemeResource AccentButtonStyle}" Click="saveMenuItem_Click"/>
+            <TextBlock Text="&#xE7C3;" FontSize="24" Padding="8" VerticalAlignment="Top" FontFamily="Segoe MDL2 Assets"/>
+            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                <TextBlock Text="{x:Bind _attachment.FileName}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{x:Bind _attachment.FileSize, Converter={StaticResource FileSizeConverter}}" VerticalAlignment="Center"/>
             </StackPanel>
+            <Button Grid.Column="2" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
         </Grid>
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>
     </Grid>

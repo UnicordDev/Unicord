@@ -3,9 +3,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Push;
 using Microsoft.AppCenter.Crashes;
-
+using Microsoft.AppCenter.Push;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using System;
@@ -15,21 +14,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicord.Abstractions;
-using Unicord.Universal.Abstractions;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
-using Windows.System.Threading;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -58,7 +53,6 @@ namespace Unicord.Universal
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
 
         internal static ConcurrentDictionary<ulong, DiscordRestClient> AdditionalUserClients { get; private set; } = new ConcurrentDictionary<ulong, DiscordRestClient>();
-        internal static UwpMediaAbstractions MediaAbstractions { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -69,10 +63,7 @@ namespace Unicord.Universal
             InitializeComponent();
 
             Suspending += OnSuspending;
-            UnhandledException += App_UnhandledException;
-
-            MediaAbstractions = new UwpMediaAbstractions();
-            UIAbstractions.SetAbstractions<UwpUIAbstractions>();
+            UnhandledException += App_UnhandledException;            
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
@@ -264,19 +255,6 @@ namespace Unicord.Universal
         internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
         {
             Exception taskEx = null;
-            //try
-            //{
-            //    var localStorage = new LocalObjectStorageHelper();
-            //    if (!localStorage.KeyExists("background-allowed"))
-            //    {
-            //        await BackgroundExecutionManager.RequestAccessAsync();
-            //        var val = await BackgroundExecutionManager.RequestAccessKindAsync(
-            //            BackgroundAccessRequestKind.AllowedSubjectToSystemPolicy,
-            //            "Unicord can run in the background to keep you notified about DMs and incomming calls!");
-            //        localStorage.Save("background-allowed", val);
-            //    }
-            //}
-            //catch { }
 
             await _connectSemaphore.WaitAsync();
 
@@ -341,14 +319,7 @@ namespace Unicord.Universal
         {
             if (ex != null)
             {
-                var dialog = new ErrorDialog()
-                {
-                    Title = "Unable to login!",
-                    Text = "Something went wrong logging you in! Check your details and try again!",
-                    AdditionalText = ex.Message
-                };
-                await dialog.ShowAsync();
-
+                await UIUtilities.ShowErrorDialogAsync("Unable to login!", "Something went wrong logging you in! Check your details and try again!");
                 RoamingSettings.Save(VERIFY_LOGIN, false);
             }
 

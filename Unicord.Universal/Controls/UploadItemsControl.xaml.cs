@@ -7,8 +7,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicord.Abstractions;
 using Unicord.Universal.Models;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -29,7 +29,7 @@ namespace Unicord.Universal.Controls
     {
         private enum MediaType
         {
-            Audio, Video
+            Audio, Video, Photo
         }
 
         private bool _small = true;
@@ -50,34 +50,43 @@ namespace Unicord.Universal.Controls
                 var model = DataContext as ChannelViewModel;
                 var type = file.ContentType;
                 var progress = new Progress<double?>(UpdateProgressBar);
-                var setting = App.RoamingSettings.Read<MediaTranscodeOptions>("AutoTranscodeMedia");
+                var setting = App.RoamingSettings.Read<MediaTranscodeOptions>(Constants.AUTO_TRANSCODE_MEDIA);
                 var props = await file.GetBasicPropertiesAsync();
                 _cancellationToken = new CancellationTokenSource();
 
+                var transcodeFailed = false;
+
                 if (setting == MediaTranscodeOptions.Always || (setting == MediaTranscodeOptions.WhenNeeded && props.Size >= (ulong)model.UploadLimit))
                 {
+                    MediaType? mediaType = null;
+
                     if (type.StartsWith("audio"))
+                    {
+                        mediaType = MediaType.Audio;
+                    }
+                    else if (type.StartsWith("video"))
+                    {
+                        mediaType = MediaType.Video;
+                    }
+                    else if (type.StartsWith("image"))
+                    {
+                        mediaType = MediaType.Photo;
+                    }
+
+                    if (mediaType != null)
                     {
                         transcodeProgress.IsIndeterminate = true;
                         transcodeOverlay.Visibility = Visibility.Visible;
 
-                        var newFile = await TryTranscodeMediaAsync(file, MediaType.Audio, progress, _cancellationToken.Token);
+                        var newFile = await TryTranscodeMediaAsync(file, mediaType.Value, progress, _cancellationToken.Token);
                         if (newFile != null)
                         {
                             temporary = true;
                             file = newFile;
                         }
-                    }
-                    if (type.StartsWith("video"))
-                    {
-                        transcodeProgress.IsIndeterminate = true;
-                        transcodeOverlay.Visibility = Visibility.Visible;
-
-                        var newFile = await TryTranscodeMediaAsync(file, MediaType.Video, progress, _cancellationToken.Token);
-                        if (newFile != null)
+                        else
                         {
-                            temporary = true;
-                            file = newFile;
+                            transcodeFailed = true;
                         }
                     }
 
@@ -87,7 +96,7 @@ namespace Unicord.Universal.Controls
                     transcodeOverlay.Visibility = Visibility.Collapsed;
                 }
 
-                var fileModel = await FileUploadModel.FromStorageFileAsync(file, props, temporary);
+                var fileModel = await FileUploadModel.FromStorageFileAsync(file, props, temporary, transcodeFailed);
                 model.FileUploads.Add(fileModel);
 
                 _transcodeWait.Release();
@@ -97,9 +106,10 @@ namespace Unicord.Universal.Controls
 
         private void UpdateProgressBar(double? obj)
         {
-            if (obj == null && !transcodeProgress.IsIndeterminate)
+            if (obj == null)
             {
-                transcodeProgress.IsIndeterminate = true;
+                if (!transcodeProgress.IsIndeterminate)
+                    transcodeProgress.IsIndeterminate = true;
             }
             else
             {
@@ -110,7 +120,7 @@ namespace Unicord.Universal.Controls
         private async void RemoveItemButton_Click(object sender, RoutedEventArgs e)
         {
             var item = (sender as FrameworkElement).DataContext as FileUploadModel;
-            var channelViewModel = (DataContext as ChannelViewModel);
+            var channelViewModel = DataContext as ChannelViewModel;
             channelViewModel.FileUploads.Remove(item);
 
             if (item.IsTemporary)
@@ -138,9 +148,10 @@ namespace Unicord.Universal.Controls
             {
                 if (_small)
                 {
-                    Height = 150;
+                    Height = 200;
                     DockPanel.SetDock(uploadSizeContainer, Dock.Right);
-                    uploadSizeBar.Margin = new Thickness(-57, 57, -57, 57);
+                    uploadSizeBar.Width = 160;
+                    uploadSizeBar.Margin = new Thickness(-87, 87, -87, 87);
                     uploadSizeBarTransform.Angle = -90;
                     sizeRun.FontSize = 28;
                     _small = false;
@@ -151,6 +162,7 @@ namespace Unicord.Universal.Controls
                 if (!_small)
                 {
                     Height = 200;
+                    uploadSizeBar.Width = double.NaN;
                     DockPanel.SetDock(uploadSizeContainer, Dock.Bottom);
                     uploadSizeBar.Margin = new Thickness(10);
                     uploadSizeBarTransform.Angle = 0;
@@ -178,14 +190,19 @@ namespace Unicord.Universal.Controls
                 var channelViewModel = (DataContext as ChannelViewModel);
                 tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
 
-                if (type == MediaType.Audio)
+                switch (type)
                 {
-                    success = await App.MediaAbstractions.TryTranscodeAudioAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
-                }
-
-                if (type == MediaType.Video)
-                {
-                    success = await App.MediaAbstractions.TryTranscodeVideoAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
+                    case MediaType.Audio:
+                        success = await MediaTranscoding.TryTranscodeAudioAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
+                        break;
+                    case MediaType.Video:
+                        success = await MediaTranscoding.TryTranscodeVideoAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
+                        break;
+                    case MediaType.Photo:
+                        success = await MediaTranscoding.TryTranscodePhotoAsync(file, tempFile, progress, token);
+                        break;
+                    default:
+                        break;
                 }
             }
             catch (Exception ex)
@@ -193,10 +210,6 @@ namespace Unicord.Universal.Controls
                 if (!(ex is TaskCanceledException))
                 {
                     HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
-                    await UIAbstractions.Current.ShowFailureDialogAsync(
-                        "Failed to upload.",
-                        "Failed to upload.",
-                        "Whoops, that file didn't transcode nicely, sorry!");
                 }
             }
 
@@ -209,6 +222,13 @@ namespace Unicord.Universal.Controls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _cancellationToken.Cancel();
+        }
+
+        private async void TranscodeFailedButton_Click(object sender, RoutedEventArgs e)
+        {
+            await UIUtilities.ShowErrorDialogAsync(
+                "Failed to transcode!", 
+                "This file failed to transcode, it may have been a format I don't understand, or your PC might not have the needed codecs. Sorry!");
         }
     }
 }

@@ -105,7 +105,7 @@ namespace Unicord.Universal
         {
             var httpRequestMessage
                 = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
-            httpRequestMessage.Headers.Add("Authorization", Utilities.GetFormattedToken(client));
+            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(client));
 
             var cont = new HttpMultipartFormDataContent();
 
@@ -131,7 +131,7 @@ namespace Unicord.Universal
         {
             var httpRequestMessage
                 = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
-            httpRequestMessage.Headers.Add("Authorization", Utilities.GetFormattedToken(client));
+            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(client));
 
             var cont = new HttpMultipartFormDataContent();
 
