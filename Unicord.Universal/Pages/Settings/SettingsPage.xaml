@@ -52,8 +52,9 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
-
-        <Frame x:Name="frame" SourcePageType="local:AccountsSettingsPage" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto" IsVerticalRailEnabled="True">
+            <Frame x:Name="frame" SourcePageType="local:AccountsSettingsPage" Margin="10,0" />
+        </ScrollViewer>
     </lib:NavigationView>
 
 </Page>

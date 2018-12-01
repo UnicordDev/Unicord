@@ -26,8 +26,7 @@ namespace Unicord.Universal.Pages.Subpages
     /// </summary>
     public sealed partial class GuildChannelsPage : Page
     {
-        private DiscordGuild _guild;
-        public DiscordGuild Guild => _guild;
+        public DiscordGuild Guild { get; private set; }
 
         public GuildChannelsPage()
         {
@@ -37,8 +36,8 @@ namespace Unicord.Universal.Pages.Subpages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            _guild = e.Parameter as DiscordGuild;
-            Tag = _guild.Name;
+            Guild = e.Parameter as DiscordGuild;
+            Tag = Guild.Name;
 
             await RefreshList();
         }
@@ -50,7 +49,7 @@ namespace Unicord.Universal.Pages.Subpages
             ring.IsActive = true;
 
             channelsList.SelectionChanged -= channelsList_SelectionChanged;
-            var permissions = _guild.CurrentMember.PermissionsIn(_guild.Channels.First());
+            var permissions = Guild.CurrentMember.PermissionsIn(Guild.Channels.First());
             if (permissions.HasPermission(Permissions.ManageChannels))
             {
                 channelsList.CanDrag = true;
@@ -66,7 +65,7 @@ namespace Unicord.Universal.Pages.Subpages
                 channelsList.AllowDrop = false;
             }
 
-            await GetChannelList(_guild, cvs);
+            await GetChannelList(Guild, cvs);
 
             channelsList.SelectionChanged += channelsList_SelectionChanged;
 
@@ -77,39 +76,39 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (guild.Channels.Any())
             {
-                 var currentMember = guild.CurrentMember;
-            
-            var channels = guild.IsOwner ?
-                guild.Channels :
-                await Task.Run(() => guild.Channels.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
+                var currentMember = guild.CurrentMember;
 
-            var ownerId = guild.OwnerId;
+                var channels = guild.IsOwner ?
+                    guild.Channels :
+                    await Task.Run(() => guild.Channels.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
 
-            if(excludeVoice)
-            {
-                channels = channels.Where(c => c.Type != ChannelType.Voice);
-            }
+                var ownerId = guild.OwnerId;
 
-            if (channels.Any(c => c.IsCategory))
-            {
-                // Use new discord channel category behaviour
-                cvs.IsSourceGrouped = true;
-                cvs.Source = channels
-                    .Where(c => !c.IsCategory)
-                    .OrderBy(c => c.Type)
-                    .ThenBy(c => c.Position)
-                    .GroupBy(g => g.Parent)
-                    .OrderBy(c => c.Key?.Position)
-                    .ToList();
-            }
-            else
-            {
-                // Use old discord non-category behaviour
-                cvs.IsSourceGrouped = false;
-                cvs.Source = channels
-                    .OrderBy(c => c.Type)
-                    .ThenBy(c => c.Position);
-            }
+                if (excludeVoice)
+                {
+                    channels = channels.Where(c => c.Type != ChannelType.Voice);
+                }
+
+                if (channels.Any(c => c.IsCategory))
+                {
+                    // Use new discord channel category behaviour
+                    cvs.IsSourceGrouped = true;
+                    cvs.Source = channels
+                        .Where(c => !c.IsCategory)
+                        .OrderBy(c => c.Type)
+                        .ThenBy(c => c.Position)
+                        .GroupBy(g => g.Parent)
+                        .OrderBy(c => c.Key?.Position)
+                        .ToList();
+                }
+                else
+                {
+                    // Use old discord non-category behaviour
+                    cvs.IsSourceGrouped = false;
+                    cvs.Source = channels
+                        .OrderBy(c => c.Type)
+                        .ThenBy(c => c.Position);
+                }
             }
         }
 
@@ -137,7 +136,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            if(App.Discord != null)
+            if (App.Discord != null)
             {
                 App.Discord.ChannelCreated -= Discord_ChannelCreated;
                 App.Discord.ChannelUpdated -= Discord_ChannelUpdated;

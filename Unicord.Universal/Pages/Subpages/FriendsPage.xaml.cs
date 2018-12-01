@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,17 +33,45 @@ namespace Unicord.Universal.Pages.Subpages
             InitializeComponent();
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                await Task.Run(() =>
+                var allList = new List<DiscordRelationship>();
+                var onlineList = new List<DiscordRelationship>();
+
+                foreach (var rel in App.Discord.Relationships)
                 {
-                    foreach (var rel in App.Discord.Relationships)
+                    switch (rel.RelationshipType)
                     {
-                        SortRelationship(rel);
+                        case DiscordRelationshipType.Friend:
+                            int i;
+                            i = allList.BinarySearch(rel);
+                            if (i < 0) i = ~i;
+                            allList.Insert(i, rel);
+
+                            if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
+                            {
+                                i = onlineList.BinarySearch(rel);
+                                if (i < 0) i = ~i;
+
+                                onlineList.Insert(i, rel);
+                            }
+                            break;
+                        case DiscordRelationshipType.Blocked:
+                            _blocked.Add(rel);
+                            break;
+                        case DiscordRelationshipType.IncomingRequest:
+                        case DiscordRelationshipType.OutgoingRequest:
+                            _pending.Add(rel);
+                            break;
+                        default:
+                            break;
                     }
-                });
+                }
+
+                _all = new ObservableCollection<DiscordRelationship>(allList);
+                _online = new ObservableCollection<DiscordRelationship>(onlineList);
 
                 all.ItemsSource = _all;
                 online.ItemsSource = _online;
@@ -128,7 +157,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            if(App.Discord != null)
+            if (App.Discord != null)
             {
                 App.Discord.RelationshipAdded -= Discord_RelationshipAdded;
                 App.Discord.RelationshipRemoved -= Discord_RelationshipRemoved;

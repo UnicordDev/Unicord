@@ -17,10 +17,12 @@
         <Setter Property="ManipulationMode" Value="System,TranslateX"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
         <Setter Property="FocusVisualMargin" Value="-7,-3,-7,-3"/>
+        <Setter Property="Margin" Value="0,8"/>
+        <Setter Property="MinWidth" Value="48"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleSwitch">
-                    <Grid Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
@@ -218,23 +220,21 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="{ThemeResource ToggleSwitchPreContentMargin}"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="{ThemeResource ToggleSwitchPostContentMargin}"/>
                             </Grid.RowDefinitions>
-                            <Grid x:Name="SwitchAreaGrid" Background="{ThemeResource ToggleSwitchContainerBackground}" Grid.ColumnSpan="3" Control.IsTemplateFocusTarget="True" Margin="0,5" Grid.RowSpan="3"/>
+                            <Grid x:Name="SwitchAreaGrid" Background="{ThemeResource ToggleSwitchContainerBackground}" Grid.ColumnSpan="3" Control.IsTemplateFocusTarget="True" Margin="0,5"/>
                             <ContentPresenter x:Name="OffContentPresenter" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding OffContentTemplate}" Content="{TemplateBinding OffContent}" Grid.Column="2" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Opacity="0" Grid.RowSpan="3" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             <ContentPresenter x:Name="OnContentPresenter" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding OnContentTemplate}" Content="{TemplateBinding OnContent}" Grid.Column="2" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Opacity="0" Grid.RowSpan="3" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            <Rectangle x:Name="OuterBorder" Fill="{ThemeResource ToggleSwitchFillOff}" Height="20" RadiusX="10" RadiusY="10" Grid.Row="1" StrokeThickness="2" Stroke="{ThemeResource ToggleSwitchStrokeOff}" Width="44"/>
-                            <Rectangle x:Name="SwitchKnobBounds" Fill="{ThemeResource ToggleSwitchFillOn}" Height="20" Opacity="0" RadiusX="10" RadiusY="10" Grid.Row="1" StrokeThickness="{ThemeResource ToggleSwitchOnStrokeThickness}" Stroke="{ThemeResource ToggleSwitchStrokeOn}" Width="44"/>
-                            <Grid x:Name="SwitchKnob" HorizontalAlignment="Left" Height="20" Grid.Row="1" Width="20">
+                            <Rectangle x:Name="OuterBorder" Fill="{ThemeResource ToggleSwitchFillOff}" Height="20" RadiusX="10" RadiusY="10" StrokeThickness="2" Stroke="{ThemeResource ToggleSwitchStrokeOff}" Width="44"/>
+                            <Rectangle x:Name="SwitchKnobBounds" Fill="{ThemeResource ToggleSwitchFillOn}" Height="20" Opacity="0" RadiusX="10" RadiusY="10" StrokeThickness="{ThemeResource ToggleSwitchOnStrokeThickness}" Stroke="{ThemeResource ToggleSwitchStrokeOn}" Width="44"/>
+                            <Grid x:Name="SwitchKnob" HorizontalAlignment="Left" Height="20" Width="20">
                                 <Grid.RenderTransform>
                                     <TranslateTransform x:Name="KnobTranslateTransform"/>
                                 </Grid.RenderTransform>
                                 <Ellipse x:Name="SwitchKnobOn" Fill="{ThemeResource ToggleSwitchKnobFillOn}" Height="10" Opacity="0" Width="10"/>
                                 <Ellipse x:Name="SwitchKnobOff" Fill="{ThemeResource ToggleSwitchKnobFillOff}" Height="10" Width="10"/>
                             </Grid>
-                            <Thumb x:Name="SwitchThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                            <Thumb x:Name="SwitchThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3">
                                 <Thumb.Template>
                                     <ControlTemplate TargetType="Thumb">
                                         <Rectangle Fill="Transparent"/>
