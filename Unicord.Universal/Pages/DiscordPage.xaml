@@ -131,22 +131,18 @@
                             <Image Source="{StaticResource DiscordClyde}" Width="22" Height="22" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Grid>
 
-                        <ListView x:Name="guildsList" Grid.Row="1" ShowsScrollingPlaceholders="False" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
+                        <ListView x:Name="guildsList" ItemTemplate="{StaticResource GuildsListTemplate}" Grid.Row="1" ShowsScrollingPlaceholders="False" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
                             <ListView.Header>
                                 <ListViewItem x:Name="friendsItem" Tapped="friendsItem_Tapped" Margin="0,10" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
                                     <SymbolIcon Width="36" Height="36" Symbol="People"></SymbolIcon>
                                 </ListViewItem>
                             </ListView.Header>
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="discord:DiscordGuild">
-                                    <Grid Margin="-12,5" ToolTipService.ToolTip="{x:Bind Name}">
-                                        <lib:PersonPicture Margin="10,0,0,0" Width="36" Height="36" ProfilePicture="{Binding IconUrl, FallbackValue={x:Null}}" DisplayName="{x:Bind Name}" />
-                                        <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                                            <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
-                                        </Grid>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.Footer>
                                 <StackPanel Margin="0,10">
                                     <ListViewItem x:Name="settingsItem" Tapped="SettingsItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">

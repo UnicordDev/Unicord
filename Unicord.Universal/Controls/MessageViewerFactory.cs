@@ -55,6 +55,8 @@ namespace Unicord.Universal
                             c.Content = null;
                         }
 
+                        viewer.Message = message;
+
                         return viewer;
                     }
                 }

@@ -12,6 +12,7 @@
     xmlns:fcu="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:entities="using:DSharpPlus.Entities"
     mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
     <Page.Resources>
         <QuarticEase x:Key="ease" EasingMode="EaseOut"/>
@@ -123,36 +124,16 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                    <ItemsControl Grid.Row="1" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="10,6,10,0">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Ellipse Width="16" Height="16" Margin="0,0,5,0" VerticalAlignment="Center">
-                                        <Ellipse.Fill>
-                                            <ImageBrush>
-                                                <ImageBrush.ImageSource>
-                                                    <BitmapImage UriSource="{Binding NonAnimatedAvatarUrl}" DecodePixelWidth="16" DecodePixelHeight="16"/>
-                                                </ImageBrush.ImageSource>
-                                            </ImageBrush>
-                                        </Ellipse.Fill>
-                                    </Ellipse>
-                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,5,0"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
 
-                    <Grid Grid.Row="3" MinHeight="42" MaxHeight="100" fcu:ColumnSpacing="2">
+                <ItemsControl Grid.Row="1" ItemTemplate="{StaticResource TypingUserTemplate}" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="10,6,10,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <Grid Grid.Row="3" MinHeight="42" MaxHeight="100" fcu:ColumnSpacing="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -222,7 +203,7 @@
 
                     <wam:MarkdownTextBlock Grid.Column="2" Text="{x:Bind ViewModel.Topic}" Channel="{x:Bind ViewModel.Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
 
-                   
+
                     <!--<Button x:Name="addToContactsButton" Grid.Column="3" IsEnabled="True" Style="{StaticResource IconButtonStyle}" Content="&#xE779;" Click="addToContactsButton_Click" ToolTipService.ToolTip="Add to Contacts"/>-->
                     <ToggleButton x:Name="muteButton" Grid.Column="4" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
 

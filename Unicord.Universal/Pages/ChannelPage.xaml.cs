@@ -12,11 +12,11 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicord.Abstractions;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Subpages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
@@ -90,7 +90,7 @@ namespace Unicord.Universal.Pages
                     reload = true;
                 }
 
-                ViewModel = new ChannelViewModel(chan, Dispatcher);
+                ViewModel = new ChannelViewModel(chan);
                 DataContext = ViewModel;
 
                 if (reload)
@@ -108,7 +108,7 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>()?.LeaveFullscreen();
 
-                ViewModel = new ChannelViewModel(chan, Dispatcher);
+                ViewModel = new ChannelViewModel(chan);
                 DataContext = ViewModel;
 
                 await Load();
@@ -257,7 +257,6 @@ namespace Unicord.Universal.Pages
 
             if (App.Discord != null)
             {
-
                 App.Discord.MessageCreated -= Discord_MessageCreated;
                 App.Discord.MessageUpdated -= Discord_MessageUpdated;
                 App.Discord.MessageDeleted -= Discord_MessageDeleted;
@@ -312,7 +311,7 @@ namespace Unicord.Universal.Pages
                         .FirstOrDefault(m => m.Id == e.Message.Id);
                     if (message != null)
                     {
-                        message.Message = e.Message;
+                        message.UpdateViewer(MessageViewer.MessageProperty, e.MessageBefore, e.Message);
                     }
                 });
             }
@@ -436,8 +435,7 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "PasteFailure" });
-                await UIAbstractions.Current.ShowFailureDialogAsync(
-                    "Failed to upload.",
+                await UIUtilities.ShowErrorDialogAsync(
                     "Failed to upload.",
                     "Whoops, something went wrong while uploading that file, sorry!");
             }

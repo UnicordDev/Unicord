@@ -89,7 +89,9 @@ namespace Unicord.Universal.Controls.Embed
                 content.Children.Remove(firstChild);
                 posterContainer.Visibility = Visibility.Visible;
 
-                try { UnloadObject(firstChild); } catch { firstChild.Navigate(new Uri("about:blank")); }
+                firstChild.Navigate(new Uri("about:blank"));
+
+                try { UnloadObject(firstChild); } catch {  }
             }
         }
     }

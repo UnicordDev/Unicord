@@ -45,27 +45,58 @@ namespace Unicord.Universal.Controls
         }
 
         public static readonly DependencyProperty ImageUriProperty =
-            DependencyProperty.Register("ImageUri", typeof(Uri), typeof(ImageElement), new PropertyMetadata(null));
+            DependencyProperty.Register("ImageUri", typeof(Uri), typeof(ImageElement), new PropertyMetadata(null, OnImageChanged));
+
+        private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImageElement element)
+            {
+                if (!element._templated)
+                {
+                    element._templated = element.ApplyTemplate();
+                }
+                else
+                {
+                    LoadImage(element);
+                }
+            }
+        }
+
+        private static void LoadImage(ImageElement element)
+        {
+            var image = element.GetTemplateChild("image") as Image;
+            image.PointerEntered += element.Image_PointerEntered;
+            image.PointerExited += element.Image_PointerExited;
+
+            var width = element.ImageWidth;
+            var height = element.ImageHeight;
+            Drawing.ScaleProportions(ref width, ref height, 640, 360);
+
+            var img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={width}&height={height}"))
+            {
+                DecodePixelWidth = width,
+                DecodePixelHeight = height,
+                AutoPlay = false
+            };
+
+            image.Source = img;
+        }
+
+        private bool _templated;
 
         public ImageElement()
         {
-            this.DefaultStyleKey = typeof(ImageElement);
+            DefaultStyleKey = typeof(ImageElement);
         }
 
         protected override void OnApplyTemplate()
         {
-            var image = GetTemplateChild("image") as Image;
-            var width = ImageWidth;
-            var height = ImageHeight;
-            Drawing.ScaleProportions(ref width, ref height, 640, 360);
+            _templated = true;
 
-            var img = new BitmapImage(ImageUri)
+            if(ImageUri != null)
             {
-                DecodePixelWidth = width,
-                DecodePixelHeight = height
-            };
-
-            image.Source = img;
+                LoadImage(this);
+            }
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -82,6 +113,22 @@ namespace Unicord.Universal.Controls
             image.Height = height;
 
             return new Size(width, height);
+        }
+
+        private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if(sender is Image i && i.Source is BitmapImage image)
+            {
+                image.Stop();
+            }
+        }
+
+        private void Image_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Image i && i.Source is BitmapImage image)
+            {
+                image.Play();
+            }
         }
     }
 }
