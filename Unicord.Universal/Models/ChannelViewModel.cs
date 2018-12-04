@@ -1,19 +1,19 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using WamWooWam.Core;
-using DSharpPlus.EventArgs;
 using System.Threading;
-using System.Collections.Concurrent;
-using Windows.UI.Core;
+using System.Threading.Tasks;
 using Unicord.Universal.Utilities;
-using Windows.UI.Xaml.Media;
+using WamWooWam.Core;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Models
 {
@@ -36,8 +36,9 @@ namespace Unicord.Universal.Models
             CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
             if (channel.Type != ChannelType.Voice)
             {
-                App.Discord.TypingStarted += Discord_TypingStarted;
+                App.Discord.TypingStarted += OnTypingStarted;
                 App.Discord.MessageCreated += OnMessageCreated;
+                App.Discord.MessageDeleted += OnMessageDeleted;
                 App.Discord.ChannelUpdated += OnChannelUpdated;
 
                 TypingUsers = new ObservableCollection<DiscordUser>();
@@ -49,7 +50,8 @@ namespace Unicord.Universal.Models
                 Permissions = Permissions.Administrator;
 
             AvailableUsers = new ObservableCollection<DiscordUser> { CurrentUser };
-            
+            Messages = new ObservableCollection<DiscordMessage>();
+
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
             {
@@ -59,6 +61,37 @@ namespace Unicord.Universal.Models
                 InvokePropertyChanged(nameof(UploadInfoForeground));
                 InvokePropertyChanged(nameof(CanUpload));
             };
+        }
+
+        public ObservableCollection<DiscordMessage> Messages { get; set; }
+
+        private Task OnMessageCreated(MessageCreateEventArgs e)
+        {
+            if (e.Channel.Id == Channel.Id)
+            {
+                if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
+                    src.Cancel();
+
+                var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
+                if (usr != null)
+                {
+                    _context.Post(a =>
+                    {
+                        TypingUsers.Remove(usr);
+                        UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
+                    }, null);
+                }
+
+                _context.Post(a => Messages.Add(e.Message), null);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnMessageDeleted(MessageDeleteEventArgs e)
+        {
+            _context.Post(a => Messages.Remove(e.Message), null);
+            return Task.CompletedTask;
         }
 
         private Task OnChannelUpdated(ChannelUpdateEventArgs e)
@@ -153,6 +186,43 @@ namespace Unicord.Universal.Models
         /// </summary>
         public string ChannelSuffix =>
             Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipient.Discriminator}" : string.Empty;
+
+        internal async Task LoadMessagesAsync()
+        {
+            if (!Messages.Any())
+            {
+                var messages = await Channel.GetMessagesAsync(50).ConfigureAwait(false);
+                if (messages.Any())
+                {
+                    _context.Post(d =>
+                    {
+                        foreach (var message in messages.Reverse())
+                        {
+                            Messages.Add(message);
+                        }
+                    }, null);
+                }
+            }
+        }
+
+        internal async Task LoadMessagesBeforeAsync()
+        {
+            var message = Messages.FirstOrDefault();
+            if (message != null)
+            {
+                var messages = await Channel.GetMessagesBeforeAsync(message.Id, 50).ConfigureAwait(false);
+                if (messages.Any())
+                {
+                    _context.Post(d =>
+                    {
+                        foreach (var m in messages)
+                        {
+                            Messages.Insert(0, m);
+                        }
+                    }, null);
+                }
+            }
+        }
 
         /// <summary>
         /// The full channel name (i.e. @WamWooWam#6402, #general, etc.)
@@ -325,6 +395,8 @@ namespace Unicord.Universal.Models
 
         public Visibility ShowTypingContainer => ShowSlowMode == Visibility.Visible || ShowTypingUsers == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
 
+        public DateTimeOffset LastAccessed { get; internal set; }
+
         public async Task UpdateAvailableUsers()
         {
             try
@@ -355,24 +427,6 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private Task OnMessageCreated(MessageCreateEventArgs e)
-        {   
-            if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
-                src.Cancel();
-
-            var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
-            if (usr != null)
-            {
-                _context.Post(a =>
-                {
-                    TypingUsers.Remove(usr);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                }, null);
-            }
-
-            return Task.CompletedTask;
-        }
-
         #region Typing
 
         public async Task TriggerTypingAsync(string text)
@@ -398,7 +452,7 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private Task Discord_TypingStarted(TypingStartEventArgs e)
+        private Task OnTypingStarted(TypingStartEventArgs e)
         {
             if (e.Channel.Id == Channel.Id && e.User.Id != CurrentUser.Id)
             {
@@ -438,8 +492,9 @@ namespace Unicord.Universal.Models
         {
             if (Channel.Type != ChannelType.Voice)
             {
-                App.Discord.TypingStarted -= Discord_TypingStarted;
+                App.Discord.TypingStarted -= OnTypingStarted;
                 App.Discord.MessageCreated -= OnMessageCreated;
+                App.Discord.MessageDeleted -= OnMessageDeleted;
             }
         }
     }

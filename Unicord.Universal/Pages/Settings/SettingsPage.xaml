@@ -53,7 +53,7 @@
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVerticalRailEnabled="True">
-            <Frame x:Name="frame" SourcePageType="local:AccountsSettingsPage" Margin="10,0" />
+            <Frame x:Name="frame" SourcePageType="local:AccountsSettingsPage" Margin="12" />
         </ScrollViewer>
     </lib:NavigationView>
 

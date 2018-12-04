@@ -16,7 +16,7 @@
 
         <TextBlock Text="&#xE783;" FontSize="48" FontFamily="Segoe MDL2 Assets"/>
 
-        <Grid Grid.Column="1" Margin="10,0,0,0">
+        <Grid Grid.Column="1" Margin="12,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

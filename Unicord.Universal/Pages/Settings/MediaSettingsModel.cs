@@ -20,7 +20,7 @@ namespace Unicord.Universal.Pages.Settings
         public int ProcessingAlgorithm
         {
             get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.MrfCrf444);
-            set => App.RoamingSettings.Save(VIDEO_PROCESSING, value);
+            set => App.RoamingSettings.Save(VIDEO_PROCESSING, (MediaTranscodeOptions)value);
         }
 
         public int VideoBitrate

@@ -218,6 +218,7 @@
     <Compile Include="Controls\MediaPlayerControl.xaml.cs">
       <DependentUpon>MediaPlayerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MessagesListView.cs" />
     <Compile Include="Controls\MessageViewer.xaml.cs">
       <DependentUpon>MessageViewer.xaml</DependentUpon>
     </Compile>

@@ -45,8 +45,8 @@ namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
-        private static ThreadLocal<ConcurrentQueue<DiscordChannel>> _channelHistory
-            = new ThreadLocal<ConcurrentQueue<DiscordChannel>>(() => new ConcurrentQueue<DiscordChannel>());
+        private static ThreadLocal<ConcurrentDictionary<ulong, ChannelViewModel>> _channelHistory
+            = new ThreadLocal<ConcurrentDictionary<ulong, ChannelViewModel>>(() => new ConcurrentDictionary<ulong, ChannelViewModel>());
 
         public ChannelViewModel ViewModel
         {
@@ -58,9 +58,8 @@ namespace Unicord.Universal.Pages
         }
 
         private EmotePicker _emotePicker;
-        private bool _loading = false;
-        private MessageViewerFactory _messageViewerFactory;
         private ChannelViewModel _viewModel;
+        private bool _loading;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -75,40 +74,89 @@ namespace Unicord.Universal.Pages
             {
                 topGrid.Padding = App.StatusBarFill;
             }
+
+            if (_emotePicker == null)
+            {
+                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile" && ActualWidth > 400)
+                {
+                    _emotePicker = new EmotePicker() { Width = 300, Height = 300, HorizontalAlignment = HorizontalAlignment.Stretch };
+
+                    var flyout = new Flyout { Content = _emotePicker };
+                    flyout.Closed += (o, ev) =>
+                    {
+                        emoteButton.IsChecked = false;
+                        _emotePicker.Unload();
+                    };
+
+                    FlyoutBase.SetAttachedFlyout(emoteButton, flyout);
+                }
+                else
+                {
+                    if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
+                    {
+                        var navigation = SystemNavigationManager.GetForCurrentView();
+                        navigation.BackRequested += Navigation_BackRequested;
+                    }
+
+                    _emotePicker = new EmotePicker()
+                    {
+                        Height = 275,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        Visibility = Visibility.Collapsed,
+                        Padding = new Thickness(10, 0, 10, 0)
+                    };
+                    Grid.SetRow(_emotePicker, 4);
+                    footerGrid.Children.Add(_emotePicker);
+                }
+
+                _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
+            }
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is DiscordChannel chan)
             {
+                ChannelViewModel model = null;
                 App._currentChannelId = chan.Id;
 
-                var reload = false;
+                if (_channelHistory.Value.TryGetValue(chan.Id, out var result))
+                {
+                    model = result;
+                }
+
                 if (ViewModel != null)
                 {
-                    _channelHistory.Value.Enqueue(ViewModel.Channel);
-                    reload = true;
+                    _channelHistory.Value[ViewModel.Channel.Id] = ViewModel;
                 }
 
-                ViewModel = new ChannelViewModel(chan);
+                if (model == null)
+                    model = new ChannelViewModel(chan);
+
+                ViewModel = model;
                 DataContext = ViewModel;
 
-                if (reload)
+                if(_channelHistory.Value.Count > 10)
                 {
-                    await Load();
+                    var oldest = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
+                    _channelHistory.Value.TryRemove(oldest.Key, out var value);
+                    value.Dispose();
                 }
+
+                await Load();
             }
         }
 
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (_channelHistory.Value.TryDequeue(out var chan))
+            this.FindParent<MainPage>()?.LeaveFullscreen();
+
+            var lastChannel = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
+            if (lastChannel.Key != default)
             {
                 e.Handled = true;
 
-                this.FindParent<MainPage>()?.LeaveFullscreen();
-
-                ViewModel = new ChannelViewModel(chan);
+                ViewModel = lastChannel.Value;
                 DataContext = ViewModel;
 
                 await Load();
@@ -117,61 +165,16 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            _messageViewerFactory = MessageViewerFactory.GetForCurrentThread();
-            App.Discord.MessageCreated += Discord_MessageCreated;
-            App.Discord.MessageDeleted += Discord_MessageDeleted;
-            App.Discord.MessageUpdated += Discord_MessageUpdated;
-
-            try
-            {
-                if (_emotePicker == null)
-                {
-                    if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile" && ActualWidth > 400)
-                    {
-                        _emotePicker = new EmotePicker() { Width = 300, Height = 300, HorizontalAlignment = HorizontalAlignment.Stretch };
-
-                        var flyout = new Flyout { Content = _emotePicker };
-                        flyout.Closed += (o, ev) =>
-                        {
-                            emoteButton.IsChecked = false;
-                            _emotePicker.Unload();
-                        };
-
-                        FlyoutBase.SetAttachedFlyout(emoteButton, flyout);
-                    }
-                    else
-                    {
-                        if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
-                        {
-                            var navigation = SystemNavigationManager.GetForCurrentView();
-                            navigation.BackRequested += Navigation_BackRequested;
-                        }
-
-                        _emotePicker = new EmotePicker()
-                        {
-                            Height = 275,
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                            Visibility = Visibility.Collapsed,
-                            Padding = new Thickness(10, 0, 10, 0)
-                        };
-                        Grid.SetRow(_emotePicker, 4);
-                        footerGrid.Children.Add(_emotePicker);
-                    }
-
-                    _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
-                }
-            }
-            catch (Exception ex)
-            {
-                HockeyClient.Current.TrackException(ex);
-            }
+            var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
+            scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
 
             await Load();
         }
 
+
         private async Task Load()
         {
-            _loading = true;
+            ViewModel.LastAccessed = DateTimeOffset.Now;
 
             try
             {
@@ -188,50 +191,14 @@ namespace Unicord.Universal.Pages
                     _emotePicker.Channel = ViewModel.Channel;
                     noMessages.Visibility = Visibility.Collapsed;
                     splitView.IsPaneOpen = false;
-
-                    Bindings.Update();
-
-                    foreach (var viewer in messagesPanel.Children.OfType<MessageViewer>().ToArray())
-                    {
-                        _messageViewerFactory.RequeueViewer(viewer);
-                    }
                 });
 
-                var messages = await ViewModel.Channel.GetMessagesAsync(50).ConfigureAwait(false);
-                if (messages.Any())
-                {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        foreach (var message in messages.Reverse())
-                        {
-                            var viewer = _messageViewerFactory.GetViewerForMessage(message, ViewModel.Channel);
-                            messagesPanel.Children.Add(viewer);
-                        }
-                    });
-                }
-                else
-                {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => noMessages.Visibility = Visibility.Visible);
-                }
+                await ViewModel.LoadMessagesAsync();
 
                 if (ViewModel.Channel.Guild?.IsSynced == false)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
                 }
-
-                await Dispatcher.RunIdleAsync(d =>
-                {
-                    var message = (UIElement)messagesPanel.Children.OfType<MessageViewer>().LastOrDefault(m => m.Id == ViewModel.Channel.ReadState?.LastMessageId);
-                    if (message != null)
-                    {
-                        message?.StartBringIntoView();
-                    }
-                    else
-                    {
-                        messagesScroll.ChangeView(null, messagesScroll.ScrollableHeight, null, true);
-                    }
-
-                });
             }
             catch (Exception ex)
             {
@@ -244,30 +211,18 @@ namespace Unicord.Universal.Pages
                 loadingProgress.IsIndeterminate = false;
             });
 
-            _loading = false;
             await AddToJumpListAsync();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            foreach (var viewer in messagesPanel.Children.OfType<MessageViewer>().ToArray())
-            {
-                _messageViewerFactory.RequeueViewer(viewer);
-            }
 
-            if (App.Discord != null)
-            {
-                App.Discord.MessageCreated -= Discord_MessageCreated;
-                App.Discord.MessageUpdated -= Discord_MessageUpdated;
-                App.Discord.MessageDeleted -= Discord_MessageDeleted;
-            }
         }
 
         private async Task Discord_MessageCreated(MessageCreateEventArgs e)
         {
             try
             {
-                MessageViewer msgv = null;
                 if (e.Channel.Id == ViewModel.Channel.Id)
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -275,22 +230,8 @@ namespace Unicord.Universal.Pages
                         if (noMessages.Visibility == Visibility.Visible)
                             noMessages.Visibility = Visibility.Collapsed;
 
-                        var currentMessages = messagesPanel.Children.OfType<MessageViewer>().ToArray();
-                        if (!currentMessages.Any(m => m.Message.Id == e.Message.Id))
-                        {
-                            if (currentMessages.Length == 50)
-                            {
-                                var v = messagesPanel.Children.OfType<MessageViewer>().ElementAt(0);
-                                _messageViewerFactory.RequeueViewer(v);
-                            }
-
-                            msgv = _messageViewerFactory.GetViewerForMessage(e.Message, ViewModel.Channel);
-                            messagesPanel.Children.Add(msgv);
-                        }
+                        messageList.Items.Add(e.Message);
                     });
-
-                    if ((messagesScroll.ScrollableHeight - messagesScroll.VerticalOffset - messagesScroll.ViewportHeight) < 150)
-                        await Dispatcher.RunIdleAsync(d => messagesScroll.ChangeView(null, messagesScroll.ScrollableHeight, null, true));
                 }
             }
             catch (Exception ex)
@@ -305,14 +246,14 @@ namespace Unicord.Universal.Pages
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    var message = messagesPanel.Children
-                        .OfType<MessageViewer>()
-                        .ToArray()
-                        .FirstOrDefault(m => m.Id == e.Message.Id);
-                    if (message != null)
-                    {
-                        message.UpdateViewer(MessageViewer.MessageProperty, e.MessageBefore, e.Message);
-                    }
+                    //var message = messagesPanel.Children
+                    //    .OfType<MessageViewer>()
+                    //    .ToArray()
+                    //    .FirstOrDefault(m => m.Id == e.Message.Id);
+                    //if (message != null)
+                    //{
+                    //    message.UpdateViewer(MessageViewer.MessageProperty, e.MessageBefore, e.Message);
+                    //}
                 });
             }
         }
@@ -323,59 +264,31 @@ namespace Unicord.Universal.Pages
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    var message = messagesPanel.Children
-                        .OfType<MessageViewer>()
-                        .ToArray()
-                        .FirstOrDefault(m => m.Id == e.Message.Id);
-                    if (message != null)
-                    {
-                        message.Message = null;
-                        _messageViewerFactory.RequeueViewer(message);
-                    }
+                    messageList.Items.Remove(e.Message);
                 });
             }
         }
 
-        private async void messagesScroll_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
+            var scroll = sender as ScrollViewer;
             if (!e.IsIntermediate)
             {
-                if (messagesScroll.VerticalOffset >= (messagesScroll.ScrollableHeight - messagesScroll.ViewportHeight) && ViewModel.Channel.ReadState?.Unread != false)
+                if (scroll.VerticalOffset >= (scroll.ScrollableHeight - scroll.ViewportHeight) && ViewModel.Channel.ReadState?.Unread != false)
                 {
-                    var messageViewer = messagesPanel.Children.OfType<MessageViewer>().LastOrDefault();
-                    if (messageViewer != null)
-                    {
-                        await messageViewer.Message.AcknowledgeAsync().ConfigureAwait(false);
-                    }
-                }
-                else if (messagesScroll.VerticalOffset <= 150 && !_loading)
-                {
-                    _loading = true;
-                    var message = messagesPanel.Children
-                        .OfType<MessageViewer>()
-                        .FirstOrDefault();
-
+                    var message = messageList.Items.LastOrDefault() as DiscordMessage;
                     if (message != null)
                     {
-                        loadingProgress.Visibility = Visibility.Visible;
-                        loadingProgress.IsIndeterminate = true;
-
-                        var messages = await ViewModel.Channel.GetMessagesBeforeAsync(message.Id, 50).ConfigureAwait(false);
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            foreach (var m in messages)
-                            {
-                                var viewer = _messageViewerFactory.GetViewerForMessage(m, ViewModel.Channel);
-                                messagesPanel.Children.Insert(0, viewer);
-                            }
-
-                            message.StartBringIntoView();
-
-                            loadingProgress.Visibility = Visibility.Collapsed;
-                            loadingProgress.IsIndeterminate = false;
-                        });
+                        await message.AcknowledgeAsync().ConfigureAwait(false);
                     }
-                    _loading = false;
+                }
+                else if (scroll.VerticalOffset <= 150 && !_loading)
+                {
+                    //_loading = true;
+
+                    await ViewModel.LoadMessagesBeforeAsync();
+
+                    //_loading = false;
                 }
             }
         }

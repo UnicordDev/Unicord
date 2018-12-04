@@ -36,8 +36,8 @@ namespace Unicord.Universal.Controls
         {
             _embed = embed;
             _channel = m.Channel;
-            _showThumbnail = true;
             InitializeComponent();
+            thumbnail.Visibility = Visibility.Visible;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -54,9 +54,14 @@ namespace Unicord.Universal.Controls
                 mainGrid.Children.Add(image);
             }
 
+            if (_embed.Thumbnail != null)
+            {
+                thumbnail.Visibility = Visibility.Visible;
+            }
+
             if (_embed.Video != null)
             {
-                _showThumbnail = false;
+                thumbnail.Visibility = Visibility.Collapsed;
                 var video = new EmbedVideoControl() { Thumbnail = _embed.Thumbnail, Video = _embed.Video };
                 mainGrid.Children.Add(video);
             }

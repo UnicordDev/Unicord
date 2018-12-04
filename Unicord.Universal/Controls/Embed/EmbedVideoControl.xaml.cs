@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -31,7 +32,7 @@ namespace Unicord.Universal.Controls.Embed
 
         private void Canvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var browser = new WebView(WebViewExecutionMode.SeparateThread)
+            var browser = new WebView(ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess") ? WebViewExecutionMode.SeparateProcess : WebViewExecutionMode.SameThread)
             {
                 Source = Video.Url,
                 VerticalAlignment = VerticalAlignment.Stretch,

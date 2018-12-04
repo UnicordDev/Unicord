@@ -8,10 +8,10 @@
     xmlns:embed="using:Unicord.Universal.Controls.Embed"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls" BorderThickness="8,0,0,0" BorderBrush="{ThemeResource SystemControlBackgroundBaseMediumHighBrush}"
     mc:Ignorable="d" MaxWidth="640" Loaded="UserControl_Loaded"
-    d:DesignHeight="300" HorizontalAlignment="Left" Margin="10,5"
+    d:DesignHeight="300" HorizontalAlignment="Left" Margin="8,4"
     d:DesignWidth="400" DataContext="{x:Bind _embed}">
 
-    <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="10">
+    <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
@@ -27,13 +27,13 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid DataContext="{x:Bind _embed.Author}" x:Name="author" x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}" Margin="0,0,0,5">
+            <Grid DataContext="{x:Bind _embed.Author}" x:Name="author" x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}" Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Ellipse Width="20" Height="20" Margin="0,0,10,0" Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
+                <Ellipse Width="20" Height="20" Margin="0,0,12,0" Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
                     <Ellipse.Fill>
                         <ImageBrush>
                             <ImageBrush.ImageSource>
@@ -56,13 +56,13 @@
             <Grid x:Name="mainGrid" Grid.Row="4">
             </Grid>
 
-            <Grid Grid.Row="5" DataContext="{x:Bind _embed.Footer}" x:Name="footer" x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}" Margin="0,5,0,0">
+            <Grid Grid.Row="5" DataContext="{x:Bind _embed.Footer}" x:Name="footer" x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}" Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Rectangle Width="20" Height="20" RadiusX="2" RadiusY="2" Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}" Margin="0,0,10,0">
+                <Rectangle Width="20" Height="20" RadiusX="2" RadiusY="2" Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}" Margin="0,0,12,0">
                     <Rectangle.Fill>
                         <ImageBrush>
                             <ImageBrush.ImageSource>
@@ -78,7 +78,7 @@
         </Grid>
 
         <Grid Grid.Column="1">
-            <Image x:Name="thumbnail" Source="{Binding Thumbnail.Url}" Margin="10,0,0,0" x:Load="{x:Bind _showThumbnail}" Width="96" Height="96" VerticalAlignment="Top"/>
+            <Image x:Name="thumbnail" Source="{Binding Thumbnail.Url}" Margin="12,0,0,0"  Width="96" Height="96" VerticalAlignment="Top"/>
         </Grid>
     </Grid>
 </UserControl>

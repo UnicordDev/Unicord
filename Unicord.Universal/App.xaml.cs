@@ -74,6 +74,7 @@ namespace Unicord.Universal
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Logger.Log(e.Exception);
             e.Handled = true;
         }
 

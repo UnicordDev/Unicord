@@ -10,7 +10,7 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media">
 
     <DataTemplate x:Key="ChannelListTemplate">
-        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,15,0" IsHitTestVisible="True">
+        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,16,0" IsHitTestVisible="True">
             <ToolTipService.ToolTip>
                 <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
             </ToolTipService.ToolTip>
@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="15,0,10,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
             <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
             <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Ellipse Width="16" Height="16" Margin="0,0,5,0" VerticalAlignment="Center">
+            <Ellipse Width="16" Height="16" Margin="0,0,4,0" VerticalAlignment="Center">
                 <Ellipse.Fill>
                     <ImageBrush>
                         <ImageBrush.ImageSource>
@@ -50,38 +50,38 @@
                     </ImageBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
         </Grid>
     </DataTemplate>
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="entities:DiscordGuild">
         <Grid ToolTipService.ToolTip="{Binding Name}">
-            <lib:PersonPicture Margin="10,5" Width="36" Height="36" ProfilePicture="{Binding IconUrl, FallbackValue={x:Null}}" DisplayName="{Binding Name}" />
-            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+            <lib:PersonPicture Margin="10,4" Width="36" Height="36" ProfilePicture="{Binding IconUrl, FallbackValue={x:Null}}" DisplayName="{Binding Name}" />
+            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
                 <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{Binding MentionCount, Converter={StaticResource BoolVisibilityConverter}}" Text="{Binding MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
             </Grid>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <Grid Margin="-12,5">
+        <Grid Margin="-12,4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Canvas Margin="15,0,0,0" Width="28" Height="28">
+            <Canvas Margin="16,0,0,0" Width="28" Height="28">
                 <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-                <Ellipse Canvas.Left="15" Canvas.Top="15" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
+                <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
                     <Ellipse.Fill>
                         <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
                     </Ellipse.Fill>
                 </Ellipse>
             </Canvas>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
-            <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+            <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
                 <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
             </Grid>
 

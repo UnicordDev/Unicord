@@ -35,7 +35,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Canvas Width="64" Height="64" Margin="0,0,10,0">
+                <Canvas Width="64" Height="64" Margin="0,0,12,0">
                     <Ellipse Width="64" Height="64">
                         <Ellipse.Fill>
                             <ImageBrush>
@@ -45,7 +45,7 @@
                             </ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
-                    <Ellipse Width="18" Height="18" Canvas.Left="44" Canvas.Top="44" StrokeThickness="2" Stroke="#FF171717">
+                    <Ellipse Width="20" Height="20" Canvas.Left="44" Canvas.Top="44" StrokeThickness="2" Stroke="#FF171717">
                         <Ellipse.Fill>
                             <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}"/>
                         </Ellipse.Fill>
@@ -63,13 +63,13 @@
                         </TextBlock>
                     </Grid>
                     <StackPanel x:Name="overlayContent" x:Phase="10" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="5,0">
+                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="VideoChat"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="5,0">
+                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="5,0">
+                        <Button Style="{StaticResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
@@ -77,7 +77,7 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <Grid Margin="10">
+    <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -87,7 +87,7 @@
         <!--<TextBlock Text="Recent Places" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10,0,10,10"/>
         <TextBlock Grid.Row="1" Margin="10" Text="You've not been anywhere yet! Go have some fun, and we'll show you recent places here!" TextWrapping="Wrap"/>-->
 
-        <TextBlock Text="Friends" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10" Grid.Row="2"/>
+        <TextBlock Text="Friends" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="12" Grid.Row="2"/>
         <Pivot IsHeaderItemsCarouselEnabled="False" ManipulationMode="None" SelectedIndex="1" Grid.Row="3">
             <Pivot.Items>
                 <PivotItem Header="All">

@@ -196,7 +196,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,5" Visibility="Collapsed" fc:ColumnSpacing="2">
+                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,4" Visibility="Collapsed" fc:ColumnSpacing="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="*"/>
@@ -212,11 +212,7 @@
                 </Grid>
             </Grid>
             <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
-                <Canvas Tapped="userInfoPopup_Tapped">
-                    <Canvas.Background>
-                        <SolidColorBrush Color="{StaticResource SystemAltMediumColor}"/>
-                    </Canvas.Background>
-                </Canvas>
+                <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource OverlayBackdrop}"/>
                 <Grid RenderTransformOrigin="0.5, 0.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RenderTransform>
                         <ScaleTransform x:Name="userInfoScale" ScaleX="1" ScaleY="1"/>
@@ -225,7 +221,7 @@
                     <dialogs:ProfileOverlay x:Name="userInfoOverlay" Visibility="Visible"/>
                 </Grid>
             </Grid>
-            <Grid x:Name="fullscreenCanvas" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
+            <Grid x:Name="fullscreenCanvas" Background="{ThemeResource OverlayBackdrop}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
 
             </Grid>
             <Grid x:Name="connectingOverlay" Visibility="Collapsed" Opacity="0" RenderTransformOrigin="0.5, 0.5" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
@@ -233,7 +229,7 @@
                     <ScaleTransform x:Name="connectingScale" ScaleX="1" ScaleY="1"/>
                 </Grid.RenderTransform>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20">
-                    <Image MaxWidth="350" Source="{ThemeResource DiscordWordMark}" Margin="0,5"/>
+                    <Image MaxWidth="350" Source="{ThemeResource DiscordWordMark}" Margin="0,4"/>
                     <ProgressBar x:Name="connectingProgress" MaxWidth="350" HorizontalAlignment="Stretch" IsIndeterminate="False" />
                 </StackPanel>
             </Grid>

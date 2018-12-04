@@ -405,49 +405,70 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                 throw new RenderContextIncorrectException();
             }
 
-            var text = CreateTextBlock(localContext);
-            text.Text = CollapseWhitespace(context, element.Text);
-            text.FontFamily = InlineCodeFontFamily ?? FontFamily;
-
-            if (localContext.WithinItalics)
+            if (localContext.Parent is Hyperlink)
             {
-                text.FontStyle = FontStyle.Italic;
+                // In case of Hyperlink, break glass (or add a run).
+
+                var text = new Run { Text = CollapseWhitespace(context, element.Text) };
+
+                if (localContext.WithinItalics)
+                {
+                    text.FontStyle = FontStyle.Italic;
+                }
+
+                if (localContext.WithinBold)
+                {
+                    text.FontWeight = FontWeights.Bold;
+                }
+
+                localContext.InlineCollection.Add(text);
             }
-
-            if (localContext.WithinBold)
+            else
             {
-                text.FontWeight = FontWeights.Bold;
+                var text = CreateTextBlock(localContext);
+                text.Text = CollapseWhitespace(context, element.Text);
+                text.FontFamily = InlineCodeFontFamily ?? FontFamily;
+
+                if (localContext.WithinItalics)
+                {
+                    text.FontStyle = FontStyle.Italic;
+                }
+
+                if (localContext.WithinBold)
+                {
+                    text.FontWeight = FontWeights.Bold;
+                }
+
+                var borderthickness = InlineCodeBorderThickness;
+                var padding = InlineCodePadding;
+                var spacingoffset = -(borderthickness.Bottom + padding.Bottom);
+
+                var margin = new Thickness(0, spacingoffset, 0, spacingoffset);
+
+                var border = new Border
+                {
+                    BorderThickness = borderthickness,
+                    BorderBrush = InlineCodeBorderBrush,
+                    Background = InlineCodeBackground,
+                    Child = text,
+                    Padding = padding,
+                    Margin = margin
+                };
+
+                // Aligns content in InlineUI, see https://social.msdn.microsoft.com/Forums/silverlight/en-US/48b5e91e-efc5-4768-8eaf-f897849fcf0b/richtextbox-inlineuicontainer-vertical-alignment-issue?forum=silverlightarchieve
+                border.RenderTransform = new TranslateTransform
+                {
+                    Y = 4
+                };
+
+                var inlineUIContainer = new InlineUIContainer
+                {
+                    Child = border,
+                };
+
+                // Add it to the current inlines
+                localContext.InlineCollection.Add(inlineUIContainer);
             }
-
-            var borderthickness = InlineCodeBorderThickness;
-            var padding = InlineCodePadding;
-            var spacingoffset = -(borderthickness.Bottom + padding.Bottom);
-
-            var margin = new Thickness(0, spacingoffset, 0, spacingoffset);
-
-            var border = new Border
-            {
-                BorderThickness = borderthickness,
-                BorderBrush = InlineCodeBorderBrush,
-                Background = InlineCodeBackground,
-                Child = text,
-                Padding = padding,
-                Margin = margin
-            };
-
-            // Aligns content in InlineUI, see https://social.msdn.microsoft.com/Forums/silverlight/en-US/48b5e91e-efc5-4768-8eaf-f897849fcf0b/richtextbox-inlineuicontainer-vertical-alignment-issue?forum=silverlightarchieve
-            border.RenderTransform = new TranslateTransform
-            {
-                Y = 4
-            };
-
-            var inlineUIContainer = new InlineUIContainer
-            {
-                Child = border,
-            };
-
-            // Add it to the current inlines
-            localContext.InlineCollection.Add(inlineUIContainer);
         }
 
         protected override void RenderDiscord(DiscordInline element, IRenderContext context)

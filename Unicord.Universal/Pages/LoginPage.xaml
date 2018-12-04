@@ -9,9 +9,9 @@
     Loaded="Page_Loaded">
     <Grid>
         <StackPanel MaxWidth="400" VerticalAlignment="Center" Margin="20">
-            <Image Source="{ThemeResource DiscordWordMark}" Margin="0,10"/>
+            <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12"/>
             <PasswordBox x:Name="tokenTextBox" PlaceholderText="Token"/>
-            <Grid Margin="0,10">
+            <Grid Margin="0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>

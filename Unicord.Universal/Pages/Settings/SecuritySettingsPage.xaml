@@ -11,8 +11,9 @@
         <local:SecuritySettingsModel/>
     </Page.DataContext>
 
-    <Grid Margin="10">
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -22,8 +23,10 @@
         </Grid.RowDefinitions>
         
         <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Security and Privacy"/>
+        
+        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Grid.Row="1" Margin="0,8,0,0" Text="Diagnostic and Usage data"/>
 
-        <Grid Grid.Row="1" Margin="0,10">
+        <Grid Grid.Row="2" Margin="0,4,0,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -36,15 +39,17 @@
             <TextBlock Text="Send Diagnostic and Usage data" VerticalAlignment="Center"/>
             <ToggleSwitch Toggled="ToggleSwitch_Toggled" Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableAnalytics, Mode=TwoWay}" />
         </Grid>
+        
+        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Grid.Row="3" Text="Windows Hello"/>
 
-        <TextBlock x:Name="unavailableText" Grid.Row="3" Margin="0,10,0,0" TextWrapping="Wrap" Foreground="{StaticResource ErrorTextForegroundBrush}">
+        <TextBlock x:Name="unavailableText" Grid.Row="4" Margin="0,12,0,0" TextWrapping="Wrap" Foreground="{StaticResource ErrorTextForegroundBrush}">
             <Run Text="Windows Hello is not available on this device. Wanna"/> <Hyperlink NavigateUri="ms-settings:signinoptions"><Run>change this?</Run></Hyperlink>
         </TextBlock>
-        <ContentControl x:Name="settingsContent" Grid.Row="4" Margin="0,10" HorizontalContentAlignment="Stretch">
+        <ContentControl x:Name="settingsContent" Grid.Row="5" Margin="0,12" HorizontalContentAlignment="Stretch">
             <StackPanel>
                 <TextBlock Text="Require Windows Hello authentication to:" TextWrapping="Wrap"/>
 
-                <Grid Margin="0,10">
+                <Grid Margin="0,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -72,7 +77,7 @@
         </ContentControl>
 
 
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="2"><Hyperlink>Privacy Policy</Hyperlink></TextBlock>
+        <TextBlock Grid.Row="6" Grid.ColumnSpan="2"><Hyperlink>Privacy Policy</Hyperlink></TextBlock>
 
     </Grid>
 </Page>

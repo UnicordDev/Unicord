@@ -109,8 +109,7 @@ namespace Unicord.Universal
 
             if (viewer.Parent is Panel p)
                 p.Children.Remove(viewer);
-
-            viewer.Unload();
+            
             ViewerQueue.Enqueue(viewer);
         }
 

@@ -553,7 +553,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:FileViewer">
-                    <Image Name="image" Height="125"/>
+                    <Image Name="image" Height="128"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

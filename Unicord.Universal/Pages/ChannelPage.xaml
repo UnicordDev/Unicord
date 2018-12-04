@@ -68,10 +68,34 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="1">
-                <ScrollViewer x:Name="messagesScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ViewChanged="messagesScroll_ViewChanged" insider:CanContentRenderOutsideBounds="True">
+                <!--<ScrollViewer x:Name="messagesScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ViewChanged="messagesScroll_ViewChanged" insider:CanContentRenderOutsideBounds="True">
                     <StackPanel x:Name="messagesPanel" Padding="0,0,0,30"/>
-                </ScrollViewer>
-                <StackPanel x:Name="noMessages" Visibility="Collapsed" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Center">
+                </ScrollViewer>-->
+                <ListView x:Name="messageList" ItemsSource="{Binding Messages}" IncrementalLoadingThreshold="10" SelectionMode="None" ReorderMode="Disabled">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel 
+                                Margin="0,0,0,8"
+                                VerticalAlignment="Bottom"
+                                ItemsUpdatingScrollMode="KeepLastItemInView"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="MinHeight" Value="0"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="entities:DiscordMessage">
+                            <controls1:MessageViewer Message="{x:Bind}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackPanel x:Name="noMessages" Visibility="Collapsed" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text=":(" FontSize="110"/>
                     <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
                     <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
@@ -87,7 +111,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <controls1:CameraControl x:Name="cameraPreview" Margin="0,0,5,0"/>
+                <controls1:CameraControl x:Name="cameraPreview" Margin="0,0,4,0"/>
 
                 <ListView 
                     x:Name="photosList"
@@ -125,7 +149,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <ItemsControl Grid.Row="1" ItemTemplate="{StaticResource TypingUserTemplate}" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="10,6,10,0">
+                <ItemsControl Grid.Row="1" ItemTemplate="{StaticResource TypingUserTemplate}" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="8,4,8,0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
@@ -143,9 +167,9 @@
                     <Button Click="uploadButton_Click" IsEnabled="{Binding CanUpload}" Style="{StaticResource IconButtonStyle}" Content="&#xE898;"/>
 
                     <TextBox x:Name="messageTextBox" 
-                            IsEnabled="{x:Bind ViewModel.CanSend}"
+                            IsEnabled="{Binding CanSend}"
                             Style="{StaticResource MessageTextBoxStyle}"
-                            PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder}"
+                            PlaceholderText="{Binding ChannelPlaceholder}"
                             VerticalAlignment="Stretch" 
                             Grid.Column="1" 
                             Padding="10" 
@@ -157,9 +181,9 @@
                             FocusEngaged="messageTextBox_FocusEngaged"
                             TextChanged="messageTextBox_TextChanged" />
 
-                    <TextBlock Visibility="{Binding ShowSlowMode}" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" Margin="10" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTipService.ToolTip="{Binding SlowModeText}"/>
+                    <TextBlock Visibility="{Binding ShowSlowMode}" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" Margin="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTipService.ToolTip="{Binding SlowModeText}"/>
 
-                    <ToggleButton x:Name="emoteButton" Grid.Column="2" Click="emoteButton_Click" Visibility="{x:Bind ViewModel.ShowSendButton}" Style="{StaticResource IconToggleButtonStyle}" FontSize="18" Content="&#xED54;"/>
+                    <ToggleButton x:Name="emoteButton" Grid.Column="2" Click="emoteButton_Click" Visibility="{Binding ShowSendButton}" Style="{StaticResource IconToggleButtonStyle}" FontSize="18" Content="&#xED54;"/>
                     <Button x:Name="sendButton" Grid.Column="3" IsEnabled="{Binding CanSend}" Style="{StaticResource IconButtonStyle}" Content="&#xE724;" Click="sendButton_Click"/>
                 </Grid>
             </Grid>
@@ -191,17 +215,17 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Ellipse x:Name="userImage" x:Load="{x:Bind ViewModel.UserImageUrl, Converter={StaticResource BoolConverter}}" Width="24" Height="24" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Ellipse x:Name="userImage" Visibility="{Binding UserImageUrl, Converter={StaticResource BoolVisibilityConverter}}" Width="24" Height="24" VerticalAlignment="Center" Margin="8,0,0,0">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding UserImageUrl}"/>
                         </Ellipse.Fill>
                     </Ellipse>
 
-                    <TextBlock x:Name="header" Grid.Column="1" FontSize="15" Margin="10,0" TextTrimming="CharacterEllipsis" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
-                            <Run Text="{x:Bind ViewModel.ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{x:Bind ViewModel.ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{x:Bind ViewModel.ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
+                    <TextBlock x:Name="header" Grid.Column="1" FontSize="15" Margin="8,0" TextTrimming="CharacterEllipsis" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
+                            <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
                     </TextBlock>
 
-                    <wam:MarkdownTextBlock Grid.Column="2" Text="{x:Bind ViewModel.Topic}" Channel="{x:Bind ViewModel.Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
+                    <wam:MarkdownTextBlock Grid.Column="2" Text="{Binding Topic}" Channel="{Binding Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
 
 
                     <!--<Button x:Name="addToContactsButton" Grid.Column="3" IsEnabled="True" Style="{StaticResource IconButtonStyle}" Content="&#xE779;" Click="addToContactsButton_Click" ToolTipService.ToolTip="Add to Contacts"/>-->
@@ -212,7 +236,7 @@
 
                     <Button x:Name="searchButton" Grid.Column="5" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Content="&#xE721;" ToolTipService.ToolTip="Search"/>
                     <Button x:Name="pinsButton" Grid.Column="6" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Content="&#xE718;" ToolTipService.ToolTip="Pinned Messages" Click="pinsButton_Click"/>
-                    <Button x:Name="userListButton" Grid.Column="7" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Visibility="{x:Bind ViewModel.ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List"/>
+                    <Button x:Name="userListButton" Grid.Column="7" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Visibility="{Binding ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List"/>
 
                     <!-- TODO: consider -->
                     <!--<Button x:Name="closeButton" Grid.Column="7" Visibility="Collapsed" Style="{StaticResource ButtonRevealStyle}" Content="&#xEDAE;" ToolTipService.ToolTip="Close"/>-->

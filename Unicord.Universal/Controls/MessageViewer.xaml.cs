@@ -17,6 +17,7 @@ using WamWooWam.Uwp.UI.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -37,9 +38,7 @@ namespace Unicord.Universal.Controls
             DependencyProperty.Register("Message", typeof(DiscordMessage), typeof(MessageViewer), new PropertyMetadata(null, OnPropertyChanged));
 
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
-
-        public bool AutoSize { get; set; } = true;
-
+        
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordChannel _channel;
         private DiscordUser _author;
@@ -101,7 +100,11 @@ namespace Unicord.Universal.Controls
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var t = d as MessageViewer;
-            t.UpdateViewer(e.Property, e.OldValue as DiscordMessage, e.NewValue as DiscordMessage);
+            var oldMessage = e.OldValue as DiscordMessage;
+            var newMessage = e.NewValue as DiscordMessage;
+
+            if (oldMessage != newMessage)
+                t.UpdateViewer(e.Property, oldMessage, newMessage);
         }
 
         public void UpdateViewer(DependencyProperty property, DiscordMessage oldMessage, DiscordMessage newMessage)
@@ -110,27 +113,9 @@ namespace Unicord.Universal.Controls
             {
                 if (property == MessageProperty)
                 {
-                    void PropertyChanged(object ob, PropertyChangedEventArgs ev)
-                    {
-                        if (ev.PropertyName == "Content")
-                        {
-                            var newM = ob as DiscordMessage;
-                            markdown.Text = newM.Content;
-                        }
-                    }
-
-                    if (oldMessage != null)
-                    {
-                        oldMessage.PropertyChanged -= PropertyChanged;
-                    }
-
-                    _reactions.Clear();
-
                     if (newMessage == null)
                     {
                         embeds?.Children.Clear();
-                        bg.Fill = Application.Current.Resources["TransparentBrush"] as Brush;
-                        markdown.FontSize = 14;
                         markdown.Text = "";
                         DataContext = null;
                     }
@@ -138,33 +123,14 @@ namespace Unicord.Universal.Controls
                     {
                         embeds?.Children.Clear();
 
-                        Logger.Log($"{newMessage.MessageType} {(int)newMessage.MessageType}");
+                        bg.Visibility = newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id) ? Visibility.Visible : Visibility.Collapsed;
 
-                        newMessage.PropertyChanged += PropertyChanged;
-
-                        if (newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id))
-                        {
-                            bg.Fill = newMessage.Channel.Guild?.CurrentMember?.ColorBrush != null ?
-                                new SolidColorBrush(newMessage.Channel.Guild.CurrentMember.ColorBrush.Color) { Opacity = 0.1 } :
-                                Application.Current.Resources["MentionBrush"] as Brush;
-                        }
-                        else
-                        {
-                            bg.Fill = Application.Current.Resources["TransparentBrush"] as Brush;
-                        }
-
-                        markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
-                        markdown.Text = newMessage?.Content;
+                        //markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
                         DataContext = newMessage;
 
                         _channel = newMessage.Channel;
                         _author = newMessage.Author;
                         _member = _author as DiscordMember;
-
-                        foreach (var r in newMessage.Reactions)
-                        {
-                            _reactions.Add(r);
-                        }
 
                         if (newMessage.Channel.Guild != null)
                         {
@@ -172,13 +138,14 @@ namespace Unicord.Universal.Controls
                             _permissions = newMessage.Channel.PermissionsFor(_currentMember);
                         }
 
+                        ChangeSize();
                         HandleAttachments(newMessage);
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Log(ex.ToString());
             }
             finally
             {
@@ -186,56 +153,54 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ChangeSize();
-                Bindings.Update();
-            }
-            catch (Exception ex)
-            {
-                HockeyClient.Current.TrackException(ex);
-            }
-        }
-
         private void HandleAttachments(DiscordMessage m)
         {
-            if (m.Attachments.Any() || m.Embeds.Any())
+            foreach (var attach in m.Attachments)
             {
-                foreach (var attach in m.Attachments)
-                {
-                    if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == attach))
-                        embeds.Children.Add(new AttachmentViewer(attach) { Tag = attach });
-                }
+                if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == attach))
+                    embeds.Children.Add(new AttachmentViewer(attach) { Tag = attach });
+            }
 
-                foreach (var embed in m.Embeds)
+            foreach (var embed in m.Embeds)
+            {
+                if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == embed))
                 {
-                    if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == embed))
+                    if (embed.Type == "image")
                     {
-                        if (embed.Type == "image")
-                        {
-                            ImageElement element = null;
+                        ImageElement element = null;
 
-                            if (embed.Thumbnail != null)
-                            {
-                                element = new ImageElement() { Tag = embed, ImageUri = embed.Thumbnail.ProxyUrl, ImageWidth = embed.Thumbnail.Width, ImageHeight = embed.Thumbnail.Height, HorizontalAlignment = HorizontalAlignment.Left };
-                            }
-                            else if (embed.Image != null)
-                            {
-                                element = new ImageElement() { Tag = embed, ImageUri = embed.Image.ProxyUrl, ImageWidth = embed.Image.Width, ImageHeight = embed.Image.Height, HorizontalAlignment = HorizontalAlignment.Left };
-                            }
-
-                            if (element != null)
-                            {
-                                element.Margin = new Thickness(0, 10, 0, 0);
-                                embeds.Children.Add(element);
-                            }
-                        }
-                        else
+                        if (embed.Thumbnail != null)
                         {
-                            embeds.Children.Add(new EmbedViewer(m, embed) { Tag = embed });
+                            element = new ImageElement()
+                            {
+                                Tag = embed,
+                                ImageUri = embed.Thumbnail.ProxyUrl,
+                                ImageWidth = embed.Thumbnail.Width,
+                                ImageHeight = embed.Thumbnail.Height,
+                                HorizontalAlignment = HorizontalAlignment.Left
+                            };
                         }
+                        else if (embed.Image != null)
+                        {
+                            element = new ImageElement()
+                            {
+                                Tag = embed,
+                                ImageUri = embed.Image.ProxyUrl,
+                                ImageWidth = embed.Image.Width,
+                                ImageHeight = embed.Image.Height,
+                                HorizontalAlignment = HorizontalAlignment.Left
+                            };
+                        }
+
+                        if (element != null)
+                        {
+                            element.Margin = new Thickness(0, 10, 0, 0);
+                            embeds.Children.Add(element);
+                        }
+                    }
+                    else
+                    {
+                        embeds.Children.Add(new EmbedViewer(m, embed) { Tag = embed });
                     }
                 }
             }
@@ -243,31 +208,30 @@ namespace Unicord.Universal.Controls
 
         private void ChangeSize()
         {
-            var page = this.FindParent<ChannelPage>();
-            if (page != null)
+            var list = this.FindParent<ListView>();
+            if (list != null)
             {
-                var stack = page.FindChild<StackPanel>();
-                if (stack != null)
-                {
-                    var index = stack.Children.IndexOf(this);
+                //var stack = page.FindChild<StackPanel>();
+                //if (stack != null)
+                var index = list.Items.IndexOf(Message);
 
-                    if (index > 0)
+                if (index > 0)
+                {
+                    if (list.Items[index - 1] is DiscordMessage other)
                     {
-                        if (stack.Children.ElementAt(index - 1) is MessageViewer other)
+                        if (other.Author.Id == Message.Author.Id && (other.Timestamp - Message.Timestamp) < TimeSpan.FromHours(1))
                         {
-                            if (other.Message.Author.Id == Message.Author.Id && (other.Message.Timestamp - Message.Timestamp) < TimeSpan.FromHours(1))
-                            {
-                                bg.Margin = new Thickness(0, 1.5, 0, -1.5);
-                                grid.Padding = new Thickness(10, 3, 10, 0);
-                                CollapsedVisibility = Visibility.Collapsed;
-                                return;
-                            }
+                            bg.Margin = new Thickness(0, 2, 0, -2);
+                            grid.Padding = new Thickness(8, 4, 8, 0);
+                            CollapsedVisibility = Visibility.Collapsed;
+                            return;
                         }
                     }
-
-                    bg.Margin = new Thickness(0, 15, 0, -2);
-                    grid.Padding = new Thickness(10, 20, 10, 0);
                 }
+
+                bg.Margin = new Thickness(0, 16, 0, -2);
+                grid.Padding = new Thickness(8, 20, 8, 0);
+                //}
             }
 
             CollapsedVisibility = Visibility.Visible;
@@ -275,12 +239,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            Unload();
-        }
-
-        internal void Unload()
-        {
-            AutoSize = true;
+            Message = null;
         }
 
         private async void MarkdownTextBlock_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -305,7 +264,7 @@ namespace Unicord.Universal.Controls
             {
                 _isEditing = true;
                 markdown.Visibility = Visibility.Collapsed;
-                messageEditContainer.Visibility = Visibility.Visible;
+                (FindName("messageEditContainer") as Grid).Visibility = Visibility.Visible;
             }
         }
 
@@ -324,6 +283,7 @@ namespace Unicord.Universal.Controls
             var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
             if (e.Key == VirtualKey.Enter && shift.HasFlag(CoreVirtualKeyStates.None))
             {
+                e.Handled = true;
                 await FinishEditAndSend();
             }
         }
@@ -334,7 +294,7 @@ namespace Unicord.Universal.Controls
             {
                 _isEditing = false;
                 markdown.Visibility = Visibility.Visible;
-                messageEditContainer.Visibility = Visibility.Collapsed;
+                (FindName("messageEditContainer") as Grid).Visibility = Visibility.Collapsed;
             }
         }
 

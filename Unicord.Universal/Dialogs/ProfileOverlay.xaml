@@ -33,7 +33,7 @@
                     <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
                         <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                     </TextBlock>
-                    <TextBlock Grid.Row="1" Margin="0,0,5,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}"
+                    <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}"
                            Style="{ThemeResource SubtitleTextBlockStyle}">
                         <Run Text="{x:Bind _member.DisplayName}"/>
                     </TextBlock>
@@ -41,7 +41,7 @@
                         <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
                     </TextBlock>
                 </StackPanel>
-                <Grid Grid.Column="2" Margin="10,0,0,0">
+                <Grid Grid.Column="2" Margin="12,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -64,7 +64,7 @@
                 <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}">
                     <StackPanel>
                         <StackPanel x:Name="rolesList">
-                            <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>
+                            <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                             <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -73,7 +73,7 @@
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
                         </StackPanel>
-                        <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,5"/>
+                        <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                         <TextBlock Text="{x:Bind _member.JoinedAt}"/>
                     </StackPanel>
                 </PivotItem>
@@ -91,8 +91,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <lib:PersonPicture ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}" Width="36" Height="36" Margin="0,5"/>
-                                        <TextBlock Grid.Column="1" Margin="10,0" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                        <lib:PersonPicture ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}" Width="36" Height="36" Margin="0,4"/>
+                                        <TextBlock Grid.Column="1" Margin="12,0" Text="{Binding Name}" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
