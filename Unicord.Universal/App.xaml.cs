@@ -63,7 +63,7 @@ namespace Unicord.Universal
             InitializeComponent();
 
             Suspending += OnSuspending;
-            UnhandledException += App_UnhandledException;            
+            UnhandledException += App_UnhandledException;
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
@@ -273,11 +273,8 @@ namespace Unicord.Universal
                             if (onReady != null)
                                 await onReady(e);
 
-                            if (RoamingSettings.Read(SYNC_CONTACTS, true) && ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
-                            {
-                                var t = new Task(async () => await Contacts.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
-                                t.Start();
-                            }
+                            var t = new Task(async () => await Contacts.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
+                            t.Start();
                         }
 
                         Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });

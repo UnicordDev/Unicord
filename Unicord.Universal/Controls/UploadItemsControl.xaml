@@ -14,7 +14,7 @@
 
     <Grid>
         <controls:DockPanel x:Name="uploadGrid" LastChildFill="True" Grid.Row="2">
-            <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
+            <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -38,7 +38,7 @@
                 SelectionMode="None"
                 IsItemClickEnabled="True"
                 ItemClick="UploadList_ItemClick"
-                Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
                 ItemsSource="{Binding FileUploads}"
                 win1809:ScrollViewer.CanContentRenderOutsideBounds="True"
                 ScrollViewer.VerticalScrollMode="Disabled"
@@ -62,8 +62,8 @@
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
                             <Image VerticalAlignment="Stretch" Source="{Binding Thumbnail}"/>
-                            
-                            <Grid Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+
+                            <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
@@ -72,8 +72,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding FileName}" TextTrimming="Clip" Margin="10"/>
                             </Grid>
-                            
-                            <Grid Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+
+                            <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>

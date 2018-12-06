@@ -37,36 +37,46 @@ namespace Unicord.Universal.Controls
 
         private bool _loadDetails = false;
 
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            await Dispatcher.RunIdleAsync(d =>
+            var url = _attachment.Url;
+            var fileExtension = Path.GetExtension(url);
+
+            if (_mediaExtensions.Value.Contains(fileExtension))
             {
-                var url = _attachment.Url;
-                var fileExtension = Path.GetExtension(url);
+                var mediaPlayer = new MediaPlayerElement()
+                {
+                    AreTransportControlsEnabled = true,
+                    VerticalContentAlignment = VerticalAlignment.Top,
+                    Source = MediaSource.CreateFromUri(new Uri(_attachment.ProxyUrl))
+                };
 
-                if (_mediaExtensions.Value.Contains(fileExtension))
-                {
-                    var mediaPlayer = new MediaPlayerControl(_attachment, !(_attachment.Width != 0 && _attachment.Height != 0)) { VerticalContentAlignment = VerticalAlignment.Top };
-                    mainGrid.Content = mediaPlayer;
-                }
-                else if (_attachment.Height != 0 && _attachment.Width != 0)
-                {
-                    var imageElement = new ImageElement()
-                    {
-                        ImageWidth = _attachment.Width,
-                        ImageHeight = _attachment.Height,
-                        ImageUri = new Uri(_attachment.ProxyUrl)
-                    };
+                mediaPlayer.TransportControls.IsCompact = true;
 
-                    imageElement.Tapped += Image_Tapped;
-                    mainGrid.Content = imageElement;
-                }
-                else
+                if(_attachment.Width != 0)
                 {
-                    _loadDetails = true;
-                    Bindings.Update();
+                    mediaPlayer.PosterSource = new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg"));
                 }
-            });
+
+                mainGrid.Content = mediaPlayer;
+            }
+            else if (_attachment.Height != 0 && _attachment.Width != 0)
+            {
+                var imageElement = new ImageElement()
+                {
+                    ImageWidth = _attachment.Width,
+                    ImageHeight = _attachment.Height,
+                    ImageUri = new Uri(_attachment.ProxyUrl)
+                };
+
+                imageElement.Tapped += Image_Tapped;
+                mainGrid.Content = imageElement;
+            }
+            else
+            {
+                _loadDetails = true;
+                Bindings.Update();
+            }
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

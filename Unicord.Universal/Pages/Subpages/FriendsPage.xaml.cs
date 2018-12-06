@@ -216,5 +216,14 @@ namespace Unicord.Universal.Pages.Subpages
             enter?.Stop();
             exited?.Begin();
         }
+
+        private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
+        {
+            var page = this.FindParent<DiscordPage>();
+            if (page != null)
+            {
+                page.ToggleSplitPane();
+            }
+        }
     }
 }

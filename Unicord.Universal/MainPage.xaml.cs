@@ -107,7 +107,7 @@ namespace Unicord.Universal
                 Window.Current.SetTitleBar(titleBar);
             }
 
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile" && ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 if (statusBar != null)

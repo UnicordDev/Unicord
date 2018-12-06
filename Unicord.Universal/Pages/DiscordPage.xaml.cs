@@ -37,6 +37,7 @@ namespace Unicord.Universal.Pages
         private MainPageEventArgs _args;
         private bool _loaded;
         private bool _visibility;
+        private bool _isPaneOpen => ContentTransform.X != 0;
 
         public DiscordPage()
         {
@@ -91,17 +92,7 @@ namespace Unicord.Universal.Pages
         {
             try
             {
-                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
-                {
-                    SettingsContainer.Width = 450;
-                    SettingsPaneTransform.X = 450;
-                    SettingsContainer.HorizontalAlignment = HorizontalAlignment.Right;
-                }
-                else
-                {
-                    MobileHeightAnimation.To = ActualHeight;
-                    SettingsPaneTransform.Y = ActualHeight;
-                }
+                CheckSettingsPane();
 
                 _loaded = true;
 
@@ -150,18 +141,16 @@ namespace Unicord.Universal.Pages
 
         private async Task Discord_RelationshipAdded(RelationshipEventArgs e)
         {
-            if (e.Relationship.RelationshipType == DiscordRelationshipType.Friend)
-            {
-                var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
-                var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                if (store != null)
-                {
-                    var lists = await store.FindContactListsAsync();
-                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-                    var annotationList = await Tools.GetAnnotationlistAsync(annotationStore);
-                    await Contacts.AddOrUpdateContactForRelationship(list, annotationList, e.Relationship);
-                }
-            }
+            //if (e.Relationship.RelationshipType == DiscordRelationshipType.Friend)
+            //{
+            //    var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
+            //    if (store != null)
+            //    {
+            //        var lists = await store.FindContactListsAsync();
+            //        var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
+            //        await Contacts.AddOrUpdateContactForRelationship(list, e.Relationship);
+            //    }
+            //}
         }
 
         private async Task Discord_RelationshipRemoved(RelationshipEventArgs e)
@@ -202,7 +191,7 @@ namespace Unicord.Universal.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            if(App.Discord != null)
+            if (App.Discord != null)
             {
                 App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
             }
@@ -219,12 +208,40 @@ namespace Unicord.Universal.Pages
                 else
                 {
                     var notification = Tools.GetWindows10Toast(e.Message,
-                        Tools.GetMessageTitle(e.Message), 
+                        Tools.GetMessageTitle(e.Message),
                         Tools.GetMessageContent(e.Message));
 
                     var toastNotifier = ToastNotificationManager.CreateToastNotifier();
                     toastNotifier.Show(notification);
                 }
+            }
+        }
+
+        public void ToggleSplitPane()
+        {
+            if (_isPaneOpen)
+            {
+                CloseSplitPane();
+            }
+            else
+            {
+                OpenSplitPane();
+            }
+        }
+
+        public void OpenSplitPane()
+        {
+            if (ActualWidth < 640)
+            {
+                OpenPaneMobileStoryboard.Begin();
+            }            
+        }
+
+        public void CloseSplitPane()
+        {
+            if (ActualWidth < 640)
+            {
+                ClosePaneMobileStoryboard.Begin();
             }
         }
 
@@ -252,8 +269,7 @@ namespace Unicord.Universal.Pages
 
         private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (splitView.DisplayMode == SplitViewDisplayMode.Overlay)
-                splitView.IsPaneOpen = false;
+           // CloseSplitPane();
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -263,8 +279,7 @@ namespace Unicord.Universal.Pages
 
         internal async void Navigate(DiscordChannel channel, NavigationTransitionInfo info)
         {
-            if (splitView.DisplayMode == SplitViewDisplayMode.Overlay)
-                splitView.IsPaneOpen = false;
+            CloseSplitPane();
 
             if (channel is DiscordDmChannel && !(sidebarFrame.Content is DMChannelsPage))
             {
@@ -332,13 +347,30 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        private void CheckSettingsPane()
+        {
+            if (ActualWidth > 640)
+            {
+                SettingsContainer.Width = 450;
+                SettingsPaneTransform.X = 450;
+                SettingsContainer.HorizontalAlignment = HorizontalAlignment.Right;
+            }
+            else
+            {
+                MobileHeightAnimation.To = ActualHeight;
+                SettingsPaneTransform.Y = ActualHeight;
+            }
+        }
+
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (await WindowsHello.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
             {
                 SettingsOverlayGrid.Visibility = Visibility.Visible;
 
-                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
+                CheckSettingsPane();
+
+                if (ActualWidth > 640)
                 {
                     OpenSettingsDesktopStoryboard.Begin();
                 }
@@ -358,7 +390,7 @@ namespace Unicord.Universal.Pages
 
         internal void CloseSettings()
         {
-            if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
+            if (ActualWidth > 640)
             {
                 CloseSettingsDesktopStoryboard.Begin();
             }
@@ -371,6 +403,11 @@ namespace Unicord.Universal.Pages
         private void CloseSettingsStoryboard_Completed(object sender, object e)
         {
             SettingsOverlayGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            CloseSplitPane();
         }
     }
 }

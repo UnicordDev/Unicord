@@ -31,16 +31,8 @@ namespace Unicord.Universal.Pages.Settings
             this.InitializeComponent();
             DataContext = App.Discord.CurrentUser;
 
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
-            {
-                syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);
-                syncContactsSwitch.Toggled += SyncContactsSwitch_Toggled;
-            }
-            else
-            {
-                syncContactsSwitch.IsEnabled = false;
-                contactsUnavailable.Visibility = Visibility.Visible;
-            }
+            syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);
+            syncContactsSwitch.Toggled += SyncContactsSwitch_Toggled;
         }
 
         private async void SyncContactsSwitch_Toggled(object sender, RoutedEventArgs e)

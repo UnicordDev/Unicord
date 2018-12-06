@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
+using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -14,18 +16,26 @@ namespace Unicord.Universal.Integration
 {
     internal static class Contacts
     {
+#if STORE
+        private const string REMOTE_ID_PREFIX = "Unicord_";
+        private const string CONTACT_LIST_NAME = "Unicord";
+        private const string APP_ID = "24101WamWooWamRD.Unicord_g9xp2jqbzr3wg!App";
+#else
+        private const string REMOTE_ID_PREFIX = "UnicordCanary_";
+        private const string CONTACT_LIST_NAME = "Unicord Canary";
+        private const string APP_ID = "24101WamWooWamRD.Unicord.Canary_g9xp2jqbzr3wg!App";
+#endif
+
         public static async Task UpdateContactsListAsync()
         {
             try
             {
                 var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
                 var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
-                var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
                 if (store != null)
                 {
                     var lists = await store.FindContactListsAsync();
-                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-                    var annotationList = await Tools.GetAnnotationlistAsync(annotationStore);
+                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync(CONTACT_LIST_NAME));
 
                     var allContacts = await store.FindContactsAsync();
                     var removed = allContacts.Where(c =>
@@ -43,25 +53,51 @@ namespace Unicord.Universal.Integration
                         await list.DeleteContactAsync(cont);
                     }
 
+                    var contactsToAnnotate = new Dictionary<DiscordRelationship, Contact>();
+
                     foreach (var relationship in App.Discord.Relationships.Where(r => r.RelationshipType == DiscordRelationshipType.Friend))
                     {
-                        await AddOrUpdateContactForRelationship(list, annotationList, relationship, folder);
+                        var contact = await AddOrUpdateContactForRelationship(list, relationship, folder);
+                        if (contact != null)
+                        {
+                            contactsToAnnotate[relationship] = contact;
+                        }
+                    }
+
+                    if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.ContactAnnotation"))
+                    {
+                        var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
+                        var annotationList = await Tools.GetAnnotationlistAsync(annotationStore);
+                        foreach (var contact in contactsToAnnotate)
+                        {
+                            var annotation = new ContactAnnotation()
+                            {
+                                ContactId = contact.Value.Id,
+                                RemoteId = REMOTE_ID_PREFIX + contact.Key.User.Id.ToString(),
+                                SupportedOperations = ContactAnnotationOperations.Share | ContactAnnotationOperations.AudioCall | ContactAnnotationOperations.Message | ContactAnnotationOperations.ContactProfile | ContactAnnotationOperations.SocialFeeds | ContactAnnotationOperations.VideoCall
+                            };
+
+                            annotation.ProviderProperties.Add("ContactPanelAppID", APP_ID);
+                            annotation.ProviderProperties.Add("ContactShareAppID", APP_ID);
+
+                            await annotationList.TrySaveAnnotationAsync(annotation);
+                        }
                     }
                 }
             }
             catch { }
         }
 
-        public static async Task AddOrUpdateContactForRelationship(ContactList list, ContactAnnotationList annotationList, DiscordRelationship relationship, StorageFolder folder = null)
+        public static async Task<Contact> AddOrUpdateContactForRelationship(ContactList list, DiscordRelationship relationship, StorageFolder folder = null)
         {
             Contact contact = null;
 
-            if(folder == null)
+            if (folder == null)
             {
                 folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
             }
 
-            if ((contact = await list.GetContactFromRemoteIdAsync($"Unicord_{relationship.User.Id}")) == null)
+            if ((contact = await list.GetContactFromRemoteIdAsync($"{REMOTE_ID_PREFIX}{relationship.User.Id}")) == null)
             {
                 var reference = await GetAvatarReferenceAsync(relationship, folder);
 
@@ -69,7 +105,7 @@ namespace Unicord.Universal.Integration
                 {
                     DisplayNameOverride = relationship.User.Username,
                     SourceDisplayPicture = reference,
-                    RemoteId = "Unicord_" + relationship.User.Id.ToString()
+                    RemoteId = REMOTE_ID_PREFIX + relationship.User.Id.ToString()
                 };
 
                 contact.ProviderProperties["AvatarHash"] = relationship.User.AvatarHash;
@@ -91,16 +127,7 @@ namespace Unicord.Universal.Integration
                 }
             }
 
-            var annotation = new ContactAnnotation()
-            {
-                ContactId = contact.Id,
-                RemoteId = "Unicord_" + relationship.User.Id.ToString(),
-                SupportedOperations = ContactAnnotationOperations.Share | ContactAnnotationOperations.AudioCall | ContactAnnotationOperations.Message | ContactAnnotationOperations.ContactProfile | ContactAnnotationOperations.SocialFeeds | ContactAnnotationOperations.VideoCall
-            };
-
-            annotation.ProviderProperties.Add("ContactPanelAppID", "24101WamWooWamRD.Unicord_g9xp2jqbzr3wg!App");
-
-            await annotationList.TrySaveAnnotationAsync(annotation);
+            return contact;
         }
 
         public static async Task ClearContactsAsync()
@@ -111,7 +138,7 @@ namespace Unicord.Universal.Integration
                 if (store != null)
                 {
                     var lists = await store.FindContactListsAsync();
-                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
+                    var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync(CONTACT_LIST_NAME));
                     await list.DeleteAsync();
                 }
             }

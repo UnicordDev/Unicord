@@ -119,12 +119,12 @@
                             <Storyboard x:Name="OpenSwipeablePane">
                                 <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="PanArea" d:IsOptimized="True">
                                     <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseOut" />
+                                        <CircleEase EasingMode="EaseInOut" />
                                     </DoubleAnimation.EasingFunction>
                                 </DoubleAnimation>
                                 <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="PaneRoot" d:IsOptimized="True">
                                     <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseOut" />
+                                        <CircleEase EasingMode="EaseInOut" />
                                     </DoubleAnimation.EasingFunction>
                                 </DoubleAnimation>
                             </Storyboard>
@@ -528,14 +528,14 @@
                         </Grid>
 
                         <!--a new layer here to handle all the gestures -->
-                        <Grid x:Name="OverlayRoot" Grid.ColumnSpan="2" Margin="0,0,0,150">
+                        <Grid x:Name="OverlayRoot" Grid.ColumnSpan="2" IsHitTestVisible="True" Margin="0,40,0,40">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding TemplateSettings.OpenPaneGridLength, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <!--the actual element for panning, manipulations happen here-->
-                            <Rectangle x:Name="PanArea" Fill="Transparent" ManipulationMode="TranslateX,TranslateY" Width="{Binding PanAreaThreshold, RelativeSource={RelativeSource Mode=TemplatedParent}}" Grid.Column="1">
+                            <Rectangle x:Name="PanArea" Fill="Transparent" ManipulationMode="TranslateX,TranslateY" Width="12" Grid.Column="1">
                                 <Rectangle.RenderTransform>
                                     <CompositeTransform TranslateX="{Binding PanAreaInitialTranslateX, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                                 </Rectangle.RenderTransform>

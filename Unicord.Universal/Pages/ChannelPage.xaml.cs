@@ -6,33 +6,24 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Unicord.Universal.Controls;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Search;
-using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -167,6 +158,8 @@ namespace Unicord.Universal.Pages
         {
             var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
             scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+            
+            showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
 
             await Load();
         }
@@ -190,7 +183,6 @@ namespace Unicord.Universal.Pages
 
                     _emotePicker.Channel = ViewModel.Channel;
                     noMessages.Visibility = Visibility.Collapsed;
-                    splitView.IsPaneOpen = false;
                 });
 
                 await ViewModel.LoadMessagesAsync();
@@ -217,56 +209,6 @@ namespace Unicord.Universal.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        private async Task Discord_MessageCreated(MessageCreateEventArgs e)
-        {
-            try
-            {
-                if (e.Channel.Id == ViewModel.Channel.Id)
-                {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (noMessages.Visibility == Visibility.Visible)
-                            noMessages.Visibility = Visibility.Collapsed;
-
-                        messageList.Items.Add(e.Message);
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "ChannelLoadFailure" });
-            }
-        }
-
-        private async Task Discord_MessageUpdated(MessageUpdateEventArgs e)
-        {
-            if (e.Channel.Id == ViewModel.Channel.Id)
-            {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    //var message = messagesPanel.Children
-                    //    .OfType<MessageViewer>()
-                    //    .ToArray()
-                    //    .FirstOrDefault(m => m.Id == e.Message.Id);
-                    //if (message != null)
-                    //{
-                    //    message.UpdateViewer(MessageViewer.MessageProperty, e.MessageBefore, e.Message);
-                    //}
-                });
-            }
-        }
-
-        private async Task Discord_MessageDeleted(MessageDeleteEventArgs e)
-        {
-            if (e.Channel.Id == ViewModel.Channel.Id)
-            {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    messageList.Items.Remove(e.Message);
-                });
-            }
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -559,9 +501,16 @@ namespace Unicord.Universal.Pages
 
         private void pinsButton_Click(object sender, RoutedEventArgs e)
         {
-            splitView.IsPaneOpen = !splitView.IsPaneOpen;
-            if (splitView.IsPaneOpen)
-                splitViewPane.Navigate(typeof(PinsPage), ViewModel.Channel);
+
+        }
+
+        private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
+        {
+            var page = this.FindParent<DiscordPage>();
+            if(page != null)
+            {
+                page.ToggleSplitPane();
+            }
         }
     }
 }

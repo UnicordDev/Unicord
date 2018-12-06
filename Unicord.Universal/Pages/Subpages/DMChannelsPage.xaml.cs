@@ -94,7 +94,7 @@ namespace Unicord.Universal.Pages.Subpages
 
             if (channel != null)
             {
-                this.FindParent<DiscordPage>().Frame.Navigate(typeof(ChannelPage), channel);
+                this.FindParent<DiscordPage>().Navigate(channel, null);
             }
         }
     }

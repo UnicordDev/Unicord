@@ -78,6 +78,27 @@
                 Duration="00:00:00.33"                            
                 EasingFunction="{StaticResource Ease}"/>
         </Storyboard>
+
+        <Storyboard x:Key="OpenPaneMobileStoryboard" x:Name="OpenPaneMobileStoryboard">
+            <DoubleAnimation 
+                From="0"
+                To="276"
+                Storyboard.TargetName="ContentTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.33"
+                EasingFunction="{StaticResource Ease}"/>
+        </Storyboard>
+        <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
+            <DoubleAnimation 
+                From="276"
+                To="0"
+                Storyboard.TargetName="ContentTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.33"
+                EasingFunction="{StaticResource Ease}"/>
+        </Storyboard>
+
+
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -88,10 +109,9 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="splitView.DisplayMode" Value="Inline" />
-                        <Setter Target="splitView.IsPaneOpen" Value="True" />
-                        <Setter Target="sidebarMainGrid.Background" Value="{ThemeResource SidebarPrimaryAcrylicWindowBrush}"/>
-                        <Setter Target="sidebarSecondaryGrid.Background" Value="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"/>
+                        <Setter Target="ContentTransform.X" Value="0" />
+                        <Setter Target="closeItem.Visibility" Value="Collapsed" />
+                        <Setter Target="content.Margin" Value="0,0,0,0" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -101,64 +121,71 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="splitView.DisplayMode" Value="Overlay" />
-                        <Setter Target="sidebarMainGrid.Background" Value="{ThemeResource SidebarPrimaryAcrylicElementBrush}"/>
-                        <Setter Target="sidebarSecondaryGrid.Background" Value="{ThemeResource SidebarSecondaryAcrylicElementBrush}"/>
+                        <Setter Target="closeItem.Visibility" Value="Visible" />
+                        <Setter Target="content.Margin" Value="-276,0,0,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <controls:SwipeableSplitView 
-            x:Name="splitView"
-            CompactPaneLength="56"
-            OpenPaneLength="275"
-            PaneBackground="Transparent">
-            <controls:SwipeableSplitView.Pane>
-                <Grid x:Name="splitPane">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="56"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                    <Grid x:Name="sidebarMainGrid">
+            <Grid x:Name="splitPane" Width="276" HorizontalAlignment="Left">
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="56"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                        <Grid x:Name="iconGrid" Visibility="Collapsed" Height="42">
-                            <Image Source="{StaticResource DiscordClyde}" Width="22" Height="22" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </Grid>
+                <Grid x:Name="sidebarMainGrid" Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
 
-                        <ListView x:Name="guildsList" ItemTemplate="{StaticResource GuildsListTemplate}" Grid.Row="1" ShowsScrollingPlaceholders="False" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
-                            <ListView.Header>
-                                <ListViewItem x:Name="friendsItem" Tapped="friendsItem_Tapped" Margin="0,8" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid x:Name="iconGrid" Visibility="Collapsed" Height="42">
+                        <Image Source="{StaticResource DiscordClyde}" Width="22" Height="22" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Grid>
+
+                    <ListView x:Name="guildsList" ItemTemplate="{StaticResource GuildsListTemplate}" Grid.Row="1" ShowsScrollingPlaceholders="False" ItemsSource="{x:Bind _guilds}" CanDrag="True" AllowDrop="True" CanDragItems="True" CanReorderItems="True" DragItemsCompleted="guildsList_DragItemsCompleted" ScrollViewer.VerticalScrollBarVisibility="Hidden" SelectionChanged="guildsList_SelectionChanged">
+                        <ListView.Header>
+                            <StackPanel Margin="0,8">
+                                <ListViewItem x:Name="closeItem" Tapped="CloseItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                                    <FontIcon Width="36" Height="36" Glyph="&#xE700;"></FontIcon>
+                                </ListViewItem>
+                                <ListViewItem x:Name="friendsItem" Tapped="friendsItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
                                     <SymbolIcon Width="36" Height="36" Symbol="People"></SymbolIcon>
                                 </ListViewItem>
-                            </ListView.Header>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.Footer>
-                                <StackPanel Margin="0,8">
-                                    <ListViewItem x:Name="settingsItem" Tapped="SettingsItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
-                                        <SymbolIcon Width="36" Height="36" Symbol="Setting"></SymbolIcon>
-                                    </ListViewItem>
-                                    <!--
+                            </StackPanel>
+                        </ListView.Header>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Footer>
+                            <StackPanel Margin="0,8">
+                                <ListViewItem x:Name="settingsItem" Tapped="SettingsItem_Tapped" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
+                                    <SymbolIcon Width="36" Height="36" Symbol="Setting"></SymbolIcon>
+                                </ListViewItem>
+                                <!--
                                         <ListViewItem x:Name="feedbackItem" Padding="0" MinWidth="0" HorizontalContentAlignment="Stretch">
                                             <FontIcon Width="36" Height="36" Glyph="&#xED15;"></FontIcon>
                                         </ListViewItem>
                                     -->
-                                </StackPanel>
-                            </ListView.Footer>
-                        </ListView>
-                    </Grid>
+                            </StackPanel>
+                        </ListView.Footer>
+                    </ListView>
+                </Grid>
 
-                    <Grid x:Name="sidebarSecondaryGrid" Grid.Column="1">
+                <controls1:DropShadowPanel Width="220" Color="{ThemeResource SystemChromeBlackMediumLowColor}" Grid.Column="1">
+                    <Grid Grid.Column="1" x:Name="sidebarSecondaryGrid" Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -170,46 +197,17 @@
 
                         <AutoSuggestBox Grid.Row="1" Style="{StaticResource CleanAutoSuggestBox}" BorderThickness="1" QueryIcon="Find" PlaceholderText="Find some people!" Margin="8,4,8,4"/>
 
-                        <Frame x:Name="sidebarFrame" Grid.Row="2"/>
+                        <Frame x:Name="sidebarFrame" Width="220" Grid.Row="2"/>
                     </Grid>
-
-                    <!--                    
-
-                    <Grid x:Name="userStatusContainer" Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Canvas Width="40" Height="40" Margin="10,10,0,10">
-                            <Ellipse Width="40" Height="40" Canvas.Left="0" Canvas.Top="0">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{x:Bind dis:App.Discord.CurrentUser.NonAnimatedAvatarUrl}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                            <Ellipse Canvas.Left="24" Canvas.Top="24" Width="16" Height="16" StrokeThickness="2" Stroke="{Binding ElementName=userStatusContainer, Path=Background}">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{x:Bind dis:App.Discord.CurrentUser.Presence, Converter={StaticResource PresenceColourConverter}}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                        </Canvas>
-
-                        <StackPanel Margin="10,0" Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock FontWeight="Bold" Text="{x:Bind Path=dis:App.Discord.CurrentUser.Username}" TextTrimming="CharacterEllipsis"/>
-                            <TextBlock FontSize="12"><Run Text="#"/><Run Text="{x:Bind Path=dis:App.Discord.CurrentUser.Discriminator}"/></TextBlock>
-                        </StackPanel>-->
-
-                    <!--
-                        <Button x:Name="settingsButton" Grid.Column="2" VerticalAlignment="Center" Click="settingsButton_Click" Background="Transparent">
-                            <SymbolIcon Symbol="Setting" Margin="-3,-1"/>
-                        </Button>
-                    </Grid>
-                        -->
-                </Grid>
-            </controls:SwipeableSplitView.Pane>
-            <Grid Tapped="Grid_Tapped" Background="{ThemeResource MainBackgroundBrush}">
-                <Frame x:Name="mainFrame" SourcePageType="sub:FriendsPage" Navigated="mainFrame_Navigated"/>
+                </controls1:DropShadowPanel>
+            </Grid>
+            <Grid x:Name="content" Grid.Column="1" Tapped="Grid_Tapped" MinWidth="250" Background="{ThemeResource MainBackgroundBrush}">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="ContentTransform"  />
+                </Grid.RenderTransform>
+                <controls1:DropShadowPanel HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Color="{ThemeResource SystemChromeBlackMediumLowColor}">
+                    <Frame x:Name="mainFrame" HorizontalAlignment="Stretch" Background="{ThemeResource MainBackgroundBrush}" SourcePageType="sub:FriendsPage" Navigated="mainFrame_Navigated"/>
+                </controls1:DropShadowPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -221,11 +219,12 @@
                                         HorizontalAlignment="Stretch" Tapped="Notification_Tapped" Padding="16"
                                         Margin="0,24,4,0" ShowDismissButton="False" VerticalOffset="-100" FontSize="{ThemeResource ContentControlFontSize}"
                                         StackMode="StackInFront" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
-                       
+
                     </controls1:InAppNotification>
                 </Grid>
             </Grid>
-        </controls:SwipeableSplitView>
+        </Grid>
+        
         <Grid x:Name="SettingsOverlayGrid" Visibility="Collapsed">
             <Grid x:Name="SettingsOverlayBackground" Background="{ThemeResource OverlayBackdrop}" Opacity="0" Tapped="SettingsOverlayBackground_Tapped"/>
             <Grid x:Name="SettingsContainer" Background="{ThemeResource MainBackgroundBrush}">
