@@ -36,6 +36,16 @@ namespace Unicord.Universal.Pages.Subpages
             InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(e.Parameter is DiscordDmChannel channel)
+            {
+                dmsList.SelectionChanged -= dmsList_SelectionChanged;
+                dmsList.SelectedItem = channel;
+                dmsList.SelectionChanged += dmsList_SelectionChanged;
+            }
+        }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             _dms = new ObservableCollection<DiscordDmChannel>(App.Discord.PrivateChannels.OrderByDescending(r => r.ReadState?.LastMessageId));

@@ -52,7 +52,7 @@
             <VisualStateGroup>
                 <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="640" />
+                        <AdaptiveTrigger MinWindowWidth="769" />
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
@@ -79,7 +79,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+        <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -166,7 +166,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="photoPicker" Visibility="Collapsed" Grid.Row="3" Height="150" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+        <Grid x:Name="photoPicker" Visibility="Collapsed" Grid.Row="3" Height="150" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="photoTransform" Y="200"/>
             </Grid.RenderTransform>
@@ -204,7 +204,7 @@
         </Grid>
 
         <!--<controls:DropShadowPanel Grid.Row="3" HorizontalContentAlignment="Stretch" ShadowOpacity="0.33" OffsetY="-2.5">-->
-        <Grid x:Name="footerGrid" Grid.Row="4" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+        <Grid x:Name="footerGrid" Grid.Row="4" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

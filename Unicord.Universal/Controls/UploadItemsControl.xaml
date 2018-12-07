@@ -14,7 +14,7 @@
 
     <Grid>
         <controls:DockPanel x:Name="uploadGrid" LastChildFill="True" Grid.Row="2">
-            <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
+            <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -38,7 +38,7 @@
                 SelectionMode="None"
                 IsItemClickEnabled="True"
                 ItemClick="UploadList_ItemClick"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                 ItemsSource="{Binding FileUploads}"
                 win1809:ScrollViewer.CanContentRenderOutsideBounds="True"
                 ScrollViewer.VerticalScrollMode="Disabled"

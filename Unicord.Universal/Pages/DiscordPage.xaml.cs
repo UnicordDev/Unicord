@@ -231,15 +231,15 @@ namespace Unicord.Universal.Pages
 
         public void OpenSplitPane()
         {
-            if (ActualWidth < 640)
+            if (ActualWidth <= 768)
             {
                 OpenPaneMobileStoryboard.Begin();
-            }            
+            }
         }
 
         public void CloseSplitPane()
         {
-            if (ActualWidth < 640)
+            if (ActualWidth <= 768)
             {
                 ClosePaneMobileStoryboard.Begin();
             }
@@ -269,7 +269,7 @@ namespace Unicord.Universal.Pages
 
         private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
-           // CloseSplitPane();
+            // CloseSplitPane();
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -281,12 +281,19 @@ namespace Unicord.Universal.Pages
         {
             CloseSplitPane();
 
+            guildsList.SelectionChanged -= guildsList_SelectionChanged;
+
+            friendsItem.IsSelected = false;
+            guildsList.SelectedIndex = -1;
+
             if (channel is DiscordDmChannel && !(sidebarFrame.Content is DMChannelsPage))
             {
-                sidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
+                friendsItem.IsSelected = true;
+                sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
             }
             else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelsPage p) || p.Guild != channel.Guild))
             {
+                guildsList.SelectedItem = channel.Guild;
                 sidebarFrame.Navigate(typeof(GuildChannelsPage), channel.Guild, new DrillInNavigationTransitionInfo());
             }
             if (channel.IsNSFW)
@@ -307,6 +314,8 @@ namespace Unicord.Universal.Pages
             {
                 Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
             }
+
+            guildsList.SelectionChanged += guildsList_SelectionChanged;
         }
 
         private void mainFrame_Navigated(object sender, NavigationEventArgs e)
@@ -349,16 +358,16 @@ namespace Unicord.Universal.Pages
 
         private void CheckSettingsPane()
         {
-            if (ActualWidth > 640)
+            if (ActualWidth <= 768)
+            {
+                MobileHeightAnimation.To = ActualHeight;
+                SettingsPaneTransform.Y = ActualHeight;
+            }
+            else
             {
                 SettingsContainer.Width = 450;
                 SettingsPaneTransform.X = 450;
                 SettingsContainer.HorizontalAlignment = HorizontalAlignment.Right;
-            }
-            else
-            {
-                MobileHeightAnimation.To = ActualHeight;
-                SettingsPaneTransform.Y = ActualHeight;
             }
         }
 
@@ -370,7 +379,7 @@ namespace Unicord.Universal.Pages
 
                 CheckSettingsPane();
 
-                if (ActualWidth > 640)
+                if (ActualWidth > 768)
                 {
                     OpenSettingsDesktopStoryboard.Begin();
                 }
@@ -390,7 +399,7 @@ namespace Unicord.Universal.Pages
 
         internal void CloseSettings()
         {
-            if (ActualWidth > 640)
+            if (ActualWidth > 768)
             {
                 CloseSettingsDesktopStoryboard.Begin();
             }

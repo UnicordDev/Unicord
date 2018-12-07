@@ -40,22 +40,16 @@ namespace Unicord.Universal.Pages.Subpages
                 var allList = new List<DiscordRelationship>();
                 var onlineList = new List<DiscordRelationship>();
 
-                foreach (var rel in App.Discord.Relationships)
+                foreach (var rel in App.Discord.Relationships.OrderBy(r => r.User?.Username))
                 {
                     switch (rel.RelationshipType)
                     {
                         case DiscordRelationshipType.Friend:
-                            int i;
-                            i = allList.BinarySearch(rel);
-                            if (i < 0) i = ~i;
-                            allList.Insert(i, rel);
+                            allList.Add(rel);
 
                             if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
                             {
-                                i = onlineList.BinarySearch(rel);
-                                if (i < 0) i = ~i;
-
-                                onlineList.Insert(i, rel);
+                                onlineList.Add(rel);
                             }
                             break;
                         case DiscordRelationshipType.Blocked:

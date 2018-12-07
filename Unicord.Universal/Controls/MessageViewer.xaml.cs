@@ -40,6 +40,7 @@ namespace Unicord.Universal.Controls
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
         
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
+        private DiscordMessage _message;
         private DiscordChannel _channel;
         private DiscordUser _author;
         private DiscordMember _member;
@@ -90,6 +91,7 @@ namespace Unicord.Universal.Controls
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CollapsedVisibility)));
             }
         }
+
         #endregion
 
         public MessageViewer()
@@ -111,6 +113,8 @@ namespace Unicord.Universal.Controls
         {
             try
             {
+                _message = newMessage;
+
                 if (property == MessageProperty)
                 {
                     if (newMessage == null)
@@ -125,7 +129,7 @@ namespace Unicord.Universal.Controls
 
                         bg.Visibility = newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id) ? Visibility.Visible : Visibility.Collapsed;
 
-                        //markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
+                        markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
                         DataContext = newMessage;
 
                         _channel = newMessage.Channel;
@@ -211,8 +215,6 @@ namespace Unicord.Universal.Controls
             var list = this.FindParent<ListView>();
             if (list != null)
             {
-                //var stack = page.FindChild<StackPanel>();
-                //if (stack != null)
                 var index = list.Items.IndexOf(Message);
 
                 if (index > 0)
@@ -231,15 +233,33 @@ namespace Unicord.Universal.Controls
 
                 bg.Margin = new Thickness(0, 16, 0, -2);
                 grid.Padding = new Thickness(8, 20, 8, 0);
-                //}
             }
 
             CollapsedVisibility = Visibility.Visible;
         }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            App.Discord.MessageUpdated += Discord_MessageUpdated;            
+        }
+
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            Message = null;
+            App.Discord.MessageUpdated -= Discord_MessageUpdated;
+        }
+
+        private Task Discord_MessageUpdated(MessageUpdateEventArgs e)
+        {
+            if(_message.Id == e.Message.Id)
+            {
+                return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    embeds?.Children.Clear();
+                    HandleAttachments(e.Message);
+                }).AsTask();
+            }
+
+            return Task.CompletedTask;
         }
 
         private async void MarkdownTextBlock_LinkClicked(object sender, LinkClickedEventArgs e)

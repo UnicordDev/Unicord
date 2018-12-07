@@ -81,8 +81,8 @@ namespace Unicord.Universal.Models
                         UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
                     }, null);
                 }
-
-                _context.Post(a => Messages.Add(e.Message), null);
+                if (!Messages.Any(m => m.Id == e.Message.Id))
+                    _context.Post(a => Messages.Add(e.Message), null);
             }
 
             return Task.CompletedTask;
@@ -198,7 +198,8 @@ namespace Unicord.Universal.Models
                     {
                         foreach (var message in messages.Reverse())
                         {
-                            Messages.Add(message);
+                            if (!Messages.Any(m => m.Id == message.Id))
+                                Messages.Add(message);
                         }
                     }, null);
                 }
@@ -217,7 +218,8 @@ namespace Unicord.Universal.Models
                     {
                         foreach (var m in messages)
                         {
-                            Messages.Insert(0, m);
+                            if (!Messages.Any(me => me.Id == m.Id))
+                                Messages.Insert(0, m);
                         }
                     }, null);
                 }

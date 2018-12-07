@@ -105,7 +105,7 @@
             <VisualStateGroup>
                 <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="640" />
+                        <AdaptiveTrigger MinWindowWidth="769" />
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>

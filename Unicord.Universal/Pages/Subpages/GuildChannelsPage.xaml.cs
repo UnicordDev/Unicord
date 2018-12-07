@@ -52,6 +52,7 @@ namespace Unicord.Universal.Pages.Subpages
             var permissions = Guild.CurrentMember.PermissionsIn(Guild.Channels.First());
             if (permissions.HasPermission(Permissions.ManageChannels))
             {
+                channelsList.ReorderMode = ListViewReorderMode.Enabled;
                 channelsList.CanDrag = true;
                 channelsList.CanDragItems = true;
                 channelsList.CanReorderItems = true;
@@ -59,6 +60,7 @@ namespace Unicord.Universal.Pages.Subpages
             }
             else
             {
+                channelsList.ReorderMode = ListViewReorderMode.Disabled;
                 channelsList.CanDrag = false;
                 channelsList.CanDragItems = false;
                 channelsList.CanReorderItems = false;
