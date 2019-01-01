@@ -156,7 +156,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
+    <ProjectReference Include="..\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
     </ProjectReference>
