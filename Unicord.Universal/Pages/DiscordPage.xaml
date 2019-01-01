@@ -81,7 +81,6 @@
 
         <Storyboard x:Key="OpenPaneMobileStoryboard" x:Name="OpenPaneMobileStoryboard">
             <DoubleAnimation 
-                From="0"
                 To="276"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
@@ -90,7 +89,6 @@
         </Storyboard>
         <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
             <DoubleAnimation 
-                From="276"
                 To="0"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
@@ -128,7 +126,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
-        <Grid>
+        <Grid x:Name="grid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -162,6 +160,7 @@
                                     <SymbolIcon Width="36" Height="36" Symbol="People"></SymbolIcon>
                                 </ListViewItem>
                             </StackPanel>
+                            
                         </ListView.Header>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
@@ -203,11 +202,11 @@
             </Grid>
             <Grid x:Name="content" Grid.Column="1" Tapped="Grid_Tapped" MinWidth="250" Background="{ThemeResource MainBackgroundBrush}">
                 <Grid.RenderTransform>
-                    <TranslateTransform x:Name="ContentTransform"  />
+                    <TranslateTransform x:Name="ContentTransform" />
                 </Grid.RenderTransform>
-                <controls1:DropShadowPanel HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Color="{ThemeResource SystemChromeBlackMediumLowColor}">
+                <Grid>
                     <Frame x:Name="mainFrame" HorizontalAlignment="Stretch" Background="{ThemeResource MainBackgroundBrush}" SourcePageType="sub:FriendsPage" Navigated="mainFrame_Navigated"/>
-                </controls1:DropShadowPanel>
+                </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />

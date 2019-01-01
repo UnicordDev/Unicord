@@ -15,6 +15,7 @@ using Unicord.Universal.Pages.Subpages;
 using Windows.ApplicationModel.Contacts;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -45,6 +46,7 @@ namespace Unicord.Universal.Pages
             NavigationCacheMode = NavigationCacheMode.Required;
 
             _visibility = Window.Current.Visible;
+
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
 
@@ -56,8 +58,6 @@ namespace Unicord.Universal.Pages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            App.Discord.MessageCreated += Notification_MessageCreated;
-
             UpdateTitleBar();
 
             if (e.Parameter is MainPageEventArgs args)
@@ -92,7 +92,13 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                App.Discord.MessageCreated += Notification_MessageCreated;
+                App.Discord.UserSettingsUpdated += Discord_UserSettingsUpdated;
+
+                UpdateTitleBar();
                 CheckSettingsPane();
+
+                this.FindParent<MainPage>().HideConnectingOverlay();
 
                 _loaded = true;
 
@@ -101,28 +107,6 @@ namespace Unicord.Universal.Pages
                 {
                     _guilds.Add(guild);
                 }
-
-                App.Discord.UserSettingsUpdated += Discord_UserSettingsUpdated;
-
-                this.FindParent<MainPage>().HideConnectingOverlay();
-
-                //if (App.RoamingSettings.Read(Constants.SYNC_CONTACTS, true))
-                //{
-                //    try
-                //    {
-                //        var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                //        if (contacts != null)
-                //        {
-                //            App.Discord.RelationshipAdded += Discord_RelationshipAdded;
-                //            App.Discord.RelationshipRemoved += Discord_RelationshipRemoved;
-                //            App.CanAccessContacts = true;
-                //        }
-                //    }
-                //    catch
-                //    {
-                //        App.CanAccessContacts = false;
-                //    }
-                //}
 
                 if (_args != null)
                 {
@@ -137,36 +121,6 @@ namespace Unicord.Universal.Pages
 
             }
             catch { }
-        }
-
-        private async Task Discord_RelationshipAdded(RelationshipEventArgs e)
-        {
-            //if (e.Relationship.RelationshipType == DiscordRelationshipType.Friend)
-            //{
-            //    var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
-            //    if (store != null)
-            //    {
-            //        var lists = await store.FindContactListsAsync();
-            //        var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-            //        await Contacts.AddOrUpdateContactForRelationship(list, e.Relationship);
-            //    }
-            //}
-        }
-
-        private async Task Discord_RelationshipRemoved(RelationshipEventArgs e)
-        {
-            var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
-            if (store != null)
-            {
-                var lists = await store.FindContactListsAsync();
-                var list = lists.FirstOrDefault() ?? (await store.CreateContactListAsync("Unicord"));
-
-                var contact = await list.GetContactFromRemoteIdAsync($"Unicord_{e.Relationship.Id}");
-                if (contact != null)
-                {
-                    await list.DeleteContactAsync(contact);
-                }
-            }
         }
 
         private async Task Discord_UserSettingsUpdated(UserSettingsUpdateEventArgs e)
@@ -193,6 +147,7 @@ namespace Unicord.Universal.Pages
         {
             if (App.Discord != null)
             {
+                App.Discord.MessageCreated -= Notification_MessageCreated;
                 App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
             }
         }
@@ -239,7 +194,7 @@ namespace Unicord.Universal.Pages
 
         public void CloseSplitPane()
         {
-            if (ActualWidth <= 768)
+            if (ActualWidth <= 768 || ContentTransform.X < 0)
             {
                 ClosePaneMobileStoryboard.Begin();
             }

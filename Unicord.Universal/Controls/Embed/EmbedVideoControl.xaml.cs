@@ -32,7 +32,8 @@ namespace Unicord.Universal.Controls.Embed
 
         private void Canvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var browser = new WebView(ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess") ? WebViewExecutionMode.SeparateProcess : WebViewExecutionMode.SameThread)
+            var executionMode = ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess") ? WebViewExecutionMode.SeparateProcess : WebViewExecutionMode.SameThread;
+            var browser = new WebView(executionMode)
             {
                 Source = Video.Url,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -66,8 +67,8 @@ namespace Unicord.Universal.Controls.Embed
             var width = Video.Width;
             var height = Video.Height;
 
-            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 360);
-            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 360 : (int)constraint.Height);
+            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 480);
+            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
 
             return new Size(width, height);
         }

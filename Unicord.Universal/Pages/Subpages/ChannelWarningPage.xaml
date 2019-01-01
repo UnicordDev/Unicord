@@ -5,26 +5,31 @@
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
 
-    <StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="450">
-        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="120"/>
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">NSFW Content Ahead!</TextBlock>
-        <TextBlock TextWrapping="Wrap">
+    <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
+        <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+            <StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="450">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="120"/>
+                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">NSFW Content Ahead!</TextBlock>
+                <TextBlock TextWrapping="Wrap">
             <Run>Hey, there's probably NSFW content ahead, so I'm legally obliged to make sure you're over 18.</Run><LineBreak/>
             <LineBreak/><Run>Are you over 18 and willing to see NSFW content?</Run>
-        </TextBlock>
+                </TextBlock>
 
-        <Grid Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button Content="Back to safety!" Click="BackButton_Click" HorizontalAlignment="Stretch"/>
-            <Button Grid.Column="1" Style="{ThemeResource AccentButtonStyle}" Content="Take me there!" Click="ContinueButton_Click" HorizontalAlignment="Stretch"/>
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Back to safety!" Click="BackButton_Click" HorizontalAlignment="Stretch"/>
+                    <Button Grid.Column="1" Style="{ThemeResource AccentButtonStyle}" Content="Take me there!" Click="ContinueButton_Click" HorizontalAlignment="Stretch"/>
+                </Grid>
+
+                <CheckBox x:Name="notAgain" Content="Don't ask me again!" Margin="0,8"/>
+            </StackPanel>
         </Grid>
-
-        <CheckBox x:Name="notAgain" Content="Don't ask me again!" Margin="0,8"/>
-    </StackPanel>
+    </controls:DropShadowPanel>
 </Page>

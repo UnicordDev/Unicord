@@ -1,0 +1,41 @@
+﻿<Flyout
+    x:Class="Unicord.Universal.Misc.UserFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Misc"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d" Placement="Right">
+
+    <Grid Width="256">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Margin="-12,-12,-12,-12" Background="{StaticResource SystemControlAltMediumLowAcrylicWindowMediumBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding NonAnimatedAvatarUrl}" HorizontalAlignment="Center" Margin="24,24,24,8"/>
+            <TextBlock Grid.Row="1" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,24">
+                @<Run Foreground="{StaticResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1" Margin="-12,12,-12,-12" Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}">
+            <StackPanel Margin="12,0,12,12" Grid.Row="1" Visibility="{Binding Roles, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                <TextBlock Text="Roles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,8"/>
+                <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{Binding Roles}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <controls1:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Flyout>

@@ -54,9 +54,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Slider x:Name="bitrateSlider" Header="Video Bitrate" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
+                        <Slider x:Name="bitrateSlider" Header="Video Bitrate" TickFrequency="256" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="4,20,0,0">
-                        <Run Text="{Binding VideoBitrate}"/>kbps
+                        <Run Text="{Binding Value, ElementName=bitrateSlider}"/>kbps
                         </TextBlock>
                     </Grid>
                     <ComboBox HorizontalAlignment="Stretch" Header="Encoder Priority" SelectedIndex="{Binding ProcessingAlgorithm, Mode=TwoWay}" Margin="0,12">
@@ -71,9 +71,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Slider x:Name="audioBitrateSlider" Header="Audio Bitrate" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
+                        <Slider x:Name="audioBitrateSlider" Header="Audio Bitrate" TickFrequency="32" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="4,20,0,0">
-                        <Run Text="{Binding AudioBitrate}"/>kbps
+                        <Run Text="{Binding Value, ElementName=audioBitrateSlider}"/>kbps
                         </TextBlock>
                     </Grid>
                 </StackPanel>

@@ -21,13 +21,19 @@ namespace Unicord.Universal.Models
     {
         private DiscordChannel _channel;
         private DiscordUser _currentUser;
+        private double _slowModeTimeout;
 
         private ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation;
-        private DateTime _typingLastSent;
+        private DateTimeOffset _typingLastSent;
+        private DateTimeOffset _messageLastSent;
         private SynchronizationContext _context;
+        private SemaphoreSlim _loadSemaphore;
+        private DispatcherTimer _dispatcherTimer;
 
         public ChannelViewModel(DiscordChannel channel)
         {
+            _loadSemaphore = new SemaphoreSlim(1, 1);
+            _dispatcherTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1 / 30) };
             _context = SynchronizationContext.Current;
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
@@ -51,6 +57,17 @@ namespace Unicord.Universal.Models
 
             AvailableUsers = new ObservableCollection<DiscordUser> { CurrentUser };
             Messages = new ObservableCollection<DiscordMessage>();
+
+            _dispatcherTimer.Tick += (o, e) =>
+            {
+                SlowModeTimeout = Math.Max(0, PerUserRateLimit - (DateTimeOffset.Now - _messageLastSent).TotalMilliseconds);
+                InvokePropertyChanged(nameof(ShowSlowModeTimeout));
+                if (SlowModeTimeout == 0)
+                {
+                    InvokePropertyChanged(nameof(CanSend));
+                    _dispatcherTimer.Stop();
+                }
+            };
 
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
@@ -189,6 +206,8 @@ namespace Unicord.Universal.Models
 
         internal async Task LoadMessagesAsync()
         {
+            await _loadSemaphore.WaitAsync();
+
             if (!Messages.Any())
             {
                 var messages = await Channel.GetMessagesAsync(50).ConfigureAwait(false);
@@ -201,13 +220,18 @@ namespace Unicord.Universal.Models
                             if (!Messages.Any(m => m.Id == message.Id))
                                 Messages.Add(message);
                         }
+
                     }, null);
                 }
             }
+
+            _loadSemaphore.Release();
         }
 
         internal async Task LoadMessagesBeforeAsync()
         {
+            await _loadSemaphore.WaitAsync();
+
             var message = Messages.FirstOrDefault();
             if (message != null)
             {
@@ -224,6 +248,8 @@ namespace Unicord.Universal.Models
                     }, null);
                 }
             }
+
+            _loadSemaphore.Release();
         }
 
         /// <summary>
@@ -236,7 +262,9 @@ namespace Unicord.Universal.Models
         /// The current placeholder to display in the message text box
         /// </summary>
         public string ChannelPlaceholder =>
-           CanSend ? $"Message {ChannelPrefix}{ChannelName}" : "This channel is read-only";
+           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ? $"Message {ChannelPrefix}{ChannelName}" : "This channel is read-only";
+
+        public bool CanType => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
 
         /// <summary>
         /// The title for the page displaying the channel
@@ -256,6 +284,9 @@ namespace Unicord.Universal.Models
         {
             get
             {
+                if (SlowModeTimeout != 0 && !ImmuneToSlowMode)
+                    return false;
+
                 if (UploadSize > (ulong)UploadLimit)
                     return false;
 
@@ -278,25 +309,28 @@ namespace Unicord.Universal.Models
         {
             get
             {
-
-                if (UploadSize > (ulong)UploadLimit)
+                if (!CanSend)
                     return false;
 
-                if (Channel.Type == ChannelType.Voice)
-                    return false;
-
-                if (_channel is DiscordDmChannel)
+                if (Channel is DiscordDmChannel)
                     return true;
 
                 if (_currentUser is DiscordMember member)
                 {
-                    var perms = Permissions;
-                    return perms.HasPermission(Permissions.AccessChannels) && perms.HasPermission(Permissions.SendMessages) && perms.HasPermission(Permissions.AttachFiles);
+                    return Permissions.HasPermission(Permissions.AttachFiles);
                 }
 
                 return false;
             }
         }
+
+
+        public double PerUserRateLimit => (_channel.PerUserRateLimit ?? 0) * 1000;
+
+        public Visibility ShowSlowModeTimeout => SlowModeTimeout > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
+
 
         public int UploadLimit => HasNitro ? 50 * 1024 * 1024 : 8 * 1024 * 1024;
 
@@ -306,9 +340,10 @@ namespace Unicord.Universal.Models
 
         public double UploadProgressBarValue => Math.Min(UploadSize, (ulong)UploadLimit);
 
-        public Brush UploadInfoForeground => !CanSend ? new SolidColorBrush(Colors.Red) : null;
+        public Brush UploadInfoForeground => !CanSend ? (Brush)Application.Current.Resources["ErrorTextForegroundBrush"] : null;
 
         public string DisplayUploadLimit => (UploadLimit / (1024d * 1024d)).ToString("F2");
+
 
         public Visibility ShowSendButton => CanSend ? Visibility.Visible : Visibility.Collapsed;
 
@@ -353,6 +388,8 @@ namespace Unicord.Universal.Models
                             var files = models.ToDictionary(d => d.FileName, e => e.File);
                             await Tools.SendFilesWithProgressAsync(Channel, client, str, files, progress);
 
+                            OnMessageSend();
+
                             foreach (var model in models)
                             {
                                 model.Dispose();
@@ -369,10 +406,13 @@ namespace Unicord.Universal.Models
                         if (client is DiscordRestClient rest)
                         {
                             await rest.CreateMessageAsync(Channel.Id, str, false, null);
+                            OnMessageSend();
+
                             return;
                         }
 
                         await Channel.SendMessageAsync(str);
+                        OnMessageSend();
                     }
                     catch
                     {
@@ -384,13 +424,26 @@ namespace Unicord.Universal.Models
             }
         }
 
+        private void OnMessageSend()
+        {
+            if (!ImmuneToSlowMode)
+            {
+                _messageLastSent = DateTimeOffset.Now;
+                SlowModeTimeout = PerUserRateLimit;
+                InvokePropertyChanged(nameof(CanSend));
+                _dispatcherTimer.Start();
+            }
+        }
+
         public Visibility ShowSlowMode
             => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public string SlowModeText
             => $"Messages can be sent every " +
             $"{TimeSpan.FromSeconds(Channel.PerUserRateLimit.GetValueOrDefault()).ToNaturalString()}!" +
-            (Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels) ? " But, you're immune!" : "");
+            (ImmuneToSlowMode ? " But, you're immune!" : "");
+
+        private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
         public Visibility ShowTypingUsers
             => TypingUsers?.Any() == true ? Visibility.Visible : Visibility.Collapsed;
@@ -433,9 +486,9 @@ namespace Unicord.Universal.Models
 
         public async Task TriggerTypingAsync(string text)
         {
-            if (!string.IsNullOrWhiteSpace(text) && (DateTime.Now - _typingLastSent).Seconds > 10)
+            if (!string.IsNullOrWhiteSpace(text) && (DateTimeOffset.Now - _typingLastSent).Seconds > 10)
             {
-                _typingLastSent = DateTime.Now;
+                _typingLastSent = DateTimeOffset.Now;
 
                 try
                 {

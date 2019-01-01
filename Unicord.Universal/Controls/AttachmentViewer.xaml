@@ -8,11 +8,11 @@
     xmlns:c="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d"
+    mc:Ignorable="d" Margin="8,6" 
     d:DesignHeight="300" MaxWidth="640" MaxHeight="480"
     d:DesignWidth="400" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
-    <Grid Margin="10,5" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
+    <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>
@@ -22,7 +22,7 @@
                 </MenuFlyout.Items>
             </MenuFlyout>
         </Grid.ContextFlyout>
-        <ContentControl x:Name="mainGrid">
+        <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
 
         </ContentControl>
         <Grid Padding="10" MinWidth="300" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">

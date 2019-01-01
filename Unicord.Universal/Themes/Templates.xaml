@@ -30,8 +30,8 @@
     </DataTemplate>
     
     <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
-        <Border Margin="2.5" BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" Padding="5,2,5,4">
-            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center" LineHeight="15"/>
+        <Border BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" Padding="4,4,4,4">
+            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center"/>
         </Border>
     </DataTemplate>
 

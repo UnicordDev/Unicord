@@ -167,6 +167,7 @@
                 <Frame x:Name="rootFrame" />
                 <Grid x:Name="overlayGrid"/>
             </Grid>
+            
             <Grid x:Name="contentOverlay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Opacity="0" AllowDrop="True">
                 <Canvas Background="{StaticResource OverlayBackdrop}" Tapped="contentOverlay_Tapped"/>
                 <Grid x:Name="contentContainer" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20" RenderTransformOrigin="0.5, 0.5">

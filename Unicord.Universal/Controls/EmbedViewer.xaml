@@ -43,7 +43,7 @@
                     </Ellipse.Fill>
                 </Ellipse>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center">
-            <Run Text="{Binding Name}" FontSize="12pt"/>
+                    <Run Text="{Binding Name}"/>
                 </TextBlock>
             </Grid>
 

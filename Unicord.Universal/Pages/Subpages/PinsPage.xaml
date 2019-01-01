@@ -7,7 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:insider="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls">
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:controls1="using:Unicord.Universal.Controls">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,6 +17,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
+        <Grid x:Name="topGrid" Height="42">
+            <TextBlock FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="10,0">Pinned Messages</TextBlock>
+        </Grid>
+
         <StackPanel Grid.Row="1" x:Name="noMessages" Visibility="Collapsed" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock Text=":(" FontSize="110"/>
             <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">No pins!</TextBlock>
@@ -27,18 +33,26 @@
             <TextBlock TextWrapping="Wrap">Oi! Slow down there, you're being ratelimited!</TextBlock>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" insider:CanContentRenderOutsideBounds="True">
-            <StackPanel x:Name="messages" Padding="0,0,0,20">
-                
-            </StackPanel>
-        </ScrollViewer>
+        <ListView x:Name="messages" Grid.Row="1" SelectionMode="None" Padding="0,0,0,20">
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="MinHeight" Value="0"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="entities:DiscordMessage">
+                    <controls1:MessageViewer Message="{x:Bind}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <ProgressRing x:Name="progress" Grid.Row="1" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <controls:DropShadowPanel HorizontalContentAlignment="Stretch" ShadowOpacity="0.33" OffsetY="2.5">
-            <Grid x:Name="topGrid" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}" Height="42">
-                <TextBlock FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="10,0">Pinned Messages</TextBlock>
-            </Grid>
-        </controls:DropShadowPanel>
+        
     </Grid>
 </Page>

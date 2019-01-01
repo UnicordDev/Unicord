@@ -48,22 +48,9 @@ namespace Unicord.Universal.Controls
                 return;
             }
 
-            if (_embed.Image != null)
-            {
-                var image = new ImageElement() { ImageUri = _embed.Image.ProxyUrl, ImageWidth = _embed.Image.Width, ImageHeight = _embed.Image.Height };
-                mainGrid.Children.Add(image);
-            }
-
             if (_embed.Thumbnail != null)
             {
                 thumbnail.Visibility = Visibility.Visible;
-            }
-
-            if (_embed.Video != null)
-            {
-                thumbnail.Visibility = Visibility.Collapsed;
-                var video = new EmbedVideoControl() { Thumbnail = _embed.Thumbnail, Video = _embed.Video };
-                mainGrid.Children.Add(video);
             }
 
             if (_embed.Color.HasValue)
@@ -101,6 +88,19 @@ namespace Unicord.Universal.Controls
                 {
                     AddWithRow(p);
                 }
+            }
+
+            if (_embed.Image != null)
+            {
+                var image = new ImageElement() { ImageUri = _embed.Image.ProxyUrl, ImageWidth = _embed.Image.Width, ImageHeight = _embed.Image.Height };
+                AddWithRow(image);
+            }
+
+            if (_embed.Video != null)
+            {
+                thumbnail.Visibility = Visibility.Collapsed;
+                var video = new EmbedVideoControl() { Thumbnail = _embed.Thumbnail, Video = _embed.Video };
+                AddWithRow(video);
             }
 
             Bindings.Update();

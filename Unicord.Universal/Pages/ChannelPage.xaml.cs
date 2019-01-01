@@ -17,6 +17,8 @@ using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
+using Windows.Media.Audio;
+using Windows.Media.Render;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
 using Windows.Storage.FileProperties;
@@ -48,8 +50,11 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        public bool IsPaneOpen { get; private set; }
+
         private EmotePicker _emotePicker;
         private ChannelViewModel _viewModel;
+        private AudioGraph _audioGraph;
         private bool _loading;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -68,7 +73,7 @@ namespace Unicord.Universal.Pages
 
             if (_emotePicker == null)
             {
-                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile" && ActualWidth > 400)
+                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile" && Window.Current.CoreWindow.Bounds.Width > 400)
                 {
                     _emotePicker = new EmotePicker() { Width = 300, Height = 300, HorizontalAlignment = HorizontalAlignment.Stretch };
 
@@ -106,6 +111,19 @@ namespace Unicord.Universal.Pages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (_audioGraph == null)
+            {
+                try
+                {
+                    var result = await AudioGraph.CreateAsync(new AudioGraphSettings(AudioRenderCategory.Speech));
+                    if (result.Status == AudioGraphCreationStatus.Success)
+                    {
+                        _audioGraph = result.Graph;
+                    }
+                }
+                catch { }
+            }
+
             if (e.Parameter is DiscordChannel chan)
             {
                 ChannelViewModel model = null;
@@ -127,10 +145,13 @@ namespace Unicord.Universal.Pages
                 ViewModel = model;
                 DataContext = ViewModel;
 
-                if(_channelHistory.Value.Count > 10)
+                while (_channelHistory.Value.Count > 10)
                 {
-                    var oldest = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
+                    var oldest = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed.ToUnixTimeMilliseconds()).FirstOrDefault();
                     _channelHistory.Value.TryRemove(oldest.Key, out var value);
+
+                    Logger.Log($"Removing ChannelViewModel for {oldest.Value.Channel}");
+
                     value.Dispose();
                 }
 
@@ -154,14 +175,12 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
             scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
-            
-            showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
 
-            await Load();
+            showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
         }
 
 
@@ -185,7 +204,7 @@ namespace Unicord.Universal.Pages
                     noMessages.Visibility = Visibility.Collapsed;
                 });
 
-                await ViewModel.LoadMessagesAsync();
+                await ViewModel.LoadMessagesAsync().ConfigureAwait(false);
 
                 if (ViewModel.Channel.Guild?.IsSynced == false)
                 {
@@ -202,6 +221,12 @@ namespace Unicord.Universal.Pages
                 loadingProgress.Visibility = Visibility.Collapsed;
                 loadingProgress.IsIndeterminate = false;
             });
+
+            if (IsPaneOpen)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel));
+            }
 
             await AddToJumpListAsync();
         }
@@ -482,8 +507,9 @@ namespace Unicord.Universal.Pages
         {
             if (e != null)
             {
-                if (!char.IsWhiteSpace(messageTextBox.Text.LastOrDefault()))
+                if (messageTextBox.Text.Length > 0 && !char.IsWhiteSpace(messageTextBox.Text[messageTextBox.Text.Length - 1]))
                     messageTextBox.Text += " ";
+
                 messageTextBox.Text += $"{e} ";
                 messageTextBox.Focus(FocusState.Programmatic);
             }
@@ -501,16 +527,84 @@ namespace Unicord.Universal.Pages
 
         private void pinsButton_Click(object sender, RoutedEventArgs e)
         {
+            TogglePane(typeof(PinsPage), ViewModel.Channel);
+        }
 
+        private void UserListButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsPaneOpen)
+            {
+                OpenPane(typeof(UserListPage), ViewModel.Channel);
+            }
+            else
+            {
+                ClosePane();
+            }
         }
 
         private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
         {
             var page = this.FindParent<DiscordPage>();
-            if(page != null)
+            if (page != null)
             {
                 page.ToggleSplitPane();
             }
+        }
+
+        private void Content_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (IsPaneOpen && ActualWidth <= 1024)
+            {
+                ClosePane();
+
+                var page = this.FindParent<DiscordPage>();
+                if (page != null)
+                {
+                    page.CloseSplitPane();
+                }
+            }
+        }
+
+        private void OpenPane(Type t = null, object parameter = null)
+        {
+            IsPaneOpen = true;
+            sidebarGrid.Visibility = Visibility.Visible;
+            if (ActualWidth <= 1024)
+            {
+                OpenPaneStoryboard.Begin();
+            }
+
+            if (t != null && sidebarFrame.CurrentSourcePageType != t)
+            {
+                sidebarFrame.Navigate(t, parameter);
+            }
+        }
+
+        private void ClosePane()
+        {
+            IsPaneOpen = false;
+            if (ActualWidth > 1024)
+                sidebarGrid.Visibility = Visibility.Collapsed;
+            ClosePaneStoryboard.Begin();
+
+            sidebarFrame.Navigate(typeof(Page));
+        }
+
+        public void TogglePane(Type t = null, object parameter = null)
+        {
+            if (IsPaneOpen && sidebarFrame.CurrentSourcePageType == t)
+            {
+                ClosePane();
+            }
+            else
+            {
+                OpenPane(t, parameter);
+            }
+        }
+
+        private void ClosePaneStoryboard_Completed(object sender, object e)
+        {
+            sidebarGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

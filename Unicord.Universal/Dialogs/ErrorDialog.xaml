@@ -22,7 +22,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock x:Name="errorTitle" FontSize="16" FontWeight="Bold" Text="Whoops!" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1"></TextBlock>
-            <TextBlock x:Name="errorContent" Grid.Row="1" Text="This is what went wrong, maybe stop being big dumb" TextWrapping="Wrap" />
+            <TextBlock x:Name="errorContent" Grid.Row="1" Text="Something went very wrong here, I entirely blame you for it." TextWrapping="Wrap" />
         </Grid>
     </Grid>
 </ContentDialog>

@@ -112,7 +112,7 @@
                             <Button x:Name="messageEditCancelButton" Content="&#xE711;" Click="messageEditCancelButton_Click" Style="{StaticResource IconButtonStyle}" Grid.Column="2"/>
                         </Grid>
 
-                        <wam:MarkdownTextBlock x:Name="markdown" Grid.Column="1" Channel="{Binding Channel}" Text="{Binding Content}" ContextFlyout="{x:Null}" WrapCodeBlock="True" LinkClicked="MarkdownTextBlock_LinkClicked"/>
+                        <wam:MarkdownTextBlock x:Name="markdown" Grid.Column="1" IsEnabled="False" Channel="{Binding Channel}" Text="{Binding Content}" ContextFlyout="{x:Null}" WrapCodeBlock="True" LinkClicked="MarkdownTextBlock_LinkClicked"/>
                     </Grid>
                 </Grid>
                 <StackPanel Grid.Row="2" x:Name="embeds">

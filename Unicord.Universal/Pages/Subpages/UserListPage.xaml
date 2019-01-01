@@ -1,0 +1,84 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Subpages.UserListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:entities="using:DSharpPlus.Entities"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <CollectionViewSource x:Key="ViewSource" x:Name="viewSource" IsSourceGrouped="True" />
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="topGrid" Height="42">
+            <TextBlock FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="10,0">Users</TextBlock>
+        </Grid>
+
+        <AutoSuggestBox x:Name="userSearch" Grid.Row="1" Style="{StaticResource CleanAutoSuggestBox}" BorderThickness="1" QueryIcon="Find" PlaceholderText="Search Users" Margin="8"/>
+
+        <ListView x:Name="userList" Grid.Row="2" SelectionMode="Single" SelectionChanged="UserList_SelectionChanged" IsSynchronizedWithCurrentItem="False" ItemsSource="{Binding Source={StaticResource ViewSource}}" Padding="0,0,0,20">
+
+            <ListView.GroupStyle>
+                <GroupStyle HidesIfEmpty="True">
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Key.Name, FallbackValue=People}" FontSize="14" FontWeight="Bold" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+            
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="8,4"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="MinHeight" Value="0"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="entities:DiscordUser">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Canvas Width="38" Height="38" Grid.RowSpan="2">
+                            <lib:PersonPicture Width="38" Height="38" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding AvatarUrl}" />
+                            <Ellipse Canvas.Left="24" Canvas.Top="24" Width="14" Height="14" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Canvas>
+
+                        <Grid Grid.Column="1" Margin="8,0" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock FontWeight="SemiBold" Text="{Binding DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" />
+                            <TextBlock Grid.Row="1" FontSize="11" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter},FallbackValue=Collapsed}">
+                                <Run Text="{Binding Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{Binding Presence.Activity.Name}"/>
+                            </TextBlock>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <ProgressRing x:Name="progress" Grid.Row="2" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+
+    </Grid>
+</Page>

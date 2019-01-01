@@ -322,13 +322,12 @@ namespace Unicord.Universal.Controls
         {
             if (_isEditing)
             {
+                FinishEdit();
                 if (!string.IsNullOrWhiteSpace(messageEditBox.Text))
                 {
                     markdown.Text = messageEditBox.Text;
                     await Message.ModifyAsync(messageEditBox.Text);
                 }
-
-                FinishEdit();
             }
         }
     }

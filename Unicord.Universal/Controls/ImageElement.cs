@@ -70,7 +70,7 @@ namespace Unicord.Universal.Controls
 
             var width = element.ImageWidth;
             var height = element.ImageHeight;
-            Drawing.ScaleProportions(ref width, ref height, 640, 360);
+            Drawing.ScaleProportions(ref width, ref height, 640, 480);
 
             var img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={width}&height={height}"))
             {
@@ -104,8 +104,8 @@ namespace Unicord.Universal.Controls
             var width = ImageWidth;
             var height = ImageHeight;
 
-            Drawing.ScaleProportions(ref width, ref height, 640, 360);
-            Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 360 : (int)constraint.Height);
+            Drawing.ScaleProportions(ref width, ref height, 640, 480);
+            Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
 
             var image = GetTemplateChild("image") as Image;
 

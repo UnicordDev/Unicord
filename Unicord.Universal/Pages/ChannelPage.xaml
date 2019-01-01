@@ -13,22 +13,22 @@
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:entities="using:DSharpPlus.Entities"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
     <Page.Resources>
-        <QuarticEase x:Key="ease" EasingMode="EaseOut"/>
+        <CircleEase EasingMode="EaseInOut" x:Key="Ease"/>
         <Storyboard x:Name="showPhotoPicker">
             <DoubleAnimation 
                 Storyboard.TargetName="uploadsTransform" 
                 Storyboard.TargetProperty="Y"
                 From="150"
                 To="0"
-                EasingFunction="{StaticResource ease}"
+                EasingFunction="{StaticResource Ease}"
                 Duration="00:00:00.55"/>
             <DoubleAnimation 
                 Storyboard.TargetName="photoTransform" 
                 Storyboard.TargetProperty="Y"
                 To="0"
-                EasingFunction="{StaticResource ease}"
+                EasingFunction="{StaticResource Ease}"
                 Duration="00:00:00.55"/>
         </Storyboard>
         <Storyboard x:Name="hidePhotoPicker">
@@ -36,20 +36,52 @@
                 Storyboard.TargetName="uploadsTransform" 
                 Storyboard.TargetProperty="Y"
                 To="150"
-                EasingFunction="{StaticResource ease}"
+                EasingFunction="{StaticResource Ease}"
                 Duration="00:00:00.55"/>
             <DoubleAnimation 
                 Storyboard.TargetName="photoTransform" 
                 Storyboard.TargetProperty="Y"
                 To="200"
-                EasingFunction="{StaticResource ease}"
+                EasingFunction="{StaticResource Ease}"
                 Duration="00:00:00.55"
                 Completed="DoubleAnimation_Completed"/>
         </Storyboard>
+
+        <Storyboard x:Key="OpenPaneStoryboard" x:Name="OpenPaneStoryboard">
+            <DoubleAnimation 
+                To="-276"
+                Storyboard.TargetName="ContentTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.33"
+                EasingFunction="{StaticResource Ease}"/>
+        </Storyboard>
+
+        <Storyboard x:Key="ClosePaneStoryboard" x:Name="ClosePaneStoryboard"
+                    Completed="ClosePaneStoryboard_Completed">
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="ContentTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.33"
+                EasingFunction="{StaticResource Ease}"/>
+        </Storyboard>
+
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
+                <VisualState x:Name="VeryWideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1025" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                        <Setter Target="sidebarGrid.(Grid.Column)" Value="1" />
+                        <Setter Target="ContentTransform.X" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+
                 <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="769" />
@@ -57,6 +89,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                        <Setter Target="sidebarGrid.(Grid.Column)" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -67,117 +100,133 @@
 
                     <VisualState.Setters>
                         <Setter Target="showSidebarButton.Visibility" Value="Visible" />
+                        <Setter Target="sidebarGrid.(Grid.Column)" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid fcu:ColumnSpacing="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- because VisualStateManager is wank -->
-                <Grid x:Name="showSidebarButtonContainer" Margin="0,0,-4,0">
-                    <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" Style="{StaticResource IconButtonStyle}" Content="&#xE700;"/>
-                </Grid>
-
-                <Ellipse x:Name="userImage" Grid.Column="1" Visibility="{Binding UserImageUrl, Converter={StaticResource HideOnNullConverter}}" Width="24" Height="24" VerticalAlignment="Center" Margin="12,0,0,0">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding UserImageUrl}"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-
-                <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0" TextTrimming="CharacterEllipsis" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
-                    <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
-                </TextBlock>
-
-                <wam:MarkdownTextBlock Grid.Column="3" Text="{Binding Topic}" Channel="{Binding Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
-
-                <ToggleButton x:Name="muteButton" Grid.Column="4" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
-
-                <!-- TODO: consider -->
-                <!--<Button x:Name="popoutButton" Grid.Column="3" Style="{StaticResource ButtonRevealStyle}" Content="&#xE8A7;" ToolTipService.ToolTip="Open in pop out..."/>-->
-
-                <Button x:Name="searchButton" Grid.Column="5" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Content="&#xE721;" ToolTipService.ToolTip="Search"/>
-                <Button x:Name="pinsButton" Grid.Column="6" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Content="&#xE718;" ToolTipService.ToolTip="Pinned Messages" Click="pinsButton_Click"/>
-                <Button x:Name="userListButton" Grid.Column="7" IsEnabled="False" Style="{StaticResource IconButtonStyle}" Visibility="{Binding ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List"/>
-
-                <!-- TODO: consider -->
-                <!--<Button x:Name="closeButton" Grid.Column="7" Visibility="Collapsed" Style="{StaticResource ButtonRevealStyle}" Content="&#xEDAE;" ToolTipService.ToolTip="Close"/>-->
+            <Grid x:Name="sidebarGrid" Visibility="Collapsed" Width="276" Padding="{Binding Padding, ElementName=topGrid}" Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}" HorizontalAlignment="Right">
+                <Frame x:Name="sidebarFrame" />
             </Grid>
-            <ProgressBar x:Name="loadingProgress" Visibility="Collapsed" Grid.Row="1"/>
-            <ProgressBar x:Name="uploadProgress" Visibility="Collapsed" Grid.Row="2"/>
-        </Grid>
 
-        <Grid Grid.Row="1">
-            <!--<ScrollViewer x:Name="messagesScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ViewChanged="messagesScroll_ViewChanged" insider:CanContentRenderOutsideBounds="True">
+            <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
+                <controls:DropShadowPanel.RenderTransform>
+                    <TranslateTransform x:Name="ContentTransform" />
+                </controls:DropShadowPanel.RenderTransform>
+                <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid fcu:ColumnSpacing="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- because VisualStateManager is wank -->
+                            <Grid x:Name="showSidebarButtonContainer" Margin="0,0,-4,0">
+                                <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" Style="{StaticResource IconButtonStyle}" Content="&#xE700;"/>
+                            </Grid>
+
+                            <Ellipse x:Name="userImage" Grid.Column="1" Visibility="{Binding UserImageUrl, Converter={StaticResource HideOnNullConverter}}" Width="24" Height="24" VerticalAlignment="Center" Margin="12,0,0,0">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding UserImageUrl}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+
+                            <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0" TextTrimming="CharacterEllipsis" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
+                                <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
+                            </TextBlock>
+
+                            <wam:MarkdownTextBlock Grid.Column="3" Text="{Binding Topic}" Channel="{Binding Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
+
+                            <ToggleButton x:Name="muteButton" Grid.Column="4" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
+
+                            <!-- TODO: consider -->
+                            <!--<Button x:Name="popoutButton" Grid.Column="3" Style="{StaticResource ButtonRevealStyle}" Content="&#xE8A7;" ToolTipService.ToolTip="Open in pop out..."/>-->
+
+                            <Button x:Name="searchButton" Grid.Column="5" Style="{StaticResource IconButtonStyle}" Content="&#xE721;" ToolTipService.ToolTip="Search"/>
+                            <Button x:Name="pinsButton" Grid.Column="6" Style="{StaticResource IconButtonStyle}" Content="&#xE718;" ToolTipService.ToolTip="Pinned Messages" Click="pinsButton_Click"/>
+                            <Button x:Name="userListButton" Grid.Column="7" Style="{StaticResource IconButtonStyle}" Visibility="{Binding ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List" Click="UserListButton_Click"/>
+
+                            <!-- TODO: consider -->
+                            <!--<Button x:Name="closeButton" Grid.Column="7" Visibility="Collapsed" Style="{StaticResource ButtonRevealStyle}" Content="&#xEDAE;" ToolTipService.ToolTip="Close"/>-->
+                        </Grid>
+                        <ProgressBar x:Name="loadingProgress" Visibility="Collapsed" Grid.Row="1"/>
+                        <ProgressBar x:Name="uploadProgress" Visibility="Collapsed" Grid.Row="2"/>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <!--<ScrollViewer x:Name="messagesScroll" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ViewChanged="messagesScroll_ViewChanged" insider:CanContentRenderOutsideBounds="True">
                     <StackPanel x:Name="messagesPanel" Padding="0,0,0,30"/>
                 </ScrollViewer>-->
-            <ListView x:Name="messageList" ItemsSource="{Binding Messages}" IncrementalLoadingThreshold="10" SelectionMode="None" ReorderMode="Disabled">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsStackPanel 
+                        <ListView x:Name="messageList" ItemsSource="{Binding Messages}" IncrementalLoadingThreshold="10" SelectionMode="None" ReorderMode="Disabled" Tapped="Content_Tapped">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsStackPanel 
                                 Margin="0,0,0,8"
                                 VerticalAlignment="Bottom"
                                 ItemsUpdatingScrollMode="KeepLastItemInView"/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Margin" Value="0"/>
-                        <Setter Property="MinHeight" Value="0"/>
-                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="entities:DiscordMessage">
-                        <controls1:MessageViewer Message="{x:Bind}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <StackPanel x:Name="noMessages" Visibility="Collapsed" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text=":(" FontSize="110"/>
-                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
-                <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
-            </StackPanel>
-        </Grid>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="MinHeight" Value="0"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="entities:DiscordMessage">
+                                    <controls1:MessageViewer Message="{x:Bind}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <StackPanel x:Name="noMessages" Visibility="Collapsed" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text=":(" FontSize="110"/>
+                            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
+                            <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
+                        </StackPanel>
+                    </Grid>
 
-        <Grid x:Name="photoPicker" Visibility="Collapsed" Grid.Row="3" Height="150" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.RenderTransform>
-                <TranslateTransform x:Name="photoTransform" Y="200"/>
-            </Grid.RenderTransform>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                    <Grid x:Name="photoPicker" Visibility="Collapsed" Grid.Row="3" Height="150" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="photoTransform" Y="200"/>
+                        </Grid.RenderTransform>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-            <controls1:CameraControl x:Name="cameraPreview" Margin="0,0,4,0"/>
+                        <controls1:CameraControl x:Name="cameraPreview" Margin="0,0,4,0"/>
 
-            <ListView 
+                        <ListView 
                     x:Name="photosList"
                     Grid.Column="1"
                     ScrollViewer.VerticalScrollMode="Disabled"
@@ -186,52 +235,54 @@
                     ScrollViewer.HorizontalScrollMode="Enabled"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
                     ScrollViewer.IsHorizontalRailEnabled="True">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Image Height="150" Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Height="150" Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
 
-            <TextBlock x:Name="noPhotos" Visibility="Collapsed" Style="{StaticResource TitleTextBlockStyle}" Text="Nothing to see here!" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="noPhotos" Visibility="Collapsed" Style="{StaticResource TitleTextBlockStyle}" Text="Nothing to see here!" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-            <ProgressRing x:Name="loadingImagesRing" Grid.Column="1" Width="42" Height="42" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        </Grid>
+                        <ProgressRing x:Name="loadingImagesRing" Grid.Column="1" Width="42" Height="42" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
 
-        <!--<controls:DropShadowPanel Grid.Row="3" HorizontalContentAlignment="Stretch" ShadowOpacity="0.33" OffsetY="-2.5">-->
-        <Grid x:Name="footerGrid" Grid.Row="4" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                    <!--<controls:DropShadowPanel Grid.Row="3" HorizontalContentAlignment="Stretch" ShadowOpacity="0.33" OffsetY="-2.5">-->
+                    <Grid x:Name="footerGrid" Grid.Row="4" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-            <ItemsControl Grid.Row="1" ItemTemplate="{StaticResource TypingUserTemplate}" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="8,4,8,0">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                        <ItemsControl Grid.Row="1" ItemTemplate="{StaticResource TypingUserTemplate}" ItemsSource="{Binding TypingUsers}" Visibility="{Binding ShowTypingUsers}" Margin="8,4,8,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-            <Grid Grid.Row="3" MinHeight="42" MaxHeight="100" fcu:ColumnSpacing="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Button Click="uploadButton_Click" IsEnabled="{Binding CanUpload}" Style="{StaticResource IconButtonStyle}" Content="&#xE898;"/>
+                        <ProgressBar x:Name="slowModeTimeout" Visibility="{Binding ShowSlowModeTimeout}" Value="{Binding SlowModeTimeout}" Maximum="{Binding PerUserRateLimit}" Grid.Row="2" />
 
-                <TextBox x:Name="messageTextBox" 
-                            IsEnabled="{Binding CanSend}"
+                        <Grid Grid.Row="3" MinHeight="42" MaxHeight="100" fcu:ColumnSpacing="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Click="uploadButton_Click" IsEnabled="{Binding CanUpload}" Style="{StaticResource IconButtonStyle}" Content="&#xE898;"/>
+
+                            <TextBox x:Name="messageTextBox" 
+                            IsEnabled="{Binding CanType}"
                             Style="{StaticResource MessageTextBoxStyle}"
                             PlaceholderText="{Binding ChannelPlaceholder}"
                             VerticalAlignment="Stretch" 
@@ -245,23 +296,28 @@
                             FocusEngaged="messageTextBox_FocusEngaged"
                             TextChanged="messageTextBox_TextChanged" />
 
-                <TextBlock Visibility="{Binding ShowSlowMode}" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" Margin="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTipService.ToolTip="{Binding SlowModeText}"/>
+                            <TextBlock Visibility="{Binding ShowSlowMode}" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" Margin="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTipService.ToolTip="{Binding SlowModeText}"/>
 
-                <ToggleButton x:Name="emoteButton" Grid.Column="2" Click="emoteButton_Click" Visibility="{Binding ShowSendButton}" Style="{StaticResource IconToggleButtonStyle}" FontSize="18" Content="&#xED54;"/>
-                <Button x:Name="sendButton" Grid.Column="3" IsEnabled="{Binding CanSend}" Style="{StaticResource IconButtonStyle}" Content="&#xE724;" Click="sendButton_Click"/>
-            </Grid>
+                            <ToggleButton x:Name="emoteButton" Grid.Column="2" Click="emoteButton_Click" Visibility="{Binding ShowSendButton}" Style="{StaticResource IconToggleButtonStyle}" FontSize="18" Content="&#xED54;"/>
+                            <Button x:Name="sendButton" Grid.Column="3" IsEnabled="{Binding CanSend}" Style="{StaticResource IconButtonStyle}" Content="&#xE724;" Click="sendButton_Click"/>
+                        </Grid>
+                    </Grid>
+                    <!--</controls:DropSkhadowPanel>-->
+
+
+                    <controls1:UploadItemsControl x:Name="uploadItems" Visibility="Collapsed" Grid.Row="2">
+                        <controls1:UploadItemsControl.RenderTransform>
+                            <TranslateTransform x:Name="uploadsTransform" Y="0"/>
+                        </controls1:UploadItemsControl.RenderTransform>
+                    </controls1:UploadItemsControl>
+                </Grid>
+            </controls:DropShadowPanel>
         </Grid>
-        <!--</controls:DropSkhadowPanel>-->
 
 
-        <controls1:UploadItemsControl x:Name="uploadItems" Visibility="Collapsed" Grid.Row="2">
-            <controls1:UploadItemsControl.RenderTransform>
-                <TranslateTransform x:Name="uploadsTransform" Y="0"/>
-            </controls1:UploadItemsControl.RenderTransform>
-        </controls1:UploadItemsControl>
 
         <!--<controls:DropShadowPanel HorizontalContentAlignment="Stretch" ShadowOpacity="0.33" OffsetY="2.5">-->
-        
+
         <!--</controls:DropShadowPanel>-->
     </Grid>
 </Page>

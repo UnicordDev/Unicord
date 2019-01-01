@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -47,15 +48,19 @@ namespace Unicord.Universal.Controls
                 var mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = true,
-                    VerticalContentAlignment = VerticalAlignment.Top,
                     Source = MediaSource.CreateFromUri(new Uri(_attachment.ProxyUrl))
                 };
 
                 mediaPlayer.TransportControls.IsCompact = true;
 
-                if(_attachment.Width != 0)
+                if (_attachment.Width != 0)
                 {
                     mediaPlayer.PosterSource = new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg"));
+                }
+                else
+                {
+                    mediaPlayer.Height = 42;
+                    _audioOnly = true;
                 }
 
                 mainGrid.Content = mediaPlayer;
@@ -77,6 +82,35 @@ namespace Unicord.Universal.Controls
                 _loadDetails = true;
                 Bindings.Update();
             }
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            if (_attachment.Width != 0)
+            {
+                int width = _attachment.Width;
+                int height = _attachment.Height;
+
+                Drawing.ScaleProportions(ref width, ref height, 640, 480);
+                Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
+
+                mainGrid.Width = width;
+                mainGrid.Height = height;
+
+                return new Size(width, height);
+            }
+            else if (_audioOnly)
+            {
+                var width = (int)Math.Min(constraint.Width, 480);
+                var height = 42;
+
+                mainGrid.Width = width;
+                mainGrid.Height = height;
+
+                return new Size(width, height);
+            }
+
+            return base.MeasureOverride(constraint);
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -134,6 +168,7 @@ namespace Unicord.Universal.Controls
 
         StorageFile _shareFile;
         DataTransferManager _dataTransferManager;
+        private bool _audioOnly;
 
         private async void shareMenuItem_Click(object sender, RoutedEventArgs e)
         {
