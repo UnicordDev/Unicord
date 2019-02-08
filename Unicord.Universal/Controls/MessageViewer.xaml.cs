@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
 using Windows.Foundation;
@@ -38,7 +39,7 @@ namespace Unicord.Universal.Controls
             DependencyProperty.Register("Message", typeof(DiscordMessage), typeof(MessageViewer), new PropertyMetadata(null, OnPropertyChanged));
 
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
-        
+
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordMessage _message;
         private DiscordChannel _channel;
@@ -55,17 +56,8 @@ namespace Unicord.Universal.Controls
 
         private bool _canReact => _currentMember == null || _permissions.HasPermission(Permissions.AddReactions);
 
-        private bool _canDelete =>
-           _canEdit || _manageMessages;
-
-        private bool _canEdit =>
-            _author?.Id == App.Discord.CurrentUser.Id;
-
         private bool _changeNickname =>
             _author is DiscordMember ? _permissions.HasPermission(Permissions.ManageNicknames) || (_author.Id == App.Discord.CurrentUser.Id && _permissions.HasPermission(Permissions.ChangeNickname)) : false;
-
-        private bool _pinMessages =>
-            _manageMessages || _channel is DiscordDmChannel;
 
         private bool _manageMessages =>
             _currentMember != null ? _currentMember.IsOwner || _permissions.HasPermission(Permissions.ManageMessages) : false;
@@ -76,11 +68,9 @@ namespace Unicord.Universal.Controls
         private bool _banMembers =>
             _currentMember != null ? _currentMember.IsOwner || CheckPermission(Permissions.BanMembers) : false;
 
-        private bool _middleSeparatorVisible => _changeNickname || _manageMessages || _pinMessages || _kickMembers || _banMembers;
-
-        private bool _bottomSeparatorVisible => _canDelete || _canEdit;
-
         public ulong Id => Message.Id;
+
+        private bool CanEdit => Message?.Author.Id == App.Discord.CurrentUser.Id;
 
         public Visibility CollapsedVisibility
         {
@@ -169,43 +159,7 @@ namespace Unicord.Universal.Controls
             {
                 if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == embed))
                 {
-                    if (embed.Type == "image")
-                    {
-                        ImageElement element = null;
-
-                        if (embed.Thumbnail != null)
-                        {
-                            element = new ImageElement()
-                            {
-                                Tag = embed,
-                                ImageUri = embed.Thumbnail.ProxyUrl,
-                                ImageWidth = embed.Thumbnail.Width,
-                                ImageHeight = embed.Thumbnail.Height,
-                                HorizontalAlignment = HorizontalAlignment.Left
-                            };
-                        }
-                        else if (embed.Image != null)
-                        {
-                            element = new ImageElement()
-                            {
-                                Tag = embed,
-                                ImageUri = embed.Image.ProxyUrl,
-                                ImageWidth = embed.Image.Width,
-                                ImageHeight = embed.Image.Height,
-                                HorizontalAlignment = HorizontalAlignment.Left
-                            };
-                        }
-
-                        if (element != null)
-                        {
-                            element.Margin = new Thickness(0, 10, 0, 0);
-                            embeds.Children.Add(element);
-                        }
-                    }
-                    else
-                    {
-                        embeds.Children.Add(new EmbedViewer(m, embed) { Tag = embed });
-                    }
+                    embeds.Children.Add(new EmbedViewer(m, embed) { Tag = embed });
                 }
             }
         }
@@ -221,7 +175,8 @@ namespace Unicord.Universal.Controls
                 {
                     if (list.Items[index - 1] is DiscordMessage other)
                     {
-                        if (other.Author.Id == Message.Author.Id && (other.Timestamp - Message.Timestamp) < TimeSpan.FromHours(1))
+                        var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
+                        if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
                         {
                             bg.Margin = new Thickness(0, 2, 0, -2);
                             grid.Padding = new Thickness(8, 4, 8, 0);
@@ -240,7 +195,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.MessageUpdated += Discord_MessageUpdated;            
+            App.Discord.MessageUpdated += Discord_MessageUpdated;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -250,7 +205,7 @@ namespace Unicord.Universal.Controls
 
         private Task Discord_MessageUpdated(MessageUpdateEventArgs e)
         {
-            if(_message.Id == e.Message.Id)
+            if (_message.Id == e.Message.Id)
             {
                 return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -278,7 +233,7 @@ namespace Unicord.Universal.Controls
                 .ShowUserOverlay(_author, true);
         }
 
-        private void editMessageMenuItem_Click(object sender, RoutedEventArgs e)
+        public void BeginEditing()
         {
             if (!_isEditing)
             {
@@ -329,6 +284,11 @@ namespace Unicord.Universal.Controls
                     await Message.ModifyAsync(messageEditBox.Text);
                 }
             }
+        }
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            BeginEditing();
         }
     }
 }

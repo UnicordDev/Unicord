@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -60,25 +61,38 @@ namespace Unicord.Universal.Pages.Settings
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            await App.Discord.DisconnectAsync();
-            App.Discord.Dispose();
-            App.Discord = null;
-
-            try
+            var dialog = new ErrorDialog()
             {
-                var passwordVault = new PasswordVault();
-                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER))
-                {
-                    passwordVault.Remove(c);
-                }
-            }
-            catch { }
+                Icon = "\xF3B1",
+                Title = "Are you sure?",
+                Content = "Are you sure you want to logout?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No"
+            };
 
-            var frame = (Window.Current.Content as Frame);
-            frame.Navigate(typeof(Page));
-            frame.BackStack.Clear();
-            frame.ForwardStack.Clear();
-            frame.Navigate(typeof(MainPage));
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+
+                await App.Discord.DisconnectAsync();
+                App.Discord.Dispose();
+                App.Discord = null;
+
+                try
+                {
+                    var passwordVault = new PasswordVault();
+                    foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER))
+                    {
+                        passwordVault.Remove(c);
+                    }
+                }
+                catch { }
+
+                var frame = (Window.Current.Content as Frame);
+                frame.Navigate(typeof(Page));
+                frame.BackStack.Clear();
+                frame.ForwardStack.Clear();
+                frame.Navigate(typeof(MainPage));
+            }
         }
     }
 }

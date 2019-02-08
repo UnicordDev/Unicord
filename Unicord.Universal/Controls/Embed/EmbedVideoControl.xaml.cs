@@ -27,20 +27,36 @@ namespace Unicord.Universal.Controls.Embed
             this.InitializeComponent();
         }
 
+        public DiscordEmbed Embed { get; set; }
         public DiscordEmbedVideo Video { get; set; }
         public DiscordEmbedThumbnail Thumbnail { get; set; }
 
         private void Canvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var executionMode = ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess") ? WebViewExecutionMode.SeparateProcess : WebViewExecutionMode.SameThread;
+            var uri = Video.Url;
+            var provider = Embed?.Provider?.Name.ToLowerInvariant();
+
+            if (provider == "giphy")
+            {
+                var builder = new UriBuilder(uri) { Host = "i.giphy.com" };
+                uri = builder.Uri;
+            }
+
+            var executionMode = WebViewExecutionMode.SameThread;
+            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
+            {
+                executionMode = WebViewExecutionMode.SeparateProcess;
+            }
+
             var browser = new WebView(executionMode)
             {
-                Source = Video.Url,
+                Source = uri,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
             browser.ContainsFullScreenElementChanged += Browser_ContainsFullScreenElementChanged;
+
             content.Children.Add(browser);
 
             posterContainer.Visibility = Visibility.Collapsed;
@@ -51,7 +67,7 @@ namespace Unicord.Universal.Controls.Embed
             var page = this.FindParent<MainPage>();
             if (sender.ContainsFullScreenElement)
             {
-                if(page != null)
+                if (page != null)
                 {
                     page.EnterFullscreen(sender, content);
                 }
@@ -93,7 +109,7 @@ namespace Unicord.Universal.Controls.Embed
 
                 firstChild.Navigate(new Uri("about:blank"));
 
-                try { UnloadObject(firstChild); } catch {  }
+                try { UnloadObject(firstChild); } catch { }
             }
         }
     }

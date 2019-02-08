@@ -136,6 +136,10 @@ namespace WamWooWam.Parsers.Markdown.Render
                     RenderStrikethroughRun((StrikethroughTextInline)element, context);
                     break;
 
+                case MarkdownInlineType.Spoiler:
+                    RenderSpoiler((SpoilerTextInline)element, context);
+                    break;
+
                 case MarkdownInlineType.Code:
                     RenderCodeRun((CodeInline)element, context);
                     break;

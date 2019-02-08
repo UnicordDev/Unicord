@@ -167,7 +167,7 @@ namespace DSharpPlus.VoiceNext
 
             Configuration = config;
             OpusDecoders = new ConcurrentDictionary<uint, OpusDecoder>();
-            OpusEncoder = new OpusEncoder(48000, 2, Configuration.VoiceApplication);
+            OpusEncoder = new OpusEncoder(48000, 2, Configuration.VoiceApplication) { Bitrate = 13107, UseVBR = true };
             Sodium = new SodiumCodec();
             Rtp = new RtpCodec();
 
@@ -338,7 +338,7 @@ namespace DSharpPlus.VoiceNext
 
             ushort seq = 0;
             uint ts = 0, ssrc = 0;
-            int length = 0;
+            var length = 0;
             try
             {
                 using (var reader = args.GetDataReader())
@@ -561,7 +561,6 @@ namespace DSharpPlus.VoiceNext
 
                 var remoteHostName = new HostName(DiscoveredEndpoint.Address.ToString());
 
-                //await UdpSocket.CancelIOAsync();                
                 // Ready
                 var vsp = new VoiceDispatch
                 {
@@ -574,7 +573,10 @@ namespace DSharpPlus.VoiceNext
                             Address = DiscoveredEndpoint.Address.ToString(),
                             Port = (ushort)DiscoveredEndpoint.Port,
                             Mode = VOICE_MODE
-                        }
+                        },
+                        Address = DiscoveredEndpoint.Address.ToString(),
+                        Port = (ushort)DiscoveredEndpoint.Port,
+                        Mode = VOICE_MODE
                     }
                 };
                 var vsj = JsonConvert.SerializeObject(vsp, Formatting.None);

@@ -29,6 +29,7 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
             nav.SelectedItem = nav.MenuItems.First();
+            frame.Navigate(typeof(AccountsSettingsPage));
         }
 
         private void NavigationView_BackRequested(Lib.NavigationView sender, Lib.NavigationViewBackRequestedEventArgs args)
@@ -43,6 +44,10 @@ namespace Unicord.Universal.Pages.Settings
             {
                 case "Home":
                     frame.Navigate(typeof(AccountsSettingsPage));
+                    break;
+
+                case "Messaging":
+                    frame.Navigate(typeof(MessagingSettingsPage));
                     break;
 
                 case "Media":

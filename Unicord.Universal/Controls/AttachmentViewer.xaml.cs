@@ -40,6 +40,11 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Path.GetFileNameWithoutExtension(_attachment.Url).StartsWith("SPOILER_") && App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
+            {
+                spoilerOverlay.Visibility = Visibility.Visible;
+            }
+
             var url = _attachment.Url;
             var fileExtension = Path.GetExtension(url);
 
@@ -88,8 +93,8 @@ namespace Unicord.Universal.Controls
         {
             if (_attachment.Width != 0)
             {
-                int width = _attachment.Width;
-                int height = _attachment.Height;
+                var width = _attachment.Width;
+                var height = _attachment.Height;
 
                 Drawing.ScaleProportions(ref width, ref height, 640, 480);
                 Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
@@ -241,6 +246,11 @@ namespace Unicord.Universal.Controls
         private async void openMenuItem_Click(object sender, RoutedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri(_attachment.Url));
+        }
+
+        private void SpoilerOverlay_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            spoilerOverlay.Visibility = Visibility.Collapsed;
         }
     }
 }

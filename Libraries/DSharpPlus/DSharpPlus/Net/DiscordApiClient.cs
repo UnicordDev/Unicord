@@ -85,28 +85,6 @@ namespace DSharpPlus.Net
                 ret.Author = usr;
             }
 
-            var mentioned_users = new List<DiscordUser>();
-            var mentioned_roles = guild != null ? new List<DiscordRole>() : null;
-            var mentioned_channels = guild != null ? new List<DiscordChannel>() : null;
-
-            if (!string.IsNullOrWhiteSpace(ret.Content))
-            {
-                if (guild != null)
-                {
-                    mentioned_users = Utilities.GetUserMentions(ret).Select(xid => guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList();
-                    mentioned_roles = Utilities.GetRoleMentions(ret).Select(xid => guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList();
-                    mentioned_channels = Utilities.GetChannelMentions(ret).Select(xid => guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList();
-                }
-                else
-                {
-                    mentioned_users = Utilities.GetUserMentions(ret).Select(Discord.InternalGetCachedUser).ToList();
-                }
-            }
-
-            ret._mentionedUsers = mentioned_users;
-            ret._mentionedRoles = mentioned_roles;
-            ret._mentionedChannels = mentioned_channels;
-
             if (ret._reactions == null)
             {
                 ret._reactions = new List<DiscordReaction>();

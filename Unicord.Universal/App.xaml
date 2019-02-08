@@ -47,6 +47,13 @@
                 <ResourceDictionary Source="Themes/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
+                                BackgroundSource="Backdrop"
+                                TintOpacity="0"
+                                FallbackColor="{StaticResource SystemChromeMediumColor}"/>
+
+
+
             <converters:PresenceColourConverter x:Key="PresenceColourConverter"/>
             <converters:PresenceTextConverter x:Key="PresenceTextConverter"/>
             <converters:HideOnNullConverter x:Key="HideOnNullConverter"/>

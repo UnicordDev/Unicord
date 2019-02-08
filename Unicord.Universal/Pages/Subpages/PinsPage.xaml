@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <Grid x:Name="topGrid" Height="42">
             <TextBlock FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="10,0">Pinned Messages</TextBlock>
         </Grid>
@@ -46,13 +46,13 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="entities:DiscordMessage">
-                    <controls1:MessageViewer Message="{x:Bind}"/>
+                    <controls1:MessageViewer Message="{x:Bind}" Background="Transparent" IsEnabled="False" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <ProgressRing x:Name="progress" Grid.Row="1" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        
+
     </Grid>
 </Page>

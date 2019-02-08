@@ -97,7 +97,7 @@ namespace DSharpPlus
         public IReadOnlyList<DiscordDmChannel> PrivateChannels
             => _privateChannelsLazy.Value;
 
-        internal List<DiscordDmChannel> _privateChannels = new List<DiscordDmChannel>();
+        public List<DiscordDmChannel> _privateChannels = new List<DiscordDmChannel>();
         private Lazy<IReadOnlyList<DiscordDmChannel>> _privateChannelsLazy;
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace DSharpPlus
             _channelUpdated = new AsyncEvent<ChannelUpdateEventArgs>(EventErrorHandler, "CHANNEL_UPDATED");
             _channelDeleted = new AsyncEvent<ChannelDeleteEventArgs>(EventErrorHandler, "CHANNEL_DELETED");
             _dmChannelDeleted = new AsyncEvent<DmChannelDeleteEventArgs>(EventErrorHandler, "DM_CHANNEL_DELETED");
-            _channelPinsUpdated = new AsyncEvent<ChannelPinsUpdateEventArgs>(EventErrorHandler, "CHANNEL_PINS_UPDATEED");
+            _channelPinsUpdated = new AsyncEvent<ChannelPinsUpdateEventArgs>(EventErrorHandler, "CHANNEL_PINS_UPDATED");
             _guildCreated = new AsyncEvent<GuildCreateEventArgs>(EventErrorHandler, "GUILD_CREATED");
             _guildAvailable = new AsyncEvent<GuildCreateEventArgs>(EventErrorHandler, "GUILD_AVAILABLE");
             _guildUpdated = new AsyncEvent<GuildUpdateEventArgs>(EventErrorHandler, "GUILD_UPDATED");
@@ -1827,28 +1827,6 @@ namespace DSharpPlus
                 message.Author = usr;
             }
 
-            var mentioned_users = new List<DiscordUser>();
-            var mentioned_roles = guild != null ? new List<DiscordRole>() : null;
-            var mentioned_channels = guild != null ? new List<DiscordChannel>() : null;
-
-            if (!string.IsNullOrWhiteSpace(message.Content))
-            {
-                if (guild != null)
-                {
-                    mentioned_users = Utilities.GetUserMentions(message).Select(xid => guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList();
-                    mentioned_roles = Utilities.GetRoleMentions(message).Select(xid => guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList();
-                    mentioned_channels = Utilities.GetChannelMentions(message).Select(xid => guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList();
-                }
-                else
-                {
-                    mentioned_users = Utilities.GetUserMentions(message).Select(InternalGetCachedUser).ToList();
-                }
-            }
-
-            message._mentionedUsers = mentioned_users;
-            message._mentionedRoles = mentioned_roles;
-            message._mentionedChannels = mentioned_channels;
-
             if (message._reactions == null)
             {
                 message._reactions = new List<DiscordReaction>();
@@ -1868,30 +1846,27 @@ namespace DSharpPlus
             {
                 if (author.Id != CurrentUser.Id)
                 {
-                    if (message.MentionEveryone || message._mentionedUsers.Any(u => u?.Id == CurrentUser.Id))
+                    if (message.MentionEveryone || message.MentionedUsers.Any(u => u?.Id == CurrentUser.Id) || message.Channel is DiscordDmChannel)
                     {
                         message.Channel.ReadState.MentionCount += 1;
                         message.Channel.Guild?.InvokePropertyChanged("MentionCount");
-                    }
-
-                    message.Channel.InvokePropertyChanged("ReadState");
-                    message.Channel.InvokePropertyChanged("Guild");
+                    };
                 }
                 else
                 {
+                    message.Channel.ReadState.MentionCount = 0;
                     message.Channel.ReadState.LastMessageId = message.Id;
                 }
+
+                if (message.Channel.Guild != null)
+                    message.Channel.Guild.InvokePropertyChanged(nameof(message.Channel.Guild.Unread));
 
                 message.Channel.InvokePropertyChanged(nameof(message.Channel.ReadState));
             }
 
             var ea = new MessageCreateEventArgs(this)
             {
-                Message = message,
-
-                MentionedUsers = new ReadOnlyCollection<DiscordUser>(mentioned_users),
-                MentionedRoles = mentioned_roles != null ? new ReadOnlyCollection<DiscordRole>(mentioned_roles) : null,
-                MentionedChannels = mentioned_channels != null ? new ReadOnlyCollection<DiscordChannel>(mentioned_channels) : null
+                Message = message
             };
             await _messageCreated.InvokeAsync(ea).ConfigureAwait(false);
         }
@@ -1948,35 +1923,12 @@ namespace DSharpPlus
                 message.Content = event_message.Content ?? message.Content;
             }
 
-            var mentioned_users = new List<DiscordUser>();
-            var mentioned_roles = guild != null ? new List<DiscordRole>() : null;
-            var mentioned_channels = guild != null ? new List<DiscordChannel>() : null;
-
-            if (!string.IsNullOrWhiteSpace(message.Content))
-            {
-                if (guild != null)
-                {
-                    mentioned_users = Utilities.GetUserMentions(message).Select(xid => guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList();
-                    mentioned_roles = Utilities.GetRoleMentions(message).Select(xid => guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList();
-                    mentioned_channels = Utilities.GetChannelMentions(message).Select(xid => guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList();
-                }
-                else
-                {
-                    mentioned_users = Utilities.GetUserMentions(message).Select(InternalGetCachedUser).ToList();
-                }
-            }
-
-            message._mentionedUsers = mentioned_users;
-            message._mentionedRoles = mentioned_roles;
-            message._mentionedChannels = mentioned_channels;
+            message._mentionsInvalidated = true;
 
             var ea = new MessageUpdateEventArgs(this)
             {
                 Message = message,
-                MessageBefore = oldmsg,
-                MentionedUsers = new ReadOnlyCollection<DiscordUser>(mentioned_users),
-                MentionedRoles = mentioned_roles != null ? new ReadOnlyCollection<DiscordRole>(mentioned_roles) : null,
-                MentionedChannels = mentioned_channels != null ? new ReadOnlyCollection<DiscordChannel>(mentioned_channels) : null
+                MessageBefore = oldmsg
             };
             await _messageUpdated.InvokeAsync(ea).ConfigureAwait(false);
         }

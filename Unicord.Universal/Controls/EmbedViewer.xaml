@@ -8,7 +8,7 @@
     xmlns:embed="using:Unicord.Universal.Controls.Embed"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls" BorderThickness="8,0,0,0" BorderBrush="{ThemeResource SystemControlBackgroundBaseMediumHighBrush}"
     mc:Ignorable="d" MaxWidth="640" Loaded="UserControl_Loaded"
-    d:DesignHeight="300" HorizontalAlignment="Left" Margin="8,4"
+    d:DesignHeight="300" HorizontalAlignment="Left" Margin="12,4,8,4"
     d:DesignWidth="400" DataContext="{x:Bind _embed}">
 
     <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="12">
@@ -37,7 +37,7 @@
                     <Ellipse.Fill>
                         <ImageBrush>
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{Binding ProxyIconUrl}" DecodePixelWidth="20" DecodePixelHeight="20"/> 
+                                <BitmapImage UriSource="{Binding ProxyIconUrl}" DecodePixelWidth="20" DecodePixelHeight="20"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Ellipse.Fill>
@@ -78,7 +78,7 @@
         </Grid>
 
         <Grid Grid.Column="1">
-            <Image x:Name="thumbnail" Source="{Binding Thumbnail.Url}" Margin="12,0,0,0"  Width="96" Height="96" VerticalAlignment="Top"/>
+            <Image x:Name="thumbnail" Source="{Binding Thumbnail.Url}" Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Margin="12,0,0,0"  Width="96" Height="96" VerticalAlignment="Top"/>
         </Grid>
     </Grid>
 </UserControl>

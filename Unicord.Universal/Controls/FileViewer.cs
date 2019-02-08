@@ -51,6 +51,8 @@ namespace Unicord.Universal.Controls
                     image.Source = source;
                 }
 
+                ToolTipService.SetToolTip(v, f.Name);
+
                 try
                 {
                     var thumb = await f.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);

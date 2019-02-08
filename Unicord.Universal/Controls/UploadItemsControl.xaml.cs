@@ -75,6 +75,7 @@ namespace Unicord.Universal.Controls
 
                     if (mediaType != null)
                     {
+                        model.IsTranscoding = true;
                         transcodeProgress.IsIndeterminate = true;
                         transcodeOverlay.Visibility = Visibility.Visible;
 
@@ -91,13 +92,14 @@ namespace Unicord.Universal.Controls
                     }
 
                     props = await file.GetBasicPropertiesAsync();
-
                     transcodeProgress.IsIndeterminate = false;
                     transcodeOverlay.Visibility = Visibility.Collapsed;
                 }
 
                 var fileModel = await FileUploadModel.FromStorageFileAsync(file, props, temporary, transcodeFailed);
                 model.FileUploads.Add(fileModel);
+
+                model.IsTranscoding = false;
 
                 _transcodeWait.Release();
             }
@@ -227,7 +229,7 @@ namespace Unicord.Universal.Controls
         private async void TranscodeFailedButton_Click(object sender, RoutedEventArgs e)
         {
             await UIUtilities.ShowErrorDialogAsync(
-                "Failed to transcode!", 
+                "Failed to transcode!",
                 "This file failed to transcode, it may have been a format I don't understand, or your PC might not have the needed codecs. Sorry!");
         }
     }

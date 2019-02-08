@@ -12,43 +12,21 @@
     xmlns:fcu="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
-    mc:Ignorable="d"
+    xmlns:commands="using:Unicord.Universal.Commands"
+    mc:Ignorable="d" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded"
     d:DesignHeight="300"
     d:DesignWidth="400">
-    <UserControl.ContextFlyout>
-        <MenuFlyout>
-
-            <MenuFlyoutItem Text="Copy" x:Name="copyMenuItem" Icon="Copy"/>
-
-            <MenuFlyoutSeparator/>
-
-            <MenuFlyoutItem x:Name="addReactionMenuItem" x:Load="{x:Bind _canReact}" Text="Add Reaction" Icon="Emoji"/>
-
-            <MenuFlyoutSeparator x:Name="addReactionSeparator" x:Load="{x:Bind _canReact}" />
-            
-            <MenuFlyoutItem x:Name="profileMenuItem" Text="Profile" Icon="OtherUser" Click="profileMenuItem_Click"/>
-            <MenuFlyoutItem Text="Mention" Icon="Send"/>
-            <MenuFlyoutItem Text="Message" Icon="Message"/>
-
-            <MenuFlyoutSeparator x:Name="middleSeparator" x:Load="{x:Bind _middleSeparatorVisible}"/>
-
-            <MenuFlyoutItem Text="Change Nickname" x:Name="changeNicknameMenuItem" x:Load="{x:Bind _changeNickname}" Icon="Character"/>
-            <MenuFlyoutItem Text="Pin Message" x:Name="pinMessageMenuItem" x:Load="{x:Bind _pinMessages}" Icon="Pin"/>
-            <MenuFlyoutItem Text="Kick" Foreground="Red" x:Name="kickMemberMenuItem" x:Load="{x:Bind _kickMembers}" Icon="LeaveChat"/>
-            <MenuFlyoutItem Text="Ban" Foreground="Red" x:Name="banMemberMenuItem" x:Load="{x:Bind _banMembers}" Icon="Remove"/>
-
-            <MenuFlyoutSeparator x:Name="bottomSeparator" x:Load="{x:Bind _bottomSeparatorVisible}"/>
-
-            <MenuFlyoutItem Text="Edit Message" x:Name="editMessageMenuItem" x:Load="{x:Bind _canEdit}" Click="editMessageMenuItem_Click" Icon="Edit"/>
-            <MenuFlyoutItem Text="Delete Message" x:Name="deleteMessageMenuItem" Visibility="{x:Bind _canDelete, Converter={StaticResource BoolVisibilityConverter}}" Foreground="Orange" Icon="Delete"/>
-
-        </MenuFlyout>
-    </UserControl.ContextFlyout>
+    <UserControl.Resources>
+        <commands:DeleteMessageCommand x:Key="DeleteMessageCommand" />
+        <commands:PinMessageCommand x:Key="PinMessageCommand" />
+        <commands:MessageUserCommand x:Key="MessageUserCommand" />
+        <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand" />
+    </UserControl.Resources>
     <Grid>
         <Rectangle x:Name="bg" Visibility="Collapsed" Fill="{StaticResource MentionBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
         
-        <Grid x:Name="grid">
+        <Grid x:Name="grid" Background="{Binding Background, ElementName=self}" IsHitTestVisible="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
@@ -56,7 +34,36 @@
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
+            <Grid.ContextFlyout>
+                <MenuFlyout>
 
+                    <MenuFlyoutItem Text="Copy" x:Name="copyMenuItem" Icon="Copy"/>
+
+                    <MenuFlyoutSeparator/>
+
+                    <MenuFlyoutItem x:Name="addReactionMenuItem" x:Load="{x:Bind _canReact}" Text="Add Reaction" Icon="Emoji"/>
+
+                    <MenuFlyoutSeparator x:Name="addReactionSeparator" x:Load="{x:Bind _canReact}" />
+
+                    <MenuFlyoutItem x:Name="profileMenuItem" Text="Profile" Icon="OtherUser" Click="profileMenuItem_Click"/>
+                    <MenuFlyoutItem Text="Mention" Icon="Send"/>
+                    <MenuFlyoutItem Text="Message" Icon="Message" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding Author}"/>
+
+                    <MenuFlyoutSeparator />
+
+                    <MenuFlyoutItem Text="Change Nickname" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding Author}" Icon="Character"/>
+                    <MenuFlyoutItem Text="Pin Message" Command="{StaticResource PinMessageCommand}" CommandParameter="{Binding}" Icon="Pin"/>
+                    <MenuFlyoutItem Text="Kick" Foreground="{ThemeResource ErrorTextForegroundBrush}" Icon="LeaveChat"/>
+                    <MenuFlyoutItem Text="Ban" Foreground="{ThemeResource ErrorTextForegroundBrush}" Icon="Remove"/>
+
+                    <MenuFlyoutSeparator />
+
+                    <MenuFlyoutItem x:Name="editMenuFlyout" Text="Edit Message" Click="MenuFlyoutItem_Click" IsEnabled="{x:Bind CanEdit}" Icon="Edit"/>
+                    <MenuFlyoutItem Text="Delete Message" Command="{StaticResource DeleteMessageCommand}" CommandParameter="{Binding}" Foreground="{ThemeResource ErrorTextForegroundBrush}" Icon="Delete"/>
+
+                </MenuFlyout>
+            </Grid.ContextFlyout>
+            
             <Ellipse 
                 x:Name="imageContainer"
                 Visibility="{Binding CollapsedVisibility, ElementName=self}"
@@ -100,50 +107,24 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <!--<TextBlock x:Name="systemMessageSymbol" Visibility="Collapsed" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,6,10,6" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>-->
+                        <TextBlock x:Name="systemMessageSymbol" Visibility="Collapsed" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,6,10,6" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                         <Grid x:Name="messageEditContainer" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.Column="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="messageEditBox" Text="{Binding Content, Mode=OneWay}" AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="100" fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp" Style="{StaticResource MessageTextBoxStyle}"/>
+                            <TextBox x:Name="messageEditBox" Text="{Binding Content, Mode=OneWay}" AcceptsReturn="False" TextWrapping="Wrap" MaxHeight="100" fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp" Style="{StaticResource MessageTextBoxStyle}"/>
                             <Button x:Name="messageEditFinishButton" Content="&#xE73E;" Click="messageEditFinishButton_Click" Style="{StaticResource IconButtonStyle}" Grid.Column="1"/>
                             <Button x:Name="messageEditCancelButton" Content="&#xE711;" Click="messageEditCancelButton_Click" Style="{StaticResource IconButtonStyle}" Grid.Column="2"/>
                         </Grid>
 
-                        <wam:MarkdownTextBlock x:Name="markdown" Grid.Column="1" IsEnabled="False" Channel="{Binding Channel}" Text="{Binding Content}" ContextFlyout="{x:Null}" WrapCodeBlock="True" LinkClicked="MarkdownTextBlock_LinkClicked"/>
+                        <wam:MarkdownTextBlock x:Name="markdown" Grid.Column="1" IsEnabled="False" Channel="{Binding Channel}" Text="{Binding Content}" ContextFlyout="{x:Null}" WrapCodeBlock="True"/>
                     </Grid>
                 </Grid>
                 <StackPanel Grid.Row="2" x:Name="embeds">
 
                 </StackPanel>
-                <!--<ItemsControl x:Name="reactions" Margin="10,0" Grid.Row="3" ItemsSource="{x:Bind _reactions}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="entities:DiscordReaction">
-                            <Border Padding="2" Margin="0,0,5,0" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Rectangle Grid.ColumnSpan="2" Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Margin="-2" Visibility="{Binding IsMe, Converter={StaticResource BoolVisibilityConverter}}"/>
-
-                                    <TextBlock Visibility="{Binding Emoji.Unicode, Converter={StaticResource HideOnNullConverter}}" FontSize="14" Text="{Binding Emoji.Unicode}" Width="18" Height="18"/>
-                                    <Image Source="{Binding Emoji.Url}" Width="18" Height="18"/>
-
-                                    <TextBlock Margin="5,0" Text="{Binding Count}" FontSize="13" Grid.Column="1" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>-->
             </Grid>
         </Grid>
     </Grid>

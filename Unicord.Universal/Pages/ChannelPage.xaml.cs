@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,10 +19,12 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Media.Audio;
+using Windows.Media.Capture;
 using Windows.Media.Render;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.System;
 using Windows.System.Profile;
@@ -54,8 +57,7 @@ namespace Unicord.Universal.Pages
 
         private EmotePicker _emotePicker;
         private ChannelViewModel _viewModel;
-        private AudioGraph _audioGraph;
-        private bool _loading;
+        private bool _scrollHandlerAdded;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -66,64 +68,20 @@ namespace Unicord.Universal.Pages
 
             messageTextBox.KeyDown += messageTextBox_KeyDown;
 
+            if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
+            {
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested += Navigation_BackRequested;
+            }
+
             if (App.StatusBarFill != default)
             {
                 topGrid.Padding = App.StatusBarFill;
-            }
-
-            if (_emotePicker == null)
-            {
-                if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile" && Window.Current.CoreWindow.Bounds.Width > 400)
-                {
-                    _emotePicker = new EmotePicker() { Width = 300, Height = 300, HorizontalAlignment = HorizontalAlignment.Stretch };
-
-                    var flyout = new Flyout { Content = _emotePicker };
-                    flyout.Closed += (o, ev) =>
-                    {
-                        emoteButton.IsChecked = false;
-                        _emotePicker.Unload();
-                    };
-
-                    FlyoutBase.SetAttachedFlyout(emoteButton, flyout);
-                }
-                else
-                {
-                    if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
-                    {
-                        var navigation = SystemNavigationManager.GetForCurrentView();
-                        navigation.BackRequested += Navigation_BackRequested;
-                    }
-
-                    _emotePicker = new EmotePicker()
-                    {
-                        Height = 275,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        Visibility = Visibility.Collapsed,
-                        Padding = new Thickness(10, 0, 10, 0)
-                    };
-                    Grid.SetRow(_emotePicker, 4);
-                    footerGrid.Children.Add(_emotePicker);
-                }
-
-                _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
             }
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (_audioGraph == null)
-            {
-                try
-                {
-                    var result = await AudioGraph.CreateAsync(new AudioGraphSettings(AudioRenderCategory.Speech));
-                    if (result.Status == AudioGraphCreationStatus.Success)
-                    {
-                        _audioGraph = result.Graph;
-                    }
-                }
-                catch { }
-            }
-
             if (e.Parameter is DiscordChannel chan)
             {
                 ChannelViewModel model = null;
@@ -159,6 +117,19 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_scrollHandlerAdded)
+            {
+                var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
+                scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+
+                showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
+
+                _scrollHandlerAdded = true;
+            }
+        }
+
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
             this.FindParent<MainPage>()?.LeaveFullscreen();
@@ -175,15 +146,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
-            scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
-
-            showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
-        }
-
-
         private async Task Load()
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
@@ -194,13 +156,7 @@ namespace Unicord.Universal.Pages
                 {
                     loadingProgress.Visibility = Visibility.Visible;
                     loadingProgress.IsIndeterminate = true;
-
-                    if (!ViewModel.FileUploads.Any())
-                    {
-                        uploadItems.Visibility = Visibility.Collapsed;
-                    }
-
-                    _emotePicker.Channel = ViewModel.Channel;
+                    
                     noMessages.Visibility = Visibility.Collapsed;
                 });
 
@@ -231,11 +187,6 @@ namespace Unicord.Universal.Pages
             await AddToJumpListAsync();
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var scroll = sender as ScrollViewer;
@@ -249,7 +200,7 @@ namespace Unicord.Universal.Pages
                         await message.AcknowledgeAsync().ConfigureAwait(false);
                     }
                 }
-                else if (scroll.VerticalOffset <= 150 && !_loading)
+                else if (scroll.VerticalOffset <= 150)
                 {
                     //_loading = true;
 
@@ -284,11 +235,12 @@ namespace Unicord.Universal.Pages
                 {
                     e.Handled = true;
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
-                    uploadItems.Visibility = Visibility.Visible;
                     foreach (var item in items)
                     {
                         await uploadItems.AddStorageFileAsync(item);
                     }
+
+                    return;
                 }
 
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
@@ -307,9 +259,10 @@ namespace Unicord.Universal.Pages
                             await encoder.FlushAsync();
                         }
                     }
-
-                    uploadItems.Visibility = Visibility.Visible;
+                    
                     await uploadItems.AddStorageFileAsync(file, true);
+
+                    return;
                 }
             }
             catch (Exception ex)
@@ -331,7 +284,6 @@ namespace Unicord.Universal.Pages
         {
             if (ViewModel.FileUploads.Any())
             {
-                uploadItems.Visibility = Visibility.Collapsed;
                 uploadProgress.Visibility = Visibility.Visible;
                 var progress = new Progress<double?>(d =>
                 {
@@ -351,6 +303,7 @@ namespace Unicord.Universal.Pages
             {
                 await ViewModel.SendMessageAsync(messageTextBox);
             }
+
             uploadProgress.Visibility = Visibility.Collapsed;
         }
 
@@ -360,7 +313,6 @@ namespace Unicord.Universal.Pages
             {
                 hidePhotoPicker.Begin();
                 photosList.SelectionChanged -= SelectionHandler;
-                cameraPreview.FileChosen -= FileHandler;
             }
             else
             {
@@ -372,10 +324,8 @@ namespace Unicord.Universal.Pages
                 try
                 {
                     var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov" }) { FolderDepth = FolderDepth.Deep };
-                    var query = KnownFolders.PicturesLibrary
-                        .CreateFileQueryWithOptions(queryOption);
-
-                    var factory = new FileInformationFactory(query, ThumbnailMode.PicturesView, 128);
+                    var photosQuery = KnownFolders.PicturesLibrary.CreateFileQueryWithOptions(queryOption);
+                    var factory = new FileInformationFactory(photosQuery, ThumbnailMode.SingleItem, 256);
                     photosList.ItemsSource = factory.GetVirtualizedFilesVector();
                 }
                 catch (Exception ex)
@@ -391,24 +341,51 @@ namespace Unicord.Universal.Pages
             async void SelectionHandler(object o, SelectionChangedEventArgs ev)
             {
                 photosList.SelectionChanged -= SelectionHandler;
-                cameraPreview.FileChosen -= FileHandler;
                 hidePhotoPicker.Begin();
 
-                uploadItems.Visibility = Visibility.Visible;
                 await uploadItems.AddStorageFileAsync(ev.AddedItems.First() as IStorageFile);
             }
+        }
 
-            async void FileHandler(object o, StorageFile file)
+        private async void popoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var cameraUi = new CameraCaptureUI();
+            var file = await cameraUi.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
+
+            if (App.RoamingSettings.Read("SavePhotos", true))
             {
-                photosList.SelectionChanged -= SelectionHandler;
-                cameraPreview.FileChosen -= FileHandler;
-                hidePhotoPicker.Begin();
-
-                uploadItems.Visibility = Visibility.Visible;
-                await uploadItems.AddStorageFileAsync(file);
+                await file.MoveAsync(KnownFolders.CameraRoll, $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}{Path.GetExtension(file.Path)}");
             }
 
-            cameraPreview.FileChosen += FileHandler;
+            if (file != null)
+            {
+                hidePhotoPicker.Begin();
+                await uploadItems.AddStorageFileAsync(file);
+            }
+        }
+
+        private async void openLocalButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var picker = new FileOpenPicker
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                    CommitButtonText = $"Upload",
+                    ViewMode = PickerViewMode.Thumbnail
+                };
+
+                picker.FileTypeFilter.Add("*");
+
+                var files = await picker.PickMultipleFilesAsync();
+
+                hidePhotoPicker.Begin();
+                foreach (var file in files)
+                {
+                    await uploadItems.AddStorageFileAsync(file);
+                }
+            }
+            catch { }
         }
 
         private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
@@ -483,6 +460,8 @@ namespace Unicord.Universal.Pages
         {
             if (sender is ToggleButton button)
             {
+                EnsureEmotePicker();
+
                 var pane = InputPane.GetForCurrentView();
                 var flyout = FlyoutBase.GetAttachedFlyout(emoteButton);
 
@@ -503,6 +482,75 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        /// <summary>
+        /// Lazily initializes the emote picker
+        /// </summary>
+        private void EnsureEmotePicker()
+        {
+            if (_emotePicker == null)
+            {
+                _emotePicker = new EmotePicker
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch
+                };
+
+                _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
+            }
+
+            var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(emoteButton);
+
+            if (Window.Current.CoreWindow.Bounds.Width > 400)
+            {
+                if (footerGrid.Children.Contains(_emotePicker))
+                {
+                    footerGrid.Children.Remove(_emotePicker);
+                }
+
+                _emotePicker.Width = 300;
+                _emotePicker.Height = 300;
+                _emotePicker.Padding = new Thickness(0);
+                _emotePicker.Visibility = Visibility.Visible;
+
+                if (flyout == null)
+                {
+                    flyout = new Flyout { Content = _emotePicker };
+                    flyout.Closed += (o, ev) =>
+                    {
+                        emoteButton.IsChecked = false;
+                        _emotePicker.Unload();
+                    };
+
+                    FlyoutBase.SetAttachedFlyout(emoteButton, flyout);
+                }
+                else if (flyout.Content != _emotePicker)
+                {
+                    flyout.Content = _emotePicker;
+                }
+
+            }
+            else
+            {
+                if (flyout != null)
+                {
+                    (flyout as Flyout).Content = null;
+                }
+
+                _emotePicker.Width = double.NaN;
+                _emotePicker.Height = 275;
+                _emotePicker.Visibility = Visibility.Collapsed;
+                _emotePicker.Padding = new Thickness(10, 0, 10, 0);
+
+                if (!footerGrid.Children.Contains(_emotePicker))
+                {
+                    Grid.SetRow(_emotePicker, 4);
+                    footerGrid.Children.Add(_emotePicker);
+                }
+            }
+
+            _emotePicker.Channel = ViewModel.Channel;
+        }
+
         private void EmotePicker_EmojiPicked(object sender, DiscordEmoji e)
         {
             if (e != null)
@@ -520,8 +568,11 @@ namespace Unicord.Universal.Pages
             if (sender.FocusState != FocusState.Programmatic)
             {
                 emoteButton.IsChecked = false;
-                _emotePicker.Unload();
-                _emotePicker.Visibility = Visibility.Collapsed;
+                if (_emotePicker != null)
+                {
+                    _emotePicker.Unload();
+                    _emotePicker.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -556,12 +607,12 @@ namespace Unicord.Universal.Pages
             if (IsPaneOpen && ActualWidth <= 1024)
             {
                 ClosePane();
+            }
 
-                var page = this.FindParent<DiscordPage>();
-                if (page != null)
-                {
-                    page.CloseSplitPane();
-                }
+            var page = this.FindParent<DiscordPage>();
+            if (page != null)
+            {
+                page.CloseSplitPane();
             }
         }
 

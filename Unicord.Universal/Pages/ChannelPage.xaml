@@ -13,7 +13,7 @@
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:entities="using:DSharpPlus.Entities"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    mc:Ignorable="d" Loaded="Page_Loaded">
     <Page.Resources>
         <CircleEase EasingMode="EaseInOut" x:Key="Ease"/>
         <Storyboard x:Name="showPhotoPicker">
@@ -158,7 +158,7 @@
                                 </Ellipse.Fill>
                             </Ellipse>
 
-                            <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0" TextTrimming="CharacterEllipsis" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
+                            <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0" TextTrimming="Clip" TextWrapping="NoWrap" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
                                 <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
                             </TextBlock>
 
@@ -188,9 +188,9 @@
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel 
-                                Margin="0,0,0,8"
-                                VerticalAlignment="Bottom"
-                                ItemsUpdatingScrollMode="KeepLastItemInView"/>
+                                        Margin="0,0,0,8"
+                                        VerticalAlignment="Bottom"
+                                        ItemsUpdatingScrollMode="KeepLastItemInView"/>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                             <ListView.ItemContainerStyle>
@@ -224,25 +224,32 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <controls1:CameraControl x:Name="cameraPreview" Margin="0,0,4,0"/>
+                        <Grid Width="42" Margin="0,0,4,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button x:Name="captureButton" Style="{StaticResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE722;" Click="popoutButton_Click"/>
+                            <Button x:Name="openLocalButton" Style="{StaticResource StretchyIconButtonStyle}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE8DA;" Click="openLocalButton_Click"/>
+                        </Grid>
 
                         <ListView 
-                    x:Name="photosList"
-                    Grid.Column="1"
-                    ScrollViewer.VerticalScrollMode="Disabled"
-                    ScrollViewer.IsVerticalRailEnabled="False"
-                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ScrollViewer.HorizontalScrollMode="Enabled"
-                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                    ScrollViewer.IsHorizontalRailEnabled="True">
+                            x:Name="photosList"
+                            Grid.Column="1"
+                            ScrollViewer.VerticalScrollMode="Disabled"
+                            ScrollViewer.IsVerticalRailEnabled="False"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            ScrollViewer.HorizontalScrollMode="Enabled"
+                            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                            ScrollViewer.IsHorizontalRailEnabled="True">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel Orientation="Horizontal" />
+                                    <ItemsStackPanel Orientation="Horizontal" />
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Image Height="150" Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}"/>
+                                    <Image Height="150" MaxWidth="300" Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -282,19 +289,19 @@
                             <Button Click="uploadButton_Click" IsEnabled="{Binding CanUpload}" Style="{StaticResource IconButtonStyle}" Content="&#xE898;"/>
 
                             <TextBox x:Name="messageTextBox" 
-                            IsEnabled="{Binding CanType}"
-                            Style="{StaticResource MessageTextBoxStyle}"
-                            PlaceholderText="{Binding ChannelPlaceholder}"
-                            VerticalAlignment="Stretch" 
-                            Grid.Column="1" 
-                            Padding="10" 
-                            TextWrapping="Wrap"
-                            MaxHeight="90" 
-                            MaxLength="2000" 
-                            InputScope="Chat"
-                            Paste="messageTextBox_Paste"
-                            FocusEngaged="messageTextBox_FocusEngaged"
-                            TextChanged="messageTextBox_TextChanged" />
+                                IsEnabled="{Binding CanType}"
+                                Style="{StaticResource MessageTextBoxStyle}"
+                                PlaceholderText="{Binding ChannelPlaceholder}"
+                                VerticalAlignment="Stretch" 
+                                Grid.Column="1" 
+                                Padding="10" 
+                                TextWrapping="Wrap"
+                                MaxHeight="90" 
+                                MaxLength="2000" 
+                                InputScope="Chat"
+                                Paste="messageTextBox_Paste"
+                                FocusEngaged="messageTextBox_FocusEngaged"
+                                TextChanged="messageTextBox_TextChanged" />
 
                             <TextBlock Visibility="{Binding ShowSlowMode}" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" Margin="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" ToolTipService.ToolTip="{Binding SlowModeText}"/>
 
@@ -304,10 +311,9 @@
                     </Grid>
                     <!--</controls:DropSkhadowPanel>-->
 
-
-                    <controls1:UploadItemsControl x:Name="uploadItems" Visibility="Collapsed" Grid.Row="2">
+                    <controls1:UploadItemsControl x:Name="uploadItems" Visibility="{Binding ShowUploads, Mode=TwoWay}" Grid.Row="2">
                         <controls1:UploadItemsControl.RenderTransform>
-                            <TranslateTransform x:Name="uploadsTransform" Y="0"/>
+                            <TranslateTransform x:Name="uploadsTransform" Y="200"/>
                         </controls1:UploadItemsControl.RenderTransform>
                     </controls1:UploadItemsControl>
                 </Grid>

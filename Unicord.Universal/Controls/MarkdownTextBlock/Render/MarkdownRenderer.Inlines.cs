@@ -471,6 +471,29 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
             }
         }
 
+        protected override void RenderSpoiler(SpoilerTextInline element, IRenderContext context)
+        {
+            if (!(context is InlineRenderContext localContext))
+            {
+                throw new RenderContextIncorrectException();
+            }
+
+            // TODO (maybe): make this shit actually work?
+
+            var span = new Span();
+
+            var childContext = new InlineRenderContext(span.Inlines, context)
+            {
+                Parent = span
+            };
+
+            // Render the children into the inline.
+            RenderInlineChildren(element.Inlines, childContext);            
+
+            // Add it to the current inlines
+            localContext.InlineCollection.Add(span);
+        }
+
         protected override void RenderDiscord(DiscordInline element, IRenderContext context)
         {
             if (!(context is InlineRenderContext localContext))

@@ -1,12 +1,12 @@
 ﻿#pragma warning disable CS0618
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DSharpPlus.Entities
 {
@@ -15,13 +15,17 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class DiscordMessage : SnowflakeObject, IEquatable<DiscordMessage>
     {
+        internal bool _mentionsInvalidated;
+
+        private string _content;
+        private ReadOnlyCollection<DiscordUser> _mentionedUsers;
+        private ReadOnlyCollection<DiscordRole> _mentionedRoles;
+        private ReadOnlyCollection<DiscordChannel> _mentionedChannels;
+
         internal DiscordMessage()
         {
             _attachmentsLazy = new Lazy<IReadOnlyList<DiscordAttachment>>(() => new ReadOnlyCollection<DiscordAttachment>(_attachments));
             _embedsLazy = new Lazy<IReadOnlyList<DiscordEmbed>>(() => new ReadOnlyCollection<DiscordEmbed>(_embeds));
-            _mentionedChannelsLazy = new Lazy<IReadOnlyList<DiscordChannel>>(() => new ReadOnlyCollection<DiscordChannel>(_mentionedChannels));
-            _mentionedRolesLazy = new Lazy<IReadOnlyList<DiscordRole>>(() => new ReadOnlyCollection<DiscordRole>(_mentionedRoles));
-            _mentionedUsersLazy = new Lazy<IReadOnlyList<DiscordUser>>(() => new ReadOnlyCollection<DiscordUser>(_mentionedUsers));
             _reactionsLazy = new Lazy<IReadOnlyList<DiscordReaction>>(() => new ReadOnlyCollection<DiscordReaction>(_reactions));
         }
 
@@ -33,17 +37,8 @@ namespace DSharpPlus.Entities
             _attachments = other._attachments; // the attachments cannot change, thus no need to copy and reallocate.
             _embeds = new List<DiscordEmbed>(other._embeds);
 
-            if (other._mentionedChannels != null)
-            {
-                _mentionedChannels = new List<DiscordChannel>(other._mentionedChannels);
-            }
+            _mentionsInvalidated = true;
 
-            if (other._mentionedRoles != null)
-            {
-                _mentionedRoles = new List<DiscordRole>(other._mentionedRoles);
-            }
-
-            _mentionedUsers = new List<DiscordUser>(other._mentionedUsers);
             _reactions = new List<DiscordReaction>(other._reactions);
 
             Author = other.Author;
@@ -127,38 +122,65 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordUser> MentionedUsers
-            => _mentionedUsersLazy.Value;
+        {
+            get
+            {
+                if (_mentionedUsers == null || _mentionsInvalidated)
+                {
+                    if (Channel.Guild != null)
+                    {
+                        _mentionedUsers = new ReadOnlyCollection<DiscordUser>(Utilities.GetUserMentions(this).Select(xid => Channel.Guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList());
+                    }
+                    else
+                    {
+                        _mentionedUsers = new ReadOnlyCollection<DiscordUser>(Utilities.GetUserMentions(this).Select(Discord.InternalGetCachedUser).ToList());
+                    }
+                }
 
-        [JsonProperty("mentions", NullValueHandling = NullValueHandling.Ignore)]
-        internal List<DiscordUser> _mentionedUsers;
-        [JsonIgnore]
-        Lazy<IReadOnlyList<DiscordUser>> _mentionedUsersLazy;
+                return _mentionedUsers;
+            }
+        }
 
-        // TODO this will probably throw an exception in DMs since it tries to wrap around a null List...
-        // this is probably low priority but need to find out a clean way to solve it...
         /// <summary>
         /// Gets roles mentioned by this message.
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordRole> MentionedRoles
-            => _mentionedRolesLazy.Value;
+        {
+            get
+            {
+                if ((_mentionedRoles == null || _mentionsInvalidated) && Channel.Guild != null)
+                {
+                    if (Channel.Guild != null)
+                    {
+                        _mentionedRoles = new ReadOnlyCollection<DiscordRole>(Utilities.GetRoleMentions(this).Select(xid => Channel.Guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList());
+                    }
+                }
 
-        [JsonIgnore]
-        internal List<DiscordRole> _mentionedRoles;
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordRole>> _mentionedRolesLazy;
+                return _mentionedRoles;
+            }
+        }
 
         /// <summary>
         /// Gets channels mentioned by this message.
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordChannel> MentionedChannels
-            => _mentionedChannelsLazy.Value;
+        {
+            get
+            {
+                if ((_mentionedChannels == null || _mentionsInvalidated) && Channel.Guild != null)
+                {
+                    if (Channel.Guild != null)
+                    {
+                        _mentionedChannels = new ReadOnlyCollection<DiscordChannel>(Utilities.GetChannelMentions(this).Select(xid => Channel.Guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList());
+                    }
+                }
 
-        [JsonIgnore]
-        internal List<DiscordChannel> _mentionedChannels;
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordChannel>> _mentionedChannelsLazy;
+                return _mentionedChannels;
+            }
+        }
+
 
         /// <summary>
         /// Gets files attached to this message.
@@ -195,7 +217,6 @@ namespace DSharpPlus.Entities
         internal List<DiscordReaction> _reactions = new List<DiscordReaction>();
         [JsonIgnore]
         private Lazy<IReadOnlyList<DiscordReaction>> _reactionsLazy;
-        private string _content;
 
         /*
         /// <summary>
@@ -417,7 +438,7 @@ namespace DSharpPlus.Entities
         /// <returns>The hash code for this <see cref="DiscordMessage"/>.</returns>
         public override int GetHashCode()
         {
-            int hash = 13;
+            var hash = 13;
 
             hash = (hash * 7) + Id.GetHashCode();
             hash = (hash * 7) + ChannelId.GetHashCode();

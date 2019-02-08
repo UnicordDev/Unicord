@@ -21,7 +21,7 @@
                     <FontIcon Glyph="&#xE80F;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem ToolTipService.ToolTip="Text and Images">
+            <lib:NavigationViewItem Tag="Messaging" ToolTipService.ToolTip="Text and Images">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE70F;" />
                 </lib:NavigationViewItem.Icon>
@@ -53,7 +53,7 @@
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVerticalRailEnabled="True">
-            <Frame x:Name="frame" SourcePageType="local:AccountsSettingsPage" Margin="12" />
+            <Frame x:Name="frame" Margin="12" />
         </ScrollViewer>
     </lib:NavigationView>
 

@@ -40,6 +40,9 @@ namespace Unicord
         
         public const string SYNC_CONTACTS = "SyncContacts";
         public const string AUDIOPHILE_MODE = "AudiophileMode";
+
+        public const string ENABLE_SPOILERS = "EnableSpoilers";
+
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
 
         public const string VIDEO_BITRATE = "VideoBitrate";

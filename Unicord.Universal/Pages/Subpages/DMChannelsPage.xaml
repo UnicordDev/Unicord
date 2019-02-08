@@ -10,6 +10,12 @@
     mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" Tag="Direct Messages">
 
     <Grid>
-        <ListView x:Name="dmsList" Grid.Row="1" ShowsScrollingPlaceholders="False" SelectionChanged="dmsList_SelectionChanged" ItemTemplate="{StaticResource DMChannelTemplate}"/>
+        <ListView x:Name="dmsList" Grid.Row="1" ShowsScrollingPlaceholders="False" SelectionChanged="dmsList_SelectionChanged" ItemTemplate="{StaticResource DMChannelTemplate}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepItemsInView" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
     </Grid>
 </Page>

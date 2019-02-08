@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:b="using:Unicord.Universal.Behaviours"
+    xmlns:entities="using:DSharpPlus.Entities"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -44,10 +45,10 @@
             </Grid>
         </GridView.Header>
         <GridView.ItemTemplate>
-            <DataTemplate>
-                <Image MaxWidth="32" MaxHeight="32">
+            <DataTemplate x:DataType="entities:DiscordEmoji">
+                <Image MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
                     <Image.Source>
-                        <BitmapImage UriSource="{Binding Url}"/>
+                        <BitmapImage UriSource="{x:Bind Url}"/>
                     </Image.Source>
                 </Image>
             </DataTemplate>

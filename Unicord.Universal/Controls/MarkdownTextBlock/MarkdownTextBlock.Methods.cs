@@ -2,14 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using ColorCode;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ColorCode;
 using WamWooWam.Parsers.Markdown;
 using WamWooWam.Uwp.UI.Controls.Markdown.Render;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -60,8 +61,8 @@ namespace WamWooWam.Uwp.UI.Controls
                 try
                 {
                     // Try to parse the markdown.
-                    MarkdownDocument markdown = new MarkdownDocument();
-                    foreach (string str in SchemeList.Split(',').ToList())
+                    var markdown = new MarkdownDocument();
+                    foreach (var str in SchemeList.Split(',').ToList())
                     {
                         if (!string.IsNullOrEmpty(str))
                         {
@@ -175,7 +176,7 @@ namespace WamWooWam.Uwp.UI.Controls
         private void UnhookListeners()
         {
             // Clear any hyper link events if we have any
-            foreach (object link in _listeningHyperlinks)
+            foreach (var link in _listeningHyperlinks)
             {
                 if (link is Hyperlink hyperlink)
                 {
@@ -230,7 +231,7 @@ namespace WamWooWam.Uwp.UI.Controls
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         async Task<ImageSource> IImageResolver.ResolveImageAsync(string url, string tooltip)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
                 if (!string.IsNullOrEmpty(UriPrefix))
                 {
@@ -337,15 +338,18 @@ namespace WamWooWam.Uwp.UI.Controls
             }
 
             // Fire off the event.
-            var eventArgs = new LinkClickedEventArgs(url);
-            if (isHyperlink)
-            {
-                LinkClicked?.Invoke(this, eventArgs);
-            }
-            else
-            {
-                ImageClicked?.Invoke(this, eventArgs);
-            }
+            //var eventArgs = new LinkClickedEventArgs(url);
+            //if (isHyperlink)
+            //{
+            //    LinkClicked?.Invoke(this, eventArgs);
+            //}
+            //else
+            //{
+            //    ImageClicked?.Invoke(this, eventArgs);
+            //}
+
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = true });
         }
     }
 }

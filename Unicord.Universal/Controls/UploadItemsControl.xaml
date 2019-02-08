@@ -49,7 +49,7 @@
                 ScrollViewer.IsHorizontalRailEnabled="True">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <ItemsStackPanel Orientation="Horizontal" VerticalAlignment="Stretch" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
@@ -78,13 +78,15 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="10">
                                     <Run Text="{Binding DisplayLength}"/>
                                 </TextBlock>
 
-                                <Button x:Name="transcodeFailedButton" Click="TranscodeFailedButton_Click" Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ErrorTextForegroundBrush}" Style="{ThemeResource IconButtonStyle}" Grid.Column="1" Content="&#xE783;"/>
-                                <Button x:Name="removeItemButton" Click="RemoveItemButton_Click" Style="{ThemeResource IconButtonStyle}" Grid.Column="2" Content="&#xE74D;"/>
+                                <Button x:Name="transcodeFailedButton" ToolTipService.ToolTip="Transcode failed!" Click="TranscodeFailedButton_Click" Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ErrorTextForegroundBrush}" Style="{ThemeResource IconButtonStyle}" Grid.Column="1" Content="&#xE783;"/>
+                                <ToggleButton x:Name="spoilerButton" ToolTipService.ToolTip="Mark as Spoiler" IsChecked="{Binding Spoiler, Mode=TwoWay}" Style="{ThemeResource IconToggleButtonStyle}" Grid.Column="2" Content="&#xE890;"/>
+                                <Button x:Name="removeItemButton" ToolTipService.ToolTip="Remove" Click="RemoveItemButton_Click" Style="{ThemeResource IconButtonStyle}" Grid.Column="3" Content="&#xE74D;"/>
                             </Grid>
                         </Grid>
                     </DataTemplate>
@@ -93,7 +95,7 @@
 
         </controls:DockPanel>
 
-        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Margin="0,0,0,-1000" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
+        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Padding="0,0,0,-512" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
             <Grid VerticalAlignment="Top" Height="248">
                 <StackPanel VerticalAlignment="Center" Margin="10">
                     <TextBlock Text="Transcoding" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Margin="10" />

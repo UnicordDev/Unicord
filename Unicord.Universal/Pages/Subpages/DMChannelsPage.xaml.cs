@@ -38,7 +38,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(e.Parameter is DiscordDmChannel channel)
+            if (e.Parameter is DiscordDmChannel channel)
             {
                 dmsList.SelectionChanged -= dmsList_SelectionChanged;
                 dmsList.SelectedItem = channel;
@@ -49,7 +49,7 @@ namespace Unicord.Universal.Pages.Subpages
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             _dms = new ObservableCollection<DiscordDmChannel>(App.Discord.PrivateChannels.OrderByDescending(r => r.ReadState?.LastMessageId));
-            
+
             App.Discord.DmChannelCreated += Discord_DmChannelCreated;
             App.Discord.DmChannelDeleted += Discord_DmChannelDeleted;
             App.Discord.MessageCreated += Discord_MessageCreated;
@@ -69,28 +69,36 @@ namespace Unicord.Universal.Pages.Subpages
                 .AsTask();
         }
 
-        private Task Discord_MessageCreated(MessageCreateEventArgs e)
+        private async Task Discord_MessageCreated(MessageCreateEventArgs e)
         {
             if (e.Channel is DiscordDmChannel dm)
             {
                 var index = _dms.IndexOf(e.Message.Channel as DiscordDmChannel);
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    dmsList.SelectionChanged -= dmsList_SelectionChanged;
+                    var selected = dmsList.SelectedIndex == index;
 
-                if (index > 0)
-                {
-                    return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _dms.Move(index, 0)).AsTask();
-                }
-                else if (index < 0)
-                {
-                    return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _dms.Insert(0, dm)).AsTask();
-                }
+                    if (index > 0)
+                    {
+                        _dms.Move(index, 0);
+                    }
+                    else if (index < 0)
+                    {
+                        _dms.Insert(0, dm);
+                    }
+
+                    if (selected)
+                        dmsList.SelectedIndex = 0;
+
+                    dmsList.SelectionChanged += dmsList_SelectionChanged;
+                });
             }
-
-            return Task.CompletedTask;
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            if(App.Discord != null)
+            if (App.Discord != null)
             {
                 App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
                 App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;

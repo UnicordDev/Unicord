@@ -22,6 +22,7 @@
                 </MenuFlyout.Items>
             </MenuFlyout>
         </Grid.ContextFlyout>
+        
         <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
 
         </ContentControl>
@@ -39,5 +40,18 @@
             <Button Grid.Column="2" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
         </Grid>
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>
+
+        <Grid x:Name="spoilerOverlay" 
+              Visibility="Collapsed"
+              Tapped="SpoilerOverlay_Tapped"
+              Background="{ThemeResource SpoilerAcrylicBrush}"
+              HorizontalAlignment="Stretch" 
+              VerticalAlignment="Stretch"
+              ToolTipService.ToolTip="Spoiler! Click to show!">
+            <controls:DropShadowPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" BlurRadius="8" ShadowOpacity="1" OffsetX="-16" Color="Black">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="32"/>
+            </controls:DropShadowPanel>
+        </Grid>
+
     </Grid>
 </UserControl>

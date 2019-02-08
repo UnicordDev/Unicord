@@ -64,7 +64,7 @@ namespace WamWooWam.Parsers.Markdown
         /// <summary>
         /// strike through element
         /// </summary>
-        Strikethrough,
+        Spoiler,
 
         /// <summary>
         /// Super script element.
@@ -80,6 +80,7 @@ namespace WamWooWam.Parsers.Markdown
         /// Emoji element.
         /// </summary>
         Emoji,
-        Discord
+        Discord,
+        Strikethrough
     }
 }

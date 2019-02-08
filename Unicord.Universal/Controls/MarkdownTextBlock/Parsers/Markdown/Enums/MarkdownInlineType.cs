@@ -42,7 +42,7 @@ namespace WamWooWam.Parsers.Markdown
         /// <summary>
         /// A strike through run
         /// </summary>
-        Strikethrough,
+        Spoiler,
 
         /// <summary>
         /// A superscript run
@@ -68,6 +68,7 @@ namespace WamWooWam.Parsers.Markdown
         /// Link Reference
         /// </summary>
         LinkReference,
-        Discord
+        Discord,
+        Strikethrough
     }
 }

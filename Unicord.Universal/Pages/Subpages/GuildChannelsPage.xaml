@@ -12,10 +12,10 @@
 
     <Grid>
         <ListView x:Name="channelsList" 
-        SelectionChanged="channelsList_SelectionChanged"
-        ItemTemplate="{StaticResource ChannelListTemplate}"
-        IsSynchronizedWithCurrentItem="False" 
-        ItemsSource="{Binding Source={StaticResource cvs}}">
+            SelectionChanged="channelsList_SelectionChanged"
+            ItemTemplate="{StaticResource ChannelListTemplate}"
+            IsSynchronizedWithCurrentItem="False" 
+            ItemsSource="{Binding Source={StaticResource cvs}}">
             <ListView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>

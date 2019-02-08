@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,19 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return value is null ? Visibility.Collapsed : value is bool b ? b ? Visibility.Visible : Visibility.Collapsed : value is int i ? i > 0 ? Visibility.Visible : Visibility.Collapsed : Visibility.Collapsed;
+            if (value is null)
+                return Visibility.Collapsed;
+
+            if (value is bool b)
+                return b ? Visibility.Visible : Visibility.Collapsed;
+
+            if (value is int i)
+                return i > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+            if (value is IEnumerable e)
+                return e.OfType<object>().Any() ? Visibility.Visible : Visibility.Collapsed;
+
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

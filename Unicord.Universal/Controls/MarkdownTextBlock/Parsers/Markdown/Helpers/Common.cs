@@ -174,6 +174,10 @@ namespace WamWooWam.Parsers.Markdown.Helpers
                                 parseResult = StrikethroughTextInline.Parse(markdown, pos, end);
                                 break;
 
+                            case InlineParseMethod.Spoiler:
+                                parseResult = SpoilerTextInline.Parse(markdown, pos, end);
+                                break;
+
                             case InlineParseMethod.Code:
                                 parseResult = CodeInline.Parse(markdown, pos, end);
                                 break;

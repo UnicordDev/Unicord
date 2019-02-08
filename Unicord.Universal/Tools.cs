@@ -101,32 +101,6 @@ namespace Unicord.Universal
             return default;
         }
 
-        public static async Task SendFileWithProgressAsync(DiscordChannel channel, BaseDiscordClient client, string message, IInputStream file, string fileName, IProgress<double?> progress)
-        {
-            var httpRequestMessage
-                = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
-            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(client));
-
-            var cont = new HttpMultipartFormDataContent();
-
-            if (!string.IsNullOrWhiteSpace(message))
-            {
-                cont.Add(new HttpStringContent(message), "content");
-            }
-
-            cont.Add(new HttpStreamContent(file), "file", fileName);
-
-            httpRequestMessage.Content = cont;
-
-            var send = _httpClient.Value.SendRequestAsync(httpRequestMessage);
-            send.Progress += new AsyncOperationProgressHandler<HttpResponseMessage, HttpProgress>((o, e) =>
-            {
-                progress.Report((e.BytesSent / (double)e.TotalBytesToSend) * 100);
-            });
-
-            await send;
-        }
-
         public static async Task SendFilesWithProgressAsync(DiscordChannel channel, BaseDiscordClient client, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
         {
             var httpRequestMessage
@@ -138,7 +112,7 @@ namespace Unicord.Universal
             if (!string.IsNullOrWhiteSpace(message))
             {
                 cont.Add(new HttpStringContent(message), "content");
-            }
+            }            
 
             for (var i = 0; i < files.Count; i++)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using WamWooWam.Core;
@@ -47,6 +48,17 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ImageUriProperty =
             DependencyProperty.Register("ImageUri", typeof(Uri), typeof(ImageElement), new PropertyMetadata(null, OnImageChanged));
 
+
+        public bool IsSpoiler
+        {
+            get { return (bool)GetValue(IsSpoilerProperty); }
+            set { SetValue(IsSpoilerProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsSpoilerProperty =
+            DependencyProperty.Register("IsSpoiler", typeof(bool), typeof(ImageElement), new PropertyMetadata(false));
+
+
         private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ImageElement element)
@@ -93,7 +105,7 @@ namespace Unicord.Universal.Controls
         {
             _templated = true;
 
-            if(ImageUri != null)
+            if (ImageUri != null)
             {
                 LoadImage(this);
             }
@@ -117,7 +129,7 @@ namespace Unicord.Universal.Controls
 
         private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if(sender is Image i && i.Source is BitmapImage image)
+            if (sender is Image i && i.Source is BitmapImage image)
             {
                 image.Stop();
             }

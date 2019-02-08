@@ -23,8 +23,11 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+    <x:Double x:Key="ContentControlFontSize">14</x:Double>
+
     <Style TargetType="wam:MarkdownTextBlock">
-        <Setter Property="FontSize" Value="{ThemeResource ContentControlFontSize}"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="LinkForeground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
         <Setter Property="QuoteBackground" Value="Transparent" />
