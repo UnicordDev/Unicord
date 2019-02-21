@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -61,18 +62,8 @@ namespace Unicord.Universal.Pages.Settings
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ErrorDialog()
+            if (await UIUtilities.ShowYesNoDialogAsync("Are you sure?", "Are you sure you want to logout?", "\xF3B1"))
             {
-                Icon = "\xF3B1",
-                Title = "Are you sure?",
-                Content = "Are you sure you want to logout?",
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "No"
-            };
-
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-
                 await App.Discord.DisconnectAsync();
                 App.Discord.Dispose();
                 App.Discord = null;

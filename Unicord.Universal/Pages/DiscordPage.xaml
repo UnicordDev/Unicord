@@ -74,6 +74,7 @@
                 Duration="00:00:00.33"                            
                 EasingFunction="{StaticResource Ease}"/>
         </Storyboard>
+        
         <Storyboard x:Key="CloseSettingsMobileStoryboard" x:Name="CloseSettingsMobileStoryboard" Completed="CloseSettingsStoryboard_Completed">
             <DoubleAnimation 
                 x:Name="MobileHeightAnimation"
@@ -103,6 +104,7 @@
                 Duration="00:00:00.33"
                 EasingFunction="{StaticResource Ease}"/>
         </Storyboard>
+        
         <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
             <DoubleAnimation 
                 To="0"
@@ -112,7 +114,107 @@
                 EasingFunction="{StaticResource Ease}"/>
         </Storyboard>
 
+        <ExponentialEase x:Key="Enter" Exponent="7" EasingMode="EaseInOut" />
 
+        <Storyboard x:Key="OpenCustomStoryboard" x:Name="OpenCustomStoryboard">
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="CustomPaneTranslate"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.00"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="1"
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleX"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="1"
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleY"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="1"
+                Storyboard.TargetName="CustomOverlayGrid"
+                Storyboard.TargetProperty="Opacity"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+        </Storyboard>
+
+        <Storyboard x:Key="CloseCustomStoryboard" x:Name="CloseCustomStoryboard" Completed="CloseCustomMobileStoryboard_Completed">
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="CustomPaneTranslate"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.00"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="0.9"
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleX"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="0.9"
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleY"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="CustomOverlayGrid"
+                Storyboard.TargetProperty="Opacity"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+        </Storyboard>
+
+        <Storyboard x:Key="OpenCustomMobileStoryboard" x:Name="OpenCustomMobileStoryboard">
+            <DoubleAnimation 
+                To="1"
+                Storyboard.TargetName="CustomOverlayGrid"
+                Storyboard.TargetProperty="Opacity"
+                Duration="00:00:00.00"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                x:Name="CustomOpenAnimation"
+                To="0"
+                Storyboard.TargetName="CustomPaneTranslate"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                x:Name="CustomOpenAnimation2"
+                From="0"
+                Storyboard.TargetName="MainGridTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+        </Storyboard>
+
+        <Storyboard x:Key="CloseCustomMobileStoryboard" x:Name="CloseCustomMobileStoryboard" Completed="CloseCustomMobileStoryboard_Completed">
+            <DoubleAnimation 
+                x:Name="CustomCloseAnimation"
+                From="0"
+                Storyboard.TargetName="CustomPaneTranslate"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="MainGridTransform"
+                Storyboard.TargetProperty="X"
+                Duration="00:00:00.50"
+                EasingFunction="{StaticResource Enter}"/>
+            <DoubleAnimation 
+                To="0"
+                Storyboard.TargetName="CustomOverlayGrid"
+                Storyboard.TargetProperty="Opacity"
+                BeginTime="00:00:00.50"
+                Duration="00:00:00.00"
+                EasingFunction="{StaticResource Enter}"/>
+        </Storyboard>
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -148,6 +250,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="MainGridTransform" />
+            </Grid.RenderTransform>
+
             <Grid x:Name="splitPane" Width="276" HorizontalAlignment="Left">
 
                 <Grid.ColumnDefinitions>
@@ -179,7 +285,7 @@
                                 <ListView x:Name="unreadDms" SelectionChanged="UnreadDms_SelectionChanged" ScrollViewer.VerticalScrollMode="Disabled">
                                     <ListView.HeaderTemplate>
                                         <DataTemplate>
-                                            <lib:NavigationViewItemSeparator/>
+                                            <lib:NavigationViewItemSeparator />
                                         </DataTemplate>
                                     </ListView.HeaderTemplate>
                                     <ListView.ItemContainerStyle>
@@ -261,13 +367,25 @@
             </Grid>
         </Grid>
 
+        <Grid x:Name="CustomOverlayGrid" Opacity="0" Visibility="Collapsed">
+            <Grid x:Name="CustomContainer" Background="{ThemeResource MainBackgroundBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
+                        <TranslateTransform x:Name="CustomPaneTranslate" X="0" Y="0" />
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Frame x:Name="CustomGrid"/>
+            </Grid>
+        </Grid>
+
         <Grid x:Name="SettingsOverlayGrid" Visibility="Collapsed">
             <Grid x:Name="SettingsOverlayBackground" Background="{ThemeResource OverlayBackdrop}" Opacity="0" Tapped="SettingsOverlayBackground_Tapped"/>
             <Grid x:Name="SettingsContainer" Background="{ThemeResource MainBackgroundBrush}">
                 <Grid.RenderTransform>
                     <TranslateTransform x:Name="SettingsPaneTransform" />
                 </Grid.RenderTransform>
-                <Frame x:Name="SettingsGrid" Grid.Row="1" SourcePageType="settings:SettingsPage"/>
+                <Frame x:Name="SettingsGrid" SourcePageType="settings:SettingsPage"/>
             </Grid>
         </Grid>
     </Grid>

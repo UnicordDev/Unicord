@@ -12,14 +12,35 @@ namespace Unicord.Universal.Utilities
 {
     internal static class UIUtilities
     {
-        public static async Task ShowErrorDialogAsync(string title, string content)
+        public static async Task ShowErrorDialogAsync(string title, string content, string icon = null)
         {
             try
             {
                 var dialog = new ErrorDialog() { Title = title, Content = content };
+
+                if (icon != null)
+                    dialog.Icon = icon;
+
                 await dialog.ShowAsync();
             }
             catch { }
+        }
+
+        public static async Task<bool> ShowYesNoDialogAsync(string title, string content, string icon = null)
+        {
+            try
+            {
+                var dialog = new YesNoDialog() { Title = title, Content = content };
+
+                if (icon != null)
+                    dialog.Icon = icon;
+
+                return await dialog.ShowAsync() == ContentDialogResult.Primary ? true : false;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

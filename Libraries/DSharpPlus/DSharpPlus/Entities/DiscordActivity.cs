@@ -188,6 +188,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public DateTimeOffset? StartTimestamp { get; internal set; }
 
+        public DateTimeOffset? NowTimestamp => DateTimeOffset.Now;
+
         /// <summary>
         /// Gets the game end timestamp.
         /// </summary>

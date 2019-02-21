@@ -53,16 +53,13 @@ namespace Unicord.Universal.Controls
                 var mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = true,
-                    Source = MediaSource.CreateFromUri(new Uri(_attachment.ProxyUrl))
+                    Source = MediaSource.CreateFromUri(new Uri(_attachment.ProxyUrl)),
+                    PosterSource = _attachment.Width != 0 ? new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg")) : null
                 };
 
                 mediaPlayer.TransportControls.IsCompact = true;
 
-                if (_attachment.Width != 0)
-                {
-                    mediaPlayer.PosterSource = new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg"));
-                }
-                else
+                if (_attachment.Width == 0)
                 {
                     mediaPlayer.Height = 42;
                     _audioOnly = true;

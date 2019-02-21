@@ -55,7 +55,7 @@
 
                         <Canvas Width="38" Height="38" Grid.RowSpan="2">
                             <lib:PersonPicture Width="38" Height="38" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding AvatarUrl}" />
-                            <Ellipse Canvas.Left="24" Canvas.Top="24" Width="14" Height="14" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+                            <Ellipse Canvas.Left="24" Canvas.Top="24" Width="16" Height="16" StrokeThickness="2" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
                                 <Ellipse.Fill>
                                     <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}"/>
                                 </Ellipse.Fill>

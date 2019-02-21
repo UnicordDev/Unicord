@@ -9,6 +9,7 @@ using Windows.Media.Core;
 using Windows.Media.MediaProperties;
 using Windows.Media.Transcoding;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Utilities
@@ -23,46 +24,11 @@ namespace Unicord.Universal.Utilities
         public static async Task<bool> TryTranscodeVideoAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
             var props = await (input as IStorageItemProperties).Properties.GetVideoPropertiesAsync();
-
-            var width = (int)props.Width;
-            var height = (int)props.Height;
-            var bitrate = hq ? (uint)2_000_000 : 1_115_000;
-
-            var maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
-            var maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
-
-            Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
-            bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, bitrate);
-
-            var container = new ContainerEncodingProperties()
-            {
-                Subtype = MediaEncodingSubtypes.Mpeg4
-            };
-
-            var profile = new MediaEncodingProfile() { Container = container };
-            var video = new VideoStreamDescriptor(new VideoEncodingProperties()
-            {
-                Width = (uint)(Math.Round(width / 2.0) * 2),
-                Height = (uint)(Math.Round(height / 2.0) * 2),
-                Subtype = MediaEncodingSubtypes.H264,
-                Bitrate = bitrate
-            });
-
-            var audio = new AudioStreamDescriptor(new AudioEncodingProperties()
-            {
-                Bitrate = App.RoamingSettings.Read(AUDIO_BITRATE, 192u),
-                BitsPerSample = 16,
-                ChannelCount = 2,
-                SampleRate = App.RoamingSettings.Read(AUDIO_SAMPLERATE, 44100u),
-                Subtype = MediaEncodingSubtypes.Aac
-            });
-
-            profile.SetVideoTracks(new[] { video });
-            profile.SetAudioTracks(new[] { audio });
+            var profile = CreateVideoEncodingProfileFromProps(hq, props);
 
             return await TryTranscodeMediaAsync(input, output, profile, progress, token);
         }
-
+       
         public static Task<bool> TryTranscodeAudioAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
             var profile = MediaEncodingProfile.CreateMp3(hq ? AudioEncodingQuality.High : AudioEncodingQuality.Medium);
@@ -92,7 +58,7 @@ namespace Unicord.Universal.Utilities
                     return true;
                 }
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -115,6 +81,46 @@ namespace Unicord.Universal.Utilities
             }
 
             return false;
+        }
+
+        public static MediaEncodingProfile CreateVideoEncodingProfileFromProps(bool hq, VideoProperties props)
+        {
+            var width = (int)props.Width;
+            var height = (int)props.Height;
+            var bitrate = hq ? (uint)2_000_000 : 1_115_000;
+
+            var maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
+            var maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
+
+            Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
+            bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, bitrate);
+
+            var profile = new MediaEncodingProfile()
+            {
+                Container = new ContainerEncodingProperties()
+                {
+                    Subtype = MediaEncodingSubtypes.Mpeg4
+                },
+
+                Video = new VideoEncodingProperties()
+                {
+                    Width = (uint)(Math.Round(width / 2.0) * 2),
+                    Height = (uint)(Math.Round(height / 2.0) * 2),
+                    Subtype = MediaEncodingSubtypes.H264,
+                    Bitrate = bitrate
+                },
+
+                Audio = new AudioEncodingProperties()
+                {
+                    Bitrate = App.RoamingSettings.Read(AUDIO_BITRATE, 192u),
+                    BitsPerSample = 16,
+                    ChannelCount = 2,
+                    SampleRate = App.RoamingSettings.Read(AUDIO_SAMPLERATE, 44100u),
+                    Subtype = MediaEncodingSubtypes.Aac
+                }
+            };
+
+            return profile;
         }
     }
 }

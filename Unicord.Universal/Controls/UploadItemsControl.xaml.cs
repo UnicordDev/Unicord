@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Unicord.Universal.Models;
+using Unicord.Universal.Pages;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -87,7 +88,8 @@ namespace Unicord.Universal.Controls
                         }
                         else
                         {
-                            transcodeFailed = true;
+                            if (!_cancellationToken.IsCancellationRequested)
+                                transcodeFailed = true;
                         }
                     }
 
@@ -129,9 +131,6 @@ namespace Unicord.Universal.Controls
                 await item.StorageFile.DeleteAsync();
 
             item.Dispose();
-
-            if (!channelViewModel.FileUploads.Any())
-                Visibility = Visibility.Collapsed;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -146,32 +145,7 @@ namespace Unicord.Universal.Controls
 
         private void DoSize(double width)
         {
-            if (width > 640)
-            {
-                if (_small)
-                {
-                    Height = 200;
-                    DockPanel.SetDock(uploadSizeContainer, Dock.Right);
-                    uploadSizeBar.Width = 160;
-                    uploadSizeBar.Margin = new Thickness(-87, 87, -87, 87);
-                    uploadSizeBarTransform.Angle = -90;
-                    sizeRun.FontSize = 28;
-                    _small = false;
-                }
-            }
-            else
-            {
-                if (!_small)
-                {
-                    Height = 200;
-                    uploadSizeBar.Width = double.NaN;
-                    DockPanel.SetDock(uploadSizeContainer, Dock.Bottom);
-                    uploadSizeBar.Margin = new Thickness(10);
-                    uploadSizeBarTransform.Angle = 0;
-                    sizeRun.FontSize = 20;
-                    _small = true;
-                }
-            }
+
         }
 
         private async void UploadList_ItemClick(object sender, ItemClickEventArgs e)
@@ -231,6 +205,18 @@ namespace Unicord.Universal.Controls
             await UIUtilities.ShowErrorDialogAsync(
                 "Failed to transcode!",
                 "This file failed to transcode, it may have been a format I don't understand, or your PC might not have the needed codecs. Sorry!");
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            var bigModel = DataContext as ChannelViewModel;
+
+            var model = (sender as FrameworkElement).DataContext as FileUploadModel;
+            var newModel = new EditedFileUploadModel(model) { Parent = this };
+            bigModel.FileUploads.Remove(model);
+            bigModel.FileUploads.Add(newModel);
+
+            this.FindParent<DiscordPage>().OpenCustomPane(typeof(VideoEditor), newModel);
         }
     }
 }

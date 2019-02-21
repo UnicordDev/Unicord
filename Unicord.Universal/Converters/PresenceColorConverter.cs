@@ -46,8 +46,13 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var v = value as DiscordPresence;
-            switch (v?.Activity?.ActivityType)
+            if(!(value is DiscordActivity activity))
+            {
+                var v = value as DiscordPresence;
+                activity = v?.Activity;
+            }
+
+            switch (activity?.ActivityType)
             {
                 case ActivityType.Playing:
                     return "Playing";

@@ -16,6 +16,7 @@ using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Contacts;
+using Windows.Foundation;
 using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
@@ -466,6 +467,46 @@ namespace Unicord.Universal.Pages
         private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseSplitPane();
+        }
+
+        public void OpenCustomPane(Type pageType, object parameter)
+        {
+            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
+
+            if (ActualWidth > 768)
+            {
+                CustomContainer.RenderTransformOrigin = new Point(0.5, 0.5);
+                OpenCustomStoryboard.Begin();
+            }
+            else
+            {
+                CustomContainer.RenderTransformOrigin = new Point(0, 0);
+                CustomOpenAnimation.From = ActualWidth;
+                CustomOpenAnimation2.To = -ActualWidth;
+                OpenCustomMobileStoryboard.Begin();
+            }
+
+            CustomOverlayGrid.Visibility = Visibility.Visible;
+        }
+
+        public void CloseCustomPane()
+        {
+            if (ActualWidth > 768)
+            {
+                CustomContainer.RenderTransformOrigin = new Point(0.5, 0.5);
+                CloseCustomStoryboard.Begin();
+            }
+            else
+            {
+                CustomContainer.RenderTransformOrigin = new Point(0, 0);
+                CustomCloseAnimation.To = ActualWidth;
+                CloseCustomMobileStoryboard.Begin();
+            }
+        }
+
+        private void CloseCustomMobileStoryboard_Completed(object sender, object e)
+        {
+            CustomOverlayGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

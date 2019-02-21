@@ -4,6 +4,7 @@
     xmlns:local="using:Unicord.Universal.Themes"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:Windows10FallCreatorsUpdate="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)">
 
     <Style x:Key="DropShadowPanelStyle" TargetType="controls:DropShadowPanel">
@@ -13,7 +14,57 @@
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         <Setter Property="Color" Value="{StaticResource SystemChromeBlackMediumLowColor}" />
     </Style>
+
+    <Style x:Key="VideoSliderThumbStyle" TargetType="Thumb">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Canvas Margin="24,0">
+                        <Border Canvas.Left="12" Canvas.Top="12" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" BorderThickness="1" BorderBrush="{TemplateBinding Background}"/>
+                        <Ellipse x:Name="ellipse" Width="26" Height="26" Fill="{TemplateBinding Foreground}" StrokeThickness="2" Stroke="{TemplateBinding Background}"/>
+                    </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MediaSliderThumbStyle" TargetType="Thumb">
+        <Setter Property="Width" Value="24"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Ellipse x:Name="ellipse" Fill="{TemplateBinding Foreground}" StrokeThickness="2" Stroke="{TemplateBinding Background}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MediaSliderProgressBarStyle" TargetType="ProgressBar">
+        <Setter Property="Height" Value="{ThemeResource SliderTrackThemeHeight}"/>
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Maximum" Value="100"/>
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
     
+    <Style x:Key="MediaTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+        <Setter Property="FontSize" Value="{ThemeResource MTCMediaFontSize}"/>
+        <Setter Property="FontFamily" Value="{ThemeResource MTCMediaFontFamily}"/>
+        <Setter Property="Style" Value="{ThemeResource CaptionTextBlockStyle}"/>
+        <Setter Property="IsTextScaleFactorEnabled" Value="False"/>
+    </Style>
+
     <Style TargetType="MediaTransportControls">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -24,14 +75,6 @@
                 <ControlTemplate TargetType="MediaTransportControls">
                     <Grid x:Name="RootGrid" Background="Transparent">
                         <Grid.Resources>
-                            <Style x:Key="MediaTextBlockStyle" TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                                <Setter Property="FontSize" Value="{ThemeResource MTCMediaFontSize}"/>
-                                <Setter Property="FontFamily" Value="{ThemeResource MTCMediaFontFamily}"/>
-                                <Setter Property="Style" Value="{ThemeResource CaptionTextBlockStyle}"/>
-                                <Setter Property="IsTextScaleFactorEnabled" Value="False"/>
-                            </Style>
                             <Style x:Key="MediaSliderStyle" TargetType="Slider">
                                 <Setter Property="Background" Value="{ThemeResource SliderTrackFill}"/>
                                 <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}"/>
@@ -46,29 +89,6 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Slider">
                                             <Grid Margin="{TemplateBinding Padding}">
-                                                <Grid.Resources>
-                                                    <Style x:Key="SliderThumbStyle" TargetType="Thumb">
-                                                        <Setter Property="BorderThickness" Value="0"/>
-                                                        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
-                                                        <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="Thumb">
-                                                                    <Ellipse x:Name="ellipse" Fill="{TemplateBinding Foreground}" StrokeThickness="2" Stroke="{TemplateBinding Background}"/>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                    <Style x:Key="MediaSliderProgressBarStyle" TargetType="ProgressBar">
-                                                        <Setter Property="Height" Value="{ThemeResource SliderTrackThemeHeight}"/>
-                                                        <Setter Property="Minimum" Value="0"/>
-                                                        <Setter Property="Maximum" Value="100"/>
-                                                        <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}"/>
-                                                        <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="BorderBrush" Value="Transparent"/>
-                                                        <Setter Property="BorderThickness" Value="1"/>
-                                                    </Style>
-                                                </Grid.Resources>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*"/>
@@ -210,7 +230,7 @@
                                                         <TickBar x:Name="TopTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,0,0,4" VerticalAlignment="Bottom" Visibility="Collapsed"/>
                                                         <TickBar x:Name="HorizontalInlineTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Visibility="Collapsed"/>
                                                         <TickBar x:Name="BottomTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,4,0,0" Grid.Row="2" VerticalAlignment="Top" Visibility="Collapsed"/>
-                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{StaticResource SliderThumbStyle}" Width="24">
+                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{StaticResource MediaSliderThumbStyle}" Width="24">
                                                             <Thumb.DataContext>
                                                                 <Grid Height="112" Width="192">
                                                                     <Image x:Name="ThumbnailImage"/>
@@ -242,7 +262,7 @@
                                                         <TickBar x:Name="LeftTickBar" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
                                                         <TickBar x:Name="VerticalInlineTickBar" Grid.Column="1" Fill="{ThemeResource SliderInlineTickBarFill}" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderTrackThemeHeight}"/>
                                                         <TickBar x:Name="RightTickBar" Grid.Column="2" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
-                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{StaticResource SliderThumbStyle}" Width="24"/>
+                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{StaticResource MediaSliderThumbStyle}" Width="24"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
@@ -255,7 +275,7 @@
                             <VisualStateGroup x:Name="ControlPanelVisibilityStates">
                                 <VisualState x:Name="ControlPanelFadeIn">
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0:0:0.3" From="50" Storyboard.TargetName="TranslateVertical" Storyboard.TargetProperty="Y" To="0">
+                                        <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="TranslateVertical" Storyboard.TargetProperty="Y" To="0">
                                             <DoubleAnimation.EasingFunction>
                                                 <ExponentialEase Exponent="7" EasingMode="EaseOut" />
                                             </DoubleAnimation.EasingFunction>
@@ -267,7 +287,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border" Storyboard.TargetProperty="IsHitTestVisible">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="False"/>
                                         </ObjectAnimationUsingKeyFrames>
-                                        <DoubleAnimation Duration="0:0:0.150" Storyboard.TargetName="TranslateVertical" Storyboard.TargetProperty="Y" To="50">
+                                        <DoubleAnimation Duration="0:0:0.300" Storyboard.TargetName="TranslateVertical" Storyboard.TargetProperty="Y" To="100">
                                             <DoubleAnimation.EasingFunction>
                                                 <ExponentialEase Exponent="4.5" EasingMode="EaseIn" />
                                             </DoubleAnimation.EasingFunction>
@@ -337,7 +357,7 @@
                                         <Setter Target="FullWindowSymbol.Symbol" Value="BackToWindow"/>
                                     </VisualState.Setters>
                                 </VisualState>
-                            </VisualStateGroup>                            
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border x:Name="ControlPanel_ControlPanelVisibilityStates_Border">
                             <Grid x:Name="ControlPanelGrid" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Bottom">
@@ -376,7 +396,7 @@
                                     </Button>
                                 </Border>
                                 <Border x:Name="MediaTransportControls_Command_Border" Grid.Column="1" Grid.Row="2">
-                                    
+
                                     <Grid x:Name="MediaControlsCommandBar" Margin="0,0">
 
                                         <Grid.ColumnDefinitions>
@@ -402,7 +422,7 @@
                                             </Button.Flyout>
                                             <SymbolIcon x:Name="VolumeMuteSymbol" Symbol="Volume"/>
                                         </Button>
-                                        
+
                                         <Button Grid.Column="2" Style="{StaticResource IconButtonStyle}" x:Name="PlayPauseButton">
                                             <SymbolIcon x:Name="PlayPauseSymbol" Symbol="Play"/>
                                         </Button>
@@ -418,6 +438,175 @@
                                 </Border>
                             </Grid>
                         </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RangeSliderThumbStyle" TargetType="Thumb">
+        <Setter Property="UseSystemFocusVisuals" Value="True"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="FocusVisualMargin" Value="-14,-6,-14,-6"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border Background="{TemplateBinding Background}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            CornerRadius="4"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls1:RangeSelector">
+        <Setter Property="Background" Value="{ThemeResource SliderTrackFill}"/>
+        <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}"/>
+        <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}"/>
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls1:RangeSelector">
+                    <Grid x:Name="ControlGrid" Height="24" >
+
+                        <Border x:Name="OutOfRangeContentContainer"
+                                Background="Transparent"
+                                Grid.Column="1">
+                            <Rectangle x:Name="BackgroundElement"
+                                       Height="2"
+                                       Fill="{TemplateBinding Background}" />
+                        </Border>
+
+                        <Canvas x:Name="ContainerCanvas"
+                                Grid.Column="1"
+                                Background="Transparent">
+                            <Rectangle x:Name="ActiveRectangle"
+                                       HorizontalAlignment="Stretch"
+                                       Height="2"
+                                       VerticalAlignment="Center"
+                                       Fill="{TemplateBinding Foreground}" />
+
+                            <Grid x:Name="ToolTip" 
+                                  BorderThickness="1"
+                                  BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}"
+                                  Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" 
+                                  Margin="0,-44,0,8" 
+                                  Visibility="Collapsed">
+                                <TextBlock x:Name="ToolTipText" 
+                                           Margin="8"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                            </Grid>
+
+                            <Thumb x:Name="MinThumb"
+                                   AutomationProperties.Name="Min thumb"
+                                   IsTabStop="True" 
+                                   Style="{StaticResource RangeSliderThumbStyle}"
+                                   TabIndex="0" />
+
+                            <Thumb x:Name="CurrentThumb"
+                                   AutomationProperties.Name="Current thumb"
+                                   IsTabStop="True" 
+                                   Style="{StaticResource VideoSliderThumbStyle}"
+                                   Margin="-32"
+                                   TabIndex="0" />
+
+                            <Thumb x:Name="MaxThumb"
+                                   AutomationProperties.Name="Max thumb"
+                                   IsTabStop="True"
+                                   Style="{StaticResource RangeSliderThumbStyle}"
+                                   TabIndex="1" />
+                        </Canvas>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MinPressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MinThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="CurrentPressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CurrentThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState x:Name="MaxPressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaxThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
+                                                                       Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRectangle"
+                                                                       Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MinThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlDisabledChromeDisabledHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaxThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlDisabledChromeDisabledHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
+                                                                       Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MinThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CurrentThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaxThumb"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

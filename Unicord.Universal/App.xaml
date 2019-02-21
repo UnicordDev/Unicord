@@ -10,8 +10,8 @@
     xmlns:ins="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:entities="using:DSharpPlus.Entities">
-    <Application.Resources> 
-        <ResourceDictionary>           
+    <Application.Resources>
+        <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
                     <SvgImageSource x:Key="DiscordClyde" UriSource="Assets/DiscordClyde.Light.svg" />
@@ -52,8 +52,6 @@
                                 TintOpacity="0"
                                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
 
-
-
             <converters:PresenceColourConverter x:Key="PresenceColourConverter"/>
             <converters:PresenceTextConverter x:Key="PresenceTextConverter"/>
             <converters:HideOnNullConverter x:Key="HideOnNullConverter"/>
@@ -72,7 +70,7 @@
 
             <SolidColorBrush x:Key="MentionBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.1"/>
             <SolidColorBrush x:Key="TransparentBrush" Color="Transparent"/>
-           
+
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
@@ -96,9 +94,8 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="Template" Value="{StaticResource IconToggleButtonTemplate}"/>
-            </Style>          
-           
-            
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

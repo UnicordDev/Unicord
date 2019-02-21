@@ -64,7 +64,7 @@ namespace Unicord.Universal.Pages.Subpages
                         }
                     }
 
-                    var discordMembers = await Task.Run(() => channel.Users.OrderBy(g => g.DisplayName).GroupBy(g => g.Roles.Where(r => r.IsHoisted).OrderBy(r => r.Position).FirstOrDefault()).OrderByDescending(g => g.Key?.Position)).ConfigureAwait(false);
+                    var discordMembers = await Task.Run(() => channel.Users.Distinct().OrderBy(g => g.DisplayName).GroupBy(g => g.Roles.Where(r => r.IsHoisted).OrderBy(r => r.Position).FirstOrDefault()).OrderByDescending(g => g.Key?.Position)).ConfigureAwait(false);
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         viewSource.Source = discordMembers;

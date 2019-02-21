@@ -2,6 +2,8 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
+using Windows.Media;
 using Windows.Media.Audio;
 using Windows.Media.Capture;
 using Windows.Media.Render;
@@ -58,6 +61,8 @@ namespace Unicord.Universal.Pages
         private EmotePicker _emotePicker;
         private ChannelViewModel _viewModel;
         private bool _scrollHandlerAdded;
+        private VideoFrame _videoFrame;
+        private string _error;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -156,7 +161,7 @@ namespace Unicord.Universal.Pages
                 {
                     loadingProgress.Visibility = Visibility.Visible;
                     loadingProgress.IsIndeterminate = true;
-                    
+
                     noMessages.Visibility = Visibility.Collapsed;
                 });
 
@@ -259,7 +264,8 @@ namespace Unicord.Universal.Pages
                             await encoder.FlushAsync();
                         }
                     }
-                    
+
+                    showPhotoPicker.Begin();
                     await uploadItems.AddStorageFileAsync(file, true);
 
                     return;
@@ -312,7 +318,6 @@ namespace Unicord.Universal.Pages
             if (photoPicker.Visibility == Visibility.Visible)
             {
                 hidePhotoPicker.Begin();
-                photosList.SelectionChanged -= SelectionHandler;
             }
             else
             {
@@ -333,28 +338,65 @@ namespace Unicord.Universal.Pages
                     HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "FileQueryFailure" });
                 }
 
-                photosList.SelectionChanged += SelectionHandler;
-
                 loadingImagesRing.IsActive = false;
-            }
-
-            async void SelectionHandler(object o, SelectionChangedEventArgs ev)
-            {
-                photosList.SelectionChanged -= SelectionHandler;
-                hidePhotoPicker.Begin();
-
-                await uploadItems.AddStorageFileAsync(ev.AddedItems.First() as IStorageFile);
             }
         }
 
-        private async void popoutButton_Click(object sender, RoutedEventArgs e)
+        private async void SelectionHandler(object o, SelectionChangedEventArgs ev)
         {
-            var cameraUi = new CameraCaptureUI();
-            var file = await cameraUi.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
+            hidePhotoPicker.Begin();
 
-            if (App.RoamingSettings.Read("SavePhotos", true))
+            foreach (var item in ev.AddedItems.OfType<IStorageFile>())
             {
-                await file.MoveAsync(KnownFolders.CameraRoll, $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}{Path.GetExtension(file.Path)}");
+                await uploadItems.AddStorageFileAsync(item);
+            }
+        }
+
+        private async void OpenPopoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            cameraPreview.Stop();
+            cameraPreview.CameraHelper.Dispose();
+            
+            var capture = new CameraCaptureUI();
+            var file = await capture.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
+            if (file != null)
+            {
+                var fileName = $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}{Path.GetExtension(file.Path)}";
+                var folder = App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder;
+                await file.MoveAsync(folder, fileName, NameCollisionOption.GenerateUniqueName);
+
+                hidePhotoPicker.Begin();
+                await uploadItems.AddStorageFileAsync(file);                
+            }
+            else
+            {
+                await cameraPreview.StartAsync();
+            }
+        }
+
+        private async void CaptureButton_Click(object sender, RoutedEventArgs e)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+
+            var softwareBitmap = _videoFrame?.SoftwareBitmap;
+            var fileName = $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.jpg";
+            var file = await (App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder)
+                .CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
+
+            if (softwareBitmap != null)
+            {
+                // Why...
+                if (softwareBitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 || softwareBitmap.BitmapAlphaMode == BitmapAlphaMode.Straight)
+                {
+                    softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                }
+
+                using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, fileStream);
+                    encoder.SetSoftwareBitmap(softwareBitmap);
+                    await encoder.FlushAsync();
+                }
             }
 
             if (file != null)
@@ -386,6 +428,50 @@ namespace Unicord.Universal.Pages
                 }
             }
             catch { }
+        }
+
+        private void CameraPreview_PreviewFailed(object sender, PreviewFailedEventArgs e)
+        {
+            _error = e.Error;
+            loadingCameraRing.IsActive = false;
+            previewFailed.Visibility = Visibility.Visible;
+        }
+
+        private async void ShowPhotoPicker_Completed(object sender, object e)
+        {
+            previewFailed.Visibility = Visibility.Collapsed;
+            loadingCameraRing.IsActive = true;
+
+            await cameraPreview.StartAsync();
+
+            loadingCameraRing.IsActive = false;
+            cameraPreview.CameraHelper.FrameArrived += CameraHelper_FrameArrived;
+        }
+
+        private void HidePhotoPicker_Completed(object sender, object e)
+        {
+            cameraPreview.Stop();
+            cameraPreview.CameraHelper.FrameArrived -= CameraHelper_FrameArrived;
+            loadingCameraRing.IsActive = false;
+            previewFailed.Visibility = Visibility.Collapsed;
+        }
+
+        private void CameraHelper_FrameArrived(object sender, FrameEventArgs e)
+        {
+            _videoFrame = e.VideoFrame;
+        }
+
+        private async void PreviewFailed_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (_error != null)
+            {
+                await UIUtilities.ShowErrorDialogAsync("Unable to load camera", _error);
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            hidePhotoPicker.Begin();
         }
 
         private void RemoveItemButton_Click(object sender, RoutedEventArgs e)

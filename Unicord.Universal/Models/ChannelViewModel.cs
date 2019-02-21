@@ -168,6 +168,8 @@ namespace Unicord.Universal.Models
 
         public Permissions Permissions { get; set; }
 
+        public DiscordUser Recipient => Channel.Type == ChannelType.Private ? (Channel as DiscordDmChannel).Recipient : null;
+
         public ObservableCollection<DiscordUser> AvailableUsers { get; set; }
 
         public ObservableCollection<DiscordUser> TypingUsers { get; set; }

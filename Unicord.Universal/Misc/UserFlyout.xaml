@@ -7,15 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Unicord.Universal.Controls"
     mc:Ignorable="d" Placement="Right">
 
-    <Grid Width="256">
+    <Grid x:Name="Root" Width="256" Margin="-12">
+        <Grid.Resources>
+            <StaticResource x:Key="PrimaryBrush" ResourceKey="SystemControlAltMediumLowAcrylicWindowMediumBrush"/>
+            <StaticResource x:Key="SecondaryBrush" ResourceKey="SystemControlAcrylicWindowMediumHighBrush"/>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Margin="-12,-12,-12,-12" Background="{StaticResource SystemControlAltMediumLowAcrylicWindowMediumBrush}">
+        <Grid Background="{StaticResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -25,9 +32,12 @@
                 @<Run Foreground="{StaticResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
             </TextBlock>
         </Grid>
-        <Grid Grid.Row="1" Margin="-12,12,-12,-12" Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}">
-            <StackPanel Margin="12,0,12,12" Grid.Row="1" Visibility="{Binding Roles, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                <TextBlock Text="Roles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,8"/>
+        <Grid Grid.Row="1" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{StaticResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
+            <controls:RichPresenceControl DataContext="{Binding Presence.Activity}" Margin="8" />
+        </Grid>
+        <Grid Grid.Row="2" Background="{StaticResource SystemControlAcrylicElementMediumHighBrush}">
+            <StackPanel Margin="12,8,12,12" Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
+                <TextBlock Text="Roles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,0,0,8"/>
                 <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{Binding Roles}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

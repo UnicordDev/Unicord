@@ -16,7 +16,7 @@
     mc:Ignorable="d" Loaded="Page_Loaded">
     <Page.Resources>
         <CircleEase EasingMode="EaseInOut" x:Key="Ease"/>
-        <Storyboard x:Name="showPhotoPicker">
+        <Storyboard x:Name="showPhotoPicker" Completed="ShowPhotoPicker_Completed">
             <DoubleAnimation 
                 Storyboard.TargetName="uploadsTransform" 
                 Storyboard.TargetProperty="Y"
@@ -31,7 +31,7 @@
                 EasingFunction="{StaticResource Ease}"
                 Duration="00:00:00.55"/>
         </Storyboard>
-        <Storyboard x:Name="hidePhotoPicker">
+        <Storyboard x:Name="hidePhotoPicker" Completed="HidePhotoPicker_Completed">
             <DoubleAnimation 
                 Storyboard.TargetName="uploadsTransform" 
                 Storyboard.TargetProperty="Y"
@@ -139,6 +139,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -158,20 +159,26 @@
                                 </Ellipse.Fill>
                             </Ellipse>
 
-                            <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0" TextTrimming="Clip" TextWrapping="NoWrap" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
+                            <TextBlock x:Name="header" Grid.Column="2" FontSize="15" Margin="8,0,8,0" TextTrimming="Clip" TextWrapping="NoWrap" MaxWidth="250" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center">
                                 <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}"/><Run FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}"/><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}"/>
                             </TextBlock>
 
-                            <wam:MarkdownTextBlock Grid.Column="3" Text="{Binding Topic}" Channel="{Binding Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
+                            <Ellipse Width="10" Height="10" Margin="-4,0,8,0" Grid.Column="3" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}, FallbackValue=Gray}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
 
-                            <ToggleButton x:Name="muteButton" Grid.Column="4" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
+                            <wam:MarkdownTextBlock Grid.Column="4" Text="{Binding Topic}" Channel="{Binding Channel}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
+
+                            <ToggleButton x:Name="muteButton" Grid.Column="5" IsEnabled="False" Style="{StaticResource IconToggleButtonStyle}" Content="&#xE74F;" ToolTipService.ToolTip="Mute"/>
 
                             <!-- TODO: consider -->
                             <!--<Button x:Name="popoutButton" Grid.Column="3" Style="{StaticResource ButtonRevealStyle}" Content="&#xE8A7;" ToolTipService.ToolTip="Open in pop out..."/>-->
 
-                            <Button x:Name="searchButton" Grid.Column="5" Style="{StaticResource IconButtonStyle}" Content="&#xE721;" ToolTipService.ToolTip="Search"/>
-                            <Button x:Name="pinsButton" Grid.Column="6" Style="{StaticResource IconButtonStyle}" Content="&#xE718;" ToolTipService.ToolTip="Pinned Messages" Click="pinsButton_Click"/>
-                            <Button x:Name="userListButton" Grid.Column="7" Style="{StaticResource IconButtonStyle}" Visibility="{Binding ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List" Click="UserListButton_Click"/>
+                            <Button x:Name="searchButton" Grid.Column="6" Style="{StaticResource IconButtonStyle}" Content="&#xE721;" ToolTipService.ToolTip="Search"/>
+                            <Button x:Name="pinsButton" Grid.Column="7" Style="{StaticResource IconButtonStyle}" Content="&#xE718;" ToolTipService.ToolTip="Pinned Messages" Click="pinsButton_Click"/>
+                            <Button x:Name="userListButton" Grid.Column="8" Style="{StaticResource IconButtonStyle}" Visibility="{Binding ShowUserlistButton}" Content="&#xE716;" ToolTipService.ToolTip="User List" Click="UserListButton_Click"/>
 
                             <!-- TODO: consider -->
                             <!--<Button x:Name="closeButton" Grid.Column="7" Visibility="Collapsed" Style="{StaticResource ButtonRevealStyle}" Content="&#xEDAE;" ToolTipService.ToolTip="Close"/>-->
@@ -228,20 +235,39 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Button x:Name="captureButton" Style="{StaticResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE722;" Click="popoutButton_Click"/>
-                            <Button x:Name="openLocalButton" Style="{StaticResource StretchyIconButtonStyle}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE8DA;" Click="openLocalButton_Click"/>
+                            <Button x:Name="openPopoutButton" Style="{StaticResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE8A7;" Click="OpenPopoutButton_Click"/>
+                            <Button x:Name="captureButton" Style="{StaticResource StretchyIconButtonStyle}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE722;" Click="CaptureButton_Click"/>
+                            <Button x:Name="openLocalButton" Style="{StaticResource StretchyIconButtonStyle}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="&#xE8DA;" Click="openLocalButton_Click"/>
                         </Grid>
 
                         <ListView 
                             x:Name="photosList"
                             Grid.Column="1"
+                            SelectionChanged="SelectionHandler"
                             ScrollViewer.VerticalScrollMode="Disabled"
                             ScrollViewer.IsVerticalRailEnabled="False"
                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
                             ScrollViewer.HorizontalScrollMode="Enabled"
                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
                             ScrollViewer.IsHorizontalRailEnabled="True">
+                            <ListView.Header>
+                                <Grid Margin="0,0,8,0" MinWidth="200">
+                                    <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed"  />
+                                    <Grid x:Name="previewFailed" 
+                                          Visibility="Collapsed"
+                                          HorizontalAlignment="Stretch" 
+                                          VerticalAlignment="Stretch"
+                                          Tapped="PreviewFailed_Tapped"
+                                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                                        <controls:DropShadowPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" BlurRadius="8" ShadowOpacity="1" OffsetX="-16" Color="Black">
+                                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="32"/>
+                                        </controls:DropShadowPanel>
+                                    </Grid>
+                                    <ProgressRing x:Name="loadingCameraRing" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </ListView.Header>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel Orientation="Horizontal" />

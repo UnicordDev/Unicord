@@ -9,11 +9,39 @@
     xmlns:win1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:models="using:Unicord.Universal.Models"
     mc:Ignorable="d" SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded"
-    d:DesignHeight="300"
+    d:DesignHeight="300" Height="200"
     d:DesignWidth="400" MaxHeight="200">
 
     <Grid>
         <controls:DockPanel x:Name="uploadGrid" LastChildFill="True" Grid.Row="2">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="DefaultStates">
+                    <VisualState x:Name="LargeState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="640"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Right"/>
+                            <Setter Target="uploadSizeBar.Width" Value="160"/>
+                            <Setter Target="uploadSizeBar.Margin" Value="-87, 87, -87, 87"/>
+                            <Setter Target="uploadSizeBarTransform.Angle" Value="-90"/>
+                            <Setter Target="sizeRun.FontSize" Value="28"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="SmallState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Bottom"/>
+                            <Setter Target="uploadSizeBar.Margin" Value="10"/>
+                            <Setter Target="uploadSizeBarTransform.Angle" Value="0"/>
+                            <Setter Target="sizeRun.FontSize" Value="20"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            
             <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -79,14 +107,16 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="10">
                                     <Run Text="{Binding DisplayLength}"/>
                                 </TextBlock>
 
                                 <Button x:Name="transcodeFailedButton" ToolTipService.ToolTip="Transcode failed!" Click="TranscodeFailedButton_Click" Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ErrorTextForegroundBrush}" Style="{ThemeResource IconButtonStyle}" Grid.Column="1" Content="&#xE783;"/>
-                                <ToggleButton x:Name="spoilerButton" ToolTipService.ToolTip="Mark as Spoiler" IsChecked="{Binding Spoiler, Mode=TwoWay}" Style="{ThemeResource IconToggleButtonStyle}" Grid.Column="2" Content="&#xE890;"/>
-                                <Button x:Name="removeItemButton" ToolTipService.ToolTip="Remove" Click="RemoveItemButton_Click" Style="{ThemeResource IconButtonStyle}" Grid.Column="3" Content="&#xE74D;"/>
+                                <Button x:Name="editButton" ToolTipService.ToolTip="Edit this clip" Click="EditButton_Click" Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}" Style="{ThemeResource IconButtonStyle}" Grid.Column="2" Content="&#xE8B2;"/>
+                                <ToggleButton x:Name="spoilerButton" ToolTipService.ToolTip="Mark as Spoiler" IsChecked="{Binding Spoiler, Mode=TwoWay}" Style="{ThemeResource IconToggleButtonStyle}" Grid.Column="3" Content="&#xE890;"/>
+                                <Button x:Name="removeItemButton" ToolTipService.ToolTip="Remove" Click="RemoveItemButton_Click" Style="{ThemeResource IconButtonStyle}" Grid.Column="4" Content="&#xE74D;"/>
                             </Grid>
                         </Grid>
                     </DataTemplate>
@@ -95,8 +125,8 @@
 
         </controls:DockPanel>
 
-        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Padding="0,0,0,-512" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
-            <Grid VerticalAlignment="Top" Height="248">
+        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
+            <Grid >
                 <StackPanel VerticalAlignment="Center" Margin="10">
                     <TextBlock Text="Transcoding" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Margin="10" />
                     <ProgressBar x:Name="transcodeProgress" IsIndeterminate="False" MaxWidth="350"/>
