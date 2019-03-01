@@ -79,6 +79,5 @@
 
         <ProgressRing x:Name="progress" Grid.Row="2" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-
     </Grid>
 </Page>

@@ -85,7 +85,7 @@ namespace Unicord.Universal.Pages.Subpages
             {
                 var element = (sender as ListView).ContainerFromItem(item);
                 var value = new UserFlyout() { DataContext = item };
-                if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode"))
+                if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
                 {
                     value.ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
                 }

@@ -14,7 +14,7 @@
 
     <controls1:DropShadowPanel VerticalAlignment="Center">
         <StackPanel>
-            <Grid Padding="20" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}">
+            <Grid Padding="20" Background="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -48,6 +48,9 @@
                         <Button Style="{StaticResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid Grid.Row="1" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{StaticResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
+                <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
             </Grid>
             <Grid Height="205" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Pivot>

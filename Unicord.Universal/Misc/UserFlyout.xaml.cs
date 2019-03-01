@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using DSharpPlus.Entities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -31,6 +32,13 @@ namespace Unicord.Universal.Misc
         public UserFlyout()
         {
             this.InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            Window.Current.Content.FindChild<MainPage>()
+                .ShowUserOverlay(DataContext as DiscordUser, true);
         }
     }
 }

@@ -249,5 +249,13 @@ namespace Unicord.Universal.Controls
         {
             spoilerOverlay.Visibility = Visibility.Collapsed;
         }
+
+        private void CopyUrlItem_Click(object sender, RoutedEventArgs e)
+        {
+            var package = new DataPackage();
+            package.SetText(_attachment.Url);
+            package.SetWebLink(new Uri(_attachment.Url));
+            Clipboard.SetContent(package);
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace Unicord.Universal.Models
         public UploadItemsControl Parent { get; set; }
         public MediaComposition Composition { get; set; }
         public MediaClip Clip { get; set; }
+        public StorageFile CompositionFile { get; internal set; }
 
         public override void Dispose()
         {

@@ -8,7 +8,7 @@
     xmlns:c="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Margin="8,6" 
+    mc:Ignorable="d" Margin="8,6"
     d:DesignHeight="300" MaxWidth="640" MaxHeight="480"
     d:DesignWidth="400" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
@@ -18,6 +18,7 @@
                 <MenuFlyout.Items>
                     <MenuFlyoutItem x:Name="saveMenuItem" Text="Save" Icon="Save" Click="saveMenuItem_Click"/>
                     <MenuFlyoutItem x:Name="shareMenuItem" Text="Share" Click="shareMenuItem_Click" fc:Icon="Share" c:Icon="Send" />
+                    <MenuFlyoutItem x:Name="copyUrlItem" Text="Copy Link" Click="CopyUrlItem_Click" Icon="Copy" />
                     <MenuFlyoutItem x:Name="openMenuItem" Text="Open Link" Click="openMenuItem_Click" Icon="Link"/>
                 </MenuFlyout.Items>
             </MenuFlyout>
@@ -26,7 +27,7 @@
         <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
 
         </ContentControl>
-        <Grid Padding="10" MinWidth="300" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
+        <Grid Padding="10" HorizontalAlignment="Stretch" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>

@@ -1,14 +1,14 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.UI;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Uwp.UI;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
@@ -113,7 +113,7 @@ namespace Unicord.Universal.Pages
                 _loaded = true;
 
                 var guildPositions = App.Discord.UserSettings?.GuildPositions;
-                foreach (var guild in App.Discord.Guilds.Values.OrderBy(g => guildPositions.IndexOf(g.Id)))
+                foreach (var guild in App.Discord.Guilds.Values.OrderBy(g => guildPositions?.IndexOf(g.Id) ?? 0))
                 {
                     _guilds.Add(guild);
                 }

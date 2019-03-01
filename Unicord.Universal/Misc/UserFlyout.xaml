@@ -47,5 +47,7 @@
                 </ItemsControl>
             </StackPanel>
         </Grid>
+
+        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Style="{ThemeResource IconButtonStyle}" Margin="0,1,0,0" Content="&#xE8A7;" Click="Button_Click"/>
     </Grid>
 </Flyout>
