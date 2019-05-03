@@ -639,13 +639,13 @@
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp.csproj">
+      <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
+      <Name>MomentSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MomentSharp\MomentSharp.csproj">
-      <Project>{c6243e7a-895b-4f5b-bbff-3ece29bffe8d}</Project>
-      <Name>MomentSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
