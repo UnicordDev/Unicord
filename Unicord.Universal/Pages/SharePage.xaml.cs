@@ -1,10 +1,11 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -39,7 +40,7 @@ namespace Unicord.Universal.Pages
 
         public SharePage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -54,13 +55,35 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                // BUGBUG: this is messy
+                var items = new List<object> { new { Name = "Direct Messages" } };
+                items.AddRange(App.Discord.Guilds.Values);
+                guildBox.ItemsSource = items;
+
+                channelsBox.ItemTemplateSelector = new ChannelTemplateSelector()
+                {
+                    ServerChannelTemplate = (DataTemplate)App.Current.Resources["NoIndicatorChannelListTemplate"],
+                    DirectMessageTemplate = (DataTemplate)App.Current.Resources["NoIndicatorDMChannelTemplate"]
+                };
+
                 if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
                 {
-                    if (_shareOperation.Contacts.Any())
+                    var contact = _shareOperation.Contacts.FirstOrDefault();
+                    if (contact != null)
                     {
-                        destinationGrid.Visibility = Visibility.Collapsed;
+                        var id = await Contacts.TryGetChannelIdAsync(contact);
+                        if (id != 0)
+                        {
+                            guildBox.SelectedIndex = 0;
+                            channelsBox.SelectedItem = await App.Discord.CreateDmChannelAsync(id);
+
+                            target.Text = contact.DisplayName;
+                            destinationGrid.Visibility = Visibility.Collapsed;
+                        }
                     }
                 }
+
+                _shareOperation.ReportStarted();
 
                 var data = _shareOperation.Data;
                 if (data.AvailableFormats.Contains(StandardDataFormats.StorageItems))
@@ -78,27 +101,8 @@ namespace Unicord.Universal.Pages
                 {
                     // do shit
 
-                    _file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Strings.RandomString(12)}.jpg");
+                    _file = await Tools.GetImageFileFromDataPackage(data);
 
-                    var randomAccessStreamReference = await data.GetBitmapAsync();
-                    var img = new BitmapImage();
-                    thumbnailImage.Source = img;
-
-                    using (var stream = await _file.OpenAsync(FileAccessMode.ReadWrite))
-                    {
-                        using (var bmp = await randomAccessStreamReference.OpenReadAsync())
-                        {
-                            await img.SetSourceAsync(bmp);
-
-                            var decoder = await BitmapDecoder.CreateAsync(bmp);
-                            using (var softwareBmp = await decoder.GetSoftwareBitmapAsync())
-                            {
-                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
-                                encoder.SetSoftwareBitmap(softwareBmp);
-                                await encoder.FlushAsync();
-                            }
-                        }
-                    }
                     return;
                 }
                 else
@@ -139,7 +143,15 @@ namespace Unicord.Universal.Pages
 
         private async void guildBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await GuildChannelsPage.GetChannelList((guildBox.SelectedItem as dynamic).Value as DiscordGuild, channelsListSource, true);
+            if (guildBox.SelectedIndex == 0)
+            {
+                channelsListSource.IsSourceGrouped = false;
+                channelsListSource.Source = App.Discord.PrivateChannels.Values.OrderBy(c => c.Name ?? c.Recipient?.Username);
+            }
+            else
+            {
+                await GuildChannelsPage.GetChannelList(guildBox.SelectedItem as DiscordGuild, channelsListSource, true);
+            }
         }
 
         private async void sendButton_Click(object sender, RoutedEventArgs e)
@@ -173,7 +185,28 @@ namespace Unicord.Universal.Pages
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            _shareOperation.DismissUI();
+            Window.Current.Close();
+        }
+    }
+
+    public class ChannelTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate DirectMessageTemplate { get; set; }
+        public DataTemplate ServerChannelTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            if (item is DiscordDmChannel)
+            {
+                return DirectMessageTemplate;
+            }
+
+            return ServerChannelTemplate;
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            return SelectTemplateCore(item);
         }
     }
 }

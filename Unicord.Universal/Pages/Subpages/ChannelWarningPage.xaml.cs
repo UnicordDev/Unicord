@@ -28,7 +28,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         public ChannelWarningPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -42,7 +42,9 @@ namespace Unicord.Universal.Pages.Subpages
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             if (Frame.CanGoBack)
+            {
                 Frame.GoBack();
+            }
         }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)

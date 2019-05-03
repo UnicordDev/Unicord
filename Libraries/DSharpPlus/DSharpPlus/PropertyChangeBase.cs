@@ -30,7 +30,7 @@ namespace DSharpPlus.Entities
                     _handlers[context] = new List<PropertyChangedEventHandler>() { value };
                 }
 
-                //Debug.WriteLine($"Added event handler, {this}, {value}");
+                // Debug.WriteLine($"Added event handler, {this}, {value}");
             }
 
             remove
@@ -41,7 +41,7 @@ namespace DSharpPlus.Entities
                     list.Remove(value);
                 }
 
-                //Debug.WriteLine($"Removed event handler, {this}, {value}");
+                // Debug.WriteLine($"Removed event handler, {this}, {value}");
             }
         }
 

@@ -29,8 +29,8 @@ namespace Unicord.Universal.Controls
 
         public DiscordChannel Channel
         {
-            get { return (DiscordChannel)GetValue(ChannelProperty); }
-            set { SetValue(ChannelProperty, value); }
+            get => (DiscordChannel)GetValue(ChannelProperty);
+            set => SetValue(ChannelProperty, value);
         }
 
         public static readonly DependencyProperty ChannelProperty =
@@ -50,11 +50,11 @@ namespace Unicord.Universal.Controls
                 if (Channel.IsPrivate || Channel.PermissionsFor(Channel.Guild.CurrentMember).HasFlag(Permissions.UseExternalEmojis) && App.Discord.CurrentUser.HasNitro)
                 {
                     enumerable = App.Discord.Guilds.Values
-                        .SelectMany(g => g.Emojis);
+                        .SelectMany(g => g.Emojis.Values);
                 }
                 else
                 {
-                    enumerable = Channel.Guild.Emojis;
+                    enumerable = Channel.Guild.Emojis.Values;
                 }
 
                 enumerable = enumerable.OrderBy(g => g.Name);
@@ -72,7 +72,7 @@ namespace Unicord.Universal.Controls
                     source.IsSourceGrouped = true;
 
                     source.Source =
-                        await Task.Run(() => enumerable.GroupBy(em => em.Discord.Guilds.Values.First(g => g.Emojis.Contains(em)))
+                        await Task.Run(() => enumerable.GroupBy(em => em.Discord.Guilds.Values.First(g => g.Emojis.Values.Contains(em)))
                         .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
                         .ToList());
                 }

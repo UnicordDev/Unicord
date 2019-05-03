@@ -12,17 +12,15 @@ namespace Unicord.Universal
 {
     internal static class Logger
     {
+#if DEBUG
         private static ConcurrentQueue<LogMessage> _messages = new ConcurrentQueue<LogMessage>();
         private static Task _loggerThread;
         private static bool _logging;
 
         static Logger()
         {
-#if DEBUG
             _logging = true;
-            _loggerThread = new Task(async () => await LoggerLoopAsync(), TaskCreationOptions.LongRunning);
-            _loggerThread.Start();
-#endif
+            _loggerThread = Task.Run(LoggerLoopAsync);
         }
 
         private static async Task LoggerLoopAsync()
@@ -41,6 +39,7 @@ namespace Unicord.Universal
                 await Task.Delay(1000);
             }
         }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General", [CallerLineNumber] int line = 0)
@@ -51,6 +50,7 @@ namespace Unicord.Universal
         }
     }
 
+#if DEBUG
     internal struct LogMessage
     {
         public string Message;
@@ -58,5 +58,7 @@ namespace Unicord.Universal
         public int LineNumber;
         public DateTimeOffset DateTime;
     }
+#endif
+
 }
 

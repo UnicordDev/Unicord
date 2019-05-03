@@ -33,8 +33,10 @@ namespace WamWooWam.Parsers.Markdown.Blocks
         /// <returns> A parsed paragraph. </returns>
         internal static ParagraphBlock Parse(string markdown)
         {
-            var result = new ParagraphBlock();
-            result.Inlines = Common.ParseInlineChildren(markdown, 0, markdown.Length);
+            var result = new ParagraphBlock
+            {
+                Inlines = Common.ParseInlineChildren(markdown, 0, markdown.Length)
+            };
             return result;
         }
 

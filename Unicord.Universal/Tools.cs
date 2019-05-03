@@ -8,10 +8,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Data.Xml.Dom;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Security.Credentials;
 using Windows.Storage;
@@ -68,7 +71,9 @@ namespace Unicord.Universal
         {
             var parent = VisualTreeHelper.GetParent(obj);
             if (parent == null)
+            {
                 return default;
+            }
 
             return parent is T obj1 ? obj1 : parent.FindParent<T>();
         }
@@ -80,7 +85,9 @@ namespace Unicord.Universal
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 if (child is T c)
+                {
                     controlList.Add(c);
+                }
 
                 controlList.AddRange(child.AllChildren<T>());
             }
@@ -93,12 +100,35 @@ namespace Unicord.Universal
             {
                 var child = VisualTreeHelper.GetChild(parent, index);
                 if (child is T t && (controlName == null || t.Name == controlName))
+                {
                     return t;
+                }
                 else if ((child = FindChild<T>(child, controlName)) != default)
+                {
                     return child as T;
+                }
             }
 
             return default;
+        }
+
+        public static async Task<StorageFile> GetImageFileFromDataPackage(DataPackageView dataPackageView)
+        {
+            var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Strings.RandomString(12)}.png");
+
+            using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+            using (var bmp = await (await dataPackageView.GetBitmapAsync()).OpenReadAsync())
+            {
+                var decoder = await BitmapDecoder.CreateAsync(bmp);
+                using (var softwareBmp = await decoder.GetSoftwareBitmapAsync())
+                {
+                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+                    encoder.SetSoftwareBitmap(softwareBmp);
+                    await encoder.FlushAsync();
+                }
+            }
+
+            return file;
         }
 
         public static async Task SendFilesWithProgressAsync(DiscordChannel channel, BaseDiscordClient client, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
@@ -134,7 +164,9 @@ namespace Unicord.Universal
         public static bool CheckRoleHeirarchy(DiscordMember _member, DiscordMember _current)
         {
             if (_member == null || _current == null)
+            {
                 return false;
+            }
 
             return _member.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position;
         }
@@ -144,7 +176,10 @@ namespace Unicord.Universal
             if (!(element.Resources[name] is Storyboard resource))
             {
                 if (message == null)
+                {
                     message = string.Format("Storyboard '{0}' cannot be found! Check the default Generic.xaml.", name);
+                }
+
                 throw new NullReferenceException(message);
             }
             return resource;
@@ -155,7 +190,10 @@ namespace Unicord.Universal
             if (!(element.RenderTransform is CompositeTransform renderTransform))
             {
                 if (message == null)
+                {
                     message = string.Format("{0}'s RenderTransform should be a CompositeTransform! Check the default Generic.xaml.", element.Name);
+                }
+
                 throw new NullReferenceException(message);
             }
             return renderTransform;
@@ -190,7 +228,9 @@ namespace Unicord.Universal
             {
                 var embed = message.Embeds.FirstOrDefault(em => em.Thumbnail.ProxyUrl != null || em.Image.ProxyUrl != null);
                 if (embed != null)
+                {
                     toastBinding.HeroImage = new ToastGenericHeroImage { Source = (embed.Thumbnail?.ProxyUrl ?? embed.Image?.ProxyUrl).ToString() };
+                }
             }
 
 #if DEBUG

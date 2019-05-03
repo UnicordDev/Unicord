@@ -26,6 +26,22 @@ namespace Unicord.Universal.Integration
         private const string APP_ID = "24101WamWooWamRD.Unicord.Canary_g9xp2jqbzr3wg!App";
 #endif
 
+        public static async Task<ulong> TryGetChannelIdAsync(Contact contact)
+        {
+            var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
+            var manager = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
+            contact = await contacts.GetContactAsync(contact.Id);
+            var annotations = await manager.FindAnnotationsForContactAsync(contact);
+            var annotation = annotations.FirstOrDefault();
+
+            if (ulong.TryParse(annotation.RemoteId.Split('_').Last(), out var id))
+            {
+                return id;
+            }
+
+            return 0;
+        }
+
         public static async Task UpdateContactsListAsync()
         {
             try
@@ -42,7 +58,7 @@ namespace Unicord.Universal.Integration
                     {
                         if (ulong.TryParse(c.RemoteId.Split('_').Last(), out var id))
                         {
-                            return !App.Discord.Relationships.Any(r => r.Id == id);
+                            return !App.Discord.Relationships.ContainsKey(id);
                         }
 
                         return false;
@@ -55,7 +71,7 @@ namespace Unicord.Universal.Integration
 
                     var contactsToAnnotate = new Dictionary<DiscordRelationship, Contact>();
 
-                    foreach (var relationship in App.Discord.Relationships.Where(r => r.RelationshipType == DiscordRelationshipType.Friend))
+                    foreach (var relationship in App.Discord.Relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend))
                     {
                         var contact = await AddOrUpdateContactForRelationship(list, relationship, folder);
                         if (contact != null)

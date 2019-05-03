@@ -2,77 +2,121 @@
     x:Class="Unicord.Universal.Pages.Settings.SecuritySettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Pages.Settings"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded" x:DefaultBindMode="TwoWay">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Unicord.Universal.Pages.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:DefaultBindMode="TwoWay"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
     <Page.DataContext>
-        <local:SecuritySettingsModel/>
+        <local:SecuritySettingsModel />
     </Page.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Security and Privacy"/>
-        
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Grid.Row="1" Margin="0,8,0,0" Text="Diagnostic and Usage data"/>
+
+        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Security and Privacy" />
+
+        <TextBlock
+            Grid.Row="1"
+            Margin="0,8,0,0"
+            Style="{StaticResource SubtitleTextBlockStyle}"
+            Text="Diagnostic and Usage data" />
 
         <Grid Grid.Row="2" Margin="0,4,0,12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Send Diagnostic and Usage data" VerticalAlignment="Center"/>
-            <ToggleSwitch Toggled="ToggleSwitch_Toggled" Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableAnalytics, Mode=TwoWay}" />
+            <TextBlock VerticalAlignment="Center" Text="Send Diagnostic and Usage data" />
+            <ToggleSwitch
+                Grid.Column="1"
+                IsOn="{Binding EnableAnalytics, Mode=TwoWay}"
+                Style="{StaticResource NoTextToggleSwitchStyle}"
+                Toggled="ToggleSwitch_Toggled" />
         </Grid>
-        
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Grid.Row="3" Text="Windows Hello"/>
 
-        <TextBlock x:Name="unavailableText" Grid.Row="4" Margin="0,12,0,0" TextWrapping="Wrap" Foreground="{StaticResource ErrorTextForegroundBrush}">
-            <Run Text="Windows Hello is not available on this device. Wanna"/> <Hyperlink NavigateUri="ms-settings:signinoptions"><Run>change this?</Run></Hyperlink>
+        <TextBlock
+            Grid.Row="3"
+            Style="{StaticResource SubtitleTextBlockStyle}"
+            Text="Windows Hello" />
+
+        <TextBlock
+            x:Name="unavailableText"
+            Grid.Row="4"
+            Margin="0,12,0,0"
+            Foreground="{StaticResource ErrorTextForegroundBrush}"
+            TextWrapping="Wrap">
+            <Run Text="Windows Hello is not available on this device. Wanna" /> <Hyperlink NavigateUri="ms-settings:signinoptions">
+                <Run>change this?</Run>
+            </Hyperlink>
         </TextBlock>
-        <ContentControl x:Name="settingsContent" Grid.Row="5" Margin="0,12" HorizontalContentAlignment="Stretch">
+        <ContentControl
+            x:Name="settingsContent"
+            Grid.Row="5"
+            Margin="0,12"
+            HorizontalContentAlignment="Stretch">
             <StackPanel>
-                <TextBlock Text="Require Windows Hello authentication to:" TextWrapping="Wrap"/>
+                <TextBlock Text="Require Windows Hello authentication to:" TextWrapping="Wrap" />
 
                 <Grid Margin="0,12">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Login" VerticalAlignment="Center"/>
-                    <ToggleSwitch Style="{StaticResource NoTextToggleSwitchStyle}" Grid.Column="1" IsOn="{Binding HelloForLogin, Mode=TwoWay}" />
+                    <TextBlock VerticalAlignment="Center" Text="Login" />
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        IsOn="{Binding HelloForLogin, Mode=TwoWay}"
+                        Style="{StaticResource NoTextToggleSwitchStyle}" />
 
-                    <TextBlock Grid.Row="1" Text="Change settings" VerticalAlignment="Center"/>
-                    <ToggleSwitch Grid.Row="1"  Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding HelloForSettings, Mode=TwoWay}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="Change settings" />
+                    <ToggleSwitch
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        IsOn="{Binding HelloForSettings, Mode=TwoWay}"
+                        Style="{StaticResource NoTextToggleSwitchStyle}" />
 
-                    <TextBlock Grid.Row="2" Text="Access NSFW channels" VerticalAlignment="Center"/>
-                    <ToggleSwitch Grid.Row="2"  Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding HelloForNSFW, Mode=TwoWay}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        Text="Access NSFW channels" />
+                    <ToggleSwitch
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        IsOn="{Binding HelloForNSFW, Mode=TwoWay}"
+                        Style="{StaticResource NoTextToggleSwitchStyle}" />
 
                 </Grid>
 
-                <TimePicker Time="{Binding AuthenticationTime, Mode=TwoWay}" Header="Keep me authenticated for" HorizontalAlignment="Stretch" />
+                <TimePicker
+                    HorizontalAlignment="Stretch"
+                    Header="Keep me authenticated for"
+                    Time="{Binding AuthenticationTime, Mode=TwoWay}" />
             </StackPanel>
         </ContentControl>
 

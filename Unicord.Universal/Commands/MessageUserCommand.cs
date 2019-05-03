@@ -26,12 +26,12 @@ namespace Unicord.Universal.Commands
             }
             else if (parameter is DiscordUser u && u.Id != App.Discord.CurrentUser.Id)
             {
-                if (App.Discord.Relationships.Any(r => r.RelationshipType == DiscordRelationshipType.Friend && r.Id == u.Id))
+                if (App.Discord.Relationships.TryGetValue(u.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
                     return true;
                 }
 
-                if (App.Discord.Guilds.ToArray().Any(g => g.Value.Members.ToArray().Any(gm => gm.Id == u.Id)))
+                if (App.Discord.Guilds.Values.Any(g => g.Members.ContainsKey(u.Id)))
                 {
                     return true;
                 }
@@ -44,10 +44,11 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordUser user)
             {
-                var channel = App.Discord.PrivateChannels.FirstOrDefault(c => c.Recipient?.Id == user.Id);
+                var channel = App.Discord.PrivateChannels.Values.FirstOrDefault(c => c.Recipient?.Id == user.Id);
                 if (channel == null)
                 {
-                    if (App.Discord.Relationships.Any(r => r.RelationshipType == DiscordRelationshipType.Friend && r.Id == user.Id) || App.Discord.Guilds.ToArray().Any(g => g.Value.Members.ToArray().Any(gm => gm.Id == user.Id)))
+                    if ((App.Discord.Relationships.TryGetValue(user.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend) ||
+                        App.Discord.Guilds.Any(g => g.Value.Members.ContainsKey(user.Id)))
                     {
                         channel = await App.Discord.CreateDmChannelAsync(user.Id);
                     }

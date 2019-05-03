@@ -96,14 +96,14 @@ namespace DSharpPlus.Entities
         /// Gets the user's avatar URL.
         /// </summary>
         [JsonIgnore]
-        public string AvatarUrl
+        public virtual string AvatarUrl
             => !string.IsNullOrWhiteSpace(AvatarHash) ? (AvatarHash.StartsWith("a_") ? $"https://cdn.discordapp.com/avatars/{Id.ToString(CultureInfo.InvariantCulture)}/{AvatarHash}.gif?size=128" : $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png?size=128") : DefaultAvatarUrl;
 
         /// <summary>
         /// Gets the user's avatar URL.
         /// </summary>
         [JsonIgnore]
-        public string NonAnimatedAvatarUrl
+        public virtual string NonAnimatedAvatarUrl
             => !string.IsNullOrWhiteSpace(AvatarHash) ? $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png?size=128" : DefaultAvatarUrl;
         
         /// <summary>

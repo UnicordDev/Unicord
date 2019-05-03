@@ -21,7 +21,7 @@ namespace Unicord.Universal.Controls
     {
         public RichPresenceControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

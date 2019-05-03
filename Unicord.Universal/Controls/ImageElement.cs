@@ -21,8 +21,8 @@ namespace Unicord.Universal.Controls
     {
         public int ImageWidth
         {
-            get { return (int)GetValue(ImageWidthProperty); }
-            set { SetValue(ImageWidthProperty, value); }
+            get => (int)GetValue(ImageWidthProperty);
+            set => SetValue(ImageWidthProperty, value);
         }
 
         public static readonly DependencyProperty ImageWidthProperty =
@@ -31,8 +31,8 @@ namespace Unicord.Universal.Controls
 
         public int ImageHeight
         {
-            get { return (int)GetValue(ImageHeightProperty); }
-            set { SetValue(ImageHeightProperty, value); }
+            get => (int)GetValue(ImageHeightProperty);
+            set => SetValue(ImageHeightProperty, value);
         }
 
         public static readonly DependencyProperty ImageHeightProperty =
@@ -41,8 +41,8 @@ namespace Unicord.Universal.Controls
 
         public Uri ImageUri
         {
-            get { return (Uri)GetValue(ImageUriProperty); }
-            set { SetValue(ImageUriProperty, value); }
+            get => (Uri)GetValue(ImageUriProperty);
+            set => SetValue(ImageUriProperty, value);
         }
 
         public static readonly DependencyProperty ImageUriProperty =
@@ -51,8 +51,8 @@ namespace Unicord.Universal.Controls
 
         public bool IsSpoiler
         {
-            get { return (bool)GetValue(IsSpoilerProperty); }
-            set { SetValue(IsSpoilerProperty, value); }
+            get => (bool)GetValue(IsSpoilerProperty);
+            set => SetValue(IsSpoilerProperty, value);
         }
 
         public static readonly DependencyProperty IsSpoilerProperty =

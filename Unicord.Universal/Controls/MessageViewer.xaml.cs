@@ -1,9 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.HockeyApp;
-using NeoSmart.Unicode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,6 +8,12 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.HockeyApp;
+using NeoSmart.Unicode;
+using Unicord.Universal.Commands;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
 using Windows.Foundation;
@@ -39,6 +40,8 @@ namespace Unicord.Universal.Controls
             DependencyProperty.Register("Message", typeof(DiscordMessage), typeof(MessageViewer), new PropertyMetadata(null, OnPropertyChanged));
 
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
+
+        private static DispatcherTimer _timestampTimer;
 
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordMessage _message;
@@ -70,7 +73,10 @@ namespace Unicord.Universal.Controls
 
         public ulong Id => Message.Id;
 
-        private bool CanEdit => Message?.Author.Id == App.Discord.CurrentUser.Id;
+        private bool CanEdit => Message?.Author.Id == App.Discord?.CurrentUser.Id;
+
+        private bool _showBottomSeparator =>
+            CanEdit || DeleteMessageCommand.Instance.CanExecute(Message);
 
         public Visibility CollapsedVisibility
         {
@@ -87,40 +93,55 @@ namespace Unicord.Universal.Controls
         public MessageViewer()
         {
             InitializeComponent();
+
+            if (_timestampTimer == null)
+            {
+                _timestampTimer = new DispatcherTimer()
+                {
+#if DEBUG
+                    Interval = TimeSpan.FromSeconds(10)
+#else
+                    Interval = TimeSpan.FromMinutes(1)
+#endif
+                };
+                _timestampTimer.Start();
+            }
         }
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var t = d as MessageViewer;
-            var oldMessage = e.OldValue as DiscordMessage;
-            var newMessage = e.NewValue as DiscordMessage;
+            if (d is MessageViewer t)
+            {
+                var oldMessage = e.OldValue as DiscordMessage;
+                var newMessage = e.NewValue as DiscordMessage;
 
-            if (oldMessage != newMessage)
-                t.UpdateViewer(e.Property, oldMessage, newMessage);
+                if (oldMessage != newMessage)
+                {
+                    t.UpdateViewer(e.Property, oldMessage, newMessage);
+                }
+            }
         }
 
         public void UpdateViewer(DependencyProperty property, DiscordMessage oldMessage, DiscordMessage newMessage)
         {
             try
             {
-                _message = newMessage;
-
                 if (property == MessageProperty)
                 {
                     if (newMessage == null)
                     {
                         embeds?.Children.Clear();
                         markdown.Text = "";
-                        DataContext = null;
+                        grid.DataContext = null;
                     }
                     else
                     {
+                        _message = newMessage;
                         embeds?.Children.Clear();
 
-                        bg.Visibility = newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id) ? Visibility.Visible : Visibility.Collapsed;
-
+                        //bg.Visibility = newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id) ? Visibility.Visible : Visibility.Collapsed;
                         markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
-                        DataContext = newMessage;
+                        grid.DataContext = newMessage;
 
                         _channel = newMessage.Channel;
                         _author = newMessage.Author;
@@ -152,7 +173,9 @@ namespace Unicord.Universal.Controls
             foreach (var attach in m.Attachments)
             {
                 if (!embeds.Children.OfType<UserControl>().Any(e => e.Tag == attach))
+                {
                     embeds.Children.Add(new AttachmentViewer(attach) { Tag = attach });
+                }
             }
 
             foreach (var embed in m.Embeds)
@@ -164,11 +187,19 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        private void ChangeSize()
+        public void ChangeSize()
         {
             var list = this.FindParent<ListView>();
             if (list != null)
             {
+                if (list.SelectionMode == ListViewSelectionMode.Multiple)
+                {
+                    CollapsedVisibility = Visibility.Visible;
+                    embeds.Visibility = Visibility.Collapsed;
+                    grid.Padding = new Thickness(8);
+                    return;
+                }
+
                 var index = list.Items.IndexOf(Message);
 
                 if (index > 0)
@@ -178,15 +209,15 @@ namespace Unicord.Universal.Controls
                         var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
                         if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
                         {
-                            bg.Margin = new Thickness(0, 2, 0, -2);
-                            grid.Padding = new Thickness(8, 4, 8, 0);
                             CollapsedVisibility = Visibility.Collapsed;
+                            //bg.Margin = new Thickness(0, 2, 0, -2);
+                            grid.Padding = new Thickness(8, 4, 8, 0);
                             return;
                         }
                     }
                 }
 
-                bg.Margin = new Thickness(0, 16, 0, -2);
+                //bg.Margin = new Thickness(0, 16, 0, -2);
                 grid.Padding = new Thickness(8, 20, 8, 0);
             }
 
@@ -196,11 +227,22 @@ namespace Unicord.Universal.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             App.Discord.MessageUpdated += Discord_MessageUpdated;
+            _timestampTimer.Tick += _timestampTimer_Tick;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.Discord.MessageUpdated -= Discord_MessageUpdated;
+            _timestampTimer.Tick -= _timestampTimer_Tick;
+            if (App.Discord != null)
+            {
+                App.Discord.MessageUpdated -= Discord_MessageUpdated;
+            }
+        }
+
+        private void _timestampTimer_Tick(object sender, object e)
+        {
+            if (_collapsedVisibility == Visibility.Visible)
+                _message?.InvokePropertyChanged(nameof(_message.Timestamp));
         }
 
         private Task Discord_MessageUpdated(MessageUpdateEventArgs e)
@@ -239,7 +281,12 @@ namespace Unicord.Universal.Controls
             {
                 _isEditing = true;
                 markdown.Visibility = Visibility.Collapsed;
-                (FindName("messageEditContainer") as Grid).Visibility = Visibility.Visible;
+
+
+                if (FindName("messageEditContainer") is Grid grid)
+                {
+                    grid.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -269,7 +316,11 @@ namespace Unicord.Universal.Controls
             {
                 _isEditing = false;
                 markdown.Visibility = Visibility.Visible;
-                (FindName("messageEditContainer") as Grid).Visibility = Visibility.Collapsed;
+
+                if (FindName("messageEditContainer") is Grid grid)
+                {
+                    grid.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -289,6 +340,11 @@ namespace Unicord.Universal.Controls
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             BeginEditing();
+        }
+
+        private void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.FindParent<ChannelPage>().EnterEditMode(Message);
         }
     }
 }

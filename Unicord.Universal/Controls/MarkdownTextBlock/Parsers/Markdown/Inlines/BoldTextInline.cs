@@ -84,8 +84,10 @@ namespace WamWooWam.Parsers.Markdown.Inlines
             }
 
             // We found something!
-            var result = new BoldTextInline();
-            result.Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd);
+            var result = new BoldTextInline
+            {
+                Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd)
+            };
             return new InlineParseResult(result, start, innerEnd + 2);
         }
 

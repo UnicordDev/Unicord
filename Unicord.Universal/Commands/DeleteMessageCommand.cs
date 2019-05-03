@@ -14,6 +14,9 @@ namespace Unicord.Universal.Commands
 {
     class DeleteMessageCommand : ICommand
     {
+        public static readonly DeleteMessageCommand Instance
+            = new DeleteMessageCommand();
+        
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
@@ -21,16 +24,23 @@ namespace Unicord.Universal.Commands
             if (parameter is DiscordMessage message)
             {
                 if (message.Author.Id == App.Discord.CurrentUser.Id)
+                {
                     return true;
+                }
 
                 if (message.Author is DiscordMember member)
                 {
                     var currentMember = member.Guild.CurrentMember;
 
                     if (currentMember.IsOwner)
+                    {
                         return true;
+                    }
+
                     if (currentMember.PermissionsIn(message.Channel).HasFlag(Permissions.ManageMessages))
+                    {
                         return true;
+                    }
                 }
             }
 

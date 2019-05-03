@@ -21,7 +21,7 @@ namespace DSharpPlus
             DateTimeFormat = timeformatting;
         }
 
-        public void LogMessage(LogLevel level, string application, string message, DateTime timestamp)
+        public void LogMessage(LogLevel level, string application, string message, DateTime timestamp, Exception ex = null)
         {
             if (level <= Level)
             {

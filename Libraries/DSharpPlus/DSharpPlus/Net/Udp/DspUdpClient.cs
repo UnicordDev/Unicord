@@ -32,7 +32,7 @@ namespace DSharpPlus.Net.Udp
             Client = new UdpClient();
             // TODO: Solve for .NET Standard, this is possibly default behaviour (???)
 #if !WINDOWS_UWP
-            this.Client.AllowNatTraversal(true);
+            Client.AllowNatTraversal(true);
 #endif
         }
 

@@ -53,12 +53,16 @@ namespace Unicord.Universal.Pages.Subpages
                 if (e.Message.Pinned)
                 {
                     if (!pins.Contains(e.Message))
+                    {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => pins.Add(e.Message));
+                    }
                 }
                 else
                 {
                     if (pins.Contains(e.Message))
+                    {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => pins.Remove(e.Message));
+                    }
                 }
 
                 if (e.Channel.Id == _channel.Id)

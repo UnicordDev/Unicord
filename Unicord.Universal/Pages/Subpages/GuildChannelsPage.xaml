@@ -2,25 +2,36 @@
     x:Class="Unicord.Universal.Pages.Subpages.GuildChannelsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
     <Page.Resources>
-        <CollectionViewSource x:Key="cvs" x:Name="cvs" IsSourceGrouped="True" />
+        <CollectionViewSource
+            x:Key="cvs"
+            x:Name="cvs"
+            IsSourceGrouped="True" />
     </Page.Resources>
 
     <Grid>
-        <ListView x:Name="channelsList" 
-            SelectionChanged="channelsList_SelectionChanged"
+        <ListView
+            x:Name="channelsList"
+            IsSynchronizedWithCurrentItem="False"
             ItemTemplate="{StaticResource ChannelListTemplate}"
-            IsSynchronizedWithCurrentItem="False" 
-            ItemsSource="{Binding Source={StaticResource cvs}}">
+            ItemsSource="{Binding Source={StaticResource cvs}}"
+            SelectionChanged="channelsList_SelectionChanged">
             <ListView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Key.Name, FallbackValue={Binding Key}}" FontSize="14" FontWeight="Bold" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Text="{Binding Key.Name, FallbackValue={Binding Key}}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap" />
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
@@ -28,13 +39,18 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Setters>
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Padding" Value="0,0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0,0" />
                     </Style.Setters>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <ProgressRing x:Name="ring" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <ProgressRing
+            x:Name="ring"
+            Width="64"
+            Height="64"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center" />
     </Grid>
 </Page>

@@ -24,7 +24,7 @@ namespace Unicord.Universal.Pages.Settings
     {
         public AboutSettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

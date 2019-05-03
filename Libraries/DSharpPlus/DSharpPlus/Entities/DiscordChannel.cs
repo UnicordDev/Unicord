@@ -32,19 +32,19 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public DiscordChannel Parent
-            => Guild?.Channels.FirstOrDefault(xc => xc.Id == ParentId);
+            => ParentId.HasValue ? Guild?.Channels[ParentId.Value] : null;
 
         /// <summary>
         /// Gets the name of this channel.
         /// </summary>
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; internal set; }
+        public virtual string Name { get; internal set; }
 
         /// <summary>
         /// Gets the type of this channel.
         /// </summary>
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-        public ChannelType Type { get; internal set; }
+        public virtual ChannelType Type { get; internal set; }
 
         /// <summary>
         /// Gets the position of this channel.
@@ -89,7 +89,7 @@ namespace DSharpPlus.Entities
         /// Gets the channel's topic. This is applicable to text channels only.
         /// </summary>
         [JsonProperty("topic", NullValueHandling = NullValueHandling.Ignore)]
-        public string Topic { get; internal set; } = "";
+        public virtual string Topic { get; internal set; } = "";
 
         /// <summary>
         /// Gets the ID of the last message sent in this channel. This is applicable to text channels only.
@@ -150,7 +150,7 @@ namespace DSharpPlus.Entities
                     throw new ArgumentException("Only channel categories contain children");
                 }
 
-                return Guild._channels.Where(e => e.ParentId == Id);
+                return Guild._channels.Values.Where(e => e.ParentId == Id);
             }
         }
 
@@ -169,10 +169,10 @@ namespace DSharpPlus.Entities
 
                 if (Type == ChannelType.Voice)
                 {
-                    return Guild.Members.Where(x => x.VoiceState?.ChannelId == Id).Distinct();
+                    return Guild.Members.Values.Where(x => x.VoiceState?.ChannelId == Id).Distinct();
                 }
 
-                return Guild.Members.Where(x => (PermissionsFor(x) & Permissions.AccessChannels) == Permissions.AccessChannels);
+                return Guild.Members.Values.Where(x => (PermissionsFor(x) & Permissions.AccessChannels) == Permissions.AccessChannels);
             }
         }
 
@@ -342,7 +342,7 @@ namespace DSharpPlus.Entities
             }
             if (Type != ChannelType.Text)
             {
-                perUserRateLimit = Optional<int?>.FromNoValue();
+                perUserRateLimit = Optional.FromNoValue<int?>();
             }
 
             return await Guild.CreateChannelAsync(Name, Type, Parent, bitrate, userLimit, ovrs, IsNSFW, perUserRateLimit, reason).ConfigureAwait(false);
@@ -370,7 +370,7 @@ namespace DSharpPlus.Entities
         /// <returns></returns>
         public Task ModifyAsync(Action<ChannelEditModel> action)
         {
-            var mdl = new ChannelEditModel();
+            var mdl = new ChannelEditModel(this);
             action(mdl);
             return Discord.ApiClient.ModifyChannelAsync(Id, mdl.Name, mdl.Position, mdl.Topic, mdl.Nsfw,
                 mdl.Parent.HasValue ? mdl.Parent.Value?.Id : default(Optional<ulong?>), mdl.Bitrate, mdl.Userlimit, mdl.PerUserRateLimit, mdl.AuditLogReason);
@@ -389,7 +389,7 @@ namespace DSharpPlus.Entities
                 throw new InvalidOperationException("Cannot modify order of non-guild channels.");
             }
 
-            var chns = Guild._channels.Where(xc => xc.Type == Type).OrderBy(xc => xc.Position).ToArray();
+            var chns = Guild._channels.Values.Where(xc => xc.Type == Type).OrderBy(xc => xc.Position).ToArray();
             var pmds = new RestGuildChannelReorderPayload[chns.Length];
             for (var i = 0; i < chns.Length; i++)
             {
@@ -569,7 +569,7 @@ namespace DSharpPlus.Entities
         /// <returns></returns>
         public async Task<DiscordWebhook> CreateWebhookAsync(string name, Optional<Stream> avatar = default, string reason = null)
         {
-            var av64 = Optional<string>.FromNoValue();
+            var av64 = Optional.FromNoValue<string>();
             if (avatar.HasValue && avatar.Value != null)
             {
                 using (var imgtool = new ImageTool(avatar.Value))
@@ -617,6 +617,9 @@ namespace DSharpPlus.Entities
         {
             // default permissions
             const Permissions def = Permissions.None;
+
+            if (mbr == null)
+                return def;
 
             // future note: might be able to simplify @everyone role checks to just check any role ... but i'm not sure
             // xoxo, ~uwx

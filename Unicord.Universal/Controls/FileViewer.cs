@@ -39,7 +39,9 @@ namespace Unicord.Universal.Controls
             var v = d as FileViewer;
 
             if (!v._appliedTemplate)
+            {
                 v._appliedTemplate = v.ApplyTemplate();
+            }
 
             await v._semaphore.WaitAsync();
 
@@ -57,7 +59,9 @@ namespace Unicord.Universal.Controls
                 {
                     var thumb = await f.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);
                     if (thumb != null)
+                    {
                         await source.SetSourceAsync(thumb);
+                    }
                 }
                 catch (Exception ex)
                 {

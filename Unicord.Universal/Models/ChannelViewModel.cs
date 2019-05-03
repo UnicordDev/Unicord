@@ -28,20 +28,20 @@ namespace Unicord.Universal.Models
         private SynchronizationContext _context;
         private SemaphoreSlim _loadSemaphore;
         private DispatcherTimer _dispatcherTimer;
-        private ObservableCollection<DiscordMessage> _messages;
         private bool _isTranscoding;
+        private bool _slim;
 
-        public ChannelViewModel(DiscordChannel channel)
+        public ChannelViewModel(DiscordChannel channel, bool slim = false)
         {
+            _slim = slim;
             _loadSemaphore = new SemaphoreSlim(0, 1);
-            _dispatcherTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1 / 30) };
             _context = SynchronizationContext.Current;
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
 
             Channel = channel;
             CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
-            if (channel.Type != ChannelType.Voice)
+            if (channel.Type != ChannelType.Voice && !_slim)
             {
                 App.Discord.TypingStarted += OnTypingStarted;
                 App.Discord.MessageCreated += OnMessageCreated;
@@ -53,23 +53,32 @@ namespace Unicord.Universal.Models
             }
 
             if (channel.Guild != null)
+            {
                 Permissions = _channel.PermissionsFor(channel.Guild.CurrentMember);
+            }
             else
+            {
                 Permissions = Permissions.Administrator;
+            }
 
             AvailableUsers = new ObservableCollection<DiscordUser> { CurrentUser };
-            Messages = new ObservableCollection<DiscordMessage>();
 
-            _dispatcherTimer.Tick += (o, e) =>
+            if (!_slim)
             {
-                SlowModeTimeout = Math.Max(0, PerUserRateLimit - (DateTimeOffset.Now - _messageLastSent).TotalMilliseconds);
-                InvokePropertyChanged(nameof(ShowSlowModeTimeout));
-                if (SlowModeTimeout == 0)
+                Messages = new ObservableCollection<DiscordMessage>();
+
+                _dispatcherTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1 / 30) };
+                _dispatcherTimer.Tick += (o, e) =>
                 {
-                    InvokePropertyChanged(nameof(CanSend));
-                    _dispatcherTimer.Stop();
-                }
-            };
+                    SlowModeTimeout = Math.Max(0, PerUserRateLimit - (DateTimeOffset.Now - _messageLastSent).TotalMilliseconds);
+                    InvokePropertyChanged(nameof(ShowSlowModeTimeout));
+                    if (SlowModeTimeout == 0)
+                    {
+                        InvokePropertyChanged(nameof(CanSend));
+                        _dispatcherTimer.Stop();
+                    }
+                };
+            }
 
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
@@ -85,7 +94,7 @@ namespace Unicord.Universal.Models
             _loadSemaphore.Release();
         }
 
-        public ObservableCollection<DiscordMessage> Messages { get => _messages; set => _messages = value; }
+        public ObservableCollection<DiscordMessage> Messages { get; set; }
 
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
@@ -94,7 +103,9 @@ namespace Unicord.Universal.Models
             if (e.Channel.Id == Channel.Id)
             {
                 if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
+                {
                     src.Cancel();
+                }
 
                 var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
                 if (usr != null)
@@ -106,7 +117,9 @@ namespace Unicord.Universal.Models
                     }, null);
                 }
                 if (!Messages.Any(m => m.Id == e.Message.Id))
+                {
                     _context.Post(a => Messages.Add(e.Message), null);
+                }
             }
 
             _loadSemaphore.Release();
@@ -142,9 +155,13 @@ namespace Unicord.Universal.Models
                 OnPropertySet(ref _channel, value);
 
                 if (_channel.Guild != null)
+                {
                     Permissions = _channel.PermissionsFor(_channel.Guild.CurrentMember);
+                }
                 else
+                {
                     Permissions = Permissions.Administrator;
+                }
 
                 InvokePropertyChanged(string.Empty);
             }
@@ -158,9 +175,13 @@ namespace Unicord.Universal.Models
                 OnPropertySet(ref _currentUser, value);
 
                 if (_channel.Guild != null)
+                {
                     Permissions = _channel.PermissionsFor(_currentUser as DiscordMember);
+                }
                 else
+                {
                     Permissions = Permissions.Administrator;
+                }
 
                 InvokePropertyChanged(string.Empty);
             }
@@ -174,7 +195,7 @@ namespace Unicord.Universal.Models
 
         public ObservableCollection<DiscordUser> TypingUsers { get; set; }
 
-        public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r", "\n" }, " ") : string.Empty;
+        public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
 
         /// <summary>
         /// The channel's symbol. (i.e. #, @ etc.)
@@ -192,7 +213,9 @@ namespace Unicord.Universal.Models
             get
             {
                 if (!string.IsNullOrEmpty(Channel.Name))
+                {
                     return Channel.Name;
+                }
 
                 if (Channel is DiscordDmChannel dm)
                 {
@@ -218,6 +241,11 @@ namespace Unicord.Universal.Models
 
         internal async Task LoadMessagesAsync()
         {
+            if (_slim)
+            {
+                throw new InvalidOperationException("Unable to load messages with a slim view model.");
+            }
+
             await _loadSemaphore.WaitAsync();
 
             if (!Messages.Any())
@@ -233,12 +261,14 @@ namespace Unicord.Universal.Models
                 {
                     _context.Post(d =>
                     {
-                        lock (_messages)
+                        lock (Messages)
                         {
                             foreach (var mess in messages)
                             {
                                 if (!Messages.Any(m => m.Id == mess.Id))
+                                {
                                     Messages.Insert(index + 1, mess);
+                                }
                             }
                         }
 
@@ -257,17 +287,24 @@ namespace Unicord.Universal.Models
 
         private async Task UnsafeLoadMessages()
         {
+            if (_slim)
+            {
+                throw new InvalidOperationException("Unable to load messages with a slim view model.");
+            }
+
             var messages = await Channel.GetMessagesAsync(50).ConfigureAwait(false);
             if (messages.Any())
             {
                 _context.Post(d =>
                 {
-                    lock (_messages)
+                    lock (Messages)
                     {
                         foreach (var message in messages.Reverse())
                         {
                             if (!Messages.Any(m => m.Id == message.Id))
+                            {
                                 Messages.Add(message);
+                            }
                         }
                     }
 
@@ -277,6 +314,11 @@ namespace Unicord.Universal.Models
 
         internal async Task LoadMessagesBeforeAsync()
         {
+            if (_slim)
+            {
+                throw new InvalidOperationException("Unable to load messages with a slim view model.");
+            }
+
             await _loadSemaphore.WaitAsync();
 
             var message = Messages.FirstOrDefault();
@@ -287,12 +329,14 @@ namespace Unicord.Universal.Models
                 {
                     _context.Post(d =>
                     {
-                        lock (_messages)
+                        lock (Messages)
                         {
                             foreach (var m in messages)
                             {
                                 if (!Messages.Any(me => me.Id == m.Id))
+                                {
                                     Messages.Insert(0, m);
+                                }
                             }
                         }
                     }, null);
@@ -335,16 +379,24 @@ namespace Unicord.Universal.Models
             get
             {
                 if (SlowModeTimeout != 0 && !ImmuneToSlowMode)
+                {
                     return false;
+                }
 
                 if (UploadSize > (ulong)UploadLimit)
+                {
                     return false;
+                }
 
                 if (Channel.Type == ChannelType.Voice)
+                {
                     return false;
+                }
 
                 if (Channel is DiscordDmChannel)
+                {
                     return true;
+                }
 
                 if (_currentUser is DiscordMember member)
                 {
@@ -360,10 +412,14 @@ namespace Unicord.Universal.Models
             get
             {
                 if (!CanSend)
+                {
                     return false;
+                }
 
                 if (Channel is DiscordDmChannel)
+                {
                     return true;
+                }
 
                 if (_currentUser is DiscordMember member)
                 {
@@ -420,7 +476,9 @@ namespace Unicord.Universal.Models
         public async Task SendMessageAsync(TextBox textBox, IProgress<double?> progress = null)
         {
             if (Channel.Type == ChannelType.Voice)
+            {
                 return;
+            }
 
             if ((!string.IsNullOrWhiteSpace(textBox.Text) || FileUploads.Any()) && CanSend)
             {
@@ -503,6 +561,9 @@ namespace Unicord.Universal.Models
         public Visibility ShowTypingContainer => ShowSlowMode == Visibility.Visible || ShowTypingUsers == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
 
         public DateTimeOffset LastAccessed { get; internal set; }
+
+        public bool IsEditMode { get; set; }
+
         public bool IsTranscoding
         {
             get => _isTranscoding;
@@ -521,7 +582,9 @@ namespace Unicord.Universal.Models
                 AvailableUsers.Add(CurrentUser);
 
                 if (Channel.Guild == null) // for now
+                {
                     return;
+                }
 
                 foreach (var u in App.AdditionalUserClients)
                 {
@@ -573,7 +636,9 @@ namespace Unicord.Universal.Models
             if (e.Channel.Id == Channel.Id && e.User.Id != CurrentUser.Id)
             {
                 if (_typingCancellation.TryRemove(e.User.Id, out var src))
+                {
                     src.Cancel();
+                }
 
                 _context.Post(o =>
                 {
@@ -606,11 +671,18 @@ namespace Unicord.Universal.Models
 
         public virtual void Dispose()
         {
-            if (Channel.Type != ChannelType.Voice)
+            if (Channel.Type != ChannelType.Voice && !_slim)
             {
                 App.Discord.TypingStarted -= OnTypingStarted;
                 App.Discord.MessageCreated -= OnMessageCreated;
                 App.Discord.MessageDeleted -= OnMessageDeleted;
+                App.Discord.ChannelUpdated -= OnChannelUpdated;
+                App.Discord.Resumed -= OnResumed;
+            }
+
+            foreach (var item in FileUploads)
+            {
+                item.Dispose();
             }
         }
     }

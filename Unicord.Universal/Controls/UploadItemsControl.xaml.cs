@@ -1,5 +1,6 @@
 ﻿using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +34,6 @@ namespace Unicord.Universal.Controls
             Audio, Video, Photo
         }
 
-        private bool _small = true;
         private CancellationTokenSource _cancellationToken;
         private SemaphoreSlim _transcodeWait = new SemaphoreSlim(1, 1);
 
@@ -89,7 +89,9 @@ namespace Unicord.Universal.Controls
                         else
                         {
                             if (!_cancellationToken.IsCancellationRequested)
+                            {
                                 transcodeFailed = true;
+                            }
                         }
                     }
 
@@ -113,7 +115,9 @@ namespace Unicord.Universal.Controls
             if (obj == null)
             {
                 if (!transcodeProgress.IsIndeterminate)
+                {
                     transcodeProgress.IsIndeterminate = true;
+                }
             }
             else
             {
@@ -128,7 +132,9 @@ namespace Unicord.Universal.Controls
             channelViewModel.FileUploads.Remove(item);
 
             if (item.IsTemporary)
+            {
                 await item.StorageFile.DeleteAsync();
+            }
 
             item.Dispose();
         }
@@ -190,9 +196,13 @@ namespace Unicord.Universal.Controls
             }
 
             if (success)
+            {
                 return tempFile;
+            }
             else
+            {
                 return null;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -217,6 +227,15 @@ namespace Unicord.Universal.Controls
             bigModel.FileUploads.Add(newModel);
 
             this.FindParent<DiscordPage>().OpenCustomPane(typeof(VideoEditor), newModel);
+        }
+
+        private void EditButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!App.RoamingSettings.Read("EditTipShown", false))
+            {
+                ((sender as Button).Resources["editTip"] as TeachingTip).IsOpen = true;
+                App.RoamingSettings.Save("EditTipShown", true);
+            }
         }
     }
 }

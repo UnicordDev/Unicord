@@ -65,4 +65,11 @@ namespace Unicord
         WhenNeeded,
         Never
     }
+       
+    public enum TimestampStyle
+    {
+        Relative,
+        Absolute,
+        Both
+    }
 }

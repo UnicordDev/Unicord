@@ -15,7 +15,9 @@ namespace DSharpPlus
         public static bool HasPermission(this Permissions p, Permissions permission)
         {
             if ((p & Permissions.Administrator) == Permissions.Administrator || (p & permission) == permission)
+            {
                 return true;
+            }
 
             return false;
         }

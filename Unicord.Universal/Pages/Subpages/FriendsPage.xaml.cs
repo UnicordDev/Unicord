@@ -40,7 +40,7 @@ namespace Unicord.Universal.Pages.Subpages
                 var allList = new List<DiscordRelationship>();
                 var onlineList = new List<DiscordRelationship>();
 
-                foreach (var rel in App.Discord.Relationships.OrderBy(r => r.User?.Username))
+                foreach (var rel in App.Discord.Relationships.Values.OrderBy(r => r.User?.Username))
                 {
                     switch (rel.RelationshipType)
                     {
@@ -83,8 +83,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (e.PresenceBefore?.Status != e.Status)
             {
-                var rel = App.Discord.Relationships.FirstOrDefault(r => r.User.Id == e.User.Id);
-                if (rel != null && rel.RelationshipType == DiscordRelationshipType.Friend)
+                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
@@ -116,14 +115,21 @@ namespace Unicord.Universal.Pages.Subpages
                     if (!skipAll)
                     {
                         i = _all.ToList().BinarySearch(rel);
-                        if (i < 0) i = ~i;
+                        if (i < 0)
+                        {
+                            i = ~i;
+                        }
+
                         _all.Insert(i, rel);
                     }
 
                     if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
                     {
                         i = _online.ToList().BinarySearch(rel);
-                        if (i < 0) i = ~i;
+                        if (i < 0)
+                        {
+                            i = ~i;
+                        }
 
                         _online.Insert(i, rel);
                     }
@@ -143,7 +149,10 @@ namespace Unicord.Universal.Pages.Subpages
         private void RemoveRelationship(DiscordRelationship rel, bool skipAll = false)
         {
             if (!skipAll)
+            {
                 _all.Remove(rel);
+            }
+
             _online.Remove(rel);
             _pending.Remove(rel);
             _blocked.Remove(rel);

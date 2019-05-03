@@ -156,10 +156,12 @@ namespace WamWooWam.Parsers.Markdown.Blocks
             }
 
             // We found something!
-            var result = new LinkReferenceBlock();
-            result.Id = id;
-            result.Url = url;
-            result.Tooltip = tooltip;
+            var result = new LinkReferenceBlock
+            {
+                Id = id,
+                Url = url,
+                Tooltip = tooltip
+            };
             return result;
         }
 

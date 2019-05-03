@@ -17,7 +17,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
-        
+
         <DataTemplate x:Key="userTemplate" x:DataType="discord:DiscordRelationship">
             <Grid Padding="10" HorizontalAlignment="Stretch" Background="#00FFFFFF" PointerCanceled="Grid_PointerCanceled" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
                 <Grid.Resources>
@@ -102,7 +102,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">            
+        <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>

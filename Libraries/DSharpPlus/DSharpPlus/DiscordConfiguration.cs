@@ -145,10 +145,7 @@ namespace DSharpPlus
         public UdpClientFactoryDelegate UdpClientFactory
         {
             internal get => _udpClientFactory;
-            set
-            {
-                _udpClientFactory = value ?? throw new InvalidOperationException("You need to supply a valid UDP client factory method.");
-            }
+            set => _udpClientFactory = value ?? throw new InvalidOperationException("You need to supply a valid UDP client factory method.");
         }
         private UdpClientFactoryDelegate _udpClientFactory = DspUdpClient.CreateNew;
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Controls;
+using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -24,7 +26,14 @@ namespace Unicord.Universal.Pages.Settings
     {
         public MessagingSettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // dirty hack to work around databinding fuckery
+            App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)(sender as ComboBox).SelectedIndex);
+            ((DataContext as MessagingSettingsModel).ExampleMessage as MockMessage).NotifyAllChanged();
         }
     }
 }

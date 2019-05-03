@@ -200,10 +200,12 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                 }
 
                 // We found a regular stand-alone link.
-                var result = new MarkdownLinkInline();
-                result.Inlines = Common.ParseInlineChildren(markdown, linkTextOpen, linkTextClose, ignoreLinks: true);
-                result.Url = url.Replace(" ", "%20");
-                result.Tooltip = tooltip;
+                var result = new MarkdownLinkInline
+                {
+                    Inlines = Common.ParseInlineChildren(markdown, linkTextOpen, linkTextClose, ignoreLinks: true),
+                    Url = url.Replace(" ", "%20"),
+                    Tooltip = tooltip
+                };
                 return new InlineParseResult(result, start, end);
             }
             else if (markdown[pos] == '[')
@@ -216,9 +218,11 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                 }
 
                 // We found a reference-style link.
-                var result = new MarkdownLinkInline();
-                result.Inlines = Common.ParseInlineChildren(markdown, linkTextOpen, linkTextClose, ignoreLinks: true);
-                result.ReferenceId = markdown.Substring(linkOpen + 1, linkClose - (linkOpen + 1));
+                var result = new MarkdownLinkInline
+                {
+                    Inlines = Common.ParseInlineChildren(markdown, linkTextOpen, linkTextClose, ignoreLinks: true),
+                    ReferenceId = markdown.Substring(linkOpen + 1, linkClose - (linkOpen + 1))
+                };
                 if (result.ReferenceId == string.Empty)
                 {
                     result.ReferenceId = markdown.Substring(linkTextOpen, linkTextClose - linkTextOpen);

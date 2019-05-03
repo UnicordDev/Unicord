@@ -11,7 +11,7 @@
     <AssemblyName>DSharpPlus.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18323.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -426,9 +426,6 @@
     <Compile Include="..\DSharpPlus\EventArgs\UserUpdateEventArgs.cs">
       <Link>EventArgs\UserUpdateEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\DSharpPlus\EventArgs\VoiceReceiveEventArgs.cs">
-      <Link>EventArgs\VoiceReceiveEventArgs.cs</Link>
-    </Compile>
     <Compile Include="..\DSharpPlus\EventArgs\VoiceServerUpdateEventArgs.cs">
       <Link>EventArgs\VoiceServerUpdateEventArgs.cs</Link>
     </Compile>
@@ -555,6 +552,9 @@
     <Compile Include="..\DSharpPlus\Net\Serialization\DiscordJson.cs">
       <Link>Net\Serialization\DiscordJson.cs</Link>
     </Compile>
+    <Compile Include="..\DSharpPlus\Net\Serialization\SnowflakeArrayAsDictionaryJsonConverter.cs">
+      <Link>Net\Serialization\SnowflakeArrayAsDictionaryJsonConverter.cs</Link>
+    </Compile>
     <Compile Include="..\DSharpPlus\Net\Udp\BaseUdpClient.cs">
       <Link>Net\Udp\BaseUdpClient.cs</Link>
     </Compile>
@@ -567,11 +567,20 @@
     <Compile Include="..\DSharpPlus\Net\WebSocket\BaseWebSocketClient.cs">
       <Link>Net\WebSocket\BaseWebSocketClient.cs</Link>
     </Compile>
+    <Compile Include="..\DSharpPlus\Net\WebSocket\SocketLock.cs">
+      <Link>Net\WebSocket\SocketLock.cs</Link>
+    </Compile>
     <Compile Include="..\DSharpPlus\Net\WebSocket\WebSocketClient.cs">
       <Link>Net\WebSocket\WebSocketClient.cs</Link>
     </Compile>
     <Compile Include="..\DSharpPlus\PropertyChangeBase.cs">
       <Link>PropertyChangeBase.cs</Link>
+    </Compile>
+    <Compile Include="..\DSharpPlus\ReadOnlyConcurrentDictionary.cs">
+      <Link>ReadOnlyConcurrentDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\DSharpPlus\ReadOnlySet.cs">
+      <Link>ReadOnlySet.cs</Link>
     </Compile>
     <Compile Include="..\DSharpPlus\RingBuffer.cs">
       <Link>RingBuffer.cs</Link>
@@ -583,13 +592,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.9</Version>
+      <Version>6.2.8</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
+      <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
-      <Version>4.5.1</Version>
+      <Version>4.5.2</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

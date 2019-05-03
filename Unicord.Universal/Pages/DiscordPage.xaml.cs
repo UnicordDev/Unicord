@@ -130,10 +130,12 @@ namespace Unicord.Universal.Pages
                     }
                 };
 
-                foreach (var dm in App.Discord.PrivateChannels)
+                foreach (var dm in App.Discord.PrivateChannels.Values)
                 {
                     if (dm.ReadState.MentionCount > 0)
+                    {
                         _unreadDms.Add(dm);
+                    }
 
                     dm.PropertyChanged += Dm_PropertyChanged;
                 }
@@ -153,7 +155,6 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     friendsItem_Tapped(null, null);
                 }
-
             }
             catch (Exception ex)
             {
@@ -174,7 +175,9 @@ namespace Unicord.Universal.Pages
         private async Task Discord_GuildCreated(GuildCreateEventArgs e)
         {
             if (!_guilds.Contains(e.Guild))
+            {
                 await Dispatcher.RunIdleAsync(d => _guilds.Add(e.Guild));
+            }
         }
 
         private async Task Discord_GuildDeleted(GuildDeleteEventArgs e)
@@ -225,14 +228,14 @@ namespace Unicord.Universal.Pages
         {
             if (App.Discord != null)
             {
-                App.Discord.MessageCreated -= Notification_MessageCreated;
+                App.Discord.MessageCreated      -= Notification_MessageCreated;
                 App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
-                App.Discord.GuildCreated -= Discord_GuildCreated;
-                App.Discord.GuildDeleted -= Discord_GuildDeleted;
-                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
-                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
+                App.Discord.GuildCreated        -= Discord_GuildCreated;
+                App.Discord.GuildDeleted        -= Discord_GuildDeleted;
+                App.Discord.DmChannelCreated    -= Discord_DmChannelCreated;
+                App.Discord.DmChannelDeleted    -= Discord_DmChannelDeleted;
 
-                foreach (var dm in App.Discord.PrivateChannels)
+                foreach (var dm in App.Discord.PrivateChannels.Values)
                 {
                     dm.PropertyChanged -= Dm_PropertyChanged;
                 }
@@ -292,6 +295,15 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
+            if(Frame.CurrentSourcePageType == typeof(ChannelPage))
+            {
+                notification.Margin = new Thickness(0, 42, 4, 0);
+            }
+            else
+            {
+                notification.Margin = new Thickness(0, 20, 4, 0);
+            }
+
             notification.Content = new MessageViewer() { Message = message, IsEnabled = false, Background = new SolidColorBrush(Colors.Transparent) };
             notification.Show(7_000);
         }
@@ -300,15 +312,25 @@ namespace Unicord.Universal.Pages
         {
             var message = ((sender as InAppNotification).Content as MessageViewer)?.Message;
             if (message != null)
+            {
                 Navigate(message.Channel, new DrillInNavigationTransitionInfo());
+            }
         }
 
-        private void GuildsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void GuildsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.FirstOrDefault() is DiscordGuild g)
             {
-                sidebarFrame.Navigate(typeof(GuildChannelsPage), g);
-                friendsItem.IsSelected = false;
+                if (!g.IsUnavailable)
+                {
+                    sidebarFrame.Navigate(typeof(GuildChannelsPage), g);
+                    friendsItem.IsSelected = false;
+                }
+                else
+                {
+                    guildsList.SelectedItem = null;
+                    await UIUtilities.ShowErrorDialogAsync("This server is unavailable!", "It seems this having some problems, and is currently unavailable, sorry!");
+                }
             }
         }
 
@@ -359,6 +381,12 @@ namespace Unicord.Universal.Pages
             else
             {
                 Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+            }
+
+            if(_args?.IsUriActivation == true)
+            {
+                notification.Content = new UriActivationMessage();
+                notification.Show(7_000);
             }
 
             unreadDms.SelectionChanged += UnreadDms_SelectionChanged;
@@ -439,7 +467,7 @@ namespace Unicord.Universal.Pages
                 }
             }
 
-            //SettingsGrid.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());
+            SettingsGrid.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());
         }
 
         private void SettingsOverlayBackground_Tapped(object sender, TappedRoutedEventArgs e)
@@ -462,6 +490,7 @@ namespace Unicord.Universal.Pages
         private void CloseSettingsStoryboard_Completed(object sender, object e)
         {
             SettingsOverlayGrid.Visibility = Visibility.Collapsed;
+            SettingsGrid.Navigate(typeof(Page), null, new SuppressNavigationTransitionInfo());
         }
 
         private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
@@ -507,6 +536,11 @@ namespace Unicord.Universal.Pages
         private void CloseCustomMobileStoryboard_Completed(object sender, object e)
         {
             CustomOverlayGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void OpenSettingsStoryboard_Completed(object sender, object e)
+        {
+
         }
     }
 }

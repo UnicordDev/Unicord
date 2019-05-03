@@ -5,6 +5,12 @@
     /// </summary>
     public struct ConnectionEndpoint
     {
+        public ConnectionEndpoint(string host, int port)
+        {
+            Hostname = host;
+            Port = port;
+        }
+
         /// <summary>
         /// Gets or sets the hostname associated with this endpoint.
         /// </summary>

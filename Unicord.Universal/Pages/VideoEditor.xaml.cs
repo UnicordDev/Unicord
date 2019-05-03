@@ -134,10 +134,14 @@ namespace Unicord.Universal.Pages
         public void UpdateMediaElementSource()
         {
             if (!_ready || _model == null)
+            {
                 return;
+            }
 
             if (mediaElement.MediaPlayer?.PlaybackSession != null)
+            {
                 mediaElement.MediaPlayer.PlaybackSession.PositionChanged -= PlaybackSession_PositionChanged;
+            }
 
             _mediaStreamSource = _model.Composition.GeneratePreviewMediaStreamSource(Math.Min((int)mediaElement.ActualWidth, 1280), Math.Min((int)mediaElement.ActualHeight, 720));
 
@@ -169,7 +173,9 @@ namespace Unicord.Universal.Pages
         private void RangeSelector_RangeChanged(object sender, Controls.RangeChangedEventArgs e)
         {
             if (!_ready)
+            {
                 return;
+            }
 
             if (_playing)
             {
@@ -213,7 +219,9 @@ namespace Unicord.Universal.Pages
         private void RangeSelector_ValueChanged(object sender, double e)
         {
             if (!_ready)
+            {
                 return;
+            }
 
             if (_playing)
             {
@@ -402,7 +410,9 @@ namespace Unicord.Universal.Pages
         private void _playTimer_Tick(object sender, object e)
         {
             if (!_ready || mediaElement.MediaPlayer == null || mediaElement.MediaPlayer.PlaybackSession == null)
+            {
                 return;
+            }
 
             _scrubSkip = true;
             mediaElement.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(Math.Min(Math.Max(0, (_startPosition != 0 ? _startPosition : rangeSelector.Value) - rangeSelector.RangeMin), rangeSelector.RangeMax));
@@ -478,7 +488,9 @@ namespace Unicord.Universal.Pages
         private void VolumeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (mediaElement.MediaPlayer != null && !mediaElement.MediaPlayer.IsMuted)
+            {
                 mediaElement.MediaPlayer.Volume = e.NewValue / 100d;
+            }
         }
     }
 }

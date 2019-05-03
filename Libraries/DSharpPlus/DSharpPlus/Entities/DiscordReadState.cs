@@ -21,12 +21,18 @@ namespace DSharpPlus.Entities
         public bool Unread
         {
             get
-            {
-                var channel = Discord?.InternalGetCachedChannel(Id);
+            { 
+                // this shit should never happen but apparently it does sometimes, don't question it
+                if (Id == 0)
+                    return false;
 
-                if (channel?.Type == ChannelType.Text)
+                var channel = Discord?.InternalGetCachedChannel(Id);
+                if (channel == null)
+                    return false;
+
+                if (channel?.Type == ChannelType.Text || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
                 {
-                    return channel.LastMessageId != 0 ? channel.LastMessageId > _lastMessageId : false;
+                    return (MentionCount > 0 || (channel.LastMessageId != 0 ? channel.LastMessageId > _lastMessageId : false));
                 }
                 else
                 {
@@ -36,7 +42,7 @@ namespace DSharpPlus.Entities
         }
 
         [JsonProperty("mention_count")]
-        public int MentionCount { get => _mentionCount; internal set => OnPropertySet(ref _mentionCount, value); }
+        public int MentionCount { get => _mentionCount; internal set { OnPropertySet(ref _mentionCount, value); InvokePropertyChanged(nameof(Unread)); } }
 
         [JsonProperty("last_message_id")]
         public ulong LastMessageId { get => _lastMessageId; internal set { OnPropertySet(ref _lastMessageId, value); InvokePropertyChanged(nameof(Unread)); } }

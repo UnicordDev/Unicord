@@ -50,9 +50,9 @@ namespace WamWooWam.Parsers.Markdown.Blocks
         internal static ListBlock Parse(string markdown, int start, int maxEnd, int quoteDepth, out int actualEnd)
         {
             var russianDolls = new List<NestedListInfo>();
-            int russianDollIndex = -1;
-            bool previousLineWasBlank = false;
-            bool inCodeBlock = false;
+            var russianDollIndex = -1;
+            var previousLineWasBlank = false;
+            var inCodeBlock = false;
             ListItemBlock currentListItem = null;
             actualEnd = start;
 
@@ -88,7 +88,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         //    previous list item).
                         // 5. Etcetera.
                         ListBlock listToAddTo = null;
-                        int spaceCount = lineInfo.FirstNonWhitespaceChar - lineInfo.StartOfLine;
+                        var spaceCount = lineInfo.FirstNonWhitespaceChar - lineInfo.StartOfLine;
                         russianDollIndex = russianDolls.FindIndex(rd => rd.SpaceCount == spaceCount);
                         if (russianDollIndex >= 0)
                         {
@@ -142,21 +142,21 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         }
 
                         // This is the start of a new paragraph.
-                        int spaceCount = lineInfo.FirstNonWhitespaceChar - lineInfo.StartOfLine;
+                        var spaceCount = lineInfo.FirstNonWhitespaceChar - lineInfo.StartOfLine;
                         if (spaceCount == 0)
                         {
                             break;
                         }
 
                         russianDollIndex = Math.Min(russianDollIndex, (spaceCount - 1) / 4);
-                        int linestart = Math.Min(lineInfo.FirstNonWhitespaceChar, lineInfo.StartOfLine + ((russianDollIndex + 1) * 4));
+                        var linestart = Math.Min(lineInfo.FirstNonWhitespaceChar, lineInfo.StartOfLine + ((russianDollIndex + 1) * 4));
 
                         // 0 spaces = end of the list.
                         // 1-4 spaces = first level.
                         // 5-8 spaces = second level, etc.
                         if (previousLineWasBlank)
                         {
-                            ListBlock listToAddTo = russianDolls[russianDollIndex].List;
+                            var listToAddTo = russianDolls[russianDollIndex].List;
                             currentListItem = listToAddTo.Items[listToAddTo.Items.Count - 1];
 
                             ListItemBuilder builder;
@@ -236,7 +236,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                 // Skip any other digits.
                 while (start < maxEnd)
                 {
-                    char c = markdown[start];
+                    var c = markdown[start];
                     if (c < '0' || c > '9')
                     {
                         break;
@@ -315,7 +315,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
         /// <returns> <c>true</c> if any of the list items were parsed using the block parser. </returns>
         private static bool ReplaceStringBuilders(ListBlock list)
         {
-            bool usedBlockParser = false;
+            var usedBlockParser = false;
             foreach (var listItem in list.Items)
             {
                 // Use the inline parser if there is one paragraph, use the block parser otherwise.
@@ -347,8 +347,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         else
                         {
                             // Don't allow blocks.
-                            var paragraph = new ParagraphBlock();
-                            paragraph.Inlines = Common.ParseInlineChildren(blockText, 0, blockText.Length);
+                            var paragraph = new ParagraphBlock { Inlines = Common.ParseInlineChildren(blockText, 0, blockText.Length) };
                             newBlockList.Add(paragraph);
                         }
                     }
@@ -376,7 +375,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
             }
 
             var result = new StringBuilder();
-            for (int i = 0; i < Items.Count; i++)
+            for (var i = 0; i < Items.Count; i++)
             {
                 if (result.Length > 0)
                 {

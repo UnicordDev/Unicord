@@ -19,7 +19,9 @@ namespace Unicord.Universal.Utilities
                 var dialog = new ErrorDialog() { Title = title, Content = content };
 
                 if (icon != null)
+                {
                     dialog.Icon = icon;
+                }
 
                 await dialog.ShowAsync();
             }
@@ -33,7 +35,9 @@ namespace Unicord.Universal.Utilities
                 var dialog = new YesNoDialog() { Title = title, Content = content };
 
                 if (icon != null)
+                {
                     dialog.Icon = icon;
+                }
 
                 return await dialog.ShowAsync() == ContentDialogResult.Primary ? true : false;
             }

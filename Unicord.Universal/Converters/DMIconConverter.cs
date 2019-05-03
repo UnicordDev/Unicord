@@ -25,7 +25,9 @@ namespace Unicord.Universal.Converters
                 if (c.Type == ChannelType.Group)
                 {
                     if (c.IconUrl != null)
+                    {
                         return c.IconUrl;
+                    }
                 }
             }
 

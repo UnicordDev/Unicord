@@ -316,8 +316,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double ImageMaxWidth
         {
-            get { return (double)GetValue(ImageMaxWidthProperty); }
-            set { SetValue(ImageMaxWidthProperty, value); }
+            get => (double)GetValue(ImageMaxWidthProperty);
+            set => SetValue(ImageMaxWidthProperty, value);
         }
 
         /// <summary>
@@ -325,8 +325,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double ImageMaxHeight
         {
-            get { return (double)GetValue(ImageMaxHeightProperty); }
-            set { SetValue(ImageMaxHeightProperty, value); }
+            get => (double)GetValue(ImageMaxHeightProperty);
+            set => SetValue(ImageMaxHeightProperty, value);
         }
 
         /// <summary>
@@ -334,8 +334,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Stretch ImageStretch
         {
-            get { return (Stretch)GetValue(ImageStretchProperty); }
-            set { SetValue(ImageStretchProperty, value); }
+            get => (Stretch)GetValue(ImageStretchProperty);
+            set => SetValue(ImageStretchProperty, value);
         }
 
         /// <summary>
@@ -343,8 +343,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness CodeBorderThickness
         {
-            get { return (Thickness)GetValue(CodeBorderThicknessProperty); }
-            set { SetValue(CodeBorderThicknessProperty, value); }
+            get => (Thickness)GetValue(CodeBorderThicknessProperty);
+            set => SetValue(CodeBorderThicknessProperty, value);
         }
 
         /// <summary>
@@ -352,8 +352,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness InlineCodeBorderThickness
         {
-            get { return (Thickness)GetValue(InlineCodeBorderThicknessProperty); }
-            set { SetValue(InlineCodeBorderThicknessProperty, value); }
+            get => (Thickness)GetValue(InlineCodeBorderThicknessProperty);
+            set => SetValue(InlineCodeBorderThicknessProperty, value);
         }
 
         /// <summary>
@@ -361,8 +361,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness InlineCodePadding
         {
-            get { return (Thickness)GetValue(InlineCodePaddingProperty); }
-            set { SetValue(InlineCodePaddingProperty, value); }
+            get => (Thickness)GetValue(InlineCodePaddingProperty);
+            set => SetValue(InlineCodePaddingProperty, value);
         }
 
         /// <summary>
@@ -370,8 +370,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness CodeMargin
         {
-            get { return (Thickness)GetValue(CodeMarginProperty); }
-            set { SetValue(CodeMarginProperty, value); }
+            get => (Thickness)GetValue(CodeMarginProperty);
+            set => SetValue(CodeMarginProperty, value);
         }
 
         /// <summary>
@@ -379,8 +379,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness CodePadding
         {
-            get { return (Thickness)GetValue(CodePaddingProperty); }
-            set { SetValue(CodePaddingProperty, value); }
+            get => (Thickness)GetValue(CodePaddingProperty);
+            set => SetValue(CodePaddingProperty, value);
         }
 
         /// <summary>
@@ -388,8 +388,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header1FontSize
         {
-            get { return (double)GetValue(Header1FontSizeProperty); }
-            set { SetValue(Header1FontSizeProperty, value); }
+            get => (double)GetValue(Header1FontSizeProperty);
+            set => SetValue(Header1FontSizeProperty, value);
         }
 
         /// <summary>
@@ -397,8 +397,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header1Margin
         {
-            get { return (Thickness)GetValue(Header1MarginProperty); }
-            set { SetValue(Header1MarginProperty, value); }
+            get => (Thickness)GetValue(Header1MarginProperty);
+            set => SetValue(Header1MarginProperty, value);
         }
 
         /// <summary>
@@ -406,8 +406,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header2FontSize
         {
-            get { return (double)GetValue(Header2FontSizeProperty); }
-            set { SetValue(Header2FontSizeProperty, value); }
+            get => (double)GetValue(Header2FontSizeProperty);
+            set => SetValue(Header2FontSizeProperty, value);
         }
 
         /// <summary>
@@ -415,8 +415,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header2Margin
         {
-            get { return (Thickness)GetValue(Header2MarginProperty); }
-            set { SetValue(Header2MarginProperty, value); }
+            get => (Thickness)GetValue(Header2MarginProperty);
+            set => SetValue(Header2MarginProperty, value);
         }
 
         /// <summary>
@@ -424,8 +424,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header3FontSize
         {
-            get { return (double)GetValue(Header3FontSizeProperty); }
-            set { SetValue(Header3FontSizeProperty, value); }
+            get => (double)GetValue(Header3FontSizeProperty);
+            set => SetValue(Header3FontSizeProperty, value);
         }
 
         /// <summary>
@@ -433,8 +433,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header3Margin
         {
-            get { return (Thickness)GetValue(Header3MarginProperty); }
-            set { SetValue(Header3MarginProperty, value); }
+            get => (Thickness)GetValue(Header3MarginProperty);
+            set => SetValue(Header3MarginProperty, value);
         }
 
         /// <summary>
@@ -442,8 +442,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header4FontSize
         {
-            get { return (double)GetValue(Header4FontSizeProperty); }
-            set { SetValue(Header4FontSizeProperty, value); }
+            get => (double)GetValue(Header4FontSizeProperty);
+            set => SetValue(Header4FontSizeProperty, value);
         }
 
         /// <summary>
@@ -451,8 +451,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header4Margin
         {
-            get { return (Thickness)GetValue(Header4MarginProperty); }
-            set { SetValue(Header4MarginProperty, value); }
+            get => (Thickness)GetValue(Header4MarginProperty);
+            set => SetValue(Header4MarginProperty, value);
         }
 
         /// <summary>
@@ -460,8 +460,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header5FontSize
         {
-            get { return (double)GetValue(Header5FontSizeProperty); }
-            set { SetValue(Header5FontSizeProperty, value); }
+            get => (double)GetValue(Header5FontSizeProperty);
+            set => SetValue(Header5FontSizeProperty, value);
         }
 
         /// <summary>
@@ -469,8 +469,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header5Margin
         {
-            get { return (Thickness)GetValue(Header5MarginProperty); }
-            set { SetValue(Header5MarginProperty, value); }
+            get => (Thickness)GetValue(Header5MarginProperty);
+            set => SetValue(Header5MarginProperty, value);
         }
 
         /// <summary>
@@ -478,8 +478,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double Header6FontSize
         {
-            get { return (double)GetValue(Header6FontSizeProperty); }
-            set { SetValue(Header6FontSizeProperty, value); }
+            get => (double)GetValue(Header6FontSizeProperty);
+            set => SetValue(Header6FontSizeProperty, value);
         }
 
         /// <summary>
@@ -487,8 +487,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness Header6Margin
         {
-            get { return (Thickness)GetValue(Header6MarginProperty); }
-            set { SetValue(Header6MarginProperty, value); }
+            get => (Thickness)GetValue(Header6MarginProperty);
+            set => SetValue(Header6MarginProperty, value);
         }
 
         /// <summary>
@@ -496,8 +496,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness HorizontalRuleMargin
         {
-            get { return (Thickness)GetValue(HorizontalRuleMarginProperty); }
-            set { SetValue(HorizontalRuleMarginProperty, value); }
+            get => (Thickness)GetValue(HorizontalRuleMarginProperty);
+            set => SetValue(HorizontalRuleMarginProperty, value);
         }
 
         /// <summary>
@@ -505,8 +505,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double HorizontalRuleThickness
         {
-            get { return (double)GetValue(HorizontalRuleThicknessProperty); }
-            set { SetValue(HorizontalRuleThicknessProperty, value); }
+            get => (double)GetValue(HorizontalRuleThicknessProperty);
+            set => SetValue(HorizontalRuleThicknessProperty, value);
         }
 
         /// <summary>
@@ -514,8 +514,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness ListMargin
         {
-            get { return (Thickness)GetValue(ListMarginProperty); }
-            set { SetValue(ListMarginProperty, value); }
+            get => (Thickness)GetValue(ListMarginProperty);
+            set => SetValue(ListMarginProperty, value);
         }
 
         /// <summary>
@@ -523,8 +523,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double ListGutterWidth
         {
-            get { return (double)GetValue(ListGutterWidthProperty); }
-            set { SetValue(ListGutterWidthProperty, value); }
+            get => (double)GetValue(ListGutterWidthProperty);
+            set => SetValue(ListGutterWidthProperty, value);
         }
 
         /// <summary>
@@ -532,8 +532,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double ListBulletSpacing
         {
-            get { return (double)GetValue(ListBulletSpacingProperty); }
-            set { SetValue(ListBulletSpacingProperty, value); }
+            get => (double)GetValue(ListBulletSpacingProperty);
+            set => SetValue(ListBulletSpacingProperty, value);
         }
 
         /// <summary>
@@ -541,8 +541,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness ParagraphMargin
         {
-            get { return (Thickness)GetValue(ParagraphMarginProperty); }
-            set { SetValue(ParagraphMarginProperty, value); }
+            get => (Thickness)GetValue(ParagraphMarginProperty);
+            set => SetValue(ParagraphMarginProperty, value);
         }
 
         /// <summary>
@@ -550,8 +550,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness QuoteBorderThickness
         {
-            get { return (Thickness)GetValue(QuoteBorderThicknessProperty); }
-            set { SetValue(QuoteBorderThicknessProperty, value); }
+            get => (Thickness)GetValue(QuoteBorderThicknessProperty);
+            set => SetValue(QuoteBorderThicknessProperty, value);
         }
 
         /// <summary>
@@ -559,8 +559,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness QuoteMargin
         {
-            get { return (Thickness)GetValue(QuoteMarginProperty); }
-            set { SetValue(QuoteMarginProperty, value); }
+            get => (Thickness)GetValue(QuoteMarginProperty);
+            set => SetValue(QuoteMarginProperty, value);
         }
 
         /// <summary>
@@ -568,8 +568,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness QuotePadding
         {
-            get { return (Thickness)GetValue(QuotePaddingProperty); }
-            set { SetValue(QuotePaddingProperty, value); }
+            get => (Thickness)GetValue(QuotePaddingProperty);
+            set => SetValue(QuotePaddingProperty, value);
         }
 
         /// <summary>
@@ -577,8 +577,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public double TableBorderThickness
         {
-            get { return (double)GetValue(TableBorderThicknessProperty); }
-            set { SetValue(TableBorderThicknessProperty, value); }
+            get => (double)GetValue(TableBorderThicknessProperty);
+            set => SetValue(TableBorderThicknessProperty, value);
         }
 
         /// <summary>
@@ -586,8 +586,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness TableCellPadding
         {
-            get { return (Thickness)GetValue(TableCellPaddingProperty); }
-            set { SetValue(TableCellPaddingProperty, value); }
+            get => (Thickness)GetValue(TableCellPaddingProperty);
+            set => SetValue(TableCellPaddingProperty, value);
         }
 
         /// <summary>
@@ -595,8 +595,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public Thickness TableMargin
         {
-            get { return (Thickness)GetValue(TableMarginProperty); }
-            set { SetValue(TableMarginProperty, value); }
+            get => (Thickness)GetValue(TableMarginProperty);
+            set => SetValue(TableMarginProperty, value);
         }
 
         /// <summary>
@@ -604,8 +604,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public TextWrapping TextWrapping
         {
-            get { return (TextWrapping)GetValue(TextWrappingProperty); }
-            set { SetValue(TextWrappingProperty, value); }
+            get => (TextWrapping)GetValue(TextWrappingProperty);
+            set => SetValue(TextWrappingProperty, value);
         }
     }
 }

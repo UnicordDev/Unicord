@@ -3,8 +3,9 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Net;
 using DSharpPlus.Net.Udp;
-using DSharpPlus.VoiceNext.VoiceEntities;
+using DSharpPlus.VoiceNext.Entities;
 using Newtonsoft.Json;
 
 namespace DSharpPlus.VoiceNext
@@ -28,7 +29,11 @@ namespace DSharpPlus.VoiceNext
         internal VoiceNextExtension(VoiceNextConfiguration config)
         {
             Configuration = new VoiceNextConfiguration(config);
+#if !NETSTANDARD1_1
             IsIncomingEnabled = config.EnableIncoming;
+#else
+            this.IsIncomingEnabled = false;
+#endif
 
             ActiveConnections = new ConcurrentDictionary<ulong, VoiceNextConnection>();
             VoiceStateUpdates = new ConcurrentDictionary<ulong, TaskCompletionSource<VoiceStateUpdateEventArgs>>();
@@ -46,7 +51,7 @@ namespace DSharpPlus.VoiceNext
                 throw new InvalidOperationException("What did I tell you?");
 
             Client = client;
-
+            
             Client.VoiceStateUpdated += Client_VoiceStateUpdate;
             Client.VoiceServerUpdated += Client_VoiceServerUpdate;
         }
@@ -155,7 +160,7 @@ namespace DSharpPlus.VoiceNext
                 vnc.Channel = e.Channel;
             }
 
-            if (!string.IsNullOrWhiteSpace(e.SessionId) && e.User.Id == Client.CurrentUser.Id && VoiceStateUpdates.ContainsKey(gld.Id))
+            if (!string.IsNullOrWhiteSpace(e.SessionId) && e.User.Id == Client.CurrentUser.Id && e.Channel != null && VoiceStateUpdates.ContainsKey(gld.Id))
             {
                 VoiceStateUpdates.TryRemove(gld.Id, out var xe);
                 xe.SetResult(e);

@@ -49,29 +49,29 @@
         </Storyboard>
         <Storyboard x:Name="hideConnecting" x:Key="hideConnecting"
                     Completed="hideConnecting_Completed">
-            <DoubleAnimation From="1" To="0"
+            <DoubleAnimation To="0"
                              Storyboard.TargetName="connectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
                              EasingFunction="{StaticResource ease}"/>
 
-            <DoubleAnimation From="0.85" To="1" 
+            <DoubleAnimation To="1" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource ease}"/>
-            <DoubleAnimation From="0.85" To="1" 
+            <DoubleAnimation To="1" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource ease}"/>
 
-            <DoubleAnimation From="1" To="1.25" 
+            <DoubleAnimation To="1.25" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource ease}"/>
-            <DoubleAnimation From="1" To="1.25" 
+            <DoubleAnimation To="1.25" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"

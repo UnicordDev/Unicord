@@ -18,11 +18,8 @@ namespace DSharpPlus.Entities
         public string Theme
         {
             get => _theme;
-            set
-            {
-                OnPropertySet(ref _theme, value);
-            }
-        }        
+            set => OnPropertySet(ref _theme, value);
+        }
 
         [JsonProperty("status")]
         public string Status { get; set; }

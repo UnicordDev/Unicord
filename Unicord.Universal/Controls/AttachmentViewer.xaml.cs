@@ -137,9 +137,14 @@ namespace Unicord.Universal.Controls
         private async void saveMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button b)
+            {
                 b.IsEnabled = false;
+            }
+
             if (sender is MenuFlyoutItem i)
+            {
                 i.IsEnabled = false;
+            }
 
             downloadProgressBar.IsIndeterminate = true;
 
@@ -161,9 +166,14 @@ namespace Unicord.Universal.Controls
             }
 
             if (sender is Button b1)
+            {
                 b1.IsEnabled = true;
+            }
+
             if (sender is MenuFlyoutItem i1)
+            {
                 i1.IsEnabled = true;
+            }
 
             downloadProgressBar.Visibility = Visibility.Collapsed;
         }
@@ -181,7 +191,7 @@ namespace Unicord.Universal.Controls
             if (await DownloadAttachmentToFileAsync(_shareFile))
             {
                 _dataTransferManager.DataRequested += _dataTransferManager_DataRequested;
-                DataTransferManager.ShowShareUI();
+                DataTransferManager.ShowShareUI(new ShareUIOptions());
             }
 
             downloadProgressBar.Visibility = Visibility.Collapsed;
@@ -195,7 +205,7 @@ namespace Unicord.Universal.Controls
             {
                 if (p.TotalBytesToReceive.HasValue)
                 {
-                    downloadProgressBar.Maximum = (double)p.TotalBytesToReceive;
+                    downloadProgressBar.Maximum = (double)p.TotalBytesToReceive.Value;
                 }
                 else
                 {
@@ -225,7 +235,7 @@ namespace Unicord.Universal.Controls
         {
             var request = args.Request;
 
-            request.Data.Properties.Title = "Sharing attachment";
+            request.Data.Properties.Title = $"Sharing {Path.GetFileName(_attachment.Url)}";
             request.Data.Properties.Description = Path.GetFileName(_attachment.Url);
 
             request.Data.SetWebLink(new Uri(_attachment.Url));

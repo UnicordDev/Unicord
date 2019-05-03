@@ -38,6 +38,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             Guild = e.Parameter as DiscordGuild;
             Tag = Guild.Name;
+            DataContext = Guild;
 
             await RefreshList();
         }
@@ -49,7 +50,7 @@ namespace Unicord.Universal.Pages.Subpages
             ring.IsActive = true;
 
             channelsList.SelectionChanged -= channelsList_SelectionChanged;
-            var permissions = Guild.CurrentMember.PermissionsIn(Guild.Channels.First());
+            var permissions = Guild.CurrentMember.PermissionsIn(Guild.Channels.Values.FirstOrDefault());
             if (permissions.HasPermission(Permissions.ManageChannels))
             {
                 channelsList.ReorderMode = ListViewReorderMode.Enabled;
@@ -74,15 +75,15 @@ namespace Unicord.Universal.Pages.Subpages
             ring.IsActive = false;
         }
 
-        public static async Task GetChannelList(DiscordGuild guild, CollectionViewSource cvs, bool excludeVoice = false)
+        public static Task GetChannelList(DiscordGuild guild, CollectionViewSource cvs, bool excludeVoice = false)
         {
             if (guild.Channels.Any())
             {
                 var currentMember = guild.CurrentMember;
 
                 var channels = guild.IsOwner ?
-                    guild.Channels :
-                    await Task.Run(() => guild.Channels.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
+                    guild.Channels.Values :
+                    guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels));
 
                 var ownerId = guild.OwnerId;
 
@@ -100,8 +101,7 @@ namespace Unicord.Universal.Pages.Subpages
                         .OrderBy(c => c.Type)
                         .ThenBy(c => c.Position)
                         .GroupBy(g => g.Parent)
-                        .OrderBy(c => c.Key?.Position)
-                        .ToList();
+                        .OrderBy(c => c.Key?.Position);
                 }
                 else
                 {
@@ -112,6 +112,8 @@ namespace Unicord.Universal.Pages.Subpages
                         .ThenBy(c => c.Position);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

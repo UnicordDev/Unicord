@@ -22,5 +22,15 @@ namespace DSharpPlus.Net.Models
         {
 
         }
+
+        public ChannelEditModel(DiscordChannel channel)
+        {
+            Name = channel.Name;
+            Topic = channel.Topic;
+            Parent = channel.Parent;
+            Bitrate = channel.Bitrate == 0 ? (int?)null : channel.Bitrate;
+            Userlimit = channel.UserLimit == 0 ? (int?)null : channel.UserLimit;
+            PerUserRateLimit = channel.PerUserRateLimit;
+        }
     }
 }

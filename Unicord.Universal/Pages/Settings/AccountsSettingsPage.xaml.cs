@@ -30,7 +30,7 @@ namespace Unicord.Universal.Pages.Settings
     {
         public AccountsSettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             DataContext = App.Discord.CurrentUser;
 
             syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);

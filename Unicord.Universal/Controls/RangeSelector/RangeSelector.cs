@@ -60,8 +60,8 @@ namespace Unicord.Universal.Controls
 
         public double Value
         {
-            get { return (double)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => (double)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
         }
 
         private bool _pointerManipulatingValue;
@@ -418,15 +418,9 @@ namespace Unicord.Universal.Controls
         /// </value>
         public double Minimum
         {
-            get
-            {
-                return (double)GetValue(MinimumProperty);
-            }
+            get => (double)GetValue(MinimumProperty);
 
-            set
-            {
-                SetValue(MinimumProperty, value);
-            }
+            set => SetValue(MinimumProperty, value);
         }
 
         private static void MinimumChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -475,15 +469,9 @@ namespace Unicord.Universal.Controls
         /// </value>
         public double Maximum
         {
-            get
-            {
-                return (double)GetValue(MaximumProperty);
-            }
+            get => (double)GetValue(MaximumProperty);
 
-            set
-            {
-                SetValue(MaximumProperty, value);
-            }
+            set => SetValue(MaximumProperty, value);
         }
 
         private static void MaximumChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -532,15 +520,9 @@ namespace Unicord.Universal.Controls
         /// </value>
         public double RangeMin
         {
-            get
-            {
-                return (double)GetValue(RangeMinProperty);
-            }
+            get => (double)GetValue(RangeMinProperty);
 
-            set
-            {
-                SetValue(RangeMinProperty, value);
-            }
+            set => SetValue(RangeMinProperty, value);
         }
 
         private static void RangeMinChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -597,15 +579,9 @@ namespace Unicord.Universal.Controls
         /// </value>
         public double RangeMax
         {
-            get
-            {
-                return (double)GetValue(RangeMaxProperty);
-            }
+            get => (double)GetValue(RangeMaxProperty);
 
-            set
-            {
-                SetValue(RangeMaxProperty, value);
-            }
+            set => SetValue(RangeMaxProperty, value);
         }
 
         private static void ValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -698,15 +674,9 @@ namespace Unicord.Universal.Controls
         /// </value>
         public double StepFrequency
         {
-            get
-            {
-                return (double)GetValue(StepFrequencyProperty);
-            }
+            get => (double)GetValue(StepFrequencyProperty);
 
-            set
-            {
-                SetValue(StepFrequencyProperty, value);
-            }
+            set => SetValue(StepFrequencyProperty, value);
         }
 
         private void RangeMinToStepFrequency()

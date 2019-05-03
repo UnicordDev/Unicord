@@ -88,8 +88,10 @@ namespace WamWooWam.Parsers.Markdown.Inlines
             }
 
             // We found something!
-            var result = new CodeInline();
-            result.Text = markdown.Substring(innerStart, innerEnd - innerStart).Trim(' ', '\t', '\r', '\n');
+            var result = new CodeInline
+            {
+                Text = markdown.Substring(innerStart, innerEnd - innerStart).Trim(' ', '\t', '\r', '\n')
+            };
             return new InlineParseResult(result, start, end);
         }
 

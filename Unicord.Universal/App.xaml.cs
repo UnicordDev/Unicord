@@ -25,6 +25,7 @@ using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -42,9 +43,9 @@ namespace Unicord.Universal
     sealed partial class App : Application
     {
         internal static ulong _currentChannelId = 0;
-        private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
 
-        internal static TaskCompletionSource<ReadyEventArgs> ReadySource { get; } = new TaskCompletionSource<ReadyEventArgs>();
+        private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
+        private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
         internal static Thickness StatusBarFill { get; set; }
@@ -63,7 +64,7 @@ namespace Unicord.Universal
             InitializeComponent();
 
             Suspending += OnSuspending;
-            UnhandledException += App_UnhandledException;
+            UnhandledException += App_UnhandledException;            
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
@@ -88,10 +89,35 @@ namespace Unicord.Universal
                 case ToastNotificationActivatedEventArgs toast:
                     await OnLaunchedAsync(false, toast.Argument);
                     return;
+                case ProtocolActivatedEventArgs protocol:
+                    await OnProtocolActivatedAsync(protocol);
+                    return;
                 default:
                     Debug.WriteLine(e.Kind);
                     break;
             }
+        }
+
+        private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
+        {
+            if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
+            {
+                var path = protocol.Uri.AbsolutePath.Split('/').Skip(1).ToArray();
+                if (path.Length > 1 && ulong.TryParse(path[2], out var channel))
+                {
+                    if (!(Window.Current.Content is Frame rootFrame))
+                    {
+                        rootFrame = new Frame();
+                        Window.Current.Content = rootFrame;
+                    }
+
+                    rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
+                    Window.Current.Activate();
+                    return;
+                }
+            }
+
+            await Launcher.LaunchUriAsync(protocol.Uri, new LauncherOptions() { IgnoreAppUriHandlers = true });
         }
 
         private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
@@ -103,15 +129,10 @@ namespace Unicord.Universal
 
                 try
                 {
-                    var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-                    var manager = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                    var contact = await contacts.GetContactAsync(task.Contact.Id);
-                    var annotations = await manager.FindAnnotationsForContactAsync(contact);
-                    var annotation = annotations.FirstOrDefault();
-
-                    if (ulong.TryParse(annotation.RemoteId.Split('_').Last(), out var id))
+                    var id = await Contacts.TryGetChannelIdAsync(task.Contact);
+                    if (id != 0)
                     {
-                        rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { UserId = id, FullFrame = true });
+                        rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { UserId = id, FullFrame = true, IsUriActivation = false });
                     }
                 }
                 catch
@@ -269,17 +290,39 @@ namespace Unicord.Universal
                         async Task ReadyHandler(ReadyEventArgs e)
                         {
                             e.Client.Ready -= ReadyHandler;
-                            ReadySource.TrySetResult(e);
+                            _readySource.TrySetResult(e);
                             if (onReady != null)
+                            {
                                 await onReady(e);
+                            }
 
                             var t = new Task(async () => await Contacts.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
                             t.Start();
                         }
 
+                        Task SocketErrored(SocketErrorEventArgs e)
+                        {
+                            e.Client.Ready -= ReadyHandler;
+                            e.Client.SocketErrored -= SocketErrored;
+                            e.Client.ClientErrored -= ClientErrored;
+                            _readySource.SetException(e.Exception);
+                            return Task.CompletedTask;
+                        }
+
+                        Task ClientErrored(ClientErrorEventArgs e)
+                        {
+                            e.Client.Ready -= ReadyHandler;
+                            e.Client.SocketErrored -= SocketErrored;
+                            e.Client.ClientErrored -= ClientErrored;
+                            _readySource.SetException(e.Exception);
+                            return Task.CompletedTask;
+                        }
+
                         Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
                         Discord.Ready += ReadyHandler;
+                        Discord.SocketErrored += SocketErrored;
+                        Discord.ClientErrored += ClientErrored;
 
                         _connectSemaphore.Release();
 
@@ -288,7 +331,7 @@ namespace Unicord.Universal
                     catch (Exception ex)
                     {
                         Tools.ResetPasswordVault();
-                        ReadySource.TrySetException(ex);
+                        _readySource.TrySetException(ex);
                         await onError(ex);
                     }
                 }
@@ -303,7 +346,7 @@ namespace Unicord.Universal
 
                 try
                 {
-                    var res = await ReadySource.Task;
+                    var res = await _readySource.Task;
                     await onReady(res);
                 }
                 catch

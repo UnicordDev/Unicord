@@ -349,7 +349,9 @@ namespace WamWooWam.Uwp.UI.Controls
             //}
 
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
                 await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = true });
+            }
         }
     }
 }

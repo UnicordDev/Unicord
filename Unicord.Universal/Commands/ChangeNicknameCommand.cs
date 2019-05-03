@@ -19,7 +19,7 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
-                var channel = member.Guild.Channels.FirstOrDefault();
+                var channel = member.Guild.Channels.Values.FirstOrDefault();
                 if (channel != null)
                 {
                     var permissions = member.Guild.CurrentMember.PermissionsIn(channel);

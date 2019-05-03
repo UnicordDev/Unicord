@@ -8,7 +8,7 @@
     mc:Ignorable="d" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     Loaded="Page_Loaded">
     <Grid>
-        <StackPanel MaxWidth="400" VerticalAlignment="Center" Margin="20">
+        <StackPanel MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
             <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12"/>
             <PasswordBox x:Name="tokenTextBox" PlaceholderText="Token"/>
             <Grid Margin="0,12">

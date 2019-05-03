@@ -76,8 +76,10 @@ namespace WamWooWam.Parsers.Markdown.Inlines
             }
 
             // We found something!
-            var result = new StrikethroughTextInline();
-            result.Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd);
+            var result = new StrikethroughTextInline
+            {
+                Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd)
+            };
             return new InlineParseResult(result, start, innerEnd + 2);
         }
 

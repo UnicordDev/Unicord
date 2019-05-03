@@ -11,7 +11,7 @@
     <AssemblyName>DSharpPlus.VoiceNext.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18282.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -26,6 +26,8 @@
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +37,8 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -45,6 +49,8 @@
     <DebugType>full</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -55,6 +61,8 @@
     <DebugType>pdbonly</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -65,6 +73,8 @@
     <DebugType>full</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -75,6 +85,8 @@
     <DebugType>pdbonly</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <PlatformTarget>ARM64</PlatformTarget>
@@ -85,6 +97,8 @@
     <DebugType>full</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <PlatformTarget>ARM64</PlatformTarget>
@@ -95,6 +109,8 @@
     <DebugType>pdbonly</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -105,6 +121,8 @@
     <DebugType>full</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -115,44 +133,54 @@
     <DebugType>pdbonly</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Codec\OpusCodec.cs" />
-    <Compile Include="Codec\RtpCodec.cs" />
-    <Compile Include="Codec\SodiumCodec.cs" />
+    <Compile Include="AudioFormat.cs" />
+    <Compile Include="Codec\Helpers.cs" />
+    <Compile Include="Codec\Interop.cs" />
+    <Compile Include="Codec\Opus.cs" />
+    <Compile Include="Codec\Rtp.cs" />
+    <Compile Include="Codec\Sodium.cs" />
     <Compile Include="DiscordClientExtensions.cs" />
+    <Compile Include="Entities\AudioSender.cs" />
+    <Compile Include="Entities\VoiceDispatch.cs" />
+    <Compile Include="Entities\VoiceIdentifyPayload.cs" />
+    <Compile Include="Entities\VoicePacket.cs" />
+    <Compile Include="Entities\VoiceReadyPayload.cs" />
+    <Compile Include="Entities\VoiceSelectProtocolPayload.cs" />
+    <Compile Include="Entities\VoiceSelectProtocolPayloadData.cs" />
+    <Compile Include="Entities\VoiceServerUpdatePayload.cs" />
+    <Compile Include="Entities\VoiceSessionDescriptionPayload.cs" />
+    <Compile Include="Entities\VoiceSpeakingPayload.cs" />
+    <Compile Include="Entities\VoiceStateUpdatePayload.cs" />
+    <Compile Include="Entities\VoiceUserJoinPayload.cs" />
+    <Compile Include="Entities\VoiceUserLeavePayload.cs" />
+    <Compile Include="EventArgs\VoiceReceiveEventArgs.cs" />
+    <Compile Include="EventArgs\VoiceUserJoinEventArgs.cs" />
     <Compile Include="EventArgs\VoiceUserLeaveEventArgs.cs" />
+    <Compile Include="IVoiceFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VoiceEntities\VoiceDispatch.cs" />
-    <Compile Include="VoiceEntities\VoiceIdentifyPayload.cs" />
-    <Compile Include="VoiceEntities\VoiceReadyPayload.cs" />
-    <Compile Include="VoiceEntities\VoiceSelectProtocolPayload.cs" />
-    <Compile Include="VoiceEntities\VoiceSelectProtocolPayloadData.cs" />
-    <Compile Include="VoiceEntities\VoiceServerUpdatePayload.cs" />
-    <Compile Include="VoiceEntities\VoiceSessionDescriptionPayload.cs" />
-    <Compile Include="VoiceEntities\VoiceSpeakingPayload.cs" />
-    <Compile Include="VoiceEntities\VoiceStateUpdatePayload.cs" />
-    <Compile Include="VoiceEntities\VoiceUserLeavePayload.cs" />
+    <Compile Include="VoiceApplication.cs" />
     <Compile Include="VoiceNextConfiguration.cs" />
     <Compile Include="VoiceNextConnection.cs" />
     <Compile Include="VoiceNextExtension.cs" />
+    <Compile Include="VoiceTransmitStream.cs" />
     <EmbeddedResource Include="Properties\DSharpPlus.VoiceNext.UWP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Concentus">
-      <Version>1.1.7</Version>
-    </PackageReference>
-    <PackageReference Include="libsodium-uwp">
-      <Version>1.0.160</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.3</Version>
+      <Version>6.2.8</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Buffers">
+      <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

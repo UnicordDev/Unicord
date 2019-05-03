@@ -2,135 +2,223 @@
     x:Class="Unicord.Universal.Controls.UploadItemsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:win1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Unicord.Universal.Models"
-    mc:Ignorable="d" SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded"
-    d:DesignHeight="300" Height="200"
-    d:DesignWidth="400" MaxHeight="200">
+    xmlns:win1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Height="200"
+    MaxHeight="200"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    Loaded="UserControl_Loaded"
+    SizeChanged="UserControl_SizeChanged"
+    mc:Ignorable="d">
 
     <Grid>
-        <controls:DockPanel x:Name="uploadGrid" LastChildFill="True" Grid.Row="2">
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="DefaultStates">
-                    <VisualState x:Name="LargeState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="640"/>
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Right"/>
-                            <Setter Target="uploadSizeBar.Width" Value="160"/>
-                            <Setter Target="uploadSizeBar.Margin" Value="-87, 87, -87, 87"/>
-                            <Setter Target="uploadSizeBarTransform.Angle" Value="-90"/>
-                            <Setter Target="sizeRun.FontSize" Value="28"/>
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="SmallState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="0"/>
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Bottom"/>
-                            <Setter Target="uploadSizeBar.Margin" Value="10"/>
-                            <Setter Target="uploadSizeBarTransform.Angle" Value="0"/>
-                            <Setter Target="sizeRun.FontSize" Value="20"/>
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            
-            <Grid controls:DockPanel.Dock="Bottom" x:Name="uploadSizeContainer" Grid.Row="1" Grid.Column="1" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+        <controls:DockPanel
+            x:Name="uploadGrid"
+            Grid.Row="2"
+            LastChildFill="True">
+            <Grid
+                x:Name="uploadSizeContainer"
+                Grid.Row="1"
+                Grid.Column="1"
+                controls:DockPanel.Dock="Bottom"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Grid Margin="10">
-                    <ProgressBar x:Name="uploadSizeBar" Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Height="5" HorizontalAlignment="Stretch" RenderTransformOrigin="0.5, 0.5" Value="{Binding UploadProgressBarValue}" Maximum="{Binding UploadLimit}">
+                    <ProgressBar
+                        x:Name="uploadSizeBar"
+                        Height="5"
+                        HorizontalAlignment="Stretch"
+                        Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}"
+                        Maximum="{Binding UploadLimit}"
+                        RenderTransformOrigin="0.5, 0.5"
+                        Value="{Binding UploadProgressBarValue}">
                         <ProgressBar.RenderTransform>
-                            <RotateTransform x:Name="uploadSizeBarTransform"/>
+                            <RotateTransform x:Name="uploadSizeBarTransform" />
                         </ProgressBar.RenderTransform>
                     </ProgressBar>
                 </Grid>
 
-                <TextBlock x:Name="uploadSizeText" Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource ApplicationForegroundThemeBrush}}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Margin="0,10,10,10">
-                    <Run x:Name="sizeRun" FontSize="20" Text="{Binding DisplayUploadSize,FallbackValue=0.00}"/>/<Run Text="{Binding DisplayUploadLimit, FallbackValue=8.00}"/> MB
-                </TextBlock>
+                <TextBlock
+                    x:Name="uploadSizeText"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="0,10,10,10"
+                    VerticalAlignment="Bottom"
+                    Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource ApplicationForegroundThemeBrush}}">
+                    <Run
+                        x:Name="sizeRun"
+                        FontSize="20"
+                        Text="{Binding DisplayUploadSize, FallbackValue=0.00}" />
+                    /<Run Text="{Binding DisplayUploadLimit, FallbackValue=8.00}" />
+                    MB</TextBlock>
             </Grid>
 
             <ListView
                 x:Name="uploadList"
-                SelectionMode="None"
+                win1809:ScrollViewer.CanContentRenderOutsideBounds="True"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                 IsItemClickEnabled="True"
                 ItemClick="UploadList_ItemClick"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                 ItemsSource="{Binding FileUploads}"
-                win1809:ScrollViewer.CanContentRenderOutsideBounds="True"
-                ScrollViewer.VerticalScrollMode="Disabled"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollMode="Enabled"
+                ScrollViewer.IsHorizontalRailEnabled="True"
                 ScrollViewer.IsVerticalRailEnabled="False"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                ScrollViewer.HorizontalScrollMode="Enabled"
-                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                ScrollViewer.IsHorizontalRailEnabled="True">
+                ScrollViewer.VerticalScrollMode="Disabled"
+                SelectionMode="None">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" />
+                        <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="VerticalAlignment" Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
-                            <Image VerticalAlignment="Stretch" Source="{Binding Thumbnail}"/>
+                            <Image VerticalAlignment="Stretch" Source="{Binding Thumbnail}" />
 
-                            <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                            <Grid
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding FileName}" TextTrimming="Clip" Margin="10"/>
+                                <TextBlock
+                                    Margin="10"
+                                    Text="{Binding FileName}"
+                                    TextTrimming="Clip" />
                             </Grid>
 
-                            <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                            <Grid
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Bottom"
+                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="10">
-                                    <Run Text="{Binding DisplayLength}"/>
+                                    <Run Text="{Binding DisplayLength}" />
                                 </TextBlock>
 
-                                <Button x:Name="transcodeFailedButton" ToolTipService.ToolTip="Transcode failed!" Click="TranscodeFailedButton_Click" Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ErrorTextForegroundBrush}" Style="{ThemeResource IconButtonStyle}" Grid.Column="1" Content="&#xE783;"/>
-                                <Button x:Name="editButton" ToolTipService.ToolTip="Edit this clip" Click="EditButton_Click" Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}" Style="{ThemeResource IconButtonStyle}" Grid.Column="2" Content="&#xE8B2;"/>
-                                <ToggleButton x:Name="spoilerButton" ToolTipService.ToolTip="Mark as Spoiler" IsChecked="{Binding Spoiler, Mode=TwoWay}" Style="{ThemeResource IconToggleButtonStyle}" Grid.Column="3" Content="&#xE890;"/>
-                                <Button x:Name="removeItemButton" ToolTipService.ToolTip="Remove" Click="RemoveItemButton_Click" Style="{ThemeResource IconButtonStyle}" Grid.Column="4" Content="&#xE74D;"/>
+                                <Button
+                                    x:Name="transcodeFailedButton"
+                                    Grid.Column="1"
+                                    Click="TranscodeFailedButton_Click"
+                                    Content="&#xE783;"
+                                    Foreground="{StaticResource ErrorTextForegroundBrush}"
+                                    Style="{ThemeResource IconButtonStyle}"
+                                    ToolTipService.ToolTip="Transcode failed!"
+                                    Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" />
+                                <Button
+                                    x:Name="editButton"
+                                    Grid.Column="2"
+                                    Click="EditButton_Click"
+                                    Content="&#xE8B2;"
+                                    Loaded="EditButton_Loaded"
+                                    Style="{ThemeResource IconButtonStyle}"
+                                    ToolTipService.ToolTip="Edit this clip"
+                                    Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}">
+                                    <Button.Resources>
+                                        <winui:TeachingTip
+                                            x:Key="editTip"
+                                            Title="Edit video!"
+                                            IsLightDismissEnabled="True"
+                                            Subtitle="Wanna trim this video? Click here!"
+                                            Target="{Binding ElementName=editButton}" />
+                                    </Button.Resources>
+                                </Button>
+                                <ToggleButton
+                                    x:Name="spoilerButton"
+                                    Grid.Column="3"
+                                    Content="&#xE890;"
+                                    IsChecked="{Binding Spoiler, Mode=TwoWay}"
+                                    Style="{ThemeResource IconToggleButtonStyle}"
+                                    ToolTipService.ToolTip="Mark as Spoiler" />
+                                <Button
+                                    x:Name="removeItemButton"
+                                    Grid.Column="4"
+                                    Click="RemoveItemButton_Click"
+                                    Content="&#xE74D;"
+                                    Style="{ThemeResource IconButtonStyle}"
+                                    ToolTipService.ToolTip="Remove" />
                             </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="DefaultStates">
+                    <VisualState x:Name="LargeState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="640" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Right" />
+                            <Setter Target="uploadSizeBar.Width" Value="160" />
+                            <Setter Target="uploadSizeBar.Margin" Value="-87, 87, -87, 87" />
+                            <Setter Target="uploadSizeBarTransform.Angle" Value="-90" />
+                            <Setter Target="sizeRun.FontSize" Value="28" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="SmallState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Bottom" />
+                            <Setter Target="uploadSizeBar.Margin" Value="10" />
+                            <Setter Target="uploadSizeBarTransform.Angle" Value="0" />
+                            <Setter Target="sizeRun.FontSize" Value="20" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
         </controls:DockPanel>
 
-        <Grid x:Name="transcodeOverlay" Visibility="Collapsed" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
-            <Grid >
-                <StackPanel VerticalAlignment="Center" Margin="10">
-                    <TextBlock Text="Transcoding" TextAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Margin="10" />
-                    <ProgressBar x:Name="transcodeProgress" IsIndeterminate="False" MaxWidth="350"/>
-                    <Button Style="{StaticResource TextBlockButtonStyle}" Content="Cancel" HorizontalAlignment="Center" Click="Button_Click"/>
+        <Grid
+            x:Name="transcodeOverlay"
+            Background="{ThemeResource SystemControlBackgroundAltMediumBrush}"
+            Visibility="Collapsed">
+            <Grid>
+                <StackPanel Margin="10" VerticalAlignment="Center">
+                    <TextBlock
+                        Margin="10"
+                        Style="{ThemeResource TitleTextBlockStyle}"
+                        Text="Transcoding"
+                        TextAlignment="Center" />
+                    <ProgressBar
+                        x:Name="transcodeProgress"
+                        MaxWidth="350"
+                        IsIndeterminate="False" />
+                    <Button
+                        HorizontalAlignment="Center"
+                        Click="Button_Click"
+                        Content="Cancel"
+                        Style="{StaticResource TextBlockButtonStyle}" />
                 </StackPanel>
             </Grid>
         </Grid>

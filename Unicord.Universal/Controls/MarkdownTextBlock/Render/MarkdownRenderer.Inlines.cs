@@ -512,7 +512,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
 
                     if (element.DiscordType == DiscordInline.MentionType.User)
                     {
-                        var user = guild != null ? guild.Members.FirstOrDefault(m => m.Id == element.Id) : client.UserCache.TryGetValue(element.Id, out var u) ? u : null;
+                        var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.UserCache.TryGetValue(element.Id, out var u) ? u : null;
                         if (user != null)
                         {
                             var me = user as DiscordMember;
@@ -527,7 +527,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     }
                     else if (element.DiscordType == DiscordInline.MentionType.Role)
                     {
-                        var role = client.Guilds.SelectMany(g => g.Value.Roles).FirstOrDefault(r => r.Id == element.Id);
+                        var role = client.Guilds.Values.SelectMany(g => g.Roles.Values).FirstOrDefault(r => r.Id == element.Id);
                         if (role != null)
                         {
                             run.Text = $"@{role.Name}";
@@ -546,9 +546,9 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                         var channel = guild != null ? guild.GetChannel(element.Id) : null;
                         if (channel == null)
                         {
-                            channel = client.Guilds
-                                .SelectMany(g => g.Value.Channels)
-                                .Union(client.PrivateChannels)
+                            channel = client.Guilds.Values
+                                .SelectMany(g => g.Channels.Values)
+                                .Union(client.PrivateChannels.Values)
                                 .AsParallel()
                                 .FirstOrDefault(c => c.Id == element.Id);
                         }

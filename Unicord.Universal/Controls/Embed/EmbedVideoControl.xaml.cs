@@ -24,7 +24,7 @@ namespace Unicord.Universal.Controls.Embed
     {
         public EmbedVideoControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public DiscordEmbed Embed { get; set; }

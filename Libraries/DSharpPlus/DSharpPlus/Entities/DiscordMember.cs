@@ -90,7 +90,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public IEnumerable<DiscordRole> Roles
-            => RoleIds.Select(xid => Guild.Roles.FirstOrDefault(xr => xr.Id == xid));
+            => this.RoleIds.Select(id => this.Guild.GetRole(id));
 
         /// <summary>
         /// Gets the color associated with this user's top color-giving role, otherwise 0 (no color).
@@ -100,7 +100,7 @@ namespace DSharpPlus.Entities
         {
             get
             {
-                var role = Roles.OrderByDescending(xr => xr.Position).FirstOrDefault(xr => xr.Color.Value != 0);
+                var role = Roles.OrderByDescending(xr => xr?.Position).FirstOrDefault(xr => xr?.Color.Value != 0);
                 if (role != null)
                 {
                     return role.Color;
@@ -119,7 +119,9 @@ namespace DSharpPlus.Entities
             get
             {
                 if (_brush != null)
+                {
                     return _brush;
+                }
 
                 _brush = Color.Value != default(DiscordColor).Value ? new SolidColorBrush(Media.Color.FromArgb(255, Color.R, Color.G, Color.B)) : null;
 #if WINDOWS_WPF
@@ -153,7 +155,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public DiscordVoiceState VoiceState
-            => Discord.Guilds[_guild_id].VoiceStates.FirstOrDefault(xvs => xvs.UserId == Id);
+            => this.Discord.Guilds[this._guild_id].VoiceStates.TryGetValue(this.Id, out var voiceState) ? voiceState : null;
 
         [JsonIgnore]
         internal ulong _guild_id = 0;
@@ -183,8 +185,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override string Username
         {
-            get { return User.Username; }
-            internal set { User.Username = value; }
+            get => User.Username;
+            internal set => User.Username = value;
         }
 
         /// <summary>
@@ -192,8 +194,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override string Discriminator
         {
-            get { return User.Discriminator; }
-            internal set { User.Username = value; }
+            get => User.Discriminator;
+            internal set => User.Username = value;
         }
 
         /// <summary>
@@ -201,8 +203,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override string AvatarHash
         {
-            get { return User.AvatarHash; }
-            internal set { User.AvatarHash = value; }
+            get => User.AvatarHash;
+            internal set => User.AvatarHash = value;
         }
 
         /// <summary>
@@ -210,8 +212,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override bool IsBot
         {
-            get { return User.IsBot; }
-            internal set { User.IsBot = value; }
+            get => User.IsBot;
+            internal set => User.IsBot = value;
         }
 
         /// <summary>
@@ -219,8 +221,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override string Email
         {
-            get { return User.Email; }
-            internal set { User.Email = value; }
+            get => User.Email;
+            internal set => User.Email = value;
         }
 
         /// <summary>
@@ -228,8 +230,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override bool? MfaEnabled
         {
-            get { return User.MfaEnabled; }
-            internal set { User.MfaEnabled = value; }
+            get => User.MfaEnabled;
+            internal set => User.MfaEnabled = value;
         }
 
         /// <summary>
@@ -237,8 +239,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public override bool? Verified
         {
-            get { return User.Verified; }
-            internal set { User.Verified = value; }
+            get => User.Verified;
+            internal set => User.Verified = value;
         }
         #endregion
 

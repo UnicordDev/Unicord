@@ -43,7 +43,7 @@ namespace Unicord.Universal.Controls
         // safely subscribe/unsubscribe manipulation events here
         internal Grid PaneRoot
         {
-            get { return _paneRoot; }
+            get => _paneRoot;
             set
             {
                 if (_paneRoot != null)
@@ -69,7 +69,7 @@ namespace Unicord.Universal.Controls
         // safely subscribe/unsubscribe manipulation events here
         internal Rectangle PanArea
         {
-            get { return _panArea; }
+            get => _panArea;
             set
             {
                 if (_panArea != null)
@@ -95,7 +95,7 @@ namespace Unicord.Universal.Controls
         // safely subscribe/unsubscribe manipulation events here
         internal Rectangle DismissLayer
         {
-            get { return _dismissLayer; }
+            get => _dismissLayer;
             set
             {
                 if (_dismissLayer != null)
@@ -115,7 +115,7 @@ namespace Unicord.Universal.Controls
         // safely subscribe/unsubscribe animation completed events here
         internal Storyboard OpenSwipeablePaneAnimation
         {
-            get { return _openSwipeablePane; }
+            get => _openSwipeablePane;
             set
             {
                 if (_openSwipeablePane != null)
@@ -135,7 +135,7 @@ namespace Unicord.Universal.Controls
         // safely subscribe/unsubscribe animation completed events here
         internal Storyboard CloseSwipeablePaneAnimation
         {
-            get { return _closeSwipeablePane; }
+            get => _closeSwipeablePane;
             set
             {
                 if (_closeSwipeablePane != null)
@@ -154,8 +154,8 @@ namespace Unicord.Universal.Controls
 
         public bool IsSwipeablePaneOpen
         {
-            get { return (bool)GetValue(IsSwipeablePaneOpenProperty); }
-            set { SetValue(IsSwipeablePaneOpenProperty, value); }
+            get => (bool)GetValue(IsSwipeablePaneOpenProperty);
+            set => SetValue(IsSwipeablePaneOpenProperty, value);
         }
 
         public static readonly DependencyProperty IsSwipeablePaneOpenProperty =
@@ -174,7 +174,11 @@ namespace Unicord.Universal.Controls
                     break;
 
                 case SplitViewDisplayMode.Overlay:
-                    if (splitView.OpenSwipeablePaneAnimation == null || splitView.CloseSwipeablePaneAnimation == null) return;
+                    if (splitView.OpenSwipeablePaneAnimation == null || splitView.CloseSwipeablePaneAnimation == null)
+                    {
+                        return;
+                    }
+
                     if ((bool)e.NewValue)
                     {
                         splitView.OpenSwipeablePane();
@@ -189,8 +193,8 @@ namespace Unicord.Universal.Controls
 
         public double PanAreaInitialTranslateX
         {
-            get { return (double)GetValue(PanAreaInitialTranslateXProperty); }
-            set { SetValue(PanAreaInitialTranslateXProperty, value); }
+            get => (double)GetValue(PanAreaInitialTranslateXProperty);
+            set => SetValue(PanAreaInitialTranslateXProperty, value);
         }
 
         public static readonly DependencyProperty PanAreaInitialTranslateXProperty =
@@ -198,8 +202,8 @@ namespace Unicord.Universal.Controls
 
         public double PanAreaThreshold
         {
-            get { return (double)GetValue(PanAreaThresholdProperty); }
-            set { SetValue(PanAreaThresholdProperty, value); }
+            get => (double)GetValue(PanAreaThresholdProperty);
+            set => SetValue(PanAreaThresholdProperty, value);
         }
 
         public static readonly DependencyProperty PanAreaThresholdProperty =
@@ -213,8 +217,8 @@ namespace Unicord.Universal.Controls
         /// </summary>
         public bool IsPanSelectorEnabled
         {
-            get { return (bool)GetValue(IsPanSelectorEnabledProperty); }
-            set { SetValue(IsPanSelectorEnabledProperty, value); }
+            get => (bool)GetValue(IsPanSelectorEnabledProperty);
+            set => SetValue(IsPanSelectorEnabledProperty, value);
         }
 
         public static readonly DependencyProperty IsPanSelectorEnabledProperty =
@@ -285,7 +289,10 @@ namespace Unicord.Universal.Controls
             var x = _panAreaTransform.TranslateX + e.Delta.Translation.X;
 
             // keep the pan within the bountry
-            if (x < PanAreaInitialTranslateX || x > 0) return;
+            if (x < PanAreaInitialTranslateX || x > 0)
+            {
+                return;
+            }
 
             // while we are panning the PanArea on X axis, let's sync the PaneRoot's position X too
             _paneRootTransform.TranslateX = _panAreaTransform.TranslateX = x;

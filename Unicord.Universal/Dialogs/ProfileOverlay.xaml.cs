@@ -60,7 +60,7 @@ namespace Unicord.Universal.Dialogs
         private async Task LoadedAsync()
         {
             var mutualGuilds =
-                await Task.Run(() => App.Discord.Guilds.Values.Where(g => g.Members.Any(u => u.Id == _user.Id)).OrderBy(g => g.Name));
+                await Task.Run(() => App.Discord.Guilds.Values.Where(g => g.Members.ContainsKey(_user.Id)).OrderBy(g => g.Name));
 
             mutualServers.ItemsSource = mutualGuilds;
 

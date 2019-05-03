@@ -147,6 +147,11 @@ namespace DSharpPlus.Entities
         /// </summary>
         public PropertyChange<string> TopicChange { get; internal set; }
 
+        /// <summary>
+        /// Gets the description of channel's slow mode timeout change.
+        /// </summary>
+        public PropertyChange<int?> PerUserRateLimitChange { get; internal set; }
+
         internal DiscordAuditLogChannelEntry() { }
     }
 
@@ -201,7 +206,7 @@ namespace DSharpPlus.Entities
         /// Gets the number inactivity days after which members were pruned.
         /// </summary>
         public int Days { get; internal set; }
-        
+
         /// <summary>
         /// Gets the number of members pruned.
         /// </summary>
@@ -346,7 +351,7 @@ namespace DSharpPlus.Entities
         /// Gets the affected webhook.
         /// </summary>
         public DiscordWebhook Target { get; internal set; }
-        
+
         /// <summary>
         /// Gets the description of webhook's name change.
         /// </summary>

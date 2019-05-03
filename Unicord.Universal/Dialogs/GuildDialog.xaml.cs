@@ -22,8 +22,8 @@ namespace Unicord.Universal.Dialogs
     {
         public DiscordGuild Guild
         {
-            get { return (DiscordGuild)GetValue(GuildProperty); }
-            set { SetValue(GuildProperty, value); }
+            get => (DiscordGuild)GetValue(GuildProperty);
+            set => SetValue(GuildProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Guild.  This enables animation, styling, binding, etc...
@@ -36,11 +36,11 @@ namespace Unicord.Universal.Dialogs
             var guildDialog = d as GuildDialog;
             guildDialog.DataContext = guild;
 
-            if (guild.Channels.Any(c => c.IsCategory))
+            if (guild.Channels.Values.Any(c => c.IsCategory))
             {
                 // Use new discord channel category behaviour
                 guildDialog.cvs.IsSourceGrouped = true;
-                guildDialog.cvs.Source = guild.Channels
+                guildDialog.cvs.Source = guild.Channels.Values
                     .Where(c => !c.IsCategory)
                     .OrderBy(c => c.Position)
                     .OrderBy(c => c.Type)
@@ -51,7 +51,7 @@ namespace Unicord.Universal.Dialogs
             {
                 // Use old discord non-category behaviour
                 guildDialog.cvs.IsSourceGrouped = false;
-                guildDialog.cvs.Source = guild.Channels
+                guildDialog.cvs.Source = guild.Channels.Values
                     .OrderBy(c => c.Position)
                     .OrderBy(c => c.Type);
             }

@@ -14,16 +14,24 @@ namespace Unicord.Universal.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is null)
+            {
                 return Visibility.Collapsed;
+            }
 
             if (value is bool b)
+            {
                 return b ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             if (value is int i)
+            {
                 return i > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             if (value is IEnumerable e)
+            {
                 return e.OfType<object>().Any() ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             return Visibility.Collapsed;
         }

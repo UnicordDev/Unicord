@@ -250,15 +250,13 @@ namespace DSharpPlus.Entities
                 throw new ArgumentNullException(nameof(client), "Client cannot be null.");
             }
 
-            var ed = client.Guilds.Values.SelectMany(xg => xg.Emojis)
-                .ToDictionary(xe => xe.Id, xe => xe);
-
-            if (!ed.ContainsKey(id))
+            foreach (var guild in client.Guilds.Values)
             {
-                throw new KeyNotFoundException("Given emote was not found.");
+                if (guild.Emojis.TryGetValue(id, out var found))
+                    return found;
             }
 
-            return ed[id];
+            throw new KeyNotFoundException("Given emote was not found.");
         }
 
         /// <summary>
@@ -270,30 +268,20 @@ namespace DSharpPlus.Entities
         public static DiscordEmoji FromName(BaseDiscordClient client, string name)
         {
             if (client == null)
-            {
                 throw new ArgumentNullException(nameof(client), "Client cannot be null.");
-            }
 
             if (string.IsNullOrWhiteSpace(name))
-            {
                 throw new ArgumentNullException(nameof(name), "Name cannot be empty or null.");
-            }
 
             if (UnicodeEmojis.ContainsKey(name))
-            {
                 return new DiscordEmoji { Discord = client, Name = UnicodeEmojis[name] };
-            }
 
-            var ed = client.Guilds.Values.SelectMany(xg => xg.Emojis)
-                .OrderBy(xe => xe.Name)
-                .GroupBy(xe => xe.Name)
-                .ToDictionary(xg => xg.Key, xg => xg);
+            var allEmojis = client.Guilds.Values.SelectMany(xg => xg.Emojis.Values).OrderBy(xe => xe.Name);
+
             var ek = name.Substring(1, name.Length - 2);
-
-            if (ed.ContainsKey(ek))
-            {
-                return ed[ek].First();
-            }
+            foreach (var emoji in allEmojis)
+                if (emoji.Name == ek)
+                    return emoji;
 
             throw new ArgumentException(nameof(name), "Invalid emoji name specified.");
         }

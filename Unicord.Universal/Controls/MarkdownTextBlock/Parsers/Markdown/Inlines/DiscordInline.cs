@@ -129,7 +129,9 @@ namespace WamWooWam.Parsers.Markdown.Inlines
         {
             var nextIndex = text.IndexOf(':', index);
             if (index == -1)
+            {
                 return null;
+            }
 
             var emoteName = text.Substring(index, nextIndex - index);
             nextIndex++;

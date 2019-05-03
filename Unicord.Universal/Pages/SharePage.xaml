@@ -22,7 +22,9 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Share to Discord" Margin="0" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Margin="0" Style="{StaticResource TitleTextBlockStyle}">
+                Share to <Run x:Name="target">Discord</Run>
+            </TextBlock>
 
             <Grid Grid.Row="1" Margin="0,10">
                 <Grid.ColumnDefinitions>
@@ -39,7 +41,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="guildBox" Header="Choose a server..." ItemsSource="{x:Bind local:App.Discord.Guilds}" SelectionChanged="guildBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="0">
+                <ComboBox x:Name="guildBox" Header="Choose a server..." SelectionChanged="guildBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -47,8 +49,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <lib:PersonPicture DisplayName="{Binding Value.Name}" Width="28" Height="28" ProfilePicture="{Binding Value.IconUrl}" Margin="0,0,10,0"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Value.Name}" VerticalAlignment="Center"/>
+                                <lib:PersonPicture DisplayName="{Binding Name}" Width="28" Height="28" ProfilePicture="{Binding IconUrl}" Margin="0,0,10,0"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
                             </Grid>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -60,8 +62,7 @@
                       HorizontalAlignment="Stretch" 
                       Header="And a channel..."
                       ItemsSource="{Binding Source={StaticResource channelsListSource}}"
-                      Visibility="{Binding SelectedItem, Converter={StaticResource HideOnNullConverter}, ElementName=guildBox}" 
-                      ItemTemplate="{StaticResource ChannelListTemplate}"/>
+                      Visibility="{Binding SelectedItem, Converter={StaticResource HideOnNullConverter}, ElementName=guildBox}"/>
             </Grid>
 
             <Grid Grid.Row="3" Visibility="{Binding SelectedItem, Converter={StaticResource HideOnNullConverter}, ElementName=channelsBox}" Margin="0,10">

@@ -70,7 +70,9 @@ namespace Unicord.Universal.Pages.Settings
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
                 Margin = App.StatusBarFill;
+            }
         }
     }
 }

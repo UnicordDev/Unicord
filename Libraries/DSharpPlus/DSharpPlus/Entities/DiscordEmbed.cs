@@ -11,7 +11,7 @@ namespace DSharpPlus.Entities
     {
         internal DiscordEmbed()
         {
-            _color_lazy = new Lazy<Optional<DiscordColor>>(() => _color.HasValue ? Optional<DiscordColor>.FromValue(_color.Value) : Optional<DiscordColor>.FromNoValue());
+            _color_lazy = new Lazy<Optional<DiscordColor>>(() => _color.HasValue ? Optional.FromValue<DiscordColor>(_color.Value) : Optional.FromNoValue<DiscordColor>());
         }
 
         /// <summary>

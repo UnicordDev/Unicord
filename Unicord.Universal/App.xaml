@@ -9,7 +9,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:ins="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    xmlns:entities="using:DSharpPlus.Entities">
+    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:commands="using:Unicord.Universal.Commands">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -53,6 +54,7 @@
                                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
 
             <converters:PresenceColourConverter x:Key="PresenceColourConverter"/>
+            <converters:DateTimeConverter x:Key="DateTimeConverter"/>
             <converters:PresenceTextConverter x:Key="PresenceTextConverter"/>
             <converters:HideOnNullConverter x:Key="HideOnNullConverter"/>
             <converters:ChannelSymbolConverter x:Key="ChannelSymbolConverter"/>
@@ -65,6 +67,8 @@
             <converters:DMNameConverter x:Key="DMNameConverter"/>
             <converters:DMIconConverter x:Key="DMIconConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
+
+            <commands:EditChannelCommand x:Key="EditChannelCommand"/>
 
             <media:AcrylicBrush x:Key="OverlayBackdrop" TintColor="{ThemeResource SystemAltHighColor}" TintOpacity="0.33" FallbackColor="#80000000"/>
 

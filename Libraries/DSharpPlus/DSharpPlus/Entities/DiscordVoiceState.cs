@@ -60,7 +60,9 @@ namespace DSharpPlus.Entities
 
                 if (Guild != null)
                 {
-                    usr = Guild._members.FirstOrDefault(xm => xm.Id == UserId);
+                    DiscordMember member;
+                    if (Guild._members.TryGetValue(UserId, out member))
+                        usr = member;
                 }
 
                 if (usr == null)

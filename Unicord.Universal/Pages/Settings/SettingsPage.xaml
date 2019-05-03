@@ -2,19 +2,20 @@
     x:Class="Unicord.Universal.Pages.Settings.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    xmlns:local="using:Unicord.Universal.Pages.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
 
-    <lib:NavigationView 
+    <lib:NavigationView
         x:Name="nav"
+        BackRequested="NavigationView_BackRequested"
         IsBackEnabled="True"
         IsSettingsVisible="False"
-        PaneDisplayMode="Top"
         ItemInvoked="NavigationView_ItemInvoked"
-        BackRequested="NavigationView_BackRequested">
+        PaneDisplayMode="Top">
         <lib:NavigationView.MenuItems>
             <lib:NavigationViewItem Tag="Home" ToolTipService.ToolTip="Home">
                 <lib:NavigationViewItem.Icon>
@@ -43,7 +44,7 @@
             </lib:NavigationViewItem>
             <lib:NavigationViewItem Tag="Security" ToolTipService.ToolTip="Security and Privacy">
                 <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE72E;"/>
+                    <FontIcon Glyph="&#xE72E;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
             <lib:NavigationViewItem Tag="About" ToolTipService.ToolTip="About Unicord">
@@ -52,7 +53,7 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" IsVerticalRailEnabled="True">
+        <ScrollViewer IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="frame" Margin="12" />
         </ScrollViewer>
     </lib:NavigationView>

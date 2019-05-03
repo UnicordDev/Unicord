@@ -36,10 +36,12 @@ namespace WamWooWam.Parsers.Markdown.Blocks
         /// <returns> A parsed quote block. </returns>
         internal static QuoteBlock Parse(string markdown, int startOfLine, int maxEnd, int quoteDepth, out int actualEnd)
         {
-            var result = new QuoteBlock();
+            var result = new QuoteBlock
+            {
 
-            // Recursively call into the markdown block parser.
-            result.Blocks = MarkdownDocument.Parse(markdown, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd);
+                // Recursively call into the markdown block parser.
+                Blocks = MarkdownDocument.Parse(markdown, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd)
+            };
 
             return result;
         }

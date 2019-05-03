@@ -21,16 +21,23 @@ namespace Unicord.Universal.Commands
             if (parameter is DiscordMessage message)
             {
                 if (message.Channel is DiscordDmChannel)
+                {
                     return true;
+                }
 
                 if (message.Author is DiscordMember member)
                 {
                     var currentMember = member.Guild.CurrentMember;
 
                     if (currentMember.IsOwner)
+                    {
                         return true;
+                    }
+
                     if (currentMember.PermissionsIn(message.Channel).HasFlag(Permissions.ManageMessages))
+                    {
                         return true;
+                    }
                 }
             }
 

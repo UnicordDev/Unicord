@@ -59,22 +59,38 @@ namespace DSharpPlus
             action(mdl);
 
             if (mdl.AfkChannel.HasValue)
+            {
                 if (mdl.AfkChannel.Value.Type != ChannelType.Voice)
+                {
                     throw new ArgumentException("AFK channel needs to be a voice channel!");
+                }
+            }
 
-            var iconb64 = Optional<string>.FromNoValue();
+            var iconb64 = Optional.FromNoValue<string>();
             if (mdl.Icon.HasValue && mdl.Icon.Value != null)
+            {
                 using (var imgtool = new ImageTool(mdl.Icon.Value))
+                {
                     iconb64 = imgtool.GetBase64();
+                }
+            }
             else if (mdl.Icon.HasValue)
+            {
                 iconb64 = null;
+            }
 
-            var splashb64 = Optional<string>.FromNoValue();
+            var splashb64 = Optional.FromNoValue<string>();
             if (mdl.Splash.HasValue && mdl.Splash.Value != null)
+            {
                 using (var imgtool = new ImageTool(mdl.Splash.Value))
+                {
                     splashb64 = imgtool.GetBase64();
+                }
+            }
             else if (mdl.Splash.HasValue)
+            {
                 splashb64 = null;
+            }
 
             return await ApiClient.ModifyGuildAsync(guild_id, mdl.Name, mdl.Region.IfPresent(x => x.Id), mdl.VerificationLevel, mdl.DefaultMessageNotifications,
                 mdl.MfaLevel, mdl.ExplicitContentFilter, mdl.AfkChannel.IfPresent(x => x?.Id), mdl.AfkTimeout, iconb64, mdl.Owner.IfPresent(x => x.Id),
@@ -110,7 +126,9 @@ namespace DSharpPlus
                 foreach (var xtm in tms)
                 {
                     if (UserCache.ContainsKey(xtm.User.Id))
+                    {
                         continue;
+                    }
 
                     var usr = new DiscordUser(xtm.User) { Discord = this };
                     UserCache.AddOrUpdate(xtm.User.Id, usr, (id, old) =>
@@ -161,7 +179,9 @@ namespace DSharpPlus
         public Task<DiscordChannel> CreateGuildChannelAsync(ulong id, string name, ChannelType type, ulong? parent, int? bitrate, int? user_limit, IEnumerable<DiscordOverwriteBuilder> overwrites, bool? nsfw, Optional<int?> perUserRateLimit, string reason)
         {
             if (type != ChannelType.Category && type != ChannelType.Text && type != ChannelType.Voice)
+            {
                 throw new ArgumentException("Channel type must be text, voice, or category.", nameof(type));
+            }
 
             return ApiClient.CreateGuildChannelAsync(id, name, type, parent, bitrate, user_limit, overwrites, nsfw, perUserRateLimit, reason);
         }
@@ -281,8 +301,12 @@ namespace DSharpPlus
         {
             string av64 = null;
             if (avatar != null)
+            {
                 using (var imgtool = new ImageTool(avatar))
+                {
                     av64 = imgtool.GetBase64();
+                }
+            }
 
             return new DiscordUser(await ApiClient.ModifyCurrentUserAsync(username, av64).ConfigureAwait(false)) { Discord = this };
         }
@@ -301,13 +325,15 @@ namespace DSharpPlus
             action(mdl);
 
             if (mdl.VoiceChannel.HasValue && mdl.VoiceChannel.Value.Type != ChannelType.Voice)
+            {
                 throw new ArgumentException("Given channel is not a voice channel.", nameof(mdl.VoiceChannel));
+            }
 
             if (mdl.Nickname.HasValue && CurrentUser.Id == member_id)
             {
                 await ApiClient.ModifyCurrentMemberNicknameAsync(guild_id, mdl.Nickname.Value,
                     mdl.AuditLogReason).ConfigureAwait(false);
-                await ApiClient.ModifyGuildMemberAsync(guild_id, member_id, Optional<string>.FromNoValue(),
+                await ApiClient.ModifyGuildMemberAsync(guild_id, member_id, Optional.FromNoValue<string>(),
                     mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
                     mdl.VoiceChannel.IfPresent(e => e.Id), mdl.AuditLogReason).ConfigureAwait(false);
             }
@@ -407,8 +433,12 @@ namespace DSharpPlus
         {
             string av64 = null;
             if (avatar != null)
+            {
                 using (var imgtool = new ImageTool(avatar))
+                {
                     av64 = imgtool.GetBase64();
+                }
+            }
 
             return ApiClient.CreateWebhookAsync(channel_id, name, av64, reason);
         }
@@ -432,8 +462,12 @@ namespace DSharpPlus
         {
             string av64 = null;
             if (avatar != null)
+            {
                 using (var imgtool = new ImageTool(avatar))
+                {
                     av64 = imgtool.GetBase64();
+                }
+            }
 
             return ApiClient.ModifyWebhookAsync(webhook_id, name, av64, reason);
         }
@@ -445,8 +479,12 @@ namespace DSharpPlus
         {
             string av64 = null;
             if (avatar != null)
+            {
                 using (var imgtool = new ImageTool(avatar))
+                {
                     av64 = imgtool.GetBase64();
+                }
+            }
 
             return ApiClient.ModifyWebhookAsync(webhook_id, name, av64, webhook_token, reason);
         }
@@ -496,7 +534,10 @@ namespace DSharpPlus
         public override void Dispose()
         {
             if (disposed)
+            {
                 return;
+            }
+
             disposed = true;
             _guilds = null;
         }

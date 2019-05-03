@@ -2,33 +2,51 @@
     x:Class="Unicord.Universal.Pages.Subpages.ChannelWarningPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Pages.Subpages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+    mc:Ignorable="d">
 
     <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
         <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
-            <StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="450">
-                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7BA;" FontSize="120"/>
+            <StackPanel
+                MaxWidth="450"
+                Margin="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <TextBlock
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="120"
+                    Text="&#xE7BA;" />
                 <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">NSFW Content Ahead!</TextBlock>
                 <TextBlock TextWrapping="Wrap">
-            <Run>Hey, there's probably NSFW content ahead, so I'm legally obliged to make sure you're over 18.</Run><LineBreak/>
-            <LineBreak/><Run>Are you over 18 and willing to see NSFW content?</Run>
+                    <Run>Hey, there's probably NSFW content ahead, so I'm legally obliged to make sure you're over 18.</Run><LineBreak />
+                    <LineBreak /><Run>Are you over 18 and willing to see NSFW content?</Run>
                 </TextBlock>
 
                 <Grid Margin="0,8,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button Content="Back to safety!" Click="BackButton_Click" HorizontalAlignment="Stretch"/>
-                    <Button Grid.Column="1" Style="{ThemeResource AccentButtonStyle}" Content="Take me there!" Click="ContinueButton_Click" HorizontalAlignment="Stretch"/>
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Click="BackButton_Click"
+                        Content="Back to safety!" />
+                    <Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        Click="ContinueButton_Click"
+                        Content="Take me there!"
+                        Style="{ThemeResource AccentButtonStyle}" />
                 </Grid>
 
-                <CheckBox x:Name="notAgain" Content="Don't ask me again!" Margin="0,8"/>
+                <CheckBox
+                    x:Name="notAgain"
+                    Margin="0,8"
+                    Content="Don't ask me again!" />
             </StackPanel>
         </Grid>
     </controls:DropShadowPanel>

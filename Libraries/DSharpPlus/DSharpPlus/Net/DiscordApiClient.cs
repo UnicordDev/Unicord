@@ -71,13 +71,12 @@ namespace DSharpPlus.Net
 
             if (guild != null)
             {
-                var mbr = guild.Members.FirstOrDefault(xm => xm.Id == author.Id);
+                var mbr = guild.Members.Values.FirstOrDefault(xm => xm.Id == author.Id);
                 if (mbr == null)
                 {
                     mbr = new DiscordMember(usr) { Discord = Discord, _guild_id = guild.Id };
-                    guild._members.Add(mbr);
+                    guild._members[mbr.Id] = (mbr);
                 }
-
                 ret.Author = mbr;
             }
             else
@@ -142,7 +141,10 @@ namespace DSharpPlus.Net
             var guild = JsonConvert.DeserializeObject<DiscordGuild>(res.Response);
 
             if (Discord is DiscordClient dc)
+            {
                 await dc.OnGuildCreateEventAsync(guild, raw_members, null).ConfigureAwait(false);
+            }
+
             return guild;
         }
 
@@ -186,7 +188,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id";
             var bucket = Rest.GetBucket(RestRequestMethod.PATCH, route, new { guild_id }, out var path);
@@ -197,11 +201,16 @@ namespace DSharpPlus.Net
             var json = JObject.Parse(res.Response);
             var raw_members = (JArray)json["members"];
             var guild = JsonConvert.DeserializeObject<DiscordGuild>(res.Response);
-            foreach (var r in guild._roles)
+            foreach (var r in guild._roles.Values)
+            {
                 r._guild_id = guild.Id;
+            }
 
             if (Discord is DiscordClient dc)
+            {
                 await dc.OnGuildUpdateEventAsync(guild, raw_members).ConfigureAwait(false);
+            }
+
             return guild;
         }
 
@@ -239,14 +248,18 @@ namespace DSharpPlus.Net
         internal Task CreateGuildBanAsync(ulong guild_id, ulong user_id, int delete_message_days, string reason)
         {
             if (delete_message_days < 0 || delete_message_days > 7)
+            {
                 throw new ArgumentException("Delete message days must be a number between 0 and 7.", nameof(delete_message_days));
+            }
 
             var urlparams = new Dictionary<string, string>
             {
                 ["delete-message-days"] = delete_message_days.ToString(CultureInfo.InvariantCulture)
             };
             if (reason != null)
+            {
                 urlparams["reason"] = reason;
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.BANS}/:user_id";
             var bucket = Rest.GetBucket(RestRequestMethod.PUT, route, new { guild_id, user_id }, out var path);
@@ -259,7 +272,9 @@ namespace DSharpPlus.Net
         {
             var urlparams = new Dictionary<string, string>();
             if (reason != null)
+            {
                 urlparams["reason"] = reason;
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.BANS}/:user_id";
             var bucket = Rest.GetBucket(RestRequestMethod.DELETE, route, new { guild_id, user_id }, out var path);
@@ -303,9 +318,14 @@ namespace DSharpPlus.Net
         {
             var urlparams = new Dictionary<string, string>();
             if (limit != null && limit > 0)
+            {
                 urlparams["limit"] = limit.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (after != null)
+            {
                 urlparams["after"] = after.Value.ToString(CultureInfo.InvariantCulture);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.MEMBERS}";
             var bucket = Rest.GetBucket(RestRequestMethod.GET, route, new { guild_id }, out var path);
@@ -321,7 +341,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.MEMBERS}/:user_id{Endpoints.ROLES}/:role_id";
             var bucket = Rest.GetBucket(RestRequestMethod.PUT, route, new { guild_id, user_id, role_id }, out var path);
@@ -334,7 +356,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.MEMBERS}/:user_id{Endpoints.ROLES}/:role_id";
             var bucket = Rest.GetBucket(RestRequestMethod.DELETE, route, new { guild_id, user_id, role_id }, out var path);
@@ -347,7 +371,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.CHANNELS}";
             var bucket = Rest.GetBucket(RestRequestMethod.PATCH, route, new { guild_id }, out var path);
@@ -360,7 +386,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.ROLES}";
             var bucket = Rest.GetBucket(RestRequestMethod.PATCH, route, new { guild_id }, out var path);
@@ -376,13 +404,24 @@ namespace DSharpPlus.Net
                 ["limit"] = limit.ToString(CultureInfo.InvariantCulture)
             };
             if (after != null)
+            {
                 urlparams["after"] = after?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (before != null)
+            {
                 urlparams["before"] = before?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (responsible != null)
+            {
                 urlparams["user_id"] = responsible?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (action_type != null)
+            {
                 urlparams["action_type"] = action_type?.ToString(CultureInfo.InvariantCulture);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.AUDIT_LOGS}";
             var bucket = Rest.GetBucket(RestRequestMethod.GET, route, new { guild_id }, out var path);
@@ -401,8 +440,12 @@ namespace DSharpPlus.Net
         {
             var restoverwrites = new List<DiscordRestOverwrite>();
             if (overwrites != null)
+            {
                 foreach (var ow in overwrites)
+                {
                     restoverwrites.Add(ow.Build());
+                }
+            }
 
             var pld = new RestChannelCreatePayload
             {
@@ -418,7 +461,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.GUILDS}/:guild_id{Endpoints.CHANNELS}";
             var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { guild_id }, out var path);
@@ -453,7 +498,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id";
             var bucket = Rest.GetBucket(RestRequestMethod.PATCH, route, new { channel_id }, out var path);
@@ -485,7 +532,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id";
             var bucket = Rest.GetBucket(RestRequestMethod.DELETE, route, new { channel_id }, out var path);
@@ -510,14 +559,24 @@ namespace DSharpPlus.Net
         internal async Task<DiscordMessage> CreateMessageAsync(ulong channel_id, string content, bool? tts, DiscordEmbed embed)
         {
             if (content != null && content.Length >= 2000)
+            {
                 throw new ArgumentException("Max message length is 2000");
+            }
+
             if (string.IsNullOrEmpty(content) && embed == null)
+            {
                 throw new ArgumentException("Cannot send empty message");
+            }
+
             if (content == null && embed == null)
+            {
                 throw new ArgumentException("Message must have text or embed");
+            }
 
             if (embed?.Timestamp != null)
+            {
                 embed.Timestamp = embed.Timestamp.Value.ToUniversalTime();
+            }
 
             var pld = new RestChannelMessageCreatePayload
             {
@@ -544,10 +603,14 @@ namespace DSharpPlus.Net
             var file = new Dictionary<string, Stream> { { file_name, file_data } };
 
             if (content != null && content.Length >= 2000)
+            {
                 throw new ArgumentException("Max message length is 2000");
+            }
 
             if (embed?.Timestamp != null)
+            {
                 embed.Timestamp = embed.Timestamp.Value.ToUniversalTime();
+            }
 
             var values = new Dictionary<string, string>();
             var pld = new RestChannelMessageCreateMultipartPayload
@@ -558,7 +621,9 @@ namespace DSharpPlus.Net
             };
 
             if (!string.IsNullOrEmpty(content) || embed != null || tts == true)
+            {
                 values["payload_json"] = DiscordJson.SerializeObject(pld);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.MESSAGES}";
             var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
@@ -574,12 +639,19 @@ namespace DSharpPlus.Net
         internal async Task<DiscordMessage> UploadFilesAsync(ulong channel_id, Dictionary<string, Stream> files, string content, bool? tts, DiscordEmbed embed)
         {
             if (embed?.Timestamp != null)
+            {
                 embed.Timestamp = embed.Timestamp.Value.ToUniversalTime();
+            }
 
             if (content != null && content.Length >= 2000)
+            {
                 throw new ArgumentException("Message content length cannot exceed 2000 characters.");
+            }
+
             if (files.Count == 0 && string.IsNullOrEmpty(content) && embed == null)
+            {
                 throw new ArgumentException("You must specify content, an embed, or at least one file.");
+            }
 
             var values = new Dictionary<string, string>();
             var pld = new RestChannelMessageCreateMultipartPayload
@@ -589,7 +661,9 @@ namespace DSharpPlus.Net
                 IsTTS = tts
             };
             if (!string.IsNullOrWhiteSpace(content) || embed != null || tts == true)
+            {
                 values["payload_json"] = DiscordJson.SerializeObject(pld);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.MESSAGES}";
             var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
@@ -613,11 +687,13 @@ namespace DSharpPlus.Net
             var channels_raw = JsonConvert.DeserializeObject<IEnumerable<DiscordChannel>>(res.Response).Select(xc => { xc.Discord = Discord; return xc; });
 
             foreach (var ret in channels_raw)
+            {
                 foreach (var xo in ret._permission_overwrites)
                 {
                     xo.Discord = Discord;
                     xo._channel_id = ret.Id;
                 }
+            }
 
             return new ReadOnlyCollection<DiscordChannel>(new List<DiscordChannel>(channels_raw));
         }
@@ -626,13 +702,24 @@ namespace DSharpPlus.Net
         {
             var urlparams = new Dictionary<string, string>();
             if (around != null)
+            {
                 urlparams["around"] = around?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (before != null)
+            {
                 urlparams["before"] = before?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (after != null)
+            {
                 urlparams["after"] = after?.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (limit > 0)
+            {
                 urlparams["limit"] = limit.ToString(CultureInfo.InvariantCulture);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.MESSAGES}";
             var bucket = Rest.GetBucket(RestRequestMethod.GET, route, new { channel_id }, out var path);
@@ -643,7 +730,9 @@ namespace DSharpPlus.Net
             var msgs_raw = JArray.Parse(res.Response);
             var msgs = new List<DiscordMessage>();
             foreach (var xj in msgs_raw)
+            {
                 msgs.Add(PrepareMessage(xj));
+            }
 
             return new ReadOnlyCollection<DiscordMessage>(new List<DiscordMessage>(msgs));
         }
@@ -664,7 +753,9 @@ namespace DSharpPlus.Net
         internal async Task<DiscordMessage> EditMessageAsync(ulong channel_id, ulong message_id, Optional<string> content, Optional<DiscordEmbed> embed)
         {
             if (embed.HasValue && embed.Value != null && embed.Value.Timestamp != null)
+            {
                 embed.Value.Timestamp = embed.Value.Timestamp.Value.ToUniversalTime();
+            }
 
             var pld = new RestChannelMessageEditPayload
             {
@@ -689,7 +780,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.MESSAGES}/:message_id";
             var bucket = Rest.GetBucket(RestRequestMethod.DELETE, route, new { channel_id, message_id }, out var path);
@@ -707,7 +800,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.MESSAGES}{Endpoints.BULK_DELETE}";
             var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
@@ -741,7 +836,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.INVITES}";
             var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
@@ -759,7 +856,9 @@ namespace DSharpPlus.Net
         {
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.PERMISSIONS}/:overwrite_id";
             var bucket = Rest.GetBucket(RestRequestMethod.DELETE, route, new { channel_id, overwrite_id }, out var path);
@@ -779,7 +878,9 @@ namespace DSharpPlus.Net
 
             var headers = Utilities.GetBaseHeaders();
             if (!string.IsNullOrWhiteSpace(reason))
+            {
                 headers.Add(REASON_HEADER_NAME, reason);
+            }
 
             var route = $"{Endpoints.CHANNELS}/:channel_id{Endpoints.PERMISSIONS}/:overwrite_id";
             var bucket = Rest.GetBucket(RestRequestMethod.PUT, route, new { channel_id, overwrite_id }, out var path);
@@ -808,7 +909,9 @@ namespace DSharpPlus.Net
             var msgs_raw = JArray.Parse(res.Response);
             var msgs = new List<DiscordMessage>();
             foreach (var xj in msgs_raw)
+            {
                 msgs.Add(PrepareMessage(xj));
+            }
 
             return new ReadOnlyCollection<DiscordMessage>(new List<DiscordMessage>(msgs));
         }
@@ -983,9 +1086,14 @@ namespace DSharpPlus.Net
             var route = $"{Endpoints.USERS}{Endpoints.ME}{Endpoints.GUILDS}?limit={limit}";
 
             if (before != null)
+            {
                 route += "&before=" + before;
+            }
+
             if (after != null)
+            {
                 route += "&after=" + after;
+            }
 
             var bucket = Rest.GetBucket(RestRequestMethod.GET, route, new { }, out var path);
 
@@ -1084,7 +1192,7 @@ namespace DSharpPlus.Net
             var json = JObject.Parse(res.Response);
             var raw_members = (JArray)json["members"];
             var guild_rest = JsonConvert.DeserializeObject<DiscordGuild>(res.Response);
-            foreach (var r in guild_rest._roles)
+            foreach (var r in guild_rest._roles.Values)
             {
                 r._guild_id = guild_rest.Id;
             }
@@ -1766,7 +1874,7 @@ namespace DSharpPlus.Net
                 {
                     if (!users.ContainsKey(xtu.Id))
                     {
-                        var xu = gld?.Members.FirstOrDefault(xm => xm.Id == xtu.Id) ?? new DiscordUser(xtu);
+                        var xu = gld != null && gld.Members.TryGetValue(xtu.Id, out var member) ? member : new DiscordUser(xtu);
                         users[xu.Id] = xu;
                     }
 
@@ -1796,7 +1904,7 @@ namespace DSharpPlus.Net
             var xtu = emoji_raw["user"]?.ToObject<TransportUser>();
             if (xtu != null)
             {
-                emoji.User = gld?.Members.FirstOrDefault(xm => xm.Id == xtu.Id) ?? new DiscordUser(xtu);
+                emoji.User = gld != null && gld.Members.TryGetValue(xtu.Id, out var member) ? member : new DiscordUser(xtu);
             }
 
             return emoji;
@@ -1832,7 +1940,7 @@ namespace DSharpPlus.Net
             var xtu = emoji_raw["user"]?.ToObject<TransportUser>();
             if (xtu != null)
             {
-                emoji.User = gld?.Members.FirstOrDefault(xm => xm.Id == xtu.Id) ?? new DiscordUser(xtu);
+                emoji.User = gld != null && gld.Members.TryGetValue(xtu.Id, out var member) ? member : new DiscordUser(xtu);
             }
             else
             {
@@ -1871,7 +1979,7 @@ namespace DSharpPlus.Net
             var xtu = emoji_raw["user"]?.ToObject<TransportUser>();
             if (xtu != null)
             {
-                emoji.User = gld?.Members.FirstOrDefault(xm => xm.Id == xtu.Id) ?? new DiscordUser(xtu);
+                emoji.User = gld != null && gld.Members.TryGetValue(xtu.Id, out var member) ? member : new DiscordUser(xtu);
             }
 
             return emoji;

@@ -28,7 +28,8 @@
                     </Paragraph>
                     <Paragraph>
                         <Run>Copyright © 2015 Mike Santiago</Run>
-                        <LineBreak/><Run>Copyright © 2016-2018 DSharpPlus Development Team</Run>
+                        <LineBreak/>
+                        <Run>Copyright © 2016-2018 DSharpPlus Development Team</Run>
                     </Paragraph>
                     <Paragraph>Used under the
                         <Hyperlink NavigateUri="https://github.com/DSharpPlus/DSharpPlus/blob/master/LICENSE">MIT licence</Hyperlink>
@@ -46,7 +47,7 @@
                     <Paragraph>Used under the
                         <Hyperlink NavigateUri="https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/master/license.md">MIT licence</Hyperlink>
                     </Paragraph>
-                    
+
                     <Paragraph/>
 
                     <Paragraph>
@@ -59,7 +60,7 @@
                     <Paragraph>Used under the
                         <Hyperlink NavigateUri="https://github.com/WilliamABradley/ColorCode-Universal/blob/master/license.md">Microsoft Public License</Hyperlink>
                     </Paragraph>
-                    
+
                     <Paragraph/>
 
                     <Paragraph>
@@ -74,7 +75,7 @@
                     </Paragraph>
 
                     <Paragraph/>
-                    
+
                     <Paragraph>
                         <Bold>libsodium</Bold>
                         <Run>- A modern, portable, easy to use crypto library.</Run>
@@ -98,7 +99,7 @@
                     <Paragraph>Used under the
                         <Hyperlink NavigateUri="https://github.com/xiph/opus/blob/master/LICENSE_PLEASE_READ.txt">BSD License</Hyperlink>
                     </Paragraph>
-                    
+
                     <Paragraph/>
 
                     <Paragraph>
@@ -125,19 +126,19 @@
                     <Paragraph>Used under the
                         <Hyperlink NavigateUri="https://github.com/WindowsNotifications/QueryString.NET/blob/master/LICENSE">MIT License</Hyperlink>
                     </Paragraph>
-                    
+
                     <Paragraph/>
 
                     <Paragraph>
                         <Run>Discord, the Discord Logo, Clyde and so on are trademarks of Hammer and Chisel. Unicord is in no way associated with nor endorced by these people, but they're cool!</Run>
                     </Paragraph>
-                    
+
                     <Paragraph/>
-                    
+
                     <Paragraph>
                         <Run Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="Hey you read all this shit? You're pretty cool too, hit me up! @WamWooWam#6402"/>
                     </Paragraph>
-                    
+
                 </RichTextBlock>
             </StackPanel>
         </ScrollViewer>

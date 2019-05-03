@@ -13,7 +13,9 @@ namespace Unicord.Universal.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value == null)
+            {
                 return 0.5;
+            }
 
             if (value is bool b && b)
             {

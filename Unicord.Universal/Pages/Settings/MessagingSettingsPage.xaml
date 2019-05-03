@@ -5,6 +5,8 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls1="using:Unicord.Universal.Controls"
     mc:Ignorable="d">
     <Page.DataContext>
         <local:MessagingSettingsModel />
@@ -12,6 +14,8 @@
 
     <StackPanel>
         <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Text and Images" Margin="0,0,0,12"/>
+
+        <controls1:MessageViewer x:Name="messageViewer" Message="{Binding ExampleMessage,Mode=OneWay}" IsEnabled="False" Background="Transparent" Margin="0,0,0,8" />
 
         <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Spoilers"/>
         <Grid Grid.Row="1" Margin="0,4,0,8">
@@ -27,6 +31,51 @@
             <TextBlock Text="Enable Spoilers" VerticalAlignment="Center"/>
             <ToggleSwitch Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
         </Grid>
-        
+
+        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Timestamps"/>
+        <TextBlock TextWrapping="Wrap" Text="How do you want timestamps on messages to appear?"/>
+        <ComboBox SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,4,0,8">
+            <ComboBoxItem>
+                <Grid>
+                    <TextBlock Text="Relative" />
+                    <TextBlock Text="3 minutes ago" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
+                </Grid>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <Grid>
+                    <TextBlock Text="Absolute" />
+                    <TextBlock Text="Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
+                </Grid>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <Grid>
+                    <TextBlock Text="Both" />
+                    <TextBlock Text="3 minutes ago - Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
+                </Grid>
+            </ComboBoxItem>
+            <!--
+            <controls:WrapPanel>
+                <RadioButton Content="Relative" ToolTipService.ToolTip="3 minutes ago"/>
+                <RadioButton Content="Absolute" ToolTipService.ToolTip="Today at 12:34"/>
+                <RadioButton Content="Both" ToolTipService.ToolTip="3 minutes ago - Today at 12:34"/>
+            </controls:WrapPanel>
+            -->
+        </ComboBox>
+        <!--
+        <Grid Grid.Row="1" Margin="0,4,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Show full date and time as tooltip" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <ToggleSwitch Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}"  />
+        </Grid>
+        -->
+
     </StackPanel>
 </Page>

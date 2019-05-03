@@ -48,7 +48,9 @@ namespace Unicord.Universal.Pages
         {
             var mainPage = this.FindParent<MainPage>();
             if (mainPage.IsOverlayShown)
+            {
                 mainPage.HideConnectingOverlay();
+            }
         }
 
         private async void loadFileButton_Click(object sender, RoutedEventArgs e)

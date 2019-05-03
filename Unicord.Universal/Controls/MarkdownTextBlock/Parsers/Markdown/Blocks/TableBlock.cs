@@ -294,8 +294,10 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                     requireVerticalBar: true,
                     contentParser: (startingPos2, maxEndingPos2) =>
                     {
-                        var cell = new TableCell();
-                        cell.Inlines = Common.ParseInlineChildren(markdown, startingPos2, maxEndingPos2);
+                        var cell = new TableCell
+                        {
+                            Inlines = Common.ParseInlineChildren(markdown, startingPos2, maxEndingPos2)
+                        };
                         Cells.Add(cell);
                     });
             }

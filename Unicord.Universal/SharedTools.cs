@@ -27,7 +27,7 @@ namespace Unicord
             if (message.Channel.Guild != null)
             {
                 var usr = message.Channel.Guild.CurrentMember;
-                if (message.MentionedRoles.Any(r => (usr.Roles.Contains(r))))
+                if (message.MentionedRoles?.Any(r => (usr.Roles.Contains(r))) == true)
                 {
                     willNotify = true;
                 }

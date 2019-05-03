@@ -18,8 +18,7 @@ namespace DSharpPlus.Entities
         internal bool _mentionsInvalidated;
 
         private string _content;
-        private ReadOnlyCollection<DiscordUser> _mentionedUsers;
-        private ReadOnlyCollection<DiscordRole> _mentionedRoles;
+        private List<DiscordRole> _mentionedRoles;
         private ReadOnlyCollection<DiscordChannel> _mentionedChannels;
 
         internal DiscordMessage()
@@ -57,7 +56,7 @@ namespace DSharpPlus.Entities
         /// Gets the channel in which the message was sent.
         /// </summary>
         [JsonIgnore]
-        public DiscordChannel Channel
+        public virtual DiscordChannel Channel
             => (Discord as DiscordClient)?.InternalGetCachedChannel(ChannelId);
 
         /// <summary>
@@ -70,19 +69,19 @@ namespace DSharpPlus.Entities
         /// Gets the user or member that sent the message.
         /// </summary>
         [JsonProperty("author", NullValueHandling = NullValueHandling.Ignore)]
-        public DiscordUser Author { get; internal set; }
+        public virtual DiscordUser Author { get; internal set; }
 
         /// <summary>
         /// Gets the message's content.
         /// </summary>
         [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
-        public string Content { get => _content; internal set => OnPropertySet(ref _content, value); }
+        public virtual string Content { get => _content; internal set => OnPropertySet(ref _content, value); }
 
         /// <summary>
         /// Gets the message's creation timestamp.
         /// </summary>
         [JsonIgnore]
-        public DateTimeOffset Timestamp
+        public virtual DateTimeOffset Timestamp
             => DateTimeOffset.Parse(TimestampRaw, CultureInfo.InvariantCulture);
 
         [JsonProperty("timestamp", NullValueHandling = NullValueHandling.Ignore)]
@@ -117,6 +116,9 @@ namespace DSharpPlus.Entities
         [JsonProperty("mention_everyone", NullValueHandling = NullValueHandling.Ignore)]
         public bool MentionEveryone { get; internal set; }
 
+        [JsonProperty("mentions", NullValueHandling = NullValueHandling.Ignore)]
+        internal List<DiscordUser> _mentionedUsers;
+
         /// <summary>
         /// Gets users or members mentioned by this message.
         /// </summary>
@@ -125,18 +127,6 @@ namespace DSharpPlus.Entities
         {
             get
             {
-                if (_mentionedUsers == null || _mentionsInvalidated)
-                {
-                    if (Channel.Guild != null)
-                    {
-                        _mentionedUsers = new ReadOnlyCollection<DiscordUser>(Utilities.GetUserMentions(this).Select(xid => Channel.Guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList());
-                    }
-                    else
-                    {
-                        _mentionedUsers = new ReadOnlyCollection<DiscordUser>(Utilities.GetUserMentions(this).Select(Discord.InternalGetCachedUser).ToList());
-                    }
-                }
-
                 return _mentionedUsers;
             }
         }
@@ -149,15 +139,23 @@ namespace DSharpPlus.Entities
         {
             get
             {
-                if ((_mentionedRoles == null || _mentionsInvalidated) && Channel.Guild != null)
+                if (_mentionedRoles == null)
                 {
-                    if (Channel.Guild != null)
+                    if(string.IsNullOrWhiteSpace(Content))
                     {
-                        _mentionedRoles = new ReadOnlyCollection<DiscordRole>(Utilities.GetRoleMentions(this).Select(xid => Channel.Guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList());
+                        _mentionedRoles = Utilities.GetRoleMentions(this).Select(xid => Channel.Guild.GetRole(xid)).ToList();
+                    }
+                    else
+                    {
+                        return new List<DiscordRole>();
                     }
                 }
+                else
+                {
+                    return _mentionedRoles;
+                }
 
-                return _mentionedRoles;
+                return new List<DiscordRole>();
             }
         }
 
@@ -169,14 +167,6 @@ namespace DSharpPlus.Entities
         {
             get
             {
-                if ((_mentionedChannels == null || _mentionsInvalidated) && Channel.Guild != null)
-                {
-                    if (Channel.Guild != null)
-                    {
-                        _mentionedChannels = new ReadOnlyCollection<DiscordChannel>(Utilities.GetChannelMentions(this).Select(xid => Channel.Guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList());
-                    }
-                }
-
                 return _mentionedChannels;
             }
         }

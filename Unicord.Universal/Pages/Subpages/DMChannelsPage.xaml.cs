@@ -48,7 +48,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            _dms = new ObservableCollection<DiscordDmChannel>(App.Discord.PrivateChannels.OrderByDescending(r => r.ReadState?.LastMessageId));
+            _dms = new ObservableCollection<DiscordDmChannel>(App.Discord.PrivateChannels.Values.OrderByDescending(r => r.ReadState?.LastMessageId));
 
             App.Discord.DmChannelCreated += Discord_DmChannelCreated;
             App.Discord.DmChannelDeleted += Discord_DmChannelDeleted;
@@ -89,7 +89,9 @@ namespace Unicord.Universal.Pages.Subpages
                     }
 
                     if (selected)
+                    {
                         dmsList.SelectedIndex = 0;
+                    }
 
                     dmsList.SelectionChanged += dmsList_SelectionChanged;
                 });

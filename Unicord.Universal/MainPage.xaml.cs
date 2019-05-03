@@ -224,10 +224,10 @@ namespace Unicord.Universal
 
         internal async Task GoToChannelAsync(DiscordClient e)
         {
-            var guildChannels = e.Guilds.Values.SelectMany(g => g.Channels)
+            var guildChannels = e.Guilds.Values.SelectMany(g => g.Channels.Values)
                 .Where(c => c.Type == ChannelType.Text && c.PermissionsFor(c.Guild.CurrentMember).HasPermission(Permissions.AccessChannels));
 
-            var dm = e.PrivateChannels
+            var dm = e.PrivateChannels.Values
                 .Concat(guildChannels)
                 .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == _args.UserId || c.Id == _args.ChannelId : c.Id == _args.ChannelId);
 
@@ -320,9 +320,14 @@ namespace Unicord.Universal
         public void HideOverlay()
         {
             if (contentOverlay.Visibility == Visibility.Visible)
+            {
                 hideContent.Begin();
+            }
+
             if (userInfoOverlay.Visibility == Visibility.Visible)
+            {
                 hideUserOverlay.Begin();
+            }
         }
 
         private void ResetOverlay()
@@ -330,11 +335,19 @@ namespace Unicord.Universal
             contentOverlay.Visibility = Visibility.Collapsed;
 
             if (_openHandler != null)
+            {
                 openButton.Click -= _openHandler;
+            }
+
             if (_saveHandler != null)
+            {
                 saveButton.Click -= _saveHandler;
+            }
+
             if (_shareHandler != null)
+            {
                 shareButton.Click -= _shareHandler;
+            }
 
             _openHandler = null;
             _saveHandler = null;

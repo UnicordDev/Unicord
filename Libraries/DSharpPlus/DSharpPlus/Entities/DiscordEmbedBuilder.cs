@@ -15,7 +15,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         public string Title
         {
-            get { return _title; }
+            get => _title;
             set
             {
                 if (value != null && value.Length > 256)
@@ -33,7 +33,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         public string Description
         {
-            get { return _description; }
+            get => _description;
             set
             {
                 if (value != null && value.Length > 2048)
@@ -51,7 +51,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         public string Url
         {
-            get { return _url?.ToString(); }
+            get => _url?.ToString();
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -71,8 +71,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public Optional<DiscordColor> Color
         {
-            get { return _color; }
-            set { _color = value; }
+            get => _color;
+            set => _color = value;
         }
         private Optional<DiscordColor> _color;
 
@@ -81,8 +81,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         public DateTimeOffset? Timestamp
         {
-            get { return _timestamp; }
-            set { _timestamp = value; }
+            get => _timestamp;
+            set => _timestamp = value;
         }
         private DateTimeOffset? _timestamp;
 
@@ -91,7 +91,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         public string ImageUrl
         {
-            get { return _image_uri?.ToString(); }
+            get => _image_uri?.ToString();
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -111,7 +111,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         public string ThumbnailUrl
         {
-            get { return _thumbnail_uri?.ToString(); }
+            get => _thumbnail_uri?.ToString();
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -510,7 +510,7 @@ namespace DSharpPlus.Entities
                 Title = _title,
                 Description = _description,
                 Url = _url,
-                _color = _color.HasValue ? _color.Value.Value : Optional<int>.FromNoValue(),
+                _color = _color.HasValue ? _color.Value.Value : Optional.FromNoValue<int>(),
                 Timestamp = _timestamp
             };
 
@@ -565,7 +565,7 @@ namespace DSharpPlus.Entities
             /// </summary>
             public string Name
             {
-                get { return _name; }
+                get => _name;
                 set
                 {
                     if (value != null && value.Length > 256)
@@ -583,7 +583,7 @@ namespace DSharpPlus.Entities
             /// </summary>
             public string Url
             {
-                get { return _uri?.ToString(); }
+                get => _uri?.ToString();
                 set
                 {
                     if (string.IsNullOrEmpty(value))
@@ -603,7 +603,7 @@ namespace DSharpPlus.Entities
             /// </summary>
             public string IconUrl
             {
-                get { return _icon_uri?.ToString(); }
+                get => _icon_uri?.ToString();
                 set
                 {
                     if (string.IsNullOrEmpty(value))
@@ -626,7 +626,7 @@ namespace DSharpPlus.Entities
             /// </summary>
             public string Text
             {
-                get { return _text; }
+                get => _text;
                 set
                 {
                     if (value != null && value.Length > 2048)
@@ -644,7 +644,7 @@ namespace DSharpPlus.Entities
             /// </summary>
             public string IconUrl
             {
-                get { return _icon_uri?.ToString(); }
+                get => _icon_uri?.ToString();
                 set
                 {
                     if (string.IsNullOrEmpty(value))
