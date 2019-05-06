@@ -1640,7 +1640,7 @@ namespace DSharpPlus.Entities
         /// Returns a string representation of this guild.
         /// </summary>
         /// <returns>String representation of this guild.</returns>
-        public override string ToString() => $"Guild {Id}; {Name}";
+        public override string ToString() => $"Guild {Id}; {Name}; {Members.Count}/{MemberCount} Members";
 
         /// <summary>
         /// Checks whether this <see cref="DiscordGuild"/> is equal to another object.

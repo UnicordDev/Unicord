@@ -61,7 +61,8 @@ namespace Unicord.Universal.Controls
 
                 if (_attachment.Width == 0)
                 {
-                    mediaPlayer.Height = 42;
+                    mediaPlayer.VerticalAlignment = VerticalAlignment.Top;
+                    mediaPlayer.VerticalContentAlignment = VerticalAlignment.Top;
                     _audioOnly = true;
                 }
 

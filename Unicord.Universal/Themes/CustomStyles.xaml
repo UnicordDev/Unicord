@@ -374,7 +374,7 @@
                                 <Grid.RenderTransform>
                                     <TranslateTransform x:Name="TranslateVertical"/>
                                 </Grid.RenderTransform>
-                                <Border x:Name="ErrorBorder" Background="{ThemeResource MediaTransportControlsPanelBackground}" Grid.ColumnSpan="3" HorizontalAlignment="Center" Height="96" Visibility="Collapsed" Width="320">
+                                <Border x:Name="ErrorBorder" Background="{ThemeResource MediaTransportControlsPanelBackground}" Grid.ColumnSpan="3"  HorizontalAlignment="Center" VerticalAlignment="Stretch" MinHeight="42" Visibility="Collapsed" Width="320">
                                     <TextBlock x:Name="ErrorTextBlock" Margin="12" Style="{StaticResource MediaTextBlockStyle}" TextWrapping="WrapWholeWords"/>
                                 </Border>
                                 <Border x:Name="MediaTransportControls_Timeline_Border" Margin="12,0" Grid.Column="1" Grid.Row="1">

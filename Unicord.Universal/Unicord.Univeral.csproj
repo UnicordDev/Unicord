@@ -11,7 +11,7 @@
     <AssemblyName>Unicord.Universal</AssemblyName>
     <DefaultLanguage>en-GB</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.15138.0</TargetPlatformMinVersion>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -28,6 +28,8 @@
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <HockeyAppResourceId>b87a8458e7a24a688e6c3a2d11d08657</HockeyAppResourceId>
+    <AppxBundleAutoResourcePackageQualifiers>
+    </AppxBundleAutoResourcePackageQualifiers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -46,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -72,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -98,7 +100,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -120,6 +122,7 @@
     <Compile Include="Commands\EditChannelCommand.cs" />
     <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />
+    <Compile Include="Commands\MuteCommand.cs" />
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Constants.cs" />
@@ -243,6 +246,7 @@
     <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
+    <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
@@ -273,6 +277,7 @@
     </Compile>
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
+    <Compile Include="Misc\UnicordMutedStore.cs" />
     <Compile Include="Misc\UserFlyout.xaml.cs">
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
@@ -426,6 +431,8 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Controls\MarkdownTextBlock\About.txt" />
+    <None Include="priconfig.packaging.xml" />
+    <None Include="priconfig.default.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -609,6 +616,11 @@
     <PackageReference Include="Microsoft.AppCenter.Push">
       <Version>1.14.0</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Net.Native.Compiler">
+      <Version>2.2.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.8</Version>
     </PackageReference>
@@ -616,7 +628,7 @@
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer">
-      <Version>4.0.0</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>4.0.0</Version>
@@ -630,11 +642,18 @@
     <PackageReference Include="System.Reflection">
       <Version>4.3.0</Version>
     </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>4.6.0-preview4.19212.13</Version>
+    </PackageReference>
     <PackageReference Include="Unicode.net">
       <Version>0.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj">
+      <Project>{f061f955-5565-4d48-8111-f2f7f2241499}</Project>
+      <Name>DSharpPlus.VoiceNext.UWP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
@@ -642,6 +661,20 @@
     <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp.csproj">
       <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
       <Name>MomentSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
+      <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
+      <Name>libopus</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Native\sodium\libsodium.vcxproj">
+      <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
+      <Name>libsodium</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
@@ -687,15 +720,17 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <LangVersion>latest</LangVersion>
     <ErrorReport>none</ErrorReport>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Sore\</OutputPath>
+    <OutputPath>bin\x86\Store\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
@@ -711,7 +746,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM\Sore\</OutputPath>
+    <OutputPath>bin\ARM\Store\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
@@ -727,7 +762,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x64' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Sore\</OutputPath>
+    <OutputPath>bin\x64\Store\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
@@ -743,7 +778,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM64' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM64\Sore\</OutputPath>
+    <OutputPath>bin\ARM64\Store\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
@@ -758,7 +793,7 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|Win32' ">
-    <OutputPath>bin\Win32\Sore\</OutputPath>
+    <OutputPath>bin\Win32\Store\</OutputPath>
     <DefineConstants>NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <PlatformTarget>AnyCPU</PlatformTarget>

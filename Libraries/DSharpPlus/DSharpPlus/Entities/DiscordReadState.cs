@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -21,7 +21,7 @@ namespace DSharpPlus.Entities
         public bool Unread
         {
             get
-            { 
+            {
                 // this shit should never happen but apparently it does sometimes, don't question it
                 if (Id == 0)
                     return false;
@@ -32,6 +32,9 @@ namespace DSharpPlus.Entities
 
                 if (channel?.Type == ChannelType.Text || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
                 {
+                    if (channel.Muted)
+                        return false;
+
                     return (MentionCount > 0 || (channel.LastMessageId != 0 ? channel.LastMessageId > _lastMessageId : false));
                 }
                 else

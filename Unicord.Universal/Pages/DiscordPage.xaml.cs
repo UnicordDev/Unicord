@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.VoiceNext;
 using Microsoft.Toolkit.Uwp.UI;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
@@ -228,12 +229,12 @@ namespace Unicord.Universal.Pages
         {
             if (App.Discord != null)
             {
-                App.Discord.MessageCreated      -= Notification_MessageCreated;
+                App.Discord.MessageCreated -= Notification_MessageCreated;
                 App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
-                App.Discord.GuildCreated        -= Discord_GuildCreated;
-                App.Discord.GuildDeleted        -= Discord_GuildDeleted;
-                App.Discord.DmChannelCreated    -= Discord_DmChannelCreated;
-                App.Discord.DmChannelDeleted    -= Discord_DmChannelDeleted;
+                App.Discord.GuildCreated -= Discord_GuildCreated;
+                App.Discord.GuildDeleted -= Discord_GuildDeleted;
+                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
+                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
 
                 foreach (var dm in App.Discord.PrivateChannels.Values)
                 {
@@ -295,7 +296,7 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            if(Frame.CurrentSourcePageType == typeof(ChannelPage))
+            if (Frame.CurrentSourcePageType == typeof(ChannelPage))
             {
                 notification.Margin = new Thickness(0, 42, 4, 0);
             }
@@ -344,53 +345,65 @@ namespace Unicord.Universal.Pages
 
         internal async void Navigate(DiscordChannel channel, NavigationTransitionInfo info = null)
         {
-            CloseSplitPane();
-
-            unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
-            guildsList.SelectionChanged -= GuildsList_SelectionChanged;
-
-            if (channel is DiscordDmChannel dm && !(sidebarFrame.Content is DMChannelsPage))
+            try
             {
-                guildsList.SelectedIndex = -1;
-                unreadDms.SelectedItem = dm;
-                friendsItem.IsSelected = true;
-                sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
-            }
-            else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelsPage p) || p.Guild != channel.Guild))
-            {
-                friendsItem.IsSelected = false;
-                unreadDms.SelectedIndex = -1;
-                guildsList.SelectedItem = channel.Guild;
-                sidebarFrame.Navigate(typeof(GuildChannelsPage), channel.Guild, new DrillInNavigationTransitionInfo());
-            }
+                CloseSplitPane();
 
-            if (channel.IsNSFW)
-            {
-                if (await WindowsHello.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
+                if (channel is DiscordDmChannel dm && !(sidebarFrame.Content is DMChannelsPage))
                 {
-                    if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
+                    guildsList.SelectedIndex = -1;
+                    unreadDms.SelectedItem = dm;
+                    friendsItem.IsSelected = true;
+                    sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                }
+                else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelsPage p) || p.Guild != channel.Guild))
+                {
+                    friendsItem.IsSelected = false;
+                    unreadDms.SelectedIndex = -1;
+                    guildsList.SelectedItem = channel.Guild;
+                    sidebarFrame.Navigate(typeof(GuildChannelsPage), channel.Guild, new DrillInNavigationTransitionInfo());
+                }
+
+                if (channel.Type == ChannelType.Voice)
+                {
+                    var voice = App.Discord.GetVoiceNext();
+                    await voice.ConnectAsync(channel);
+                }
+
+                if (channel.IsNSFW)
+                {
+                    if (await WindowsHello.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
                     {
-                        Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
-                    }
-                    else
-                    {
-                        Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                        if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
+                        {
+                            Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
+                        }
+                        else
+                        {
+                            Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                        }
                     }
                 }
+                else
+                {
+                    Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                }
+
+                if (_args?.IsUriActivation == true)
+                {
+                    notification.Content = new UriActivationMessage();
+                    notification.Show(7_000);
+                }
+
+                unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
+                guildsList.SelectionChanged -= GuildsList_SelectionChanged;
             }
-            else
+            finally
             {
-                Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                unreadDms.SelectionChanged += UnreadDms_SelectionChanged;
+                guildsList.SelectionChanged += GuildsList_SelectionChanged;
             }
 
-            if(_args?.IsUriActivation == true)
-            {
-                notification.Content = new UriActivationMessage();
-                notification.Show(7_000);
-            }
-
-            unreadDms.SelectionChanged += UnreadDms_SelectionChanged;
-            guildsList.SelectionChanged += GuildsList_SelectionChanged;
         }
 
         private void mainFrame_Navigated(object sender, NavigationEventArgs e)

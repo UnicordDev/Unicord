@@ -63,11 +63,23 @@ namespace Unicord.Universal.Pages.Subpages
                             return;
                         }
                     }
-
-                    var discordMembers = await Task.Run(() => channel.Users.Distinct().OrderBy(g => g.DisplayName).GroupBy(g => g.Roles.Where(r => r.IsHoisted).OrderBy(r => r.Position).FirstOrDefault()).OrderByDescending(g => g.Key?.Position)).ConfigureAwait(false);
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        viewSource.Source = discordMembers;
+                        if (channel is DiscordDmChannel dm)
+                        {
+                            viewSource.IsSourceGrouped = false;
+                            viewSource.Source = dm.Recipients.OrderBy(r => r.Username);
+                        }
+                        else
+                        {
+                            viewSource.IsSourceGrouped = true;
+                            viewSource.Source = channel.Users
+                               .Distinct()
+                               .OrderBy(g => g.DisplayName)
+                               .GroupBy(g => g.Roles.Where(r => r.IsHoisted).OrderBy(r => r.Position).FirstOrDefault())
+                               .OrderByDescending(g => g.Key?.Position);
+                        }
+
                         progress.IsActive = false;
                     });
                 }

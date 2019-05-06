@@ -1,22 +1,25 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Push;
-using Microsoft.HockeyApp;
-using Microsoft.Toolkit.Uwp.Helpers;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.VoiceNext;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Push;
+using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Themes;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
@@ -64,7 +67,7 @@ namespace Unicord.Universal
             InitializeComponent();
 
             Suspending += OnSuspending;
-            UnhandledException += App_UnhandledException;            
+            UnhandledException += App_UnhandledException;
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
@@ -81,6 +84,8 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
+            Resources.MergedDictionaries.Add(new Templates());
+
             switch (e)
             {
                 case ContactPanelActivatedEventArgs cont:
@@ -155,6 +160,7 @@ namespace Unicord.Universal
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+            Resources.MergedDictionaries.Add(new Templates());
             await OnLaunchedAsync(e.PrelaunchActivated, e.Arguments);
         }
 
@@ -290,6 +296,8 @@ namespace Unicord.Universal
                         async Task ReadyHandler(ReadyEventArgs e)
                         {
                             e.Client.Ready -= ReadyHandler;
+                            e.Client.SocketErrored -= SocketErrored;
+                            e.Client.ClientErrored -= ClientErrored;
                             _readySource.TrySetResult(e);
                             if (onReady != null)
                             {
@@ -318,14 +326,27 @@ namespace Unicord.Universal
                             return Task.CompletedTask;
                         }
 
-                        Discord = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User, AutomaticGuildSync = false, LogLevel = DSharpPlus.LogLevel.Debug });
+                        Discord = await Task.Run(() => new DiscordClient(new DiscordConfiguration()
+                        {
+                            Token = token,
+                            TokenType = TokenType.User,
+                            AutomaticGuildSync = false,
+                            LogLevel = DSharpPlus.LogLevel.Debug,
+                            MutedStore = new UnicordMutedStore(),
+                            ReconnectIndefinitely = true
+                        }));
+
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
                         Discord.Ready += ReadyHandler;
                         Discord.SocketErrored += SocketErrored;
                         Discord.ClientErrored += ClientErrored;
 
+                        // here we go bois
+                        Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
+
                         _connectSemaphore.Release();
 
+                        await Discord.InitializeAsync();
                         await Discord.ConnectAsync(status: status);
                     }
                     catch (Exception ex)

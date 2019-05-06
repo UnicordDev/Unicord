@@ -1,11 +1,11 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -81,14 +81,11 @@ namespace Unicord.Universal.Pages.Subpages
 
         private async Task Discord_PresenceUpdated(PresenceUpdateEventArgs e)
         {
-            if (e.PresenceBefore?.Status != e.Status)
+            if (e.User != null && e.PresenceBefore?.Status != e.Status)
             {
-                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend)
+                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) && rel?.RelationshipType == DiscordRelationshipType.Friend)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        SortRelationship(rel, true);
-                    });
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SortRelationship(rel, true));
                 }
             }
         }

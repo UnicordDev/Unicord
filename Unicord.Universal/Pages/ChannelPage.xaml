@@ -271,7 +271,7 @@
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
-                                    IsEnabled="False"
+                                    IsChecked="{Binding Channel.Muted, Mode=TwoWay}"
                                     Style="{StaticResource IconToggleButtonStyle}"
                                     ToolTipService.ToolTip="Mute" />
                                 <Button

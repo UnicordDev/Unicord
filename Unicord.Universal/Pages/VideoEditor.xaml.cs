@@ -54,6 +54,7 @@ namespace Unicord.Universal.Pages
         private bool _scrubSkip;
         private DispatcherTimer _resizeTimer;
         private double _startPosition;
+        private bool _createdNew;
 
         public VideoEditor()
         {
@@ -89,6 +90,8 @@ namespace Unicord.Universal.Pages
 
             if (_model.Composition == null)
             {
+                _createdNew = true;
+
                 var name = Path.ChangeExtension(_model.StorageFile.Name, "uni-cmp");
                 try
                 {
@@ -160,6 +163,12 @@ namespace Unicord.Universal.Pages
             if (await UIUtilities.ShowYesNoDialogAsync("Save your changes?", "Do you want to save your changes? They'll be loaded the next time you edit this clip."))
             {
                 await SaveComposition();
+            }
+
+            if (_createdNew)
+            {
+                _model.Composition = null;
+                _model.Clip = null;
             }
 
             Close();

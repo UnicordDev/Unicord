@@ -41,6 +41,11 @@ namespace DSharpPlus
         public LogLevel LogLevel { internal get; set; } = LogLevel.Info;
 
         /// <summary>
+        /// Gets the store for muted values
+        /// </summary>
+        public IMutedStore MutedStore { internal get; set; }
+
+        /// <summary>
         /// <para>Sets whether to use the internal log handler.</para>
         /// <para>This is disabled by default. Use it if you don't want to provide your own log handlers.</para>
         /// </summary>
@@ -180,6 +185,7 @@ namespace DSharpPlus
             Proxy = other.Proxy;
             HttpTimeout = other.HttpTimeout;
             ReconnectIndefinitely = other.ReconnectIndefinitely;
+            MutedStore = other.MutedStore;
         }
     }
 }

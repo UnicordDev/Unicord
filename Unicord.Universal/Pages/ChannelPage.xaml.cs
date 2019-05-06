@@ -18,6 +18,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -46,12 +47,13 @@ namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
-        private static ThreadLocal<ConcurrentDictionary<ulong, ChannelViewModel>> _channelHistory
-            = new ThreadLocal<ConcurrentDictionary<ulong, ChannelViewModel>>(() => new ConcurrentDictionary<ulong, ChannelViewModel>());
+        private Dictionary<ulong, ChannelViewModel> _channelHistory
+            = new Dictionary<ulong, ChannelViewModel>();
 
         public ChannelViewModel ViewModel
         {
-            get => _viewModel; private set
+            get => _viewModel;
+            private set
             {
                 _viewModel = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ViewModel)));
@@ -89,8 +91,9 @@ namespace Unicord.Universal.Pages
             }
 
             messageTextBox.KeyDown += messageTextBox_KeyDown;
-
             messageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
+
+            Application.Current.Suspending += OnSuspending;
 
             if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
             {
@@ -101,6 +104,17 @@ namespace Unicord.Universal.Pages
             if (App.StatusBarFill != default)
             {
                 topGrid.Padding = App.StatusBarFill;
+            }
+        }
+
+        private void OnSuspending(object sender, SuspendingEventArgs e)
+        {
+            foreach (var item in _channelHistory)
+            {
+                if (item.Value != _viewModel)
+                {
+                    item.Value.Dispose();
+                }
             }
         }
 
@@ -121,14 +135,14 @@ namespace Unicord.Universal.Pages
                 ChannelViewModel model = null;
                 App._currentChannelId = chan.Id;
 
-                if (_channelHistory.Value.TryGetValue(chan.Id, out var result))
+                if (_channelHistory.TryGetValue(chan.Id, out var result))
                 {
                     model = result;
                 }
 
                 if (ViewModel != null)
                 {
-                    _channelHistory.Value[ViewModel.Channel.Id] = ViewModel;
+                    _channelHistory[ViewModel.Channel.Id] = ViewModel;
                 }
 
                 if (model == null)
@@ -139,10 +153,11 @@ namespace Unicord.Universal.Pages
                 ViewModel = model;
                 DataContext = ViewModel;
 
-                while (_channelHistory.Value.Count > 10)
+                while (_channelHistory.Count > 10)
                 {
-                    var oldest = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed.ToUnixTimeMilliseconds()).FirstOrDefault();
-                    _channelHistory.Value.TryRemove(oldest.Key, out var value);
+                    var oldest = _channelHistory.OrderBy(m => m.Value.LastAccessed.ToUnixTimeMilliseconds()).FirstOrDefault();
+                    var value = _channelHistory[oldest.Key];
+                    _channelHistory.Remove(oldest.Key);
 
                     Logger.Log($"Removing ChannelViewModel for {oldest.Value.Channel}");
 
@@ -170,7 +185,7 @@ namespace Unicord.Universal.Pages
         {
             this.FindParent<MainPage>()?.LeaveFullscreen();
 
-            var lastChannel = _channelHistory.Value.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
+            var lastChannel = _channelHistory.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
             if (lastChannel.Key != default)
             {
                 e.Handled = true;

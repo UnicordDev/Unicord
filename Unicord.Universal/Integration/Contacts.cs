@@ -163,9 +163,9 @@ namespace Unicord.Universal.Integration
 
         private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DiscordRelationship relationship, StorageFolder folder)
         {
-            StorageFile tempFile = null;
+            var tempFile = await folder.GetFileAsync($"{relationship.User.AvatarHash}.jpeg");
 
-            try
+            if(tempFile != null)
             {
                 tempFile = await folder.CreateFileAsync($"{relationship.User.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
 
@@ -174,10 +174,6 @@ namespace Unicord.Universal.Integration
                 {
                     await RandomAccessStream.CopyAndCloseAsync(stream, fileStream);
                 }
-            }
-            catch
-            {
-                tempFile = await ApplicationData.Current.LocalFolder.GetFileAsync($"{relationship.User.AvatarHash}.jpeg");
             }
 
             var reference = RandomAccessStreamReference.CreateFromFile(tempFile);

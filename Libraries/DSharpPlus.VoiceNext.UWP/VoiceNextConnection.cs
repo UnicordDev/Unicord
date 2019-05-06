@@ -310,7 +310,7 @@ namespace DSharpPlus.VoiceNext
             Sequence++;
             Timestamp += (uint)audioFormat.CalculateFrameSize(audioFormat.CalculateSampleDuration(pcm.Length));
 
-            Span<byte> nonce = stackalloc byte[Sodium.NonceSize];
+            Span<byte> nonce = new byte[Sodium.NonceSize];
             switch (SelectedEncryptionMode)
             {
                 case EncryptionMode.XSalsa20_Poly1305:
@@ -332,7 +332,7 @@ namespace DSharpPlus.VoiceNext
                     throw new Exception("Unsupported encryption mode.");
             }
 
-            Span<byte> encrypted = stackalloc byte[Sodium.CalculateTargetSize(opus)];
+            Span<byte> encrypted = new byte[Sodium.CalculateTargetSize(opus)];
             Sodium.Encrypt(opus, encrypted, nonce);
             encrypted.CopyTo(packet.Slice(Rtp.HeaderSize));
             packet = packet.Slice(0, Rtp.CalculatePacketSize(encrypted.Length, SelectedEncryptionMode));
@@ -435,7 +435,7 @@ namespace DSharpPlus.VoiceNext
             if (gap >= 5)
                 Discord.DebugLogger.LogMessage(LogLevel.Warning, "VNext RX", "5 or more voice packets were dropped when receiving", DateTime.Now);
 
-            Span<byte> nonce = stackalloc byte[Sodium.NonceSize];
+            Span<byte> nonce = new byte[Sodium.NonceSize];
             Sodium.GetNonce(data, nonce, SelectedEncryptionMode);
             Rtp.GetDataFromPacket(data, out var encryptedOpus, SelectedEncryptionMode);
 

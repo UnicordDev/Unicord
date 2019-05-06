@@ -195,6 +195,18 @@ namespace DSharpPlus.Entities
         public int? PerUserRateLimit { get; internal set; }
 
         [JsonIgnore]
+        public bool Muted
+        {
+            get => Discord.Configuration.MutedStore.GetMuted(Id);
+            set
+            {
+                Discord.Configuration.MutedStore.SetMuted(Id, value);
+                InvokePropertyChanged(nameof(Muted));
+                InvokePropertyChanged(nameof(ReadState));
+            }
+        }
+
+        [JsonIgnore]
         public bool Visible => Guild != null ? PermissionsFor(Guild.CurrentMember).HasPermission(Permissions.AccessChannels) : true;
 
         #region Methods

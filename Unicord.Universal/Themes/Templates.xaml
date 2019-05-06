@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
+    x:Class="Unicord.Universal.Themes.Templates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Unicord.Universal.Themes.Templates"
     xmlns:local="using:Unicord.Universal.Themes"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
@@ -177,29 +177,45 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <DataTemplate x:Key="ChannelListTemplate">
-        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,16,0" IsHitTestVisible="True">
-            <ToolTipService.ToolTip>
-                <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
-            </ToolTipService.ToolTip>
-            <Grid.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
-                </MenuFlyout>
-            </Grid.ContextFlyout>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
+        <lib:SwipeControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <lib:SwipeControl.RightItems>
+                <lib:SwipeItems>
+                    <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close"  Invoked="SwipeItem_Invoked">
+                        <lib:SwipeItem.IconSource>
+                            <lib:SymbolIconSource Symbol="Mute" />
+                        </lib:SwipeItem.IconSource>
+                    </lib:SwipeItem>
+                </lib:SwipeItems>
+            </lib:SwipeControl.RightItems>
+            
+            <Grid Name="grid" 
+              Margin="0,0,16,0" 
+              IsHitTestVisible="True"
+              Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                <ToolTipService.ToolTip>
+                    <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
+                </ToolTipService.ToolTip>
+                <Grid.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
+                    </MenuFlyout>
+                </Grid.ContextFlyout>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
-            <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+                <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
-            <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" Text="{Binding ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                    <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" Text="{Binding ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+                </Grid>
             </Grid>
-        </Grid>
+        </lib:SwipeControl>
     </DataTemplate>
 
     <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
@@ -238,27 +254,38 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <lib:SwipeControl>
+            <lib:SwipeControl.RightItems>
+                <lib:SwipeItems>
+                    <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close" Invoked="SwipeItem_Invoked">
+                        <lib:SwipeItem.IconSource>
+                            <lib:SymbolIconSource Symbol="Mute" />
+                        </lib:SwipeItem.IconSource>
+                    </lib:SwipeItem>
+                </lib:SwipeItems>
+            </lib:SwipeControl.RightItems>
 
-            <Canvas Margin="0,0,0,0" Width="28" Height="28">
-                <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-                <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Canvas>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+            <Grid Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
-                <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
+                <Canvas Margin="0,0,0,0" Width="28" Height="28">
+                    <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
+                    <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
+                        <Ellipse.Fill>
+                            <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Canvas>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+
+                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                    <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
+                </Grid>
             </Grid>
-
-        </Grid>
+        </lib:SwipeControl>
     </DataTemplate>
 
     <DataTemplate x:Key="NoIndicatorDMChannelTemplate" x:DataType="entities:DiscordDmChannel">

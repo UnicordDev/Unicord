@@ -155,7 +155,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
 
-            if (channel != null && channel.Type == ChannelType.Text)
+            if (channel != null)
             {
                 this.FindParent<DiscordPage>().Navigate(channel, null);
             }

@@ -1,12 +1,13 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.UI;
@@ -34,7 +35,7 @@ namespace Unicord.Universal.Models
         public ChannelViewModel(DiscordChannel channel, bool slim = false)
         {
             _slim = slim;
-            _loadSemaphore = new SemaphoreSlim(0, 1);
+            _loadSemaphore = new SemaphoreSlim(1, 1);
             _context = SynchronizationContext.Current;
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
@@ -90,8 +91,6 @@ namespace Unicord.Universal.Models
                 InvokePropertyChanged(nameof(CanUpload));
                 InvokePropertyChanged(nameof(ShowUploads));
             };
-
-            _loadSemaphore.Release();
         }
 
         public ObservableCollection<DiscordMessage> Messages { get; set; }
@@ -100,29 +99,35 @@ namespace Unicord.Universal.Models
         {
             await _loadSemaphore.WaitAsync();
 
-            if (e.Channel.Id == Channel.Id)
+            try
             {
-                if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
+                if (e.Channel.Id == Channel.Id)
                 {
-                    src.Cancel();
-                }
-
-                var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
-                if (usr != null)
-                {
-                    _context.Post(a =>
+                    if (_typingCancellation.TryGetValue(e.Author.Id, out var src))
                     {
-                        TypingUsers.Remove(usr);
-                        UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
-                    }, null);
-                }
-                if (!Messages.Any(m => m.Id == e.Message.Id))
-                {
-                    _context.Post(a => Messages.Add(e.Message), null);
+                        src.Cancel();
+                    }
+
+                    var usr = TypingUsers.FirstOrDefault(u => u.Id == e.Author.Id);
+                    if (usr != null)
+                    {
+                        _context.Post(a =>
+                        {
+                            TypingUsers.Remove(usr);
+                            UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
+                        }, null);
+                    }
+                    if (!Messages.Any(m => m.Id == e.Message.Id))
+                    {
+                        _context.Post(a => Messages.Add(e.Message), null);
+                    }
                 }
             }
+            finally
+            {
+                _loadSemaphore.Release();
+            }
 
-            _loadSemaphore.Release();
         }
 
         private Task OnMessageDeleted(MessageDeleteEventArgs e)
@@ -142,9 +147,34 @@ namespace Unicord.Universal.Models
             return Task.CompletedTask;
         }
 
-        private Task OnResumed(ReadyEventArgs e)
+        private async Task OnResumed(ReadyEventArgs e)
         {
-            return LoadMessagesAsync();
+            await _loadSemaphore.WaitAsync();
+
+            try
+            {
+                // needs work, but it's functional
+                // i also never want to touch it again
+
+                var messages = (await Channel.GetMessagesAsync()).Reverse().ToList();
+                var lastMessage = messages.LastOrDefault(m => m.Id == Messages.LastOrDefault()?.Id);
+                if (lastMessage != null)
+                {
+                    if (lastMessage.Id != messages.LastOrDefault().Id)
+                    {
+                        var messagesToAppend = messages.Skip(messages.IndexOf(lastMessage) + 1).Reverse().ToList();
+                        InsertMessages(Messages.Count - 1, messagesToAppend);
+                    }
+                }
+                else
+                {
+                    ClearAndAddMessages(messages);
+                }
+            }
+            finally
+            {
+                _loadSemaphore.Release();
+            }
         }
 
         public DiscordChannel Channel
@@ -248,42 +278,58 @@ namespace Unicord.Universal.Models
 
             await _loadSemaphore.WaitAsync();
 
-            if (!Messages.Any())
+            try
             {
-                await UnsafeLoadMessages();
-            }
-            else
-            {
-                var message = Messages.Last();
-                var index = Messages.IndexOf(message);
-                var messages = await Channel.GetMessagesAfterAsync(message.Id, 100);
-                if (messages.Count < 100)
+                if (!Messages.Any())
                 {
-                    _context.Post(d =>
-                    {
-                        lock (Messages)
-                        {
-                            foreach (var mess in messages)
-                            {
-                                if (!Messages.Any(m => m.Id == mess.Id))
-                                {
-                                    Messages.Insert(index + 1, mess);
-                                }
-                            }
-                        }
-
-                    }, null);
+                    await UnsafeLoadMessages();
                 }
                 else
                 {
-                    Messages.Clear();
+                    var message = Messages.Last();
+                    var index = Messages.IndexOf(message);
+                    var messages = await Channel.GetMessagesAfterAsync(message.Id, 100);
+                    if (messages.Count < 100)
+                    {
+                        InsertMessages(index, messages);
+                    }
+                    else
+                    {
+                        Messages.Clear();
+                        ClearAndAddMessages(messages);
+                    }
+                }
+            }
+            finally
+            {
+                _loadSemaphore.Release();
+            }
+        }
 
-                    await UnsafeLoadMessages();
+        private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
+        {
+            foreach (var mess in messages)
+            {
+                if (!Messages.Any(m => m.Id == mess.Id))
+                {
+                    Messages.Insert(index + 1, mess);
                 }
             }
 
-            _loadSemaphore.Release();
-        }
+        }, null);
+
+        private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages) => _context.Post(d =>
+        {
+            Messages.Clear();
+
+            foreach (var message in messages.Reverse())
+            {
+                if (!Messages.Any(m => m.Id == message.Id))
+                {
+                    Messages.Add(message);
+                }
+            }
+        }, null);
 
         private async Task UnsafeLoadMessages()
         {
@@ -294,23 +340,9 @@ namespace Unicord.Universal.Models
 
             var messages = await Channel.GetMessagesAsync(50).ConfigureAwait(false);
             if (messages.Any())
-            {
-                _context.Post(d =>
-                {
-                    lock (Messages)
-                    {
-                        foreach (var message in messages.Reverse())
-                        {
-                            if (!Messages.Any(m => m.Id == message.Id))
-                            {
-                                Messages.Add(message);
-                            }
-                        }
-                    }
-
-                }, null);
-            }
+                ClearAndAddMessages(messages);
         }
+
 
         internal async Task LoadMessagesBeforeAsync()
         {
@@ -321,29 +353,22 @@ namespace Unicord.Universal.Models
 
             await _loadSemaphore.WaitAsync();
 
-            var message = Messages.FirstOrDefault();
-            if (message != null)
+            try
             {
-                var messages = await Channel.GetMessagesBeforeAsync(message.Id, 50).ConfigureAwait(false);
-                if (messages.Any())
+                var message = Messages.FirstOrDefault();
+                if (message != null)
                 {
-                    _context.Post(d =>
+                    var messages = await Channel.GetMessagesBeforeAsync(message.Id, 50).ConfigureAwait(false);
+                    if (messages.Any())
                     {
-                        lock (Messages)
-                        {
-                            foreach (var m in messages)
-                            {
-                                if (!Messages.Any(me => me.Id == m.Id))
-                                {
-                                    Messages.Insert(0, m);
-                                }
-                            }
-                        }
-                    }, null);
+                        InsertMessages(-1, messages);
+                    }
                 }
             }
-
-            _loadSemaphore.Release();
+            finally
+            {
+                _loadSemaphore.Release();
+            }
         }
 
         /// <summary>
@@ -679,6 +704,8 @@ namespace Unicord.Universal.Models
                 App.Discord.ChannelUpdated -= OnChannelUpdated;
                 App.Discord.Resumed -= OnResumed;
             }
+
+            Messages.Clear();
 
             foreach (var item in FileUploads)
             {
