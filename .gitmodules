@@ -1,3 +1,6 @@
 [submodule "Libraries/WamWooWam.Core"]
 	path = Libraries/WamWooWam.Core
 	url = https://github.com/WamWooWam/WamWooWam.Core
+[submodule "Libraries/Native/libsodium"]
+	path = Libraries/Native/libsodium
+	url = https://github.com/WamWooWam/libsodium
