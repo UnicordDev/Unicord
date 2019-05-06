@@ -669,7 +669,7 @@
       <OutputItemType>Content</OutputItemType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\sodium\libsodium.vcxproj">
+    <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
       <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
       <Name>libsodium</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
