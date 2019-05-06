@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Univeral", "Unicord
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.VoiceNext.UWP", "Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj", "{F061F955-5565-4D48-8111-F2F7F2241499}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MomentSharp", "Libraries\MomentSharp\MomentSharp.csproj", "{95D6C6BD-2D67-4395-A7C0-234FA418BA19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MomentSharp", "Libraries\MomentSharp\MomentSharp\MomentSharp.csproj", "{95D6C6BD-2D67-4395-A7C0-234FA418BA19}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Native", "Native", "{29620FD8-F805-446B-855F-2C3AADC19DFC}"
 EndProject

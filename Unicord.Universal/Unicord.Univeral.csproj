@@ -658,7 +658,7 @@
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp.csproj">
+    <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp\MomentSharp.csproj">
       <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
       <Name>MomentSharp</Name>
     </ProjectReference>
