@@ -8,9 +8,9 @@ namespace DSharpPlus.VoiceNext.Entities
     internal class AudioSender : IDisposable
     {
         public uint SSRC { get; }
-        public ulong Id => User?.Id ?? 0;
+        public ulong Id => UserId;
         public OpusDecoder Decoder { get; }
-        public DiscordUser User { get; set; } = null;
+        public ulong UserId { get; set; }
         public ushort LastSequence { get; set; } = 0;
 
         public AudioSender(uint ssrc, OpusDecoder decoder)

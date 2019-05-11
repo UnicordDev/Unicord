@@ -55,9 +55,7 @@ namespace Unicord.Universal
 
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
-
-        internal static ConcurrentDictionary<ulong, DiscordRestClient> AdditionalUserClients { get; private set; } = new ConcurrentDictionary<ulong, DiscordRestClient>();
-
+        
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

@@ -486,10 +486,6 @@ namespace Unicord.Universal.Models
 
         public BaseDiscordClient GetClient()
         {
-            if (App.AdditionalUserClients.TryGetValue(CurrentUser.Id, out var client))
-            {
-                return client;
-            }
 
             return App.Discord;
         }
@@ -610,19 +606,6 @@ namespace Unicord.Universal.Models
                 {
                     return;
                 }
-
-                foreach (var u in App.AdditionalUserClients)
-                {
-                    var guild = u.Value.Guilds.FirstOrDefault(g => g.Key == Channel.GuildId).Value;
-                    if (guild != null)
-                    {
-                        var m = await Channel.Guild.GetMemberAsync(u.Key);
-                        if (Permissions.HasPermission(Permissions.AccessChannels) && Permissions.HasPermission(Permissions.SendMessages))
-                        {
-                            AvailableUsers.Add(m);
-                        }
-                    }
-                }
             }
             finally
             {
@@ -635,22 +618,13 @@ namespace Unicord.Universal.Models
 
         public async Task TriggerTypingAsync(string text)
         {
-            if (!string.IsNullOrWhiteSpace(text) && (DateTimeOffset.Now - _typingLastSent).Seconds > 10)
+            if (!string.IsNullOrEmpty(text) && (DateTimeOffset.Now - _typingLastSent).Seconds > 10)
             {
                 _typingLastSent = DateTimeOffset.Now;
 
                 try
                 {
-                    var client = GetClient();
-                    if (client is DiscordRestClient rest)
-                    {
-                        await rest.TriggerTypingAsync(Channel.Id);
-                        return;
-                    }
-                    else
-                    {
-                        await Channel.TriggerTypingAsync();
-                    }
+                    await Channel.TriggerTypingAsync();
                 }
                 catch { }
             }

@@ -17,7 +17,7 @@ namespace DSharpPlus.VoiceNext.EventArgs
         /// <summary>
         /// Gets the user that sent the audio data.
         /// </summary>
-        public DiscordUser User { get; internal set; }
+        public ulong UserId { get; internal set; }
 
         /// <summary>
         /// Gets the received voice data, decoded to PCM format.

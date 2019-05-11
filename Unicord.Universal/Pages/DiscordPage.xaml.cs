@@ -16,6 +16,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
+using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;
 using Windows.System.Profile;
@@ -366,8 +367,8 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
-                    var voice = App.Discord.GetVoiceNext();
-                    await voice.ConnectAsync(channel);
+                    var voice = await VoiceViewModel.StartNewAsync(channel);
+                    return;
                 }
 
                 if (channel.IsNSFW)

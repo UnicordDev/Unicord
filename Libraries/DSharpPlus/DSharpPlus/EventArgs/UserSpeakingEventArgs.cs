@@ -10,7 +10,7 @@ namespace DSharpPlus.EventArgs
         /// <summary>
         /// Gets the users whose speaking state changed.
         /// </summary>
-        public DiscordUser User { get; internal set; }
+        public ulong UserId { get; internal set; }
 
         /// <summary>
         /// Gets the SSRC of the audio source.

@@ -1,2 +1,2 @@
 # Unicord
-A free, open source Discord Client for Windows 10 and Windows Phone 10
+A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience. Built on [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus/)!

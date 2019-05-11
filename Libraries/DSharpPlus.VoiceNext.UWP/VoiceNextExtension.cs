@@ -5,6 +5,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net;
 using DSharpPlus.Net.Udp;
+using DSharpPlus.VoiceNext.Codec;
 using DSharpPlus.VoiceNext.Entities;
 using Newtonsoft.Json;
 
@@ -17,7 +18,7 @@ namespace DSharpPlus.VoiceNext
     {
         private VoiceNextConfiguration Configuration { get; set; }
 
-        private ConcurrentDictionary<ulong, VoiceNextConnection> ActiveConnections { get; set; }
+        public ConcurrentDictionary<ulong, VoiceNextConnection> ActiveConnections { get; set; }
         private ConcurrentDictionary<ulong, TaskCompletionSource<VoiceStateUpdateEventArgs>> VoiceStateUpdates { get; set; }
         private ConcurrentDictionary<ulong, TaskCompletionSource<VoiceServerUpdateEventArgs>> VoiceServerUpdates { get; set; }
 
@@ -29,11 +30,7 @@ namespace DSharpPlus.VoiceNext
         internal VoiceNextExtension(VoiceNextConfiguration config)
         {
             Configuration = new VoiceNextConfiguration(config);
-#if !NETSTANDARD1_1
             IsIncomingEnabled = config.EnableIncoming;
-#else
-            this.IsIncomingEnabled = false;
-#endif
 
             ActiveConnections = new ConcurrentDictionary<ulong, VoiceNextConnection>();
             VoiceStateUpdates = new ConcurrentDictionary<ulong, TaskCompletionSource<VoiceStateUpdateEventArgs>>();
@@ -50,10 +47,13 @@ namespace DSharpPlus.VoiceNext
             if (Client != null)
                 throw new InvalidOperationException("What did I tell you?");
 
-            Client = client;
-            
+            Client = client;            
             Client.VoiceStateUpdated += Client_VoiceStateUpdate;
             Client.VoiceServerUpdated += Client_VoiceServerUpdate;
+
+            //Interop.SodiumInit();
+            //Client.DebugLogger.LogMessage(LogLevel.Debug, "VNext", $" Using libopus version {Interop.OpusVersion}", DateTime.Now);
+            //Client.DebugLogger.LogMessage(LogLevel.Debug, "VNext", $" Using libsodium version {Interop.SodiumVersion}", DateTime.Now);
         }
 
         /// <summary>

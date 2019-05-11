@@ -473,7 +473,7 @@ namespace DSharpPlus
         internal void EventErrorHandler(string evname, Exception ex)
         {
             DebugLogger.LogMessage(LogLevel.Error, "DSharpPlus", $"An {ex.GetType()} occured in {evname}.", DateTime.Now);
-            _clientErrored.InvokeAsync(new ClientErrorEventArgs(null) { EventName = evname, Exception = ex }).ConfigureAwait(false).GetAwaiter().GetResult();
+            _clientErrored?.InvokeAsync(new ClientErrorEventArgs(null) { EventName = evname, Exception = ex }).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         private void Goof(string evname, Exception ex) => DebugLogger.LogMessage(LogLevel.Critical, "DSharpPlus", $"An {ex.GetType()} occured in the exception handler.", DateTime.Now);
@@ -754,139 +754,139 @@ namespace DSharpPlus
 
         #region Event Dispatchers
         private Task Client_ClientError(ClientErrorEventArgs e) 
-            => _clientErrored.InvokeAsync(e);
+            => _clientErrored?.InvokeAsync(e);
 
         private Task Client_SocketError(SocketErrorEventArgs e) 
-            => _socketErrored.InvokeAsync(e);
+            => _socketErrored?.InvokeAsync(e);
 
         private Task Client_SocketOpened() 
-            => _socketOpened.InvokeAsync();
+            => _socketOpened?.InvokeAsync();
 
         private Task Client_SocketClosed(SocketCloseEventArgs e) 
-            => _socketClosed.InvokeAsync(e);
+            => _socketClosed?.InvokeAsync(e);
 
         private Task Client_Ready(ReadyEventArgs e) 
-            => _ready.InvokeAsync(e);
+            => _ready?.InvokeAsync(e);
 
         private Task Client_Resumed(ReadyEventArgs e) 
-            => _resumed.InvokeAsync(e);
+            => _resumed?.InvokeAsync(e);
 
         private Task Client_ChannelCreated(ChannelCreateEventArgs e) 
-            => _channelCreated.InvokeAsync(e);
+            => _channelCreated?.InvokeAsync(e);
 
         private Task Client_DMChannelCreated(DmChannelCreateEventArgs e) 
-            => _dmChannelCreated.InvokeAsync(e);
+            => _dmChannelCreated?.InvokeAsync(e);
 
         private Task Client_ChannelUpdated(ChannelUpdateEventArgs e) 
-            => _channelUpdated.InvokeAsync(e);
+            => _channelUpdated?.InvokeAsync(e);
 
         private Task Client_ChannelDeleted(ChannelDeleteEventArgs e) 
-            => _channelDeleted.InvokeAsync(e);
+            => _channelDeleted?.InvokeAsync(e);
 
         private Task Client_DMChannelDeleted(DmChannelDeleteEventArgs e) 
-            => _dmChannelDeleted.InvokeAsync(e);
+            => _dmChannelDeleted?.InvokeAsync(e);
 
         private Task Client_ChannelPinsUpdated(ChannelPinsUpdateEventArgs e) 
-            => _channelPinsUpdated.InvokeAsync(e);
+            => _channelPinsUpdated?.InvokeAsync(e);
 
         private Task Client_GuildCreated(GuildCreateEventArgs e) 
-            => _guildCreated.InvokeAsync(e);
+            => _guildCreated?.InvokeAsync(e);
 
         private Task Client_GuildAvailable(GuildCreateEventArgs e) 
-            => _guildAvailable.InvokeAsync(e);
+            => _guildAvailable?.InvokeAsync(e);
 
         private Task Client_GuildUpdated(GuildUpdateEventArgs e) 
-            => _guildUpdated.InvokeAsync(e);
+            => _guildUpdated?.InvokeAsync(e);
 
         private Task Client_GuildDeleted(GuildDeleteEventArgs e) 
-            => _guildDeleted.InvokeAsync(e);
+            => _guildDeleted?.InvokeAsync(e);
 
         private Task Client_GuildUnavailable(GuildDeleteEventArgs e) 
-            => _guildUnavailable.InvokeAsync(e);
+            => _guildUnavailable?.InvokeAsync(e);
 
         private Task Client_GuildDownloadCompleted(GuildDownloadCompletedEventArgs e)
-            => _guildDownloadCompleted.InvokeAsync(e);
+            => _guildDownloadCompleted?.InvokeAsync(e);
 
         private Task Client_MessageCreated(MessageCreateEventArgs e) 
-            => _messageCreated.InvokeAsync(e);
+            => _messageCreated?.InvokeAsync(e);
 
         private Task Client_PresenceUpdate(PresenceUpdateEventArgs e) 
-            => _presenceUpdated.InvokeAsync(e);
+            => _presenceUpdated?.InvokeAsync(e);
 
         private Task Client_GuildBanAdd(GuildBanAddEventArgs e) 
-            => _guildBanAdded.InvokeAsync(e);
+            => _guildBanAdded?.InvokeAsync(e);
 
         private Task Client_GuildBanRemove(GuildBanRemoveEventArgs e) 
-            => _guildBanRemoved.InvokeAsync(e);
+            => _guildBanRemoved?.InvokeAsync(e);
 
         private Task Client_GuildEmojisUpdate(GuildEmojisUpdateEventArgs e) 
-            => _guildEmojisUpdated.InvokeAsync(e);
+            => _guildEmojisUpdated?.InvokeAsync(e);
 
         private Task Client_GuildIntegrationsUpdate(GuildIntegrationsUpdateEventArgs e) 
-            => _guildIntegrationsUpdated.InvokeAsync(e);
+            => _guildIntegrationsUpdated?.InvokeAsync(e);
 
         private Task Client_GuildMemberAdd(GuildMemberAddEventArgs e) 
-            => _guildMemberAdded.InvokeAsync(e);
+            => _guildMemberAdded?.InvokeAsync(e);
 
         private Task Client_GuildMemberRemove(GuildMemberRemoveEventArgs e) 
-            => _guildMemberRemoved.InvokeAsync(e);
+            => _guildMemberRemoved?.InvokeAsync(e);
 
         private Task Client_GuildMemberUpdate(GuildMemberUpdateEventArgs e) 
-            => _guildMemberUpdated.InvokeAsync(e);
+            => _guildMemberUpdated?.InvokeAsync(e);
 
         private Task Client_GuildRoleCreate(GuildRoleCreateEventArgs e) 
-            => _guildRoleCreated.InvokeAsync(e);
+            => _guildRoleCreated?.InvokeAsync(e);
 
         private Task Client_GuildRoleUpdate(GuildRoleUpdateEventArgs e) 
-            => _guildRoleUpdated.InvokeAsync(e);
+            => _guildRoleUpdated?.InvokeAsync(e);
 
         private Task Client_GuildRoleDelete(GuildRoleDeleteEventArgs e) 
-            => _guildRoleDeleted.InvokeAsync(e);
+            => _guildRoleDeleted?.InvokeAsync(e);
 
         private Task Client_MessageUpdate(MessageUpdateEventArgs e) 
-            => _messageUpdated.InvokeAsync(e);
+            => _messageUpdated?.InvokeAsync(e);
 
         private Task Client_MessageDelete(MessageDeleteEventArgs e) 
-            => _messageDeleted.InvokeAsync(e);
+            => _messageDeleted?.InvokeAsync(e);
 
         private Task Client_MessageBulkDelete(MessageBulkDeleteEventArgs e) 
-            => _messageBulkDeleted.InvokeAsync(e);
+            => _messageBulkDeleted?.InvokeAsync(e);
 
         private Task Client_TypingStart(TypingStartEventArgs e) 
-            => _typingStarted.InvokeAsync(e);
+            => _typingStarted?.InvokeAsync(e);
 
         private Task Client_UserSettingsUpdate(UserSettingsUpdateEventArgs e) 
-            => _userSettingsUpdated.InvokeAsync(e);
+            => _userSettingsUpdated?.InvokeAsync(e);
 
         private Task Client_UserUpdate(UserUpdateEventArgs e) 
-            => _userUpdated.InvokeAsync(e);
+            => _userUpdated?.InvokeAsync(e);
 
         private Task Client_VoiceStateUpdate(VoiceStateUpdateEventArgs e) 
-            => _voiceStateUpdated.InvokeAsync(e);
+            => _voiceStateUpdated?.InvokeAsync(e);
 
         private Task Client_VoiceServerUpdate(VoiceServerUpdateEventArgs e) 
-            => _voiceServerUpdated.InvokeAsync(e);
+            => _voiceServerUpdated?.InvokeAsync(e);
 
         private Task Client_GuildMembersChunk(GuildMembersChunkEventArgs e) 
-            => _guildMembersChunk.InvokeAsync(e);
+            => _guildMembersChunk?.InvokeAsync(e);
 
         private Task Client_UnknownEvent(UnknownEventArgs e) 
-            => _unknownEvent.InvokeAsync(e);
+            => _unknownEvent?.InvokeAsync(e);
 
         private Task Client_MessageReactionAdd(MessageReactionAddEventArgs e) 
-            => _messageReactionAdded.InvokeAsync(e);
+            => _messageReactionAdded?.InvokeAsync(e);
 
         private Task Client_MessageReactionRemove(MessageReactionRemoveEventArgs e) 
-            => _messageReactionRemoved.InvokeAsync(e);
+            => _messageReactionRemoved?.InvokeAsync(e);
 
         private Task Client_MessageReactionRemoveAll(MessageReactionsClearEventArgs e) 
-            => _messageReactionsCleared.InvokeAsync(e);
+            => _messageReactionsCleared?.InvokeAsync(e);
 
         private Task Client_WebhooksUpdate(WebhooksUpdateEventArgs e) 
-            => _webhooksUpdated.InvokeAsync(e);
+            => _webhooksUpdated?.InvokeAsync(e);
 
         private Task Client_HeartBeated(HeartbeatEventArgs e) 
-            => _heartbeated.InvokeAsync(e);
+            => _heartbeated?.InvokeAsync(e);
 
         private void DebugLogger_LogMessageReceived(object sender, DebugLogMessageEventArgs e) 
             => DebugLogger.LogMessage(e.Level, e.Application, e.Message, e.Timestamp);

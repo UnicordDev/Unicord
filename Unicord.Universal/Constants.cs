@@ -12,7 +12,7 @@ namespace Unicord
 #if DEBUG
         public const string MAIN_URL = "http://localhost:8000/";
 #else
-        public const string MAIN_URL = "https://dwpf.wankerr.com/";
+        public const string MAIN_URL = "https://wamwoowam.co.uk/unicord/";
 #endif
         public const string TOKEN_IDENTIFIER = "Unicord_Token";
         public const string APP_USER_MODEL_ID = "com.wankerr.Unicord";

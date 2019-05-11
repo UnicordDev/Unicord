@@ -152,9 +152,13 @@ namespace DSharpPlus
             internal get => _udpClientFactory;
             set => _udpClientFactory = value ?? throw new InvalidOperationException("You need to supply a valid UDP client factory method.");
         }
+
         private UdpClientFactoryDelegate _udpClientFactory = DspUdpClient.CreateNew;
 
 #endif
+
+        public bool LightMode { get; set; }
+
         /// <summary>
         /// Creates a new configuration with default values.
         /// </summary>
@@ -186,6 +190,7 @@ namespace DSharpPlus
             HttpTimeout = other.HttpTimeout;
             ReconnectIndefinitely = other.ReconnectIndefinitely;
             MutedStore = other.MutedStore;
+            LightMode = other.LightMode;
         }
     }
 }

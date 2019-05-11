@@ -198,6 +198,7 @@ namespace DSharpPlus
             _messageReactionsCleared = new AsyncEvent<MessageReactionsClearEventArgs>(EventErrorHandler, "MESSAGE_REACTIONS_CLEARED");
             _webhooksUpdated = new AsyncEvent<WebhooksUpdateEventArgs>(EventErrorHandler, "WEBHOOKS_UPDATED");
             _heartbeated = new AsyncEvent<HeartbeatEventArgs>(EventErrorHandler, "HEARTBEATED");
+            _onDispatch = new AsyncEvent<string>(EventErrorHandler, "DISPATCH");
 
             _relationshipAdded = new AsyncEvent<RelationshipEventArgs>(EventErrorHandler, "RELATIONSHIP_ADD");
             _relationshipRemoved = new AsyncEvent<RelationshipEventArgs>(EventErrorHandler, "RElATIONSHIP_REMOVE");
@@ -235,7 +236,7 @@ namespace DSharpPlus
         /// Connects to the gateway
         /// </summary>
         /// <returns></returns>
-        public async Task ConnectAsync(DiscordActivity activity = null, UserStatus? status = null, DateTimeOffset? idlesince = null)
+        public virtual async Task ConnectAsync(DiscordActivity activity = null, UserStatus? status = null, DateTimeOffset? idlesince = null)
         {
 
             // Check if connection lock is already set, and set it if it isn't
@@ -701,7 +702,7 @@ namespace DSharpPlus
             switch (payload.OpCode)
             {
                 case GatewayOpCode.Dispatch:
-                    await HandleDispatchAsync(payload).ConfigureAwait(false);
+                    await HandleDispatchAsync(data, payload).ConfigureAwait(false);
                     break;
 
                 case GatewayOpCode.Heartbeat:
@@ -730,12 +731,14 @@ namespace DSharpPlus
             }
         }
 
-        internal async Task HandleDispatchAsync(GatewayPayload payload)
+        internal async Task HandleDispatchAsync(string data, GatewayPayload payload)
         {
             DiscordChannel chn;
             ulong gid;
             ulong cid;
             TransportUser usr;
+
+            await _onDispatch.InvokeAsync(data);
 
             if (payload.Data is JObject dat)
             {
@@ -745,7 +748,16 @@ namespace DSharpPlus
                     case "ready":
                         var glds = (JArray)dat["guilds"];
                         var dmcs = (JArray)dat["private_channels"];
-                        await OnReadyEventAsync(dat.ToObject<ReadyPayload>(), glds, dmcs, dat.TryGetValue("relationships", out var t) ? t as JArray : new JArray(), dat.TryGetValue("presences", out var p) ? p as JArray : new JArray(), dat.TryGetValue("user_settings", out var s) ? s as JObject : null, dat.TryGetValue("read_state", out var read) ? read as JArray : null).ConfigureAwait(false);
+
+                        if (Configuration.LightMode)
+                        {
+                            await OnLightReadyEventAsync(dat.ToObject<ReadyPayload>(), glds, dmcs, dat.TryGetValue("user_settings", out var s) ? s as JObject : null).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await OnReadyEventAsync(dat.ToObject<ReadyPayload>(), glds, dmcs, dat.TryGetValue("relationships", out var t) ? t as JArray : new JArray(), dat.TryGetValue("presences", out var p) ? p as JArray : new JArray(), dat.TryGetValue("user_settings", out var s) ? s as JObject : null, dat.TryGetValue("read_state", out var read) ? read as JArray : null).ConfigureAwait(false);
+                        }
+
                         break;
 
                     case "resumed":
@@ -1111,6 +1123,135 @@ namespace DSharpPlus
                 }
             }
         }
+
+        internal async Task OnLightReadyEventAsync(ReadyPayload ready, JArray rawGuilds, JArray rawDmChannels, JObject settings)
+        {
+            //ready.CurrentUser.Discord = this;
+
+            var rusr = ready.CurrentUser;
+            CurrentUser.Username = rusr.Username;
+            CurrentUser.Discriminator = rusr.Discriminator;
+            CurrentUser.AvatarHash = rusr.AvatarHash;
+            CurrentUser.MfaEnabled = rusr.MfaEnabled;
+            CurrentUser.Verified = rusr.Verified;
+            CurrentUser.IsBot = rusr.IsBot;
+            CurrentUser.HasNitro = ready.CurrentUser.IsPremium;
+
+            _gatewayVersion = ready.GatewayVersion;
+            _sessionId = ready.SessionId;
+            var raw_guild_index = rawGuilds.ToDictionary(xt => (ulong)xt["id"], xt => (JObject)xt);
+
+            var set = settings?.ToObject<DiscordUserSettings>();
+            UserSettings = set;
+
+            _presences[ready.CurrentUser.Id] = new DiscordPresence() { InternalStatus = set.Status ?? "online" };
+
+            _privateChannels.Clear();
+            foreach (var rawChannel in rawDmChannels)
+            {
+                var channel = rawChannel.ToObject<DiscordDmChannel>();
+
+                channel.Discord = this;
+
+                //xdc._recipients = 
+                //    .Select(xtu => this.InternalGetCachedUser(xtu.Id) ?? new DiscordUser(xtu) { Discord = this })
+                //    .ToList();
+
+                var recips_raw = rawChannel["recipients"].ToObject<IEnumerable<TransportUser>>();
+                channel._recipients = new List<DiscordUser>();
+                foreach (var xr in recips_raw)
+                {
+                    var xu = new DiscordUser(xr) { Discord = this };
+                    xu = UserCache.AddOrUpdate(xr.Id, xu, (id, old) =>
+                    {
+                        old.Username = xu.Username;
+                        old.Discriminator = xu.Discriminator;
+                        old.AvatarHash = xu.AvatarHash;
+                        return old;
+                    });
+
+                    channel._recipients.Add(xu);
+                }
+
+                _privateChannels[channel.Id] = channel;
+                _channelCache[channel.Id] = channel;
+            }
+
+            _guilds.Clear();
+            foreach (var guild in ready.Guilds)
+            {
+                guild.Discord = this;
+
+                if (guild._channels == null)
+                    guild._channels = new ConcurrentDictionary<ulong, DiscordChannel>();
+
+                foreach (var xc in guild.Channels.Values)
+                {
+                    xc.GuildId = guild.Id;
+                    xc.Discord = this;
+                    foreach (var xo in xc._permission_overwrites)
+                    {
+                        xo.Discord = this;
+                        xo._channel_id = xc.Id;
+                    }
+
+                    _channelCache[xc.Id] = xc;
+                }
+
+                if (guild._roles == null)
+                    guild._roles = new ConcurrentDictionary<ulong, DiscordRole>();
+
+                foreach (var xr in guild.Roles.Values)
+                {
+                    xr.Discord = this;
+                    xr._guild_id = guild.Id;
+                }
+
+                var raw_guild = raw_guild_index[guild.Id];
+                var raw_members = (JArray)raw_guild["members"];
+
+                if (guild._members != null)
+                    guild._members.Clear();
+                else
+                    guild._members = new ConcurrentDictionary<ulong, DiscordMember>();
+
+                if (raw_members != null)
+                {
+                    foreach (var xj in raw_members)
+                    {
+                        var xtm = xj.ToObject<TransportMember>();
+
+                        var xu = new DiscordUser(xtm.User) { Discord = this };
+                        xu = UserCache.AddOrUpdate(xtm.User.Id, xu, (id, old) =>
+                        {
+                            old.Username = xu.Username;
+                            old.Discriminator = xu.Discriminator;
+                            old.AvatarHash = xu.AvatarHash;
+                            return old;
+                        });
+
+                        guild._members[xtm.User.Id] = new DiscordMember(xtm) { Discord = this, _guild_id = guild.Id };
+                    }
+                }
+
+                if (guild._emojis == null)
+                    guild._emojis = new ConcurrentDictionary<ulong, DiscordEmoji>();
+
+                foreach (var xe in guild.Emojis.Values)
+                    xe.Discord = this;
+
+                if (guild._voice_states == null)
+                    guild._voice_states = new ConcurrentDictionary<ulong, DiscordVoiceState>();
+
+                foreach (var xvs in guild.VoiceStates.Values)
+                    xvs.Discord = this;
+
+                _guilds[guild.Id] = guild;
+            }
+
+            await _ready.InvokeAsync(new ReadyEventArgs(this)).ConfigureAwait(false);
+        }
+
 
         internal Task OnResumedAsync()
         {
@@ -2722,6 +2863,16 @@ namespace DSharpPlus
         }
 
         #region Events
+        /// <summary>
+        /// Fired whenever an error occurs within an event handler.
+        /// </summary>
+        public event AsyncEventHandler<string> OnDispatch
+        {
+            add { _onDispatch.Register(value); }
+            remove { _onDispatch.Unregister(value); }
+        }
+        private AsyncEvent<string> _onDispatch;
+
         /// <summary>
         /// Fired whenever an error occurs within an event handler.
         /// </summary>

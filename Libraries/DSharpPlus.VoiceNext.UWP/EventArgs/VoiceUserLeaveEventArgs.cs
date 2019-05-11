@@ -11,7 +11,7 @@ namespace DSharpPlus.VoiceNext.EventArgs
         /// <summary>
         /// Gets the user who left.
         /// </summary>
-        public DiscordUser User { get; internal set; }
+        public ulong UserId { get; internal set; }
 
 #if !NETSTANDARD1_1
         /// <summary>
