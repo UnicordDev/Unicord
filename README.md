@@ -23,7 +23,7 @@ From here, building should be as simple as double clicking `Unicord.sln`, ensuri
 ![Canary](https://i.imgur.com/NaMdkZ4.png)
 
 ## Testing
-Unicord curently lacks any kind of unit testing. This will likely change as I adopt a more sane workflow, but for now, I suggest going around the app and making sure everything you'd use regularly works, and ensuring all confugurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
+Unicord currently lacks any kind of unit testing. This will likely change as I adopt a more sane workflow, but for now, I suggest going around the app and making sure everything you'd use regularly works, and ensuring all configurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
 
 ![batch build](https://i.imgur.com/8bvkRRv.png)
 
@@ -37,4 +37,4 @@ Unicord is licenced under the MIT License.
 
 ## Acknowledgements
  - [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) Contributors, for providing a wonderful base on which I've built much of this
- - Any member of my [Discord server](https://discord.gg/NfneAaS) who's given me any tips, feedback or guidence! <3
+ - Any member of my [Discord server](https://discord.gg/NfneAaS) who's given me any tips, feedback or guidance! <3
