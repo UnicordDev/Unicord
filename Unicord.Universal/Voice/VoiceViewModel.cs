@@ -14,15 +14,15 @@ namespace Unicord.Universal.Voice
 {
     public class VoiceViewModel
     {
-        private VoiceNextConnection _connection;
-
         public static async Task<VoiceViewModel> StartNewAsync(DiscordChannel channel)
         {
             var model = new VoiceViewModel();
 
-            var service = new AppServiceConnection();
-            service.AppServiceName = "com.wankerr.Unicord.Voice";
-            service.PackageFamilyName = Package.Current.Id.FamilyName;
+            var service = new AppServiceConnection
+            {
+                AppServiceName = "com.wankerr.Unicord.Voice",
+                PackageFamilyName = Package.Current.Id.FamilyName
+            };
 
             var status = await service.OpenAsync();
             if (status != AppServiceConnectionStatus.Success)

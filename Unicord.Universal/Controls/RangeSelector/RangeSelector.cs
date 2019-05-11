@@ -425,9 +425,8 @@ namespace Unicord.Universal.Controls
 
         private static void MinimumChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var rangeSelector = d as RangeSelector;
 
-            if (rangeSelector == null || !rangeSelector._valuesAssigned)
+            if (!(d is RangeSelector rangeSelector) || !rangeSelector._valuesAssigned)
             {
                 return;
             }
@@ -476,9 +475,8 @@ namespace Unicord.Universal.Controls
 
         private static void MaximumChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var rangeSelector = d as RangeSelector;
 
-            if (rangeSelector == null || !rangeSelector._valuesAssigned)
+            if (!(d is RangeSelector rangeSelector) || !rangeSelector._valuesAssigned)
             {
                 return;
             }
@@ -527,9 +525,8 @@ namespace Unicord.Universal.Controls
 
         private static void RangeMinChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var rangeSelector = d as RangeSelector;
 
-            if (rangeSelector == null)
+            if (!(d is RangeSelector rangeSelector))
             {
                 return;
             }
@@ -586,9 +583,8 @@ namespace Unicord.Universal.Controls
 
         private static void ValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var rangeSelector = d as RangeSelector;
 
-            if (rangeSelector == null)
+            if (!(d is RangeSelector rangeSelector))
             {
                 return;
             }
@@ -621,9 +617,8 @@ namespace Unicord.Universal.Controls
 
         private static void RangeMaxChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var rangeSelector = d as RangeSelector;
 
-            if (rangeSelector == null)
+            if (!(d is RangeSelector rangeSelector))
             {
                 return;
             }

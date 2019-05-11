@@ -24,7 +24,7 @@ namespace Unicord.Universal.Pages.Management
     {
         public ChannelEditPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

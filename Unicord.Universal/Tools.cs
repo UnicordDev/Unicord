@@ -131,11 +131,11 @@ namespace Unicord.Universal
             return file;
         }
 
-        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, BaseDiscordClient client, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
+        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
         {
             var httpRequestMessage
                 = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
-            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(client));
+            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
 
             var cont = new HttpMultipartFormDataContent();
 
@@ -168,35 +168,8 @@ namespace Unicord.Universal
                 return false;
             }
 
+            // i love discord
             return _member.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position;
-        }
-
-        public static Storyboard GetStoryboard(this FrameworkElement element, string name, string message = null)
-        {
-            if (!(element.Resources[name] is Storyboard resource))
-            {
-                if (message == null)
-                {
-                    message = string.Format("Storyboard '{0}' cannot be found! Check the default Generic.xaml.", name);
-                }
-
-                throw new NullReferenceException(message);
-            }
-            return resource;
-        }
-
-        public static CompositeTransform GetCompositeTransform(this FrameworkElement element, string message = null)
-        {
-            if (!(element.RenderTransform is CompositeTransform renderTransform))
-            {
-                if (message == null)
-                {
-                    message = string.Format("{0}'s RenderTransform should be a CompositeTransform! Check the default Generic.xaml.", element.Name);
-                }
-
-                throw new NullReferenceException(message);
-            }
-            return renderTransform;
         }
 
         internal static ToastNotification GetWindows10Toast(DiscordMessage message, string title, string messageText)

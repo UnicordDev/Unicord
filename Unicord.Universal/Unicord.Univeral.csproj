@@ -13,7 +13,7 @@
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
-    <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support --> 
+    <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
@@ -234,7 +234,6 @@
     <Compile Include="Controls\RichPresenceControl.xaml.cs">
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SwipeableSplitView.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>

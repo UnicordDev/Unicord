@@ -18,7 +18,7 @@ namespace Unicord.Universal.Models
     {
         public IStorageFile StorageFile { get; set; }
         public ImageSource Thumbnail { get; set; }
-        public IInputStream File { get; set; }
+        public IInputStream Stream { get; set; }
         public string FileName { get; set; }
         public ulong Length { get; set; }
 
@@ -38,10 +38,10 @@ namespace Unicord.Universal.Models
 
         public async Task UpdateFromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
-            File?.Dispose();
+            Stream?.Dispose();
 
             FileName = file.Name;
-            File = await file.OpenReadAsync();
+            Stream = await file.OpenReadAsync();
             IsTemporary = isTemporary;
             TranscodeFailed = transcodeFailed;
 
@@ -69,7 +69,7 @@ namespace Unicord.Universal.Models
 
         public virtual void Dispose()
         {
-            File?.Dispose();
+            Stream?.Dispose();
         }
     }
 
@@ -80,7 +80,7 @@ namespace Unicord.Universal.Models
             StorageFile = original.StorageFile;
             Thumbnail = original.Thumbnail;
             FileName = original.FileName;
-            File = original.File;
+            Stream = original.Stream;
             Length = original.Length;
             IsTemporary = original.IsTemporary;
             Spoiler = original.Spoiler;
@@ -94,7 +94,7 @@ namespace Unicord.Universal.Models
 
         public override void Dispose()
         {
-            File?.Dispose();
+            Stream?.Dispose();
             Composition = null;
             Clip = null;
         }

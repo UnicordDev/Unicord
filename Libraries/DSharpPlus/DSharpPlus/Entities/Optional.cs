@@ -58,7 +58,7 @@ namespace DSharpPlus.Entities
         /// Gets the value of this <see cref="Optional{T}"/>.
         /// </summary>
         /// <exception cref="InvalidOperationException">If this <see cref="Optional{T}"/> has no value.</exception>
-        public T Value => this.HasValue ? this._val : throw new InvalidOperationException("Value is not set.");
+        public T Value => HasValue ? _val : throw new InvalidOperationException("Value is not set.");
         object IOptional.RawValue => _val;
 
         private readonly T _val;
@@ -69,8 +69,8 @@ namespace DSharpPlus.Entities
         /// <param name="value">Value of this option.</param>
         public Optional(T value)
         {
-            this._val = value;
-            this.HasValue = true;
+            _val = value;
+            HasValue = true;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace DSharpPlus.Entities
         /// <returns>String representation of this optional value.</returns>
         public override string ToString()
         {
-            return $"Optional<{typeof(T)}> ({(this.HasValue ? this.Value.ToString() : "<no value>")})";
+            return $"Optional<{typeof(T)}> ({(HasValue ? Value.ToString() : "<no value>")})";
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace DSharpPlus.Entities
             switch (obj)
             {
                 case T t:
-                    return this.Equals(t);
+                    return Equals(t);
                 case Optional<T> opt:
-                    return this.Equals(opt);
+                    return Equals(opt);
                 default:
                     return false;
             }
@@ -107,10 +107,10 @@ namespace DSharpPlus.Entities
         /// <returns>Whether the <see cref="Optional{T}"/> is equal to this <see cref="Optional{T}"/>.</returns>
         public bool Equals(Optional<T> e)
         {
-            if (!this.HasValue && !e.HasValue)
+            if (!HasValue && !e.HasValue)
                 return true;
 
-            return this.HasValue == e.HasValue && this.Value.Equals(e.Value);
+            return HasValue == e.HasValue && Value.Equals(e.Value);
         }
 
         /// <summary>
@@ -119,14 +119,14 @@ namespace DSharpPlus.Entities
         /// <param name="e">Object to compare to.</param>
         /// <returns>Whether the object is equal to the value of this <see cref="Optional{T}"/>.</returns>
         public bool Equals(T e)
-            => this.HasValue && ReferenceEquals(this.Value, e);
+            => HasValue && ReferenceEquals(Value, e);
 
         /// <summary>
         /// Gets the hash code for this <see cref="Optional{T}"/>.
         /// </summary>
         /// <returns>The hash code for this <see cref="Optional{T}"/>.</returns>
         public override int GetHashCode()
-            => this.HasValue ? this.Value.GetHashCode() : 0;
+            => HasValue ? Value.GetHashCode() : 0;
 
         public static implicit operator Optional<T>(T val)
             => new Optional<T>(val);
