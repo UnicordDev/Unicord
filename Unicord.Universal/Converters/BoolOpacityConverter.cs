@@ -19,7 +19,7 @@ namespace Unicord.Universal.Converters
 
             if (value is bool b && b)
             {
-                return 1;
+                return 1.0;
             }
             else
             {

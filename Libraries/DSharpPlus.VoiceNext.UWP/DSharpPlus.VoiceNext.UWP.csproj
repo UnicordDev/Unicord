@@ -185,9 +185,6 @@
     <PackageReference Include="System.Memory">
       <Version>4.5.2</Version>
     </PackageReference>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>4.6.0-preview5.19224.8</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">

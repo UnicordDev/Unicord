@@ -245,10 +245,14 @@
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="entities:DiscordGuild">
-        <Grid ToolTipService.ToolTip="{Binding Name}">
-            <lib:PersonPicture Margin="10,4" Width="36" Height="36" ProfilePicture="{Binding IconUrl, FallbackValue={x:Null}}" DisplayName="{Binding Name}" />
-            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{Binding MentionCount, Converter={StaticResource BoolVisibilityConverter}}" Text="{Binding MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+        <Grid ToolTipService.ToolTip="{x:Bind Name}">
+            <lib:PersonPicture Margin="10,4" Width="36" Height="36" DisplayName="{x:Bind Name}">
+                <lib:PersonPicture.ProfilePicture>
+                    <BitmapImage UriSource="{Binding IconUrl, FallbackValue={x:Null}}" DecodePixelWidth="36" DecodePixelHeight="36" DecodePixelType="Logical" />
+                </lib:PersonPicture.ProfilePicture>
+            </lib:PersonPicture>
+            <Grid x:Name="unreadIndicator" Visibility="{x:Bind Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{x:Bind MentionCount, Converter={StaticResource BoolVisibilityConverter}}" Text="{x:Bind MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
             </Grid>
         </Grid>
     </DataTemplate>
@@ -265,24 +269,28 @@
                 </lib:SwipeItems>
             </lib:SwipeControl.RightItems>
 
-            <Grid Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+            <Grid Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Canvas Margin="0,0,0,0" Width="28" Height="28">
-                    <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-                    <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
+                    <lib:PersonPicture Width="28" Height="28" DisplayName="{x:Bind Converter={StaticResource DMNameConverter}}">
+                        <lib:PersonPicture.ProfilePicture>
+                            <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="28" DecodePixelHeight="28" DecodePixelType="Logical" />
+                        </lib:PersonPicture.ProfilePicture>
+                    </lib:PersonPicture>
+                    <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{x:Bind Recipient, Converter={StaticResource HideOnNullConverter}}">
                         <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                            <SolidColorBrush Color="{x:Bind Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                 </Canvas>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
-                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
-                    <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
+                <Grid x:Name="unreadIndicator" Visibility="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                    <TextBlock Text="{x:Bind ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </lib:SwipeControl>

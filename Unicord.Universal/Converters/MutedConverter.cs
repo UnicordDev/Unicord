@@ -24,7 +24,7 @@ namespace Unicord.Universal.Converters
             }
             else
             {
-                return 1;
+                return 1.0; // must return double
             }
         }
 

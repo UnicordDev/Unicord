@@ -24,7 +24,7 @@
     <PackageCertificateThumbprint>8D80CBC726BA879EA47D519F017FD0D2072B7AFC</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -279,6 +279,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Misc\Emoji.cs" />
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
     <Compile Include="Misc\UnicordMutedStore.cs" />
@@ -373,6 +374,7 @@
     <Content Include="Assets\example-avatar.png" />
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
+    <Content Include="Assets\emoji.json" />
     <None Include="DiscordUWP_StoreKey.pfx" />
     <None Include="DiscordUWP_TemporaryKey.pfx" />
   </ItemGroup>
@@ -638,12 +640,6 @@
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>4.6.0-preview5.19224.8</Version>
     </PackageReference>
     <PackageReference Include="Unicode.net">
       <Version>0.1.2</Version>

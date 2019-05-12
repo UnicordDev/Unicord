@@ -19,14 +19,14 @@ namespace Unicord.Universal.Converters
             {
                 if (c.Type == ChannelType.Private)
                 {
-                    return c.Recipient.NonAnimatedAvatarUrl;
+                    return c.Recipient.GetAvatarUrl(ImageFormat.Png, 64);
                 }
 
                 if (c.Type == ChannelType.Group)
                 {
                     if (c.IconUrl != null)
                     {
-                        return c.IconUrl;
+                        return c.IconUrl + "?size=64";
                     }
                 }
             }

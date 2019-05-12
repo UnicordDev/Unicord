@@ -18,11 +18,11 @@
                     <SvgImageSource x:Key="DiscordClyde" UriSource="Assets/DiscordClyde.Light.svg" />
                     <SvgImageSource x:Key="DiscordLogo" UriSource="Assets/DiscordLogo.Light.svg"/>
                     <SvgImageSource x:Key="DiscordWordMark" UriSource="Assets/DiscordWordMark.Light.svg"/>
-                    <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="White" TintColor="White" />
-                    <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="White" TintColor="White" />
-                    <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFF6F6F6" TintColor="#FFF6F6F6" />
-                    <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFF6F6F6" TintColor="#FFF6F6F6" />
-                    <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFF0F0F0"/>
+                    <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
+                    <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
+                    <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
+                    <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
+                    <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFE0E0E0"/>
                     <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">

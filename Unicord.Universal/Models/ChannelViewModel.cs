@@ -578,7 +578,7 @@ namespace Unicord.Universal.Models
 
                 _context.Post(o =>
                 {
-                    TypingUsers.Add(e.User);
+                    TypingUsers.Add(Channel.Guild != null && Channel.Guild.Members.TryGetValue(e.User.Id, out var member) ? member : e.User);
                     UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
                 }, null);
 

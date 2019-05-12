@@ -815,7 +815,7 @@ namespace Unicord.Universal.Pages
         {
             IsPaneOpen = true;
             sidebarGrid.Visibility = Visibility.Visible;
-            if (ActualWidth < 1024)
+            if (Window.Current.Bounds.Width <= 1024)
             {
                 OpenPaneStoryboard.Begin();
             }
@@ -829,7 +829,7 @@ namespace Unicord.Universal.Pages
         private void ClosePane()
         {
             IsPaneOpen = false;
-            if (ActualWidth > 1024)
+            if (Window.Current.Bounds.Width > 1024)
             {
                 sidebarGrid.Visibility = Visibility.Collapsed;
             }
@@ -858,7 +858,7 @@ namespace Unicord.Universal.Pages
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (IsPaneOpen && ActualWidth <= 1024)
+            if (IsPaneOpen && Window.Current.Bounds.Width <= 1024)
             {
                 ClosePane();
             }

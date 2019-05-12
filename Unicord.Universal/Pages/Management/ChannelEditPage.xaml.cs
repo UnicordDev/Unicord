@@ -38,11 +38,14 @@ namespace Unicord.Universal.Pages.Management
             mainContent.IsEnabled = false;
             backButton.IsEnabled = false;
             progressRing.IsActive = true;
+
+            progressRing.IsActive = false;
+            this.FindParent<DiscordPage>().CloseCustomPane();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-
+            this.FindParent<DiscordPage>().CloseCustomPane();
         }
     }
 }

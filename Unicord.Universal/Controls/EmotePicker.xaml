@@ -46,13 +46,21 @@
         </GridView.Header>
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="entities:DiscordEmoji">
-                <Image MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
-                    <Image.Source>
-                        <BitmapImage UriSource="{x:Bind Url}"/>
-                    </Image.Source>
-                </Image>
+                <Grid Width="32" Height="32">
+                    <Image MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
+                        <Image.Source>
+                            <BitmapImage UriSource="{Binding Url}"/>
+                        </Image.Source>
+                    </Image>
+                    <TextBlock Text="{Binding Unicode}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
+                </Grid>
             </DataTemplate>
         </GridView.ItemTemplate>
+        <GridView.ItemContainerStyle>
+            <Style TargetType="GridViewItem">
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </GridView.ItemContainerStyle>
         <GridView.GroupStyle>
             <GroupStyle HeaderTemplate="{StaticResource GroupHeaderTemplate}" />
         </GridView.GroupStyle>
