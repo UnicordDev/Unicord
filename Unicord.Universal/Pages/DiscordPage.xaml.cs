@@ -373,7 +373,7 @@ namespace Unicord.Universal.Pages
 
                 if (channel.IsNSFW)
                 {
-                    if (await WindowsHello.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
+                    if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
                     {
                         if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
                         {
@@ -465,7 +465,7 @@ namespace Unicord.Universal.Pages
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (await WindowsHello.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
+            if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
             {
                 SettingsOverlayGrid.Visibility = Visibility.Visible;
 

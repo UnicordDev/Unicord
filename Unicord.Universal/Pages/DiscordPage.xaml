@@ -19,20 +19,19 @@
     mc:Ignorable="d">
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
-        <ExponentialEase
-            x:Key="EaseIn"
-            EasingMode="EaseOut"
-            Exponent="7" />
+        <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
+        <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
+        
         <Storyboard x:Key="OpenSettingsDesktopStoryboard" x:Name="OpenSettingsDesktopStoryboard" Completed="OpenSettingsStoryboard_Completed">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="X"
                 From="450"
                 To="0"
                 Duration="00:00:00.50" />
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsGridTransform"
                 Storyboard.TargetProperty="X"
                 From="600"
@@ -44,7 +43,7 @@
                 To="0"
                 Duration="00:00:00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsOverlayBackground"
                 Storyboard.TargetProperty="Opacity"
                 To="1"
@@ -52,7 +51,7 @@
         </Storyboard>
         <Storyboard x:Key="OpenSettingsMobileStoryboard" x:Name="OpenSettingsMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
                 From="2048"
@@ -64,7 +63,7 @@
                 To="0"
                 Duration="00:00:00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsOverlayBackground"
                 Storyboard.TargetProperty="Opacity"
                 To="1"
@@ -75,7 +74,7 @@
             x:Name="CloseSettingsDesktopStoryboard"
             Completed="CloseSettingsStoryboard_Completed">
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="X"
                 From="0"
@@ -87,14 +86,14 @@
                 To="0"
                 Duration="00:00:00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsGridTransform"
                 Storyboard.TargetProperty="X"
                 From="0"
                 To="600"
                 Duration="00:00:00.23" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsOverlayBackground"
                 Storyboard.TargetProperty="Opacity"
                 To="0"
@@ -107,7 +106,7 @@
             Completed="CloseSettingsStoryboard_Completed">
             <DoubleAnimation
                 x:Name="MobileHeightAnimation"
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
                 From="0"
@@ -119,7 +118,7 @@
                 To="0"
                 Duration="00:00:00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Ease}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsOverlayBackground"
                 Storyboard.TargetProperty="Opacity"
                 To="0"
@@ -128,7 +127,7 @@
 
         <Storyboard x:Key="OpenPaneMobileStoryboard" x:Name="OpenPaneMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
                 To="276"
@@ -137,43 +136,46 @@
 
         <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
                 To="0"
                 Duration="00:00:00.33" />
         </Storyboard>
 
-        <ExponentialEase
-            x:Key="Enter"
-            EasingMode="EaseInOut"
-            Exponent="7" />
-
         <Storyboard x:Key="OpenCustomStoryboard" x:Name="OpenCustomStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="CustomPaneTranslate"
                 Storyboard.TargetProperty="X"
                 To="0"
                 Duration="00:00:00.00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="MainGridTransform"
+                Storyboard.TargetProperty="X"
+                To="0"
+                Duration="00:00:00.00" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="CustomPaneScale"
                 Storyboard.TargetProperty="ScaleX"
+                From="1.1"
                 To="1"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.66" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="CustomPaneScale"
                 Storyboard.TargetProperty="ScaleY"
+                From="1.1"
                 To="1"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.66" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="CustomOverlayGrid"
                 Storyboard.TargetProperty="Opacity"
                 To="1"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.66" />
         </Storyboard>
 
         <Storyboard
@@ -181,52 +183,68 @@
             x:Name="CloseCustomStoryboard"
             Completed="CloseCustomMobileStoryboard_Completed">
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="CustomPaneTranslate"
                 Storyboard.TargetProperty="X"
                 To="0"
                 Duration="00:00:00.00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="MainGridTransform"
+                Storyboard.TargetProperty="X"
+                To="0"
+                Duration="00:00:00.00" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="CustomPaneScale"
                 Storyboard.TargetProperty="ScaleX"
-                To="0.9"
-                Duration="00:00:00.50" />
+                To="1.1"
+                Duration="00:00:00.25" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="CustomPaneScale"
                 Storyboard.TargetProperty="ScaleY"
-                To="0.9"
-                Duration="00:00:00.50" />
+                To="1.1"
+                Duration="00:00:00.25" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="CustomOverlayGrid"
                 Storyboard.TargetProperty="Opacity"
                 To="0"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.25" />
         </Storyboard>
 
         <Storyboard x:Key="OpenCustomMobileStoryboard" x:Name="OpenCustomMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleX"
+                To="1"
+                Duration="00:00:00" />
+            <DoubleAnimation
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleY"
+                To="1"
+                Duration="00:00:00" />
+            <DoubleAnimation
                 Storyboard.TargetName="CustomOverlayGrid"
                 Storyboard.TargetProperty="Opacity"
                 To="1"
                 Duration="00:00:00.00" />
+            
             <DoubleAnimation
                 x:Name="CustomOpenAnimation"
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="CustomPaneTranslate"
                 Storyboard.TargetProperty="X"
                 To="0"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.66" />
             <DoubleAnimation
                 x:Name="CustomOpenAnimation2"
-                EasingFunction="{StaticResource Enter}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="MainGridTransform"
                 Storyboard.TargetProperty="X"
                 From="0"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.66" />
         </Storyboard>
 
         <Storyboard
@@ -234,25 +252,33 @@
             x:Name="CloseCustomMobileStoryboard"
             Completed="CloseCustomMobileStoryboard_Completed">
             <DoubleAnimation
-                x:Name="CustomCloseAnimation"
-                EasingFunction="{StaticResource Enter}"
-                Storyboard.TargetName="CustomPaneTranslate"
-                Storyboard.TargetProperty="X"
-                From="0"
-                Duration="00:00:00.50" />
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleX"
+                To="1"
+                Duration="00:00:00" />
             <DoubleAnimation
-                EasingFunction="{StaticResource Enter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.50" />
+                Storyboard.TargetName="CustomPaneScale"
+                Storyboard.TargetProperty="ScaleY"
+                To="1"
+                Duration="00:00:00" />
             <DoubleAnimation
-                BeginTime="00:00:00.50"
-                EasingFunction="{StaticResource Enter}"
                 Storyboard.TargetName="CustomOverlayGrid"
                 Storyboard.TargetProperty="Opacity"
                 To="0"
                 Duration="00:00:00.00" />
+            <DoubleAnimation
+                x:Name="CustomCloseAnimation"
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="CustomPaneTranslate"
+                Storyboard.TargetProperty="X"
+                From="0"
+                Duration="00:00:00.66" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="MainGridTransform"
+                Storyboard.TargetProperty="X"
+                To="0"
+                Duration="00:00:00.66" />
         </Storyboard>
     </Page.Resources>
     <Grid>

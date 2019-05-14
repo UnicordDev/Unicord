@@ -110,7 +110,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageElement">
-                    <Image x:Name="image" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
+                    <local:ScaledContentControl TargetWidth="{TemplateBinding ImageWidth}" TargetHeight="{TemplateBinding ImageHeight}">
+                        <Image x:Name="image" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
+                    </local:ScaledContentControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:ScaledContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ScaledContentControl">
+                    <ContentPresenter 
+                        x:Name="ContentPresenter" 
+                        Content="{TemplateBinding Content}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

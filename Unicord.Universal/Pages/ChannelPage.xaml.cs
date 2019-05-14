@@ -14,7 +14,9 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -35,7 +37,6 @@ using Windows.Storage.Search;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
-using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -235,7 +236,7 @@ namespace Unicord.Universal.Pages
                     sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel));
             }
 
-            await AddToJumpListAsync();
+            await JumpListManager.AddToListAsync(_viewModel.Channel);
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -473,21 +474,25 @@ namespace Unicord.Universal.Pages
 
         private async void ShowPhotoPicker_Completed(object sender, object e)
         {
-            previewFailed.Visibility = Visibility.Collapsed;
-            loadingCameraRing.IsActive = true;
-
-            await cameraPreview.StartAsync();
-
-            loadingCameraRing.IsActive = false;
-            cameraPreview.CameraHelper.FrameArrived += CameraHelper_FrameArrived;
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
+            {
+                previewFailed.Visibility = Visibility.Collapsed;
+                loadingCameraRing.IsActive = true;
+                await cameraPreview.StartAsync();
+                loadingCameraRing.IsActive = false;
+                cameraPreview.CameraHelper.FrameArrived += CameraHelper_FrameArrived;
+            }
         }
 
         private void HidePhotoPicker_Completed(object sender, object e)
         {
-            cameraPreview.Stop();
-            cameraPreview.CameraHelper.FrameArrived -= CameraHelper_FrameArrived;
-            loadingCameraRing.IsActive = false;
-            previewFailed.Visibility = Visibility.Collapsed;
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
+            {
+                cameraPreview.Stop();
+                cameraPreview.CameraHelper.FrameArrived -= CameraHelper_FrameArrived;
+                loadingCameraRing.IsActive = false;
+                previewFailed.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CameraHelper_FrameArrived(object sender, FrameEventArgs e)
@@ -519,61 +524,6 @@ namespace Unicord.Universal.Pages
             photoPicker.Visibility = Visibility.Collapsed;
             uploadsTransform.Y = 0;
             loadingImagesRing.IsActive = false;
-        }
-
-        // TODO: Refactor and componentize
-        private async Task AddToJumpListAsync()
-        {
-            try
-            {
-                if (JumpList.IsSupported())
-                {
-                    var list = await JumpList.LoadCurrentAsync();
-                    var guild = _viewModel.Channel.Guild;
-
-                    var data = ApplicationData.Current.LocalFolder;
-                    var folder = await data.CreateFolderAsync("recents", CreationCollisionOption.OpenIfExists);
-
-                    string group = null;
-                    var arguments = $"-channelId={_viewModel.Channel.Id}"; ;
-                    StorageFile file = null;
-
-                    if (ViewModel.Channel.Guild != null)
-                    {
-                        group = "Recent Channels";
-
-                        file = await folder.CreateFileAsync($"server-{guild.IconHash}.png", CreationCollisionOption.ReplaceExisting);
-                        await Tools.DownloadToFileAsync(new Uri(guild.IconUrl + "?size=32"), file);
-                    }
-                    else if (_viewModel.Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private)
-                    {
-                        group = "Recent People";
-
-                        file = await folder.CreateFileAsync($"user-{dm.Recipient.AvatarHash}.png", CreationCollisionOption.ReplaceExisting);
-                        await Tools.DownloadToFileAsync(new Uri(dm.Recipient.GetAvatarUrl(ImageFormat.Png, 32)), file);
-                    }
-
-                    if (group != null && arguments != null && file != null)
-                    {
-                        var item = list.Items.FirstOrDefault(i => i.Arguments == arguments);
-                        if (item == null)
-                        {
-                            item = JumpListItem.CreateWithArguments(arguments, _viewModel.TitleText);
-                            item.GroupName = group;
-                            item.Logo = new Uri($"ms-appdata:///local/recents/{file.Name}");
-                            list.Items.Add(item);
-                        }
-
-                        if (list.Items.Count > 10)
-                        {
-                            list.Items.Remove(list.Items.First());
-                        }
-                    }
-
-                    await list.SaveAsync();
-                }
-            }
-            catch { }
         }
 
         private void AddAccelerator(VirtualKey key, VirtualKeyModifiers modifiers, TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> handler)
@@ -881,6 +831,11 @@ namespace Unicord.Universal.Pages
             {
                 EnterEditMode();
             }
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
         }
     }
 }

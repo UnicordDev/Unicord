@@ -71,7 +71,7 @@ namespace Unicord.Universal.Pages
                     var contact = _shareOperation.Contacts.FirstOrDefault();
                     if (contact != null)
                     {
-                        var id = await Contacts.TryGetChannelIdAsync(contact);
+                        var id = await ContactListManager.TryGetChannelIdAsync(contact);
                         if (id != 0)
                         {
                             guildBox.SelectedIndex = 0;

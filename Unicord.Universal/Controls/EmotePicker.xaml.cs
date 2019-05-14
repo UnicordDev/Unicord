@@ -1,13 +1,13 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Newtonsoft.Json;
 using Unicord.Universal.Misc;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -80,17 +80,23 @@ namespace Unicord.Universal.Controls
                 else
                 {
                     source.IsSourceGrouped = true;
+                    source.Source = await Task.Run(() =>
+                    {
+                        var emojiEnum = Emoji
+                             .GroupBy(e => e.Category)
+                             .Select(g => new EmojiGroup(g.Key, g))
+                             .ToList();
 
-                    var emojiEnum = Emoji.GroupBy(e => e.Category).Select(g => new EmojiGroup(g.Key, g));
+                        var list = enumerable
+                            .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
+                            .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
+                            .Select(g => new EmojiGroup(g.Key, g))
+                            .ToList();
 
-                    var list = await Task.Run(() => enumerable
-                        .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
-                        .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
-                        .Select(g => new EmojiGroup(g.Key, g))
-                        .ToList());
-                    list.AddRange(emojiEnum);
+                        list.AddRange(emojiEnum);
 
-                    source.Source = list;
+                        return list;
+                    });
                 }
             }
             catch { }
@@ -122,6 +128,6 @@ namespace Unicord.Universal.Controls
         {
             InputPane.GetForCurrentView()?.TryHide();
             await Load();
-        }        
+        }
     }
 }

@@ -20,8 +20,8 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>DiscordUWP_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>8D80CBC726BA879EA47D519F017FD0D2072B7AFC</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>Unicord.Univeral_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
@@ -74,7 +74,8 @@
     <ErrorReport>none</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>latest</LangVersion>
-    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -119,6 +120,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <UseDotNetNativeIncremental>true</UseDotNetNativeIncremental>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -234,6 +238,7 @@
     <Compile Include="Controls\RichPresenceControl.xaml.cs">
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScaledContainer.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
@@ -254,6 +259,7 @@
     <Compile Include="Converters\PresenceColorConverter.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
+    <Compile Include="Converters\UriConverter.cs" />
     <Compile Include="Dialogs\ChangeNicknameDialog.xaml.cs">
       <DependentUpon>ChangeNicknameDialog.xaml</DependentUpon>
     </Compile>
@@ -275,7 +281,8 @@
     <Compile Include="Dialogs\YesNoDialog.xaml.cs">
       <DependentUpon>YesNoDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Integration\Contacts.cs" />
+    <Compile Include="Integration\ContactListManager.cs" />
+    <Compile Include="Integration\JumpListManager.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -283,7 +290,7 @@
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
     <Compile Include="Misc\UnicordMutedStore.cs" />
-    <Compile Include="Misc\UserFlyout.xaml.cs">
+    <Compile Include="Controls\UserFlyout.xaml.cs">
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChannelViewModel.cs" />
@@ -302,6 +309,7 @@
     <Compile Include="Pages\Management\ChannelEditPage.xaml.cs">
       <DependentUpon>ChannelEditPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Management\ChannelEditViewModel.cs" />
     <Compile Include="Pages\Settings\MessagingSettingsModel.cs" />
     <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
       <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
@@ -353,8 +361,9 @@
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools.cs" />
-    <Compile Include="Integration\WindowsHello.cs" />
+    <Compile Include="Integration\WindowsHelloManager.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
+    <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
     <Compile Include="Voice\VoiceViewModel.cs" />
   </ItemGroup>
@@ -376,7 +385,8 @@
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\emoji.json" />
     <None Include="DiscordUWP_StoreKey.pfx" />
-    <None Include="DiscordUWP_TemporaryKey.pfx" />
+    <None Include="Unicord.Univeral_StoreKey.pfx" />
+    <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\DiscordWordMark.Light.svg" />
@@ -515,7 +525,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Misc\UserFlyout.xaml">
+    <Page Include="Controls\UserFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -682,10 +692,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsDesktop, Version=10.0.17763.0">
-      <Name>Windows Desktop Extensions for the UWP %28WindowsDesktop, Version=10.0.17763.0%29</Name>
+    <SDKReference Include="WindowsDesktop, Version=10.0.16299.0">
+      <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.17763.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.16299.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>

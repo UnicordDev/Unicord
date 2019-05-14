@@ -1,9 +1,10 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -26,7 +27,7 @@ namespace Unicord.Universal.Controls
     public sealed partial class AttachmentViewer : UserControl
     {
         DiscordAttachment _attachment;
-        private static readonly Lazy<string[]> _mediaExtensions = new Lazy<string[]>(() => new string[] { ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus" });
+        private static readonly Lazy<string[]> _mediaExtensions = new Lazy<string[]>(() => new string[] { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus" });
 
         public AttachmentViewer(DiscordAttachment attachment)
         {
@@ -85,6 +86,9 @@ namespace Unicord.Universal.Controls
                 _loadDetails = true;
                 Bindings.Update();
             }
+
+            if (!_loadDetails)
+                Background = null;
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -137,99 +141,97 @@ namespace Unicord.Universal.Controls
 
         private async void saveMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button b)
-            {
-                b.IsEnabled = false;
-            }
+            var control = sender as Control;
+            control.IsEnabled = false;
 
-            if (sender is MenuFlyoutItem i)
-            {
-                i.IsEnabled = false;
-            }
-
+            downloadProgressBar.Visibility = Visibility.Visible;
             downloadProgressBar.IsIndeterminate = true;
 
-            var picker = new FileSavePicker()
+            try
             {
-                SuggestedStartLocation = PickerLocationId.Downloads,
-                SuggestedFileName = Path.GetFileNameWithoutExtension(_attachment.Url),
-                DefaultFileExtension = Path.GetExtension(_attachment.Url)
-            };
+                var progress = new Progress<HttpProgress>(p =>
+                {
+                    if (p.TotalBytesToReceive.HasValue)
+                    {
+                        downloadProgressBar.Maximum = (double)p.TotalBytesToReceive.Value;
+                    }
+                    else
+                    {
+                        downloadProgressBar.IsIndeterminate = true;
+                    }
 
-            picker.FileTypeChoices.Add($"Attachment Extension (*{Path.GetExtension(_attachment.Url)})", new List<string>() { Path.GetExtension(_attachment.Url) });
+                    downloadProgressBar.Value = p.BytesReceived;
+                });
 
-            var file = await picker.PickSaveFileAsync();
-            downloadProgressBar.IsIndeterminate = false;
+                var picker = new FileSavePicker()
+                {
+                    SuggestedStartLocation = PickerLocationId.Downloads,
+                    SuggestedFileName = Path.GetFileNameWithoutExtension(_attachment.Url),
+                    DefaultFileExtension = Path.GetExtension(_attachment.Url)
+                };
 
-            if (file != null)
+                picker.FileTypeChoices.Add($"Attachment Extension (*{Path.GetExtension(_attachment.Url)})", new List<string>() { Path.GetExtension(_attachment.Url) });
+
+                var file = await picker.PickSaveFileAsync();
+                downloadProgressBar.IsIndeterminate = false;
+
+                if (file != null)
+                {
+                    await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), _shareFile, progress);
+                }
+            }
+            catch (Exception)
             {
-                await DownloadAttachmentToFileAsync(file);
+                await UIUtilities.ShowErrorDialogAsync(
+                    "Failed to download attachment",
+                    "Something went wrong downloading that attachment, maybe try again later?");
             }
 
-            if (sender is Button b1)
-            {
-                b1.IsEnabled = true;
-            }
-
-            if (sender is MenuFlyoutItem i1)
-            {
-                i1.IsEnabled = true;
-            }
-
+            control.IsEnabled = true;
             downloadProgressBar.Visibility = Visibility.Collapsed;
         }
 
         StorageFile _shareFile;
-        DataTransferManager _dataTransferManager;
         private bool _audioOnly;
 
         private async void shareMenuItem_Click(object sender, RoutedEventArgs e)
         {
             downloadProgressBar.Visibility = Visibility.Visible;
-            _dataTransferManager = DataTransferManager.GetForCurrentView();
-            _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(_attachment.Url)}");
+            downloadProgressBar.IsIndeterminate = true;
 
-            if (await DownloadAttachmentToFileAsync(_shareFile))
+            try
             {
-                _dataTransferManager.DataRequested += _dataTransferManager_DataRequested;
-                DataTransferManager.ShowShareUI(new ShareUIOptions());
+
+                var transferManager = DataTransferManager.GetForCurrentView();
+                _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(_attachment.Url)}");
+
+                var progress = new Progress<HttpProgress>(p =>
+                {
+                    if (p.TotalBytesToReceive.HasValue)
+                    {
+                        downloadProgressBar.Maximum = p.TotalBytesToReceive.Value;
+                    }
+                    else
+                    {
+                        downloadProgressBar.IsIndeterminate = true;
+                    }
+
+                    downloadProgressBar.Value = p.BytesReceived;
+                });
+
+                await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), _shareFile, progress);
+                transferManager.DataRequested += _dataTransferManager_DataRequested;
+                DataTransferManager.ShowShareUI();
+            }
+            catch (Exception)
+            {
+                await UIUtilities.ShowErrorDialogAsync(
+                    "Failed to download attachment",
+                    "Something went wrong downloading that attachment, maybe try again later?");
             }
 
             downloadProgressBar.Visibility = Visibility.Collapsed;
-        }
-
-        private async Task<bool> DownloadAttachmentToFileAsync(StorageFile file)
-        {
-            CachedFileManager.DeferUpdates(file);
-
-            var progress = new Progress<HttpProgress>(p =>
-            {
-                if (p.TotalBytesToReceive.HasValue)
-                {
-                    downloadProgressBar.Maximum = (double)p.TotalBytesToReceive.Value;
-                }
-                else
-                {
-                    downloadProgressBar.IsIndeterminate = true;
-                }
-
-                downloadProgressBar.Value = p.BytesReceived;
-            });
-
-            var message = new HttpRequestMessage(HttpMethod.Get, new Uri(_attachment.Url));
-            var resp = await Tools.HttpClient.SendRequestAsync(message).AsTask(progress);
-
-            var content = await resp.Content.ReadAsInputStreamAsync();
-            var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
-
-            await RandomAccessStream.CopyAndCloseAsync(content, fileStream);
-
-            content.Dispose();
-            fileStream.Dispose();
-
-            await CachedFileManager.CompleteUpdatesAsync(file);
-
-            return true;
+            downloadProgressBar.IsIndeterminate = false;
         }
 
         private void _dataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
@@ -242,13 +244,7 @@ namespace Unicord.Universal.Controls
             request.Data.SetWebLink(new Uri(_attachment.Url));
             request.Data.SetStorageItems(new[] { _shareFile });
 
-            // REVISIT: Videos now specify these, that causes issues.
-            //if (_attachment.Height != 0 && _attachment.Width != 0)
-            //{
-            //    request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(_shareFile));
-            //}
-
-            _dataTransferManager.DataRequested -= _dataTransferManager_DataRequested;
+            sender.DataRequested -= _dataTransferManager_DataRequested;
         }
 
         private async void openMenuItem_Click(object sender, RoutedEventArgs e)

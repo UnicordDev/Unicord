@@ -95,7 +95,7 @@
                                 Canvas.Top="24"
                                 Width="16"
                                 Height="16"
-                                Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+                                Stroke="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"
                                 StrokeThickness="2">
                                 <Ellipse.Fill>
                                     <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />

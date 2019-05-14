@@ -293,6 +293,38 @@ namespace Unicord.Universal.Models
 
         public bool HasNitro => Channel.Discord.CurrentUser.HasNitro;
 
+        public Visibility ShowEditButton
+            => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels) ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility ShowSlowMode
+            => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public string SlowModeText
+            => $"Messages can be sent every " +
+            $"{TimeSpan.FromSeconds(Channel.PerUserRateLimit.GetValueOrDefault()).ToNaturalString()}!" +
+            (ImmuneToSlowMode ? " But, you're immune!" : "");
+
+        private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
+
+        public Visibility ShowTypingUsers
+            => TypingUsers?.Any() == true ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility ShowTypingContainer => ShowSlowMode == Visibility.Visible || ShowTypingUsers == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+
+        public DateTimeOffset LastAccessed { get; internal set; }
+
+        public bool IsEditMode { get; set; }
+
+        public bool IsTranscoding
+        {
+            get => _isTranscoding;
+            internal set
+            {
+                InvokePropertyChanged(nameof(ShowUploads));
+                _isTranscoding = value;
+            }
+        }
+
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
             await _loadSemaphore.WaitAsync();
@@ -519,35 +551,6 @@ namespace Unicord.Universal.Models
                             "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
                     }
                 }
-            }
-        }
-
-        public Visibility ShowSlowMode
-            => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0 ? Visibility.Visible : Visibility.Collapsed;
-
-        public string SlowModeText
-            => $"Messages can be sent every " +
-            $"{TimeSpan.FromSeconds(Channel.PerUserRateLimit.GetValueOrDefault()).ToNaturalString()}!" +
-            (ImmuneToSlowMode ? " But, you're immune!" : "");
-
-        private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
-
-        public Visibility ShowTypingUsers
-            => TypingUsers?.Any() == true ? Visibility.Visible : Visibility.Collapsed;
-
-        public Visibility ShowTypingContainer => ShowSlowMode == Visibility.Visible || ShowTypingUsers == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
-
-        public DateTimeOffset LastAccessed { get; internal set; }
-
-        public bool IsEditMode { get; set; }
-
-        public bool IsTranscoding
-        {
-            get => _isTranscoding;
-            internal set
-            {
-                InvokePropertyChanged(nameof(ShowUploads));
-                _isTranscoding = value;
             }
         }
 

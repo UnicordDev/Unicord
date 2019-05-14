@@ -14,7 +14,7 @@ using Windows.Storage.Streams;
 
 namespace Unicord.Universal.Integration
 {
-    internal static class Contacts
+    internal static class ContactListManager
     {
 #if STORE
         private const string REMOTE_ID_PREFIX = "Unicord_";

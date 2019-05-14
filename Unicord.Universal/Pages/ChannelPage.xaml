@@ -6,13 +6,14 @@
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:entities="using:DSharpPlus.Entities"
-    xmlns:fcu="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-    xmlns:insider="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
     xmlns:local="using:Unicord.Universal.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
 
@@ -260,7 +261,7 @@
                                 x:Name="DefaultControls"
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
-                                fcu:Spacing="2"
+                                w1709:Spacing="2"
                                 Opacity="1"
                                 Orientation="Horizontal">
 
@@ -268,6 +269,13 @@
                                     <TranslateTransform x:Name="DefaultTranslate" X="0" />
                                 </StackPanel.RenderTransform>
 
+                                <!--<Button
+                                    x:Name="editButton"
+                                    Click="EditButton_Click"
+                                    Content="&#xE70F;"
+                                    Visibility="{Binding ShowEditButton}"
+                                    Style="{StaticResource IconButtonStyle}"
+                                    ToolTipService.ToolTip="Edit Channel" />-->
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
@@ -299,7 +307,7 @@
                                 x:Name="EditingControls"
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
-                                fcu:Spacing="2"
+                                w1709:Spacing="2"
                                 Opacity="0"
                                 Orientation="Horizontal">
 
@@ -336,6 +344,7 @@
                     <Grid Grid.Row="1">
                         <ListView
                             x:Name="messageList"
+                            w1809:ScrollViewer.CanContentRenderOutsideBounds="True"
                             IncrementalLoadingThreshold="10"
                             ItemTemplate="{StaticResource DefaultMessageTemplate}"
                             ItemsSource="{Binding Messages}"
@@ -389,7 +398,7 @@
                         <Grid Width="42" Margin="0,0,4,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <w1803:RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Button
@@ -399,7 +408,7 @@
                                 Click="OpenPopoutButton_Click"
                                 Content="&#xE8A7;"
                                 Style="{StaticResource StretchyIconButtonStyle}" />
-                            <Button
+                            <w1803:Button
                                 x:Name="captureButton"
                                 Grid.Row="1"
                                 HorizontalAlignment="Stretch"
@@ -427,7 +436,7 @@
                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
                             ScrollViewer.VerticalScrollMode="Disabled"
                             SelectionChanged="SelectionHandler">
-                            <ListView.Header>
+                            <w1803:ListView.Header>
                                 <Grid MinWidth="200" Margin="0,0,8,0">
                                     <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
                                     <Grid
@@ -457,7 +466,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center" />
                                 </Grid>
-                            </ListView.Header>
+                            </w1803:ListView.Header>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel Orientation="Horizontal" />
@@ -527,7 +536,7 @@
                             Grid.Row="3"
                             MinHeight="42"
                             MaxHeight="100"
-                            fcu:ColumnSpacing="2">
+                            w1709:ColumnSpacing="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />

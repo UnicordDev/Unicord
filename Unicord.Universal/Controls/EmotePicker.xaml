@@ -8,6 +8,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:b="using:Unicord.Universal.Behaviours"
     xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:misc="using:Unicord.Universal.Misc"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -15,14 +16,18 @@
 
         <CollectionViewSource x:Name="source" x:Key="source"/>
 
-        <DataTemplate x:Key="GroupHeaderTemplate">
+        <DataTemplate x:Key="GroupHeaderTemplate" x:DataType="misc:EmojiGroup">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <lib:PersonPicture Width="24" Height="24" Margin="0,0,10,0" ProfilePicture="{Binding Key.IconUrl}" DisplayName="{Binding Key.Name}" Visibility="{Binding Key.IconUrl, Converter={StaticResource HideOnNullConverter}}" />
+                <Grid Width="24" Height="24" Margin="0,0,10,0">
+                    <lib:PersonPicture x:Name="iconImage" Visibility="{Binding Key.IconUrl, Converter={StaticResource HideOnNullConverter}}" Width="24" Height="24" ProfilePicture="{Binding Key.IconUrl}" DisplayName="{x:Bind Key.Name}" />
+                    <TextBlock x:Name="iconText" Visibility="{x:Bind Key.IconCharacter, Converter={StaticResource HideOnNullConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Text="{x:Bind Key.IconCharacter}" />
+                </Grid>
+                
                 <TextBlock FontSize="14" VerticalAlignment="Center" Grid.Column="1" Text="{Binding Key.Name}"/>
             </Grid>
         </DataTemplate>
@@ -47,12 +52,12 @@
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="entities:DiscordEmoji">
                 <Grid Width="32" Height="32">
-                    <Image MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
+                    <Image x:Name="emoteImage" x:Load="{x:Bind Url, Converter={StaticResource BoolConverter}}" MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
                         <Image.Source>
-                            <BitmapImage UriSource="{Binding Url}"/>
+                            <BitmapImage UriSource="{x:Bind Url,Converter={StaticResource UriConverter}}" />
                         </Image.Source>
                     </Image>
-                    <TextBlock Text="{Binding Unicode}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
+                    <TextBlock x:Name="emojiText" x:Load="{x:Bind Unicode, Converter={StaticResource BoolConverter}}" Text="{x:Bind Unicode}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
                 </Grid>
             </DataTemplate>
         </GridView.ItemTemplate>

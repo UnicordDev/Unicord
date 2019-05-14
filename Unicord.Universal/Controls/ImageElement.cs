@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -58,6 +59,15 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty IsSpoilerProperty =
             DependencyProperty.Register("IsSpoiler", typeof(bool), typeof(ImageElement), new PropertyMetadata(false));
 
+        private bool _templated;
+        private BitmapImage _img;
+        private bool _addedEvent;
+
+        public ImageElement()
+        {
+            DefaultStyleKey = typeof(ImageElement);
+            Unloaded += ImageElement_Unloaded;
+        }
 
         private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -77,28 +87,30 @@ namespace Unicord.Universal.Controls
         private static void LoadImage(ImageElement element)
         {
             var image = element.GetTemplateChild("image") as Image;
-            image.PointerEntered += element.Image_PointerEntered;
-            image.PointerExited += element.Image_PointerExited;
 
             var width = element.ImageWidth;
             var height = element.ImageHeight;
             Drawing.ScaleProportions(ref width, ref height, 640, 480);
 
-            var img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={width}&height={height}"))
+            element._img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={width}&height={height}"))
             {
                 DecodePixelWidth = width,
-                DecodePixelHeight = height,
-                AutoPlay = false
+                DecodePixelHeight = height
             };
 
-            image.Source = img;
-        }
+            if (!App.RoamingSettings.Read("AutoPlayGifs", true) || NetworkHelper.IsNetworkLimited)
+            {
+                element._img.AutoPlay = false;
+                image.PointerEntered += element.Image_PointerEntered;
+                image.PointerExited += element.Image_PointerExited;
+            }
+            else if (!element._addedEvent)
+            {
+                element._addedEvent = true;
+                Window.Current.VisibilityChanged += element.Current_VisibilityChanged;
+            }
 
-        private bool _templated;
-
-        public ImageElement()
-        {
-            DefaultStyleKey = typeof(ImageElement);
+            image.Source = element._img;
         }
 
         protected override void OnApplyTemplate()
@@ -109,22 +121,6 @@ namespace Unicord.Universal.Controls
             {
                 LoadImage(this);
             }
-        }
-
-        protected override Size MeasureOverride(Size constraint)
-        {
-            var width = ImageWidth;
-            var height = ImageHeight;
-
-            Drawing.ScaleProportions(ref width, ref height, 640, 480);
-            Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
-
-            var image = GetTemplateChild("image") as Image;
-
-            image.Width = width;
-            image.Height = height;
-
-            return new Size(width, height);
         }
 
         private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -140,6 +136,30 @@ namespace Unicord.Universal.Controls
             if (sender is Image i && i.Source is BitmapImage image)
             {
                 image.Play();
+            }
+        }
+
+        private void Current_VisibilityChanged(object sender, Windows.UI.Core.VisibilityChangedEventArgs e)
+        {
+            if(_img != null)
+            {
+                if (e.Visible)
+                {
+                    _img.Play();
+                }
+                else
+                {
+                    _img.Stop();
+                }
+            }
+        }
+
+        private void ImageElement_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _img = null;
+            if (_addedEvent)
+            {
+                Window.Current.VisibilityChanged -= Current_VisibilityChanged;
             }
         }
     }

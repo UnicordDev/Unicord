@@ -30,10 +30,10 @@
                 <TextBlock Style="{ThemeResource TitleTextBlockStyle}" Text="Overview" Margin="0,0,0,4"/>
 
                 <TextBlock>Name</TextBlock>
-                <TextBox Style="{StaticResource ChannelNameTextBoxStyle}" FontFamily="/Assets/FiraCode-Regular.ttf#Fira Code" Padding="8,6" Margin="0,4,0,12" PlaceholderText="something-witty"/>
+                <TextBox Style="{StaticResource ChannelNameTextBoxStyle}" FontFamily="/Assets/FiraCode-Regular.ttf#Fira Code" BeforeTextChanging="TextBox_BeforeTextChanging" Padding="8,6" Margin="0,4,0,12" PlaceholderText="something-witty" Text="{Binding Name, Mode=TwoWay}"/>
 
                 <TextBlock>Topic</TextBlock>
-                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MaxLength="1024" PlaceholderText="What's this channel for?"/>
+                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -44,7 +44,7 @@
                         <TextBlock Text="NSFW Channel" VerticalAlignment="Center"/>
                         <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">People will need to confirm they're over 18 before viewing this channel, and the server wide content filter won't apply here.</TextBlock>
                     </StackPanel>
-                    <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
+                    <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
                 </Grid>
 
                 

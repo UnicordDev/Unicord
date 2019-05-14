@@ -67,6 +67,7 @@
             <converters:DMIconConverter x:Key="DMIconConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
             <converters:MutedConverter x:Key="MutedConverter"/>
+            <converters:UriConverter x:Key="UriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

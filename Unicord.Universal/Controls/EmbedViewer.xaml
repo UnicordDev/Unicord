@@ -16,6 +16,7 @@
     BorderThickness="8,0,0,0"
     DataContext="{x:Bind _embed}"
     Loaded="UserControl_Loaded"
+    Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
 
     <Grid Padding="12" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">

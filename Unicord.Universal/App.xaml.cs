@@ -132,7 +132,7 @@ namespace Unicord.Universal
 
                 try
                 {
-                    var id = await Contacts.TryGetChannelIdAsync(task.Contact);
+                    var id = await ContactListManager.TryGetChannelIdAsync(task.Contact);
                     if (id != 0)
                     {
                         rootFrame.Navigate(typeof(MainPage), new MainPageEventArgs() { UserId = id, FullFrame = true, IsUriActivation = false });
@@ -287,7 +287,7 @@ namespace Unicord.Universal
 
             if (Discord == null)
             {
-                if (background || await WindowsHello.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))
+                if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))
                 {
                     try
                     {
@@ -302,7 +302,7 @@ namespace Unicord.Universal
                                 await onReady(e);
                             }
 
-                            var t = new Task(async () => await Contacts.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
+                            var t = new Task(async () => await ContactListManager.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
                             t.Start();
                         }
 

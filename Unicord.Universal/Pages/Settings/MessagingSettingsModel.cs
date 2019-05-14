@@ -35,5 +35,11 @@ namespace Unicord.Universal.Pages.Settings
                 App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)value);
             }
         }
+
+        public bool AutoPlayGifs
+        {
+            get => App.RoamingSettings.Read("AutoPlayGifs", true);
+            set => App.RoamingSettings.Save("AutoPlayGifs", value);
+        }
     }
 }

@@ -173,7 +173,7 @@ namespace Unicord.Universal
 
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
             {
-                await Contacts.ClearContactsAsync();
+                await ContactListManager.ClearContactsAsync();
             }
         }
 

@@ -1,6 +1,3 @@
-using DSharpPlus;
-using DSharpPlus.Entities;
-using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.Notifications;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
@@ -36,10 +36,28 @@ namespace Unicord.Universal
 
         public static async Task DownloadToFileAsync(Uri url, StorageFile file)
         {
+            CachedFileManager.DeferUpdates(file);
+
             var resp = await HttpClient.GetAsync(url);
             var source = await resp.Content.ReadAsInputStreamAsync();
             var destination = await file.OpenAsync(FileAccessMode.ReadWrite);
             await RandomAccessStream.CopyAndCloseAsync(source, destination);
+
+            await CachedFileManager.CompleteUpdatesAsync(file);
+        }
+
+        public static async Task DownloadToFileWithProgressAsync(Uri url, StorageFile file, IProgress<HttpProgress> progress)
+        {
+            CachedFileManager.DeferUpdates(file);
+
+            var message = new HttpRequestMessage(HttpMethod.Get, url);
+            var resp = await HttpClient.SendRequestAsync(message).AsTask(progress);
+
+            var content = await resp.Content.ReadAsInputStreamAsync();
+            var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
+
+            await RandomAccessStream.CopyAndCloseAsync(content, fileStream);
+            await CachedFileManager.CompleteUpdatesAsync(file);
         }
 
         internal static void ResetPasswordVault()
@@ -142,7 +160,7 @@ namespace Unicord.Universal
             if (!string.IsNullOrWhiteSpace(message))
             {
                 cont.Add(new HttpStringContent(message), "content");
-            }            
+            }
 
             for (var i = 0; i < files.Count; i++)
             {

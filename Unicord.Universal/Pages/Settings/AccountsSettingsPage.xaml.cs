@@ -47,11 +47,11 @@ namespace Unicord.Universal.Pages.Settings
             var isEnabled = App.RoamingSettings.Read(SYNC_CONTACTS, true);
             if (isEnabled)
             {
-                await Contacts.ClearContactsAsync();
+                await ContactListManager.ClearContactsAsync();
             }
             else
             {
-                await Contacts.UpdateContactsListAsync();
+                await ContactListManager.UpdateContactsListAsync();
             }
 
             App.RoamingSettings.Save(SYNC_CONTACTS, !isEnabled);

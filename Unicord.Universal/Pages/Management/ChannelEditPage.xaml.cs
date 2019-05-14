@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using DSharpPlus.Entities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +23,21 @@ namespace Unicord.Universal.Pages.Management
     /// </summary>
     public sealed partial class ChannelEditPage : Page
     {
+        private ChannelEditViewModel _viewModel;
+
         public ChannelEditPage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is DiscordChannel channel)
+            {
+                // TODO: check perms
+                _viewModel = new ChannelEditViewModel(channel);
+                DataContext = _viewModel;
+            }
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -32,12 +45,14 @@ namespace Unicord.Universal.Pages.Management
             topGrid.Padding = App.StatusBarFill;
         }
 
-        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             acceptButton.Visibility = Visibility.Collapsed;
             mainContent.IsEnabled = false;
             backButton.IsEnabled = false;
             progressRing.IsActive = true;
+
+            await _viewModel.SaveChangesAsync();
 
             progressRing.IsActive = false;
             this.FindParent<DiscordPage>().CloseCustomPane();
@@ -46,6 +61,14 @@ namespace Unicord.Universal.Pages.Management
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<DiscordPage>().CloseCustomPane();
+        }
+
+        private void TextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+        {
+            if(args.NewText.Contains(" "))
+            {
+                sender.Text = args.NewText.Replace(' ', '-');
+            }
         }
     }
 }
