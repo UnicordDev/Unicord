@@ -36,6 +36,7 @@ namespace Unicord.Universal.Voice
         private async void _connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             var deferral = args.GetDeferral();
+
             try
             {
                 if (args.Request.Message.TryGetValue("request", out var request) && request is string req)
@@ -50,10 +51,9 @@ namespace Unicord.Universal.Voice
                     }
                 }
             }
-            finally
-            {
-                deferral.Complete();
-            }
+            catch { }
+
+            deferral.Complete();
         }
 
         private async Task ConnectAsync(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args, AppServiceDeferral deferral)

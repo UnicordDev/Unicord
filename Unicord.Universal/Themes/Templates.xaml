@@ -251,7 +251,7 @@
                     <BitmapImage UriSource="{Binding IconUrl, FallbackValue={x:Null}}" DecodePixelWidth="36" DecodePixelHeight="36" DecodePixelType="Logical" />
                 </lib:PersonPicture.ProfilePicture>
             </lib:PersonPicture>
-            <Grid x:Name="unreadIndicator" Visibility="{x:Bind Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
                 <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{x:Bind MentionCount, Converter={StaticResource BoolVisibilityConverter}}" Text="{x:Bind MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
             </Grid>
         </Grid>
@@ -289,7 +289,7 @@
                 </Canvas>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
-                <Grid x:Name="unreadIndicator" Visibility="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
                     <TextBlock Text="{x:Bind ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>

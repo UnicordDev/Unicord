@@ -286,6 +286,8 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.StorageItems))
                 {
                     e.Handled = true;
+                    showPhotoPicker.Begin();
+
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
                     {
@@ -298,9 +300,9 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
                 {
                     e.Handled = true;
-                    var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
-
                     showPhotoPicker.Begin();
+
+                    var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
                     await uploadItems.AddStorageFileAsync(file, true);
 
                     return;

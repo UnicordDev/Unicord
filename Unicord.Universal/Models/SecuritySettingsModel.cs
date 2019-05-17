@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Unicord.Constants;
 
-namespace Unicord.Universal.Pages.Settings
+namespace Unicord.Universal.Models
 {
     class SecuritySettingsModel
     {

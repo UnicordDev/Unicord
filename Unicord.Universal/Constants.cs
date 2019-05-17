@@ -42,8 +42,8 @@ namespace Unicord
         public const string AUDIOPHILE_MODE = "AudiophileMode";
 
         public const string ENABLE_SPOILERS = "EnableSpoilers";
-
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
+        public const string WARN_UNSAFE_LINKS = "WarnUnsafeLinks";
 
         public const string VIDEO_BITRATE = "VideoBitrate";
         public const string VIDEO_WIDTH = "VideoWidth";
@@ -57,6 +57,10 @@ namespace Unicord
         public const string VERIFY_NSFW = "HelloForNSFW";
         public const string VERIFY_SETTINGS = "HelloForSettings";
         public const string AUTHENTICATION_TIME = "AuthenticationTime";
+
+        public const string GIF_AUTOPLAY = "AutoPlayGifs";
+        public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
+        public const string TIMESTAMP_STYLE = "TimestampStyle";
     }
 
     public enum MediaTranscodeOptions

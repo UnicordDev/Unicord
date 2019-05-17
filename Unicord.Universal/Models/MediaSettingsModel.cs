@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Media.Transcoding;
 using static Unicord.Constants;
 
-namespace Unicord.Universal.Pages.Settings
+namespace Unicord.Universal.Models
 {
     public class MediaSettingsModel : PropertyChangedBase
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 
-namespace Unicord.Universal.Pages.Management
+namespace Unicord.Universal.Models
 {
     public class ChannelEditViewModel
     {

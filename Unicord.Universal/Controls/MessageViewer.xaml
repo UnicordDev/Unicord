@@ -60,8 +60,7 @@
                         Command="{StaticResource MessageUserCommand}"
                         CommandParameter="{Binding Author}"
                         Icon="Message"
-                        Text="Message"
-                        Visibility="{Binding IsEnabled, ElementName=message, Converter={StaticResource BoolVisibilityConverter}}" />
+                        Text="Message" />
 
                     <MenuFlyoutSeparator />
 
@@ -70,36 +69,35 @@
                         Command="{StaticResource ChangeNicknameCommand}"
                         CommandParameter="{Binding Author}"
                         Icon="Character"
-                        Text="Change Nickname"
-                        Visibility="{Binding IsEnabled, ElementName=changeNickname, Converter={StaticResource BoolVisibilityConverter}}" />
+                        Text="Change Nickname" />
 
                     <MenuFlyoutItem
                         x:Name="pinMessage"
                         Command="{StaticResource PinMessageCommand}"
                         CommandParameter="{Binding}"
                         Icon="Pin"
-                        Text="Pin Message"
-                        Visibility="{Binding IsEnabled, ElementName=pinMessage, Converter={StaticResource BoolVisibilityConverter}}" />
+                        Text="Pin Message"/>
 
                     <MenuFlyoutItem
                         x:Name="kick"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="LeaveChat"
                         Text="Kick"
-                        Visibility="{x:Bind _kickMembers, Converter={StaticResource BoolVisibilityConverter}}" />
+                        Visibility="{x:Bind _kickMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
                     <MenuFlyoutItem
                         x:Name="ban"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="Remove"
                         Text="Ban"
-                        Visibility="{x:Bind _banMembers, Converter={StaticResource BoolVisibilityConverter}}" />
+                        Visibility="{x:Bind _banMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
-                    <MenuFlyoutSeparator Visibility="{x:Bind _showBottomSeparator}" />
+                    <MenuFlyoutSeparator
+                        Visibility="{x:Bind ShowBottomSeparator, Converter={StaticResource BoolVisibilityConverter}}"  />
 
                     <MenuFlyoutItem
                         x:Name="editMenuFlyout"
-                        Click="MenuFlyoutItem_Click"
+                        Click="EditItem_Click"
                         Icon="Edit"
                         Text="Edit Message"
                         Visibility="{x:Bind CanEdit, Converter={StaticResource BoolVisibilityConverter}}" />
@@ -113,12 +111,13 @@
                         Text="Delete Message"
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
-                    <MenuFlyoutSeparator Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
+                    <MenuFlyoutSeparator 
+                        Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
                     <MenuFlyoutItem
-                        Click="MenuFlyoutItem_Click_1"
-                        Text="Edit Mode"
-                        Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}">
+                        Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}"
+                        Click="EditModeItem_Click"
+                        Text="Edit Mode">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE762;" />
                         </MenuFlyoutItem.Icon>
@@ -240,7 +239,7 @@
                             ContextFlyout="{x:Null}"
                             IsTextSelectionEnabled="False"
                             Text="{Binding Content}"
-                            WrapCodeBlock="True" />
+                            WrapCodeBlock="True"/>
                     </Grid>
                 </Grid>
                 <StackPanel x:Name="embeds" Grid.Row="2" />

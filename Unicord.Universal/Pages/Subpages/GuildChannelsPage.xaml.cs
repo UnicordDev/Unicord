@@ -1,14 +1,15 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -34,19 +35,18 @@ namespace Unicord.Universal.Pages.Subpages
             NavigationCacheMode = NavigationCacheMode.Enabled;
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Guild = e.Parameter as DiscordGuild;
             Tag = Guild.Name;
             DataContext = Guild;
 
-            await RefreshList();
+            RefreshList();
         }
 
-        private async Task RefreshList()
+        private void RefreshList()
         {
             cvs.Source = null;
-
             ring.IsActive = true;
 
             channelsList.SelectionChanged -= channelsList_SelectionChanged;
@@ -68,14 +68,14 @@ namespace Unicord.Universal.Pages.Subpages
                 channelsList.AllowDrop = false;
             }
 
-            await GetChannelList(Guild, cvs);
+            PopulateChannelList(cvs, Guild);
 
             channelsList.SelectionChanged += channelsList_SelectionChanged;
 
             ring.IsActive = false;
         }
 
-        public static Task GetChannelList(DiscordGuild guild, CollectionViewSource cvs, bool excludeVoice = false)
+        public static void PopulateChannelList(CollectionViewSource cvs, DiscordGuild guild, bool excludeVoice = false)
         {
             if (guild.Channels.Any())
             {
@@ -112,8 +112,6 @@ namespace Unicord.Universal.Pages.Subpages
                         .ThenBy(c => c.Position);
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -123,19 +121,28 @@ namespace Unicord.Universal.Pages.Subpages
             App.Discord.ChannelDeleted += Discord_ChannelDeleted;
         }
 
-        private Task Discord_ChannelCreated(ChannelCreateEventArgs e)
+        private async Task Discord_ChannelCreated(ChannelCreateEventArgs e)
         {
-            return Task.CompletedTask;
+            if (e.Guild.Id == Guild.Id)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RefreshList());
+            }
         }
 
-        private Task Discord_ChannelUpdated(ChannelUpdateEventArgs e)
+        private async Task Discord_ChannelUpdated(ChannelUpdateEventArgs e)
         {
-            return Task.CompletedTask;
+            if (e.Guild.Id == Guild.Id)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RefreshList());
+            }
         }
 
-        private Task Discord_ChannelDeleted(ChannelDeleteEventArgs e)
+        private async Task Discord_ChannelDeleted(ChannelDeleteEventArgs e)
         {
-            return Task.CompletedTask;
+            if (e.Guild.Id == Guild.Id)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RefreshList());
+            }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)

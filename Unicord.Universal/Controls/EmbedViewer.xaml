@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:embed="using:Unicord.Universal.Controls.Embed"
+    xmlns:embed="using:Unicord.Universal.Controls.Embeds"
     xmlns:local="using:Unicord.Universal.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"

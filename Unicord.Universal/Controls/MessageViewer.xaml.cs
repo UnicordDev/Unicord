@@ -75,7 +75,7 @@ namespace Unicord.Universal.Controls
 
         private bool CanEdit => Message?.Author.Id == App.Discord?.CurrentUser.Id;
 
-        private bool _showBottomSeparator =>
+        public bool ShowBottomSeparator =>
             CanEdit || DeleteMessageCommand.Instance.CanExecute(Message);
 
         public Visibility CollapsedVisibility
@@ -337,12 +337,12 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private void EditItem_Click(object sender, RoutedEventArgs e)
         {
             BeginEditing();
         }
 
-        private void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        private void EditModeItem_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<ChannelPage>().EnterEditMode(Message);
         }

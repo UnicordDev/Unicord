@@ -10,7 +10,7 @@ using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
 using Windows.Foundation.Collections;
 
-namespace Unicord.Universal.Voice
+namespace Unicord.Universal.Models
 {
     public class VoiceViewModel
     {

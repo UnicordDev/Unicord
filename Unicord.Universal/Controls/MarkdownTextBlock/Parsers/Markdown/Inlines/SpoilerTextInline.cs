@@ -63,18 +63,6 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                 return null;
             }
 
-            // The first character inside the span must NOT be a space.
-            if (ParseHelpers.IsMarkdownWhiteSpace(markdown[innerStart]))
-            {
-                return null;
-            }
-
-            // The last character inside the span must NOT be a space.
-            if (ParseHelpers.IsMarkdownWhiteSpace(markdown[innerEnd - 1]))
-            {
-                return null;
-            }
-
             // We found something!
             var result = new SpoilerTextInline
             {

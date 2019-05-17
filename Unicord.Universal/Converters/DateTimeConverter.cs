@@ -13,7 +13,7 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var setting = App.RoamingSettings.Read("TimestampStyle", TimestampStyle.Absolute);
+            var setting = App.RoamingSettings.Read(Constants.TIMESTAMP_STYLE, TimestampStyle.Absolute);
 
             if (!(value is DateTime t))
             {

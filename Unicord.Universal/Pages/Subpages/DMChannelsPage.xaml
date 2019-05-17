@@ -7,16 +7,22 @@
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Controls"
-    Loaded="Page_Loaded"
+    xmlns:models="using:Unicord.Universal.Models"
     Tag="Direct Messages"
-    Unloaded="Page_Unloaded"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
 
+    <Page.DataContext>
+        <models:DMChannelsViewModel />
+    </Page.DataContext>
+    
     <Grid>
         <ListView
             x:Name="dmsList"
             Grid.Row="1"
             ItemTemplate="{StaticResource DMChannelTemplate}"
+            ItemsSource="{Binding DMChannels}"
+            SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
             SelectionChanged="dmsList_SelectionChanged"
             ShowsScrollingPlaceholders="False">
             <ListView.ItemsPanel>

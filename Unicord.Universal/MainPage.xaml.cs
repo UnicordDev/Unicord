@@ -41,7 +41,7 @@ namespace Unicord.Universal
         public Frame RootFrame => rootFrame;
 
         private ShareOperation _shareOperation;
-        private MainPageEventArgs _args;
+        private MainPageViewModel _args;
 
         private RoutedEventHandler _openHandler;
         private RoutedEventHandler _saveHandler;
@@ -65,7 +65,7 @@ namespace Unicord.Universal
         {
             switch (e.Parameter)
             {
-                case MainPageEventArgs args:
+                case MainPageViewModel args:
                     _args = args;
                     break;
                 case ShareOperation operation:

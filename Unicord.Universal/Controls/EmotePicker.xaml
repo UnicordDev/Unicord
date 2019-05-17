@@ -52,12 +52,12 @@
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="entities:DiscordEmoji">
                 <Grid Width="32" Height="32">
-                    <Image x:Name="emoteImage" x:Load="{x:Bind Url, Converter={StaticResource BoolConverter}}" MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
+                    <Image x:Name="emoteImage" Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}" MaxWidth="32" MaxHeight="32" ToolTipService.ToolTip="{x:Bind Name}">
                         <Image.Source>
-                            <BitmapImage UriSource="{x:Bind Url,Converter={StaticResource UriConverter}}" />
+                            <BitmapImage UriSource="{Binding Url}" />
                         </Image.Source>
                     </Image>
-                    <TextBlock x:Name="emojiText" x:Load="{x:Bind Unicode, Converter={StaticResource BoolConverter}}" Text="{x:Bind Unicode}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
+                    <TextBlock x:Name="emojiText" Visibility="{x:Bind Unicode, Converter={StaticResource BoolVisibilityConverter}}" Text="{x:Bind Unicode}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
                 </Grid>
             </DataTemplate>
         </GridView.ItemTemplate>

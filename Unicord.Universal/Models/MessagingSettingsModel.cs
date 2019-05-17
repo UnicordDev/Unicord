@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using Unicord.Universal.Models;
 using static Unicord.Constants;
 
-namespace Unicord.Universal.Pages.Settings
+namespace Unicord.Universal.Models
 {
     class MessagingSettingsModel : PropertyChangedBase
     {
@@ -29,17 +28,23 @@ namespace Unicord.Universal.Pages.Settings
 
         public int TimestampStyle
         {
-            get => (int)App.RoamingSettings.Read("TimestampStyle", Unicord.TimestampStyle.Absolute);
+            get => (int)App.RoamingSettings.Read(TIMESTAMP_STYLE, Unicord.TimestampStyle.Absolute);
             set
             {
-                App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)value);
+                App.RoamingSettings.Save(TIMESTAMP_STYLE, (TimestampStyle)value);
             }
         }
 
         public bool AutoPlayGifs
         {
-            get => App.RoamingSettings.Read("AutoPlayGifs", true);
-            set => App.RoamingSettings.Save("AutoPlayGifs", value);
+            get => App.RoamingSettings.Read(GIF_AUTOPLAY, true);
+            set => App.RoamingSettings.Save(GIF_AUTOPLAY, value);
+        }
+
+        public bool WarnUnsafeLinks
+        {
+            get => App.RoamingSettings.Read(WARN_UNSAFE_LINKS, true);
+            set => App.RoamingSettings.Save(WARN_UNSAFE_LINKS, value);
         }
     }
 }

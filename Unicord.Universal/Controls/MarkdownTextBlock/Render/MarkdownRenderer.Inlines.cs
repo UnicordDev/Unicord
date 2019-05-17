@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using DSharpPlus;
-using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Unicord;
+using Unicord.Universal;
 using WamWooWam.Parsers.Markdown;
 using WamWooWam.Parsers.Markdown.Inlines;
 using WamWooWam.Parsers.Markdown.Render;
@@ -466,6 +468,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     Child = border,
                 };
 
+                RootElement.Margin = new Thickness(0, 0, 0, 4);
                 // Add it to the current inlines
                 localContext.InlineCollection.Add(inlineUIContainer);
             }
@@ -480,18 +483,82 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
 
             // TODO (maybe): make this shit actually work?
 
-            var span = new Span();
-
-            var childContext = new InlineRenderContext(span.Inlines, context)
+            if (localContext.Parent is Hyperlink)
             {
-                Parent = span
-            };
+                // In case of Hyperlink, break glass (or add a run).
 
-            // Render the children into the inline.
-            RenderInlineChildren(element.Inlines, childContext);            
+                var span = new Span();
+                var childContext = new InlineRenderContext(span.Inlines, context)
+                {
+                    Parent = span
+                };
 
-            // Add it to the current inlines
-            localContext.InlineCollection.Add(span);
+                // Render the children into the inline.
+                RenderInlineChildren(element.Inlines, childContext);
+
+                // Add it to the current inlines
+                localContext.InlineCollection.Add(span);
+            }
+            else
+            {
+                var text = CreateTextBlock(localContext);
+                var childContext = new InlineRenderContext(text.Inlines, context)
+                {
+                    Parent = text
+                };
+
+                RenderInlineChildren(element.Inlines, childContext);
+
+                if (localContext.WithinItalics)
+                {
+                    text.FontStyle = FontStyle.Italic;
+                }
+
+                if (localContext.WithinBold)
+                {
+                    text.FontWeight = FontWeights.Bold;
+                }
+
+                var borderthickness = InlineCodeBorderThickness;
+                var padding = InlineCodePadding;
+                var spacingoffset = -(borderthickness.Bottom + padding.Bottom);
+                var margin = new Thickness(0, spacingoffset, 0, spacingoffset);
+
+                var border = new Border
+                {
+                    BorderThickness = borderthickness,
+                    BorderBrush = InlineCodeBorderBrush,
+                    Background = InlineCodeBackground,
+                    Child = text,
+                    Padding = padding,
+                    Margin = margin
+                };
+
+                // Aligns content in InlineUI, see https://social.msdn.microsoft.com/Forums/silverlight/en-US/48b5e91e-efc5-4768-8eaf-f897849fcf0b/richtextbox-inlineuicontainer-vertical-alignment-issue?forum=silverlightarchieve
+                border.RenderTransform = new TranslateTransform
+                {
+                    Y = 4
+                };
+
+                if (App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
+                {
+                    text.Opacity = 0;
+                    border.Tapped += (o, e) =>
+                    {
+                        text.Opacity = 1;
+                    };
+                }
+
+                var inlineUIContainer = new InlineUIContainer
+                {
+                    Child = border,
+                };
+
+                RootElement.Margin = new Thickness(0, 0, 0, 4);
+
+                // Add it to the current inlines
+                localContext.InlineCollection.Add(inlineUIContainer);
+            }
         }
 
         protected override void RenderDiscord(DiscordInline element, IRenderContext context)
@@ -543,17 +610,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     }
                     else if (element.DiscordType == DiscordInline.MentionType.Channel)
                     {
-                        var channel = guild != null ? guild.GetChannel(element.Id) : null;
-                        if (channel == null)
-                        {
-                            channel = client.Guilds.Values
-                                .SelectMany(g => g.Channels.Values)
-                                .Union(client.PrivateChannels.Values)
-                                .AsParallel()
-                                .FirstOrDefault(c => c.Id == element.Id);
-                        }
-
-                        if (channel != null)
+                        if (client._channelCache.TryGetValue(element.Id, out var channel))
                         {
                             run.Text = channel is DiscordDmChannel c ? $"@{c.Recipient.Username}#{c.Recipient.Id}" : $"#{channel.Name}";
                         }
@@ -569,7 +626,8 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                 else
                 {
                     var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=32";
-                    var ui = new InlineUIContainer();
+                    var ui = new InlineUIContainer() { FontSize = 24 };
+
                     var image = new Image()
                     {
                         Source = new BitmapImage(new Uri(uri)),
@@ -580,9 +638,9 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     };
 
                     ToolTipService.SetToolTip(image, element.Text);
-
                     ui.Child = image;
 
+                    RootElement.Margin = new Thickness(0, 0, 0, 4);
                     localContext.InlineCollection.Add(ui);
                 }
             }

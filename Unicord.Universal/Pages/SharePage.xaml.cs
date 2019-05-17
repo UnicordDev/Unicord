@@ -150,7 +150,7 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                await GuildChannelsPage.GetChannelList(guildBox.SelectedItem as DiscordGuild, channelsListSource, true);
+                GuildChannelsPage.PopulateChannelList(channelsListSource, guildBox.SelectedItem as DiscordGuild, true);
             }
         }
 

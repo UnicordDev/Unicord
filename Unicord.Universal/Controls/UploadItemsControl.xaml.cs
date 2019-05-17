@@ -1,18 +1,19 @@
-﻿using Microsoft.HockeyApp;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -231,10 +232,14 @@ namespace Unicord.Universal.Controls
 
         private void EditButton_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!App.RoamingSettings.Read("EditTipShown", false))
+            // buggy on 1703    
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
             {
-                ((sender as Button).Resources["editTip"] as TeachingTip).IsOpen = true;
-                App.RoamingSettings.Save("EditTipShown", true);
+                if (!App.RoamingSettings.Read("EditTipShown", false))
+                {
+                    ((sender as Button).Resources["editTip"] as TeachingTip).IsOpen = true;
+                    App.RoamingSettings.Save("EditTipShown", true);
+                }
             }
         }
     }

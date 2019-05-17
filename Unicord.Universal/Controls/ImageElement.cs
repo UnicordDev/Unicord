@@ -98,7 +98,7 @@ namespace Unicord.Universal.Controls
                 DecodePixelHeight = height
             };
 
-            if (!App.RoamingSettings.Read("AutoPlayGifs", true) || NetworkHelper.IsNetworkLimited)
+            if (!App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) || NetworkHelper.IsNetworkLimited)
             {
                 element._img.AutoPlay = false;
                 image.PointerEntered += element.Image_PointerEntered;

@@ -44,7 +44,7 @@ namespace Unicord.Universal.Pages
         public new Frame Frame => mainFrame;
         private ObservableCollection<DiscordGuild> _guilds = new ObservableCollection<DiscordGuild>();
         private ObservableCollection<DiscordDmChannel> _unreadDms = new ObservableCollection<DiscordDmChannel>();
-        private MainPageEventArgs _args;
+        private MainPageViewModel _args;
         private bool _loaded;
         private bool _visibility;
 
@@ -70,7 +70,7 @@ namespace Unicord.Universal.Pages
         {
             UpdateTitleBar();
 
-            if (e.Parameter is MainPageEventArgs args)
+            if (e.Parameter is MainPageViewModel args)
             {
                 _args = args;
 

@@ -142,10 +142,10 @@
     <Compile Include="Controls\EmbedViewer.xaml.cs">
       <DependentUpon>EmbedViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Embed\EmbedFieldControl.xaml.cs">
+    <Compile Include="Controls\Embeds\EmbedFieldControl.xaml.cs">
       <DependentUpon>EmbedFieldControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Embed\EmbedVideoControl.xaml.cs">
+    <Compile Include="Controls\Embeds\EmbedVideoControl.xaml.cs">
       <DependentUpon>EmbedVideoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\EmotePicker.xaml.cs">
@@ -294,7 +294,9 @@
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChannelViewModel.cs" />
+    <Compile Include="Models\DMChannelsViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
+    <Compile Include="Models\FriendsViewModel.cs" />
     <Compile Include="Models\MainPageEventArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
@@ -309,8 +311,8 @@
     <Compile Include="Pages\Management\ChannelEditPage.xaml.cs">
       <DependentUpon>ChannelEditPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Management\ChannelEditViewModel.cs" />
-    <Compile Include="Pages\Settings\MessagingSettingsModel.cs" />
+    <Compile Include="Models\ChannelEditViewModel.cs" />
+    <Compile Include="Models\MessagingSettingsModel.cs" />
     <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
       <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
     </Compile>
@@ -320,11 +322,11 @@
     <Compile Include="Pages\Settings\AccountsSettingsPage.xaml.cs">
       <DependentUpon>AccountsSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\MediaSettingsModel.cs" />
+    <Compile Include="Models\MediaSettingsModel.cs" />
     <Compile Include="Pages\Settings\MediaSettingsPage.xaml.cs">
       <DependentUpon>MediaSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\SecuritySettingsModel.cs" />
+    <Compile Include="Models\SecuritySettingsModel.cs" />
     <Compile Include="Pages\Settings\SecuritySettingsPage.xaml.cs">
       <DependentUpon>SecuritySettingsPage.xaml</DependentUpon>
     </Compile>
@@ -365,7 +367,7 @@
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
-    <Compile Include="Voice\VoiceViewModel.cs" />
+    <Compile Include="Models\VoiceViewModel.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
@@ -384,7 +386,6 @@
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\emoji.json" />
-    <None Include="DiscordUWP_StoreKey.pfx" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
@@ -465,11 +466,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Embed\EmbedFieldControl.xaml">
+    <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Embed\EmbedVideoControl.xaml">
+    <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

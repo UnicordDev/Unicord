@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Controls;
-using Unicord.Universal.Controls.Embed;
+using Unicord.Universal.Controls.Embeds;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -62,6 +63,7 @@ namespace Unicord.Universal.Controls
 
             if (_embed.Type == "gifv" && _embed.Video != null)
             {
+                Logger.Log($"Image: {_embed.Image ?? (object)"null"}");
                 var scaleContainer = new ScaledContentControl()
                 {
                     TargetWidth = _embed.Video.Width,
@@ -71,14 +73,15 @@ namespace Unicord.Universal.Controls
                 _mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = false,
-                    Source = MediaSource.CreateFromUri(_embed.Video.Url)
+                    Source = MediaSource.CreateFromUri(_embed.Video.Url),
+                    PosterSource = _embed.Thumbnail != null ? new BitmapImage(_embed.Thumbnail.Url) : null
                 };
 
                 _mediaPlayer.Loaded += MediaPlayer_Loaded;
                 scaleContainer.Content = _mediaPlayer;
                 Content = scaleContainer;
 
-                if (App.RoamingSettings.Read("AutoPlayGifs", true) && !NetworkHelper.IsNetworkLimited)
+                if (App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) && !NetworkHelper.IsNetworkLimited)
                 {
                     Window.Current.VisibilityChanged += OnWindowVisibilityChanged;
                     _mediaPlayer.AutoPlay = true;

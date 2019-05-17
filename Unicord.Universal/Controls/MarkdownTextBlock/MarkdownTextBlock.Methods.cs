@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Unicord;
+using Unicord.Universal;
 using WamWooWam.Parsers.Markdown;
 using WamWooWam.Uwp.UI.Controls.Markdown.Render;
 using Windows.System;
@@ -350,7 +352,7 @@ namespace WamWooWam.Uwp.UI.Controls
 
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
-                await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = true });
+                await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = App.RoamingSettings.Read(Constants.WARN_UNSAFE_LINKS, true) && uri.Scheme != Uri.UriSchemeHttps });
             }
         }
     }

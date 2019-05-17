@@ -30,6 +30,7 @@ namespace WamWooWam.Parsers.Markdown.Helpers
             EmojiInline.AddTripChars(_triggerList);
             LinkAnchorInline.AddTripChars(_triggerList);
             DiscordInline.AddTripChars(_triggerList);
+            SpoilerTextInline.AddTripChars(_triggerList);
 
             // Create an array of characters to search against using IndexOfAny.
             _tripCharacters = _triggerList.Select(trigger => trigger.FirstChar).Distinct().ToArray();
