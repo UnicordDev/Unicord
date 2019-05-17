@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace Unicord.Universal.Dialogs
 {
     public sealed partial class GuildDialog : UserControl
@@ -25,8 +23,7 @@ namespace Unicord.Universal.Dialogs
             get => (DiscordGuild)GetValue(GuildProperty);
             set => SetValue(GuildProperty, value);
         }
-
-        // Using a DependencyProperty as the backing store for Guild.  This enables animation, styling, binding, etc...
+        
         public static readonly DependencyProperty GuildProperty =
             DependencyProperty.Register("Guild", typeof(DiscordGuild), typeof(GuildDialog), new PropertyMetadata(null, OnGuildChanged));
 

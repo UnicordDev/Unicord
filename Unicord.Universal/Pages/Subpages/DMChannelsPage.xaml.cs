@@ -41,9 +41,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (e.Parameter is DiscordDmChannel channel)
             {
-                dmsList.SelectionChanged -= dmsList_SelectionChanged;
                 dmsList.SelectedItem = channel;
-                dmsList.SelectionChanged += dmsList_SelectionChanged;
             }
             else
             {

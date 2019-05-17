@@ -32,7 +32,7 @@ namespace Unicord.Universal.Utilities
         {
             try
             {
-                var dialog = new YesNoDialog() { Title = title, Content = content };
+                var dialog = new ConfirmationDialog() { Title = title, Content = content };
 
                 if (icon != null)
                 {
