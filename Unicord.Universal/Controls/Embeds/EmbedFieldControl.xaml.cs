@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace Unicord.Universal.Controls.Embeds
 {
     public sealed partial class EmbedFieldControl : UserControl
