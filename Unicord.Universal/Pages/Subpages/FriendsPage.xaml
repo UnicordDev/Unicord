@@ -11,13 +11,20 @@
     xmlns:commands="using:Unicord.Universal.Commands"
     xmlns:discord="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    xmlns:models="using:Unicord.Universal.Models"
+    NavigationCacheMode="Required"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <models:FriendsViewModel/>
+    </Page.DataContext>
+
     <Page.Resources>
         <Style x:Key="itemContainerStyle" BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
 
+        <!-- is there a way to simplify this? -->
         <DataTemplate x:Key="userTemplate" x:DataType="discord:DiscordRelationship">
             <Grid Padding="10" HorizontalAlignment="Stretch" Background="#00FFFFFF" PointerCanceled="Grid_PointerCanceled" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
                 <Grid.Resources>
@@ -123,7 +130,8 @@
                 <Pivot.Items>
                     <PivotItem Header="All">
                         <GridView x:Name="all"
-                              SelectionChanged="ListView_SelectionChanged"
+                                  ItemsSource="{Binding All}"
+                                  SelectionChanged="ListView_SelectionChanged"
                               ItemTemplate="{StaticResource userTemplate}"
                               ItemContainerStyle="{StaticResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
@@ -131,14 +139,20 @@
                     </PivotItem>
                     <PivotItem Header="Online">
                         <GridView x:Name="online"
+                                  ItemsSource="{Binding Online}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
                               ItemContainerStyle="{StaticResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
                               animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
+                    <!-- 
+                        these two groups should use different templates 
+                        for accepting/declining requests and unblocking 
+                    -->
                     <PivotItem Header="Pending">
                         <GridView x:Name="pending"
+                                  ItemsSource="{Binding Pending}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
                               ItemContainerStyle="{StaticResource itemContainerStyle}"
@@ -147,6 +161,7 @@
                     </PivotItem>
                     <PivotItem Header="Blocked">
                         <GridView x:Name="blocked"
+                                  ItemsSource="{Binding Blocked}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
                               ItemContainerStyle="{StaticResource itemContainerStyle}"

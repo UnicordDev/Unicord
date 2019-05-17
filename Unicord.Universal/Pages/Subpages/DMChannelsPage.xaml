@@ -24,6 +24,7 @@
             ItemsSource="{Binding DMChannels}"
             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
             SelectionChanged="dmsList_SelectionChanged"
+            SingleSelectionFollowsFocus="False"
             ShowsScrollingPlaceholders="False">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>

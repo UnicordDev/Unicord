@@ -56,7 +56,7 @@ namespace Unicord.Universal.Models
             {
                 var index = DMChannels.IndexOf(dm);
                 var wasSelected = index == _selectedItem;
-                var newIndex = wasSelected ? 0 : SelectedIndex + 1;
+                var newIndex = wasSelected ? 0 : SelectedIndex != -1 ? SelectedIndex + 1 : -1;
 
                 if (index > 0)
                 {
