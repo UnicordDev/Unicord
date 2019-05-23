@@ -25,12 +25,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Security and Privacy" />
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Security and Privacy" />
 
         <TextBlock
             Grid.Row="1"
             Margin="0,8,0,0"
-            Style="{StaticResource SubtitleTextBlockStyle}"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
             Text="Diagnostic and Usage data" />
 
         <Grid Grid.Row="2" Margin="0,4,0,12">
@@ -47,13 +47,13 @@
             <ToggleSwitch
                 Grid.Column="1"
                 IsOn="{Binding EnableAnalytics, Mode=TwoWay}"
-                Style="{StaticResource NoTextToggleSwitchStyle}"
+                Style="{ThemeResource NoTextToggleSwitchStyle}"
                 Toggled="ToggleSwitch_Toggled" />
         </Grid>
 
         <TextBlock
             Grid.Row="3"
-            Style="{StaticResource SubtitleTextBlockStyle}"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
             Text="Windows Hello" />
 
         <TextBlock
@@ -90,7 +90,7 @@
                     <ToggleSwitch
                         Grid.Column="1"
                         IsOn="{Binding HelloForLogin, Mode=TwoWay}"
-                        Style="{StaticResource NoTextToggleSwitchStyle}" />
+                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
 
                     <TextBlock
                         Grid.Row="1"
@@ -100,7 +100,7 @@
                         Grid.Row="1"
                         Grid.Column="1"
                         IsOn="{Binding HelloForSettings, Mode=TwoWay}"
-                        Style="{StaticResource NoTextToggleSwitchStyle}" />
+                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
 
                     <TextBlock
                         Grid.Row="2"
@@ -110,7 +110,7 @@
                         Grid.Row="2"
                         Grid.Column="1"
                         IsOn="{Binding HelloForNSFW, Mode=TwoWay}"
-                        Style="{StaticResource NoTextToggleSwitchStyle}" />
+                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
 
                 </Grid>
 

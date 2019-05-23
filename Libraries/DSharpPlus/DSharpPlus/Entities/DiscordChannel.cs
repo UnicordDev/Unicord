@@ -13,8 +13,15 @@ namespace DSharpPlus.Entities
     /// <summary>
     /// Represents a discord channel.
     /// </summary>
-    public class DiscordChannel : SnowflakeObject, IEquatable<DiscordChannel>
+    public class DiscordChannel : SnowflakeObject, IEquatable<DiscordChannel>, IComparable<DiscordChannel>
     {
+        [JsonProperty("permission_overwrites", NullValueHandling = NullValueHandling.Ignore)]
+        internal List<DiscordOverwrite> _permission_overwrites = new List<DiscordOverwrite>();
+
+        private string _name;
+        private ChannelType _type;
+        private string _topic;
+
         /// <summary>
         /// Gets ID of the guild to which this channel belongs.
         /// </summary>
@@ -38,19 +45,19 @@ namespace DSharpPlus.Entities
         /// Gets the name of this channel.
         /// </summary>
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public virtual string Name { get; internal set; }
+        public virtual string Name { get => _name; internal set => OnPropertySet(ref _name, value); }
 
         /// <summary>
         /// Gets the type of this channel.
         /// </summary>
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-        public virtual ChannelType Type { get; internal set; }
+        public virtual ChannelType Type { get => _type; internal set => OnPropertySet(ref _type, value); }
 
         /// <summary>
         /// Gets the position of this channel.
         /// </summary>
         [JsonProperty("position", NullValueHandling = NullValueHandling.Ignore)]
-        public int Position { get; set; }
+        public int Position { get; set; }        
 
         /// <summary>
         /// Gets whether this channel is a DM channel.
@@ -78,18 +85,13 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordOverwrite> PermissionOverwrites
-            => _permission_overwrites_lazy.Value;
-
-        [JsonProperty("permission_overwrites", NullValueHandling = NullValueHandling.Ignore)]
-        internal List<DiscordOverwrite> _permission_overwrites = new List<DiscordOverwrite>();
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordOverwrite>> _permission_overwrites_lazy;
+            => new ReadOnlyList<DiscordOverwrite>(_permission_overwrites);
 
         /// <summary>
         /// Gets the channel's topic. This is applicable to text channels only.
         /// </summary>
         [JsonProperty("topic", NullValueHandling = NullValueHandling.Ignore)]
-        public virtual string Topic { get; internal set; } = "";
+        public virtual string Topic { get => _topic; internal set => OnPropertySet(ref _topic, value); }
 
         /// <summary>
         /// Gets the ID of the last message sent in this channel. This is applicable to text channels only.
@@ -181,11 +183,6 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonProperty("nsfw")]
         public bool IsNSFW { get; internal set; }
-
-        internal DiscordChannel()
-        {
-            _permission_overwrites_lazy = new Lazy<IReadOnlyList<DiscordOverwrite>>(() => new ReadOnlyCollection<DiscordOverwrite>(_permission_overwrites));
-        }
 
         /// <summary>
         /// <para>Gets the slow mode delay configured for this channel.</para>
@@ -756,6 +753,8 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <returns>The hash code for this <see cref="DiscordChannel"/>.</returns>
         public override int GetHashCode() => Id.GetHashCode();
+
+        public int CompareTo(DiscordChannel other) => Position.CompareTo(other?.Position ?? 0);
 
         /// <summary>
         /// Gets whether the two <see cref="DiscordChannel"/> objects are equal.

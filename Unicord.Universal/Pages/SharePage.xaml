@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d" Loaded="Page_Loaded"
     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
     <Page.Resources>
@@ -22,7 +24,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="0" Style="{StaticResource TitleTextBlockStyle}">
+            <TextBlock Margin="0" Style="{ThemeResource TitleTextBlockStyle}">
                 Share to <Run x:Name="target">Discord</Run>
             </TextBlock>
 
@@ -33,7 +35,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Image x:Name="thumbnailImage" Width="100" Height="100" Margin="0,0,20,0"/>
-                <TextBox x:Name="captionText" PlaceholderText="Say something... (optional)" Padding="2" MaxLength="2000" VerticalAlignment="Top" Style="{StaticResource MessageTextBoxStyle}" Grid.Column="1" MaxHeight="150" AcceptsReturn="True" TextWrapping="Wrap" />
+                <TextBox x:Name="captionText" PlaceholderText="Say something... (optional)" Padding="2" MaxLength="2000" VerticalAlignment="Top" Style="{ThemeResource MessageTextBoxStyle}" Grid.Column="1" MaxHeight="150" AcceptsReturn="True" TextWrapping="Wrap" />
             </Grid>
 
             <Grid x:Name="destinationGrid" Grid.Row="2">
@@ -72,11 +74,18 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="cancelButton" Content="Cancel" HorizontalAlignment="Stretch" Click="cancelButton_Click" Margin="0,0,5,0" />
-                <Button x:Name="sendButton" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Content="Send" Click="sendButton_Click" Margin="5,0,0,0" />
+                <Button x:Name="sendButton" Grid.Column="1" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" Content="Send" Click="sendButton_Click" Margin="5,0,0,0" />
             </Grid>
         </Grid>
-        <Grid x:Name="overlay" Background="{StaticResource OverlayBackdrop}" Visibility="Collapsed">
-            <ProgressRing x:Name="ring" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid x:Name="overlay" Background="{ThemeResource OverlayBackdrop}" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <controls:RadialProgressBar x:Name="ring" Width="96" Height="96" Value="0" Maximum="100" HorizontalAlignment="Center" />
+                <TextBlock x:Name="subtext" Text="Uploading" Opacity="0" Style="{StaticResource TitleTextBlockStyle}" Margin="12" HorizontalAlignment="Center">
+                    <w1809:TextBlock.OpacityTransition>
+                        <w1809:ScalarTransition Duration="00:00:00.50"/>
+                    </w1809:TextBlock.OpacityTransition>
+                </TextBlock>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

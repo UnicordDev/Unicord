@@ -175,7 +175,7 @@ namespace Unicord.Universal.Controls
 
                 if (file != null)
                 {
-                    await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), _shareFile, progress);
+                    await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), file, progress);
                 }
             }
             catch (Exception)

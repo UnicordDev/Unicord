@@ -31,7 +31,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <lib:PersonPicture Width="128" Height="128" Margin="0,0,20,0" ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}"/>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{ThemeResource SubheaderTextBlockStyle}" Text="{Binding Name}"/>
             </Grid>
         </Grid>
         <Pivot MinHeight="250" Grid.Row="1" Padding="0,0,0,20">
@@ -43,11 +43,11 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <StackPanel>
-                            <TextBlock Text="Created" Style="{StaticResource TitleTextBlockStyle}"/>
+                            <TextBlock Text="Created" Style="{ThemeResource TitleTextBlockStyle}"/>
                             <TextBlock Text="{Binding CreationTimestamp.LocalDateTime}"/>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0">
-                            <TextBlock Text="Owner" Style="{StaticResource TitleTextBlockStyle}"/>
+                            <TextBlock Text="Owner" Style="{ThemeResource TitleTextBlockStyle}"/>
                             <Grid DataContext="{Binding Owner}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -63,7 +63,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1">
                         <StackPanel>
-                            <TextBlock Text="Joined" Style="{StaticResource TitleTextBlockStyle}"/>
+                            <TextBlock Text="Joined" Style="{ThemeResource TitleTextBlockStyle}"/>
                             <TextBlock Text="{Binding CurrentMember.JoinedAt.LocalDateTime}"/>
                         </StackPanel>                        
                     </StackPanel>
@@ -121,7 +121,7 @@
                         <Setter Target="nav.PaneDisplayMode" Value="Left"/>
                         <Setter Target="nav.Margin" Value="0"/>
                         <Setter Target="icon.Visibility" Value="Visible"/>
-                        <Setter Target="name.Style" Value="{StaticResource SubheaderTextBlockStyle}"/>
+                        <Setter Target="name.Style" Value="{ThemeResource SubheaderTextBlockStyle}"/>
                         <Setter Target="name.HorizontalAlignment" Value="Left"/>
                         <Setter Target="headerGrid.Height" Value="168"/>
                         <Setter Target="headerGrid.Margin" Value="0"/>
@@ -138,7 +138,7 @@
                         <Setter Target="nav.PaneDisplayMode" Value="LeftCompact"/>
                         <Setter Target="nav.Margin" Value="0"/>
                         <Setter Target="icon.Visibility" Value="Visible"/>
-                        <Setter Target="name.Style" Value="{StaticResource SubheaderTextBlockStyle}"/>
+                        <Setter Target="name.Style" Value="{ThemeResource SubheaderTextBlockStyle}"/>
                         <Setter Target="name.HorizontalAlignment" Value="Left"/>
                         <Setter Target="headerGrid.Height" Value="168"/>
                         <Setter Target="headerGrid.Margin" Value="0"/>
@@ -157,7 +157,7 @@
                         <Setter Target="icon.Visibility" Value="Collapsed"/>
                         <Setter Target="headerGrid.Height" Value="65"/>
                         <Setter Target="headerGrid.Margin" Value="0,-25,0,0"/>
-                        <Setter Target="name.Style" Value="{StaticResource SubtitleTextBlockStyle}"/>
+                        <Setter Target="name.Style" Value="{ThemeResource SubtitleTextBlockStyle}"/>
                         <Setter Target="name.HorizontalAlignment" Value="Center"/>
                         <Setter Target="name.Margin" Value="0,20,0,0"/>
                         <Setter Target="close.Visibility" Value="Visible"/>
@@ -216,7 +216,7 @@
                 </lib:NavigationViewItem>
             </lib:NavigationView.MenuItems>
             <lib:NavigationView.PaneFooter>
-                <Button Style="{StaticResource NavigationViewPaneSearchButtonStyle}" Content="&#xE72B;" Click="Button_Click"/>
+                <Button Style="{ThemeResource NavigationViewPaneSearchButtonStyle}" Content="&#xE72B;" Click="Button_Click"/>
             </lib:NavigationView.PaneFooter>
 
             <Grid>
@@ -239,7 +239,7 @@
                         </Grid.ColumnDefinitions>
                         <lib:PersonPicture x:Name="icon" Width="128" Height="128" Margin="20,0" ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}"/>
                         <TextBlock x:Name="name" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
-                        <Button x:Name="close" Grid.Column="2" Style="{StaticResource NavigationViewPaneSearchButtonStyle}" Click="Button_Click" Margin="0,25,0,0" Content="&#xE711;"/>
+                        <Button x:Name="close" Grid.Column="2" Style="{ThemeResource NavigationViewPaneSearchButtonStyle}" Click="Button_Click" Margin="0,25,0,0" Content="&#xE711;"/>
                     </Grid>
                 </Grid>
 
@@ -309,7 +309,7 @@
                         </ListView>
 
                         <Grid Grid.Row="2" Padding="0,10,0,0">
-                            <Button Style="{StaticResource TextBlockButtonStyle}" HorizontalAlignment="Center" Content="View More"/>
+                            <Button Style="{ThemeResource TextBlockButtonStyle}" HorizontalAlignment="Center" Content="View More"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Column="2" Margin="20" Padding="10" Background="{ThemeResource SystemControlDisabledChromeMediumLowBrush}">
@@ -346,7 +346,7 @@
                         </ListView>
 
                         <Grid Grid.Row="2" Padding="0,10,0,0">
-                            <Button Style="{StaticResource TextBlockButtonStyle}" HorizontalAlignment="Center" Content="Edit"/>
+                            <Button Style="{ThemeResource TextBlockButtonStyle}" HorizontalAlignment="Center" Content="Edit"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Column="3" Margin="20" Padding="10" Background="{ThemeResource SystemControlDisabledChromeMediumLowBrush}">

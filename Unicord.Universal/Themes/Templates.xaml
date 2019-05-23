@@ -7,7 +7,8 @@
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    x:DefaultBindMode="OneWay">
 
     <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -170,7 +171,7 @@
                         </Grid>
                         <ScrollViewer x:Name="ContentElement" FontFamily="Segoe UI" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsTabStop="False" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" ZoomMode="Disabled"/>
                         <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.ColumnSpan="2" Grid.Column="1" Opacity="0.57" IsHitTestVisible="False" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" Text="{TemplateBinding PlaceholderText}" TextWrapping="{TemplateBinding TextWrapping}" TextAlignment="{TemplateBinding TextAlignment}"/>
-                        <Button x:Name="DeleteButton" AutomationProperties.AccessibilityView="Raw" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" MinWidth="34" Margin="{ThemeResource HelperButtonThemePadding}" Grid.Row="1" Style="{StaticResource DeleteButtonStyle}" VerticalAlignment="Stretch" Visibility="Collapsed"/>
+                        <Button x:Name="DeleteButton" AutomationProperties.AccessibilityView="Raw" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" MinWidth="34" Margin="{ThemeResource HelperButtonThemePadding}" Grid.Row="1" Style="{ThemeResource DeleteButtonStyle}" VerticalAlignment="Stretch" Visibility="Collapsed"/>
                         <ContentPresenter x:Name="DescriptionPresenter" AutomationProperties.AccessibilityView="Raw"  Content="{TemplateBinding Description}" Grid.ColumnSpan="2" Grid.Column="0" Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" Grid.Row="2" x:Load="False"/>
                     </Grid>
                 </ControlTemplate>
@@ -178,7 +179,7 @@
         </Setter>
     </Style>
     
-    <DataTemplate x:Key="ChannelListTemplate">
+    <DataTemplate x:Key="ChannelListTemplate" x:DataType="entities:DiscordChannel">
         <lib:SwipeControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <lib:SwipeControl.RightItems>
                 <lib:SwipeItems>
@@ -208,11 +209,11 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
-                <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
+                <TextBlock Grid.Column="1" FontSize="14" Text="{x:Bind Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
-                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                    <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" Text="{Binding ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+                <Grid x:Name="unreadIndicator" x:Load="{x:Bind ReadState.Unread}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                    <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
                 </Grid>
             </Grid>
         </lib:SwipeControl>
@@ -239,7 +240,7 @@
                     </ImageBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind DisplayName}" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
         </Grid>
     </DataTemplate>
 
@@ -251,14 +252,14 @@
                     <BitmapImage UriSource="{Binding IconUrl, FallbackValue={x:Null}}" DecodePixelWidth="36" DecodePixelHeight="36" DecodePixelType="Logical" />
                 </lib:PersonPicture.ProfilePicture>
             </lib:PersonPicture>
-            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" Visibility="{x:Bind MentionCount, Converter={StaticResource BoolVisibilityConverter}}" Text="{x:Bind MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+            <Grid x:Name="unreadIndicator" x:Load="{x:Bind Unread}" MinWidth="4" Margin="0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
             </Grid>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <lib:SwipeControl>
+        <lib:SwipeControl Margin="-12,0">
             <lib:SwipeControl.RightItems>
                 <lib:SwipeItems>
                     <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close" Invoked="SwipeItem_Invoked">
@@ -269,7 +270,7 @@
                 </lib:SwipeItems>
             </lib:SwipeControl.RightItems>
 
-            <Grid Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}">
+            <Grid Padding="12,0" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -289,36 +290,11 @@
                 </Canvas>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
-                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.MentionCount, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" MinWidth="4" Margin="-12,4,0,4" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                <Grid x:Name="unreadIndicator" x:Load="{x:Bind ReadState.Unread}" MinWidth="4" Margin="-12,2,0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
                     <TextBlock Text="{x:Bind ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
         </lib:SwipeControl>
-    </DataTemplate>
-
-    <DataTemplate x:Key="NoIndicatorDMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
-        </Grid>
-    </DataTemplate>
-
-    <DataTemplate x:Key="NoIndicatorChannelListTemplate">
-        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" IsHitTestVisible="True">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
-            <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-
-        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>

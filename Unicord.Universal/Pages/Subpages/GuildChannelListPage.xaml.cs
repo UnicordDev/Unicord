@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -8,7 +7,6 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -23,45 +21,34 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages.Subpages
 {
-    public sealed partial class DMChannelsPage : Page
+    public sealed partial class GuildChannelListPage : Page
     {
-        private DiscordDmChannel _currentChannel;
+        public DiscordGuild Guild { get; private set; }
 
-        public DMChannelsPage()
+        public GuildChannelListPage()
         {
             InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is DiscordDmChannel channel)
+            Guild = e.Parameter as DiscordGuild;
+            Tag = Guild.Name;
+
+            if (DataContext is GuildChannelListViewModel model)
             {
-                _currentChannel = channel;
-                dmsList.SelectedItem = channel;
+                model.Dispose();
             }
-            else
-            {
-                _currentChannel = null;
-                dmsList.SelectedIndex = -1;
-            }
+
+            DataContext = new GuildChannelListViewModel(Guild);
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        private void channelsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _currentChannel = null;
-            dmsList.SelectedIndex = -1;
-        }
-
-        private void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var dataContext = DataContext as DMChannelsViewModel;
-            if (dataContext.UpdatingIndex)
-                return;
-
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
             if (channel != null)
             {
-                this.FindParent<DiscordPage>()?.Navigate(channel, null);
+                this.FindParent<DiscordPage>().Navigate(channel, null);
             }
         }
     }

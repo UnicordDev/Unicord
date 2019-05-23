@@ -17,7 +17,7 @@
                 </Image.Source>
             </Image>
             <Grid x:Name="posterOverlay">
-                <Canvas Width="58" Height="58" Tapped="Canvas_Tapped" Background="{StaticResource SystemControlBackgroundAltMediumBrush}">
+                <Canvas Width="58" Height="58" Tapped="Canvas_Tapped" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Canvas.Left="5" Canvas.Top="5" FontSize="48" LineHeight="48" Width="48" Height="48">
                     &#xE768;
                     </TextBlock>

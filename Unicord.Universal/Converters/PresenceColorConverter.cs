@@ -20,7 +20,7 @@ namespace Unicord.Universal.Converters
             {
                 return Colors.Purple;
             }
-
+            
             switch (v?.Status ?? UserStatus.Offline)
             {
                 case UserStatus.Offline:

@@ -72,7 +72,7 @@ namespace Unicord.Universal.Pages.Subpages
                             viewSource.Source = channel.Users
                                .Distinct()
                                .OrderBy(g => g.DisplayName)
-                               .GroupBy(g => g.Roles.Where(r => r.IsHoisted).OrderBy(r => r.Position).FirstOrDefault())
+                               .GroupBy(g => g.Roles.OrderByDescending(r => r.Position).FirstOrDefault(r => r.IsHoisted))
                                .OrderByDescending(g => g.Key?.Position);
                         }
 

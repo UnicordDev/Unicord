@@ -13,6 +13,7 @@ using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Data.Xml.Dom;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
@@ -20,9 +21,12 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.Web.Http;
@@ -130,6 +134,26 @@ namespace Unicord.Universal
             return default;
         }
 
+        public static void AddAccelerator(this UIElement element, VirtualKey key, VirtualKeyModifiers modifiers, TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> handler)
+        {
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
+            {
+                var emoteAccelerator = new KeyboardAccelerator() { Key = key, Modifiers = modifiers, ScopeOwner = element };
+                emoteAccelerator.Invoked += handler;
+
+                element.KeyboardAccelerators.Add(emoteAccelerator);
+            }
+        }
+
+        public static void AddAccelerator(this UIElement target, VirtualKey key, VirtualKeyModifiers modifiers)
+        {
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
+            {
+                var emoteAccelerator = new KeyboardAccelerator() { Key = key, Modifiers = modifiers, ScopeOwner = target.FindParent<Page>() };
+                target.KeyboardAccelerators.Add(emoteAccelerator);
+            }
+        }
+
         public static async Task<StorageFile> GetImageFileFromDataPackage(DataPackageView dataPackageView)
         {
             var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Strings.RandomString(12)}.png");
@@ -188,6 +212,36 @@ namespace Unicord.Universal
 
             // i love discord
             return _member.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position;
+        }
+
+        // adapted from corefx
+        // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
+        public static int BinarySearch<T>(this IList<T> collection, DiscordChannel channel) where T : IComparable<DiscordChannel>
+        {
+            var lo = 0;
+            var hi = collection.Count - 1;
+
+            while (lo <= hi)
+            {
+                var i = lo + ((hi - lo) >> 1);
+                var c = collection[i].CompareTo(channel);
+
+                if (c == 0)
+                {
+                    return i < 0 ? ~i : i;
+                }
+
+                if (c < 0)
+                {
+                    lo = i + 1;
+                }
+                else
+                {
+                    hi = i - 1;
+                }
+            }
+
+            return ~lo < 0 ? lo : ~lo;
         }
 
         internal static ToastNotification GetWindows10Toast(DiscordMessage message, string title, string messageText)

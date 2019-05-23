@@ -101,11 +101,11 @@
                             <Button.Flyout>
                                 <Flyout x:Name="VolumeFlyout">
                                     <StackPanel Orientation="Horizontal">
-                                        <Button x:Name="AudioMuteButton" Click="AudioMuteButton_Click" Style="{StaticResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <Button x:Name="AudioMuteButton" Click="AudioMuteButton_Click" Style="{ThemeResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
                                             <SymbolIcon x:Name="AudioMuteSymbol" Symbol="Volume"/>
                                         </Button>
                                         <Slider x:Name="VolumeSlider" HorizontalAlignment="Center" Value="85" ValueChanged="VolumeSlider_ValueChanged" IsThumbToolTipEnabled="False" Margin="0" VerticalAlignment="Center" Width="{ThemeResource MTCHorizontalVolumeSliderWidth}"/>
-                                        <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{StaticResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
+                                        <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{ThemeResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
                                     </StackPanel>
                                 </Flyout>
                             </Button.Flyout>

@@ -215,7 +215,7 @@
                                 MaxHeight="100"
                                 fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp"
                                 AcceptsReturn="False"
-                                Style="{StaticResource MessageTextBoxStyle}"
+                                Style="{ThemeResource MessageTextBoxStyle}"
                                 Text="{Binding Content, Mode=OneWay}"
                                 TextWrapping="Wrap" />
                             <Button
@@ -223,13 +223,13 @@
                                 Grid.Column="1"
                                 Click="messageEditFinishButton_Click"
                                 Content="&#xE73E;"
-                                Style="{StaticResource IconButtonStyle}" />
+                                Style="{ThemeResource IconButtonStyle}" />
                             <Button
                                 x:Name="messageEditCancelButton"
                                 Grid.Column="2"
                                 Click="messageEditCancelButton_Click"
                                 Content="&#xE711;"
-                                Style="{StaticResource IconButtonStyle}" />
+                                Style="{ThemeResource IconButtonStyle}" />
                         </Grid>
 
                         <wam:MarkdownTextBlock

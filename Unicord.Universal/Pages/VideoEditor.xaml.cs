@@ -261,12 +261,12 @@ namespace Unicord.Universal.Pages
 
             if (_tempFile == null)
             {
-                _tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(_model.StorageFile.Name, CreationCollisionOption.GenerateUniqueName);
+                _tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(Path.ChangeExtension(_model.StorageFile.Name, ".mp4"), CreationCollisionOption.GenerateUniqueName);
             }
 
             await SaveComposition();
 
-            _renderTask = _model.Composition.RenderToFileAsync(_tempFile, MediaTrimmingPreference.Fast, profile);
+            _renderTask = _model.Composition.RenderToFileAsync(_tempFile, MediaTrimmingPreference.Precise, profile);
             _renderTask.Progress = OnProgress;
             _renderTask.Completed = OnCompleted;
         }

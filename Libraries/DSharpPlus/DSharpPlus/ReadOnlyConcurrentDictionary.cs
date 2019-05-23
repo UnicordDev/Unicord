@@ -50,4 +50,22 @@ namespace DSharpPlus
 
         public IEnumerable<TValue> Values => _underlyingDict.Values;
     }
+
+    internal readonly struct ReadOnlyList<T> : IReadOnlyList<T>
+    {
+        private readonly List<T> _underlyingList;
+        
+        public ReadOnlyList(List<T> list)
+        {
+            _underlyingList = list;
+        }
+
+        public T this[int index] => _underlyingList[index];        
+        public int Count => _underlyingList.Count;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerator<T> GetEnumerator() => ((IReadOnlyList<T>)_underlyingList).GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        IEnumerator IEnumerable.GetEnumerator() => ((IReadOnlyList<T>)_underlyingList).GetEnumerator();
+    }
 }

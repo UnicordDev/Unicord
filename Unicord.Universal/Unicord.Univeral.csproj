@@ -26,7 +26,7 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
@@ -297,6 +297,7 @@
     <Compile Include="Models\DMChannelsViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsViewModel.cs" />
+    <Compile Include="Models\GuildChannelListViewModel.cs" />
     <Compile Include="Models\MainPageEventArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
@@ -345,8 +346,8 @@
     <Compile Include="Pages\Subpages\FriendsPage.xaml.cs">
       <DependentUpon>FriendsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Subpages\GuildChannelsPage.xaml.cs">
-      <DependentUpon>GuildChannelsPage.xaml</DependentUpon>
+    <Compile Include="Pages\Subpages\GuildChannelListPage.xaml.cs">
+      <DependentUpon>GuildChannelListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Subpages\PinsPage.xaml.cs">
       <DependentUpon>PinsPage.xaml</DependentUpon>
@@ -586,7 +587,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Subpages\GuildChannelsPage.xaml">
+    <Page Include="Pages\Subpages\GuildChannelListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

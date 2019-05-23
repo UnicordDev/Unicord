@@ -13,9 +13,9 @@
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Audio and Video" Margin="0,0,0,12"/>
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Audio and Video" Margin="0,0,0,12"/>
 
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Photo Capture"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Photo Capture"/>
         <Grid Grid.Row="1" Margin="0,4,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -27,10 +27,10 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Save photos after capturing" VerticalAlignment="Center"/>
-            <ToggleSwitch Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding SavePhotos, Mode=TwoWay}" />
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding SavePhotos, Mode=TwoWay}" />
         </Grid>
 
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Media Compression" Margin="0,0,0,8"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Media Compression" Margin="0,0,0,8"/>
         <TextBlock TextWrapping="Wrap">
             This feature allows me to automatically shrink down audio and video files to fit within your upload limit!
         </TextBlock>
@@ -42,10 +42,10 @@
             </ComboBox.Items>
         </ComboBox>
 
-        <controls:Expander Margin="-12,0" Style="{StaticResource TransparentExpanderStyle}" Header="Advanced" Background="Transparent">
+        <controls:Expander Margin="-12,0" Style="{ThemeResource TransparentExpanderStyle}" Header="Advanced" Background="Transparent">
             <Grid Padding="4,0">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Video Options" Margin="0,4"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Video Options" Margin="0,4"/>
                     <TextBlock TextWrapping="Wrap">
                     If you need to, you can adjust the output resolution and quality of the compressed video here.
                     </TextBlock>
@@ -66,7 +66,7 @@
                             <ComboBoxItem Content="Prioritise quality, smaller file sizes"/>
                         </ComboBox.Items>
                     </ComboBox>
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Audio Options" Margin="0,0,0,4"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Audio Options" Margin="0,0,0,4"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

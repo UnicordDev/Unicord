@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
@@ -17,6 +18,7 @@ using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +27,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace Unicord.Universal.Pages
 {
@@ -52,7 +55,7 @@ namespace Unicord.Universal.Pages
             {
                 // BUGBUG: this is messy
                 var items = new List<object> { new { Name = "Direct Messages" } };
-                items.AddRange(App.Discord.Guilds.Values);
+                items.AddRange(App.Discord.Guilds.Values.OrderBy(g => g.Name));
                 guildBox.ItemsSource = items;
 
                 channelsBox.ItemTemplateSelector = new ChannelTemplateSelector()
@@ -87,7 +90,6 @@ namespace Unicord.Universal.Pages
 
                     var img = new BitmapImage();
                     thumbnailImage.Source = img;
-
                     await img.SetSourceAsync(await _file.GetThumbnailAsync(ThumbnailMode.SingleItem));
 
                     return;
@@ -97,6 +99,10 @@ namespace Unicord.Universal.Pages
                     // do shit
 
                     _file = await Tools.GetImageFileFromDataPackage(data);
+
+                    var img = new BitmapImage();
+                    thumbnailImage.Source = img;
+                    await img.SetSourceAsync(await _file.GetThumbnailAsync(ThumbnailMode.PicturesView));
 
                     return;
                 }
@@ -141,27 +147,36 @@ namespace Unicord.Universal.Pages
             if (guildBox.SelectedIndex == 0)
             {
                 channelsListSource.IsSourceGrouped = false;
-                channelsListSource.Source = App.Discord.PrivateChannels.Values.OrderBy(c => c.Name ?? c.Recipient?.Username);
+                channelsListSource.Source = App.Discord.PrivateChannels.Values
+                    .OrderBy(c => c.Name ?? c.Recipient?.Username)
+                    .OrderByDescending(m => m.ReadState?.LastMessageId ?? 0);
             }
             else
             {
-                GuildChannelsPage.PopulateChannelList(channelsListSource, guildBox.SelectedItem as DiscordGuild, true);
+                var guild = guildBox.SelectedItem as DiscordGuild;
+                var user = guild.CurrentMember;
+                channelsListSource.Source = guild.Channels.Values
+                    .Where(c => c.PermissionsFor(user).HasFlag(Permissions.SendMessages))
+                    .OrderBy(c => c.Position);
             }
         }
 
         private async void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            overlay.Visibility = Visibility.Visible;
-            ring.IsActive = true;
-
             try
             {
                 if (channelsBox.SelectedItem is DiscordChannel channel)
                 {
                     if (_file != null)
                     {
-                        var stream = await _file.OpenStreamForReadAsync();
-                        await channel.SendFileAsync(stream, _file.Name, captionText.Text);
+                        overlay.Visibility = Visibility.Visible;
+                        ring.Value = 0;
+                        subtext.Opacity = 1;
+
+                        var progress = new Progress<double?>(p => ring.Value = p ?? 0d);
+                        var stream = await _file.OpenReadAsync();
+                        var dictionary = new Dictionary<string, IInputStream>() { [_file.Name] = stream };
+                        await Tools.SendFilesWithProgressAsync(channel, captionText.Text, dictionary, progress);
                     }
                     else if (!string.IsNullOrWhiteSpace(captionText.Text))
                     {
@@ -171,7 +186,9 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
+                await UIUtilities.ShowErrorDialogAsync("Sending failed!", ex.Message);
                 _shareOperation.ReportError(ex.Message);
+                return;
             }
 
             _shareOperation.ReportCompleted();

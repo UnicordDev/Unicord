@@ -277,7 +277,6 @@ namespace Unicord.Universal
 
             await _connectSemaphore.WaitAsync();
 
-
             if (Discord == null)
             {
                 if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))

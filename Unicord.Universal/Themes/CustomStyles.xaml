@@ -225,17 +225,17 @@
                                                             <RowDefinition Height="18"/>
                                                         </Grid.RowDefinitions>
                                                         <Rectangle x:Name="HorizontalTrackRect" Grid.ColumnSpan="3" Fill="{TemplateBinding Background}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1"/>
-                                                        <ProgressBar x:Name="DownloadProgressIndicator" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="1" Style="{StaticResource MediaSliderProgressBarStyle}" VerticalAlignment="Center"/>
+                                                        <ProgressBar x:Name="DownloadProgressIndicator" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="1" Style="{ThemeResource MediaSliderProgressBarStyle}" VerticalAlignment="Center"/>
                                                         <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1"/>
                                                         <TickBar x:Name="TopTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,0,0,4" VerticalAlignment="Bottom" Visibility="Collapsed"/>
                                                         <TickBar x:Name="HorizontalInlineTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Visibility="Collapsed"/>
                                                         <TickBar x:Name="BottomTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,4,0,0" Grid.Row="2" VerticalAlignment="Top" Visibility="Collapsed"/>
-                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{StaticResource MediaSliderThumbStyle}" Width="24">
+                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{ThemeResource MediaSliderThumbStyle}" Width="24">
                                                             <Thumb.DataContext>
                                                                 <Grid Height="112" Width="192">
                                                                     <Image x:Name="ThumbnailImage"/>
                                                                     <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                                                        <TextBlock x:Name="TimeElapsedPreview" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" IsTextScaleFactorEnabled="False" Margin="6,1,6,3" Style="{StaticResource BodyTextBlockStyle}"/>
+                                                                        <TextBlock x:Name="TimeElapsedPreview" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" IsTextScaleFactorEnabled="False" Margin="6,1,6,3" Style="{ThemeResource BodyTextBlockStyle}"/>
                                                                     </Border>
                                                                 </Grid>
                                                             </Thumb.DataContext>
@@ -262,7 +262,7 @@
                                                         <TickBar x:Name="LeftTickBar" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
                                                         <TickBar x:Name="VerticalInlineTickBar" Grid.Column="1" Fill="{ThemeResource SliderInlineTickBarFill}" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderTrackThemeHeight}"/>
                                                         <TickBar x:Name="RightTickBar" Grid.Column="2" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
-                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{StaticResource MediaSliderThumbStyle}" Width="24"/>
+                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{ThemeResource MediaSliderThumbStyle}" Width="24"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
@@ -375,7 +375,7 @@
                                     <TranslateTransform x:Name="TranslateVertical"/>
                                 </Grid.RenderTransform>
                                 <Border x:Name="ErrorBorder" Background="{ThemeResource MediaTransportControlsPanelBackground}" Grid.ColumnSpan="3"  HorizontalAlignment="Center" VerticalAlignment="Stretch" MinHeight="42" Visibility="Collapsed" Width="320">
-                                    <TextBlock x:Name="ErrorTextBlock" Margin="12" Style="{StaticResource MediaTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+                                    <TextBlock x:Name="ErrorTextBlock" Margin="12" Style="{ThemeResource MediaTextBlockStyle}" TextWrapping="WrapWholeWords"/>
                                 </Border>
                                 <Border x:Name="MediaTransportControls_Timeline_Border" Margin="12,0" Grid.Column="1" Grid.Row="1">
                                     <Grid x:Name="MediaTransportControls_Timeline_Grid">
@@ -384,14 +384,14 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Slider x:Name="ProgressSlider" Grid.Column="1" VerticalAlignment="Center" IsThumbToolTipEnabled="False" MinWidth="80" Margin="4,0" Style="{StaticResource MediaSliderStyle}"/>
+                                        <Slider x:Name="ProgressSlider" Grid.Column="1" VerticalAlignment="Center" IsThumbToolTipEnabled="False" MinWidth="80" Margin="4,0" Style="{ThemeResource MediaSliderStyle}"/>
                                         <ProgressBar x:Name="BufferingProgressBar" Grid.Column="1" Height="4" IsIndeterminate="True" IsHitTestVisible="False" Margin="0,2,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
-                                        <TextBlock x:Name="TimeElapsedElement" Visibility="Collapsed" HorizontalAlignment="Left" Margin="0" Style="{StaticResource MediaTextBlockStyle}" Text="00:00" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="TimeRemainingElement" Visibility="Collapsed" Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource MediaTextBlockStyle}" Text="00:00" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="TimeElapsedElement" Visibility="Collapsed" HorizontalAlignment="Left" Margin="0" Style="{ThemeResource MediaTextBlockStyle}" Text="00:00" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="TimeRemainingElement" Visibility="Collapsed" Grid.Column="2" HorizontalAlignment="Right" Style="{ThemeResource MediaTextBlockStyle}" Text="00:00" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Border>
                                 <Border x:Name="LeftSidePlayBorder" Grid.Column="0" Grid.Row="1" Visibility="Collapsed">
-                                    <Button x:Name="PlayPauseButtonOnLeft" Margin="0" Style="{StaticResource IconButtonStyle}" VerticalAlignment="Center">
+                                    <Button x:Name="PlayPauseButtonOnLeft" Margin="0" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Center">
                                         <SymbolIcon x:Name="PlayPauseSymbolLeft" Symbol="Play"/>
                                     </Button>
                                 </Border>
@@ -408,29 +408,29 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Button Style="{StaticResource IconButtonStyle}" Margin="2,0,0,0" x:Name="VolumeMuteButton">
+                                        <Button Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="VolumeMuteButton">
                                             <Button.Flyout>
                                                 <Flyout x:Name="VolumeFlyout">
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button x:Name="AudioMuteButton" Style="{StaticResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                        <Button x:Name="AudioMuteButton" Style="{ThemeResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
                                                             <SymbolIcon x:Name="AudioMuteSymbol" Symbol="Volume"/>
                                                         </Button>
                                                         <Slider x:Name="VolumeSlider" HorizontalAlignment="Center" IsThumbToolTipEnabled="False" Margin="0" VerticalAlignment="Center" Value="50" Width="{ThemeResource MTCHorizontalVolumeSliderWidth}"/>
-                                                        <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{StaticResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
+                                                        <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{ThemeResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
                                                     </StackPanel>
                                                 </Flyout>
                                             </Button.Flyout>
                                             <SymbolIcon x:Name="VolumeMuteSymbol" Symbol="Volume"/>
                                         </Button>
 
-                                        <Button Grid.Column="2" Style="{StaticResource IconButtonStyle}" x:Name="PlayPauseButton">
+                                        <Button Grid.Column="2" Style="{ThemeResource IconButtonStyle}" x:Name="PlayPauseButton">
                                             <SymbolIcon x:Name="PlayPauseSymbol" Symbol="Play"/>
                                         </Button>
 
-                                        <Button Grid.Column="4" Style="{StaticResource IconButtonStyle}" Margin="2,0,0,0" Visibility="Collapsed" x:Name="CastButton">
+                                        <Button Grid.Column="4" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" Visibility="Collapsed" x:Name="CastButton">
                                             <FontIcon Glyph="&#xEC15;"/>
                                         </Button>
-                                        <Button Grid.Column="5" Style="{StaticResource IconButtonStyle}" Margin="2,0,0,0" x:Name="FullWindowButton">
+                                        <Button Grid.Column="5" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="FullWindowButton">
                                             <SymbolIcon x:Name="FullWindowSymbol" Symbol="FullScreen"/>
                                         </Button>
 
@@ -506,20 +506,20 @@
                             <Thumb x:Name="MinThumb"
                                    AutomationProperties.Name="Min thumb"
                                    IsTabStop="True" 
-                                   Style="{StaticResource RangeSliderThumbStyle}"
+                                   Style="{ThemeResource RangeSliderThumbStyle}"
                                    TabIndex="0" />
 
                             <Thumb x:Name="CurrentThumb"
                                    AutomationProperties.Name="Current thumb"
                                    IsTabStop="True" 
-                                   Style="{StaticResource VideoSliderThumbStyle}"
+                                   Style="{ThemeResource VideoSliderThumbStyle}"
                                    Margin="-32"
                                    TabIndex="0" />
 
                             <Thumb x:Name="MaxThumb"
                                    AutomationProperties.Name="Max thumb"
                                    IsTabStop="True"
-                                   Style="{StaticResource RangeSliderThumbStyle}"
+                                   Style="{ThemeResource RangeSliderThumbStyle}"
                                    TabIndex="1" />
                         </Canvas>
 
@@ -975,7 +975,7 @@
     <Style x:Key="TransparentExpanderStyle" TargetType="controls:Expander">
         <Setter Property="Header" Value="Header"/>
         <Setter Property="IsTabStop" Value="False"/>
-        <Setter Property="HeaderStyle" Value="{StaticResource HeaderToggleButtonStyle}"/>
+        <Setter Property="HeaderStyle" Value="{ThemeResource HeaderToggleButtonStyle}"/>
         <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeLowBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -1484,7 +1484,7 @@
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
         <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
-        <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
+        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeLowBrush}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
         <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
@@ -1750,7 +1750,7 @@
                                     IsHitTestVisible="False" />
                         <Button x:Name="DeleteButton"
                                     Grid.Row="1"
-                                    Style="{StaticResource DeleteButtonStyle}"
+                                    Style="{ThemeResource DeleteButtonStyle}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     IsTabStop="False"
                                     Grid.Column="1"
@@ -1761,7 +1761,7 @@
                                     VerticalAlignment="Stretch" />
                         <Button x:Name="QueryButton"
                                     Grid.Row="1"
-                                    Style="{StaticResource QueryButtonStyle}"
+                                    Style="{ThemeResource QueryButtonStyle}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     IsTabStop="False"
                                     Grid.Column="2"
@@ -1781,7 +1781,7 @@
     <Style x:Key="CleanAutoSuggestBox" TargetType="AutoSuggestBox">
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="TextBoxStyle" Value="{StaticResource AutoSuggestBoxTextBoxStyle}" />
+        <Setter Property="TextBoxStyle" Value="{ThemeResource AutoSuggestBoxTextBoxStyle}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AutoSuggestBox">

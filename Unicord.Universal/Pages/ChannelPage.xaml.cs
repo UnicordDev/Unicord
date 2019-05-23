@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
@@ -19,23 +15,18 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
-using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Media;
-using Windows.Media.Audio;
 using Windows.Media.Capture;
-using Windows.Media.Render;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.System;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -83,12 +74,12 @@ namespace Unicord.Universal.Pages
                     KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
                 }
 
-                AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
-                AddAccelerator(VirtualKey.E, VirtualKeyModifiers.Control, emoteButton);
-                AddAccelerator(VirtualKey.P, VirtualKeyModifiers.Control, pinsButton);
-                AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control, userListButton);
-                AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, uploadButton);
-                AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control, searchButton);
+                this.AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
+                emoteButton.AddAccelerator(VirtualKey.E, VirtualKeyModifiers.Control);
+                pinsButton.AddAccelerator(VirtualKey.P, VirtualKeyModifiers.Control);
+                userListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
+                uploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
+                searchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
             }
 
             messageTextBox.KeyDown += messageTextBox_KeyDown;
@@ -265,11 +256,35 @@ namespace Unicord.Universal.Pages
 
         private async void messageTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            var textBox = (sender as TextBox);
             var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter && shift.HasFlag(CoreVirtualKeyStates.None))
+            if (e.Key == VirtualKey.Enter)
             {
                 e.Handled = true;
-                await SendAsync();
+                if (shift.HasFlag(CoreVirtualKeyStates.Down))
+                {
+                    var start = textBox.SelectionStart;
+                    textBox.Text = textBox.Text.Insert(start, "\r\n");
+                    textBox.SelectionStart = start + 1;
+                }
+                else
+                {
+                    await SendAsync();
+                }
+            }
+            else if (e.Key == VirtualKey.Up && string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
+                if (lastMessage != null)
+                {
+                    var container = messageList.ContainerFromItem(lastMessage);
+                    if (container != null)
+                    {
+                        messageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
+                        var viewer = container.FindChild<MessageViewer>();
+                        viewer.BeginEditing();
+                    }
+                }
             }
         }
 
@@ -315,6 +330,12 @@ namespace Unicord.Universal.Pages
                     "Failed to upload.",
                     "Whoops, something went wrong while uploading that file, sorry!");
             }
+        }
+
+        internal void FocusTextBox()
+        {
+            messageTextBox.Focus(FocusState.Keyboard);
+            messageTextBox.SelectionStart = messageTextBox.Text.Length;
         }
 
         private async void sendButton_Click(object sender, RoutedEventArgs e)
@@ -476,7 +497,7 @@ namespace Unicord.Universal.Pages
 
         private async void ShowPhotoPicker_Completed(object sender, object e)
         {
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 32))
             {
                 previewFailed.Visibility = Visibility.Collapsed;
                 loadingCameraRing.IsActive = true;
@@ -488,7 +509,7 @@ namespace Unicord.Universal.Pages
 
         private void HidePhotoPicker_Completed(object sender, object e)
         {
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 32))
             {
                 cameraPreview.Stop();
                 cameraPreview.CameraHelper.FrameArrived -= CameraHelper_FrameArrived;
@@ -526,30 +547,6 @@ namespace Unicord.Universal.Pages
             photoPicker.Visibility = Visibility.Collapsed;
             uploadsTransform.Y = 0;
             loadingImagesRing.IsActive = false;
-        }
-
-        private void AddAccelerator(VirtualKey key, VirtualKeyModifiers modifiers, TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> handler)
-        {
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
-            {
-                var emoteAccelerator = new KeyboardAccelerator() { Key = key, Modifiers = modifiers, ScopeOwner = this };
-
-                if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Input.KeyboardAccelerator", "Invoked"))
-                {
-                    emoteAccelerator.Invoked += handler;
-                }
-
-                KeyboardAccelerators.Add(emoteAccelerator);
-            }
-        }
-
-        private void AddAccelerator(VirtualKey key, VirtualKeyModifiers modifiers, UIElement target)
-        {
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
-            {
-                var emoteAccelerator = new KeyboardAccelerator() { Key = key, Modifiers = modifiers, ScopeOwner = this };
-                target.KeyboardAccelerators.Add(emoteAccelerator);
-            }
         }
 
         private async void emoteButton_Click(object sender, RoutedEventArgs e)

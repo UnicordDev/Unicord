@@ -65,6 +65,7 @@ namespace DSharpPlus.Entities
         public void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);
+            var context = SynchronizationContext.Current;
             foreach (var item in _handlers)
             {
                 for (var i = 0; i < item.Value.Count; i++)
@@ -72,7 +73,20 @@ namespace DSharpPlus.Entities
                     try
                     {
                         var handler = item.Value[i];
-                        item.Key.Post(o => handler.Invoke(this, args), null);
+                        if (item.Key == context)
+                            handler.Invoke(this, args);
+                        else
+                            item.Key.Post(o =>
+                            {
+                                try
+                                {
+                                    handler.Invoke(this, args);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Error in binding: {0}", ex);
+                                }
+                            }, null);
                     }
                     catch (Exception ex)
                     {

@@ -45,8 +45,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="searchBox" InputScope="Search" PlaceholderText="Search emotes..." TextChanged="TextBox_TextChanged" VerticalAlignment="Center" Style="{StaticResource MessageTextBoxStyle}" />
-                <Button Grid.Column="1" Style="{StaticResource StretchyIconButtonStyle}" Content="&#xE721;" Width="36" Height="36" Click="Button_Click" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Bottom" />
+                <TextBox x:Name="searchBox" InputScope="Search" PlaceholderText="Search emotes..." TextChanged="TextBox_TextChanged" VerticalAlignment="Center" Style="{ThemeResource MessageTextBoxStyle}" />
+                <Button Grid.Column="1" Style="{ThemeResource StretchyIconButtonStyle}" Content="&#xE721;" Width="36" Height="36" Click="Button_Click" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Bottom" />
             </Grid>
         </GridView.Header>
         <GridView.ItemTemplate>

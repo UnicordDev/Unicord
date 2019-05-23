@@ -22,11 +22,10 @@ namespace DSharpPlus.Entities
         /// Gets IDs the roles this emoji is enabled for.
         /// </summary>
         [JsonIgnore]
-        public IReadOnlyList<ulong> Roles => _rolesLazy.Value;
+        public IReadOnlyList<ulong> Roles => new ReadOnlyList<ulong>(_roles);
 
         [JsonProperty("roles", NullValueHandling = NullValueHandling.Ignore)]
         internal List<ulong> _roles = null;
-        private Lazy<IReadOnlyList<ulong>> _rolesLazy;
 
         /// <summary>
         /// Gets whether this emoji requires colons to use.
@@ -81,11 +80,6 @@ namespace DSharpPlus.Entities
 
                 return $"https://cdn.discordapp.com/emojis/{Id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
             }
-        }
-
-        internal DiscordEmoji()
-        {
-            _rolesLazy = new Lazy<IReadOnlyList<ulong>>(() => new ReadOnlyCollection<ulong>(_roles));
         }
 
         /// <summary>

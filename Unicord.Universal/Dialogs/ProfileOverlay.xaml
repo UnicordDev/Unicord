@@ -44,12 +44,12 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Style="{StaticResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand}" CommandParameter="{x:Bind _user}" />
-                        <Button Style="{StaticResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
+                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand}" CommandParameter="{x:Bind _user}" />
+                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{StaticResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
+            <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
                 <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
             </Grid>
             <Grid Height="205" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">

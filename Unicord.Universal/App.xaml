@@ -50,7 +50,7 @@
             <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
                                 BackgroundSource="Backdrop"
                                 TintOpacity="0"
-                                FallbackColor="{StaticResource SystemChromeMediumColor}"/>
+                                FallbackColor="{ThemeResource SystemChromeMediumColor}"/>
 
             <converters:PresenceColourConverter x:Key="PresenceColourConverter"/>
             <converters:DateTimeConverter x:Key="DateTimeConverter"/>

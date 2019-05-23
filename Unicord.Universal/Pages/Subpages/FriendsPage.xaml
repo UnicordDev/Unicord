@@ -13,7 +13,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
     NavigationCacheMode="Required"
-    mc:Ignorable="d">
+    mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
         <models:FriendsViewModel/>
     </Page.DataContext>
@@ -70,13 +70,13 @@
                         </TextBlock>
                     </Grid>
                     <StackPanel x:Name="overlayContent" x:Phase="10" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="VideoChat"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{StaticResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
@@ -84,7 +84,7 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
+    <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="WideState">
@@ -123,7 +123,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" VerticalAlignment="Center" Style="{StaticResource IconButtonStyle}" Content="&#xE700;"/>
+                <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" VerticalAlignment="Center" Style="{ThemeResource IconButtonStyle}" Content="&#xE700;"/>
                 <TextBlock Text="Friends" Style="{ThemeResource SubheaderTextBlockStyle}" Grid.Column="1" Margin="12" Grid.Row="2"/>
             </Grid>
             <Pivot Margin="12,0,12,12" IsHeaderItemsCarouselEnabled="False" ManipulationMode="None" SelectedIndex="1" Grid.Row="3">
@@ -133,7 +133,7 @@
                                   ItemsSource="{Binding All}"
                                   SelectionChanged="ListView_SelectionChanged"
                               ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
                               animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
@@ -142,7 +142,7 @@
                                   ItemsSource="{Binding Online}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
                               animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
@@ -155,7 +155,7 @@
                                   ItemsSource="{Binding Pending}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
                               animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
@@ -164,7 +164,7 @@
                                   ItemsSource="{Binding Blocked}"
                               SelectionChanged="ListView_SelectionChanged" 
                               ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{StaticResource itemContainerStyle}"
+                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
                               b:ListViewBehaviour.MinItemWidth="250"
                               animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>

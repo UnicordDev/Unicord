@@ -5,6 +5,8 @@
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <ResourceDictionary.ThemeDictionaries>
@@ -131,4 +133,35 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- 
+        i'd prefer these to be in ./Templates.xaml but because that file has a code behind
+        windows says no
+    -->
+    
+    <DataTemplate x:Key="NoIndicatorDMChannelTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NoIndicatorChannelListTemplate">
+        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" IsHitTestVisible="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+            <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+
+        </Grid>
+    </DataTemplate>
+    
 </ResourceDictionary>

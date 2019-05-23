@@ -127,10 +127,10 @@ namespace Unicord.Universal.Models
             if (_onlineList.Remove(rel))
                 _syncContext.Post(a => Online.Remove(rel), null);
 
-            if (Pending.Contains(rel))
+            if (Pending.Contains(rel)) // is this actually faster?
                 _syncContext.Post(a => Pending.Remove(rel), null);
 
-            if (Blocked.Contains(rel))
+            if (Blocked.Contains(rel)) // ^^
                 _syncContext.Post(a => Blocked.Remove(rel), null);
         }
 

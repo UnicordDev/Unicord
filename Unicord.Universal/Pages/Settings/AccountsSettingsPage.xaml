@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
+        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -29,15 +29,15 @@
                 </Grid.ColumnDefinitions>
                 <lib:PersonPicture ProfilePicture="{Binding AvatarUrl}" Width="96" Height="96" Margin="0,0,16,0"/>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
                         <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username, Mode=OneWay}"/>#<Run Text="{Binding Discriminator, Mode=OneWay}"/>
                     </TextBlock>
                     <TextBlock Text="{Binding Email}"/>
                 </StackPanel>
             </Grid>
-            <Button Grid.Column="1" Style="{StaticResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
+            <Button Grid.Column="1" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
         </Grid>
-        <TextBlock Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}" Text="Friends" Margin="0,12,0,0"/>
+        <TextBlock Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" Text="Friends" Margin="0,12,0,0"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -57,7 +57,7 @@
                 <Run Text="Sync my friends with" />
                 <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
             </TextBlock>
-            <ToggleSwitch x:Name="syncContactsSwitch" Style="{StaticResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
+            <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
         </Grid>
 
         <Button x:Name="logoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Content="Logout" Click="LogoutButton_Click"/>

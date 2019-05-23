@@ -28,7 +28,7 @@ namespace Unicord.Universal.Utilities
 
             return await TryTranscodeMediaAsync(input, output, profile, progress, token);
         }
-       
+
         public static Task<bool> TryTranscodeAudioAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
             var profile = MediaEncodingProfile.CreateMp3(hq ? AudioEncodingQuality.High : AudioEncodingQuality.Medium);
@@ -94,6 +94,11 @@ namespace Unicord.Universal.Utilities
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, bitrate);
+
+            if (width == 0)
+                width = maxWidth;
+            if (height == 0)
+                height = maxHeight;
 
             var profile = new MediaEncodingProfile()
             {

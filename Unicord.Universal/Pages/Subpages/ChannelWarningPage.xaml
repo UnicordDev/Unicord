@@ -9,7 +9,7 @@
     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     mc:Ignorable="d">
 
-    <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
+    <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
         <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
             <StackPanel
                 MaxWidth="450"

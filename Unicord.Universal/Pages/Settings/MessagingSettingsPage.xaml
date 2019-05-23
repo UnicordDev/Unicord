@@ -14,11 +14,11 @@
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Text and Images" Margin="0,0,0,12"/>
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Text and Images" Margin="0,0,0,12"/>
 
         <controls1:MessageViewer x:Name="messageViewer" Message="{Binding ExampleMessage,Mode=OneWay}" IsEnabled="False" Background="Transparent" Margin="0,0,0,8" />
 
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Timestamps"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Timestamps"/>
         <TextBlock TextWrapping="Wrap" Text="How do you want timestamps on messages to appear?"/>
         <ComboBox SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,4,0,8">
             <ComboBoxItem>
@@ -41,7 +41,7 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Chat"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Chat"/>
 
         <Grid Grid.Row="1" Margin="0,4,0,8">
             <Grid.ColumnDefinitions>
@@ -55,13 +55,13 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Automatically Play GIFs" TextWrapping="Wrap" VerticalAlignment="Center"/>
-            <ToggleSwitch Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding AutoPlayGifs, Mode=TwoWay}" />
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AutoPlayGifs, Mode=TwoWay}" />
 
             <TextBlock Grid.Row="1" Text="Enable Spoilers" VerticalAlignment="Center"/>
-            <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
+            <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
             
             <TextBlock Grid.Row="2" Text="Prompt for Untrusted Links" VerticalAlignment="Center" ToolTipService.ToolTip="With this option enabled, you will be prompted by Windows before opening insecure links."/>
-            <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{StaticResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
+            <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
         </Grid>
         
 

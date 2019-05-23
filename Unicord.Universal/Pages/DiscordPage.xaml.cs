@@ -17,8 +17,11 @@ using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
+using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.System;
 using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
@@ -53,6 +56,22 @@ namespace Unicord.Universal.Pages
             _visibility = Window.Current.Visible;
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
+
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
+            {
+                //this.AddAccelerator(VirtualKey.Up, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerUp_Invoked);
+                //this.AddAccelerator(VirtualKey.Down, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerDown_Invoked);
+            }
+        }
+
+        private void MoveServerUp_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex - 1, _guilds.Count));
+        }
+
+        private void MoveServerDown_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex + 1, _guilds.Count));
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -320,7 +339,7 @@ namespace Unicord.Universal.Pages
             {
                 if (!g.IsUnavailable)
                 {
-                    sidebarFrame.Navigate(typeof(GuildChannelsPage), g);
+                    sidebarFrame.Navigate(typeof(GuildChannelListPage), g);
                     friendsItem.IsSelected = false;
                 }
                 else
@@ -352,12 +371,12 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
-                else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelsPage p) || p.Guild != channel.Guild))
+                else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
                 {
                     friendsItem.IsSelected = false;
                     unreadDms.SelectedIndex = -1;
                     guildsList.SelectedItem = channel.Guild;
-                    sidebarFrame.Navigate(typeof(GuildChannelsPage), channel.Guild, new DrillInNavigationTransitionInfo());
+                    sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
                 }
 
                 if (channel.Type == ChannelType.Voice)

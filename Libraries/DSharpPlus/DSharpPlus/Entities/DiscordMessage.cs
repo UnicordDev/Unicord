@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS0618
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -21,15 +21,9 @@ namespace DSharpPlus.Entities
         private List<DiscordRole> _mentionedRoles;
         private ReadOnlyCollection<DiscordChannel> _mentionedChannels;
 
-        internal DiscordMessage()
-        {
-            _attachmentsLazy = new Lazy<IReadOnlyList<DiscordAttachment>>(() => new ReadOnlyCollection<DiscordAttachment>(_attachments));
-            _embedsLazy = new Lazy<IReadOnlyList<DiscordEmbed>>(() => new ReadOnlyCollection<DiscordEmbed>(_embeds));
-            _reactionsLazy = new Lazy<IReadOnlyList<DiscordReaction>>(() => new ReadOnlyCollection<DiscordReaction>(_reactions));
-        }
+        internal DiscordMessage() { }
 
         internal DiscordMessage(DiscordMessage other)
-            : this()
         {
             Discord = other.Discord;
 
@@ -141,7 +135,7 @@ namespace DSharpPlus.Entities
             {
                 if (_mentionedRoles == null)
                 {
-                    if(string.IsNullOrWhiteSpace(Content))
+                    if (string.IsNullOrWhiteSpace(Content))
                     {
                         _mentionedRoles = Utilities.GetRoleMentions(this).Select(xid => Channel.Guild.GetRole(xid)).ToList();
                     }
@@ -177,36 +171,30 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordAttachment> Attachments
-            => _attachmentsLazy.Value;
+            => new ReadOnlyList<DiscordAttachment>(_attachments);
 
         [JsonProperty("attachments", NullValueHandling = NullValueHandling.Ignore)]
         internal List<DiscordAttachment> _attachments = new List<DiscordAttachment>();
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordAttachment>> _attachmentsLazy;
 
         /// <summary>
         /// Gets embeds attached to this message.
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordEmbed> Embeds
-            => _embedsLazy.Value;
+           => new ReadOnlyList<DiscordEmbed>(_embeds);
 
         [JsonProperty("embeds", NullValueHandling = NullValueHandling.Ignore)]
         internal List<DiscordEmbed> _embeds = new List<DiscordEmbed>();
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordEmbed>> _embedsLazy;
 
         /// <summary>
         /// Gets reactions used on this message.
         /// </summary>
         [JsonIgnore]
         public IReadOnlyList<DiscordReaction> Reactions
-            => _reactionsLazy.Value;
+           => new ReadOnlyList<DiscordReaction>(_reactions);
 
         [JsonProperty("reactions", NullValueHandling = NullValueHandling.Ignore)]
         internal List<DiscordReaction> _reactions = new List<DiscordReaction>();
-        [JsonIgnore]
-        private Lazy<IReadOnlyList<DiscordReaction>> _reactionsLazy;
 
         /*
         /// <summary>

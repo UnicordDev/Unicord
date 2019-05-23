@@ -129,7 +129,7 @@
                                     Grid.Column="1"
                                     Click="TranscodeFailedButton_Click"
                                     Content="&#xE783;"
-                                    Foreground="{StaticResource ErrorTextForegroundBrush}"
+                                    Foreground="{ThemeResource ErrorTextForegroundBrush}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Transcode failed!"
                                     Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" />
@@ -218,7 +218,7 @@
                         HorizontalAlignment="Center"
                         Click="Button_Click"
                         Content="Cancel"
-                        Style="{StaticResource TextBlockButtonStyle}" />
+                        Style="{ThemeResource TextBlockButtonStyle}" />
                 </StackPanel>
             </Grid>
         </Grid>

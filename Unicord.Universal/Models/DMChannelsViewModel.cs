@@ -28,7 +28,6 @@ namespace Unicord.Universal.Models
         public ObservableCollection<DiscordDmChannel> DMChannels { get; set; }
 
         public int SelectedIndex { get => _selectedItem; set => OnPropertySet(ref _selectedItem, value); }
-
         public bool UpdatingIndex { get; set; }
 
         public void Dispose()
@@ -54,20 +53,24 @@ namespace Unicord.Universal.Models
         {
             if (e.Channel is DiscordDmChannel dm)
             {
+                var current = DMChannels.ElementAtOrDefault(SelectedIndex);
                 var index = DMChannels.IndexOf(dm);
-                var wasSelected = index == _selectedItem;
-                var newIndex = wasSelected ? 0 : SelectedIndex != -1 ? SelectedIndex + 1 : -1;
-
-                if (index > 0)
+                _syncContext.Post(o =>
                 {
-                    _syncContext.Post(o => DMChannels.Move(index, 0), null);
-                }
-                else if (index < 0)
-                {
-                    _syncContext.Post(o => DMChannels.Insert(0, dm), null);
-                }
+                    // BUGBUG: this is very bad
+                    UpdatingIndex = true;
+                    if (index > 0)
+                    {
+                        DMChannels.Move(index, 0);
+                    }
+                    else if (index < 0)
+                    {
+                        DMChannels.Insert(0, dm);
+                    }
 
-                _syncContext.Post(o => SelectedIndex = newIndex, null);
+                    SelectedIndex = current == null ? -1 : DMChannels.IndexOf(current);
+                    UpdatingIndex = false;
+                }, null);
             }
 
             return Task.CompletedTask;

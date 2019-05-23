@@ -59,11 +59,12 @@ namespace Unicord.Universal.Pages.Management
             this.FindParent<DiscordPage>().CloseCustomPane();
         }
 
-        private void TextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
         {
-            if(args.NewText.Contains(" "))
+            if (sender.Text.Contains(" "))
             {
-                sender.Text = args.NewText.Replace(' ', '-');
+                sender.Text = sender.Text.Replace(' ', '-');
+                sender.Select(sender.Text.Length, 0);
             }
         }
     }

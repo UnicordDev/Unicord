@@ -14,6 +14,7 @@
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:wNone="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 32)"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
 
@@ -135,7 +136,7 @@
         </Storyboard>
 
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
-            <controls1:MessageViewer Message="{x:Bind}" />
+            <controls1:MessageViewer Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
 
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
@@ -164,11 +165,11 @@
                 <Frame x:Name="sidebarFrame" />
             </Grid>
 
-            <controls:DropShadowPanel Style="{StaticResource DropShadowPanelStyle}">
+            <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
                 <controls:DropShadowPanel.RenderTransform>
                     <TranslateTransform x:Name="ContentTransform" />
                 </controls:DropShadowPanel.RenderTransform>
-                <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+                <Grid Background="{ThemeResource MainBackgroundBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -204,7 +205,7 @@
                                         x:Name="showSidebarButton"
                                         Click="ShowSidebarButton_Click"
                                         Content="&#xE700;"
-                                        Style="{StaticResource IconButtonStyle}" />
+                                        Style="{ThemeResource IconButtonStyle}" />
                                 </Grid>
 
                                 <Ellipse
@@ -274,30 +275,30 @@
                                     Click="EditButton_Click"
                                     Content="&#xE70F;"
                                     Visibility="{Binding ShowEditButton}"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
                                     IsChecked="{Binding Channel.Muted, Mode=TwoWay}"
-                                    Style="{StaticResource IconToggleButtonStyle}"
+                                    Style="{ThemeResource IconToggleButtonStyle}"
                                     ToolTipService.ToolTip="Mute" />
                                 <Button
                                     x:Name="searchButton"
                                     Content="&#xE721;"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Search" />
                                 <Button
                                     x:Name="pinsButton"
                                     Click="pinsButton_Click"
                                     Content="&#xE718;"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Pinned Messages" />
                                 <Button
                                     x:Name="userListButton"
                                     Click="UserListButton_Click"
                                     Content="&#xE716;"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="User List"
                                     Visibility="{Binding ShowUserlistButton}" />
 
@@ -319,13 +320,13 @@
                                     x:Name="deleteAllButton"
                                     Click="DeleteAllButton_Click"
                                     Content="&#xE74D;"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Delete" />
                                 <Button
                                     x:Name="closeEditButton"
                                     Click="CloseEditButton_Click"
                                     Content="&#xE711;"
-                                    Style="{StaticResource IconButtonStyle}"
+                                    Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Close" />
 
                             </StackPanel>
@@ -398,7 +399,7 @@
                         <Grid Width="42" Margin="0,0,4,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
-                                <w1803:RowDefinition Height="*" />
+                                <wNone:RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Button
@@ -407,15 +408,15 @@
                                 VerticalAlignment="Stretch"
                                 Click="OpenPopoutButton_Click"
                                 Content="&#xE8A7;"
-                                Style="{StaticResource StretchyIconButtonStyle}" />
-                            <w1803:Button
+                                Style="{ThemeResource StretchyIconButtonStyle}" />
+                            <wNone:Button
                                 x:Name="captureButton"
                                 Grid.Row="1"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 Click="CaptureButton_Click"
                                 Content="&#xE722;"
-                                Style="{StaticResource StretchyIconButtonStyle}" />
+                                Style="{ThemeResource StretchyIconButtonStyle}" />
                             <Button
                                 x:Name="openLocalButton"
                                 Grid.Row="2"
@@ -423,7 +424,7 @@
                                 VerticalAlignment="Stretch"
                                 Click="openLocalButton_Click"
                                 Content="&#xE8DA;"
-                                Style="{StaticResource StretchyIconButtonStyle}" />
+                                Style="{ThemeResource StretchyIconButtonStyle}" />
                         </Grid>
 
                         <ListView
@@ -436,7 +437,7 @@
                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
                             ScrollViewer.VerticalScrollMode="Disabled"
                             SelectionChanged="SelectionHandler">
-                            <w1803:ListView.Header>
+                            <wNone:ListView.Header>
                                 <Grid MinWidth="200" Margin="0,0,8,0">
                                     <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
                                     <Grid
@@ -466,7 +467,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center" />
                                 </Grid>
-                            </w1803:ListView.Header>
+                            </wNone:ListView.Header>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel Orientation="Horizontal" />
@@ -487,7 +488,7 @@
                             Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Style="{StaticResource TitleTextBlockStyle}"
+                            Style="{ThemeResource TitleTextBlockStyle}"
                             Text="Nothing to see here!"
                             Visibility="Collapsed" />
 
@@ -548,7 +549,7 @@
                                 Click="uploadButton_Click"
                                 Content="&#xE898;"
                                 IsEnabled="{Binding CanUpload}"
-                                Style="{StaticResource IconButtonStyle}" />
+                                Style="{ThemeResource IconButtonStyle}" />
 
                             <TextBox
                                 x:Name="messageTextBox"
@@ -562,7 +563,7 @@
                                 MaxLength="2000"
                                 Paste="messageTextBox_Paste"
                                 PlaceholderText="{Binding ChannelPlaceholder}"
-                                Style="{StaticResource MessageTextBoxStyle}"
+                                Style="{ThemeResource MessageTextBoxStyle}"
                                 TextChanged="messageTextBox_TextChanged"
                                 TextWrapping="Wrap" />
 
@@ -582,7 +583,7 @@
                                 Click="emoteButton_Click"
                                 Content="&#xED54;"
                                 FontSize="18"
-                                Style="{StaticResource IconToggleButtonStyle}"
+                                Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding ShowSendButton}">
                                 <ToggleButton.Resources>
                                     <ui:TeachingTip
@@ -599,7 +600,7 @@
                                 Click="sendButton_Click"
                                 Content="&#xE724;"
                                 IsEnabled="{Binding CanSend}"
-                                Style="{StaticResource IconButtonStyle}" />
+                                Style="{ThemeResource IconButtonStyle}" />
                         </Grid>
                     </Grid>
 

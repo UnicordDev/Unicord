@@ -280,10 +280,11 @@ namespace Unicord.Universal.Controls
                 _isEditing = true;
                 markdown.Visibility = Visibility.Collapsed;
 
-
                 if (FindName("messageEditContainer") is Grid grid)
                 {
                     grid.Visibility = Visibility.Visible;
+                    messageEditBox.Focus(FocusState.Keyboard);
+                    messageEditBox.SelectionStart = messageEditBox.Text.Length;
                 }
             }
         }
@@ -301,10 +302,19 @@ namespace Unicord.Universal.Controls
         private async void messageEditBox_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
         {
             var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter && shift.HasFlag(CoreVirtualKeyStates.None))
+            if (e.Key == VirtualKey.Enter)
             {
                 e.Handled = true;
-                await FinishEditAndSend();
+                if (!shift.HasFlag(CoreVirtualKeyStates.Down))
+                {
+                    await FinishEditAndSend();
+                }
+                else
+                {
+                    var start = messageEditBox.SelectionStart;
+                    messageEditBox.Text = messageEditBox.Text.Insert(start, "\r\n");
+                    messageEditBox.SelectionStart = start + 1;
+                }
             }
         }
 
@@ -318,6 +328,7 @@ namespace Unicord.Universal.Controls
                 if (FindName("messageEditContainer") is Grid grid)
                 {
                     grid.Visibility = Visibility.Collapsed;
+                    this.FindParent<ChannelPage>()?.FocusTextBox();
                 }
             }
         }
@@ -327,7 +338,7 @@ namespace Unicord.Universal.Controls
             if (_isEditing)
             {
                 FinishEdit();
-                if (!string.IsNullOrWhiteSpace(messageEditBox.Text))
+                if (!string.IsNullOrWhiteSpace(messageEditBox.Text) && messageEditBox.Text != markdown.Text)
                 {
                     markdown.Text = messageEditBox.Text;
                     await Message.ModifyAsync(messageEditBox.Text);
