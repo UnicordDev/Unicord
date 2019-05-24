@@ -238,7 +238,6 @@ namespace DSharpPlus
         /// <returns></returns>
         public virtual async Task ConnectAsync(DiscordActivity activity = null, UserStatus? status = null, DateTimeOffset? idlesince = null)
         {
-
             // Check if connection lock is already set, and set it if it isn't
             if (!ConnectionLock.Wait(0))
                 throw new InvalidOperationException("This client is already connected.");                       
@@ -2682,6 +2681,8 @@ namespace DSharpPlus
 
         internal Task SendResumeAsync()
         {
+            DebugLogger.LogMessage(LogLevel.Debug, "Gateway", $"Attempting to resume session {_sessionId} with seq {_lastSequence}", DateTime.Now);
+
             var resume = new GatewayResume
             {
                 Token = Utilities.GetFormattedToken(this),

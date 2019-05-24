@@ -322,8 +322,7 @@ namespace Unicord.Universal
                             TokenType = TokenType.User,
                             AutomaticGuildSync = false,
                             LogLevel = DSharpPlus.LogLevel.Debug,
-                            MutedStore = new UnicordMutedStore(),
-                            ReconnectIndefinitely = true
+                            MutedStore = new UnicordMutedStore()
                         }));
 
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
@@ -332,7 +331,7 @@ namespace Unicord.Universal
                         Discord.ClientErrored += ClientErrored;
 
                         // here we go bois
-                        Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
+                        // Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
 
                         _connectSemaphore.Release();
 

@@ -49,6 +49,10 @@ namespace Unicord.Universal.Pages.Settings
                     frame.Navigate(typeof(MediaSettingsPage));
                     break;
 
+                case "Themes":
+                    frame.Navigate(typeof(ThemesSettingsPage));
+                    break;
+
                 case "Security":
                     frame.Navigate(typeof(SecuritySettingsPage));
                     break;
