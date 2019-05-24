@@ -270,7 +270,7 @@
                 </lib:SwipeItems>
             </lib:SwipeControl.RightItems>
 
-            <Grid Padding="12,0" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}">
+            <Grid Padding="12,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
