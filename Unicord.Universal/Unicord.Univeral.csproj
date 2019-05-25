@@ -272,6 +272,9 @@
     <Compile Include="Dialogs\GuildDialog.xaml.cs">
       <DependentUpon>GuildDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\InstallThemeDialog.xaml.cs">
+      <DependentUpon>InstallThemeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PinMessageDialog.xaml.cs">
       <DependentUpon>PinMessageDialog.xaml</DependentUpon>
     </Compile>
@@ -300,6 +303,7 @@
     <Compile Include="Models\GuildChannelListViewModel.cs" />
     <Compile Include="Models\MainPageEventArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
+    <Compile Include="Models\ThemesSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
@@ -363,9 +367,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedTools.cs" />
-    <Compile Include="Themes\Templates.xaml.cs">
+    <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Themes.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHelloManager.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
@@ -518,6 +523,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\InstallThemeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\PinMessageDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -610,15 +619,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\CustomStyles.xaml">
+    <Page Include="Resources\Colours.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Templates.xaml">
+    <Page Include="Resources\CustomStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Generic.xaml">
+    <Page Include="Resources\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

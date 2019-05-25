@@ -15,11 +15,12 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
-using Unicord.Universal.Themes;
+using Unicord.Universal.Resources;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
@@ -46,16 +47,21 @@ namespace Unicord.Universal
 
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
-
+        
         internal static DiscordClient Discord { get; set; }
         internal static Thickness StatusBarFill { get; set; }
 
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
+        public static Exception ThemeLoadException { get; private set; }
 
         public App()
         {
             InitializeComponent();
+
+            var theme = RoamingSettings.Read<ApplicationTheme?>("RequestedTheme", null);
+            if (theme != null)
+                RequestedTheme = theme.Value;
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
@@ -75,7 +81,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            Resources.MergedDictionaries.Add(new Templates());
+            await LoadThemes();
 
             switch (e)
             {
@@ -151,7 +157,6 @@ namespace Unicord.Universal
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Resources.MergedDictionaries.Add(new Templates());
             await OnLaunchedAsync(e.PrelaunchActivated, e.Arguments);
         }
 
@@ -159,8 +164,9 @@ namespace Unicord.Universal
         {
             Analytics.TrackEvent("Launch");
 
-            var rawArgs = Strings.SplitCommandLine(arguments);
+            await LoadThemes();
 
+            var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
             foreach (var str in rawArgs)
             {
@@ -227,6 +233,25 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private async Task LoadThemes()
+        {
+            var theme = LocalSettings.Read("SelectedTheme", new Theme() { IsDefault = true });
+            if (!theme.IsDefault)
+            {
+                try
+                {
+                    await Themes.LoadAsync(theme, Resources);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    ThemeLoadException = ex;
+                }
+            }
+
+            Resources.MergedDictionaries.Insert(0, new XamlControlsResources());
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)

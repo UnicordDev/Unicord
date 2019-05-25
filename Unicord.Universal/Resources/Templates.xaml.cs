@@ -7,7 +7,7 @@ using DSharpPlus.Entities;
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 
-namespace Unicord.Universal.Themes
+namespace Unicord.Universal.Resources
 {
     public sealed partial class Templates : ResourceDictionary
     {
