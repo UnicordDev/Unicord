@@ -29,8 +29,6 @@ namespace Unicord.Universal
     {
         public static async Task LoadAsync(Theme selectedTheme, ResourceDictionary target)
         {
-            target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
-
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
             var themeDictionary = await themesDirectory.CreateFolderAsync(selectedTheme.Name, CreationCollisionOption.OpenIfExists);
             var files = await themeDictionary.GetFilesAsync();
@@ -43,6 +41,8 @@ namespace Unicord.Universal
                     target.MergedDictionaries.Add(dictionary);
                 }
             }
+
+            target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
         }
 
         /// <summary>
