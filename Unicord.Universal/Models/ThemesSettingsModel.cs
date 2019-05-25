@@ -15,12 +15,19 @@ namespace Unicord.Universal.Models
 
         public ThemesSettingsModel()
         {
+            ReloadThemes();
+        }
+
+        public void ReloadThemes()
+        {
             var defaultTheme = new Theme() { Name = "Default", Author = "N/A", IsDefault = true };
             var selectedTheme = App.LocalSettings.Read("SelectedTheme", defaultTheme);
             var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
 
             AvailableThemes.Add(defaultTheme);
             AvailableThemes.AddRange(installedThemes.Values);
+
+            InvokePropertyChanged(nameof(AvailableThemes));
 
             SelectedTheme = AvailableThemes.FirstOrDefault(t => t.Name == selectedTheme.Name);
         }
@@ -29,6 +36,16 @@ namespace Unicord.Universal.Models
 
         public List<Theme> AvailableThemes { get; set; } = new List<Theme>();
 
-        public object SelectedTheme { get => _selectedTheme; set => OnPropertySet(ref _selectedTheme, value); }
+        public object SelectedTheme
+        {
+            get => _selectedTheme;
+            set
+            {
+                OnPropertySet(ref _selectedTheme, value);
+                InvokePropertyChanged(nameof(CanRemove));
+            }
+        }
+
+        public Visibility CanRemove => (SelectedTheme as Theme).IsDefault ? Visibility.Collapsed : Visibility.Visible;
     }
 }

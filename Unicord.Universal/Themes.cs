@@ -27,14 +27,28 @@ namespace Unicord.Universal
 {
     internal static class Themes
     {
-        public static async Task LoadAsync(Theme selectedTheme, ResourceDictionary target)
+        public static void Load(Theme selectedTheme, ResourceDictionary target)
         {
-            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
-            var themeDictionary = await themesDirectory.CreateFolderAsync(selectedTheme.Name, CreationCollisionOption.OpenIfExists);
-            var files = await themeDictionary.GetFilesAsync();
-            foreach (var file in files.Where(f => Path.GetExtension(f.Name) == ".xaml"))
+            var localFolder = ApplicationData.Current.LocalFolder;
+            var themesFolderPath = Path.Combine(localFolder.Path, "Themes");
+
+            if (!Directory.Exists(themesFolderPath))
+                Directory.CreateDirectory(themesFolderPath);
+
+            var themePath = Path.Combine(themesFolderPath, selectedTheme.Name);
+            if (!Directory.Exists(themePath))
             {
-                var text = await FileIO.ReadTextAsync(file);
+                var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
+                installedThemes.Remove(selectedTheme.Name);
+
+                App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
+                App.LocalSettings.Save("SelectedTheme", new Theme() { IsDefault = true, Author = "N/A", Name = "Default" });
+                throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
+            }
+
+            foreach (var file in Directory.EnumerateFiles(themePath, "*.xaml"))
+            {
+                var text = File.ReadAllText(file);
                 var obj = XamlReader.Load(text);
                 if (obj is ResourceDictionary dictionary)
                 {
@@ -43,6 +57,20 @@ namespace Unicord.Universal
             }
 
             target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
+        }
+
+        public static async Task RemoveThemeAsync(string name)
+        {
+            var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
+            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+
+            installedThemes.Remove(name);
+
+            var folder = await themesDirectory.GetFolderAsync(name);
+            if (folder != null)
+                await folder.DeleteAsync();
+
+            App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
         }
 
         /// <summary>

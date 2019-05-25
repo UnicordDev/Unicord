@@ -47,7 +47,7 @@ namespace Unicord.Universal
 
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
-        
+
         internal static DiscordClient Discord { get; set; }
         internal static Thickness StatusBarFill { get; set; }
 
@@ -81,7 +81,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            await LoadThemes();
+            LoadThemes();
 
             switch (e)
             {
@@ -89,7 +89,7 @@ namespace Unicord.Universal
                     await OnContactPanelActivated(cont);
                     return;
                 case ToastNotificationActivatedEventArgs toast:
-                    await OnLaunchedAsync(false, toast.Argument);
+                    OnLaunched(false, toast.Argument);
                     return;
                 case ProtocolActivatedEventArgs protocol:
                     await OnProtocolActivatedAsync(protocol);
@@ -157,14 +157,14 @@ namespace Unicord.Universal
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            await OnLaunchedAsync(e.PrelaunchActivated, e.Arguments);
+            OnLaunched(e.PrelaunchActivated, e.Arguments);
         }
 
-        private async Task OnLaunchedAsync(bool preLaunch, string arguments)
+        private void OnLaunched(bool preLaunch, string arguments)
         {
             Analytics.TrackEvent("Launch");
 
-            await LoadThemes();
+            LoadThemes();
 
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
@@ -201,33 +201,10 @@ namespace Unicord.Universal
             }
             else
             {
-                if (preLaunch == false)
+                CoreApplication.EnablePrelaunch(true);
+                if (rootFrame.Content == null)
                 {
-                    CoreApplication.EnablePrelaunch(true);
-                    if (rootFrame.Content == null)
-                    {
-                        rootFrame.Navigate(typeof(MainPage), null);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var vault = new PasswordVault();
-                        var result = vault.FindAllByResource(TOKEN_IDENTIFIER).FirstOrDefault(t => t.UserName == "Default");
-
-                        if (result != null)
-                        {
-                            result.RetrievePassword();
-
-                            await LoginAsync(result.Password,
-                                r => rootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => rootFrame.Navigate(typeof(MainPage))).AsTask(),
-                                ex => Task.CompletedTask,
-                                true,
-                                UserStatus.Idle);
-                        }
-                    }
-                    catch { }
+                    rootFrame.Navigate(typeof(MainPage), null);
                 }
             }
 
@@ -235,14 +212,14 @@ namespace Unicord.Universal
             Window.Current.Activate();
         }
 
-        private async Task LoadThemes()
+        private void LoadThemes()
         {
             var theme = LocalSettings.Read("SelectedTheme", new Theme() { IsDefault = true });
             if (!theme.IsDefault)
             {
                 try
                 {
-                    await Themes.LoadAsync(theme, Resources);
+                    Themes.Load(theme, Resources);
                     return;
                 }
                 catch (Exception ex)

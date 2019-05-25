@@ -193,7 +193,8 @@
                     <Grid Margin="0,4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="32"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <ComboBox ItemsSource="{Binding AvailableThemes}" SelectedItem="{Binding SelectedTheme, Mode=TwoWay}" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
@@ -212,6 +213,9 @@
                         </ComboBox>
                         <Button x:Name="installThemeButton" Grid.Column="1" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="InstallThemeButton_Click">
                             &#xE710;
+                        </Button>
+                        <Button x:Name="removeThemeButton" Visibility="{Binding CanRemove}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
+                            &#xE738;
                         </Button>
                     </Grid>
                 </StackPanel>

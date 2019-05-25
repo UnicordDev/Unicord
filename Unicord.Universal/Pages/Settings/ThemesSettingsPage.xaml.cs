@@ -39,12 +39,17 @@ namespace Unicord.Universal.Pages.Settings
         {
             if (sender is ThemesSettingsModel model && e.PropertyName == nameof(model.SelectedTheme))
             {
-                _changedTheme = true;
+                var read = App.LocalSettings.Read<Theme>("SelectedTheme", null);
+                var selectedTheme = model.SelectedTheme as Theme;
+                if (read?.Name != selectedTheme.Name)
+                {
+                    _changedTheme = true;
 
-                App.LocalSettings.Save("SelectedTheme", model.SelectedTheme as Theme);
+                    App.LocalSettings.Save("SelectedTheme", selectedTheme);
 
-                preview.Resources = new ResourceDictionary();
-                await Themes.LoadAsync(model.SelectedTheme as Theme, preview.Resources);
+                    //preview.Resources = new ResourceDictionary();
+                    //await Themes.LoadAsync(selectedTheme, preview.Resources);
+                }
             }
         }
 
@@ -76,6 +81,18 @@ namespace Unicord.Universal.Pages.Settings
                 {
                     await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
                 }
+            }
+
+            (DataContext as ThemesSettingsModel).ReloadThemes();
+        }
+
+        private async void RemoveThemeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = DataContext as ThemesSettingsModel;
+            if (model.SelectedTheme is Theme theme)
+            {
+                await Themes.RemoveThemeAsync(theme.Name);
+                model.ReloadThemes();
             }
         }
     }
