@@ -20,7 +20,9 @@ namespace Unicord.Universal.Models
 
         public void ReloadThemes()
         {
-            var defaultTheme = new Theme() { Name = "Default", Author = "N/A", IsDefault = true };
+            AvailableThemes.Clear();
+
+            var defaultTheme = Theme.Default;
             var selectedTheme = App.LocalSettings.Read("SelectedTheme", defaultTheme);
             var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
 
@@ -29,7 +31,7 @@ namespace Unicord.Universal.Models
 
             InvokePropertyChanged(nameof(AvailableThemes));
 
-            SelectedTheme = AvailableThemes.FirstOrDefault(t => t.Name == selectedTheme.Name);
+            SelectedTheme = AvailableThemes.FirstOrDefault(t => t.Name == selectedTheme?.Name) ?? Theme.Default;
         }
 
         public ElementTheme PreviewRequestedTheme { get; set; }

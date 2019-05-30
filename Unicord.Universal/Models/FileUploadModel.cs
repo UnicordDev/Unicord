@@ -18,7 +18,6 @@ namespace Unicord.Universal.Models
     {
         public IStorageFile StorageFile { get; set; }
         public ImageSource Thumbnail { get; set; }
-        public IInputStream Stream { get; set; }
         public string FileName { get; set; }
         public ulong Length { get; set; }
 
@@ -38,17 +37,19 @@ namespace Unicord.Universal.Models
 
         public async Task UpdateFromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
-            Stream?.Dispose();
+            if (IsTemporary && StorageFile != null)
+            {
+                await StorageFile.DeleteAsync();
+            }
 
             FileName = file.Name;
-            Stream = await file.OpenReadAsync();
             IsTemporary = isTemporary;
             TranscodeFailed = transcodeFailed;
 
             prop = prop ?? await file.GetBasicPropertiesAsync();
             Length = prop.Size;
 
-            if(file.ContentType.StartsWith("video"))
+            if (file.ContentType.StartsWith("video"))
             {
                 CanEdit = true;
             }
@@ -67,9 +68,17 @@ namespace Unicord.Universal.Models
             StorageFile = file;
         }
 
+        internal async Task<IInputStream> GetStreamAsync()
+        {
+            if (StorageFile != null)
+                return await StorageFile.OpenReadAsync();
+
+            return null;
+        }
+
         public virtual void Dispose()
         {
-            Stream?.Dispose();
+
         }
     }
 
@@ -80,7 +89,6 @@ namespace Unicord.Universal.Models
             StorageFile = original.StorageFile;
             Thumbnail = original.Thumbnail;
             FileName = original.FileName;
-            Stream = original.Stream;
             Length = original.Length;
             IsTemporary = original.IsTemporary;
             Spoiler = original.Spoiler;
@@ -94,7 +102,6 @@ namespace Unicord.Universal.Models
 
         public override void Dispose()
         {
-            Stream?.Dispose();
             Composition = null;
             Clip = null;
         }

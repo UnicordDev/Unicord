@@ -214,7 +214,7 @@ namespace Unicord.Universal
 
         private void LoadThemes()
         {
-            var theme = LocalSettings.Read("SelectedTheme", new Theme() { IsDefault = true });
+            var theme = LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
             if (!theme.IsDefault)
             {
                 try

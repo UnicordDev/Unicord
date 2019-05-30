@@ -29,6 +29,15 @@ namespace Unicord.Universal
     {
         public static void Load(Theme selectedTheme, ResourceDictionary target)
         {
+            // this code must be synchronous to prevent any race conditions that may occur when 
+            // loading assets at startup. if this code was asynchronous, UWP can sometimes jump ahead and 
+            // assume startup has completed before we've fully loaded our assets, which means some changes
+            // made by themes may not load properly. (missing colours, templates, etc.)
+
+            // this also means, however, that we cannot call this method after the app is activated, 
+            // because synchronous I/O is not allowed on the UI thread, and this code must assume
+            // it's running on the UI thread, because otherwise it would be asynchronous... bleh
+
             var localFolder = ApplicationData.Current.LocalFolder;
             var themesFolderPath = Path.Combine(localFolder.Path, "Themes");
 
@@ -42,7 +51,7 @@ namespace Unicord.Universal
                 installedThemes.Remove(selectedTheme.Name);
 
                 App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
-                App.LocalSettings.Save("SelectedTheme", new Theme() { IsDefault = true, Author = "N/A", Name = "Default" });
+                App.LocalSettings.Save("SelectedTheme", Theme.Default);
                 throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
             }
 
@@ -61,6 +70,12 @@ namespace Unicord.Universal
 
         public static async Task RemoveThemeAsync(string name)
         {
+            var selectedTheme = App.LocalSettings.Read<Theme>("SelectedTheme", Theme.Default);
+            if (selectedTheme?.Name == name)
+            {
+                App.LocalSettings.Save("SelectedTheme", Theme.Default);
+            }
+
             var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
 
@@ -173,7 +188,9 @@ namespace Unicord.Universal
 
     public class Theme
     {
-        [JsonIgnore]
+        public static Theme Default
+            => new Theme() { Name = "Default", Author = "N/A", IsDefault = true };
+        
         public bool IsDefault { get; set; } = false;
 
         // internal properties used in databinding

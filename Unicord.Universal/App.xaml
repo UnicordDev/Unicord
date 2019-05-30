@@ -40,6 +40,7 @@
             <converters:ChannelSymbolConverter x:Key="ChannelSymbolConverter"/>
             <converters:BoolOpacityConverter x:Key="BoolOpacityConverter"/>
             <converters:BoolVisibilityConverter x:Key="BoolVisibilityConverter"/>
+            <converters:InverseBoolVisibilityConverter x:Key="InverseBoolVisibilityConverter"/>
             <converters:TruncateConverter x:Key="TruncateConverter"/>
             <converters:ColourBrushConverter x:Key="ColourBrushConverter"/>
             <converters:BoolConverter x:Key="BoolConverter"/>
@@ -48,6 +49,7 @@
             <converters:DMIconConverter x:Key="DMIconConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
             <converters:MutedConverter x:Key="MutedConverter"/>
+            <converters:TitleCaseConverter x:Key="TitleCaseConverter"/>
             <converters:UriConverter x:Key="UriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>

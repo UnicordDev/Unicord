@@ -433,7 +433,7 @@ namespace DSharpPlus.Entities
         /// <param name="channel">Channel to calculate permissions for.</param>
         /// <returns>Calculated permissions for this member in the channel.</returns>
         public Permissions PermissionsIn(DiscordChannel channel)
-            => channel.PermissionsFor(this);
+            => channel?.PermissionsFor(this) ?? Permissions.None;
 
         /// <summary>
         /// Returns a string representation of this member.

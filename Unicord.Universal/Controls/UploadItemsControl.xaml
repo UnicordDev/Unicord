@@ -26,7 +26,7 @@
                 x:Name="uploadSizeContainer"
                 Grid.Row="1"
                 Grid.Column="1"
-                controls:DockPanel.Dock="Bottom"
+                controls:DockPanel.Dock="Right"
                 Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -43,7 +43,7 @@
                         RenderTransformOrigin="0.5, 0.5"
                         Value="{Binding UploadProgressBarValue}">
                         <ProgressBar.RenderTransform>
-                            <RotateTransform x:Name="uploadSizeBarTransform" />
+                            <RotateTransform x:Name="uploadSizeBarTransform" Angle="90" />
                         </ProgressBar.RenderTransform>
                     </ProgressBar>
                 </Grid>
@@ -92,23 +92,7 @@
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
                             <Image VerticalAlignment="Stretch" Source="{Binding Thumbnail}" />
-
-                            <Grid
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top"
-                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Margin="10"
-                                    Text="{Binding FileName}"
-                                    TextTrimming="Clip" />
-                            </Grid>
-
+                            
                             <Grid
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Bottom"
@@ -120,9 +104,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Margin="10">
-                                    <Run Text="{Binding DisplayLength}" />
-                                </TextBlock>
+
+                                <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis"/>
 
                                 <Button
                                     x:Name="transcodeFailedButton"
@@ -138,18 +121,9 @@
                                     Grid.Column="2"
                                     Click="EditButton_Click"
                                     Content="&#xE8B2;"
-                                    Loaded="EditButton_Loaded"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit this clip"
                                     Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}">
-                                    <Button.Resources>
-                                        <winui:TeachingTip
-                                            x:Key="editTip"
-                                            Title="Edit video!"
-                                            IsLightDismissEnabled="True"
-                                            Subtitle="Wanna trim this video? Click here!"
-                                            Target="{Binding ElementName=editButton}" />
-                                    </Button.Resources>
                                 </Button>
                                 <ToggleButton
                                     x:Name="spoilerButton"
@@ -170,33 +144,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="DefaultStates">
-                    <VisualState x:Name="LargeState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="640" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Right" />
-                            <Setter Target="uploadSizeBar.Width" Value="160" />
-                            <Setter Target="uploadSizeBar.Margin" Value="-87, 87, -87, 87" />
-                            <Setter Target="uploadSizeBarTransform.Angle" Value="-90" />
-                            <Setter Target="sizeRun.FontSize" Value="28" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="SmallState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="0" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="uploadSizePanel.(controls:DockPanel.Dock)" Value="Bottom" />
-                            <Setter Target="uploadSizeBar.Margin" Value="10" />
-                            <Setter Target="uploadSizeBarTransform.Angle" Value="0" />
-                            <Setter Target="sizeRun.FontSize" Value="20" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
         </controls:DockPanel>
 
         <Grid
@@ -223,5 +170,32 @@
             </Grid>
         </Grid>
 
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DefaultStates">
+                <VisualState x:Name="LargeState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="640" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="uploadSizeContainer.(controls:DockPanel.Dock)" Value="Right" />
+                        <Setter Target="uploadSizeBar.Width" Value="130" />
+                        <Setter Target="uploadSizeBar.Margin" Value="-57, 27, -57, 27" />
+                        <Setter Target="uploadSizeBarTransform.Angle" Value="-90" />
+                        <Setter Target="sizeRun.FontSize" Value="28" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="uploadSizeContainer.(controls:DockPanel.Dock)" Value="Bottom" />
+                        <Setter Target="uploadSizeBar.Margin" Value="10" />
+                        <Setter Target="uploadSizeBarTransform.Angle" Value="0" />
+                        <Setter Target="sizeRun.FontSize" Value="20" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>

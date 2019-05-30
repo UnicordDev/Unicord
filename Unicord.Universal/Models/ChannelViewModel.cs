@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -84,7 +85,7 @@ namespace Unicord.Universal.Models
             };
         }
 
-        public ObservableCollection<DiscordMessage> Messages { get; set; }        
+        public ObservableCollection<DiscordMessage> Messages { get; set; }
 
         public DiscordChannel Channel
         {
@@ -177,7 +178,7 @@ namespace Unicord.Universal.Models
         /// </summary>
         public string ChannelSuffix =>
             // BUGBUG: these should be localizable at some point
-            Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipient.Discriminator}" : string.Empty; 
+            Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipient.Discriminator}" : string.Empty;
 
         /// <summary>
         /// The full channel name (i.e. @WamWooWam#6402, #general, etc.)
@@ -264,10 +265,10 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public double PerUserRateLimit => 
+        public double PerUserRateLimit =>
             (_channel.PerUserRateLimit ?? 0) * 1000;
 
-        public Visibility ShowSlowModeTimeout => 
+        public Visibility ShowSlowModeTimeout =>
             SlowModeTimeout > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
@@ -285,7 +286,7 @@ namespace Unicord.Universal.Models
 
         public string DisplayUploadLimit => (UploadLimit / (1024d * 1024d)).ToString("F2");
 
-        public Visibility ShowUploads => FileUploads.Any() || IsTranscoding ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowUploads => FileUploads.Any() || IsTranscoding;
 
         public Visibility ShowSendButton => CanSend ? Visibility.Visible : Visibility.Collapsed;
 
@@ -320,8 +321,8 @@ namespace Unicord.Universal.Models
             get => _isTranscoding;
             internal set
             {
+                OnPropertySet(ref _isTranscoding, value);
                 InvokePropertyChanged(nameof(ShowUploads));
-                _isTranscoding = value;
             }
         }
 
@@ -518,17 +519,27 @@ namespace Unicord.Universal.Models
                         {
                             var models = FileUploads.ToArray();
                             FileUploads.Clear();
-                            var files = models.ToDictionary(d => d.Spoiler ? $"SPOILER_{d.FileName}" : d.FileName, e => e.Stream);
+                            var files = new Dictionary<string, IInputStream>();
+                            foreach (var item in models)
+                            {
+                                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync());
+                            }
+
                             await Tools.SendFilesWithProgressAsync(Channel, str, files, progress);
 
-                            foreach (var model in models)
+                            foreach (var item in files)
                             {
-                                model.Dispose();
+                                item.Value.Dispose();
+                            }
 
-                                if (model.StorageFile != null && model.IsTemporary)
+                            foreach (var item in models)
+                            {
+                                if (item.IsTemporary && item.StorageFile != null)
                                 {
-                                    await model.StorageFile.DeleteAsync();
+                                    await item.StorageFile.DeleteAsync();
                                 }
+
+                                item.Dispose();
                             }
                         }
                         else

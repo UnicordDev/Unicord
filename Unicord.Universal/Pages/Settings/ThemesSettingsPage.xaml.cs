@@ -9,6 +9,7 @@ using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,15 +36,16 @@ namespace Unicord.Universal.Pages.Settings
             (DataContext as ThemesSettingsModel).PropertyChanged += ThemesSettingsPage_PropertyChanged;
         }
 
-        private async void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is ThemesSettingsModel model && e.PropertyName == nameof(model.SelectedTheme))
             {
                 var read = App.LocalSettings.Read<Theme>("SelectedTheme", null);
                 var selectedTheme = model.SelectedTheme as Theme;
-                if (read?.Name != selectedTheme.Name)
+                if (read?.Name != selectedTheme?.Name)
                 {
                     _changedTheme = true;
+                    relaunchRequired.Visibility = Visibility.Visible;
 
                     App.LocalSettings.Save("SelectedTheme", selectedTheme);
 
@@ -55,7 +57,8 @@ namespace Unicord.Universal.Pages.Settings
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (_changedTheme)
+            var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
+            if (_changedTheme && autoRestart)
             {
                 if (await UIUtilities.ShowYesNoDialogAsync("Theme changed!", "In order to update your theme, Unicord must restart. Do you want to restart now?"))
                 {

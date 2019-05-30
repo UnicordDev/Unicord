@@ -121,9 +121,6 @@
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <UseDotNetNativeIncremental>true</UseDotNetNativeIncremental>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -258,6 +255,7 @@
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
+    <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
     <Compile Include="Dialogs\ChangeNicknameDialog.xaml.cs">

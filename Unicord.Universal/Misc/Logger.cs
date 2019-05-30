@@ -12,7 +12,7 @@ namespace Unicord.Universal
 {
     internal static class Logger
     {
-#if DEBUG
+#if !STORE
         private static ConcurrentQueue<LogMessage> _messages = new ConcurrentQueue<LogMessage>();
         private static Task _loggerThread;
         private static bool _logging;
@@ -44,13 +44,13 @@ namespace Unicord.Universal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General", [CallerLineNumber] int line = 0)
         {
-#if DEBUG
+#if !STORE
             _messages.Enqueue(new LogMessage() { Message = message.ToString(), Source = source, LineNumber = line, DateTime = DateTimeOffset.Now });
 #endif
         }
     }
 
-#if DEBUG
+#if !STORE
     internal struct LogMessage
     {
         public string Message;

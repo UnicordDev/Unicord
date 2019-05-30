@@ -47,6 +47,10 @@ namespace DSharpPlus.Entities
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public virtual string Name { get => _name; internal set => OnPropertySet(ref _name, value); }
 
+        [JsonIgnore]
+        public virtual string DisplayName
+            => Type == ChannelType.Text ? $"#{Name}" : Name;
+
         /// <summary>
         /// Gets the type of this channel.
         /// </summary>
@@ -72,6 +76,10 @@ namespace DSharpPlus.Entities
         [JsonIgnore]
         public bool IsCategory
             => Type == ChannelType.Category;
+
+        [JsonIgnore]
+        public bool IsVoice
+            => Type == ChannelType.Voice;
 
         /// <summary>
         /// Gets the guild to which this channel belongs.
@@ -178,6 +186,22 @@ namespace DSharpPlus.Entities
             }
         }
 
+        [JsonIgnore]
+        public virtual IEnumerable<DiscordMember> ConnectedUsers
+        {
+            get
+            {
+                if (Type == ChannelType.Voice)
+                {
+                    return Guild.Members.Values.Where(x => x.VoiceState?.ChannelId == Id).Distinct();
+                }
+
+                return Enumerable.Empty<DiscordMember>();
+            }
+        }
+
+        public int UserCount => ConnectedUsers.Count();
+
         /// <summary>
         /// Gets whether this channel is an NSFW channel.
         /// </summary>
@@ -194,10 +218,10 @@ namespace DSharpPlus.Entities
         [JsonIgnore]
         public bool Muted
         {
-            get => Discord.Configuration.MutedStore.GetMuted(Id);
+            get => Discord.Configuration.MutedStore.GetMutedChannel(Id);
             set
             {
-                Discord.Configuration.MutedStore.SetMuted(Id, value);
+                Discord.Configuration.MutedStore.SetMutedChannel(Id, value);
                 InvokePropertyChanged(nameof(Muted));
                 InvokePropertyChanged(nameof(ReadState));
             }

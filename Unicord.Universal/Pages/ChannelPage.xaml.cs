@@ -82,6 +82,7 @@ namespace Unicord.Universal.Pages
                 searchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
             }
 
+            uploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
             messageTextBox.KeyDown += messageTextBox_KeyDown;
             messageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
 
@@ -301,8 +302,6 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.StorageItems))
                 {
                     e.Handled = true;
-                    showPhotoPicker.Begin();
-
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
                     {
@@ -315,8 +314,6 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
                 {
                     e.Handled = true;
-                    showPhotoPicker.Begin();
-
                     var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
                     await uploadItems.AddStorageFileAsync(file, true);
 
@@ -369,6 +366,21 @@ namespace Unicord.Universal.Pages
             }
 
             uploadProgress.Visibility = Visibility.Collapsed;
+        }
+
+        private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == true)
+            {
+                uploadItems.Visibility = Visibility.Visible;
+                hideUploadPanel.Stop();
+                showUploadPanel.Begin();
+            }
+            else
+            {
+                showUploadPanel.Stop();
+                hideUploadPanel.Begin();
+            }
         }
 
         private void uploadButton_Click(object sender, RoutedEventArgs e)
@@ -516,6 +528,22 @@ namespace Unicord.Universal.Pages
                 loadingCameraRing.IsActive = false;
                 previewFailed.Visibility = Visibility.Collapsed;
             }
+
+            photosList.ItemsSource = null;
+            loadingImagesRing.IsActive = false;
+            photoPicker.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowUploadPanel_Completed(object sender, object e)
+        {
+            // just to make sure
+            uploadItems.Visibility = Visibility.Visible;
+        }
+
+        private void HideUploadPanel_Completed(object sender, object e)
+        {
+            photoPicker.Visibility = Visibility.Collapsed;
+            uploadItems.Visibility = Visibility.Collapsed;
         }
 
         private void CameraHelper_FrameArrived(object sender, FrameEventArgs e)
@@ -539,14 +567,6 @@ namespace Unicord.Universal.Pages
         private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.FileUploads.Remove((sender as FrameworkElement).DataContext as FileUploadModel);
-        }
-
-        private void DoubleAnimation_Completed(object sender, object e)
-        {
-            photosList.ItemsSource = null;
-            photoPicker.Visibility = Visibility.Collapsed;
-            uploadsTransform.Y = 0;
-            loadingImagesRing.IsActive = false;
         }
 
         private async void emoteButton_Click(object sender, RoutedEventArgs e)

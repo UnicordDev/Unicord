@@ -88,13 +88,17 @@
             HorizontalContentAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="300"/>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
+                <TextBlock x:Name="relaunchRequired" Visibility="Collapsed" Text="To apply theme changes, Unicord will need to relaunch." Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
+
                 <controls:DropShadowPanel
+                    Grid.Row="1"
                     HorizontalContentAlignment="Stretch"
                     Color="{ThemeResource SystemChromeBlackMediumLowColor}">
                     <Grid x:Name="preview" Background="{ThemeResource MainBackgroundBrush}">
@@ -124,7 +128,7 @@
                                 <Ellipse Style="{ThemeResource PreviewEllipse}"/>
                                 <Ellipse Style="{ThemeResource PreviewEllipse}"/>
                                 <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                            </StackPanel> 
+                            </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
                             <StackPanel Margin="4,6">
@@ -176,7 +180,7 @@
                     </Grid>
                 </controls:DropShadowPanel>
 
-                <StackPanel Grid.Row="1" Margin="0,8,0,4">
+                <StackPanel Grid.Row="2" Margin="0,8,0,4">
                     <TextBlock Text="Colour Scheme" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                     <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,4">
                         <ComboBoxItem Content="System Default"/>
@@ -186,7 +190,7 @@
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="This setting won't be synced with Discord"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Margin="0,4,0,4">
+                <StackPanel Grid.Row="3" Margin="0,4,0,4">
                     <TextBlock Text="Main Theme" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                     <!-- links TBD -->
                     <TextBlock TextWrapping="WrapWholeWords">Wanna spice things up? You can <Hyperlink>download some themes</Hyperlink> or learn how to <Hyperlink>make your own</Hyperlink>!</TextBlock>

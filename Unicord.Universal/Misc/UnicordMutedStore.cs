@@ -10,16 +10,18 @@ namespace Unicord.Universal.Misc
 {
     class UnicordMutedStore : IMutedStore
     {
-        private ConcurrentDictionary<ulong, bool> _mutedStore;
+        private ConcurrentDictionary<ulong, bool> _mutedChannelStore;
+        private ConcurrentDictionary<ulong, bool> _mutedServerStore;
 
         internal UnicordMutedStore()
         {
-            _mutedStore = App.RoamingSettings.Read("MutedChannels", new ConcurrentDictionary<ulong, bool>());
+            _mutedChannelStore = App.RoamingSettings.Read("MutedChannels", new ConcurrentDictionary<ulong, bool>());
+            _mutedServerStore = App.RoamingSettings.Read("MutedServers", new ConcurrentDictionary<ulong, bool>());
         }
 
-        public bool GetMuted(ulong id)
+        public bool GetMutedChannel(ulong id)
         {
-            if(_mutedStore.TryGetValue(id, out var muted))
+            if(_mutedChannelStore.TryGetValue(id, out var muted))
             {
                 return muted;
             }
@@ -27,10 +29,26 @@ namespace Unicord.Universal.Misc
             return false;
         }
 
-        public void SetMuted(ulong id, bool muted)
+        public void SetMutedChannel(ulong id, bool muted)
         {
-            _mutedStore[id] = muted;
-            App.RoamingSettings.Save("MutedChannels", _mutedStore);
+            _mutedChannelStore[id] = muted;
+            App.RoamingSettings.Save("MutedChannels", _mutedChannelStore);
+        }
+
+        public bool GetMutedGuild(ulong id)
+        {
+            if (_mutedServerStore.TryGetValue(id, out var muted))
+            {
+                return muted;
+            }
+
+            return false;
+        }
+
+        public void SetMutedGuild(ulong id, bool muted)
+        {
+            _mutedServerStore[id] = muted;
+            App.RoamingSettings.Save("MutedServers", _mutedServerStore);
         }
     }
 }
