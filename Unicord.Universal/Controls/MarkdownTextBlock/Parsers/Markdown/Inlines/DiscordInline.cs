@@ -128,7 +128,7 @@ namespace WamWooWam.Parsers.Markdown.Inlines
         private static InlineParseResult HandleEmote(string text, StringBuilder builder, int index, int innerStart, int innerEnd)
         {
             var nextIndex = text.IndexOf(':', index);
-            if (index == -1)
+            if (nextIndex == -1)
             {
                 return null;
             }

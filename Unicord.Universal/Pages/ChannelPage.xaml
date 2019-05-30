@@ -1,20 +1,17 @@
 ﻿<Page
     x:Class="Unicord.Universal.Pages.ChannelPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:entities="using:DSharpPlus.Entities"
-    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
-    xmlns:local="using:Unicord.Universal.Pages"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Unicord.Universal.Models"
-    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
-    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:wNone="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 32)"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls1="using:Unicord.Universal.Controls"
+    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
 
@@ -27,16 +24,10 @@
             x:Key="EaseOut"
             EasingMode="EaseIn"
             Exponent="4.5" />
+        
         <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
 
         <Storyboard x:Name="showPhotoPicker" Completed="ShowPhotoPicker_Completed">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="uploadsTransform"
-                Storyboard.TargetProperty="Y"
-                From="150"
-                To="0"
-                Duration="00:00:00.50" />
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseIn}"
                 Storyboard.TargetName="photoTransform"
@@ -47,17 +38,27 @@
         <Storyboard x:Name="hidePhotoPicker" Completed="HidePhotoPicker_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="uploadsTransform"
-                Storyboard.TargetProperty="Y"
-                To="150"
-                Duration="00:00:00.20" />
-            <DoubleAnimation
-                Completed="DoubleAnimation_Completed"
-                EasingFunction="{StaticResource EaseOut}"
                 Storyboard.TargetName="photoTransform"
                 Storyboard.TargetProperty="Y"
                 To="200"
-                Duration="00:00:00.20" />
+                Duration="00:00:00.15" />
+        </Storyboard>
+
+        <Storyboard x:Name="showUploadPanel" Completed="ShowUploadPanel_Completed">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="uploadsTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.50" />
+        </Storyboard>
+        <Storyboard x:Name="hideUploadPanel" Completed="HideUploadPanel_Completed">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseOut}"
+                Storyboard.TargetName="uploadsTransform"
+                Storyboard.TargetProperty="Y"
+                To="200"
+                Duration="00:00:00.15" />
         </Storyboard>
 
         <Storyboard x:Key="OpenPaneStoryboard" x:Name="OpenPaneStoryboard">
@@ -382,123 +383,134 @@
                         </StackPanel>
                     </Grid>
 
-                    <Grid
-                        x:Name="photoPicker"
-                        Grid.Row="3"
-                        Height="150"
-                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                        Visibility="Collapsed">
-                        <Grid.RenderTransform>
-                            <TranslateTransform x:Name="photoTransform" Y="200" />
-                        </Grid.RenderTransform>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="2">
+                        <controls1:UploadItemsControl
+                            x:Name="uploadItems"
+                            Height="150"
+                            Visibility="Collapsed"
+                            IsEnabled="{Binding ShowUploads, UpdateSourceTrigger=PropertyChanged}">
+                            <controls1:UploadItemsControl.RenderTransform>
+                                <TranslateTransform x:Name="uploadsTransform" Y="250" />
+                            </controls1:UploadItemsControl.RenderTransform>
+                        </controls1:UploadItemsControl>
 
-                        <Grid Width="42" Margin="0,0,4,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <wNone:RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Button
-                                x:Name="openPopoutButton"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Click="OpenPopoutButton_Click"
-                                Content="&#xE8A7;"
-                                Style="{ThemeResource StretchyIconButtonStyle}" />
-                            <wNone:Button
-                                x:Name="captureButton"
-                                Grid.Row="1"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Click="CaptureButton_Click"
-                                Content="&#xE722;"
-                                Style="{ThemeResource StretchyIconButtonStyle}" />
-                            <Button
-                                x:Name="openLocalButton"
-                                Grid.Row="2"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Click="openLocalButton_Click"
-                                Content="&#xE8DA;"
-                                Style="{ThemeResource StretchyIconButtonStyle}" />
-                        </Grid>
+                        <Grid
+                            x:Name="photoPicker"
+                            Height="150"
+                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                            Visibility="Collapsed">
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="photoTransform" Y="200" />
+                            </Grid.RenderTransform>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <ListView
-                            x:Name="photosList"
-                            Grid.Column="1"
-                            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                            ScrollViewer.HorizontalScrollMode="Enabled"
-                            ScrollViewer.IsHorizontalRailEnabled="True"
-                            ScrollViewer.IsVerticalRailEnabled="False"
-                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollMode="Disabled"
-                            SelectionChanged="SelectionHandler">
-                            <wNone:ListView.Header>
-                                <Grid MinWidth="200" Margin="0,0,8,0">
-                                    <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
-                                    <Grid
-                                        x:Name="previewFailed"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                                        Tapped="PreviewFailed_Tapped"
-                                        Visibility="Collapsed">
-                                        <controls:DropShadowPanel
-                                            VerticalAlignment="Center"
-                                            HorizontalContentAlignment="Center"
-                                            BlurRadius="8"
-                                            OffsetX="-16"
-                                            ShadowOpacity="1"
-                                            Color="Black">
-                                            <TextBlock
-                                                FontFamily="Segoe MDL2 Assets"
-                                                FontSize="32"
-                                                Text="&#xE7BA;" />
-                                        </controls:DropShadowPanel>
+                            <Grid Width="42" Margin="0,0,4,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <wNone:RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Button
+                                    x:Name="openPopoutButton"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Click="OpenPopoutButton_Click"
+                                    Content="&#xE8A7;"
+                                    Style="{ThemeResource StretchyIconButtonStyle}" />
+                                <wNone:Button
+                                    x:Name="captureButton"
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Click="CaptureButton_Click"
+                                    Content="&#xE722;"
+                                    Style="{ThemeResource StretchyIconButtonStyle}" />
+                                <Button
+                                    x:Name="openLocalButton"
+                                    Grid.Row="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Click="openLocalButton_Click"
+                                    Content="&#xE8DA;"
+                                    Style="{ThemeResource StretchyIconButtonStyle}" />
+                            </Grid>
+
+                            <ListView
+                                x:Name="photosList"
+                                Grid.Column="1"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                ScrollViewer.HorizontalScrollMode="Enabled"
+                                ScrollViewer.IsHorizontalRailEnabled="True"
+                                ScrollViewer.IsVerticalRailEnabled="False"
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollMode="Disabled"
+                                SelectionChanged="SelectionHandler">
+                                <wNone:ListView.Header>
+                                    <Grid MinWidth="200" Margin="0,0,8,0">
+                                        <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
+                                        <Grid
+                                            x:Name="previewFailed"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                                            Tapped="PreviewFailed_Tapped"
+                                            Visibility="Collapsed">
+                                            <controls:DropShadowPanel
+                                                VerticalAlignment="Center"
+                                                HorizontalContentAlignment="Center"
+                                                BlurRadius="8"
+                                                OffsetX="-16"
+                                                ShadowOpacity="1"
+                                                Color="Black">
+                                                <TextBlock
+                                                    FontFamily="Segoe MDL2 Assets"
+                                                    FontSize="32"
+                                                    Text="&#xE7BA;" />
+                                            </controls:DropShadowPanel>
+                                        </Grid>
+                                        <ProgressRing
+                                            x:Name="loadingCameraRing"
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
                                     </Grid>
-                                    <ProgressRing
-                                        x:Name="loadingCameraRing"
-                                        Width="16"
-                                        Height="16"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" />
-                                </Grid>
-                            </wNone:ListView.Header>
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsStackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Image
+                                </wNone:ListView.Header>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsStackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Image
                                         Height="150"
                                         MaxWidth="300"
                                         Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
 
-                        <TextBlock
-                            x:Name="noPhotos"
-                            Grid.Column="1"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Style="{ThemeResource TitleTextBlockStyle}"
-                            Text="Nothing to see here!"
-                            Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="noPhotos"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Style="{ThemeResource TitleTextBlockStyle}"
+                                Text="Nothing to see here!"
+                                Visibility="Collapsed" />
 
-                        <ProgressRing
-                            x:Name="loadingImagesRing"
-                            Grid.Column="1"
-                            Width="42"
-                            Height="42"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
+                            <ProgressRing
+                                x:Name="loadingImagesRing"
+                                Grid.Column="1"
+                                Width="42"
+                                Height="42"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
                     </Grid>
 
                     <Grid
@@ -604,14 +616,7 @@
                         </Grid>
                     </Grid>
 
-                    <controls1:UploadItemsControl
-                        x:Name="uploadItems"
-                        Grid.Row="2"
-                        Visibility="{Binding ShowUploads, Mode=TwoWay}">
-                        <controls1:UploadItemsControl.RenderTransform>
-                            <TranslateTransform x:Name="uploadsTransform" Y="200" />
-                        </controls1:UploadItemsControl.RenderTransform>
-                    </controls1:UploadItemsControl>
+                   
                 </Grid>
             </controls:DropShadowPanel>
         </Grid>

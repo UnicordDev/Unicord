@@ -161,6 +161,11 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
+                if (App.ThemeLoadException != null)
+                {
+                    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
+                }
+
                 if (_args != null)
                 {
                     var channel = await App.Discord.GetChannelAsync(_args.ChannelId);

@@ -329,12 +329,23 @@ namespace DSharpPlus.Entities
         // [JsonIgnore]
         // public IEnumerable<DiscordChannel> OrderedChannels 
         //    => this._channels.OrderBy(xc => xc.Parent?.Position).ThenBy(xc => xc.Type).ThenBy(xc => xc.Position);
+        
+        public bool Muted
+        {
+            get => Discord.Configuration.MutedStore.GetMutedGuild(Id);
+            set
+            {
+                Discord.Configuration.MutedStore.SetMutedGuild(Id, value);
+                InvokePropertyChanged(nameof(Muted));
+                InvokePropertyChanged(nameof(Unread));
+            }
+        }
 
         public bool Unread
         {
             get
             {
-                if (CurrentMember == null)
+                if (CurrentMember == null || Muted)
                     return false;
 
                 return (IsOwner ? _channels : _channels.Where(c => c.Value.PermissionsFor(CurrentMember).HasPermission(Permissions.AccessChannels)))

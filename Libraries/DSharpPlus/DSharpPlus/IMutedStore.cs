@@ -6,7 +6,10 @@ namespace DSharpPlus
 {
     public interface IMutedStore
     {
-        bool GetMuted(ulong id);
-        void SetMuted(ulong id, bool muted);
+        bool GetMutedChannel(ulong id);
+        void SetMutedChannel(ulong id, bool muted);
+
+        bool GetMutedGuild(ulong id);
+        void SetMutedGuild(ulong id, bool muted);
     }
 }

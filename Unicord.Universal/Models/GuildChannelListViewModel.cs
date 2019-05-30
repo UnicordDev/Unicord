@@ -301,7 +301,12 @@ namespace Unicord.Universal.Models
         }
     }
 
-    public class GuildChannelGroup : IGrouping<DiscordChannel, DiscordChannel>, ICollection<DiscordChannel>, IList<DiscordChannel>, IComparable<DiscordChannel>, IList, INotifyCollectionChanged
+    public class GuildChannelGroup : 
+        IGrouping<DiscordChannel, DiscordChannel>, 
+        ICollection<DiscordChannel>,
+        IList<DiscordChannel>, 
+        IComparable<DiscordChannel>,
+        IList, INotifyCollectionChanged
     {
         private ObservableCollection<DiscordChannel> _channels;
 

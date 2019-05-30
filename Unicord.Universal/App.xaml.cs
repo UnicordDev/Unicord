@@ -15,11 +15,12 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
-using Unicord.Universal.Themes;
+using Unicord.Universal.Resources;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
@@ -52,10 +53,15 @@ namespace Unicord.Universal
 
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
+        public static Exception ThemeLoadException { get; private set; }
 
         public App()
         {
             InitializeComponent();
+
+            var theme = RoamingSettings.Read<ApplicationTheme?>("RequestedTheme", null);
+            if (theme != null)
+                RequestedTheme = theme.Value;
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
@@ -75,7 +81,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            Resources.MergedDictionaries.Add(new Templates());
+            LoadThemes();
 
             switch (e)
             {
@@ -83,7 +89,7 @@ namespace Unicord.Universal
                     await OnContactPanelActivated(cont);
                     return;
                 case ToastNotificationActivatedEventArgs toast:
-                    await OnLaunchedAsync(false, toast.Argument);
+                    OnLaunched(false, toast.Argument);
                     return;
                 case ProtocolActivatedEventArgs protocol:
                     await OnProtocolActivatedAsync(protocol);
@@ -151,16 +157,16 @@ namespace Unicord.Universal
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Resources.MergedDictionaries.Add(new Templates());
-            await OnLaunchedAsync(e.PrelaunchActivated, e.Arguments);
+            OnLaunched(e.PrelaunchActivated, e.Arguments);
         }
 
-        private async Task OnLaunchedAsync(bool preLaunch, string arguments)
+        private void OnLaunched(bool preLaunch, string arguments)
         {
             Analytics.TrackEvent("Launch");
 
-            var rawArgs = Strings.SplitCommandLine(arguments);
+            LoadThemes();
 
+            var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
             foreach (var str in rawArgs)
             {
@@ -195,38 +201,34 @@ namespace Unicord.Universal
             }
             else
             {
-                if (preLaunch == false)
+                CoreApplication.EnablePrelaunch(true);
+                if (rootFrame.Content == null)
                 {
-                    CoreApplication.EnablePrelaunch(true);
-                    if (rootFrame.Content == null)
-                    {
-                        rootFrame.Navigate(typeof(MainPage), null);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var vault = new PasswordVault();
-                        var result = vault.FindAllByResource(TOKEN_IDENTIFIER).FirstOrDefault(t => t.UserName == "Default");
-
-                        if (result != null)
-                        {
-                            result.RetrievePassword();
-
-                            await LoginAsync(result.Password,
-                                r => rootFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => rootFrame.Navigate(typeof(MainPage))).AsTask(),
-                                ex => Task.CompletedTask,
-                                true,
-                                UserStatus.Idle);
-                        }
-                    }
-                    catch { }
+                    rootFrame.Navigate(typeof(MainPage), null);
                 }
             }
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private void LoadThemes()
+        {
+            var theme = LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
+            if (!theme.IsDefault)
+            {
+                try
+                {
+                    Themes.Load(theme, Resources);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    ThemeLoadException = ex;
+                }
+            }
+
+            Resources.MergedDictionaries.Insert(0, new XamlControlsResources());
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
@@ -322,8 +324,7 @@ namespace Unicord.Universal
                             TokenType = TokenType.User,
                             AutomaticGuildSync = false,
                             LogLevel = DSharpPlus.LogLevel.Debug,
-                            MutedStore = new UnicordMutedStore(),
-                            ReconnectIndefinitely = true
+                            MutedStore = new UnicordMutedStore()
                         }));
 
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
@@ -332,7 +333,7 @@ namespace Unicord.Universal
                         Discord.ClientErrored += ClientErrored;
 
                         // here we go bois
-                        Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
+                        // Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
 
                         _connectSemaphore.Release();
 

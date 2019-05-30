@@ -27,7 +27,7 @@
                     <FontIcon Glyph="&#xE70F;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Themes" ToolTipService.ToolTip="Personalisation">
+            <lib:NavigationViewItem Tag="Themes" ToolTipService.ToolTip="Themes">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE771;" />
                 </lib:NavigationViewItem.Icon>

@@ -94,11 +94,6 @@ namespace Unicord.Universal.Controls
                 return;
             }
 
-            if (_embed.Thumbnail != null)
-            {
-                thumbnail.Visibility = Visibility.Visible;
-            }
-
             if (_embed.Color.HasValue)
             {
                 var col = _embed.Color.Value;
@@ -300,6 +295,11 @@ namespace Unicord.Universal.Controls
             }
 
             _mediaPlayer = null;
+        }
+
+        private void Thumbnail_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            (sender as Image).Visibility = Visibility.Collapsed;
         }
     }
 }

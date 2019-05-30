@@ -1,0 +1,35 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Resources"
+    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFE0E0E0"/>
+            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF1C1C1C"/>
+            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    
+    <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
+                                BackgroundSource="Backdrop"
+                                TintOpacity="0"
+                                FallbackColor="{ThemeResource SystemChromeMediumColor}"/>
+
+    <media:AcrylicBrush x:Key="OverlayBackdrop" TintColor="{ThemeResource SystemAltHighColor}" TintOpacity="0.33" FallbackColor="#80000000"/>
+
+    <SolidColorBrush x:Key="MentionBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.1"/>
+    <SolidColorBrush x:Key="TransparentBrush" Color="Transparent"/>
+
+</ResourceDictionary>

@@ -76,7 +76,7 @@
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource messageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
@@ -109,7 +109,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+        <Grid Background="{ThemeResource MainBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>

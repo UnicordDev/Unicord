@@ -44,6 +44,7 @@
             x:Name="userList"
             Grid.Row="2"
             Padding="0,0,0,20"
+            ItemTemplate="{ThemeResource UserListTemplate}"
             IsSynchronizedWithCurrentItem="False"
             ItemsSource="{Binding Source={StaticResource ViewSource}}"
             SelectionChanged="UserList_SelectionChanged"
@@ -73,58 +74,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="entities:DiscordUser">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Canvas
-                            Grid.RowSpan="2"
-                            Width="38"
-                            Height="38">
-                            <lib:PersonPicture
-                                Width="38"
-                                Height="38"
-                                DisplayName="{Binding DisplayName}"
-                                ProfilePicture="{Binding AvatarUrl}" />
-                            <Ellipse
-                                Canvas.Left="24"
-                                Canvas.Top="24"
-                                Width="16"
-                                Height="16"
-                                Stroke="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"
-                                StrokeThickness="2">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
-                                </Ellipse.Fill>
-                            </Ellipse>
-                        </Canvas>
-
-                        <Grid
-                            Grid.Column="1"
-                            Margin="8,0"
-                            VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                FontWeight="SemiBold"
-                                Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
-                                Text="{Binding DisplayName}" />
-                            <TextBlock
-                                Grid.Row="1"
-                                FontSize="11"
-                                Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                                <Run Text="{Binding Presence, Converter={StaticResource PresenceTextConverter}}" /> <Run FontWeight="Bold" Text="{Binding Presence.Activity.Name}" />
-                            </TextBlock>
-                        </Grid>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
         </ListView>
 
         <ProgressRing

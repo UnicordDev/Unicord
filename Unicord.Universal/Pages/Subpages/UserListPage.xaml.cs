@@ -59,6 +59,7 @@ namespace Unicord.Universal.Pages.Subpages
                             return;
                         }
                     }
+
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         if (channel is DiscordDmChannel dm)
@@ -101,6 +102,8 @@ namespace Unicord.Universal.Pages.Subpages
                 {
                     value.ShowAt((FrameworkElement)element);
                 }
+
+                userList.SelectedItem = null;
             }
         }
     }

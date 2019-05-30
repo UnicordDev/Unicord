@@ -27,6 +27,11 @@ namespace Unicord.Universal.Pages.Settings
             frame.Navigate(typeof(AccountsSettingsPage));
         }
 
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            frame.Navigate(typeof(Page));
+        }
+
         private void NavigationView_BackRequested(Lib.NavigationView sender, Lib.NavigationViewBackRequestedEventArgs args)
         {
             var page = this.FindParent<DiscordPage>();
@@ -47,6 +52,10 @@ namespace Unicord.Universal.Pages.Settings
 
                 case "Media":
                     frame.Navigate(typeof(MediaSettingsPage));
+                    break;
+
+                case "Themes":
+                    frame.Navigate(typeof(ThemesSettingsPage));
                     break;
 
                 case "Security":
