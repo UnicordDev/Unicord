@@ -316,7 +316,7 @@ namespace DSharpPlus
 
         public Task ModifyGuildMemberAsync(ulong guild_id, ulong user_id, Optional<string> nick,
             Optional<IEnumerable<ulong>> role_ids, Optional<bool> mute, Optional<bool> deaf,
-            Optional<ulong> voice_channel_id, string reason)
+            Optional<ulong?> voice_channel_id, string reason)
             => ApiClient.ModifyGuildMemberAsync(guild_id, user_id, nick, role_ids, mute, deaf, voice_channel_id, reason);
 
         public async Task ModifyAsync(ulong member_id, ulong guild_id, Action<MemberEditModel> action)
@@ -335,13 +335,13 @@ namespace DSharpPlus
                     mdl.AuditLogReason).ConfigureAwait(false);
                 await ApiClient.ModifyGuildMemberAsync(guild_id, member_id, Optional.FromNoValue<string>(),
                     mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
-                    mdl.VoiceChannel.IfPresent(e => e.Id), mdl.AuditLogReason).ConfigureAwait(false);
+                    mdl.VoiceChannel.IfPresent(e => e?.Id), mdl.AuditLogReason).ConfigureAwait(false);
             }
             else
             {
                 await ApiClient.ModifyGuildMemberAsync(guild_id, member_id, mdl.Nickname,
                     mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
-                    mdl.VoiceChannel.IfPresent(e => e.Id), mdl.AuditLogReason).ConfigureAwait(false);
+                    mdl.VoiceChannel.IfPresent(e => e?.Id), mdl.AuditLogReason).ConfigureAwait(false);
             }
         }
 

@@ -359,15 +359,17 @@ namespace DSharpPlus.Entities
             {
                 await Discord.ApiClient.ModifyCurrentMemberNicknameAsync(Guild.Id, mdl.Nickname.Value,
                     mdl.AuditLogReason).ConfigureAwait(false);
-                await Discord.ApiClient.ModifyGuildMemberAsync(Guild.Id, Id, null,
-                    mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
-                    mdl.VoiceChannel.IfPresent(e => e.Id), mdl.AuditLogReason).ConfigureAwait(false);
+
+                if (mdl.Deafened.HasValue || mdl.Muted.HasValue || mdl.Roles.HasValue || mdl.VoiceChannel.HasValue)
+                    await Discord.ApiClient.ModifyGuildMemberAsync(Guild.Id, Id, null,
+                        mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
+                        mdl.VoiceChannel.IfPresent(e => e?.Id), mdl.AuditLogReason).ConfigureAwait(false);
             }
             else
             {
                 await Discord.ApiClient.ModifyGuildMemberAsync(Guild.Id, Id, mdl.Nickname,
                     mdl.Roles.IfPresent(e => e.Select(xr => xr.Id)), mdl.Muted, mdl.Deafened,
-                    mdl.VoiceChannel.IfPresent(e => e.Id), mdl.AuditLogReason).ConfigureAwait(false);
+                    mdl.VoiceChannel.IfPresent(e => e?.Id), mdl.AuditLogReason).ConfigureAwait(false);
             }
         }
 
@@ -408,7 +410,7 @@ namespace DSharpPlus.Entities
         public Task BanAsync(int delete_message_days = 0, string reason = null)
             => Guild.BanMemberAsync(this, delete_message_days, reason);
 
-        public Task UnbanAsync(string reason = null) 
+        public Task UnbanAsync(string reason = null)
             => Guild.UnbanMemberAsync(this, reason);
 
         /// <summary>

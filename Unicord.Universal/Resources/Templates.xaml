@@ -228,7 +228,8 @@
         <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
-
+        
+        <MenuFlyoutItem Text="Change Nickname" Icon="Rename" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding CurrentMember}"/>
         <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
