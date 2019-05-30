@@ -32,7 +32,6 @@ namespace Unicord.Universal.Controls
     {
         private DiscordEmbed _embed;
         private DiscordChannel _channel;
-        private bool _showThumbnail;
         private bool _mediaPlayerPlaying = false;
         private MediaPlayerElement _mediaPlayer;        
 

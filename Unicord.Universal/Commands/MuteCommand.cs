@@ -10,7 +10,9 @@ namespace Unicord.Universal.Commands
 {
     class MuteCommand : ICommand
     {
+#pragma warning disable 67 // the event <event> is never used
         public event EventHandler CanExecuteChanged;
+#pragma warning restore 67
 
         public bool CanExecute(object parameter)
         {

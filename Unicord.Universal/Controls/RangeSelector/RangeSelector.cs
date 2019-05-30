@@ -589,7 +589,7 @@ namespace Unicord.Universal.Controls
                 return;
             }
 
-            rangeSelector._maxSet = true;
+            rangeSelector._valueSet = true;
 
             if (!rangeSelector._valuesAssigned)
             {

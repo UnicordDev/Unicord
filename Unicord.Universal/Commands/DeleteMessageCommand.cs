@@ -16,8 +16,10 @@ namespace Unicord.Universal.Commands
     {
         public static readonly DeleteMessageCommand Instance
             = new DeleteMessageCommand();
-        
+
+#pragma warning disable 67 // the event <event> is never used
         public event EventHandler CanExecuteChanged;
+#pragma warning restore 67
 
         public bool CanExecute(object parameter)
         {

@@ -59,6 +59,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// </summary>
         public event EventHandler<MarkdownRenderedEventArgs> MarkdownRendered;
 
+#pragma warning disable 67 // Event <event> is never used.
+
         /// <summary>
         /// Fired when a link element in the markdown was tapped.
         /// </summary>
@@ -68,6 +70,8 @@ namespace WamWooWam.Uwp.UI.Controls
         /// Fired when an image element in the markdown was tapped.
         /// </summary>
         public event EventHandler<LinkClickedEventArgs> ImageClicked;
+
+#pragma warning restore 67
 
         /// <summary>
         /// Fired when an image from the markdown document needs to be resolved.
