@@ -23,10 +23,9 @@
                 </MenuFlyout.Items>
             </MenuFlyout>
         </Grid.ContextFlyout>
-        
-        <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
 
-        </ContentControl>
+        <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"/>
+        
         <Grid Padding="10" HorizontalAlignment="Stretch" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -40,6 +39,7 @@
             </StackPanel>
             <Button Grid.Column="2" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
         </Grid>
+        
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>
 
         <Grid x:Name="spoilerOverlay" 
