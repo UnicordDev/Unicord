@@ -125,6 +125,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commands\AcknowledgeCommand.cs" />
+    <Compile Include="Commands\CopyUrlCommand.cs" />
+    <Compile Include="Commands\CopyIdCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
     <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />

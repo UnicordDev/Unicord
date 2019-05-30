@@ -5,33 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace Unicord.Universal.Commands
 {
-    class MuteCommand : ICommand
+    class CopyIdCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is DiscordChannel || parameter is DiscordGuild)
-            {
-                return true;
-            }
-
-            return true;
+            return parameter is SnowflakeObject;
         }
 
         public void Execute(object parameter)
         {
-            if (parameter is DiscordChannel channel)
+            if (parameter is SnowflakeObject snowflake)
             {
-                channel.Muted = !channel.Muted;
-            }
-
-            if (parameter is DiscordGuild guild)
-            {
-                guild.Muted = !guild.Muted;
+                var package = new DataPackage();
+                package.SetText(snowflake.Id.ToString());
+                Clipboard.SetContent(package);
             }
         }
     }

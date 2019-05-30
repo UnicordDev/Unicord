@@ -189,7 +189,7 @@
 
         <MenuFlyoutSeparator/>
 
-        <MenuFlyoutItem Text="Mark as Read">
+        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
             <MenuFlyoutItem.Icon>
                 <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
             </MenuFlyoutItem.Icon>
@@ -204,8 +204,8 @@
         <MenuFlyoutSeparator />
         
         <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
-        <MenuFlyoutItem Text="Copy URL" Icon="Link" />
-        <MenuFlyoutItem Text="Copy ID" Icon="Copy" />
+        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
         
     </MenuFlyout>
 
@@ -219,7 +219,7 @@
 
         <MenuFlyoutSeparator/>
 
-        <MenuFlyoutItem Text="Mark as Read">
+        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
             <MenuFlyoutItem.Icon>
                 <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
             </MenuFlyoutItem.Icon>
@@ -238,8 +238,34 @@
         <MenuFlyoutSeparator />
 
         <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
-        <MenuFlyoutItem Text="Copy URL" Icon="Link" />
-        <MenuFlyoutItem Text="Copy ID" Icon="Copy" />
+        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
+
+    </MenuFlyout>
+
+    <MenuFlyout x:Key="DMChannelMenuFlyout">
+
+        <MenuFlyoutItem IsEnabled="False" Text="{Binding Converter={StaticResource DMNameConverter}}">
+            <MenuFlyoutItem.Icon>
+                <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding Converter={StaticResource DMIconConverter}}"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+
+        <MenuFlyoutSeparator/>
+
+        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
+            <MenuFlyoutItem.Icon>
+                <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
+            </MenuFlyoutItem.Icon>
+        </MenuFlyoutItem>
+        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+
+        <MenuFlyoutSeparator />
+
+        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
+        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
 
     </MenuFlyout>
 
@@ -351,7 +377,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <lib:SwipeControl Margin="-12,0">
+        <lib:SwipeControl Margin="-12,0" ContextFlyout="{StaticResource DMChannelMenuFlyout}">
             <lib:SwipeControl.RightItems>
                 <lib:SwipeItems>
                     <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close" Invoked="SwipeItem_Invoked">

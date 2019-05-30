@@ -386,14 +386,19 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<DiscordMessage> GetMessageAsync(ulong id)
+        public async Task<DiscordMessage> GetMessageAsync(ulong id, bool cacheOnly = false)
         {
             if (Discord.Configuration.MessageCacheSize > 0 && Discord is DiscordClient dc && dc.MessageCache.TryGet(xm => xm.Id == id && xm.ChannelId == Id, out var msg))
             {
                 return msg;
             }
 
-            return await Discord.ApiClient.GetMessageAsync(Id, id).ConfigureAwait(false);
+            if(!cacheOnly)
+            {
+                return await Discord.ApiClient.GetMessageAsync(Id, id).ConfigureAwait(false);
+            }
+
+            return null;
         }
 
         /// <summary>

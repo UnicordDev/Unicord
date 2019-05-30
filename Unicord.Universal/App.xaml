@@ -55,6 +55,9 @@
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>
             <commands:MessageUserCommand x:Key="MessageUserCommand"/>
+            <commands:CopyIdCommand x:Key="CopyIdCommand"/>
+            <commands:CopyUrlCommand x:Key="CopyUrlCommand"/>
+            <commands:AcknowledgeCommand x:Key="AcknowledgeCommand"/>
             
 
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
