@@ -597,14 +597,6 @@
                                 FontSize="18"
                                 Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding ShowSendButton}">
-                                <ToggleButton.Resources>
-                                    <ui:TeachingTip
-                                        x:Name="emoteTip"
-                                        Title="Emoji picker!"
-                                        IsLightDismissEnabled="True"
-                                        Subtitle="You can now pick emoji from all your servers down here!"
-                                        Target="{x:Bind emoteButton}" />
-                                </ToggleButton.Resources>
                             </ToggleButton>
                             <Button
                                 x:Name="sendButton"

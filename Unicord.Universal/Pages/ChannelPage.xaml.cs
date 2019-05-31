@@ -1,13 +1,13 @@
-﻿using System;
+﻿using DSharpPlus.Entities;
+using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using Microsoft.HockeyApp;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
@@ -16,6 +16,7 @@ using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
@@ -93,11 +94,6 @@ namespace Unicord.Universal.Pages
                 var navigation = SystemNavigationManager.GetForCurrentView();
                 navigation.BackRequested += Navigation_BackRequested;
             }
-
-            if (App.StatusBarFill != default)
-            {
-                topGrid.Padding = App.StatusBarFill;
-            }
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -115,6 +111,13 @@ namespace Unicord.Universal.Pages
         {
             if (e.Parameter is DiscordChannel chan)
             {
+                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+                if (coreTitleBar != null)
+                {
+                    coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
+                    topGrid.Padding = new Thickness(0, coreTitleBar.Height, 0, 0);
+                }
+
                 if (_viewModel?.IsEditMode == true)
                 {
                     LeaveEditMode();
@@ -126,7 +129,7 @@ namespace Unicord.Universal.Pages
                 }
 
                 ChannelViewModel model = null;
-                App._currentChannelId = chan.Id;
+                WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 if (_channelHistory.TryGetValue(chan.Id, out var result))
                 {
@@ -159,6 +162,28 @@ namespace Unicord.Universal.Pages
 
                 await Load();
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            if (coreTitleBar != null)
+            {
+                coreTitleBar.LayoutMetricsChanged -= CoreTitleBar_LayoutMetricsChanged;
+            }
+
+            Application.Current.Suspending -= OnSuspending;
+
+            if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
+            {
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested -= Navigation_BackRequested;
+            }
+        }
+
+        private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+        {
+            topGrid.Padding = new Thickness(0, sender.Height, 0, 0);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

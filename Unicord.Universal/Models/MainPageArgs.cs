@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Unicord.Universal.Models
 {
-    internal class MainPageViewModel
+    internal class MainPageArgs
     {
         public ulong ChannelId { get; internal set; }
         public bool IsUriActivation { get; internal set; }

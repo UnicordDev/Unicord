@@ -43,8 +43,6 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
-        internal static ulong _currentChannelId = 0;
-
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
@@ -113,7 +111,7 @@ namespace Unicord.Universal
                         Window.Current.Content = rootFrame;
                     }
 
-                    rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
                     Window.Current.Activate();
                     return;
                 }
@@ -134,7 +132,7 @@ namespace Unicord.Universal
                     var id = await ContactListManager.TryGetChannelIdAsync(task.Contact);
                     if (id != 0)
                     {
-                        rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { UserId = id, FullFrame = true, IsUriActivation = false });
+                        rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, FullFrame = true, IsUriActivation = false });
                     }
                 }
                 catch
@@ -197,7 +195,7 @@ namespace Unicord.Universal
 
             if (args.TryGetValue("channelId", out var id) && ulong.TryParse(id, out var pId))
             {
-                rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { ChannelId = pId, FullFrame = false }, new SuppressNavigationTransitionInfo());
+                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = pId, FullFrame = false }, new SuppressNavigationTransitionInfo());
             }
             else
             {

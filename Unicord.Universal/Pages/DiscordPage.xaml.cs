@@ -42,7 +42,7 @@ namespace Unicord.Universal.Pages
         public new Frame Frame => mainFrame;
         private ObservableCollection<DiscordGuild> _guilds = new ObservableCollection<DiscordGuild>();
         private ObservableCollection<DiscordDmChannel> _unreadDms = new ObservableCollection<DiscordDmChannel>();
-        private MainPageViewModel _args;
+        private MainPageArgs _args;
         private bool _loaded;
         private bool _visibility;
 
@@ -84,7 +84,7 @@ namespace Unicord.Universal.Pages
         {
             UpdateTitleBar();
 
-            if (e.Parameter is MainPageViewModel args)
+            if (e.Parameter is MainPageArgs args)
             {
                 _args = args;
 
@@ -265,7 +265,7 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (App._currentChannelId != e.Channel.Id)
+            if (!WindowManager.VisibleChannels.Contains(e.Channel.Id))
             {
                 if (SharedTools.WillShowToast(e.Message))
                 {
@@ -367,6 +367,9 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                if (await WindowManager.ActivateOtherWindow(channel))
+                    return;
+
                 CloseSplitPane();
 
                 if (channel is DiscordDmChannel dm && !(sidebarFrame.Content is DMChannelsPage))
@@ -409,11 +412,11 @@ namespace Unicord.Universal.Pages
                     Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
                 }
 
-                if (_args?.IsUriActivation == true)
-                {
-                    notification.Content = new UriActivationMessage();
-                    notification.Show(7_000);
-                }
+                //if (_args?.IsUriActivation == true)
+                //{
+                //    notification.Content = new UriActivationMessage();
+                //    notification.Show(7_000);
+                //}
 
                 unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
                 guildsList.SelectionChanged -= GuildsList_SelectionChanged;

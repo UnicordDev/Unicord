@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Media;
@@ -25,12 +26,14 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class DiscordMember : DiscordUser, IEquatable<DiscordMember>, INotifyPropertyChanged
     {
-        internal DiscordMember()
-        {
+        private ThreadLocal<SolidColorBrush> _brush;
 
+        internal DiscordMember() : base()
+        {
+            _brush = new ThreadLocal<SolidColorBrush>();
         }
 
-        internal DiscordMember(DiscordUser user)
+        internal DiscordMember(DiscordUser user) : this()
         {
             Discord = user.Discord;
 
@@ -39,7 +42,7 @@ namespace DSharpPlus.Entities
             _role_ids = new List<ulong>();
         }
 
-        internal DiscordMember(TransportMember mbr)
+        internal DiscordMember(TransportMember mbr) : this()
         {
             Id = mbr.User.Id;
             IsDeafened = mbr.IsDeafened;
@@ -107,23 +110,22 @@ namespace DSharpPlus.Entities
         }
 
 #if WINDOWS_UWP || WINDOWS_WPF
-        private SolidColorBrush _brush;
-
         [JsonIgnore]
         public override SolidColorBrush ColorBrush
         {
             get
             {
-                if (_brush != null)
+                if (_brush.IsValueCreated)
                 {
-                    return _brush;
+                    return _brush.Value;
                 }
 
-                _brush = Color.Value != default(DiscordColor).Value ? new SolidColorBrush(Media.Color.FromArgb(255, Color.R, Color.G, Color.B)) : null;
+                _brush.Value = Color.Value != default(DiscordColor).Value ? new SolidColorBrush(Media.Color.FromArgb(255, Color.R, Color.G, Color.B)) : null;
 #if WINDOWS_WPF
-                _brush?.Freeze();
+                //_brush?.Freeze();
 #endif
-                return _brush;
+
+                return _brush.Value;
             }
         }
 #endif

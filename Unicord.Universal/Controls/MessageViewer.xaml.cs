@@ -1,4 +1,9 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.HockeyApp;
+using NeoSmart.Unicode;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,13 +11,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.HockeyApp;
-using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
@@ -39,7 +40,7 @@ namespace Unicord.Universal.Controls
 
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
 
-        private static DispatcherTimer _timestampTimer;
+        private static ThreadLocal<DispatcherTimer> _timestampTimer;
 
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordMessage _message;
@@ -94,16 +95,23 @@ namespace Unicord.Universal.Controls
 
             if (_timestampTimer == null)
             {
-                _timestampTimer = new DispatcherTimer()
-                {
+                _timestampTimer = new ThreadLocal<DispatcherTimer>(() =>
+                    new DispatcherTimer()
+                    {
 #if DEBUG
-                    Interval = TimeSpan.FromSeconds(10)
+                        Interval = TimeSpan.FromSeconds(10)
 #else
-                    Interval = TimeSpan.FromMinutes(1)
+                        Interval = TimeSpan.FromMinutes(1)
 #endif
-                };
-                _timestampTimer.Start();
+                    });
+
+                _timestampTimer.Value.Start();
             }
+        }
+
+        internal static void CleanupTimer()
+        {
+            _timestampTimer.Value.Stop();
         }
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -225,12 +233,12 @@ namespace Unicord.Universal.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             App.Discord.MessageUpdated += Discord_MessageUpdated;
-            _timestampTimer.Tick += _timestampTimer_Tick;
+            _timestampTimer.Value.Tick += _timestampTimer_Tick;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            _timestampTimer.Tick -= _timestampTimer_Tick;
+            _timestampTimer.Value.Tick -= _timestampTimer_Tick;
             if (App.Discord != null)
             {
                 App.Discord.MessageUpdated -= Discord_MessageUpdated;
