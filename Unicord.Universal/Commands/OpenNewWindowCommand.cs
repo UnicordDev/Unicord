@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Utilities;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.System.Profile;
 
 namespace Unicord.Universal.Commands
 {
@@ -17,7 +20,7 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return (parameter is DiscordChannel);
+            return (parameter is DiscordChannel) && AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
         }
 
         public async void Execute(object parameter)

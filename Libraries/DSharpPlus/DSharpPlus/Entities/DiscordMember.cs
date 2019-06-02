@@ -26,11 +26,15 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class DiscordMember : DiscordUser, IEquatable<DiscordMember>, INotifyPropertyChanged
     {
+#if WINDOWS_UWP || WINDOWS_WPF
         private ThreadLocal<SolidColorBrush> _brush;
+#endif
 
         internal DiscordMember() : base()
         {
+#if WINDOWS_UWP || WINDOWS_WPF
             _brush = new ThreadLocal<SolidColorBrush>();
+#endif
         }
 
         internal DiscordMember(DiscordUser user) : this()
@@ -173,7 +177,7 @@ namespace DSharpPlus.Entities
         public bool IsOwner
             => Id == Guild.OwnerId;
 
-        #region Overriden user properties
+#region Overriden user properties
         [JsonIgnore]
         internal DiscordUser User
             => Discord.UserCache[Id];
@@ -240,7 +244,7 @@ namespace DSharpPlus.Entities
             get => User.Verified;
             internal set => User.Verified = value;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Sends a direct message to this member. Creates a direct message channel if one does not exist already.

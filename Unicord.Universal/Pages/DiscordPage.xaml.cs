@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.VoiceNext;
 using Microsoft.Toolkit.Uwp.UI;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
@@ -98,17 +98,14 @@ namespace Unicord.Universal.Pages
 
         private void UpdateTitleBar()
         {
-            if (App.StatusBarFill != default)
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                if (App.StatusBarFill.Top > 25)
-                {
-                    iconGrid.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    sidebarMainGrid.Padding = App.StatusBarFill;
-                    sidebarSecondaryGrid.Padding = App.StatusBarFill;
-                }
+                WindowManager.HandleTitleBarForGrid(sidebarMainGrid);
+                WindowManager.HandleTitleBarForGrid(sidebarSecondaryGrid);
+            }
+            else
+            {
+                iconGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -536,7 +533,7 @@ namespace Unicord.Universal.Pages
 
         public void OpenCustomPane(Type pageType, object parameter)
         {
-            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
+            CustomOverlayGrid.Visibility = Visibility.Visible;
 
             if (ActualWidth > 768)
             {
@@ -551,7 +548,7 @@ namespace Unicord.Universal.Pages
                 OpenCustomMobileStoryboard.Begin();
             }
 
-            CustomOverlayGrid.Visibility = Visibility.Visible;
+            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
         }
 
         public void CloseCustomPane()

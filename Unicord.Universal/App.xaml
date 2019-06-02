@@ -60,7 +60,13 @@
             <commands:AcknowledgeCommand x:Key="AcknowledgeCommand"/>
             <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand"/>
             <commands:OpenNewWindowCommand x:Key="OpenNewWindowCommand"/>
-            
+
+            <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+            <x:Double x:Key="ContentControlFontSize">14</x:Double>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            </Style>
 
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="Transparent"/>

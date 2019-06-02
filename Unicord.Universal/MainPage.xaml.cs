@@ -1,12 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
@@ -71,49 +72,12 @@ namespace Unicord.Universal
             }
 
             _visibility = Window.Current.Visible;
-            HandleTitleBar();
+
+            WindowManager.HandleTitleBarForWindow(titleBar);
 
             if (_isReady)
             {
                 await Discord_Ready(null);
-            }
-        }
-
-        private void HandleTitleBar()
-        {
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView"))
-            {
-                void UpdateTitleBarLayout(CoreApplicationViewTitleBar bar)
-                {
-                    titleBar.Height = bar.Height;
-                    App.StatusBarFill = new Thickness(0, bar.Height, 0, 0);
-                }
-
-                var baseTitlebar = ApplicationView.GetForCurrentView().TitleBar;
-                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-                coreTitleBar.ExtendViewIntoTitleBar = true;
-                coreTitleBar.LayoutMetricsChanged += (o, ev) => UpdateTitleBarLayout(o);
-                baseTitlebar.ButtonBackgroundColor = Colors.Transparent;
-                baseTitlebar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                titleBar.Visibility = Visibility.Visible;
-
-                UpdateTitleBarLayout(coreTitleBar);
-
-                Window.Current.SetTitleBar(titleBar);
-            }
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                if (statusBar != null)
-                {
-                    statusBar.BackgroundOpacity = 0;
-
-                    App.StatusBarFill = new Thickness(0, 25, 0, 0);
-
-                    var applicationView = ApplicationView.GetForCurrentView();
-                    applicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                }
             }
         }
 
@@ -155,6 +119,13 @@ namespace Unicord.Universal
                 rootFrame.Navigate(typeof(LoginPage));
                 await ClearJumpListAsync();
             }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var pane = InputPane.GetForCurrentView();
+            pane.Showing -= Pane_Showing;
+            pane.Hiding -= Pane_Hiding;
         }
 
         private static async Task ClearJumpListAsync()

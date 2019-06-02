@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -38,7 +39,7 @@ namespace Unicord.Universal.Pages.Management
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            topGrid.Padding = App.StatusBarFill;
+            WindowManager.HandleTitleBarForGrid(topGrid);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)

@@ -111,12 +111,7 @@ namespace Unicord.Universal.Pages
         {
             if (e.Parameter is DiscordChannel chan)
             {
-                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-                if (coreTitleBar != null)
-                {
-                    coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
-                    topGrid.Padding = new Thickness(0, coreTitleBar.Height, 0, 0);
-                }
+                WindowManager.HandleTitleBarForGrid(topGrid);
 
                 if (_viewModel?.IsEditMode == true)
                 {
@@ -166,12 +161,6 @@ namespace Unicord.Universal.Pages
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            if (coreTitleBar != null)
-            {
-                coreTitleBar.LayoutMetricsChanged -= CoreTitleBar_LayoutMetricsChanged;
-            }
-
             Application.Current.Suspending -= OnSuspending;
 
             if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
@@ -181,10 +170,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
-        {
-            topGrid.Padding = new Thickness(0, sender.Height, 0, 0);
-        }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {

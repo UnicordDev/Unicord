@@ -346,7 +346,6 @@
                     <Grid Grid.Row="1">
                         <ListView
                             x:Name="messageList"
-                            w1809:ScrollViewer.CanContentRenderOutsideBounds="True"
                             IncrementalLoadingThreshold="10"
                             ItemTemplate="{StaticResource DefaultMessageTemplate}"
                             ItemsSource="{Binding Messages}"
@@ -370,6 +369,10 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 </Style>
                             </ListView.ItemContainerStyle>
+                            <ListView.ItemContainerTransitions>
+                                <!-- these aniamtions look a little eh? -->
+                                <TransitionCollection/>
+                            </ListView.ItemContainerTransitions>
                         </ListView>
                         <StackPanel
                             x:Name="noMessages"

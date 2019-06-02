@@ -187,7 +187,7 @@ namespace Unicord.Universal.Controls
         private void ImageElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.FindParent<MainPage>()?.ShowAttachmentOverlay(
-                _embed.Thumbnail.ProxyUrl,
+                _embed.Thumbnail.Url,
                 _embed.Thumbnail.Width,
                 _embed.Thumbnail.Height,
                 open_Click,

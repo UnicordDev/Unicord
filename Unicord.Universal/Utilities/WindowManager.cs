@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.UI.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -19,6 +22,11 @@ namespace Unicord.Universal.Utilities
     {
         private static ConcurrentDictionary<CoreWindow, ulong> _windowChannelDictionary
              = new ConcurrentDictionary<CoreWindow, ulong>();
+
+        private static List<FrameworkElement> _handledElements
+             = new List<FrameworkElement>();
+
+        private static ThemeListener _notifier;
 
         public static IEnumerable<ulong> VisibleChannels
             => _windowChannelDictionary.Values;
@@ -97,6 +105,183 @@ namespace Unicord.Universal.Utilities
 
             sender.Consolidated -= ApplicationView_Consolidated;
             _windowChannelDictionary.TryRemove(CoreWindow.GetForCurrentThread(), out _);
+        }
+
+        public static void HandleTitleBarForWindow(FrameworkElement titleBar)
+        {
+            lock (_handledElements)
+            {
+                if (_handledElements.Contains(titleBar))
+                    return;
+
+                var applicationView = ApplicationView.GetForCurrentView();
+                var coreApplicationView = CoreApplication.GetCurrentView();
+
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var statusBar = StatusBar.GetForCurrentView();
+                    if (statusBar != null)
+                    {
+                        statusBar.BackgroundOpacity = 0;
+                        statusBar.ForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
+
+                        if (titleBar != null)
+                        {
+                            titleBar.Height = statusBar.OccludedRect.Height;
+                        }
+
+                        applicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                    }
+                }
+                else
+                {
+                    var coreTitleBar = coreApplicationView.TitleBar;
+                    coreTitleBar.ExtendViewIntoTitleBar = true;
+
+                    var baseTitlebar = applicationView.TitleBar;
+                    baseTitlebar.ButtonBackgroundColor = Colors.Transparent;
+                    baseTitlebar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                    baseTitlebar.ButtonForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
+                    baseTitlebar.ButtonInactiveForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
+
+                    if (titleBar != null)
+                    {
+                        // this method captures "titleBar" meaning the GC might not be able to collect it. 
+                        void UpdateTitleBarLayout(CoreApplicationViewTitleBar sender, object ev)
+                        {
+                            titleBar.Height = sender.Height;
+                        }
+
+                        // i *believe* this handles it? not 100% sure
+                        void ElementUnloaded(object sender, RoutedEventArgs e)
+                        {
+                            coreTitleBar.LayoutMetricsChanged -= UpdateTitleBarLayout;
+                            (sender as FrameworkElement).Unloaded -= ElementUnloaded;
+
+                            lock (_handledElements)
+                            {
+                                _handledElements.Remove(sender as FrameworkElement);
+                            }
+                        }
+
+                        coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
+                        titleBar.Unloaded += ElementUnloaded;
+                        titleBar.Visibility = Visibility.Visible;
+
+                        Window.Current.SetTitleBar(titleBar);
+                    }
+                }
+            }
+        }
+
+        private static void _notifier_ThemeChanged(ThemeListener sender)
+        {
+
+        }
+
+        public static void HandleTitleBarForGrid(Grid element)
+        {
+            lock (_handledElements)
+            {
+                if (_handledElements.Contains(element))
+                    return;
+
+                var applicationView = ApplicationView.GetForCurrentView();
+                var coreApplicationView = CoreApplication.GetCurrentView();
+
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var statusBar = StatusBar.GetForCurrentView();
+                    if (statusBar != null)
+                    {
+                        var rect = statusBar.OccludedRect;
+                        element.Padding = new Thickness(0, rect.Height, 0, 0);
+                    }
+                }
+                else
+                {
+                    var coreTitleBar = coreApplicationView.TitleBar;
+
+                    // this method captures "element" meaning the GC might not be able to collect it. 
+                    void UpdateTitleBarLayout(CoreApplicationViewTitleBar titleBar, object ev)
+                    {
+                        element.Padding = new Thickness(0, titleBar.Height, 0, 0);
+                    }
+
+                    // i *believe* this handles it? not 100% sure
+                    void ElementUnloaded(object sender, RoutedEventArgs e)
+                    {
+                        coreTitleBar.LayoutMetricsChanged -= UpdateTitleBarLayout;
+                        (sender as FrameworkElement).Unloaded -= ElementUnloaded;
+
+                        lock (_handledElements)
+                        {
+                            _handledElements.Remove(sender as FrameworkElement);
+                        }
+                    }
+
+                    coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
+                    element.Unloaded += ElementUnloaded;
+
+                    UpdateTitleBarLayout(coreTitleBar, null);
+                }
+            }
+        }
+
+        // for some reason Grid doesn't inherit from Control???
+        public static void HandleTitleBarForControl(Control element, bool margin = false)
+        {
+            lock (_handledElements)
+            {
+                if (_handledElements.Contains(element))
+                    return;
+
+                var applicationView = ApplicationView.GetForCurrentView();
+                var coreApplicationView = CoreApplication.GetCurrentView();
+
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var statusBar = StatusBar.GetForCurrentView();
+                    if (statusBar != null)
+                    {
+                        var rect = statusBar.OccludedRect;
+                        if (margin)
+                            element.Margin = new Thickness(0, rect.Height, 0, 0);
+                        else
+                            element.Padding = new Thickness(0, rect.Height, 0, 0);
+                    }
+                }
+                else
+                {
+                    var coreTitleBar = coreApplicationView.TitleBar;
+
+                    // this method captures "element" meaning the GC might not be able to collect it. 
+                    void UpdateTitleBarLayout(CoreApplicationViewTitleBar titleBar, object ev)
+                    {
+                        if (margin)
+                            element.Margin = new Thickness(0, titleBar.Height, 0, 0);
+                        else
+                            element.Padding = new Thickness(0, titleBar.Height, 0, 0);
+                    }
+
+                    // i *believe* this handles it? not 100% sure
+                    void ElementUnloaded(object sender, RoutedEventArgs e)
+                    {
+                        coreTitleBar.LayoutMetricsChanged -= UpdateTitleBarLayout;
+                        (sender as FrameworkElement).Unloaded -= ElementUnloaded;
+
+                        lock (_handledElements)
+                        {
+                            _handledElements.Remove(sender as FrameworkElement);
+                        }
+                    }
+
+                    coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
+                    element.Unloaded += ElementUnloaded;
+
+                    UpdateTitleBarLayout(coreTitleBar, null);
+                }
+            }
         }
     }
 }

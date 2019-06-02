@@ -47,8 +47,6 @@ namespace Unicord.Universal
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
-        internal static Thickness StatusBarFill { get; set; }
-
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
         public static Exception ThemeLoadException { get; private set; }
@@ -56,10 +54,17 @@ namespace Unicord.Universal
         public App()
         {
             InitializeComponent();
-
-            var theme = RoamingSettings.Read<ApplicationTheme?>("RequestedTheme", null);
-            if (theme != null)
-                RequestedTheme = theme.Value;
+            
+            var theme = LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            switch (theme)
+            {
+                case ElementTheme.Light:
+                    RequestedTheme = ApplicationTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    RequestedTheme = ApplicationTheme.Dark;
+                    break;
+            }            
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;

@@ -12,7 +12,38 @@
     d:DesignHeight="300" MaxWidth="640" MaxHeight="480"
     d:DesignWidth="400" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
-    <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}">
+    <UserControl.Resources>
+
+        <ExponentialEase
+            x:Key="EaseIn"
+            EasingMode="EaseOut"
+            Exponent="7" />
+        <ExponentialEase
+            x:Key="EaseOut"
+            EasingMode="EaseIn"
+            Exponent="4.5" />
+
+        <Storyboard x:Name="ShowDetails">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="detailsTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.300" />
+        </Storyboard>
+
+        <Storyboard x:Name="HideDetails">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseOut}"
+                Storyboard.TargetName="detailsTransform"
+                Storyboard.TargetProperty="Y"
+                To="-48"
+                Duration="00:00:00.150" />
+        </Storyboard>
+
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>
@@ -25,21 +56,25 @@
         </Grid.ContextFlyout>
 
         <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"/>
-        
-        <Grid Padding="10" HorizontalAlignment="Stretch" x:Name="detailsGrid" x:Load="{x:Bind _loadDetails}">
+
+        <Grid x:Name="detailsGrid" RenderTransformOrigin="0.5,0.5" fc:ColumnSpacing="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="&#xE7C3;" FontSize="24" Padding="8" VerticalAlignment="Top" FontFamily="Segoe MDL2 Assets"/>
-            <StackPanel Grid.Column="1" Margin="0,0,10,0">
-                <TextBlock Text="{x:Bind _attachment.FileName}" VerticalAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="{x:Bind _attachment.FileSize, Converter={StaticResource FileSizeConverter}}" VerticalAlignment="Center"/>
-            </StackPanel>
-            <Button Grid.Column="2" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="detailsTransform" Y="-48"/>
+            </Grid.RenderTransform>
+            <TextBlock Padding="12,0" Text="{Binding FileName}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontWeight="Bold"/>
+            <!--<Button Grid.Column="1" Content="&#xE8C8;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="c"/>-->
+            <Button Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="shareMenuItem_Click"/>
+            <Button Grid.Column="3" Content="&#xE71B;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="CopyUrlItem_Click"/>
+            <Button Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
         </Grid>
-        
+
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>
 
         <Grid x:Name="spoilerOverlay" 

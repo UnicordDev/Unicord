@@ -74,7 +74,7 @@
                         </Grid.ColumnDefinitions>
                         <Slider x:Name="audioBitrateSlider" Header="Audio Bitrate" TickFrequency="32" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="4,20,0,0">
-                        <Run Text="{Binding Value, ElementName=audioBitrateSlider}"/>kbps
+                            <Run Text="{Binding Value, ElementName=audioBitrateSlider}"/>kbps
                         </TextBlock>
                     </Grid>
                 </StackPanel>
