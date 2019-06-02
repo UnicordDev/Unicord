@@ -43,7 +43,7 @@
 
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource SystemControlBackgroundChromeMediumBrush}" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
+    <Grid Name="grid" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>

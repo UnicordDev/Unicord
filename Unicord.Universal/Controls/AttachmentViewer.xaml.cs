@@ -39,9 +39,6 @@ namespace Unicord.Universal.Controls
             _attachment = attachment;
             DataContext = attachment;
             HorizontalAlignment = HorizontalAlignment.Left;
-
-            _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
-            _timer.Tick += _timer_Tick;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -74,6 +71,9 @@ namespace Unicord.Universal.Controls
                 }
 
                 mainGrid.Content = mediaPlayer;
+
+                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
+                _timer.Tick += _timer_Tick;
             }
             else if (_attachment.Height != 0 && _attachment.Width != 0)
             {
@@ -86,6 +86,15 @@ namespace Unicord.Universal.Controls
 
                 imageElement.Tapped += Image_Tapped;
                 mainGrid.Content = imageElement;
+
+                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
+                _timer.Tick += _timer_Tick;
+            }
+            else
+            {
+                detailsTransform.Y = 0;
+                grid.PointerEntered -= Grid_PointerEntered;
+                grid.PointerExited -= Grid_PointerExited;
             }
         }
 
@@ -136,7 +145,6 @@ namespace Unicord.Universal.Controls
             HideDetails.Begin();
             _timer.Stop();
         }
-
 
         private void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
