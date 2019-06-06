@@ -76,6 +76,21 @@ namespace DSharpPlus.Entities
         public string SplashUrl
             => !string.IsNullOrWhiteSpace(SplashHash) ? $"https://cdn.discordapp.com/splashes/{Id.ToString(CultureInfo.InvariantCulture)}/{SplashHash}.jpg" : null;
 
+        [JsonProperty("banner", NullValueHandling = NullValueHandling.Ignore)]
+        public string BannerHash
+        {
+            get => _bannerHash;
+            internal set
+            {
+                OnPropertySet(ref _bannerHash, value);
+                InvokePropertyChanged(nameof(BannerUrl));
+            }
+        }
+
+        [JsonIgnore]
+        public string BannerUrl 
+            => !string.IsNullOrWhiteSpace(BannerHash) ? $"https://cdn.discordapp.com/banners/{Id.ToString(CultureInfo.InvariantCulture)}/{BannerHash}.png?size=256" : null;
+
         /// <summary>
         /// Gets the ID of the guild's owner.
         /// </summary>
@@ -268,6 +283,19 @@ namespace DSharpPlus.Entities
         public int MemberCount { get; internal set; }
 
         /// <summary>
+        /// The Nitro Boost level of this Guild
+        /// </summary>
+        [JsonProperty("premium_tier", NullValueHandling = NullValueHandling.Ignore)]
+        public int PremiumTier { get; internal set; }
+
+        /// <summary>
+        /// The number of people currently boosting this server.
+        /// </summary>
+        [JsonProperty("premium_subscription_count", NullValueHandling = NullValueHandling.Ignore)]
+        public int PremiumSubscriptionCount { get; internal set; }
+
+
+        /// <summary>
         /// Gets a collection of all the voice states for this guilds.
         /// </summary>
         [JsonIgnore]
@@ -299,6 +327,7 @@ namespace DSharpPlus.Entities
         [JsonProperty("channels", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(SnowflakeArrayAsDictionaryJsonConverter))]
         internal ConcurrentDictionary<ulong, DiscordChannel> _channels;
+        private string _bannerHash;
 
         /// <summary>
         /// Gets the guild member for current user.

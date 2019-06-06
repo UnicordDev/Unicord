@@ -327,7 +327,8 @@ namespace Unicord.Universal
                             TokenType = TokenType.User,
                             AutomaticGuildSync = false,
                             LogLevel = DSharpPlus.LogLevel.Debug,
-                            MutedStore = new UnicordMutedStore()
+                            MutedStore = new UnicordMutedStore(),
+                            GatewayCompressionLevel = GatewayCompressionLevel.None
                         }));
 
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);

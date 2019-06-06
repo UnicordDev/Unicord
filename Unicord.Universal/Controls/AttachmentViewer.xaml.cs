@@ -143,7 +143,7 @@ namespace Unicord.Universal.Controls
         private void _timer_Tick(object sender, object e)
         {
             HideDetails.Begin();
-            _timer.Stop();
+            _timer?.Stop();
         }
 
         private void Image_Tapped(object sender, TappedRoutedEventArgs e)
@@ -282,12 +282,12 @@ namespace Unicord.Universal.Controls
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             ShowDetails.Begin();
-            _timer.Stop();
+            _timer?.Stop();
         }
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            _timer.Start();
+            _timer?.Start();
         }
     }
 }

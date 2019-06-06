@@ -2637,6 +2637,9 @@ namespace DSharpPlus
             guild.OwnerId = newGuild.OwnerId;
             guild.VoiceRegionId = newGuild.VoiceRegionId;
             guild.SplashHash = newGuild.SplashHash;
+            guild.BannerHash = newGuild.BannerHash;
+            guild.PremiumTier = newGuild.PremiumTier;
+            guild.PremiumSubscriptionCount = newGuild.PremiumSubscriptionCount;
             guild.VerificationLevel = newGuild.VerificationLevel;
             guild.ExplicitContentFilter = newGuild.ExplicitContentFilter;
 

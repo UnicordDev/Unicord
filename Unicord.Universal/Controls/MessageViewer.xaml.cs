@@ -363,5 +363,15 @@ namespace Unicord.Universal.Controls
         {
             this.FindParent<ChannelPage>().EnterEditMode(Message);
         }
+
+        private void Markdown_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+        {
+            args.Handled = true;
+        }
+
+        private void CopyFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
