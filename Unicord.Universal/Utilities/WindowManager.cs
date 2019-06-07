@@ -1,15 +1,16 @@
-﻿using DSharpPlus.Entities;
-using Microsoft.Toolkit.Uwp.UI.Helpers;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
+using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -27,9 +28,22 @@ namespace Unicord.Universal.Utilities
              = new List<FrameworkElement>();
 
         private static ThemeListener _notifier;
+        private static Window _mainWindow;
 
         public static IEnumerable<ulong> VisibleChannels
             => _windowChannelDictionary.Values;
+
+        public static bool MultipleWindowsSupported =>
+            AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
+
+        public static bool IsMainWindow =>
+            Window.Current == _mainWindow;
+
+        public static void SetMainWindow(Window window)
+        {
+            if (_mainWindow == null)
+                _mainWindow = window;
+        }
 
         internal static void SetChannelForCurrentWindow(ulong id)
         {
@@ -62,6 +76,7 @@ namespace Unicord.Universal.Utilities
                 var window = Window.Current;
 
                 var frame = new Frame();
+                ThemeManager.LoadCurrentTheme(frame.Resources);
 
                 window.Content = frame;
                 window.Activate();
@@ -95,6 +110,10 @@ namespace Unicord.Universal.Utilities
 
         private static void ApplicationView_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
         {
+            // make sure we never accidentally clean up the main view
+            if (Window.Current == _mainWindow)
+                return;
+
             if (Window.Current.Content is Frame f)
             {
                 f.FindChild<MainPage>()?.RootFrame.Navigate(typeof(Page), null);

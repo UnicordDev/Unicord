@@ -87,7 +87,7 @@ namespace Unicord.Universal.Pages.Settings
             {
                 try
                 {
-                    await Themes.InstallFromFileAsync(file);
+                    await ThemeManager.InstallFromFileAsync(file);
                 }
                 catch (Exception ex)
                 {
@@ -103,7 +103,7 @@ namespace Unicord.Universal.Pages.Settings
             var model = DataContext as ThemesSettingsModel;
             if (model.SelectedTheme is Theme theme)
             {
-                await Themes.RemoveThemeAsync(theme.Name);
+                await ThemeManager.RemoveThemeAsync(theme.Name);
                 model.ReloadThemes();
             }
         }

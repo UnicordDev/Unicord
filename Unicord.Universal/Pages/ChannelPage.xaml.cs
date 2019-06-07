@@ -34,6 +34,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
@@ -112,6 +113,7 @@ namespace Unicord.Universal.Pages
             if (e.Parameter is DiscordChannel chan)
             {
                 WindowManager.HandleTitleBarForGrid(topGrid);
+                WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 if (_viewModel?.IsEditMode == true)
                 {
@@ -124,7 +126,6 @@ namespace Unicord.Universal.Pages
                 }
 
                 ChannelViewModel model = null;
-                WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 if (_channelHistory.TryGetValue(chan.Id, out var result))
                 {
@@ -456,8 +457,6 @@ namespace Unicord.Universal.Pages
 
         private async void CaptureButton_Click(object sender, RoutedEventArgs e)
         {
-            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
-
             var softwareBitmap = _videoFrame?.SoftwareBitmap;
             var fileName = $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.jpg";
             var file = await (App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder)
@@ -610,6 +609,7 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        // BUGBUG: this is a mess
         /// <summary>
         /// Lazily initializes the emote picker
         /// </summary>
@@ -865,6 +865,20 @@ namespace Unicord.Universal.Pages
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
+        }
+
+        private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowManager.MultipleWindowsSupported)
+            {
+                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                WindowManager.SetChannelForCurrentWindow(0);
+
+                _viewModel.Dispose();
+                _channelHistory.Remove(_viewModel.Channel.Id);
+
+                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
+            }
         }
     }
 }

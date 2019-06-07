@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,12 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return (parameter is DiscordChannel) && AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
+            return (parameter is DiscordChannel channel) && channel.Type != ChannelType.Voice && WindowManager.MultipleWindowsSupported;
         }
 
         public async void Execute(object parameter)
         {
-            if (parameter is DiscordChannel channel)
+            if (parameter is DiscordChannel channel && channel.Type != ChannelType.Voice)
             {
                 await WindowManager.OpenChannelWindowAsync(channel);
             }

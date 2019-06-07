@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:converters="using:Unicord.Universal.Converters"
-    xmlns:commands="using:Unicord.Universal.Commands">
+    xmlns:commands="using:Unicord.Universal.Commands" RequiresPointerMode="WhenRequested">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>

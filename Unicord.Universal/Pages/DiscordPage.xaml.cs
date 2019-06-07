@@ -1,15 +1,15 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.VoiceNext;
-using Microsoft.Toolkit.Uwp.UI;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.VoiceNext;
+using Microsoft.Toolkit.Uwp.UI;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
@@ -56,22 +56,6 @@ namespace Unicord.Universal.Pages
             _visibility = Window.Current.Visible;
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
-            {
-                //this.AddAccelerator(VirtualKey.Up, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerUp_Invoked);
-                //this.AddAccelerator(VirtualKey.Down, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerDown_Invoked);
-            }
-        }
-
-        private void MoveServerUp_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex - 1, _guilds.Count));
-        }
-
-        private void MoveServerDown_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex + 1, _guilds.Count));
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -158,10 +142,10 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
-                if (App.ThemeLoadException != null)
-                {
-                    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
-                }
+                //if (App.ThemeLoadException != null)
+                //{
+                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
+                //}
 
                 if (_args != null)
                 {
@@ -322,7 +306,7 @@ namespace Unicord.Universal.Pages
                 notification.Margin = new Thickness(0, 20, 4, 0);
             }
 
-            notification.Content = new MessageViewer() { Message = message, IsEnabled = false, Background = new SolidColorBrush(Colors.Transparent) };
+            notification.Content = message;
             notification.Show(7_000);
         }
 
@@ -364,24 +348,41 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                CloseSplitPane();
+
+                unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
+                guildsList.SelectionChanged -= GuildsList_SelectionChanged;
+
+                guildsList.SelectedIndex = -1;
+                unreadDms.SelectedIndex = -1;
+                friendsItem.IsSelected = false;
+
+                if (channel == null)
+                {
+                    friendsItem.IsSelected = true;
+                    sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                    Frame.Navigate(typeof(FriendsPage));
+
+                    return;
+                }
+
                 if (await WindowManager.ActivateOtherWindow(channel))
                     return;
 
-                CloseSplitPane();
-
-                if (channel is DiscordDmChannel dm && !(sidebarFrame.Content is DMChannelsPage))
+                if (channel is DiscordDmChannel dm)
                 {
-                    guildsList.SelectedIndex = -1;
                     unreadDms.SelectedItem = dm;
                     friendsItem.IsSelected = true;
-                    sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+
+                    if (!(sidebarFrame.Content is DMChannelsPage))
+                        sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
-                else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
+                else if (channel.Guild != null)
                 {
-                    friendsItem.IsSelected = false;
-                    unreadDms.SelectedIndex = -1;
                     guildsList.SelectedItem = channel.Guild;
-                    sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
+
+                    if ((!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
+                        sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
                 }
 
                 if (channel.Type == ChannelType.Voice)
@@ -408,22 +409,12 @@ namespace Unicord.Universal.Pages
                 {
                     Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
                 }
-
-                //if (_args?.IsUriActivation == true)
-                //{
-                //    notification.Content = new UriActivationMessage();
-                //    notification.Show(7_000);
-                //}
-
-                unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
-                guildsList.SelectionChanged -= GuildsList_SelectionChanged;
             }
             finally
             {
                 unreadDms.SelectionChanged += UnreadDms_SelectionChanged;
                 guildsList.SelectionChanged += GuildsList_SelectionChanged;
             }
-
         }
 
         private void mainFrame_Navigated(object sender, NavigationEventArgs e)
@@ -574,6 +565,6 @@ namespace Unicord.Universal.Pages
         private void OpenSettingsStoryboard_Completed(object sender, object e)
         {
 
-        }
+        }        
     }
 }

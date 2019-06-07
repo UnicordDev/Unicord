@@ -326,6 +326,9 @@ namespace Unicord.Universal.Models
             }
         }
 
+        public bool ShowPopoutButton
+            => WindowManager.IsMainWindow;
+
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
             await _loadSemaphore.WaitAsync();

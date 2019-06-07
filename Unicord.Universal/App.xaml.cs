@@ -49,7 +49,6 @@ namespace Unicord.Universal
         internal static DiscordClient Discord { get; set; }
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
-        public static Exception ThemeLoadException { get; private set; }
 
         public App()
         {
@@ -84,7 +83,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            LoadThemes();
+            ThemeManager.LoadCurrentTheme(Resources);
 
             switch (e)
             {
@@ -166,8 +165,8 @@ namespace Unicord.Universal
         private void OnLaunched(bool preLaunch, string arguments)
         {
             Analytics.TrackEvent("Launch");
-
-            LoadThemes();
+            WindowManager.SetMainWindow(Window.Current);
+            ThemeManager.LoadCurrentTheme(Resources);
 
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
@@ -213,25 +212,6 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
-        }
-
-        private void LoadThemes()
-        {
-            var theme = LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
-            if (!theme.IsDefault)
-            {
-                try
-                {
-                    Themes.Load(theme, Resources);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    ThemeLoadException = ex;
-                }
-            }
-
-            Resources.MergedDictionaries.Insert(0, new XamlControlsResources());
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)

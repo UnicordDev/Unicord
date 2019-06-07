@@ -278,6 +278,13 @@
                                     Visibility="{Binding ShowEditButton}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
+                                <Button
+                                    x:Name="newWindowButton"
+                                    Content="&#xE78B;"
+                                    Click="NewWindowButton_Click"
+                                    Style="{ThemeResource IconButtonStyle}"
+                                    Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
+                                    ToolTipService.ToolTip="Open in a New Window" />
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"

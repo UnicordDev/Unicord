@@ -499,14 +499,20 @@
                         Padding="16"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
-                        AnimationDuration="00:00:00.1000000"
+                        AnimationDuration="00:00:00.10"
                         Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}"
                         BorderThickness="1"
                         FontSize="{ThemeResource ContentControlFontSize}"
                         ShowDismissButton="True"
                         StackMode="StackInFront"
                         Tapped="Notification_Tapped"
-                        VerticalOffset="-100" />
+                        VerticalOffset="-100">
+                        <controls1:InAppNotification.ContentTemplate>
+                            <DataTemplate>
+                                <controls:MessageViewer Message="{Binding}" Background="Transparent" IsEnabled="False"/>
+                            </DataTemplate>
+                        </controls1:InAppNotification.ContentTemplate>
+                    </controls1:InAppNotification>
                 </Grid>
             </Grid>
         </Grid>

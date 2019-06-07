@@ -25,8 +25,30 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal
 {
-    internal static class Themes
+    internal static class ThemeManager
     {
+        public static void LoadCurrentTheme(ResourceDictionary dictionary)
+        {
+            var theme = App.LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
+            if (!theme.IsDefault)
+            {
+                try
+                {
+                    Load(theme, dictionary);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // TODO: this is bad
+                    //App.ThemeLoadException = ex;
+                }
+            }
+            else
+            {
+                dictionary.MergedDictionaries.Insert(0, new XamlControlsResources());
+            }
+        }
+
         public static void Load(Theme selectedTheme, ResourceDictionary target)
         {
             // this code must be synchronous to prevent any race conditions that may occur when 
