@@ -137,7 +137,7 @@ namespace Unicord.Universal.Controls
             //mediaPlayer?.meda.Pause();
 
             mainGrid.Content = null;
-            _timer.Stop();
+            _timer?.Stop();
         }
 
         private void _timer_Tick(object sender, object e)

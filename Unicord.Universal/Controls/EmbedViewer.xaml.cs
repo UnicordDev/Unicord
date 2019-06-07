@@ -96,7 +96,8 @@ namespace Unicord.Universal.Controls
             if (_embed.Color.HasValue)
             {
                 var col = _embed.Color.Value;
-                BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
+                Border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
+                Border.BorderThickness = new Thickness(4, 0, 0, 0);
             }
 
             if (_embed.Image != null)

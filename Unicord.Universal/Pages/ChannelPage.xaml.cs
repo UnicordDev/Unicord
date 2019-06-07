@@ -82,6 +82,7 @@ namespace Unicord.Universal.Pages
                 userListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
                 uploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
                 searchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
+                newWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
             }
 
             uploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
@@ -871,13 +872,12 @@ namespace Unicord.Universal.Pages
         {
             if (WindowManager.MultipleWindowsSupported)
             {
-                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
                 WindowManager.SetChannelForCurrentWindow(0);
+                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
 
+                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel.Channel.Id);
-
-                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
             }
         }
     }

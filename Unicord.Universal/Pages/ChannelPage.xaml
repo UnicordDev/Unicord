@@ -283,6 +283,7 @@
                                     Content="&#xE78B;"
                                     Click="NewWindowButton_Click"
                                     Style="{ThemeResource IconButtonStyle}"
+                                    IsEnabled="{Binding ShowPopoutButton}"
                                     Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
                                     ToolTipService.ToolTip="Open in a New Window" />
                                 <ToggleButton

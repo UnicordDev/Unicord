@@ -10,11 +10,14 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
-    mc:Ignorable="d" MaxWidth="550">
+    x:DefaultBindMode="OneWay" mc:Ignorable="d" MaxWidth="550">
 
     <controls1:DropShadowPanel VerticalAlignment="Center">
         <StackPanel>
-            <Grid Padding="20" RequestedTheme="Dark" Background="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}">
+            <Grid Padding="20" RequestedTheme="Dark">
+                <Grid.Background>
+                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark2}" />
+                </Grid.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -22,11 +25,26 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Ellipse x:Name="ellipse" Width="96" Height="96">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{x:Bind User.AvatarUrl}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
+                    <Canvas Width="96" Height="96">
+                        <Ellipse x:Name="ellipse" Width="96" Height="96">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{x:Bind User.AvatarUrl}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Ellipse
+                            Canvas.Left="70"
+                            Canvas.Top="70"
+                            Width="28"
+                            Height="28"
+                            StrokeThickness="4">
+                            <Ellipse.Stroke>
+                                <SolidColorBrush Color="{ThemeResource SystemAccentColorDark2}" />
+                            </Ellipse.Stroke>
+                            <Ellipse.Fill>
+                                <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Canvas>
                     <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
                         <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
@@ -49,7 +67,10 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
+            <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" >
+                <Grid.Background>
+                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark1}" />
+                </Grid.Background>
                 <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
             </Grid>
             <Grid Height="205" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
