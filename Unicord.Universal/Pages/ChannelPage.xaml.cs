@@ -1,13 +1,13 @@
-﻿using DSharpPlus.Entities;
-using Microsoft.HockeyApp;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
@@ -61,13 +61,15 @@ namespace Unicord.Universal.Pages
         private bool _scrollHandlerAdded;
         private VideoFrame _videoFrame;
         private string _error;
+        private ApplicationView _applicationView;
+        private DispatcherTimer _titleBarTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ChannelPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Required;
+            NavigationCacheMode = NavigationCacheMode.Enabled;
 
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
             {
@@ -184,6 +186,23 @@ namespace Unicord.Universal.Pages
 
                 _scrollHandlerAdded = true;
             }
+
+            _applicationView = ApplicationView.GetForCurrentView();
+            _titleBarTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            _titleBarTimer.Tick += _titleBarTimer_Tick;
+
+            PointerEntered += ChannelPage_PointerEntered;
+            PointerExited += ChannelPage_PointerExited;
+
+            if (_applicationView.ViewMode != ApplicationViewMode.CompactOverlay)
+            {
+                BeginShowTitleBar();
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _titleBarTimer?.Stop();
         }
 
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
@@ -378,6 +397,44 @@ namespace Unicord.Universal.Pages
             }
 
             uploadProgress.Visibility = Visibility.Collapsed;
+        }
+
+        private void ChannelPage_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (_applicationView.ViewMode == ApplicationViewMode.CompactOverlay)
+            {
+                BeginShowTitleBar();
+            }
+        }
+
+        private void ChannelPage_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (_applicationView.ViewMode == ApplicationViewMode.CompactOverlay)
+            {
+                _titleBarTimer?.Start();
+            }
+        }
+
+        private void _titleBarTimer_Tick(object sender, object e)
+        {
+            BeginHideTitleBar();
+        }
+
+        private void BeginShowTitleBar()
+        {
+            topGrid.Visibility = Visibility.Visible;
+            footerGrid.Visibility = Visibility.Visible;
+            _titleBarTimer?.Stop();
+
+            HideTitleBar.Stop();
+            ShowTitleBar.Begin();
+        }
+
+        private void BeginHideTitleBar()
+        {
+            ShowTitleBar.Stop();
+            HideTitleBarAnimation.To = -topGrid.RenderSize.Height;
+            HideTitleBar.Begin();
         }
 
         private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -879,6 +936,25 @@ namespace Unicord.Universal.Pages
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel.Channel.Id);
             }
+        }
+
+        private async void NewCompactWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowManager.MultipleWindowsSupported)
+            {
+                WindowManager.SetChannelForCurrentWindow(0);
+                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
+
+                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                _viewModel.Dispose();
+                _channelHistory.Remove(_viewModel.Channel.Id);
+            }
+        }
+
+        private void HideTitleBar_Completed(object sender, object e)
+        {
+            topGrid.Visibility = Visibility.Collapsed;
+            footerGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

@@ -12,7 +12,7 @@
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
-    Loaded="Page_Loaded"
+    Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -82,6 +82,37 @@
                 Duration="00:00:00.33" />
         </Storyboard>
 
+        <Storyboard x:Key="ShowTitleBar" x:Name="ShowTitleBar">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="TopGridTransform"
+                Storyboard.TargetProperty="Y"
+                Duration="00:00:00.15"
+                To="0" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="BottomGridTransform"
+                Storyboard.TargetProperty="Y"
+                Duration="00:00:00.15" 
+                To="0" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideTitleBar" x:Name="HideTitleBar" Completed="HideTitleBar_Completed">
+            <DoubleAnimation
+                x:Name="HideTitleBarAnimation"
+                EasingFunction="{StaticResource EaseOut}"
+                Storyboard.TargetName="TopGridTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.33" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="BottomGridTransform"
+                Storyboard.TargetProperty="Y"
+                To="50"
+                Duration="00:00:00.33" />
+        </Storyboard>
+        
         <Storyboard x:Key="ShowEditControls" x:Name="ShowEditControls">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseMovement}"
@@ -172,19 +203,63 @@
                 </controls:DropShadowPanel.RenderTransform>
                 <Grid Background="{ThemeResource MainBackgroundBrush}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-
-                    <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    
+                    <Grid Grid.Row="0">
+                        <ListView
+                            x:Name="messageList"
+                            IncrementalLoadingThreshold="10"
+                            ItemTemplate="{StaticResource DefaultMessageTemplate}"
+                            ItemsSource="{Binding Messages}"
+                            ReorderMode="Disabled"
+                            SelectionChanged="MessageList_SelectionChanged"
+                            SelectionMode="None">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsStackPanel
+                                        Margin="0,8"
+                                        VerticalAlignment="Bottom"
+                                        ItemsUpdatingScrollMode="KeepLastItemInView" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemContainerTransitions>
+                                <!-- these aniamtions look a little eh? -->
+                                <TransitionCollection/>
+                            </ListView.ItemContainerTransitions>
+                        </ListView>
+                        <StackPanel
+                            x:Name="noMessages"
+                            Margin="16"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="Collapsed">
+                            <TextBlock FontSize="110" Text=":(" />
+                            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
+                            <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <Grid x:Name="topGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="TopGridTransform" />
+                        </Grid.RenderTransform>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -278,14 +353,21 @@
                                     Visibility="{Binding ShowEditButton}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
-                                <Button
+                                <ui:DropDownButton
                                     x:Name="newWindowButton"
                                     Content="&#xE78B;"
-                                    Click="NewWindowButton_Click"
                                     Style="{ThemeResource IconButtonStyle}"
                                     IsEnabled="{Binding ShowPopoutButton}"
                                     Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
-                                    ToolTipService.ToolTip="Open in a New Window" />
+                                    ToolTipService.ToolTip="Open in a New Window">
+                                    <ui:DropDownButton.Flyout>
+                                        <ui:MenuBarItemFlyout>
+                                            <MenuFlyoutItem Icon="Add" Text="Normal Window" Click="NewWindowButton_Click" />
+                                            <MenuFlyoutItem Icon="BackToWindow" Text="Overlay Window" Click="NewCompactWindowButton_Click" />
+                                        </ui:MenuBarItemFlyout>
+                                    </ui:DropDownButton.Flyout>
+                                </ui:DropDownButton>
+
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
@@ -352,49 +434,6 @@
                     </Grid>
 
                     <Grid Grid.Row="1">
-                        <ListView
-                            x:Name="messageList"
-                            IncrementalLoadingThreshold="10"
-                            ItemTemplate="{StaticResource DefaultMessageTemplate}"
-                            ItemsSource="{Binding Messages}"
-                            ReorderMode="Disabled"
-                            SelectionChanged="MessageList_SelectionChanged"
-                            SelectionMode="None">
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsStackPanel
-                                        Margin="0,0,0,8"
-                                        VerticalAlignment="Bottom"
-                                        ItemsUpdatingScrollMode="KeepLastItemInView" />
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Padding" Value="0" />
-                                    <Setter Property="Margin" Value="0" />
-                                    <Setter Property="MinHeight" Value="0" />
-                                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemContainerTransitions>
-                                <!-- these aniamtions look a little eh? -->
-                                <TransitionCollection/>
-                            </ListView.ItemContainerTransitions>
-                        </ListView>
-                        <StackPanel
-                            x:Name="noMessages"
-                            Margin="16"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Visibility="Collapsed">
-                            <TextBlock FontSize="110" Text=":(" />
-                            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
-                            <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
-                        </StackPanel>
-                    </Grid>
-
-                    <Grid Grid.Row="2">
                         <controls1:UploadItemsControl
                             x:Name="uploadItems"
                             Height="150"
@@ -526,7 +565,7 @@
 
                     <Grid
                         x:Name="footerGrid"
-                        Grid.Row="4"
+                        Grid.Row="2"
                         Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -535,6 +574,9 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="BottomGridTransform"/>
+                        </Grid.RenderTransform>
 
                         <ItemsControl
                             Grid.Row="1"

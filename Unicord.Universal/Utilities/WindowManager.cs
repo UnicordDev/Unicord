@@ -63,7 +63,7 @@ namespace Unicord.Universal.Utilities
             return false;
         }
 
-        public static async Task OpenChannelWindowAsync(DiscordChannel channel)
+        public static async Task OpenChannelWindowAsync(DiscordChannel channel, ApplicationViewMode mode = ApplicationViewMode.Default)
         {
             if (await ActivateOtherWindow(channel))
                 return;
@@ -90,14 +90,17 @@ namespace Unicord.Universal.Utilities
                 {
                     if (sender.Id == viewId)
                     {
-                        if (window.Content is Frame f)
-                        {
-                            f.FindChild<MainPage>()?.RootFrame.Navigate(typeof(Page), null);
-                            f.Navigate(typeof(Page), null);
-                        }
+                        if (args.IsAppInitiated)
+                            return;
+
+                        // make sure we never accidentally clean up the main view
+                        if (Window.Current == _mainWindow)
+                            return;
+
+                        MessageViewer.CleanupTimer();
 
                         sender.Consolidated -= OnConsolidated;
-                        _windowChannelDictionary.TryRemove(coreWindow, out _);
+                        _windowChannelDictionary.TryRemove(CoreWindow.GetForCurrentThread(), out _);
                     }
                 }
 
@@ -105,25 +108,7 @@ namespace Unicord.Universal.Utilities
             });
 
             //var prefs = ViewModePreferences.CreateDefault(ApplicationViewMode.Default);
-            await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, ApplicationViewMode.Default);
-        }
-
-        private static void ApplicationView_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
-        {
-            // make sure we never accidentally clean up the main view
-            if (Window.Current == _mainWindow)
-                return;
-
-            if (Window.Current.Content is Frame f)
-            {
-                f.FindChild<MainPage>()?.RootFrame.Navigate(typeof(Page), null);
-                f.Navigate(typeof(Page), null);
-            }
-
-            MessageViewer.CleanupTimer();
-
-            sender.Consolidated -= ApplicationView_Consolidated;
-            _windowChannelDictionary.TryRemove(CoreWindow.GetForCurrentThread(), out _);
+            await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
         }
 
         public static void HandleTitleBarForWindow(FrameworkElement titleBar)
