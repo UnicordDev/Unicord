@@ -203,6 +203,8 @@ namespace Unicord.Universal.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             _titleBarTimer?.Stop();
+            PointerEntered -= ChannelPage_PointerEntered;
+            PointerExited -= ChannelPage_PointerExited;
         }
 
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
