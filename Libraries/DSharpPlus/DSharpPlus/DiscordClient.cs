@@ -395,30 +395,28 @@ namespace DSharpPlus
 
             Volatile.Write(ref _skippedHeartbeats, 0);
 
-            var webSocketClient = Configuration.WebSocketClientFactory(Configuration.Proxy);
+            if(_webSocketClient != null)
+            {
+                _webSocketClient.Dispose();
+            }
+
+            var webSocketClient = new WebSocketClient(Configuration.Proxy);
+
+            webSocketClient.Connected += SocketOnConnect;
+            webSocketClient.Disconnected += SocketOnDisconnect;
+            webSocketClient.MessageRecieved += SocketOnMessage;
+            webSocketClient.Errored += SocketOnError;
+            _webSocketClient = webSocketClient;
 
             _cancelTokenSource = new CancellationTokenSource();
             _cancelToken = _cancelTokenSource.Token;
-
-            SwapWebSocketClient(webSocketClient);
 
             var gwuri = new UriBuilder(_gatewayUri)
             {
                 Query = Configuration.GatewayCompressionLevel == GatewayCompressionLevel.Stream ? "v=6&encoding=json&compress=zlib-stream" : "v=6&encoding=json"
             };
 
-            await _webSocketClient.ConnectAsync(gwuri.Uri).ConfigureAwait(false);
-        }
-
-
-        private void SwapWebSocketClient(BaseWebSocketClient newSocketClient)
-        {
-            newSocketClient.Connected += SocketOnConnect;
-            newSocketClient.Disconnected += SocketOnDisconnect;
-            newSocketClient.MessageRecieved += SocketOnMessage;
-            newSocketClient.Errored += SocketOnError;
-
-            _webSocketClient = newSocketClient;
+            await webSocketClient.ConnectAsync(gwuri.Uri).ConfigureAwait(false);
         }
 
         private SocketLock GetSocketLock()
@@ -468,6 +466,7 @@ namespace DSharpPlus
             if (_webSocketClient != null)
             {
                 await _webSocketClient.DisconnectAsync(null).ConfigureAwait(false);
+                _webSocketClient.Dispose();
             }
         }
 
@@ -2637,11 +2636,13 @@ namespace DSharpPlus
             guild.OwnerId = newGuild.OwnerId;
             guild.VoiceRegionId = newGuild.VoiceRegionId;
             guild.SplashHash = newGuild.SplashHash;
-            guild.BannerHash = newGuild.BannerHash;
-            guild.PremiumTier = newGuild.PremiumTier;
-            guild.PremiumSubscriptionCount = newGuild.PremiumSubscriptionCount;
             guild.VerificationLevel = newGuild.VerificationLevel;
             guild.ExplicitContentFilter = newGuild.ExplicitContentFilter;
+            guild.PremiumTier = newGuild.PremiumTier;
+            guild.PremiumSubscriptionCount = newGuild.PremiumSubscriptionCount;
+            guild.BannerHash = newGuild.BannerHash;
+            guild.Description = newGuild.Description;
+            guild.VanityUrlCode = newGuild.VanityUrlCode;
 
             // fields not sent for update:
             // - guild.Channels

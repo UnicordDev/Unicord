@@ -283,15 +283,27 @@ namespace DSharpPlus.Entities
         public int MemberCount { get; internal set; }
 
         /// <summary>
-        /// The Nitro Boost level of this Guild
+        /// Gets vanity URL code for this guild, when applicable.
         /// </summary>
-        [JsonProperty("premium_tier", NullValueHandling = NullValueHandling.Ignore)]
-        public int PremiumTier { get; internal set; }
+        [JsonProperty("vanity_url_code")]
+        public string VanityUrlCode { get; internal set; }
 
         /// <summary>
-        /// The number of people currently boosting this server.
+        /// Gets guild description, when applicable.
         /// </summary>
-        [JsonProperty("premium_subscription_count", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("description")]
+        public string Description { get; internal set; }
+
+        /// <summary>
+        /// Gets this guild's premium tier (Nitro boosting).
+        /// </summary>
+        [JsonProperty("premium_tier")]
+        public PremiumTier PremiumTier { get; internal set; }
+
+        /// <summary>
+        /// Gets the amount of members that boosted this guild.
+        /// </summary>
+        [JsonProperty("premium_subscription_count")]
         public int PremiumSubscriptionCount { get; internal set; }
 
 
