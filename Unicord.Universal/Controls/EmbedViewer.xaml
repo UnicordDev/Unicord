@@ -19,110 +19,111 @@
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
 
-    <Grid Padding="12" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <Border x:Name="Border">
+        <Grid Padding="12" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Grid
+                <Grid
                 x:Name="author"
                 Margin="0,0,0,4"
                 x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}"
                 DataContext="{x:Bind _embed.Author}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Ellipse
+                    <Ellipse
                     Width="20"
                     Height="20"
                     Margin="0,0,12,0"
                     Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
-                    <Ellipse.Fill>
-                        <ImageBrush>
-                            <ImageBrush.ImageSource>
-                                <BitmapImage
+                        <Ellipse.Fill>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage
                                     DecodePixelHeight="20"
                                     DecodePixelWidth="20"
                                     UriSource="{Binding ProxyIconUrl}" />
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
                     <Run Text="{Binding Name}" />
-                </TextBlock>
-            </Grid>
+                    </TextBlock>
+                </Grid>
 
-            <wam:MarkdownTextBlock
+                <wam:MarkdownTextBlock
                 x:Name="title"
                 Grid.Row="1"
                 x:Load="{x:Bind _embed.Title, Converter={StaticResource BoolConverter}}"
                 FontWeight="Bold"
                 Text="{Binding Title}" />
-            <wam:MarkdownTextBlock
+                <wam:MarkdownTextBlock
                 x:Name="description"
                 Grid.Row="2"
                 x:Load="{x:Bind _embed.Description, Converter={StaticResource BoolConverter}}"
                 Text="{Binding Description}"
                 TextWrapping="Wrap" />
 
-            <Grid
+                <Grid
                 x:Name="fieldsGrid"
                 Grid.Row="3"
                 Margin="0,10" />
 
-            <Grid x:Name="mainGrid" Grid.Row="4" />
+                <Grid x:Name="mainGrid" Grid.Row="4" />
 
-            <Grid
+                <Grid
                 x:Name="footer"
                 Grid.Row="5"
                 Margin="0,4,0,0"
                 x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}"
                 DataContext="{x:Bind _embed.Footer}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Rectangle
+                    <Rectangle
                     Width="20"
                     Height="20"
                     Margin="0,0,12,0"
                     RadiusX="2"
                     RadiusY="2"
                     Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
-                    <Rectangle.Fill>
-                        <ImageBrush>
-                            <ImageBrush.ImageSource>
-                                <BitmapImage
+                        <Rectangle.Fill>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage
                                     DecodePixelHeight="20"
                                     DecodePixelWidth="20"
                                     UriSource="{Binding ProxyIconUrl}" />
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
                     <Run FontSize="12pt" Text="{Binding Text, Mode=OneWay}" />
-                </TextBlock>
+                    </TextBlock>
+                </Grid>
             </Grid>
-        </Grid>
 
-        <Grid Grid.Column="1">
-            <Image
+            <Grid Grid.Column="1">
+                <Image
                 x:Name="thumbnail"
                 Width="96"
                 Height="96"
@@ -131,6 +132,7 @@
                 ImageFailed="Thumbnail_ImageFailed"
                 Source="{Binding Thumbnail.Url}"
                 Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" />
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </UserControl>

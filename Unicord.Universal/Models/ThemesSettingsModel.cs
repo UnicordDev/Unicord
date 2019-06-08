@@ -1,9 +1,9 @@
-﻿using System;
+﻿using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Models
@@ -49,5 +49,15 @@ namespace Unicord.Universal.Models
         }
 
         public Visibility CanRemove => (SelectedTheme as Theme).IsDefault ? Visibility.Collapsed : Visibility.Visible;
+
+        public int ColourScheme
+        {
+            get => (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            set
+            {
+                App.LocalSettings.Save("RequestedTheme", (ElementTheme)value);
+                InvokePropertyChanged(nameof(ColourScheme));
+            }
+        }
     }
 }

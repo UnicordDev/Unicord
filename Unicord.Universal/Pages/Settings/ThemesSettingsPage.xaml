@@ -110,7 +110,7 @@
                         <Grid Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}">
                             <StackPanel Margin="0,6" HorizontalAlignment="Center">
                                 <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Rectangle Margin="2,2" Height="2" Stroke="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                <Rectangle Margin="2,2" Height="2" Stroke="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                 <Grid>
                                     <Ellipse Style="{ThemeResource PreviewEllipse}"/>
                                     <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
@@ -181,19 +181,21 @@
                 </controls:DropShadowPanel>
 
                 <StackPanel Grid.Row="2" Margin="0,8,0,4">
-                    <TextBlock Text="Colour Scheme" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                    <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,4">
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Colour Scheme" Margin="0,4"/>
+                    <ComboBox SelectedIndex="{Binding ColourScheme, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="0,4">
                         <ComboBoxItem Content="System Default"/>
-                        <ComboBoxItem Content="Dark"/>
                         <ComboBoxItem Content="Light"/>
+                        <ComboBoxItem Content="Dark"/>
                     </ComboBox>
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="This setting won't be synced with Discord"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Margin="0,4,0,4">
-                    <TextBlock Text="Main Theme" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Main Theme" Margin="0,4"/>
                     <!-- links TBD -->
-                    <TextBlock TextWrapping="WrapWholeWords">Wanna spice things up? You can <Hyperlink>download some themes</Hyperlink> or learn how to <Hyperlink>make your own</Hyperlink>!</TextBlock>
+                    <TextBlock TextWrapping="WrapWholeWords">
+                        Wanna spice things up? You can <Hyperlink>download some themes</Hyperlink> or learn how to <Hyperlink>make your own</Hyperlink>!
+                    </TextBlock>
                     <Grid Margin="0,4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

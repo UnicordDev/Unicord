@@ -25,8 +25,30 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal
 {
-    internal static class Themes
+    internal static class ThemeManager
     {
+        public static void LoadCurrentTheme(ResourceDictionary dictionary)
+        {
+            var theme = App.LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
+            if (!theme.IsDefault)
+            {
+                try
+                {
+                    Load(theme, dictionary);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // TODO: this is bad
+                    //App.ThemeLoadException = ex;
+                }
+            }
+            else
+            {
+                dictionary.MergedDictionaries.Insert(0, new XamlControlsResources());
+            }
+        }
+
         public static void Load(Theme selectedTheme, ResourceDictionary target)
         {
             // this code must be synchronous to prevent any race conditions that may occur when 
@@ -38,39 +60,45 @@ namespace Unicord.Universal
             // because synchronous I/O is not allowed on the UI thread, and this code must assume
             // it's running on the UI thread, because otherwise it would be asynchronous... bleh
 
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var themesFolderPath = Path.Combine(localFolder.Path, "Themes");
-
-            if (!Directory.Exists(themesFolderPath))
-                Directory.CreateDirectory(themesFolderPath);
-
-            var themePath = Path.Combine(themesFolderPath, selectedTheme.Name);
-            if (!Directory.Exists(themePath))
+            try
             {
-                var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
-                installedThemes.Remove(selectedTheme.Name);
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var themesFolderPath = Path.Combine(localFolder.Path, "Themes");
 
-                App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
-                App.LocalSettings.Save("SelectedTheme", Theme.Default);
-                throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
-            }
+                if (!Directory.Exists(themesFolderPath))
+                    Directory.CreateDirectory(themesFolderPath);
 
-            foreach (var file in Directory.EnumerateFiles(themePath, "*.xaml"))
-            {
-                var text = File.ReadAllText(file);
-                var obj = XamlReader.Load(text);
-                if (obj is ResourceDictionary dictionary)
+                var themePath = Path.Combine(themesFolderPath, selectedTheme.Name);
+                if (!Directory.Exists(themePath))
                 {
-                    target.MergedDictionaries.Add(dictionary);
+                    var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
+                    installedThemes.Remove(selectedTheme.Name);
+
+                    App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
+                    App.LocalSettings.Save("SelectedTheme", Theme.Default);
+                    throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
+                }
+
+                foreach (var file in Directory.EnumerateFiles(themePath, "*.xaml"))
+                {
+                    var text = File.ReadAllText(file);
+                    var obj = XamlReader.Load(text);
+                    if (obj is ResourceDictionary dictionary)
+                    {
+                        target.MergedDictionaries.Add(dictionary);
+                    }
                 }
             }
-
-            target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
+            finally
+            {
+                // ensure XamlControlsResources gets loaded even if theme loading itself fails
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
+            }
         }
 
         public static async Task RemoveThemeAsync(string name)
         {
-            var selectedTheme = App.LocalSettings.Read<Theme>("SelectedTheme", Theme.Default);
+            var selectedTheme = App.LocalSettings.Read("SelectedTheme", Theme.Default);
             if (selectedTheme?.Name == name)
             {
                 App.LocalSettings.Save("SelectedTheme", Theme.Default);
@@ -190,7 +218,7 @@ namespace Unicord.Universal
     {
         public static Theme Default
             => new Theme() { Name = "Default", Author = "N/A", IsDefault = true };
-        
+
         public bool IsDefault { get; set; } = false;
 
         // internal properties used in databinding

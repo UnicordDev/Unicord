@@ -42,7 +42,7 @@ namespace Unicord.Universal.Pages
         public new Frame Frame => mainFrame;
         private ObservableCollection<DiscordGuild> _guilds = new ObservableCollection<DiscordGuild>();
         private ObservableCollection<DiscordDmChannel> _unreadDms = new ObservableCollection<DiscordDmChannel>();
-        private MainPageViewModel _args;
+        private MainPageArgs _args;
         private bool _loaded;
         private bool _visibility;
 
@@ -56,22 +56,6 @@ namespace Unicord.Universal.Pages
             _visibility = Window.Current.Visible;
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAccelerator"))
-            {
-                //this.AddAccelerator(VirtualKey.Up, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerUp_Invoked);
-                //this.AddAccelerator(VirtualKey.Down, VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu, MoveServerDown_Invoked);
-            }
-        }
-
-        private void MoveServerUp_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex - 1, _guilds.Count));
-        }
-
-        private void MoveServerDown_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            guildsList.SelectedIndex = Math.Max(0, Math.Min(guildsList.SelectedIndex + 1, _guilds.Count));
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -84,7 +68,7 @@ namespace Unicord.Universal.Pages
         {
             UpdateTitleBar();
 
-            if (e.Parameter is MainPageViewModel args)
+            if (e.Parameter is MainPageArgs args)
             {
                 _args = args;
 
@@ -98,17 +82,14 @@ namespace Unicord.Universal.Pages
 
         private void UpdateTitleBar()
         {
-            if (App.StatusBarFill != default)
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                if (App.StatusBarFill.Top > 25)
-                {
-                    iconGrid.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    sidebarMainGrid.Padding = App.StatusBarFill;
-                    sidebarSecondaryGrid.Padding = App.StatusBarFill;
-                }
+                WindowManager.HandleTitleBarForGrid(sidebarMainGrid);
+                WindowManager.HandleTitleBarForGrid(sidebarSecondaryGrid);
+            }
+            else
+            {
+                iconGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -116,6 +97,9 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested += Navigation_BackRequested;
+
                 App.Discord.MessageCreated += Notification_MessageCreated;
                 App.Discord.UserSettingsUpdated += Discord_UserSettingsUpdated;
                 App.Discord.GuildCreated += Discord_GuildCreated;
@@ -161,10 +145,10 @@ namespace Unicord.Universal.Pages
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
-                if (App.ThemeLoadException != null)
-                {
-                    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
-                }
+                //if (App.ThemeLoadException != null)
+                //{
+                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
+                //}
 
                 if (_args != null)
                 {
@@ -176,10 +160,45 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     friendsItem_Tapped(null, null);
                 }
+
+                await ContactListManager.UpdateContactsListAsync();
             }
             catch (Exception ex)
             {
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested -= Navigation_BackRequested;
+
+            if (App.Discord != null)
+            {
+                App.Discord.MessageCreated -= Notification_MessageCreated;
+                App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
+                App.Discord.GuildCreated -= Discord_GuildCreated;
+                App.Discord.GuildDeleted -= Discord_GuildDeleted;
+                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
+                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
+
+                foreach (var dm in App.Discord.PrivateChannels.Values)
+                {
+                    dm.PropertyChanged -= Dm_PropertyChanged;
+                }
+            }
+        }
+
+        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (e.Handled)
+                return;
+
+            if (SettingsOverlayGrid.Visibility == Visibility.Visible)
+            {
+                CloseSettings();
+                e.Handled = true;
             }
         }
 
@@ -245,27 +264,9 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (App.Discord != null)
-            {
-                App.Discord.MessageCreated -= Notification_MessageCreated;
-                App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
-                App.Discord.GuildCreated -= Discord_GuildCreated;
-                App.Discord.GuildDeleted -= Discord_GuildDeleted;
-                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
-                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
-
-                foreach (var dm in App.Discord.PrivateChannels.Values)
-                {
-                    dm.PropertyChanged -= Dm_PropertyChanged;
-                }
-            }
-        }
-
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (App._currentChannelId != e.Channel.Id)
+            if (!WindowManager.VisibleChannels.Contains(e.Channel.Id))
             {
                 if (SharedTools.WillShowToast(e.Message))
                 {
@@ -325,7 +326,7 @@ namespace Unicord.Universal.Pages
                 notification.Margin = new Thickness(0, 20, 4, 0);
             }
 
-            notification.Content = new MessageViewer() { Message = message, IsEnabled = false, Background = new SolidColorBrush(Colors.Transparent) };
+            notification.Content = message;
             notification.Show(7_000);
         }
 
@@ -369,19 +370,39 @@ namespace Unicord.Universal.Pages
             {
                 CloseSplitPane();
 
-                if (channel is DiscordDmChannel dm && !(sidebarFrame.Content is DMChannelsPage))
+                unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
+                guildsList.SelectionChanged -= GuildsList_SelectionChanged;
+
+                guildsList.SelectedIndex = -1;
+                unreadDms.SelectedIndex = -1;
+                friendsItem.IsSelected = false;
+
+                if (channel == null)
                 {
-                    guildsList.SelectedIndex = -1;
-                    unreadDms.SelectedItem = dm;
                     friendsItem.IsSelected = true;
                     sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                    Frame.Navigate(typeof(FriendsPage));
+
+                    return;
                 }
-                else if (channel.Guild != null && (!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
+
+                if (await WindowManager.ActivateOtherWindow(channel))
+                    return;
+
+                if (channel is DiscordDmChannel dm)
                 {
-                    friendsItem.IsSelected = false;
-                    unreadDms.SelectedIndex = -1;
+                    unreadDms.SelectedItem = dm;
+                    friendsItem.IsSelected = true;
+
+                    if (!(sidebarFrame.Content is DMChannelsPage))
+                        sidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                }
+                else if (channel.Guild != null)
+                {
                     guildsList.SelectedItem = channel.Guild;
-                    sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
+
+                    if ((!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
+                        sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
                 }
 
                 if (channel.Type == ChannelType.Voice)
@@ -408,22 +429,12 @@ namespace Unicord.Universal.Pages
                 {
                     Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
                 }
-
-                if (_args?.IsUriActivation == true)
-                {
-                    notification.Content = new UriActivationMessage();
-                    notification.Show(7_000);
-                }
-
-                unreadDms.SelectionChanged -= UnreadDms_SelectionChanged;
-                guildsList.SelectionChanged -= GuildsList_SelectionChanged;
             }
             finally
             {
                 unreadDms.SelectionChanged += UnreadDms_SelectionChanged;
                 guildsList.SelectionChanged += GuildsList_SelectionChanged;
             }
-
         }
 
         private void mainFrame_Navigated(object sender, NavigationEventArgs e)
@@ -533,7 +544,7 @@ namespace Unicord.Universal.Pages
 
         public void OpenCustomPane(Type pageType, object parameter)
         {
-            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
+            CustomOverlayGrid.Visibility = Visibility.Visible;
 
             if (ActualWidth > 768)
             {
@@ -548,7 +559,7 @@ namespace Unicord.Universal.Pages
                 OpenCustomMobileStoryboard.Begin();
             }
 
-            CustomOverlayGrid.Visibility = Visibility.Visible;
+            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
         }
 
         public void CloseCustomPane()

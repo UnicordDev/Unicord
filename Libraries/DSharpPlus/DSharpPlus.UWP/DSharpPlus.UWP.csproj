@@ -297,6 +297,9 @@
     <Compile Include="..\DSharpPlus\Enums\Permission.cs">
       <Link>Enums\Permission.cs</Link>
     </Compile>
+    <Compile Include="..\DSharpPlus\Enums\PremiumTier.cs">
+      <Link>Enums\PremiumTier.cs</Link>
+    </Compile>
     <Compile Include="..\DSharpPlus\Enums\RelationshipType.cs">
       <Link>Enums\RelationshipType.cs</Link>
     </Compile>

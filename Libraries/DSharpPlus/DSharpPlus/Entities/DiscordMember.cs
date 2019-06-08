@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Media;
@@ -25,12 +26,18 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class DiscordMember : DiscordUser, IEquatable<DiscordMember>, INotifyPropertyChanged
     {
-        internal DiscordMember()
-        {
+#if WINDOWS_UWP || WINDOWS_WPF
+        private ThreadLocal<SolidColorBrush> _brush;
+#endif
 
+        internal DiscordMember() : base()
+        {
+#if WINDOWS_UWP || WINDOWS_WPF
+            _brush = new ThreadLocal<SolidColorBrush>();
+#endif
         }
 
-        internal DiscordMember(DiscordUser user)
+        internal DiscordMember(DiscordUser user) : this()
         {
             Discord = user.Discord;
 
@@ -39,7 +46,7 @@ namespace DSharpPlus.Entities
             _role_ids = new List<ulong>();
         }
 
-        internal DiscordMember(TransportMember mbr)
+        internal DiscordMember(TransportMember mbr) : this()
         {
             Id = mbr.User.Id;
             IsDeafened = mbr.IsDeafened;
@@ -107,23 +114,22 @@ namespace DSharpPlus.Entities
         }
 
 #if WINDOWS_UWP || WINDOWS_WPF
-        private SolidColorBrush _brush;
-
         [JsonIgnore]
         public override SolidColorBrush ColorBrush
         {
             get
             {
-                if (_brush != null)
+                if (_brush.IsValueCreated)
                 {
-                    return _brush;
+                    return _brush.Value;
                 }
 
-                _brush = Color.Value != default(DiscordColor).Value ? new SolidColorBrush(Media.Color.FromArgb(255, Color.R, Color.G, Color.B)) : null;
+                _brush.Value = Color.Value != default(DiscordColor).Value ? new SolidColorBrush(Media.Color.FromArgb(255, Color.R, Color.G, Color.B)) : null;
 #if WINDOWS_WPF
-                _brush?.Freeze();
+                //_brush?.Freeze();
 #endif
-                return _brush;
+
+                return _brush.Value;
             }
         }
 #endif
@@ -171,7 +177,7 @@ namespace DSharpPlus.Entities
         public bool IsOwner
             => Id == Guild.OwnerId;
 
-        #region Overriden user properties
+#region Overriden user properties
         [JsonIgnore]
         internal DiscordUser User
             => Discord.UserCache[Id];
@@ -238,7 +244,7 @@ namespace DSharpPlus.Entities
             get => User.Verified;
             internal set => User.Verified = value;
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Sends a direct message to this member. Creates a direct message channel if one does not exist already.

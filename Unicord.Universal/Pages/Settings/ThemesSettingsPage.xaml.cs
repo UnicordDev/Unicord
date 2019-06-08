@@ -38,19 +38,28 @@ namespace Unicord.Universal.Pages.Settings
 
         private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is ThemesSettingsModel model && e.PropertyName == nameof(model.SelectedTheme))
+            if (sender is ThemesSettingsModel model)
             {
-                var read = App.LocalSettings.Read<Theme>("SelectedTheme", null);
-                var selectedTheme = model.SelectedTheme as Theme;
-                if (read?.Name != selectedTheme?.Name)
+                if (e.PropertyName == nameof(model.SelectedTheme))
+                {
+                    var read = App.LocalSettings.Read<Theme>("SelectedTheme", null);
+                    var selectedTheme = model.SelectedTheme as Theme;
+                    if (read?.Name != selectedTheme?.Name)
+                    {
+                        _changedTheme = true;
+                        relaunchRequired.Visibility = Visibility.Visible;
+
+                        App.LocalSettings.Save("SelectedTheme", selectedTheme);
+
+                        //preview.Resources = new ResourceDictionary();
+                        //await Themes.LoadAsync(selectedTheme, preview.Resources);
+                    }
+                }
+
+                if (e.PropertyName == nameof(model.ColourScheme))
                 {
                     _changedTheme = true;
                     relaunchRequired.Visibility = Visibility.Visible;
-
-                    App.LocalSettings.Save("SelectedTheme", selectedTheme);
-
-                    //preview.Resources = new ResourceDictionary();
-                    //await Themes.LoadAsync(selectedTheme, preview.Resources);
                 }
             }
         }
@@ -78,7 +87,7 @@ namespace Unicord.Universal.Pages.Settings
             {
                 try
                 {
-                    await Themes.InstallFromFileAsync(file);
+                    await ThemeManager.InstallFromFileAsync(file);
                 }
                 catch (Exception ex)
                 {
@@ -94,7 +103,7 @@ namespace Unicord.Universal.Pages.Settings
             var model = DataContext as ThemesSettingsModel;
             if (model.SelectedTheme is Theme theme)
             {
-                await Themes.RemoveThemeAsync(theme.Name);
+                await ThemeManager.RemoveThemeAsync(theme.Name);
                 model.ReloadThemes();
             }
         }

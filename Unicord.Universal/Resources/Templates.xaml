@@ -202,8 +202,8 @@
         <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
-        
-        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
+
+        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
         <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
         <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
         
@@ -264,7 +264,7 @@
 
         <MenuFlyoutSeparator />
 
-        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
+        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
         <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
         <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
 

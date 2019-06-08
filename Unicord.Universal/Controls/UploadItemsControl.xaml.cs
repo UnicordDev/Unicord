@@ -230,15 +230,7 @@ namespace Unicord.Universal.Controls
 
         private void EditButton_Loaded(object sender, RoutedEventArgs e)
         {
-            // buggy on 1703    
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
-            {
-                if (!App.RoamingSettings.Read("EditTipShown", false))
-                {
-                    ((sender as Button).Resources["editTip"] as TeachingTip).IsOpen = true;
-                    App.RoamingSettings.Save("EditTipShown", true);
-                }
-            }
+
         }
     }
 }

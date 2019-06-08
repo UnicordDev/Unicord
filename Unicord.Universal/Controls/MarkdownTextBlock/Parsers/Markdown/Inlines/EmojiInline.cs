@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using DSharpPlus.Entities;
 using System.Collections.Generic;
 using WamWooWam.Parsers.Core;
 using WamWooWam.Parsers.Markdown.Helpers;
@@ -71,9 +72,9 @@ namespace WamWooWam.Parsers.Markdown.Inlines
 
             var emojiName = markdown.Substring(innerStart, innerEnd - innerStart);
 
-            if (_emojiCodesDictionary.TryGetValue(emojiName, out var emojiCode))
+            if (DiscordEmoji.UnicodeEmojis.TryGetValue($":{emojiName}:", out var emojiCode))
             {
-                var result = new EmojiInline { Text = char.ConvertFromUtf32(emojiCode), Type = MarkdownInlineType.Emoji };
+                var result = new EmojiInline { Text = emojiCode, Type = MarkdownInlineType.Emoji };
                 return new InlineParseResult(result, start, innerEnd + 1);
             }
 

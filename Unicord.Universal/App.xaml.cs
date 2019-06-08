@@ -43,25 +43,27 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
-        internal static ulong _currentChannelId = 0;
-
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
-        internal static Thickness StatusBarFill { get; set; }
-
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
-        public static Exception ThemeLoadException { get; private set; }
 
         public App()
         {
             InitializeComponent();
-
-            var theme = RoamingSettings.Read<ApplicationTheme?>("RequestedTheme", null);
-            if (theme != null)
-                RequestedTheme = theme.Value;
+            
+            var theme = LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            switch (theme)
+            {
+                case ElementTheme.Light:
+                    RequestedTheme = ApplicationTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    RequestedTheme = ApplicationTheme.Dark;
+                    break;
+            }            
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
@@ -81,7 +83,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            LoadThemes();
+            ThemeManager.LoadCurrentTheme(Resources);
 
             switch (e)
             {
@@ -113,7 +115,7 @@ namespace Unicord.Universal
                         Window.Current.Content = rootFrame;
                     }
 
-                    rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
                     Window.Current.Activate();
                     return;
                 }
@@ -134,7 +136,7 @@ namespace Unicord.Universal
                     var id = await ContactListManager.TryGetChannelIdAsync(task.Contact);
                     if (id != 0)
                     {
-                        rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { UserId = id, FullFrame = true, IsUriActivation = false });
+                        rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, FullFrame = true, IsUriActivation = false });
                     }
                 }
                 catch
@@ -163,8 +165,8 @@ namespace Unicord.Universal
         private void OnLaunched(bool preLaunch, string arguments)
         {
             Analytics.TrackEvent("Launch");
-
-            LoadThemes();
+            WindowManager.SetMainWindow(Window.Current);
+            ThemeManager.LoadCurrentTheme(Resources);
 
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
@@ -197,7 +199,7 @@ namespace Unicord.Universal
 
             if (args.TryGetValue("channelId", out var id) && ulong.TryParse(id, out var pId))
             {
-                rootFrame.Navigate(typeof(MainPage), new MainPageViewModel() { ChannelId = pId, FullFrame = false }, new SuppressNavigationTransitionInfo());
+                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = pId, FullFrame = false }, new SuppressNavigationTransitionInfo());
             }
             else
             {
@@ -210,25 +212,6 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
-        }
-
-        private void LoadThemes()
-        {
-            var theme = LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
-            if (!theme.IsDefault)
-            {
-                try
-                {
-                    Themes.Load(theme, Resources);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    ThemeLoadException = ex;
-                }
-            }
-
-            Resources.MergedDictionaries.Insert(0, new XamlControlsResources());
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
@@ -295,9 +278,6 @@ namespace Unicord.Universal
                             {
                                 await onReady(e);
                             }
-
-                            var t = new Task(async () => await ContactListManager.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
-                            t.Start();
                         }
 
                         Task SocketErrored(SocketErrorEventArgs e)
@@ -324,7 +304,8 @@ namespace Unicord.Universal
                             TokenType = TokenType.User,
                             AutomaticGuildSync = false,
                             LogLevel = DSharpPlus.LogLevel.Debug,
-                            MutedStore = new UnicordMutedStore()
+                            MutedStore = new UnicordMutedStore(),
+                            GatewayCompressionLevel = GatewayCompressionLevel.None
                         }));
 
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);

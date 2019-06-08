@@ -7,6 +7,7 @@ using DSharpPlus.EventArgs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
@@ -36,13 +37,15 @@ namespace Unicord.Universal
         public Frame RootFrame => rootFrame;
 
         private ShareOperation _shareOperation;
-        private MainPageViewModel _args;
+        internal MainPageArgs Arguments { get; private set; }
 
         private RoutedEventHandler _openHandler;
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;
         private bool _isReady;
         private bool _visibility;
+        private FrameworkElement _fullscreenElement;
+        private Panel _fullscreenParent;
 
         public MainPage()
         {
@@ -60,8 +63,8 @@ namespace Unicord.Universal
         {
             switch (e.Parameter)
             {
-                case MainPageViewModel args:
-                    _args = args;
+                case MainPageArgs args:
+                    Arguments = args;
                     break;
                 case ShareOperation operation:
                     _shareOperation = operation;
@@ -71,49 +74,12 @@ namespace Unicord.Universal
             }
 
             _visibility = Window.Current.Visible;
-            HandleTitleBar();
+
+            WindowManager.HandleTitleBarForWindow(titleBar);
 
             if (_isReady)
             {
                 await Discord_Ready(null);
-            }
-        }
-
-        private void HandleTitleBar()
-        {
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView"))
-            {
-                void UpdateTitleBarLayout(CoreApplicationViewTitleBar bar)
-                {
-                    titleBar.Height = bar.Height;
-                    App.StatusBarFill = new Thickness(0, bar.Height, 0, 0);
-                }
-
-                var baseTitlebar = ApplicationView.GetForCurrentView().TitleBar;
-                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-                coreTitleBar.ExtendViewIntoTitleBar = true;
-                coreTitleBar.LayoutMetricsChanged += (o, ev) => UpdateTitleBarLayout(o);
-                baseTitlebar.ButtonBackgroundColor = Colors.Transparent;
-                baseTitlebar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                titleBar.Visibility = Visibility.Visible;
-
-                UpdateTitleBarLayout(coreTitleBar);
-
-                Window.Current.SetTitleBar(titleBar);
-            }
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                if (statusBar != null)
-                {
-                    statusBar.BackgroundOpacity = 0;
-
-                    App.StatusBarFill = new Thickness(0, 25, 0, 0);
-
-                    var applicationView = ApplicationView.GetForCurrentView();
-                    applicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                }
             }
         }
 
@@ -122,6 +88,9 @@ namespace Unicord.Universal
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;
             pane.Hiding += Pane_Hiding;
+
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested += Navigation_BackRequested;
 
             try
             {
@@ -155,6 +124,13 @@ namespace Unicord.Universal
                 rootFrame.Navigate(typeof(LoginPage));
                 await ClearJumpListAsync();
             }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var pane = InputPane.GetForCurrentView();
+            pane.Showing -= Pane_Showing;
+            pane.Hiding -= Pane_Hiding;
         }
 
         private static async Task ClearJumpListAsync()
@@ -193,16 +169,16 @@ namespace Unicord.Universal
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
-            if (_args != null)
+            if (Arguments != null)
             {
-                if (_args.FullFrame)
+                if (Arguments.FullFrame)
                 {
                     await GoToChannelAsync(App.Discord);
                 }
                 else
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        rootFrame.Navigate(typeof(DiscordPage), _args));
+                        rootFrame.Navigate(typeof(DiscordPage), Arguments));
                 }
             }
             else if (_shareOperation != null)
@@ -224,11 +200,11 @@ namespace Unicord.Universal
 
             var dm = e.PrivateChannels.Values
                 .Concat(guildChannels)
-                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == _args.UserId || c.Id == _args.ChannelId : c.Id == _args.ChannelId);
+                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == Arguments.UserId || c.Id == Arguments.ChannelId : c.Id == Arguments.ChannelId);
 
-            if (dm == null && _args.UserId != 0)
+            if (dm == null && Arguments.UserId != 0)
             {
-                dm = await App.Discord.CreateDmChannelAsync(_args.UserId);
+                dm = await App.Discord.CreateDmChannelAsync(Arguments.UserId);
             }
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -380,6 +356,9 @@ namespace Unicord.Universal
             fullscreenCanvas.Visibility = Visibility.Visible;
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
 
+            _fullscreenElement = element;
+            _fullscreenParent = parent;
+
             parent.Children.Remove(element);
             fullscreenCanvas.Children.Add(element);
             element.Width = double.NaN;
@@ -390,6 +369,9 @@ namespace Unicord.Universal
         {
             ApplicationView.GetForCurrentView().ExitFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+
+            _fullscreenElement = null;
+            _fullscreenParent = null;
 
             fullscreenCanvas.Children.Clear();
             fullscreenCanvas.Visibility = Visibility.Collapsed;
@@ -405,6 +387,9 @@ namespace Unicord.Universal
             element.Width = double.NaN;
             element.Height = double.NaN;
 
+            _fullscreenElement = null;
+            _fullscreenParent = null;
+
             fullscreenCanvas.Visibility = Visibility.Collapsed;
         }
 
@@ -418,6 +403,35 @@ namespace Unicord.Universal
         {
             everything.Margin = new Thickness(0);
             args.EnsuredFocusedElementInView = true;
+        }
+
+        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (fullscreenCanvas.Visibility == Visibility.Visible)
+            {
+                if(_fullscreenElement != null && _fullscreenParent != null)
+                {
+                    LeaveFullscreen(_fullscreenElement, _fullscreenParent);
+                }
+                else
+                {
+                    LeaveFullscreen();
+                }
+
+                e.Handled = true;
+            }
+
+            if (contentOverlay.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                hideContent.Begin();
+            }
+
+            if (userInfoOverlay.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                hideUserOverlay.Begin();
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus;
@@ -39,7 +40,7 @@ namespace Unicord.Universal.Controls
 
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
 
-        private static DispatcherTimer _timestampTimer;
+        private static ThreadLocal<DispatcherTimer> _timestampTimer;
 
         private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordMessage _message;
@@ -74,7 +75,7 @@ namespace Unicord.Universal.Controls
         private bool CanEdit => Message?.Author.Id == App.Discord?.CurrentUser.Id;
 
         public bool ShowBottomSeparator =>
-            CanEdit || DeleteMessageCommand.Instance.CanExecute(Message);
+            CanEdit || (DeleteMessageCommand.Instance?.CanExecute(Message) ?? false);
 
         public Visibility CollapsedVisibility
         {
@@ -94,16 +95,15 @@ namespace Unicord.Universal.Controls
 
             if (_timestampTimer == null)
             {
-                _timestampTimer = new DispatcherTimer()
-                {
-#if DEBUG
-                    Interval = TimeSpan.FromSeconds(10)
-#else
-                    Interval = TimeSpan.FromMinutes(1)
-#endif
-                };
-                _timestampTimer.Start();
+                _timestampTimer = new ThreadLocal<DispatcherTimer>(() =>
+                    new DispatcherTimer() { Interval = TimeSpan.FromSeconds(30) });
+                _timestampTimer.Value.Start();
             }
+        }
+
+        internal static void CleanupTimer()
+        {
+            _timestampTimer.Value.Stop();
         }
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -225,12 +225,12 @@ namespace Unicord.Universal.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             App.Discord.MessageUpdated += Discord_MessageUpdated;
-            _timestampTimer.Tick += _timestampTimer_Tick;
+            _timestampTimer.Value.Tick += _timestampTimer_Tick;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            _timestampTimer.Tick -= _timestampTimer_Tick;
+            _timestampTimer.Value.Tick -= _timestampTimer_Tick;
             if (App.Discord != null)
             {
                 App.Discord.MessageUpdated -= Discord_MessageUpdated;
@@ -354,6 +354,16 @@ namespace Unicord.Universal.Controls
         private void EditModeItem_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<ChannelPage>().EnterEditMode(Message);
+        }
+
+        private void Markdown_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+        {
+            args.Handled = true;
+        }
+
+        private void CopyFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

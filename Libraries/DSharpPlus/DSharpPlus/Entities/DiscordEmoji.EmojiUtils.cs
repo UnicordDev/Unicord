@@ -6,8 +6,8 @@ namespace DSharpPlus.Entities
 {
     public partial class DiscordEmoji : SnowflakeObject
     {
-        private static IReadOnlyDictionary<string, string> UnicodeEmojis { get; set; }
-        private static IReadOnlyDictionary<string, string> DiscordNameLookup { get; set; }
+        public static IReadOnlyDictionary<string, string> UnicodeEmojis { get; set; }
+        public static IReadOnlyDictionary<string, string> DiscordNameLookup { get; set; }
         public static IReadOnlyList<string> UnicodeEmojiList { get; set; }
 
         static DiscordEmoji()
@@ -1276,6 +1276,7 @@ namespace DSharpPlus.Entities
             [":open_mouth:"] = "\U0001f62e",
             [":ophiuchus:"] = "\u26ce",
             [":orange_book:"] = "\U0001f4d9",
+            [":orange_heart:"] = "\U0001F9E1",
             [":orthodox_cross:"] = "\u2626",
             [":outbox_tray:"] = "\U0001f4e4",
             [":ox:"] = "\U0001f402",

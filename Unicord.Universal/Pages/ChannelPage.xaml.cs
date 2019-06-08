@@ -16,6 +16,7 @@ using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
@@ -33,14 +34,15 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
-        private Dictionary<ulong, ChannelViewModel> _channelHistory
-            = new Dictionary<ulong, ChannelViewModel>();
+        private List<ChannelViewModel> _channelHistory
+            = new List<ChannelViewModel>();
 
         public ChannelViewModel ViewModel
         {
@@ -57,15 +59,14 @@ namespace Unicord.Universal.Pages
         private EmotePicker _emotePicker;
         private ChannelViewModel _viewModel;
         private bool _scrollHandlerAdded;
-        private VideoFrame _videoFrame;
-        private string _error;
+        private DispatcherTimer _titleBarTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ChannelPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Required;
+            NavigationCacheMode = NavigationCacheMode.Enabled;
 
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
             {
@@ -80,41 +81,32 @@ namespace Unicord.Universal.Pages
                 userListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
                 uploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
                 searchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
+                newWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
             }
 
             uploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
             messageTextBox.KeyDown += messageTextBox_KeyDown;
             messageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
-
-            Application.Current.Suspending += OnSuspending;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
-            {
-                var navigation = SystemNavigationManager.GetForCurrentView();
-                navigation.BackRequested += Navigation_BackRequested;
-            }
-
-            if (App.StatusBarFill != default)
-            {
-                topGrid.Padding = App.StatusBarFill;
-            }
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             foreach (var item in _channelHistory)
             {
-                if (item.Value != _viewModel)
-                {
-                    item.Value.Dispose();
-                }
+                item.Dispose();
             }
+
+            _channelHistory.Clear();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is DiscordChannel chan)
             {
+                Application.Current.Suspending += OnSuspending;
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested += Navigation_BackRequested;
+
                 if (_viewModel?.IsEditMode == true)
                 {
                     LeaveEditMode();
@@ -125,41 +117,46 @@ namespace Unicord.Universal.Pages
                     ClosePane();
                 }
 
-                ChannelViewModel model = null;
-                App._currentChannelId = chan.Id;
-
-                if (_channelHistory.TryGetValue(chan.Id, out var result))
-                {
-                    model = result;
-                }
-
+                var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id);
                 if (ViewModel != null)
                 {
-                    _channelHistory[ViewModel.Channel.Id] = ViewModel;
+                    _channelHistory.Add(ViewModel);
                 }
 
-                if (model == null)
+                if (model != null)
+                {
+                    _channelHistory.Remove(model);
+                }
+                else
                 {
                     model = new ChannelViewModel(chan);
                 }
+
+                var args = this.FindParent<MainPage>()?.Arguments;
+                WindowManager.HandleTitleBarForGrid(topGrid, args?.ViewMode ?? ApplicationViewMode.Default);
+                WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 ViewModel = model;
                 DataContext = ViewModel;
 
                 while (_channelHistory.Count > 10)
                 {
-                    var oldest = _channelHistory.OrderBy(m => m.Value.LastAccessed.ToUnixTimeMilliseconds()).FirstOrDefault();
-                    var value = _channelHistory[oldest.Key];
-                    _channelHistory.Remove(oldest.Key);
-
-                    Logger.Log($"Removing ChannelViewModel for {oldest.Value.Channel}");
-
-                    value.Dispose();
+                    var oldModel = _channelHistory.ElementAt(0);
+                    oldModel.Dispose();
+                    _channelHistory.RemoveAt(0);
                 }
 
                 await Load();
             }
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Application.Current.Suspending -= OnSuspending;
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested -= Navigation_BackRequested;
+        }
+
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -172,18 +169,48 @@ namespace Unicord.Universal.Pages
 
                 _scrollHandlerAdded = true;
             }
+
+            var args = this.FindParent<MainPage>()?.Arguments;
+            if (args?.ViewMode == ApplicationViewMode.CompactOverlay)
+            {
+                _titleBarTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+                _titleBarTimer.Tick += _titleBarTimer_Tick;
+                DefaultControls.Visibility = Visibility.Collapsed;
+                PointerEntered += ChannelPage_PointerEntered;
+                PointerExited += ChannelPage_PointerExited;
+            }
+            else
+            {
+                _titleBarTimer = null;
+                DefaultControls.Visibility = Visibility.Visible;
+                BeginShowTitleBar();
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_titleBarTimer != null)
+            {
+                _titleBarTimer.Stop();
+                PointerEntered -= ChannelPage_PointerEntered;
+                PointerExited -= ChannelPage_PointerExited;
+            }
         }
 
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            this.FindParent<MainPage>()?.LeaveFullscreen();
+            if (e.Handled)
+                return;
 
-            var lastChannel = _channelHistory.OrderBy(m => m.Value.LastAccessed).FirstOrDefault();
-            if (lastChannel.Key != default)
+            this.FindParent<MainPage>()?.LeaveFullscreen();
+            var last = _channelHistory.ElementAtOrDefault(_channelHistory.Count - 1);
+            if (last != null)
             {
                 e.Handled = true;
 
-                ViewModel = lastChannel.Value;
+                _channelHistory.Remove(last);
+
+                ViewModel = last;
                 DataContext = ViewModel;
 
                 await Load();
@@ -368,6 +395,38 @@ namespace Unicord.Universal.Pages
             uploadProgress.Visibility = Visibility.Collapsed;
         }
 
+        private void ChannelPage_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            BeginShowTitleBar();
+        }
+
+        private void ChannelPage_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _titleBarTimer?.Start();
+        }
+
+        private void _titleBarTimer_Tick(object sender, object e)
+        {
+            BeginHideTitleBar();
+        }
+
+        private void BeginShowTitleBar()
+        {
+            topGrid.Visibility = Visibility.Visible;
+            footerGrid.Visibility = Visibility.Visible;
+            _titleBarTimer?.Stop();
+
+            HideTitleBar.Stop();
+            ShowTitleBar.Begin();
+        }
+
+        private void BeginHideTitleBar()
+        {
+            ShowTitleBar.Stop();
+            HideTitleBarAnimation.To = -topGrid.RenderSize.Height;
+            HideTitleBar.Begin();
+        }
+
         private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue == true)
@@ -424,9 +483,6 @@ namespace Unicord.Universal.Pages
 
         private async void OpenPopoutButton_Click(object sender, RoutedEventArgs e)
         {
-            cameraPreview.Stop();
-            cameraPreview.CameraHelper.Dispose();
-
             var capture = new CameraCaptureUI();
             var file = await capture.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
             if (file != null)
@@ -435,42 +491,6 @@ namespace Unicord.Universal.Pages
                 var folder = App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder;
                 await file.MoveAsync(folder, fileName, NameCollisionOption.GenerateUniqueName);
 
-                hidePhotoPicker.Begin();
-                await uploadItems.AddStorageFileAsync(file);
-            }
-            else
-            {
-                await cameraPreview.StartAsync();
-            }
-        }
-
-        private async void CaptureButton_Click(object sender, RoutedEventArgs e)
-        {
-            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
-
-            var softwareBitmap = _videoFrame?.SoftwareBitmap;
-            var fileName = $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.jpg";
-            var file = await (App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder)
-                .CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
-
-            if (softwareBitmap != null)
-            {
-                // Why...
-                if (softwareBitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 || softwareBitmap.BitmapAlphaMode == BitmapAlphaMode.Straight)
-                {
-                    softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                }
-
-                using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                {
-                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, fileStream);
-                    encoder.SetSoftwareBitmap(softwareBitmap);
-                    await encoder.FlushAsync();
-                }
-            }
-
-            if (file != null)
-            {
                 hidePhotoPicker.Begin();
                 await uploadItems.AddStorageFileAsync(file);
             }
@@ -500,35 +520,13 @@ namespace Unicord.Universal.Pages
             catch { }
         }
 
-        private void CameraPreview_PreviewFailed(object sender, PreviewFailedEventArgs e)
-        {
-            _error = e.Error;
-            loadingCameraRing.IsActive = false;
-            previewFailed.Visibility = Visibility.Visible;
-        }
-
         private async void ShowPhotoPicker_Completed(object sender, object e)
         {
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 32))
-            {
-                previewFailed.Visibility = Visibility.Collapsed;
-                loadingCameraRing.IsActive = true;
-                await cameraPreview.StartAsync();
-                loadingCameraRing.IsActive = false;
-                cameraPreview.CameraHelper.FrameArrived += CameraHelper_FrameArrived;
-            }
+
         }
 
         private void HidePhotoPicker_Completed(object sender, object e)
         {
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 32))
-            {
-                cameraPreview.Stop();
-                cameraPreview.CameraHelper.FrameArrived -= CameraHelper_FrameArrived;
-                loadingCameraRing.IsActive = false;
-                previewFailed.Visibility = Visibility.Collapsed;
-            }
-
             photosList.ItemsSource = null;
             loadingImagesRing.IsActive = false;
             photoPicker.Visibility = Visibility.Collapsed;
@@ -544,19 +542,6 @@ namespace Unicord.Universal.Pages
         {
             photoPicker.Visibility = Visibility.Collapsed;
             uploadItems.Visibility = Visibility.Collapsed;
-        }
-
-        private void CameraHelper_FrameArrived(object sender, FrameEventArgs e)
-        {
-            _videoFrame = e.VideoFrame;
-        }
-
-        private async void PreviewFailed_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (_error != null)
-            {
-                await UIUtilities.ShowErrorDialogAsync("Unable to load camera", _error);
-            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -600,6 +585,7 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        // BUGBUG: this is a mess
         /// <summary>
         /// Lazily initializes the emote picker
         /// </summary>
@@ -855,6 +841,38 @@ namespace Unicord.Universal.Pages
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
+        }
+
+        private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowManager.MultipleWindowsSupported)
+            {
+                WindowManager.SetChannelForCurrentWindow(0);
+                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
+
+                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                _viewModel.Dispose();
+                _channelHistory.Remove(_viewModel);
+            }
+        }
+
+        private async void NewCompactWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowManager.MultipleWindowsSupported)
+            {
+                WindowManager.SetChannelForCurrentWindow(0);
+                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
+
+                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                _viewModel.Dispose();
+                _channelHistory.Remove(_viewModel);
+            }
+        }
+
+        private void HideTitleBar_Completed(object sender, object e)
+        {
+            topGrid.Visibility = Visibility.Collapsed;
+            footerGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
@@ -73,10 +74,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
-            {
-                Margin = App.StatusBarFill;
-            }
+            WindowManager.HandleTitleBarForControl(nav, true);
         }
     }
 }

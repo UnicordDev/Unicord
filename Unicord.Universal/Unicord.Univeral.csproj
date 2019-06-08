@@ -82,7 +82,7 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>none</ErrorReport>
@@ -132,6 +132,7 @@
     <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />
     <Compile Include="Commands\MuteCommand.cs" />
+    <Compile Include="Commands\OpenNewWindowCommand.cs" />
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Constants.cs" />
@@ -302,7 +303,7 @@
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsViewModel.cs" />
     <Compile Include="Models\GuildChannelListViewModel.cs" />
-    <Compile Include="Models\MainPageEventArgs.cs" />
+    <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Models\ThemesSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
@@ -371,13 +372,14 @@
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Themes.cs" />
+    <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHelloManager.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
     <Compile Include="Models\VoiceViewModel.cs" />
+    <Compile Include="Utilities\WindowManager.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">

@@ -73,7 +73,7 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                topGrid.Padding = App.StatusBarFill;
+                WindowManager.HandleTitleBarForGrid(topGrid);
             }
 
             if (_model.StorageFile == null)

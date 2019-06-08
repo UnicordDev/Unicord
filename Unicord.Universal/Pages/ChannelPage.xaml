@@ -12,7 +12,7 @@
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
-    Loaded="Page_Loaded"
+    Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -82,6 +82,37 @@
                 Duration="00:00:00.33" />
         </Storyboard>
 
+        <Storyboard x:Key="ShowTitleBar" x:Name="ShowTitleBar">
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="TopGridTransform"
+                Storyboard.TargetProperty="Y"
+                Duration="00:00:00.15"
+                To="0" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseIn}"
+                Storyboard.TargetName="BottomGridTransform"
+                Storyboard.TargetProperty="Y"
+                Duration="00:00:00.15" 
+                To="0" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideTitleBar" x:Name="HideTitleBar" Completed="HideTitleBar_Completed">
+            <DoubleAnimation
+                x:Name="HideTitleBarAnimation"
+                EasingFunction="{StaticResource EaseOut}"
+                Storyboard.TargetName="TopGridTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.33" />
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseOut}"
+                Storyboard.TargetName="BottomGridTransform"
+                Storyboard.TargetProperty="Y"
+                To="50"
+                Duration="00:00:00.33" />
+        </Storyboard>
+        
         <Storyboard x:Key="ShowEditControls" x:Name="ShowEditControls">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseMovement}"
@@ -176,15 +207,17 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid x:Name="topGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="TopGridTransform" />
+                        </Grid.RenderTransform>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -278,6 +311,21 @@
                                     Visibility="{Binding ShowEditButton}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
+                                <ui:DropDownButton
+                                    x:Name="newWindowButton"
+                                    Content="&#xE78B;"
+                                    Style="{ThemeResource IconButtonStyle}"
+                                    IsEnabled="{Binding ShowPopoutButton}"
+                                    Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
+                                    ToolTipService.ToolTip="Open in a New Window">
+                                    <ui:DropDownButton.Flyout>
+                                        <ui:MenuBarItemFlyout>
+                                            <MenuFlyoutItem Icon="Add" Text="Normal Window" Click="NewWindowButton_Click" />
+                                            <MenuFlyoutItem Icon="BackToWindow" Text="Overlay Window" Click="NewCompactWindowButton_Click" />
+                                        </ui:MenuBarItemFlyout>
+                                    </ui:DropDownButton.Flyout>
+                                </ui:DropDownButton>
+
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
@@ -346,7 +394,6 @@
                     <Grid Grid.Row="1">
                         <ListView
                             x:Name="messageList"
-                            w1809:ScrollViewer.CanContentRenderOutsideBounds="True"
                             IncrementalLoadingThreshold="10"
                             ItemTemplate="{StaticResource DefaultMessageTemplate}"
                             ItemsSource="{Binding Messages}"
@@ -356,7 +403,7 @@
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel
-                                        Margin="0,0,0,8"
+                                        Margin="0,8"
                                         VerticalAlignment="Bottom"
                                         ItemsUpdatingScrollMode="KeepLastItemInView" />
                                 </ItemsPanelTemplate>
@@ -370,6 +417,10 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 </Style>
                             </ListView.ItemContainerStyle>
+                            <ListView.ItemContainerTransitions>
+                                <!-- these aniamtions look a little eh? -->
+                                <TransitionCollection/>
+                            </ListView.ItemContainerTransitions>
                         </ListView>
                         <StackPanel
                             x:Name="noMessages"
@@ -382,7 +433,7 @@
                             <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
                         </StackPanel>
                     </Grid>
-
+                    
                     <Grid Grid.Row="2">
                         <controls1:UploadItemsControl
                             x:Name="uploadItems"
@@ -410,7 +461,6 @@
                             <Grid Width="42" Margin="0,0,4,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
-                                    <wNone:RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Button
@@ -419,14 +469,6 @@
                                     VerticalAlignment="Stretch"
                                     Click="OpenPopoutButton_Click"
                                     Content="&#xE8A7;"
-                                    Style="{ThemeResource StretchyIconButtonStyle}" />
-                                <wNone:Button
-                                    x:Name="captureButton"
-                                    Grid.Row="1"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Click="CaptureButton_Click"
-                                    Content="&#xE722;"
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                                 <Button
                                     x:Name="openLocalButton"
@@ -448,37 +490,6 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                 ScrollViewer.VerticalScrollMode="Disabled"
                                 SelectionChanged="SelectionHandler">
-                                <wNone:ListView.Header>
-                                    <Grid MinWidth="200" Margin="0,0,8,0">
-                                        <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
-                                        <Grid
-                                            x:Name="previewFailed"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch"
-                                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                                            Tapped="PreviewFailed_Tapped"
-                                            Visibility="Collapsed">
-                                            <controls:DropShadowPanel
-                                                VerticalAlignment="Center"
-                                                HorizontalContentAlignment="Center"
-                                                BlurRadius="8"
-                                                OffsetX="-16"
-                                                ShadowOpacity="1"
-                                                Color="Black">
-                                                <TextBlock
-                                                    FontFamily="Segoe MDL2 Assets"
-                                                    FontSize="32"
-                                                    Text="&#xE7BA;" />
-                                            </controls:DropShadowPanel>
-                                        </Grid>
-                                        <ProgressRing
-                                            x:Name="loadingCameraRing"
-                                            Width="16"
-                                            Height="16"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center" />
-                                    </Grid>
-                                </wNone:ListView.Header>
                                 <ListView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ItemsStackPanel Orientation="Horizontal" />
@@ -515,7 +526,7 @@
 
                     <Grid
                         x:Name="footerGrid"
-                        Grid.Row="4"
+                        Grid.Row="3"
                         Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -524,6 +535,9 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="BottomGridTransform"/>
+                        </Grid.RenderTransform>
 
                         <ItemsControl
                             Grid.Row="1"
@@ -597,14 +611,6 @@
                                 FontSize="18"
                                 Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding ShowSendButton}">
-                                <ToggleButton.Resources>
-                                    <ui:TeachingTip
-                                        x:Name="emoteTip"
-                                        Title="Emoji picker!"
-                                        IsLightDismissEnabled="True"
-                                        Subtitle="You can now pick emoji from all your servers down here!"
-                                        Target="{x:Bind emoteButton}" />
-                                </ToggleButton.Resources>
                             </ToggleButton>
                             <Button
                                 x:Name="sendButton"
