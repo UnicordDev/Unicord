@@ -89,7 +89,8 @@ namespace Unicord.Universal.Controls
             if (_embed.Color.HasValue)
             {
                 var col = _embed.Color.Value;
-                BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
+                Border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
+                Border.BorderThickness = new Thickness(4, 0, 0, 0);
             }
 
             if (_embed.Image != null)
@@ -180,7 +181,7 @@ namespace Unicord.Universal.Controls
         private void ImageElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.FindParent<MainPage>()?.ShowAttachmentOverlay(
-                _embed.Thumbnail.ProxyUrl,
+                _embed.Thumbnail.Url,
                 _embed.Thumbnail.Width,
                 _embed.Thumbnail.Height,
                 open_Click,

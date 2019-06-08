@@ -9,7 +9,7 @@
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
-            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFE0E0E0"/>
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFEEEEEE"/>
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
@@ -23,9 +23,9 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
-                                BackgroundSource="Backdrop"
-                                TintOpacity="0"
-                                FallbackColor="{ThemeResource SystemChromeMediumColor}"/>
+                        BackgroundSource="Backdrop"
+                        TintOpacity="0"
+                        FallbackColor="{ThemeResource SystemChromeMediumColor}"/>
 
     <media:AcrylicBrush x:Key="OverlayBackdrop" TintColor="{ThemeResource SystemAltHighColor}" TintOpacity="0.33" FallbackColor="#80000000"/>
 

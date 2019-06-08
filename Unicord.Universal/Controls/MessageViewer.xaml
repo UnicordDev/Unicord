@@ -46,8 +46,13 @@
                         x:Load="{x:Bind _canReact}"
                         Icon="Emoji"
                         Text="Add Reaction" />
+                    
+                    <MenuFlyoutItem
+                        Icon="Copy"
+                        Text="Copy"
+                        Click="CopyFlyoutItem_Click" />
 
-                    <MenuFlyoutSeparator x:Name="addReactionSeparator" x:Load="{x:Bind _canReact}" />
+                    <MenuFlyoutSeparator  />
 
                     <MenuFlyoutItem
                         x:Name="profileMenuItem"
@@ -237,7 +242,7 @@
                             Grid.Column="1"
                             Channel="{Binding Channel}"
                             ContextFlyout="{x:Null}"
-                            IsTextSelectionEnabled="False"
+                            ContextRequested="Markdown_ContextRequested"
                             Text="{Binding Content}"
                             WrapCodeBlock="True"/>
                     </Grid>

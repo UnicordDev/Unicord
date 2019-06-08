@@ -1,6 +1,11 @@
-﻿using System;
-using System.Linq;
 using DSharpPlus.Entities;
+using Microsoft.QueryStringDotNET;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Web;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
@@ -29,6 +34,16 @@ namespace Unicord.Universal.Controls.Embeds
             {
                 var builder = new UriBuilder(uri) { Host = "i.giphy.com" };
                 uri = builder.Uri;
+            }
+
+            if (provider == "youtube")
+            {
+                var embedBuilder = new UriBuilder(uri);
+                var query = QueryString.Parse(HttpUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
+                query.Add("autoplay", "1");
+                embedBuilder.Query = query.ToString();
+
+                uri = embedBuilder.Uri;
             }
 
             var executionMode = WebViewExecutionMode.SameThread;

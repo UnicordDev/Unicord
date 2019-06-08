@@ -11,7 +11,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls" 
-    mc:Ignorable="d" Loaded="Page_Loaded" NavigationCacheMode="Required"
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" NavigationCacheMode="Required"
     Background="{ThemeResource MainBackgroundBrush}">
     <Page.Resources>
         <CircleEase x:Key="ease" EasingMode="EaseInOut"/>

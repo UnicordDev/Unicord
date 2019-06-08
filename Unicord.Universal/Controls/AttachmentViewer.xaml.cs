@@ -21,18 +21,22 @@ namespace Unicord.Universal.Controls
 {
     public sealed partial class AttachmentViewer : UserControl
     {
-        DiscordAttachment _attachment;
-        private static readonly Lazy<string[]> _mediaExtensions = new Lazy<string[]>(() => new string[] { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus" });
+        private static readonly string[] _mediaExtensions =
+            new string[] { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus" };
+
+        private bool _audioOnly;
+
+        private DiscordAttachment _attachment;
+        private DispatcherTimer _timer;
+        private StorageFile _shareFile;
 
         public AttachmentViewer(DiscordAttachment attachment)
         {
             InitializeComponent();
             _attachment = attachment;
-
+            DataContext = attachment;
             HorizontalAlignment = HorizontalAlignment.Left;
         }
-
-        private bool _loadDetails = false;
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -44,7 +48,7 @@ namespace Unicord.Universal.Controls
             var url = _attachment.Url;
             var fileExtension = Path.GetExtension(url);
 
-            if (_mediaExtensions.Value.Contains(fileExtension))
+            if (_mediaExtensions.Contains(fileExtension))
             {
                 var mediaPlayer = new MediaPlayerElement()
                 {
@@ -59,10 +63,14 @@ namespace Unicord.Universal.Controls
                 {
                     mediaPlayer.VerticalAlignment = VerticalAlignment.Top;
                     mediaPlayer.VerticalContentAlignment = VerticalAlignment.Top;
+                    detailsGrid.Visibility = Visibility.Collapsed;
                     _audioOnly = true;
                 }
 
                 mainGrid.Content = mediaPlayer;
+
+                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
+                _timer.Tick += _timer_Tick;
             }
             else if (_attachment.Height != 0 && _attachment.Width != 0)
             {
@@ -75,15 +83,16 @@ namespace Unicord.Universal.Controls
 
                 imageElement.Tapped += Image_Tapped;
                 mainGrid.Content = imageElement;
+
+                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
+                _timer.Tick += _timer_Tick;
             }
             else
             {
-                _loadDetails = true;
-                Bindings.Update();
+                detailsTransform.Y = 0;
+                grid.PointerEntered -= Grid_PointerEntered;
+                grid.PointerExited -= Grid_PointerExited;
             }
-
-            if (!_loadDetails)
-                Background = null;
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -99,6 +108,8 @@ namespace Unicord.Universal.Controls
                 mainGrid.Width = width;
                 mainGrid.Height = height;
 
+                Clip = new RectangleGeometry() { Rect = new Rect(0, 0, width, height) };
+
                 return new Size(width, height);
             }
             else if (_audioOnly)
@@ -108,6 +119,8 @@ namespace Unicord.Universal.Controls
 
                 mainGrid.Width = width;
                 mainGrid.Height = height;
+
+                Clip = new RectangleGeometry() { Rect = new Rect(0, 0, width, height) };
 
                 return new Size(width, height);
             }
@@ -121,6 +134,13 @@ namespace Unicord.Universal.Controls
             //mediaPlayer?.meda.Pause();
 
             mainGrid.Content = null;
+            _timer?.Stop();
+        }
+
+        private void _timer_Tick(object sender, object e)
+        {
+            HideDetails.Begin();
+            _timer?.Stop();
         }
 
         private void Image_Tapped(object sender, TappedRoutedEventArgs e)
@@ -186,9 +206,6 @@ namespace Unicord.Universal.Controls
             downloadProgressBar.Visibility = Visibility.Collapsed;
         }
 
-        StorageFile _shareFile;
-        private bool _audioOnly;
-
         private async void shareMenuItem_Click(object sender, RoutedEventArgs e)
         {
             downloadProgressBar.Visibility = Visibility.Visible;
@@ -196,7 +213,6 @@ namespace Unicord.Universal.Controls
 
             try
             {
-
                 var transferManager = DataTransferManager.GetForCurrentView();
                 _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(_attachment.Url)}");
 
@@ -258,6 +274,17 @@ namespace Unicord.Universal.Controls
             package.SetText(_attachment.Url);
             package.SetWebLink(new Uri(_attachment.Url));
             Clipboard.SetContent(package);
+        }
+
+        private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            ShowDetails.Begin();
+            _timer?.Stop();
+        }
+
+        private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _timer?.Start();
         }
     }
 }

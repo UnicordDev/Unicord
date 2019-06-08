@@ -56,9 +56,13 @@ namespace Unicord.Universal.Commands
                     var page = Window.Current.Content.FindChild<MainPage>();
                     if (page != null)
                     {
-                        var discordPage = page.FindChild<DiscordPage>();
-                        discordPage.Navigate(channel, new DrillInNavigationTransitionInfo());
                         page.HideOverlay();
+
+                        var discordPage = page.FindChild<DiscordPage>();
+                        if (discordPage != null)
+                        {
+                            discordPage.Navigate(channel, new DrillInNavigationTransitionInfo());
+                        }
                     }
                 }
             }

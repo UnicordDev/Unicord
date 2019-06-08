@@ -27,7 +27,20 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding NonAnimatedAvatarUrl}" HorizontalAlignment="Center" Margin="24,24,24,8"/>
+            <Canvas Width="128" Height="128" HorizontalAlignment="Center" Margin="24,24,24,8">
+                <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding NonAnimatedAvatarUrl}"/>
+                <Ellipse
+                    Canvas.Left="96"
+                    Canvas.Top="96"
+                    Width="32"
+                    Height="32"
+                    Stroke="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}"
+                    StrokeThickness="4">
+                    <Ellipse.Fill>
+                        <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Canvas>
             <TextBlock RequestedTheme="Dark" Grid.Row="1" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,24">
                 @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
             </TextBlock>

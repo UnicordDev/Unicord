@@ -5,23 +5,24 @@
     xmlns:local="using:Unicord.Universal.Controls.Embeds"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d" FocusDisengaged="UserControl_FocusDisengaged" Unloaded="UserControl_Unloaded"
     d:DesignHeight="300"
-    d:DesignWidth="400" Margin="0,12,0,0">
-
+    d:DesignWidth="400">
+    
     <Grid x:Name="content">
-        <Grid x:Name="posterContainer">
+        <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
             <Image x:Name="posterImage" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <Image.Source>
                     <BitmapImage UriSource="{x:Bind Thumbnail.ProxyUrl}"/>
                 </Image.Source>
             </Image>
-            <Grid x:Name="posterOverlay">
-                <Canvas Width="58" Height="58" Tapped="Canvas_Tapped" Background="{ThemeResource SystemControlBackgroundAltMediumBrush}">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Canvas.Left="5" Canvas.Top="5" FontSize="48" LineHeight="48" Width="48" Height="48">
-                    &#xE768;
+            <Grid x:Name="posterOverlay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <controls:DropShadowPanel HorizontalAlignment="Center" VerticalAlignment="Center" BlurRadius="16" ShadowOpacity="1" Color="Black">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="64">
+                        &#xE768;
                     </TextBlock>
-                </Canvas>
+                </controls:DropShadowPanel>
             </Grid>
         </Grid>
     </Grid>

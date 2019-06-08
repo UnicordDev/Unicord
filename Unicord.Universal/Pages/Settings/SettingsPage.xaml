@@ -7,7 +7,7 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Loaded="Page_Loaded"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Background="{ThemeResource NavigationViewTopPaneBackground}">
 
     <lib:NavigationView
         x:Name="nav"
@@ -53,7 +53,7 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
-        <ScrollViewer IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Background="{ThemeResource MainBackgroundBrush}" IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="frame" Margin="12" />
         </ScrollViewer>
     </lib:NavigationView>

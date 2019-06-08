@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
@@ -98,7 +99,11 @@ namespace Unicord.Universal.Integration
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Log("Failed to sync contacts!");
+                Logger.Log(ex.ToString());
+            }
         }
 
         public static async Task<Contact> AddOrUpdateContactForRelationship(ContactList list, DiscordRelationship relationship, StorageFolder folder = null)
@@ -112,7 +117,7 @@ namespace Unicord.Universal.Integration
 
             if ((contact = await list.GetContactFromRemoteIdAsync($"{REMOTE_ID_PREFIX}{relationship.User.Id}")) == null)
             {
-                var reference = await GetAvatarReferenceAsync(relationship, folder);
+                var reference = await GetAvatarReferenceAsync(relationship.User, folder);
 
                 contact = new Contact
                 {
@@ -131,7 +136,7 @@ namespace Unicord.Universal.Integration
                 {
                     if (relationship.User.AvatarHash != str)
                     {
-                        var reference = await GetAvatarReferenceAsync(relationship, folder);
+                        var reference = await GetAvatarReferenceAsync(relationship.User, folder);
                         contact.SourceDisplayPicture = reference;
                         contact.ProviderProperties["AvatarHash"] = relationship.User.AvatarHash;
 
@@ -158,16 +163,16 @@ namespace Unicord.Universal.Integration
             catch { }
         }
 
-        private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DiscordRelationship relationship, StorageFolder folder)
+        private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DiscordUser user, StorageFolder folder)
         {
-            var tempFile = await folder.GetFileAsync($"{relationship.User.AvatarHash}.jpeg");
+            var tempFile = await folder.TryGetItemAsync($"{user.AvatarHash}.jpeg") as StorageFile;
 
-            if (tempFile != null)
+            if (tempFile == null)
             {
-                tempFile = await folder.CreateFileAsync($"{relationship.User.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
+                tempFile = await folder.CreateFileAsync($"{user.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
 
                 using (var fileStream = await tempFile.OpenAsync(FileAccessMode.ReadWrite))
-                using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(relationship.User.GetAvatarUrl(ImageFormat.Jpeg, 256))))
+                using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(user.GetAvatarUrl(ImageFormat.Jpeg, 256))))
                 {
                     await RandomAccessStream.CopyAndCloseAsync(stream, fileStream);
                 }
