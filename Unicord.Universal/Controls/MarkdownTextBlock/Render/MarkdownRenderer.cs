@@ -3,9 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using WamWooWam.Parsers.Core;
 using WamWooWam.Parsers.Markdown;
-using WamWooWam.Parsers.Markdown.Inlines;
 using WamWooWam.Parsers.Markdown.Render;
 using WamWooWam.Uwp.UI.Extensions;
 using Windows.UI.Xaml;

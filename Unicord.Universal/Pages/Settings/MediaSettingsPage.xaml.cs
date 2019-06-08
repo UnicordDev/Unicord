@@ -26,7 +26,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(DataContext is MediaSettingsModel model && e.AddedItems.FirstOrDefault() is string str)
+            if (DataContext is MediaSettingsModel model && e.AddedItems.FirstOrDefault() is string str)
             {
                 model.Resolution = str;
             }

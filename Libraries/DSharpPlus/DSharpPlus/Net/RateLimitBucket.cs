@@ -37,7 +37,7 @@ namespace DSharpPlus.Net
         /// <summary>
         /// Gets the Id of the ratelimit bucket.
         /// </summary>
-        public string BucketId 
+        public string BucketId
             => $"{Method}:{GuildId}:{ChannelId}:{WebhookId}:{Route}";
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace DSharpPlus.Net
         /// Rate limit reset in ticks, UTC on the next response after the rate limit has been reset
         /// </summary>
         internal long _nextReset;
-        
+
         /// <summary>
         /// If the rate limit is currently being reset.
         /// This is a int because booleans can't be accessed atomically.
@@ -104,7 +104,7 @@ namespace DSharpPlus.Net
         /// <param name="channel_id">Channel Id for this bucket.</param>
         /// <param name="webhook_id">Webhook Id for this bucket.</param>
         /// <returns>Bucket Id.</returns>
-        public static string GenerateId(RestRequestMethod method, string route, string guild_id, string channel_id, string webhook_id) 
+        public static string GenerateId(RestRequestMethod method, string route, string guild_id, string channel_id, string webhook_id)
             => $"{method}:{guild_id}:{channel_id}:{webhook_id}:{route}";
 
         /// <summary>

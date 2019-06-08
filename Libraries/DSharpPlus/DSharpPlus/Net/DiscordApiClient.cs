@@ -1,9 +1,4 @@
-﻿using DSharpPlus.Entities;
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -12,6 +7,11 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Net
 {

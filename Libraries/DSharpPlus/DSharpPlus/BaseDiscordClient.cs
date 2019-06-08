@@ -23,7 +23,7 @@ namespace DSharpPlus
         /// <summary>
         /// Gets the string representing the version of D#+.
         /// </summary>
-        public string VersionString 
+        public string VersionString
             => _version_string.Value;
 
         private Lazy<string> _version_string = new Lazy<string>(() =>
@@ -70,7 +70,7 @@ namespace DSharpPlus
         /// <summary>
         /// Gets the list of available voice regions. Note that this property will not contain VIP voice regions.
         /// </summary>
-        public IReadOnlyDictionary<string, DiscordVoiceRegion> VoiceRegions 
+        public IReadOnlyDictionary<string, DiscordVoiceRegion> VoiceRegions
             => _voice_regions_lazy.Value;
 
         /// <summary>
@@ -97,14 +97,14 @@ namespace DSharpPlus
         /// Gets the current API application.
         /// </summary>
         /// <returns>Current API application.</returns>
-        public Task<DiscordApplication> GetCurrentApplicationAsync() 
+        public Task<DiscordApplication> GetCurrentApplicationAsync()
             => ApiClient.GetCurrentApplicationInfoAsync();
 
         /// <summary>
         /// Gets a list of regions
         /// </summary>
         /// <returns></returns>
-        public Task<IReadOnlyList<DiscordVoiceRegion>> ListVoiceRegionsAsync() 
+        public Task<IReadOnlyList<DiscordVoiceRegion>> ListVoiceRegionsAsync()
             => ApiClient.ListVoiceRegionsAsync();
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace DSharpPlus
             }
         }
 
-        internal DiscordUser InternalGetCachedUser(ulong user_id) 
+        internal DiscordUser InternalGetCachedUser(ulong user_id)
             => UserCache.TryGetValue(user_id, out var user) ? user : null;
 
         /// <summary>

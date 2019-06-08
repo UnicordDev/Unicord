@@ -60,7 +60,7 @@ namespace DSharpPlus.VoiceNext
             remove { _userLeft.Unregister(value); }
         }
         private AsyncEvent<VoiceUserLeaveEventArgs> _userLeft;
-        
+
         /// <summary>
         /// Triggered whenever voice data is received from the connected voice channel.
         /// </summary>
@@ -307,7 +307,7 @@ namespace DSharpPlus.VoiceNext
                 case EncryptionMode.XSalsa20_Poly1305:
                     Sodium.GenerateNonce(packet.Slice(0, Rtp.HeaderSize), nonce);
                     break;
-                    
+
                 case EncryptionMode.XSalsa20_Poly1305_Suffix:
                     Sodium.GenerateNonce(nonce);
                     break;
@@ -404,7 +404,7 @@ namespace DSharpPlus.VoiceNext
                 }
             }
         }
-        
+
         private bool ProcessPacket(ReadOnlySpan<byte> data, ref Memory<byte> opus, ref Memory<byte> pcm, IList<ReadOnlyMemory<byte>> pcmPackets, out AudioSender voiceSender, out AudioFormat outputFormat)
         {
             voiceSender = null;
@@ -840,7 +840,7 @@ namespace DSharpPlus.VoiceNext
                         Speaking = spd.Speaking,
                         SSRC = spd.SSRC.Value,
                     };
-                    
+
                     if (spk.UserId != 0 && TransmittingSSRCs.TryGetValue(spk.SSRC, out var txssrc5) && txssrc5.UserId == 0)
                     {
                         txssrc5.UserId = spk.UserId;
@@ -880,7 +880,7 @@ namespace DSharpPlus.VoiceNext
 
                 case 12: // CLIENT_CONNECTED
                     var ujpd = opp.ToObject<VoiceUserJoinPayload>();
-                                       
+
                     {
                         var opus = Opus.CreateDecoder();
                         var vtx = new AudioSender(ujpd.SSRC, opus)
@@ -897,7 +897,7 @@ namespace DSharpPlus.VoiceNext
 
                 case 13: // CLIENT_DISCONNECTED
                     var ulpd = opp.ToObject<VoiceUserLeavePayload>();
-                    
+
                     var txssrc = TransmittingSSRCs.FirstOrDefault(x => x.Value.Id == ulpd.UserId);
                     if (TransmittingSSRCs.ContainsKey(txssrc.Key))
                     {

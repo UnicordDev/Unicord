@@ -21,7 +21,7 @@
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-    
+
     <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
                                 BackgroundSource="Backdrop"
                                 TintOpacity="0"

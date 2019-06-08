@@ -107,7 +107,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-   
+
     <Style TargetType="local:ImageElement">
         <Setter Property="Template">
             <Setter.Value>
@@ -138,7 +138,7 @@
         i'd prefer these to be in ./Templates.xaml but because that file has a code behind
         windows says no
     -->
-    
+
     <DataTemplate x:Key="NoIndicatorDMChannelTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -163,5 +163,5 @@
 
         </Grid>
     </DataTemplate>
-    
+
 </ResourceDictionary>

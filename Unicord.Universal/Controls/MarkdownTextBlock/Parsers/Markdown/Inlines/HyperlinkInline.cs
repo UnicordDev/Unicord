@@ -136,7 +136,7 @@ namespace WamWooWam.Parsers.Markdown.Inlines
 
             // The URL must have at least one character after the http:// and at least one dot.
             int pos = tripPos + 3;
-            if(maxEnd - pos < 0)
+            if (maxEnd - pos < 0)
             {
                 return null;
             }

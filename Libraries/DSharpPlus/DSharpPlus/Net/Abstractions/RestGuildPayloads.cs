@@ -43,7 +43,7 @@ namespace DSharpPlus.Net.Abstractions
 
         [JsonProperty("region")]
         public Optional<string> RegionId { get; set; }
-        
+
         [JsonProperty("icon")]
         public Optional<string> IconBase64 { get; set; }
 
@@ -74,7 +74,7 @@ namespace DSharpPlus.Net.Abstractions
         [JsonProperty("system_channel_id", NullValueHandling = NullValueHandling.Include)]
         public Optional<ulong?> SystemChannelId { get; set; }
     }
-    
+
     internal sealed class RestGuildMemberAddPayload : IOAuth2Payload
     {
         [JsonProperty("access_token")]

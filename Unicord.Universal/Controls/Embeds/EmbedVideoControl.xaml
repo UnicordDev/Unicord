@@ -8,7 +8,7 @@
     mc:Ignorable="d" FocusDisengaged="UserControl_FocusDisengaged" Unloaded="UserControl_Unloaded"
     d:DesignHeight="300"
     d:DesignWidth="400" Margin="0,12,0,0">
-    
+
     <Grid x:Name="content">
         <Grid x:Name="posterContainer">
             <Image x:Name="posterImage" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch">

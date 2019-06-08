@@ -22,7 +22,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             InitializeComponent();
         }
-      
+
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var gridView = (sender as GridView);

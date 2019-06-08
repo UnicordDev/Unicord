@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -11,12 +10,10 @@ using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 

@@ -1,16 +1,10 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Input;
-using Unicord.Universal.Dialogs;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Commands
 {

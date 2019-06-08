@@ -16,7 +16,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Button x:Name="loadFileButton" Click="loadFileButton_Click" MinWidth="150" Content="Load from file..." HorizontalAlignment="Stretch" />
                 <Button x:Name="loginButton" Grid.Column="1" Click="Button_Click" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" Content="Login" HorizontalAlignment="Stretch"/>
             </Grid>

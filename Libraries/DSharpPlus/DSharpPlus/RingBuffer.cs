@@ -24,13 +24,13 @@ namespace DSharpPlus
         /// <summary>
         /// Gets the number of items in this ring buffer.
         /// </summary>
-        public int Count 
+        public int Count
             => _reached_end ? Capacity : CurrentIndex;
 
         /// <summary>
         /// Gets whether this ring buffer is read-only.
         /// </summary>
-        public bool IsReadOnly 
+        public bool IsReadOnly
             => false;
 
         /// <summary>

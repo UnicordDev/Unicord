@@ -24,7 +24,7 @@ namespace DSharpPlus.Entities
         /// Gets the URL of guild's invite splash.
         /// </summary>
         [JsonIgnore]
-        public string SplashUrl 
+        public string SplashUrl
             => !string.IsNullOrWhiteSpace(SplashHash) ? $"https://cdn.discordapp.com/splashes/{Id.ToString(CultureInfo.InvariantCulture)}/{SplashHash}.jpg" : null;
 
         internal DiscordInviteGuild() { }

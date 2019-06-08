@@ -89,9 +89,9 @@ namespace DSharpPlus.VoiceNext.Codec
             return status;
         }
 #endif
-#endregion
+        #endregion
 
-#region Opus wrapper
+        #region Opus wrapper
         [DllImport(LIB_OPUS_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "opus_encoder_create")]
         private static extern IntPtr _OpusCreateEncoder(int sampleRate, int channels, int application, out OpusError error);
 
@@ -190,7 +190,7 @@ namespace DSharpPlus.VoiceNext.Codec
         public static unsafe int OpusDecode(IntPtr decoder, int frameSize, Span<byte> pcm)
         {
             var len = 0;
-            
+
             fixed (byte* pcmPtr = &pcm.GetPinnableReference())
                 len = _OpusDecode(decoder, null, 0, pcmPtr, frameSize, 1);
 
@@ -220,6 +220,6 @@ namespace DSharpPlus.VoiceNext.Codec
             _OpusDecoderControl(decoder, OpusControl.GetLastPacketDuration, out sampleCount);
         }
 #endif
-#endregion
+        #endregion
     }
 }

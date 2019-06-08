@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
-using DSharpPlus.VoiceNext;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Calls;
 using Windows.Foundation.Collections;
 
 namespace Unicord.Universal.Models

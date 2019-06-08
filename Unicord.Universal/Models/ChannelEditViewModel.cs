@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.Entities;
 
 namespace Unicord.Universal.Models
@@ -21,7 +17,7 @@ namespace Unicord.Universal.Models
         }
 
         public string Name { get; set; }
-        
+
         public string Topic { get; set; }
 
         public bool NSFW { get; set; }

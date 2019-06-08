@@ -1,7 +1,4 @@
-﻿using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using Unicord.Universal.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;

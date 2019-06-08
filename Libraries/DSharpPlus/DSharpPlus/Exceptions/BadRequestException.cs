@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using DSharpPlus.Net;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Exceptions
 {

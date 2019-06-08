@@ -46,7 +46,7 @@
                     </StackPanel>
                     <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
                 </Grid>
-                
+
             </StackPanel>
         </ContentControl>
     </Grid>

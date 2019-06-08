@@ -92,7 +92,7 @@
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
                             <Image VerticalAlignment="Stretch" Source="{Binding Thumbnail}" />
-                            
+
                             <Grid
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Bottom"

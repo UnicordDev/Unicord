@@ -1,4 +1,4 @@
-﻿    <Page
+﻿<Page
     x:Class="Unicord.Universal.Pages.Settings.MessagingSettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -59,11 +59,11 @@
 
             <TextBlock Grid.Row="1" Text="Enable Spoilers" VerticalAlignment="Center"/>
             <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
-            
+
             <TextBlock Grid.Row="2" Text="Prompt for Untrusted Links" VerticalAlignment="Center" ToolTipService.ToolTip="With this option enabled, you will be prompted by Windows before opening insecure links."/>
             <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
         </Grid>
-        
+
 
     </StackPanel>
 </Page>

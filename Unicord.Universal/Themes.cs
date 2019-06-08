@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
@@ -13,10 +9,8 @@ using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
-using Windows.Storage.Search;
 using Windows.Storage.Streams;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
@@ -190,7 +184,7 @@ namespace Unicord.Universal
     {
         public static Theme Default
             => new Theme() { Name = "Default", Author = "N/A", IsDefault = true };
-        
+
         public bool IsDefault { get; set; } = false;
 
         // internal properties used in databinding

@@ -1,12 +1,9 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
@@ -165,7 +162,7 @@ namespace Unicord.Universal.Integration
         {
             var tempFile = await folder.GetFileAsync($"{relationship.User.AvatarHash}.jpeg");
 
-            if(tempFile != null)
+            if (tempFile != null)
             {
                 tempFile = await folder.CreateFileAsync($"{relationship.User.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
 

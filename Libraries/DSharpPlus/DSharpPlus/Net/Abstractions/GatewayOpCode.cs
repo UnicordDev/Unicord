@@ -24,7 +24,7 @@
         /// Used to update client status.
         /// </summary>
         StatusUpdate = 3,
-        
+
         /// <summary>
         /// Used to update voice state, when joining, leaving, or moving between voice channels.
         /// </summary>

@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using DSharpPlus.Net;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Exceptions
 {
@@ -23,7 +23,7 @@ namespace DSharpPlus.Exceptions
         /// Gets the JSON received.
         /// </summary>
         public string JsonMessage { get; internal set; }
-        
+
         internal UnauthorizedException(BaseRestRequest request, RestResponse response) : base("Unauthorized: " + response.ResponseCode)
         {
             WebRequest = request;

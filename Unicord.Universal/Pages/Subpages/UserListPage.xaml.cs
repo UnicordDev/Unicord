@@ -1,5 +1,4 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Misc;
 using Windows.Foundation;

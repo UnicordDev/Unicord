@@ -69,16 +69,16 @@ namespace DSharpPlus.Net
         /// Asynchronously waits for this request to complete.
         /// </summary>
         /// <returns>HTTP response to this request.</returns>
-        public Task<RestResponse> WaitForCompletionAsync() 
+        public Task<RestResponse> WaitForCompletionAsync()
             => RequestTaskSource.Task;
 
-        protected internal void SetCompleted(RestResponse response) 
+        protected internal void SetCompleted(RestResponse response)
             => RequestTaskSource.SetResult(response);
 
-        protected internal void SetFaulted(Exception ex) 
+        protected internal void SetFaulted(Exception ex)
             => RequestTaskSource.SetException(ex);
 
-        protected internal bool TrySetFaulted(Exception ex) 
+        protected internal bool TrySetFaulted(Exception ex)
             => RequestTaskSource.TrySetException(ex);
     }
 }

@@ -79,7 +79,7 @@ namespace WamWooWam.Parsers.Markdown.Render
         /// </summary>
         /// <param name="element"> The parsed inline element to render. </param>
         /// <param name="context"> Persistent state. </param>
-        protected abstract void RenderStrikethroughRun(StrikethroughTextInline element, IRenderContext context);        
+        protected abstract void RenderStrikethroughRun(StrikethroughTextInline element, IRenderContext context);
 
         /// <summary>
         /// Renders a code element

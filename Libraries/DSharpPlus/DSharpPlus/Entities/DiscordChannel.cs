@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Net.Abstractions;
-using Newtonsoft.Json;
 using DSharpPlus.Net.Models;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -61,7 +61,7 @@ namespace DSharpPlus.Entities
         /// Gets the position of this channel.
         /// </summary>
         [JsonProperty("position", NullValueHandling = NullValueHandling.Ignore)]
-        public int Position { get; set; }        
+        public int Position { get; set; }
 
         /// <summary>
         /// Gets whether this channel is a DM channel.
@@ -393,7 +393,7 @@ namespace DSharpPlus.Entities
                 return msg;
             }
 
-            if(!cacheOnly)
+            if (!cacheOnly)
             {
                 return await Discord.ApiClient.GetMessageAsync(Id, id).ConfigureAwait(false);
             }

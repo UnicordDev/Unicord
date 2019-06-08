@@ -11,7 +11,7 @@ namespace DSharpPlus.Net.Udp
         /// <summary>
         /// Gets the amount of data available for this client.
         /// </summary>
-        public override int DataAvailable 
+        public override int DataAvailable
             => Client.Available;
 
         private UdpClient Client { get; set; }

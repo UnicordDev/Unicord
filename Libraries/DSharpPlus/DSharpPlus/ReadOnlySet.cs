@@ -33,7 +33,7 @@ namespace DSharpPlus
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<T> GetEnumerator()
             => _underlyingSet.GetEnumerator();
-        
+
         /// <summary>
         /// Returns an enumerator that iterates through this set view.
         /// </summary>

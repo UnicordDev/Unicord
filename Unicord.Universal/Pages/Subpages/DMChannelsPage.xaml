@@ -15,7 +15,7 @@
     <Page.DataContext>
         <models:DMChannelsViewModel />
     </Page.DataContext>
-    
+
     <Grid>
         <ListView
             x:Name="dmsList"

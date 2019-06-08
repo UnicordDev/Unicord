@@ -17,7 +17,7 @@ namespace DSharpPlus.Net.Models
         public Optional<DiscordMember> Owner { internal get; set; }
         public Optional<Stream> Splash { internal get; set; }
         public Optional<DiscordChannel> SystemChannel { internal get; set; }
-        
+
         internal GuildEditModel()
         {
 

@@ -59,7 +59,7 @@
             <commands:CopyUrlCommand x:Key="CopyUrlCommand"/>
             <commands:AcknowledgeCommand x:Key="AcknowledgeCommand"/>
             <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand"/>
-            
+
 
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="Transparent"/>

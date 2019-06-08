@@ -1,34 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.HockeyApp;
 using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Controls
 {

@@ -198,15 +198,15 @@
         <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
-        
+
         <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
-        
+
         <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
         <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
         <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
-        
+
     </MenuFlyout>
 
     <MenuFlyout x:Key="GuildMenuFlyout">
@@ -228,7 +228,7 @@
         <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
 
         <MenuFlyoutSeparator />
-        
+
         <MenuFlyoutItem Text="Change Nickname" Icon="Rename" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding CurrentMember}"/>
         <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
 

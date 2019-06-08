@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus.Net;
 using Newtonsoft.Json;
@@ -47,7 +47,7 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Gets the default avatar url for this webhook.
         /// </summary>
-        public string AvatarUrl 
+        public string AvatarUrl
             => $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png?size=1024";
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace DSharpPlus.Entities
         /// Permanently deletes this webhook.
         /// </summary>
         /// <returns></returns>
-        public Task DeleteAsync() 
+        public Task DeleteAsync()
             => Discord.ApiClient.DeleteWebhookAsync(Id, Token);
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace DSharpPlus.Entities
         /// <param name="tts">Whether the message is to be spoken aloud.</param>
         /// <param name="embeds">Embeds to attach to the message being sent.</param>
         /// <returns></returns>
-        public Task ExecuteAsync(string content = null, string username = null, string avatar_url = null, bool tts = false, IEnumerable<DiscordEmbed> embeds = null) 
+        public Task ExecuteAsync(string content = null, string username = null, string avatar_url = null, bool tts = false, IEnumerable<DiscordEmbed> embeds = null)
             => (Discord?.ApiClient ?? ApiClient).ExecuteWebhookAsync(Id, Token, content, username, avatar_url, tts, embeds);
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <param name="json">JSON containing Slack-compatible payload for this webhook.</param>
         /// <returns></returns>
-        public Task ExecuteSlackAsync(string json) 
+        public Task ExecuteSlackAsync(string json)
             => (Discord?.ApiClient ?? ApiClient).ExecuteWebhookSlackAsync(Id, Token, json);
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <param name="json">JSON containing GitHub-compatible payload for this webhook.</param>
         /// <returns></returns>
-        public Task ExecuteGithubAsync(string json) 
+        public Task ExecuteGithubAsync(string json)
             => (Discord?.ApiClient ?? ApiClient).ExecuteWebhookGithubAsync(Id, Token, json);
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace DSharpPlus.Entities
         /// <param name="e1">First webhook to compare.</param>
         /// <param name="e2">Second webhook to compare.</param>
         /// <returns>Whether the two webhooks are not equal.</returns>
-        public static bool operator !=(DiscordWebhook e1, DiscordWebhook e2) 
+        public static bool operator !=(DiscordWebhook e1, DiscordWebhook e2)
             => !(e1 == e2);
     }
 }

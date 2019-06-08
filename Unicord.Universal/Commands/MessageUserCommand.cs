@@ -1,14 +1,9 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Unicord.Universal.Pages;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 

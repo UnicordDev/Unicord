@@ -13,7 +13,7 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class DiscordDmChannel : DiscordChannel
     {
-        private string _iconHash;       
+        private string _iconHash;
 
         /// <summary>
         /// Gets the recipients of this direct message.

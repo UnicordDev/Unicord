@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using DSharpPlus;
 
 namespace Unicord.Universal.Misc
@@ -21,7 +16,7 @@ namespace Unicord.Universal.Misc
 
         public bool GetMutedChannel(ulong id)
         {
-            if(_mutedChannelStore.TryGetValue(id, out var muted))
+            if (_mutedChannelStore.TryGetValue(id, out var muted))
             {
                 return muted;
             }

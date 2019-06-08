@@ -16,7 +16,7 @@ namespace DSharpPlus.EventArgs
         /// Gets the close message sent by remote host.
         /// </summary>
         public string CloseMessage { get; set; }
-        
+
         public SocketCloseEventArgs(DiscordClient client) : base(client) { }
     }
 

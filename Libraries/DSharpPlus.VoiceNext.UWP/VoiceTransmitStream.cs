@@ -69,7 +69,7 @@ namespace DSharpPlus.VoiceNext
         private byte[] PcmBuffer { get; }
         private Memory<byte> PcmMemory { get; }
         private int PcmBufferLength { get; set; }
-        
+
         private List<IVoiceFilter> Filters { get; }
 
         internal VoiceTransmitStream(VoiceNextConnection vnc, int pcmBufferDuration)

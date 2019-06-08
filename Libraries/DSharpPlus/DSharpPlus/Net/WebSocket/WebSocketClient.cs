@@ -1,5 +1,4 @@
-﻿using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +9,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.EventArgs;
 
 namespace DSharpPlus.Net.WebSocket
 {

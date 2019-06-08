@@ -21,7 +21,7 @@
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
         <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
         <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
-        
+
         <Storyboard x:Key="OpenSettingsDesktopStoryboard" x:Name="OpenSettingsDesktopStoryboard" Completed="OpenSettingsStoryboard_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseEnter}"
@@ -230,7 +230,7 @@
                 Storyboard.TargetProperty="Opacity"
                 To="1"
                 Duration="00:00:00.00" />
-            
+
             <DoubleAnimation
                 x:Name="CustomOpenAnimation"
                 EasingFunction="{StaticResource EaseEnter}"

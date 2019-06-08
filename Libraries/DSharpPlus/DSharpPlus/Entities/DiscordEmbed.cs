@@ -48,7 +48,7 @@ namespace DSharpPlus.Entities
         /// Gets the embed's color.
         /// </summary>
         [JsonIgnore]
-        public Optional<DiscordColor> Color 
+        public Optional<DiscordColor> Color
             => _color.HasValue ? new DiscordColor(_color.Value) : default;
 
         [JsonProperty("color", NullValueHandling = NullValueHandling.Include)]

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -26,7 +24,7 @@ namespace Unicord.Universal.Integration
                     string group = null;
                     StorageFile file = null;
 
-                    var arguments = $"-channelId={channel.Id}"; 
+                    var arguments = $"-channelId={channel.Id}";
 
                     if (channel.Guild != null)
                     {

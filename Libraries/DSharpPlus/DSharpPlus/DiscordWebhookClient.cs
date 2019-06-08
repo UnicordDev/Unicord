@@ -233,7 +233,7 @@ namespace DSharpPlus
         public async Task BroadcastMessageAsync(string content = null, List<DiscordEmbed> embeds = null, bool tts = false, string username_override = null, string avatar_override = null)
         {
             var deadhooks = new List<DiscordWebhook>();
-            foreach(var hook in _hooks)
+            foreach (var hook in _hooks)
             {
                 try
                 {

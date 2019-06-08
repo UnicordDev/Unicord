@@ -1,9 +1,9 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
 
 namespace DSharpPlus.Net.Models
 {
@@ -14,7 +14,7 @@ namespace DSharpPlus.Net.Models
         public Optional<bool> Muted { internal get; set; }
         public Optional<bool> Deafened { internal get; set; }
         public Optional<DiscordChannel> VoiceChannel { internal get; set; }
-        
+
         internal MemberEditModel()
         {
 

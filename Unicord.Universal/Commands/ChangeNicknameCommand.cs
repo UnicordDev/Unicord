@@ -1,11 +1,8 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
 

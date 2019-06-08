@@ -1,14 +1,9 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 
 namespace Unicord.Universal.Commands
 {
@@ -51,7 +46,7 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
-            if(parameter is DiscordMessage message)
+            if (parameter is DiscordMessage message)
             {
                 var dialog = new DeleteMessageDialog(message);
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)

@@ -14,7 +14,7 @@ namespace DSharpPlus
 
         private TaskCompletionSource<bool> _tsc;
 
-        public AsyncManualResetEvent() 
+        public AsyncManualResetEvent()
             : this(false)
         { }
 

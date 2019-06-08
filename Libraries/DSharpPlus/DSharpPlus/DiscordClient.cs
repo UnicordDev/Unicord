@@ -1,13 +1,4 @@
 ﻿#pragma warning disable CS0618
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
-using DSharpPlus.Net;
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Serialization;
-using DSharpPlus.Net.WebSocket;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,6 +12,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
+using DSharpPlus.Net;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Serialization;
+using DSharpPlus.Net.WebSocket;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus
 {

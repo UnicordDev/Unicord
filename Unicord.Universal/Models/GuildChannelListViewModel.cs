@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -120,7 +119,7 @@ namespace Unicord.Universal.Models
                     if (e.ChannelAfter.Type == ChannelType.Category)
                     {
                         // if it's a category, move the category    
-                        
+
                         var i = e.Guild.Channels.Values
                             .Where(c => c.Type == ChannelType.Category)
                             .OrderBy(c => c.Position)
@@ -301,10 +300,10 @@ namespace Unicord.Universal.Models
         }
     }
 
-    public class GuildChannelGroup : 
-        IGrouping<DiscordChannel, DiscordChannel>, 
+    public class GuildChannelGroup :
+        IGrouping<DiscordChannel, DiscordChannel>,
         ICollection<DiscordChannel>,
-        IList<DiscordChannel>, 
+        IList<DiscordChannel>,
         IComparable<DiscordChannel>,
         IList, INotifyCollectionChanged
     {

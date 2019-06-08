@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Unicord
+﻿namespace Unicord
 {
     public static partial class Constants
     {
@@ -37,7 +31,7 @@ namespace Unicord
         public const string MINI_MODE_SNAP_ENABLED = "MiniModeSnap";
 
         public const string ENABLE_ANALYTICS = "EnableAnalytics";
-        
+
         public const string SYNC_CONTACTS = "SyncContacts";
         public const string AUDIOPHILE_MODE = "AudiophileMode";
 
@@ -69,7 +63,7 @@ namespace Unicord
         WhenNeeded,
         Never
     }
-       
+
     public enum TimestampStyle
     {
         Relative,

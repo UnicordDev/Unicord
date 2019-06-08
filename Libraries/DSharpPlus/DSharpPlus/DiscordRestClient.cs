@@ -1,12 +1,12 @@
-﻿using DSharpPlus.Entities;
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Models;
 
 namespace DSharpPlus
 {

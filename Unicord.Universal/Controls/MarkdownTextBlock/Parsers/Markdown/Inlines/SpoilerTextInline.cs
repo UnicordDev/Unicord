@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
-using WamWooWam.Parsers.Core;
 using WamWooWam.Parsers.Markdown.Helpers;
 
 namespace WamWooWam.Parsers.Markdown.Inlines

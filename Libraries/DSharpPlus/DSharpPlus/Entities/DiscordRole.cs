@@ -1,8 +1,8 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Net.Abstractions;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {

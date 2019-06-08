@@ -95,7 +95,7 @@ namespace DSharpPlus.Net
             var webhook_id = rparams.ContainsKey("webhook_id") ? rparams["webhook_id"] : "";
 
             var id = RateLimitBucket.GenerateId(method, route, guild_id, channel_id, webhook_id);
-            
+
             // using the GetOrAdd version with the factory has no advantages as it will allocate the delegate, closure object and bucket (if needed) instead of just the bucket 
             RateLimitBucket bucket = Buckets.GetOrAdd(id, new RateLimitBucket(method, route, guild_id, channel_id, webhook_id));
 
@@ -112,7 +112,7 @@ namespace DSharpPlus.Net
 
             return ExecuteRequestAsync(request, null, null);
         }
-        
+
         // to allow proper rescheduling of the first request from a bucket
         private async Task ExecuteRequestAsync(BaseRestRequest request, RateLimitBucket bucket, TaskCompletionSource<bool> ratelimitTcs)
         {

@@ -35,7 +35,7 @@ namespace DSharpPlus.Net.Abstractions
                 {
                     case UserStatus.Online:
                         return "online";
-                        
+
                     case UserStatus.Idle:
                         return "idle";
 

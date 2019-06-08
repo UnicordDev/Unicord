@@ -1,7 +1,6 @@
 ﻿using System;
 using Windows.Storage.FileProperties;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Converters

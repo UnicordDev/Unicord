@@ -18,7 +18,7 @@ namespace Unicord.Universal.Resources
 
         private void SwipeItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
         {
-            if(args.SwipeControl.DataContext is DiscordChannel channel)
+            if (args.SwipeControl.DataContext is DiscordChannel channel)
             {
                 channel.Muted = !channel.Muted;
             }

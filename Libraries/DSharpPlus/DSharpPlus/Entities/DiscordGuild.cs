@@ -1,9 +1,4 @@
 ﻿#pragma warning disable CS0618
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Models;
-using DSharpPlus.Net.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,6 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Models;
+using DSharpPlus.Net.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Entities
 {
@@ -329,7 +329,7 @@ namespace DSharpPlus.Entities
         // [JsonIgnore]
         // public IEnumerable<DiscordChannel> OrderedChannels 
         //    => this._channels.OrderBy(xc => xc.Parent?.Position).ThenBy(xc => xc.Type).ThenBy(xc => xc.Position);
-        
+
         public bool Muted
         {
             get => Discord.Configuration.MutedStore.GetMutedGuild(Id);

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using WamWooWam.Parsers.Markdown.Helpers;
 
 namespace WamWooWam.Parsers.Markdown.Inlines
@@ -97,7 +93,7 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                 default:
                     return null;
             }
-            
+
             if (ulong.TryParse(builder.ToString(), out var id))
             {
                 return new InlineParseResult(new DiscordInline() { Id = id, DiscordType = type }, innerStart - 1, innerEnd + 1);

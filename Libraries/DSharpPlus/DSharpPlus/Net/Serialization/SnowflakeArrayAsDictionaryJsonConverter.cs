@@ -37,22 +37,22 @@ namespace DSharpPlus.Net.Serialization
             var constructor = objectType.GetTypeInfo().DeclaredConstructors
                 .FirstOrDefault(e => e.GetParameters().Length == 0);
 
-            var dict = constructor.Invoke(new object[] {});
+            var dict = constructor.Invoke(new object[] { });
 
             // the default name of an indexer is "Item"
             var properties = objectType.GetTypeInfo().GetDeclaredProperty("Item");
 
-            var entries = (IEnumerable) serializer.Deserialize(reader, objectType.GenericTypeArguments[1].MakeArrayType());
+            var entries = (IEnumerable)serializer.Deserialize(reader, objectType.GenericTypeArguments[1].MakeArrayType());
             foreach (var entry in entries)
             {
                 properties.SetValue(dict, entry, new object[]
                 {
-                    (entry as SnowflakeObject)?.Id 
-                    ?? (entry as DiscordVoiceState)?.UserId 
+                    (entry as SnowflakeObject)?.Id
+                    ?? (entry as DiscordVoiceState)?.UserId
                     ?? throw new InvalidOperationException($"Type {entry?.GetType()} is not deserializable")
                 });
             }
-            
+
             return dict;
         }
 

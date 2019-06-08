@@ -27,7 +27,7 @@
                     <lib:PersonPicture x:Name="iconImage" Visibility="{Binding Key.IconUrl, Converter={StaticResource HideOnNullConverter}}" Width="24" Height="24" ProfilePicture="{Binding Key.IconUrl}" DisplayName="{x:Bind Key.Name}" />
                     <TextBlock x:Name="iconText" Visibility="{x:Bind Key.IconCharacter, Converter={StaticResource HideOnNullConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Text="{x:Bind Key.IconCharacter}" />
                 </Grid>
-                
+
                 <TextBlock FontSize="14" VerticalAlignment="Center" Grid.Column="1" Text="{Binding Key.Name}"/>
             </Grid>
         </DataTemplate>

@@ -1,6 +1,3 @@
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +5,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Models;
+using Newtonsoft.Json;
 
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Media;

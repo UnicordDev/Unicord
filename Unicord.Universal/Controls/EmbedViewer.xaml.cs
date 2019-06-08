@@ -2,28 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Embeds;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Media.Core;
-using Windows.Networking.Connectivity;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 
 namespace Unicord.Universal.Controls
@@ -33,7 +26,7 @@ namespace Unicord.Universal.Controls
         private DiscordEmbed _embed;
         private DiscordChannel _channel;
         private bool _mediaPlayerPlaying = false;
-        private MediaPlayerElement _mediaPlayer;        
+        private MediaPlayerElement _mediaPlayer;
 
         public EmbedViewer()
         {

@@ -1,8 +1,8 @@
-﻿using DSharpPlus.Net.Abstractions;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using DSharpPlus.Net.Abstractions;
+using Newtonsoft.Json;
 
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Media;
@@ -105,7 +105,7 @@ namespace DSharpPlus.Entities
         [JsonIgnore]
         public virtual string NonAnimatedAvatarUrl
             => !string.IsNullOrWhiteSpace(AvatarHash) ? $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png?size=128" : DefaultAvatarUrl;
-        
+
         /// <summary>
         /// Gets the URL of default avatar for this user.
         /// </summary>

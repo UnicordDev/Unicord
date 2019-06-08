@@ -1,33 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
-using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
-using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-using Windows.Web.Http;
 
 namespace Unicord.Universal.Pages
 {

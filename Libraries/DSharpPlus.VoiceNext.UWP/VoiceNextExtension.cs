@@ -47,7 +47,7 @@ namespace DSharpPlus.VoiceNext
             if (Client != null)
                 throw new InvalidOperationException("What did I tell you?");
 
-            Client = client;            
+            Client = client;
             Client.VoiceStateUpdated += Client_VoiceStateUpdate;
             Client.VoiceServerUpdated += Client_VoiceServerUpdate;
 
@@ -91,7 +91,7 @@ namespace DSharpPlus.VoiceNext
             };
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
             (channel.Discord as DiscordClient)._webSocketClient.SendMessage(vsj);
-            
+
             var vstu = await vstut.Task.ConfigureAwait(false);
             var vstup = new VoiceStateUpdatePayload
             {
@@ -105,7 +105,7 @@ namespace DSharpPlus.VoiceNext
                 GuildId = vsru.Guild.Id,
                 Token = vsru.VoiceToken
             };
-            
+
             var vnc = new VoiceNextConnection(Client, gld, channel, Configuration, vsrup, vstup);
             vnc.VoiceDisconnected += Vnc_VoiceDisconnected;
             await vnc.ConnectAsync().ConfigureAwait(false);

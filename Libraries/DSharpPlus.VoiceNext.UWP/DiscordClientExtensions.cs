@@ -14,7 +14,7 @@ namespace DSharpPlus.VoiceNext
         /// </summary>
         /// <param name="client">Discord client to create VoiceNext instance for.</param>
         /// <returns>VoiceNext client instance.</returns>
-        public static VoiceNextExtension UseVoiceNext(this DiscordClient client) 
+        public static VoiceNextExtension UseVoiceNext(this DiscordClient client)
             => UseVoiceNext(client, new VoiceNextConfiguration());
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace DSharpPlus.VoiceNext
         /// </summary>
         /// <param name="client">Discord client to get VoiceNext instance for.</param>
         /// <returns>VoiceNext client instance.</returns>
-        public static VoiceNextExtension GetVoiceNext(this DiscordClient client) 
+        public static VoiceNextExtension GetVoiceNext(this DiscordClient client)
             => client.GetExtension<VoiceNextExtension>();
 
         /// <summary>

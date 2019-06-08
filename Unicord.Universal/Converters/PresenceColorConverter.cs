@@ -1,9 +1,5 @@
-﻿using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using DSharpPlus.Entities;
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 
@@ -20,7 +16,7 @@ namespace Unicord.Universal.Converters
             {
                 return Colors.Purple;
             }
-            
+
             switch (v?.Status ?? UserStatus.Offline)
             {
                 case UserStatus.Offline:
@@ -48,7 +44,7 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if(!(value is DiscordActivity activity))
+            if (!(value is DiscordActivity activity))
             {
                 var v = value as DiscordPresence;
                 activity = v?.Activity;

@@ -48,15 +48,15 @@ namespace DSharpPlus.Net.Abstractions
         public object OldValue { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<JObject> OldValues 
+        public IEnumerable<JObject> OldValues
             => (OldValue as JArray)?.ToObject<IEnumerable<JObject>>();
 
         [JsonIgnore]
-        public ulong OldValueUlong 
+        public ulong OldValueUlong
             => (ulong)OldValue;
 
         [JsonIgnore]
-        public string OldValueString 
+        public string OldValueString
             => (string)OldValue;
 
         // this can be a string or an array
@@ -64,15 +64,15 @@ namespace DSharpPlus.Net.Abstractions
         public object NewValue { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<JObject> NewValues 
+        public IEnumerable<JObject> NewValues
             => (NewValue as JArray)?.ToObject<IEnumerable<JObject>>();
 
         [JsonIgnore]
-        public ulong NewValueUlong 
+        public ulong NewValueUlong
             => (ulong)NewValue;
 
         [JsonIgnore]
-        public string NewValueString 
+        public string NewValueString
             => (string)NewValue;
 
         [JsonProperty("key")]
@@ -92,7 +92,7 @@ namespace DSharpPlus.Net.Abstractions
 
         [JsonProperty("count")]
         public int MessageCount { get; set; }
-        
+
         [JsonProperty("delete_member_days")]
         public int DeleteMemberDays { get; set; }
 

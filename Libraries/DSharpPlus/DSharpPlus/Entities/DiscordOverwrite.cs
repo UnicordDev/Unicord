@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Threading.Tasks;
-using System;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -48,7 +48,7 @@ namespace DSharpPlus.Entities
         public Task UpdateAsync(Permissions? allow = null, Permissions? deny = null, string reason = null)
             => Discord.ApiClient.EditChannelPermissionsAsync(_channel_id, Id, allow ?? Allowed, deny ?? Denied, Type.ToString().ToLowerInvariant(), reason);
         #endregion
-        
+
         /// <summary>
         /// Gets the DiscordMember that is affected by this overwrite.
         /// </summary>

@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
-using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Controls
@@ -139,7 +131,7 @@ namespace Unicord.Universal.Controls
 
         private void Current_VisibilityChanged(object sender, Windows.UI.Core.VisibilityChangedEventArgs e)
         {
-            if(_img != null)
+            if (_img != null)
             {
                 if (e.Visible)
                 {

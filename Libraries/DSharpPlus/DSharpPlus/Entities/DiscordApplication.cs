@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -20,7 +20,7 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Gets the application's icon.
         /// </summary>
-        public string Icon 
+        public string Icon
             => !string.IsNullOrWhiteSpace(IconHash) ? $"https://cdn.discordapp.com/app-icons/{Id.ToString(CultureInfo.InvariantCulture)}/{IconHash}.png?size=1024" : null;
 
         [JsonProperty("icon", NullValueHandling = NullValueHandling.Ignore)]
@@ -72,7 +72,7 @@ namespace DSharpPlus.Entities
         /// Gets this application's cover image URL.
         /// </summary>
         [JsonIgnore]
-        public string CoverImageUrl 
+        public string CoverImageUrl
             => $"https://cdn.discordapp.com/app-icons/{Id.ToString(CultureInfo.InvariantCulture)}/{CoverImageHash}.png?size=1024";
 
         [JsonIgnore]
@@ -225,7 +225,7 @@ namespace DSharpPlus.Entities
         /// <param name="e1">First application to compare.</param>
         /// <param name="e2">Second application to compare.</param>
         /// <returns>Whether the two applications are not equal.</returns>
-        public static bool operator !=(DiscordApplication e1, DiscordApplication e2) 
+        public static bool operator !=(DiscordApplication e1, DiscordApplication e2)
             => !(e1 == e2);
     }
 
@@ -272,7 +272,7 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Gets the Url of this asset.
         /// </summary>
-        public override Uri Url 
+        public override Uri Url
             => new Uri($"https://cdn.discordapp.com/app-assets/{Application.Id.ToString(CultureInfo.InvariantCulture)}/{Id}.png");
 
         internal DiscordApplicationAsset() { }
@@ -345,7 +345,7 @@ namespace DSharpPlus.Entities
         /// <param name="e1">First application asset to compare.</param>
         /// <param name="e2">Second application asset to compare.</param>
         /// <returns>Whether the two application assets are not equal.</returns>
-        public static bool operator !=(DiscordApplicationAsset e1, DiscordApplicationAsset e2) 
+        public static bool operator !=(DiscordApplicationAsset e1, DiscordApplicationAsset e2)
             => !(e1 == e2);
     }
 
