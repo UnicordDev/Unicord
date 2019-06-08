@@ -51,7 +51,7 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
-            if(parameter is DiscordMessage message)
+            if (parameter is DiscordMessage message)
             {
                 var dialog = new DeleteMessageDialog(message);
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)

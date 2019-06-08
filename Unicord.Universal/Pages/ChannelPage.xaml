@@ -106,7 +106,7 @@
                 To="0"
                 Duration="00:00:00.33" />
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseOut}"
                 Storyboard.TargetName="BottomGridTransform"
                 Storyboard.TargetProperty="Y"
                 To="50"
@@ -460,7 +460,6 @@
                             <Grid Width="42" Margin="0,0,4,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
-                                    <wNone:RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Button
@@ -469,14 +468,6 @@
                                     VerticalAlignment="Stretch"
                                     Click="OpenPopoutButton_Click"
                                     Content="&#xE8A7;"
-                                    Style="{ThemeResource StretchyIconButtonStyle}" />
-                                <wNone:Button
-                                    x:Name="captureButton"
-                                    Grid.Row="1"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Click="CaptureButton_Click"
-                                    Content="&#xE722;"
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                                 <Button
                                     x:Name="openLocalButton"
@@ -498,37 +489,6 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                 ScrollViewer.VerticalScrollMode="Disabled"
                                 SelectionChanged="SelectionHandler">
-                                <wNone:ListView.Header>
-                                    <Grid MinWidth="200" Margin="0,0,8,0">
-                                        <controls:CameraPreview x:Name="cameraPreview" PreviewFailed="CameraPreview_PreviewFailed" />
-                                        <Grid
-                                            x:Name="previewFailed"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch"
-                                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                                            Tapped="PreviewFailed_Tapped"
-                                            Visibility="Collapsed">
-                                            <controls:DropShadowPanel
-                                                VerticalAlignment="Center"
-                                                HorizontalContentAlignment="Center"
-                                                BlurRadius="8"
-                                                OffsetX="-16"
-                                                ShadowOpacity="1"
-                                                Color="Black">
-                                                <TextBlock
-                                                    FontFamily="Segoe MDL2 Assets"
-                                                    FontSize="32"
-                                                    Text="&#xE7BA;" />
-                                            </controls:DropShadowPanel>
-                                        </Grid>
-                                        <ProgressRing
-                                            x:Name="loadingCameraRing"
-                                            Width="16"
-                                            Height="16"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center" />
-                                    </Grid>
-                                </wNone:ListView.Header>
                                 <ListView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ItemsStackPanel Orientation="Horizontal" />

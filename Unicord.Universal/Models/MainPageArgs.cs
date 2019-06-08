@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.ViewManagement;
 
 namespace Unicord.Universal.Models
 {
@@ -10,7 +11,8 @@ namespace Unicord.Universal.Models
     {
         public ulong ChannelId { get; internal set; }
         public bool IsUriActivation { get; internal set; }
-        internal ulong UserId { get; set; }
-        internal bool FullFrame { get; set; }
+        public ulong UserId { get; set; }
+        public bool FullFrame { get; set; }
+        public ApplicationViewMode ViewMode { get; internal set; }
     }
 }

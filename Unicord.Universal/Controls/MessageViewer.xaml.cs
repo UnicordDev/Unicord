@@ -1,9 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.HockeyApp;
-using NeoSmart.Unicode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,6 +9,11 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.HockeyApp;
+using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
@@ -75,7 +75,7 @@ namespace Unicord.Universal.Controls
         private bool CanEdit => Message?.Author.Id == App.Discord?.CurrentUser.Id;
 
         public bool ShowBottomSeparator =>
-            CanEdit || DeleteMessageCommand.Instance.CanExecute(Message);
+            CanEdit || (DeleteMessageCommand.Instance?.CanExecute(Message) ?? false);
 
         public Visibility CollapsedVisibility
         {
@@ -96,15 +96,7 @@ namespace Unicord.Universal.Controls
             if (_timestampTimer == null)
             {
                 _timestampTimer = new ThreadLocal<DispatcherTimer>(() =>
-                    new DispatcherTimer()
-                    {
-#if DEBUG
-                        Interval = TimeSpan.FromSeconds(10)
-#else
-                        Interval = TimeSpan.FromMinutes(1)
-#endif
-                    });
-
+                    new DispatcherTimer() { Interval = TimeSpan.FromSeconds(30) });
                 _timestampTimer.Value.Start();
             }
         }

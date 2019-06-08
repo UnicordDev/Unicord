@@ -1,9 +1,9 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -37,7 +37,7 @@ namespace Unicord.Universal
         public Frame RootFrame => rootFrame;
 
         private ShareOperation _shareOperation;
-        private MainPageArgs _args;
+        internal MainPageArgs Arguments { get; private set; }
 
         private RoutedEventHandler _openHandler;
         private RoutedEventHandler _saveHandler;
@@ -62,7 +62,7 @@ namespace Unicord.Universal
             switch (e.Parameter)
             {
                 case MainPageArgs args:
-                    _args = args;
+                    Arguments = args;
                     break;
                 case ShareOperation operation:
                     _shareOperation = operation;
@@ -164,16 +164,16 @@ namespace Unicord.Universal
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
-            if (_args != null)
+            if (Arguments != null)
             {
-                if (_args.FullFrame)
+                if (Arguments.FullFrame)
                 {
                     await GoToChannelAsync(App.Discord);
                 }
                 else
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        rootFrame.Navigate(typeof(DiscordPage), _args));
+                        rootFrame.Navigate(typeof(DiscordPage), Arguments));
                 }
             }
             else if (_shareOperation != null)
@@ -195,11 +195,11 @@ namespace Unicord.Universal
 
             var dm = e.PrivateChannels.Values
                 .Concat(guildChannels)
-                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == _args.UserId || c.Id == _args.ChannelId : c.Id == _args.ChannelId);
+                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == Arguments.UserId || c.Id == Arguments.ChannelId : c.Id == Arguments.ChannelId);
 
-            if (dm == null && _args.UserId != 0)
+            if (dm == null && Arguments.UserId != 0)
             {
-                dm = await App.Discord.CreateDmChannelAsync(_args.UserId);
+                dm = await App.Discord.CreateDmChannelAsync(Arguments.UserId);
             }
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

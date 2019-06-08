@@ -81,7 +81,7 @@ namespace Unicord.Universal.Utilities
                 window.Content = frame;
                 window.Activate();
 
-                frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true });
+                frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true, ViewMode = mode });
 
                 var applicationView = ApplicationView.GetForCurrentView();
                 viewId = applicationView.Id;
@@ -183,12 +183,12 @@ namespace Unicord.Universal.Utilities
 
         }
 
-        public static void HandleTitleBarForGrid(Grid element)
+        public static void HandleTitleBarForGrid(Grid element, ApplicationViewMode mode = ApplicationViewMode.Default)
         {
             lock (_handledElements)
             {
-                if (_handledElements.Contains(element))
-                    return;
+                //if (_handledElements.Contains(element))
+                //    return;
 
                 var applicationView = ApplicationView.GetForCurrentView();
                 var coreApplicationView = CoreApplication.GetCurrentView();
@@ -209,7 +209,14 @@ namespace Unicord.Universal.Utilities
                     // this method captures "element" meaning the GC might not be able to collect it. 
                     void UpdateTitleBarLayout(CoreApplicationViewTitleBar titleBar, object ev)
                     {
-                        element.Padding = new Thickness(0, titleBar.Height, 0, 0);
+                        if (applicationView.ViewMode == ApplicationViewMode.CompactOverlay)
+                        {
+                            element.Padding = new Thickness(titleBar.SystemOverlayLeftInset / 2, 0, titleBar.SystemOverlayRightInset / 2, 0);
+                        }
+                        else
+                        {
+                            element.Padding = new Thickness(0, titleBar.Height, 0, 0);
+                        }
                     }
 
                     // i *believe* this handles it? not 100% sure
