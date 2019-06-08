@@ -97,6 +97,9 @@ namespace Unicord.Universal.Pages
         {
             try
             {
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested += Navigation_BackRequested;
+
                 App.Discord.MessageCreated += Notification_MessageCreated;
                 App.Discord.UserSettingsUpdated += Discord_UserSettingsUpdated;
                 App.Discord.GuildCreated += Discord_GuildCreated;
@@ -157,10 +160,45 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     friendsItem_Tapped(null, null);
                 }
+
+                await ContactListManager.UpdateContactsListAsync();
             }
             catch (Exception ex)
             {
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested -= Navigation_BackRequested;
+
+            if (App.Discord != null)
+            {
+                App.Discord.MessageCreated -= Notification_MessageCreated;
+                App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
+                App.Discord.GuildCreated -= Discord_GuildCreated;
+                App.Discord.GuildDeleted -= Discord_GuildDeleted;
+                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
+                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
+
+                foreach (var dm in App.Discord.PrivateChannels.Values)
+                {
+                    dm.PropertyChanged -= Dm_PropertyChanged;
+                }
+            }
+        }
+
+        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (e.Handled)
+                return;
+
+            if (SettingsOverlayGrid.Visibility == Visibility.Visible)
+            {
+                CloseSettings();
+                e.Handled = true;
             }
         }
 
@@ -222,24 +260,6 @@ namespace Unicord.Universal.Pages
                             _guilds.Move(_guilds.IndexOf(_guilds.First(g => g.Id == id)), i);
                         });
                     }
-                }
-            }
-        }
-
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (App.Discord != null)
-            {
-                App.Discord.MessageCreated -= Notification_MessageCreated;
-                App.Discord.UserSettingsUpdated -= Discord_UserSettingsUpdated;
-                App.Discord.GuildCreated -= Discord_GuildCreated;
-                App.Discord.GuildDeleted -= Discord_GuildDeleted;
-                App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
-                App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
-
-                foreach (var dm in App.Discord.PrivateChannels.Values)
-                {
-                    dm.PropertyChanged -= Dm_PropertyChanged;
                 }
             }
         }
@@ -565,6 +585,6 @@ namespace Unicord.Universal.Pages
         private void OpenSettingsStoryboard_Completed(object sender, object e)
         {
 
-        }        
+        }
     }
 }

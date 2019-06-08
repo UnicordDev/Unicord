@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Unicord.Universal.Commands;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -58,12 +59,13 @@ namespace Unicord.Universal.Dialogs
                 await Task.Run(() => App.Discord.Guilds.Values.Where(g => g.Members.ContainsKey(_user.Id)).OrderBy(g => g.Name));
 
             mutualServers.ItemsSource = mutualGuilds;
+        }
 
-            var imageAnimation =
-                ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
-            if (imageAnimation != null)
+        private void DropShadowPanel_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Escape)
             {
-                imageAnimation.TryStart(ellipse);
+                this.FindParent<MainPage>().HideOverlay();
             }
         }
     }

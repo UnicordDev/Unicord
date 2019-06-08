@@ -104,12 +104,8 @@ namespace Unicord.Universal.Pages
             if (e.Parameter is DiscordChannel chan)
             {
                 Application.Current.Suspending += OnSuspending;
-
-                if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
-                {
-                    var navigation = SystemNavigationManager.GetForCurrentView();
-                    navigation.BackRequested += Navigation_BackRequested;
-                }
+                var navigation = SystemNavigationManager.GetForCurrentView();
+                navigation.BackRequested += Navigation_BackRequested;
 
                 if (_viewModel?.IsEditMode == true)
                 {
@@ -139,7 +135,7 @@ namespace Unicord.Universal.Pages
                 var args = this.FindParent<MainPage>()?.Arguments;
                 WindowManager.HandleTitleBarForGrid(topGrid, args?.ViewMode ?? ApplicationViewMode.Default);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
-                
+
                 ViewModel = model;
                 DataContext = ViewModel;
 
@@ -157,12 +153,8 @@ namespace Unicord.Universal.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             Application.Current.Suspending -= OnSuspending;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.Core.SystemNavigationManager"))
-            {
-                var navigation = SystemNavigationManager.GetForCurrentView();
-                navigation.BackRequested -= Navigation_BackRequested;
-            }
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested -= Navigation_BackRequested;
         }
 
 
@@ -207,6 +199,9 @@ namespace Unicord.Universal.Pages
 
         private async void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
+            if (e.Handled)
+                return;
+
             this.FindParent<MainPage>()?.LeaveFullscreen();
             var last = _channelHistory.ElementAtOrDefault(_channelHistory.Count - 1);
             if (last != null)

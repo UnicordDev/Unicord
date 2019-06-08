@@ -278,9 +278,6 @@ namespace Unicord.Universal
                             {
                                 await onReady(e);
                             }
-
-                            var t = new Task(async () => await ContactListManager.UpdateContactsListAsync(), TaskCreationOptions.LongRunning);
-                            t.Start();
                         }
 
                         Task SocketErrored(SocketErrorEventArgs e)

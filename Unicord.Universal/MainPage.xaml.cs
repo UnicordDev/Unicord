@@ -44,6 +44,8 @@ namespace Unicord.Universal
         private RoutedEventHandler _shareHandler;
         private bool _isReady;
         private bool _visibility;
+        private FrameworkElement _fullscreenElement;
+        private Panel _fullscreenParent;
 
         public MainPage()
         {
@@ -86,6 +88,9 @@ namespace Unicord.Universal
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;
             pane.Hiding += Pane_Hiding;
+
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested += Navigation_BackRequested;
 
             try
             {
@@ -351,6 +356,9 @@ namespace Unicord.Universal
             fullscreenCanvas.Visibility = Visibility.Visible;
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
 
+            _fullscreenElement = element;
+            _fullscreenParent = parent;
+
             parent.Children.Remove(element);
             fullscreenCanvas.Children.Add(element);
             element.Width = double.NaN;
@@ -361,6 +369,9 @@ namespace Unicord.Universal
         {
             ApplicationView.GetForCurrentView().ExitFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+
+            _fullscreenElement = null;
+            _fullscreenParent = null;
 
             fullscreenCanvas.Children.Clear();
             fullscreenCanvas.Visibility = Visibility.Collapsed;
@@ -376,6 +387,9 @@ namespace Unicord.Universal
             element.Width = double.NaN;
             element.Height = double.NaN;
 
+            _fullscreenElement = null;
+            _fullscreenParent = null;
+
             fullscreenCanvas.Visibility = Visibility.Collapsed;
         }
 
@@ -389,6 +403,35 @@ namespace Unicord.Universal
         {
             everything.Margin = new Thickness(0);
             args.EnsuredFocusedElementInView = true;
+        }
+
+        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (fullscreenCanvas.Visibility == Visibility.Visible)
+            {
+                if(_fullscreenElement != null && _fullscreenParent != null)
+                {
+                    LeaveFullscreen(_fullscreenElement, _fullscreenParent);
+                }
+                else
+                {
+                    LeaveFullscreen();
+                }
+
+                e.Handled = true;
+            }
+
+            if (contentOverlay.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                hideContent.Begin();
+            }
+
+            if (userInfoOverlay.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                hideUserOverlay.Begin();
+            }
         }
     }
 }

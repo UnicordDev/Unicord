@@ -177,7 +177,6 @@ namespace Unicord.Universal.Models
         /// The suffix of the channel's display name. (i.e. #6402)
         /// </summary>
         public string ChannelSuffix =>
-            // BUGBUG: these should be localizable at some point
             Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipient.Discriminator}" : string.Empty;
 
         /// <summary>
@@ -301,6 +300,7 @@ namespace Unicord.Universal.Models
             => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public string SlowModeText
+            // BUGBUG: these should be localizable at some point
             => $"Messages can be sent every " +
             $"{TimeSpan.FromSeconds(Channel.PerUserRateLimit.GetValueOrDefault()).ToNaturalString()}!" +
             (ImmuneToSlowMode ? " But, you're immune!" : "");
@@ -327,7 +327,7 @@ namespace Unicord.Universal.Models
         }
 
         public bool ShowPopoutButton
-            => WindowManager.IsMainWindow;
+            => WindowManager.IsMainWindow && WindowManager.MultipleWindowsSupported;
 
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {

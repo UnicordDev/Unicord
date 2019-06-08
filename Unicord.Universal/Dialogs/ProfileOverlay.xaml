@@ -6,13 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Unicord.Universal.Controls"
-    xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
     x:DefaultBindMode="OneWay" mc:Ignorable="d" MaxWidth="550">
 
-    <controls1:DropShadowPanel VerticalAlignment="Center">
+    <toolkit:DropShadowPanel VerticalAlignment="Center" KeyUp="DropShadowPanel_PreviewKeyUp">
         <StackPanel>
             <Grid Padding="20" RequestedTheme="Dark">
                 <Grid.Background>
@@ -47,14 +47,13 @@
                     </Canvas>
                     <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
-                        <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                            <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}"
-                           Style="{ThemeResource SubtitleTextBlockStyle}">
-                        <Run Text="{x:Bind _member.DisplayName}"/>
+                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}" Style="{ThemeResource SubtitleTextBlockStyle}">
+                            <Run Text="{x:Bind _member.DisplayName}"/>
                         </TextBlock>
                         <TextBlock Grid.Row="2" Visibility="{x:Bind User.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}}">
-                        <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
+                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
                         </TextBlock>
                     </StackPanel>
                     <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
@@ -73,21 +72,21 @@
                 </Grid.Background>
                 <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
             </Grid>
-            <Grid Height="205" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-                <Pivot>
+            <Grid Height="200" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <Pivot SelectedIndex="0">
                     <Pivot.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                         </DataTemplate>
                     </Pivot.HeaderTemplate>
-                    <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}">
+                    <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}" >
                         <StackPanel>
                             <StackPanel x:Name="rolesList">
                                 <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                                 <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <controls1:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
+                                            <toolkit:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
@@ -126,5 +125,5 @@
                 </Pivot>
             </Grid>
         </StackPanel>
-    </controls1:DropShadowPanel>
+    </toolkit:DropShadowPanel>
 </UserControl>
