@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
