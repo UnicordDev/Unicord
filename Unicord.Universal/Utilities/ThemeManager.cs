@@ -13,6 +13,7 @@ using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
@@ -79,7 +80,53 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme.UseCompact });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
+            }
+        }
+
+        public static async Task LoadAsync(string themeName, ResourceDictionary target)
+        {
+            var selectedTheme = Theme.Default;
+
+            try
+            {
+                var localFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+                if (!(await localFolder.TryGetItemAsync(Strings.Normalise(themeName)) is StorageFolder themeFolder) ||
+                    !(await themeFolder.TryGetItemAsync("theme.json") is StorageFile themeDefinitionFile))
+                {
+                    throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
+                }
+
+                selectedTheme = JsonConvert.DeserializeObject<Theme>(await FileIO.ReadTextAsync(themeDefinitionFile));
+
+                foreach (var file in (await themeFolder.GetFilesAsync()).Where(f => Path.GetExtension(f.Name) == ".xaml"))
+                {
+                    Exception exception = null;
+                    var text = await FileIO.ReadTextAsync(file);
+                    await target.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        try
+                        {
+                            var obj = XamlReader.Load(text);
+                            if (obj is ResourceDictionary dictionary)
+                            {
+                                target.MergedDictionaries.Add(dictionary);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            exception = ex;
+                        }
+                    });
+
+                    if (exception != null)
+                        throw exception;
+                }
+            }
+            finally
+            {
+                // ensure XamlControlsResources gets loaded even if theme loading itself fails
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
             }
         }
 

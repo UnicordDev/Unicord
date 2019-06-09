@@ -45,11 +45,12 @@ namespace Unicord.Universal.Pages.Settings
             (DataContext as ThemesSettingsModel).PropertyChanged += ThemesSettingsPage_PropertyChanged;
         }
 
-        private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is ThemesSettingsModel model)
             {
-                if (model.ColourScheme != _initialColour || (model.SelectedTheme as Theme)?.Name != _initialTheme)
+                var theme = model.SelectedTheme as Theme;
+                if (model.ColourScheme != _initialColour || theme?.Name != _initialTheme)
                 {
                     _changedTheme = true;
                     relaunchRequired.Visibility = Visibility.Visible;
@@ -59,6 +60,32 @@ namespace Unicord.Universal.Pages.Settings
                     _changedTheme = false;
                     relaunchRequired.Visibility = Visibility.Collapsed;
                 }
+
+
+                var dictionary = new ResourceDictionary();
+                if (!string.IsNullOrWhiteSpace(theme?.Name))
+                {
+                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { }
+                }
+
+                // if we invert the theme then set it properly, the element will redraw and reload
+                // it's resources. as far as i know there's no better way to do this.
+
+                switch ((ElementTheme)model.ColourScheme)
+                {
+                    case ElementTheme.Light:
+                        preview.RequestedTheme = ElementTheme.Dark;
+                        break;
+                    case ElementTheme.Dark:
+                        preview.RequestedTheme = ElementTheme.Light;
+                        break;
+                    default:
+                        preview.RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
+                        break;
+                }
+
+                preview.Resources = dictionary;
+                preview.RequestedTheme = (ElementTheme)model.ColourScheme;
             }
         }
 
