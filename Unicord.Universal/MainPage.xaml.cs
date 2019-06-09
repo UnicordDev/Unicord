@@ -169,7 +169,7 @@ namespace Unicord.Universal
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
-            if (Arguments != null)
+            if (Arguments != null && Arguments.ChannelId != 0)
             {
                 if (Arguments.FullFrame)
                 {

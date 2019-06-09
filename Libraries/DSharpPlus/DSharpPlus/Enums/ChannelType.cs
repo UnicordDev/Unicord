@@ -31,6 +31,16 @@
         Category = 4,
 
         /// <summary>
+        /// Indicates that this is a news channel
+        /// </summary>
+        News = 5,
+
+        /// <summary>
+        /// Indicates that this is a store channel
+        /// </summary>
+        Store = 6,
+
+        /// <summary>
         /// Indicates unknown channel type.
         /// </summary>
         Unknown = int.MaxValue

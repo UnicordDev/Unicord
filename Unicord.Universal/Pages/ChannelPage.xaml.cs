@@ -28,6 +28,7 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.System;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -93,10 +94,11 @@ namespace Unicord.Universal.Pages
         {
             foreach (var item in _channelHistory)
             {
-                item.Dispose();
+                if (_viewModel != item)
+                    item.Dispose();
             }
 
-            _channelHistory.Clear();
+            _channelHistory.RemoveAll(m => m != _viewModel);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -138,6 +140,9 @@ namespace Unicord.Universal.Pages
 
                 ViewModel = model;
                 DataContext = ViewModel;
+
+                if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
+                    messageTextBox.Focus(FocusState.Keyboard);
 
                 while (_channelHistory.Count > 10)
                 {

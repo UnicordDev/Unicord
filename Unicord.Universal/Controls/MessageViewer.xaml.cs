@@ -88,11 +88,6 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        internal static void CleanupTimer()
-        {
-            _timestampTimer.Value.Stop();
-        }
-
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is MessageViewer t)

@@ -23,6 +23,10 @@ namespace Unicord.Universal.Converters
                         return "\xE8BD";
                     case ChannelType.Voice:
                         return "\xE767";
+                    case ChannelType.News:
+                        return "\xF000";
+                    case ChannelType.Store:
+                        return "\xE719";
                     default:
                         return "";
                 }

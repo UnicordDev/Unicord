@@ -21,14 +21,15 @@ namespace Unicord.Universal.Utilities
 {
     internal static class WindowManager
     {
-        private static ConcurrentDictionary<CoreWindow, ulong> _windowChannelDictionary
-             = new ConcurrentDictionary<CoreWindow, ulong>();
+        private static ConcurrentDictionary<int, ulong> _windowChannelDictionary
+             = new ConcurrentDictionary<int, ulong>();
 
         private static List<FrameworkElement> _handledElements
              = new List<FrameworkElement>();
 
         private static ThemeListener _notifier;
-        private static Window _mainWindow;
+        private static int _mainWindowId;
+        private static bool _mainWindowSet;
 
         public static IEnumerable<ulong> VisibleChannels
             => _windowChannelDictionary.Values;
@@ -37,27 +38,41 @@ namespace Unicord.Universal.Utilities
             AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
 
         public static bool IsMainWindow =>
-            Window.Current == _mainWindow;
+             _mainWindowSet && ApplicationView.GetForCurrentView().Id == _mainWindowId;
 
-        public static void SetMainWindow(Window window)
+        public static void SetMainWindow()
         {
-            if (_mainWindow == null)
-                _mainWindow = window;
+            if (!_mainWindowSet)
+            {
+                _mainWindowSet = true;
+                _mainWindowId = ApplicationView.GetForCurrentView().Id;
+            }
         }
 
         internal static void SetChannelForCurrentWindow(ulong id)
         {
-            _windowChannelDictionary[CoreWindow.GetForCurrentThread()] = id;
+            if (IsMainWindow)
+                App.LocalSettings.Save("LastViewedChannel", id);
+            _windowChannelDictionary[ApplicationView.GetForCurrentView().Id] = id;
         }
 
         public static async Task<bool> ActivateOtherWindow(DiscordChannel channel)
         {
-            var window = _windowChannelDictionary.FirstOrDefault(w => w.Value == channel.Id).Key;
-            if (window != null)
+            if (!MultipleWindowsSupported)
+                return false;
+
+            try
             {
-                var id = ApplicationView.GetApplicationViewIdForWindow(window);
-                await ApplicationViewSwitcher.SwitchAsync(id);
-                return true;
+                var window = _windowChannelDictionary.First(w => w.Value == channel.Id).Key;
+                if (window != ApplicationView.GetForCurrentView().Id)
+                {
+                    await ApplicationViewSwitcher.SwitchAsync(window);
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
 
             return false;
@@ -65,6 +80,9 @@ namespace Unicord.Universal.Utilities
 
         public static async Task OpenChannelWindowAsync(DiscordChannel channel, ApplicationViewMode mode = ApplicationViewMode.Default)
         {
+            if (!MultipleWindowsSupported)
+                return;
+
             if (await ActivateOtherWindow(channel))
                 return;
 
@@ -88,19 +106,13 @@ namespace Unicord.Universal.Utilities
 
                 void OnConsolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
                 {
-                    if (sender.Id == viewId)
+                    if (sender.Id == viewId && sender.Id != _mainWindowId)
                     {
                         if (args.IsAppInitiated)
                             return;
 
-                        // make sure we never accidentally clean up the main view
-                        if (Window.Current == _mainWindow)
-                            return;
-
-                        MessageViewer.CleanupTimer();
-
                         sender.Consolidated -= OnConsolidated;
-                        _windowChannelDictionary.TryRemove(CoreWindow.GetForCurrentThread(), out _);
+                        _windowChannelDictionary.TryRemove(sender.Id, out _);
                     }
                 }
 

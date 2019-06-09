@@ -391,9 +391,9 @@ namespace Unicord.Universal.Pages
                 }
                 else if (channel.Guild != null)
                 {
-                    guildsList.SelectedItem = channel.Guild;
+                    guildsList.SelectedIndex = _guilds.IndexOf(channel.Guild);
 
-                    if ((!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild))
+                    if (!(sidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
                         sidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
                 }
 
@@ -403,23 +403,26 @@ namespace Unicord.Universal.Pages
                     return;
                 }
 
-                if (channel.IsNSFW)
+                if (!(Frame.Content is ChannelPage cPage) || cPage.ViewModel?.Channel?.Id != channel.Id)
                 {
-                    if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
+                    if (channel.IsNSFW)
                     {
-                        if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
+                        if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
                         {
-                            Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
-                        }
-                        else
-                        {
-                            Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                            if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
+                            {
+                                Frame.Navigate(typeof(ChannelWarningPage), channel, info ?? new SlideNavigationTransitionInfo());
+                            }
+                            else
+                            {
+                                Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                            }
                         }
                     }
-                }
-                else
-                {
-                    Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                    else
+                    {
+                        Frame.Navigate(typeof(ChannelPage), channel, info ?? new SlideNavigationTransitionInfo());
+                    }
                 }
             }
             finally

@@ -482,7 +482,7 @@ namespace DSharpPlus.Entities
 
         private Task<IReadOnlyList<DiscordMessage>> GetMessagesInternalAsync(int limit = 100, ulong? before = null, ulong? after = null, ulong? around = null)
         {
-            if (Type != ChannelType.Text && Type != ChannelType.Private && Type != ChannelType.Group)
+            if (Type == ChannelType.Category || Type == ChannelType.Voice)
             {
                 throw new ArgumentException("Cannot get the messages of a non-text channel");
             }

@@ -46,7 +46,7 @@ namespace Unicord.Universal
         public App()
         {
             InitializeComponent();
-            
+
             var theme = LocalSettings.Read("RequestedTheme", ElementTheme.Default);
             switch (theme)
             {
@@ -56,7 +56,7 @@ namespace Unicord.Universal
                 case ElementTheme.Dark:
                     RequestedTheme = ApplicationTheme.Dark;
                     break;
-            }            
+            }
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
@@ -152,13 +152,13 @@ namespace Unicord.Universal
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            OnLaunched(e.PrelaunchActivated, e.Arguments);
+            OnLaunched(e.PrelaunchActivated, e.Arguments, e.PreviousExecutionState);
         }
 
-        private void OnLaunched(bool preLaunch, string arguments)
+        private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
             Analytics.TrackEvent("Launch");
-            WindowManager.SetMainWindow(Window.Current);
+            WindowManager.SetMainWindow();
             ThemeManager.LoadCurrentTheme(Resources);
 
             var rawArgs = Strings.SplitCommandLine(arguments);
@@ -172,19 +172,20 @@ namespace Unicord.Universal
                 }
             }
 
+            var channelId = 0ul;
+
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (!(Window.Current.Content is Frame rootFrame))
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                //if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                //{
-                //    TODO: Load state from previously suspended application
-                //}
+                if (previousState == ApplicationExecutionState.Terminated)
+                {
+                    channelId = LocalSettings.Read("LastViewedChannel", 0ul);
+                }
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -192,16 +193,11 @@ namespace Unicord.Universal
 
             if (args.TryGetValue("channelId", out var id) && ulong.TryParse(id, out var pId))
             {
-                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = pId, FullFrame = false }, new SuppressNavigationTransitionInfo());
+                channelId = pId;
             }
-            else
-            {
-                CoreApplication.EnablePrelaunch(true);
-                if (rootFrame.Content == null)
-                {
-                    rootFrame.Navigate(typeof(MainPage), null);
-                }
-            }
+
+            if (rootFrame.Content == null || channelId != 0)
+                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channelId });
 
             // Ensure the current window is active
             Window.Current.Activate();
