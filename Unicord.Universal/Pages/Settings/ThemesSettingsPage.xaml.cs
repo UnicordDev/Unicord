@@ -29,10 +29,19 @@ namespace Unicord.Universal.Pages.Settings
     public sealed partial class ThemesSettingsPage : Page
     {
         private bool _changedTheme;
+        private string _initialTheme;
+        private int _initialColour;
 
         public ThemesSettingsPage()
         {
             InitializeComponent();
+
+            _initialTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
+            if (string.IsNullOrWhiteSpace(_initialTheme))
+                _initialTheme = "Default";
+
+            _initialColour = (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+
             (DataContext as ThemesSettingsModel).PropertyChanged += ThemesSettingsPage_PropertyChanged;
         }
 
@@ -40,32 +49,26 @@ namespace Unicord.Universal.Pages.Settings
         {
             if (sender is ThemesSettingsModel model)
             {
-                if (e.PropertyName == nameof(model.SelectedTheme))
-                {
-                    var read = App.LocalSettings.Read<Theme>("SelectedTheme", null);
-                    var selectedTheme = model.SelectedTheme as Theme;
-                    if (read?.Name != selectedTheme?.Name)
-                    {
-                        _changedTheme = true;
-                        relaunchRequired.Visibility = Visibility.Visible;
-
-                        App.LocalSettings.Save("SelectedTheme", selectedTheme);
-
-                        //preview.Resources = new ResourceDictionary();
-                        //await Themes.LoadAsync(selectedTheme, preview.Resources);
-                    }
-                }
-
-                if (e.PropertyName == nameof(model.ColourScheme))
+                if (model.ColourScheme != _initialColour || (model.SelectedTheme as Theme)?.Name != _initialTheme)
                 {
                     _changedTheme = true;
                     relaunchRequired.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    _changedTheme = false;
+                    relaunchRequired.Visibility = Visibility.Collapsed;
                 }
             }
         }
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+            if (DataContext is ThemesSettingsModel model && model.SelectedTheme is Theme theme)
+            {
+                App.LocalSettings.Save("SelectedThemeName", theme.IsDefault ? string.Empty : theme.Name);
+            }
+
             var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
             if (_changedTheme && autoRestart)
             {
@@ -95,7 +98,7 @@ namespace Unicord.Universal.Pages.Settings
                 }
             }
 
-            (DataContext as ThemesSettingsModel).ReloadThemes();
+            await (DataContext as ThemesSettingsModel).ReloadThemes();
         }
 
         private async void RemoveThemeButton_Click(object sender, RoutedEventArgs e)
@@ -104,7 +107,15 @@ namespace Unicord.Universal.Pages.Settings
             if (model.SelectedTheme is Theme theme)
             {
                 await ThemeManager.RemoveThemeAsync(theme.Name);
-                model.ReloadThemes();
+                await model.ReloadThemes();
+            }
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ThemesSettingsModel model)
+            {
+                await model.ReloadThemes();
             }
         }
     }

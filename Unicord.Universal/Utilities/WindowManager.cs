@@ -94,7 +94,7 @@ namespace Unicord.Universal.Utilities
                 var window = Window.Current;
 
                 var frame = new Frame();
-                ThemeManager.LoadCurrentTheme(frame.Resources);
+                try { ThemeManager.LoadCurrentTheme(frame.Resources); } catch { }
 
                 window.Content = frame;
                 window.Activate();

@@ -153,6 +153,15 @@
       <DependentUpon>EmotePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FileViewer.cs" />
+    <Compile Include="Controls\Flyouts\ChannelContextFlyout.xaml.cs">
+      <DependentUpon>ChannelContextFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Flyouts\DirectMessageContextFlyout.xaml.cs">
+      <DependentUpon>DirectMessageContextFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Flyouts\GuildContextFlyout.xaml.cs">
+      <DependentUpon>GuildContextFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImageElement.cs" />
     <Compile Include="Controls\MarkdownTextBlock\CodeBlockResolvingEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Extensions\StringExtensions.cs" />
@@ -295,7 +304,7 @@
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
     <Compile Include="Misc\UnicordMutedStore.cs" />
-    <Compile Include="Controls\UserFlyout.xaml.cs">
+    <Compile Include="Controls\Flyouts\UserFlyout.xaml.cs">
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChannelViewModel.cs" />
@@ -490,6 +499,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Flyouts\ChannelContextFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Flyouts\DirectMessageContextFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Flyouts\GuildContextFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MessageViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -542,7 +563,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\UserFlyout.xaml">
+    <Page Include="Controls\Flyouts\UserFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

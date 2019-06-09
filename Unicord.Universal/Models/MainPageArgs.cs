@@ -14,5 +14,6 @@ namespace Unicord.Universal.Models
         public ulong UserId { get; set; }
         public bool FullFrame { get; set; }
         public ApplicationViewMode ViewMode { get; internal set; }
+        public Exception ThemeLoadException { get; internal set; }
     }
 }

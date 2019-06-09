@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
+using WamWooWam.Core;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -23,19 +25,10 @@ namespace Unicord.Universal
     {
         public static void LoadCurrentTheme(ResourceDictionary dictionary)
         {
-            var theme = App.LocalSettings.Read("SelectedTheme", Theme.Default) ?? Theme.Default;
-            if (!theme.IsDefault)
+            var theme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
+            if (!string.IsNullOrWhiteSpace(theme))
             {
-                try
-                {
-                    Load(theme, dictionary);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    // TODO: this is bad
-                    //App.ThemeLoadException = ex;
-                }
+                Load(theme, dictionary);
             }
             else
             {
@@ -43,7 +36,7 @@ namespace Unicord.Universal
             }
         }
 
-        public static void Load(Theme selectedTheme, ResourceDictionary target)
+        public static void Load(string selectedThemeName, ResourceDictionary target)
         {
             // this code must be synchronous to prevent any race conditions that may occur when 
             // loading assets at startup. if this code was asynchronous, UWP can sometimes jump ahead and 
@@ -54,6 +47,8 @@ namespace Unicord.Universal
             // because synchronous I/O is not allowed on the UI thread, and this code must assume
             // it's running on the UI thread, because otherwise it would be asynchronous... bleh
 
+            var selectedTheme = Theme.Default;
+
             try
             {
                 var localFolder = ApplicationData.Current.LocalFolder;
@@ -62,16 +57,14 @@ namespace Unicord.Universal
                 if (!Directory.Exists(themesFolderPath))
                     Directory.CreateDirectory(themesFolderPath);
 
-                var themePath = Path.Combine(themesFolderPath, selectedTheme.Name);
+                var themePath = Path.Combine(themesFolderPath, Strings.Normalise(selectedThemeName));
                 if (!Directory.Exists(themePath))
                 {
-                    var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
-                    installedThemes.Remove(selectedTheme.Name);
-
-                    App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
-                    App.LocalSettings.Save("SelectedTheme", Theme.Default);
+                    App.LocalSettings.Save("SelectedThemeName", string.Empty);
                     throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
                 }
+
+                selectedTheme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, "theme.json")));
 
                 foreach (var file in Directory.EnumerateFiles(themePath, "*.xaml"))
                 {
@@ -92,22 +85,19 @@ namespace Unicord.Universal
 
         public static async Task RemoveThemeAsync(string name)
         {
-            var selectedTheme = App.LocalSettings.Read("SelectedTheme", Theme.Default);
-            if (selectedTheme?.Name == name)
+            if (name == string.Empty)
+                return;
+
+            var selectedThemeName = App.LocalSettings.Read("SelectedThemeName", string.Empty);
+            if (selectedThemeName == name)
             {
-                App.LocalSettings.Save("SelectedTheme", Theme.Default);
+                App.LocalSettings.Save("SelectedThemeName", string.Empty);
             }
 
-            var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
 
-            installedThemes.Remove(name);
-
-            var folder = await themesDirectory.GetFolderAsync(name);
-            if (folder != null)
+            if (await themesDirectory.TryGetItemAsync(Strings.Normalise(name)) is StorageFolder folder)
                 await folder.DeleteAsync();
-
-            App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
         }
 
         /// <summary>
@@ -118,68 +108,54 @@ namespace Unicord.Universal
         /// <returns></returns>
         public static async Task InstallFromFileAsync(StorageFile file)
         {
-            var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
 
-            try
+            // open the archive
+            using (var fileStream = await file.OpenReadAsync())
+            using (var archive = await Task.Run(() => new ZipArchive(fileStream.AsStreamForRead(), ZipArchiveMode.Read, true)))
             {
-                // open the archive
-                using (var fileStream = await file.OpenReadAsync())
-                using (var archive = await Task.Run(() => new ZipArchive(fileStream.AsStreamForRead(), ZipArchiveMode.Read, true)))
+                // ensure it has a theme definition and load it
+                Theme theme = null;
+                var themeDefinitionFile = archive.GetEntry("theme.json");
+                if (themeDefinitionFile == null)
+                    throw new InvalidOperationException("This file does not appear to be a Unicord theme, missing theme.json!");
+
+                using (var reader = new StreamReader(themeDefinitionFile.Open()))
+                    theme = JsonConvert.DeserializeObject<Theme>(await reader.ReadToEndAsync());
+
+                if (await themesDirectory.TryGetItemAsync(theme.NormalisedName) is StorageFolder directory)
                 {
-                    // ensure it has a theme definition and load it
-                    Theme theme = null;
-                    var themeDefinitionFile = archive.GetEntry("theme.json");
-                    if (themeDefinitionFile == null)
-                        throw new InvalidOperationException("This file does not appear to be a Unicord theme, missing theme.json!");
-
-                    using (var reader = new StreamReader(themeDefinitionFile.Open()))
-                        theme = JsonConvert.DeserializeObject<Theme>(await reader.ReadToEndAsync());
-
-                    if (installedThemes.ContainsKey(theme.Name))
+                    if (await UIUtilities.ShowYesNoDialogAsync("Theme already installed!", "This theme is already installed, do you want to overwrite it?"))
                     {
-                        if (await UIUtilities.ShowYesNoDialogAsync("Theme already installed!", "This theme is already installed, do you want to overwrite it?"))
-                        {
-                            var directory = await themesDirectory.GetFolderAsync(theme.Name);
-                            if (directory != null)
-                                await directory.DeleteAsync();
-
-                            installedThemes.Remove(theme.Name);
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        await directory.DeleteAsync();
                     }
-
-                    foreach (var check in theme.ContractChecks)
+                    else
                     {
-                        if (!ApiInformation.IsApiContractPresent(check.Key, check.Value))
-                            throw new InvalidOperationException(
-                                check.Key == "Windows.Foundation.UniversalApiContract" ?
-                                "The version of Windows you're running is not supported by this theme. Sorry!" :
-                                "A pre-install check failed! This probably means your device or the version of Windows you're running is not supported by this theme. Sorry!");
-                    }
-
-                    // if the theme specifies a logo
-                    if (theme.DisplayLogo != null)
-                    {
-                        await LoadDisplayLogo(archive, theme);
-                    }
-
-                    var dialog = new InstallThemeDialog(theme);
-                    if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                    {
-                        var themeRoot = await themesDirectory.CreateFolderAsync(theme.Name);
-                        await Task.Run(() => archive.ExtractToDirectory(themeRoot.Path, true));
-
-                        installedThemes.Add(theme.Name, theme);
+                        return;
                     }
                 }
-            }
-            finally
-            {
-                App.LocalSettings.Save("InstalledThemes", (object)installedThemes);
+
+                foreach (var check in theme.ContractChecks)
+                {
+                    if (!ApiInformation.IsApiContractPresent(check.Key, check.Value))
+                        throw new InvalidOperationException(
+                            check.Key == "Windows.Foundation.UniversalApiContract" ?
+                            "The version of Windows you're running is not supported by this theme. Sorry!" :
+                            "A pre-install check failed! This probably means your device or the version of Windows you're running is not supported by this theme. Sorry!");
+                }
+
+                // if the theme specifies a logo
+                if (theme.DisplayLogo != null)
+                {
+                    await LoadDisplayLogo(archive, theme);
+                }
+
+                var dialog = new InstallThemeDialog(theme);
+                if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                {
+                    var themeRoot = await themesDirectory.CreateFolderAsync(theme.NormalisedName);
+                    await Task.Run(() => archive.ExtractToDirectory(themeRoot.Path, true));
+                }
             }
         }
 
@@ -223,6 +199,10 @@ namespace Unicord.Universal
         public Brush DisplayColourBrush =>
            DisplayColour != default ? new SolidColorBrush(Color.FromArgb(DisplayColour.A, DisplayColour.R, DisplayColour.G, DisplayColour.B)) : null;
 
+        [JsonIgnore]
+        public string NormalisedName =>
+            Strings.Normalise(Name);
+        
         /// <summary>
         /// The short display name of your theme
         /// </summary>

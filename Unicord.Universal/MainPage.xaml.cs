@@ -191,6 +191,11 @@ namespace Unicord.Universal
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     rootFrame.Navigate(typeof(DiscordPage)));
             }
+
+            if (Arguments.ThemeLoadException != null)
+            {
+                await UIUtilities.ShowErrorDialogAsync("Theme loading failed!", Arguments.ThemeLoadException.ToString());
+            }
         }
 
         internal async Task GoToChannelAsync(DiscordClient e)
@@ -409,7 +414,7 @@ namespace Unicord.Universal
         {
             if (fullscreenCanvas.Visibility == Visibility.Visible)
             {
-                if(_fullscreenElement != null && _fullscreenParent != null)
+                if (_fullscreenElement != null && _fullscreenParent != null)
                 {
                     LeaveFullscreen(_fullscreenElement, _fullscreenParent);
                 }

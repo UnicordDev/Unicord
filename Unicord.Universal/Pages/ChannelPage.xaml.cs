@@ -119,7 +119,7 @@ namespace Unicord.Universal.Pages
                     ClosePane();
                 }
 
-                var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id);
+                var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
                 if (ViewModel != null)
                 {
                     _channelHistory.Add(ViewModel);

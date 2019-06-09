@@ -1,9 +1,11 @@
-using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Newtonsoft.Json;
+using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Models
@@ -12,31 +14,54 @@ namespace Unicord.Universal.Models
     public class ThemesSettingsModel : PropertyChangedBase
     {
         private object _selectedTheme;
+        private List<Theme> _availableThemes;
 
         public ThemesSettingsModel()
         {
-            ReloadThemes();
+            SelectedTheme = Theme.Default;
         }
 
-        public void ReloadThemes()
+        public async Task ReloadThemes()
         {
-            AvailableThemes.Clear();
+            var themesList = new List<Theme>();
 
-            var defaultTheme = Theme.Default;
-            var selectedTheme = App.LocalSettings.Read("SelectedTheme", defaultTheme);
-            var installedThemes = App.LocalSettings.Read("InstalledThemes", new Dictionary<string, Theme>());
+            var selectedTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
+            if (string.IsNullOrWhiteSpace(selectedTheme))
+                selectedTheme = "Default";
 
-            AvailableThemes.Add(defaultTheme);
-            AvailableThemes.AddRange(installedThemes.Values);
+            themesList.Add(Theme.Default);
 
-            InvokePropertyChanged(nameof(AvailableThemes));
+            var themeDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var directories = await themeDirectory.GetFoldersAsync();
+            foreach (var directory in directories)
+            {
+                if (await directory.TryGetItemAsync("theme.json") is StorageFile themeJson)
+                {
+                    try
+                    {
+                        var theme = JsonConvert.DeserializeObject<Theme>(await FileIO.ReadTextAsync(themeJson));
+                        themesList.Add(theme);
+                    }
+                    catch { }
+                }
+            }
 
-            SelectedTheme = AvailableThemes.FirstOrDefault(t => t.Name == selectedTheme?.Name) ?? Theme.Default;
+            AvailableThemes = themesList;
+            SelectedTheme = themesList.FirstOrDefault(t => t.Name == selectedTheme) ?? Theme.Default;
         }
 
         public ElementTheme PreviewRequestedTheme { get; set; }
 
-        public List<Theme> AvailableThemes { get; set; } = new List<Theme>();
+        public List<Theme> AvailableThemes
+        {
+            get => _availableThemes;
+            set
+            {
+                OnPropertySet(ref _availableThemes, value);
+                InvokePropertyChanged(nameof(SelectedTheme));
+                InvokePropertyChanged(nameof(CanRemove));
+            }
+        }
 
         public object SelectedTheme
         {
@@ -48,7 +73,7 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public Visibility CanRemove => (SelectedTheme as Theme).IsDefault ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true ? Visibility.Collapsed : Visibility.Visible;
 
         public int ColourScheme
         {

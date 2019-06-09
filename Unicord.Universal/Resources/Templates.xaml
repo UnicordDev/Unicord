@@ -8,6 +8,7 @@
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     x:DefaultBindMode="OneWay">
 
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -178,98 +179,6 @@
         </Setter>
     </Style>
 
-
-    <MenuFlyout x:Key="ChannelMenuFlyout">
-
-        <MenuFlyoutItem IsEnabled="False" Text="{Binding DisplayName}">
-            <MenuFlyoutItem.Icon>
-                <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="Segoe MDL2 Assets"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-
-        <MenuFlyoutSeparator/>
-
-        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
-            <MenuFlyoutItem.Icon>
-                <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
-        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
-
-    </MenuFlyout>
-
-    <MenuFlyout x:Key="GuildMenuFlyout">
-
-        <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
-            <MenuFlyoutItem.Icon>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding IconUrl}"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-
-        <MenuFlyoutSeparator/>
-
-        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
-            <MenuFlyoutItem.Icon>
-                <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Change Nickname" Icon="Rename" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding CurrentMember}"/>
-        <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Leave Server" Icon="LeaveChat" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
-        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
-
-    </MenuFlyout>
-
-    <MenuFlyout x:Key="DMChannelMenuFlyout">
-
-        <MenuFlyoutItem IsEnabled="False" Text="{Binding Converter={StaticResource DMNameConverter}}">
-            <MenuFlyoutItem.Icon>
-                <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding Converter={StaticResource DMIconConverter}}"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-
-        <MenuFlyoutSeparator/>
-
-        <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
-            <MenuFlyoutItem.Icon>
-                <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
-            </MenuFlyoutItem.Icon>
-        </MenuFlyoutItem>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-        <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-
-        <MenuFlyoutSeparator />
-
-        <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
-        <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-        <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
-
-    </MenuFlyout>
-
     <DataTemplate x:Key="VoiceMemberListTemplate" x:DataType="entities:DiscordMember">
         <Grid Margin="0,4">
             <Grid.ColumnDefinitions>
@@ -297,11 +206,14 @@
                 </lib:SwipeItems>
             </lib:SwipeControl.RightItems>-->
 
-        <Grid VerticalAlignment="Stretch" ContextFlyout="{StaticResource ChannelMenuFlyout}" Margin="0,4">
+        <Grid VerticalAlignment="Stretch" Margin="0,4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid.ContextFlyout>
+                <flyouts:ChannelContextFlyout />
+            </Grid.ContextFlyout>
             <Grid Name="grid" 
                   Margin="0,0,16,0"
                   IsHitTestVisible="True"
@@ -365,7 +277,10 @@
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="entities:DiscordGuild">
-        <Grid ContextFlyout="{StaticResource GuildMenuFlyout}" ToolTipService.ToolTip="{x:Bind Name}">
+        <Grid ToolTipService.ToolTip="{x:Bind Name}">
+            <Grid.ContextFlyout>
+                <flyouts:GuildContextFlyout/>
+            </Grid.ContextFlyout>
             <lib:PersonPicture Margin="10,4" Width="36" Height="36" DisplayName="{x:Bind Name}">
                 <lib:PersonPicture.ProfilePicture>
                     <BitmapImage UriSource="{Binding IconUrl, FallbackValue={x:Null}}" DecodePixelWidth="36" DecodePixelHeight="36" DecodePixelType="Logical" />
@@ -378,7 +293,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <lib:SwipeControl Margin="-12,0" ContextFlyout="{StaticResource DMChannelMenuFlyout}">
+        <lib:SwipeControl Margin="-12,0">
+            <lib:SwipeControl.ContextFlyout>
+                <flyouts:DirectMessageContextFlyout />
+            </lib:SwipeControl.ContextFlyout>
             <lib:SwipeControl.RightItems>
                 <lib:SwipeItems>
                     <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close" Invoked="SwipeItem_Invoked">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
+using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -76,7 +78,7 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            ThemeManager.LoadCurrentTheme(Resources);
+            try { ThemeManager.LoadCurrentTheme(Resources); } catch { }
 
             switch (e)
             {
@@ -157,9 +159,20 @@ namespace Unicord.Universal
 
         private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
+            UpgradeSettings();
+
+            Exception themeLoadException = null; 
             Analytics.TrackEvent("Launch");
             WindowManager.SetMainWindow();
-            ThemeManager.LoadCurrentTheme(Resources);
+
+            try
+            {
+                ThemeManager.LoadCurrentTheme(Resources);
+            }
+            catch (Exception ex)
+            {
+                themeLoadException = ex;
+            }
 
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
@@ -197,10 +210,37 @@ namespace Unicord.Universal
             }
 
             if (rootFrame.Content == null || channelId != 0)
-                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channelId });
+                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channelId, ThemeLoadException = themeLoadException });
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        /// <summary>
+        /// This method migrates settings from previous versions of Unicord.
+        /// </summary>
+        private void UpgradeSettings()
+        {
+            // migrates the old theme store 
+            var theme = LocalSettings.Read<Theme>("SelectedTheme", null);
+            if (theme != null)
+            {
+                LocalSettings.Save("SelectedThemeName", theme.Name);
+                LocalSettings.Save("SelectedTheme", (Theme)null);
+                LocalSettings.Save("InstalledThemes", (object)null);
+            }
+
+            var localFolder = ApplicationData.Current.LocalFolder.Path;
+            var themesDirectory = Path.Combine(localFolder, "Themes");
+            foreach (var item in Directory.EnumerateDirectories(themesDirectory))
+            {
+                var name = Path.GetFileName(item);
+                var normalisedName = Strings.Normalise(name);
+                if (string.Compare(name, normalisedName, true) != 0)
+                {
+                    Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                }
+            }
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)

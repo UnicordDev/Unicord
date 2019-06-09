@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Misc;
 using Windows.Foundation;
 using Windows.Foundation.Collections;

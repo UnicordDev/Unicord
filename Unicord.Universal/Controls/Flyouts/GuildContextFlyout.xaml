@@ -1,0 +1,41 @@
+﻿<MenuFlyout
+    x:Class="Unicord.Universal.Controls.Flyouts.GuildContextFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls.Flyouts"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
+        <MenuFlyoutItem.Icon>
+            <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding IconUrl}"/>
+        </MenuFlyoutItem.Icon>
+    </MenuFlyoutItem>
+
+    <MenuFlyoutSeparator/>
+
+    <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
+        <MenuFlyoutItem.Icon>
+            <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
+        </MenuFlyoutItem.Icon>
+    </MenuFlyoutItem>
+    <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+
+    <MenuFlyoutSeparator />
+
+    <MenuFlyoutItem Text="Change Nickname" Icon="Rename" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding CurrentMember}"/>
+    <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
+
+    <MenuFlyoutSeparator />
+
+    <MenuFlyoutItem Text="Leave Server" Icon="LeaveChat" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+
+    <MenuFlyoutSeparator />
+
+    <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow"/>
+    <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
+
+</MenuFlyout>

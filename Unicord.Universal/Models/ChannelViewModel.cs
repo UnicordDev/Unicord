@@ -329,6 +329,8 @@ namespace Unicord.Universal.Models
         public bool ShowPopoutButton
             => WindowManager.IsMainWindow && WindowManager.MultipleWindowsSupported;
 
+        public bool IsDisposed { get; internal set; }
+
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
             await _loadSemaphore.WaitAsync();
@@ -624,6 +626,8 @@ namespace Unicord.Universal.Models
 
         public virtual void Dispose()
         {
+            IsDisposed = true;
+
             if (Channel.Type != ChannelType.Voice)
             {
                 App.Discord.TypingStarted -= OnTypingStarted;
