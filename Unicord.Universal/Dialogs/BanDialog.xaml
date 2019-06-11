@@ -1,0 +1,28 @@
+﻿<ContentDialog
+    x:Class="Unicord.Universal.Dialogs.BanDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}"
+    PrimaryButtonText="Yeah!"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
+    SecondaryButtonText="Nah">
+
+    <StackPanel>
+        <TextBlock x:Name="headerTextBlock" Text="Ban @WamWooWam#6402?" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <ComboBox x:Name="deleteMessagesBox" Margin="0,8" SelectedIndex="1" Header="Delete Messages" HorizontalAlignment="Stretch">
+            <ComboBoxItem>
+                Don't delete messages
+            </ComboBoxItem>
+            <ComboBoxItem>
+                From the last 24 hours
+            </ComboBoxItem>
+            <ComboBoxItem>
+                From the last 7 days
+            </ComboBoxItem>
+        </ComboBox>
+        <TextBox x:Name="banReasonText" MaxLength="512" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" Header="Ban Reason"/>
+    </StackPanel>
+</ContentDialog>

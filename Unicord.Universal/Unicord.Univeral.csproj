@@ -126,15 +126,18 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\AcknowledgeCommand.cs" />
+    <Compile Include="Commands\BanCommand.cs" />
     <Compile Include="Commands\CopyUrlCommand.cs" />
     <Compile Include="Commands\CopyIdCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
     <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />
+    <Compile Include="Commands\KickCommand.cs" />
     <Compile Include="Commands\MuteCommand.cs" />
     <Compile Include="Commands\OpenNewWindowCommand.cs" />
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
+    <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Constants.Private.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
@@ -162,6 +165,10 @@
     <Compile Include="Controls\Flyouts\GuildContextFlyout.xaml.cs">
       <DependentUpon>GuildContextFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Flyouts\UserListContextFlyout.xaml.cs">
+      <DependentUpon>UserListContextFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IconLabelButton.cs" />
     <Compile Include="Controls\ImageElement.cs" />
     <Compile Include="Controls\MarkdownTextBlock\CodeBlockResolvingEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Extensions\StringExtensions.cs" />
@@ -265,12 +272,16 @@
     <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
+    <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
+    <Compile Include="Dialogs\BanDialog.xaml.cs">
+      <DependentUpon>BanDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ChangeNicknameDialog.xaml.cs">
       <DependentUpon>ChangeNicknameDialog.xaml</DependentUpon>
     </Compile>
@@ -285,6 +296,9 @@
     </Compile>
     <Compile Include="Dialogs\InstallThemeDialog.xaml.cs">
       <DependentUpon>InstallThemeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\KickDialog.xaml.cs">
+      <DependentUpon>KickDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\PinMessageDialog.xaml.cs">
       <DependentUpon>PinMessageDialog.xaml</DependentUpon>
@@ -511,6 +525,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MessageViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -524,6 +542,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UriActivationMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\BanDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -548,6 +570,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\InstallThemeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\KickDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -651,13 +677,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Templates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

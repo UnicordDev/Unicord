@@ -1,0 +1,18 @@
+﻿<ContentDialog
+    x:Class="Unicord.Universal.Dialogs.KickDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlBackgroundChromeLowBrush}"
+    PrimaryButtonText="Yeah!"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
+    SecondaryButtonText="Nah">
+
+    <StackPanel>
+        <TextBlock x:Name="headerTextBlock" Text="Kick @WamWooWam#6402?" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <TextBox x:Name="kickReasonText" Margin="0,8,0,0" MaxLength="512" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" Header="Kick Reason"/>
+    </StackPanel>
+</ContentDialog>

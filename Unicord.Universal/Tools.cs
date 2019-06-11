@@ -195,15 +195,23 @@ namespace Unicord.Universal
             await send;
         }
 
-        public static bool CheckRoleHeirarchy(DiscordMember _member, DiscordMember _current)
+        /// <summary>
+        /// Returns true if <paramref name="current"/> is higher in the role heirarchy than <paramref name="member"/>.
+        /// </summary>
+        /// <param name="current">The current guild member</param>
+        /// <param name="member">The guild member to check against</param>
+        public static bool CheckRoleHeirarchy(DiscordMember current, DiscordMember member)
         {
-            if (_member == null || _current == null)
+            if (member == null || current == null)
             {
                 return false;
             }
 
             // i love discord
-            return _member.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position > _current.Roles?.OrderBy(r => r?.Position).FirstOrDefault()?.Position;
+            var memberTopRole = member.Roles.OrderByDescending(r => r.Position).FirstOrDefault();
+            var currentTopRole = current.Roles.OrderByDescending(r => r.Position).FirstOrDefault();
+
+            return (memberTopRole?.Position ?? 0) < (currentTopRole?.Position ?? 0);
         }
 
         // adapted from corefx

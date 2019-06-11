@@ -18,7 +18,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid RequestedTheme="Dark" Background="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}">
@@ -44,9 +45,11 @@
                 @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
             </TextBlock>
         </Grid>
+        
         <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
             <controls:RichPresenceControl DataContext="{Binding Presence.Activity}" Margin="8" />
         </Grid>
+        
         <Grid Grid.Row="2" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
             <StackPanel Margin="12,8,12,12" Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
                 <TextBlock Text="Roles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,0,0,8"/>
@@ -60,6 +63,16 @@
             </StackPanel>
         </Grid>
 
-        <Button RequestedTheme="Dark" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{ThemeResource IconButtonStyle}" Margin="0,1,0,0" Content="&#xE8A7;" Click="Button_Click"/>
+        <StackPanel HorizontalAlignment="Stretch" Grid.Row="3" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
+            <controls:IconLabelButton Icon="&#xE7EE;" Tapped="IconLabelButton_Tapped" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}">
+                <TextBlock TextTrimming="CharacterEllipsis" Text="Show Full Profile"/>
+            </controls:IconLabelButton>
+            <controls:IconLabelButton Icon="&#xE724;" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}">
+                <TextBlock TextTrimming="CharacterEllipsis">
+                    <Run Text="Message @"/><Run Text="{Binding Username}"/><Run Text="#"/><Run Text="{Binding Discriminator}" />
+                </TextBlock>
+            </controls:IconLabelButton>
+        </StackPanel>
+       
     </Grid>
 </Flyout>

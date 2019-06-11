@@ -51,6 +51,7 @@
             <converters:MutedConverter x:Key="MutedConverter"/>
             <converters:TitleCaseConverter x:Key="TitleCaseConverter"/>
             <converters:UriConverter x:Key="UriConverter"/>
+            <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>
@@ -60,6 +61,11 @@
             <commands:AcknowledgeCommand x:Key="AcknowledgeCommand"/>
             <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand"/>
             <commands:OpenNewWindowCommand x:Key="OpenNewWindowCommand"/>
+            <commands:DeleteMessageCommand x:Key="DeleteMessageCommand" />
+            <commands:PinMessageCommand x:Key="PinMessageCommand" />
+            <commands:ShowUserOverlayCommand x:Key="OpenUserOverlayCommand" />
+            <commands:KickCommand x:Key="KickCommand" />
+            <commands:BanCommand x:Key="BanCommand" />
 
             <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
             <x:Double x:Key="ContentControlFontSize">14</x:Double>
@@ -68,13 +74,17 @@
                 <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
             </Style>
 
-            <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+            <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-                <Setter Property="FontSize" Value="18"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="Template" Value="{StaticResource IconButtonTemplate}"/>
+                
+            </Style>
+
+            <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
+                <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+                <Setter Property="FontSize" Value="18"/>
             </Style>
 
             <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">

@@ -8,5 +8,6 @@
     mc:Ignorable="d" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}"
     Title="Pin this message?"
     PrimaryButtonText="Hell yeah!"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
     SecondaryButtonText="Nah">
 </ContentDialog>

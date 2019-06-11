@@ -256,7 +256,7 @@ namespace DSharpPlus.Net
             {
                 ["delete-message-days"] = delete_message_days.ToString(CultureInfo.InvariantCulture)
             };
-            if (reason != null)
+            if (!string.IsNullOrWhiteSpace(reason))
             {
                 urlparams["reason"] = reason;
             }
@@ -271,7 +271,7 @@ namespace DSharpPlus.Net
         internal Task RemoveGuildBanAsync(ulong guild_id, ulong user_id, string reason)
         {
             var urlparams = new Dictionary<string, string>();
-            if (reason != null)
+            if (!string.IsNullOrWhiteSpace(reason))
             {
                 urlparams["reason"] = reason;
             }
@@ -1049,7 +1049,7 @@ namespace DSharpPlus.Net
         internal Task RemoveGuildMemberAsync(ulong guild_id, ulong user_id, string reason)
         {
             var urlparams = new Dictionary<string, string>();
-            if (reason != null)
+            if (!string.IsNullOrEmpty(reason))
             {
                 urlparams["reason"] = reason;
             }
@@ -1315,7 +1315,7 @@ namespace DSharpPlus.Net
             {
                 ["days"] = days.ToString(CultureInfo.InvariantCulture)
             };
-            if (reason != null)
+            if (!string.IsNullOrWhiteSpace(reason))
             {
                 urlparams["reason"] = reason;
             }

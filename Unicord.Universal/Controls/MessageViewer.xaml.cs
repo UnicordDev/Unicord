@@ -10,12 +10,17 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
+using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Pages;
 using WamWooWam.Uwp.UI.Controls;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 
 namespace Unicord.Universal.Controls
@@ -246,7 +251,7 @@ namespace Unicord.Universal.Controls
 
         private bool CheckPermission(Permissions permission)
         {
-            return _currentMember?.IsOwner == true || _permissions.HasPermission(permission) && Tools.CheckRoleHeirarchy(_member, _currentMember);
+            return _currentMember?.IsOwner == true || _permissions.HasPermission(permission) && Tools.CheckRoleHeirarchy(_currentMember, _member);
         }
 
         private void profileMenuItem_Click(object sender, RoutedEventArgs e)
@@ -345,7 +350,15 @@ namespace Unicord.Universal.Controls
 
         private void CopyFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
+            var package = new DataPackage();
+            package.SetText(message.Text);
+            Clipboard.SetContent(package);
+        }
 
+        private void AuthorName_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var profile = new UserFlyout() { DataContext = _author };
+            profile.ShowAt(sender as TextBlock);
         }
     }
 }

@@ -19,12 +19,6 @@
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <commands:DeleteMessageCommand x:Key="DeleteMessageCommand" />
-        <commands:PinMessageCommand x:Key="PinMessageCommand" />
-        <commands:MessageUserCommand x:Key="MessageUserCommand" />
-        <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand" />
-    </UserControl.Resources>
     <Grid>
         <!--<Rectangle x:Name="bg" Visibility="Collapsed" Fill="{StaticResource MentionBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0"/>-->
 
@@ -73,7 +67,7 @@
                         x:Name="changeNickname"
                         Command="{StaticResource ChangeNicknameCommand}"
                         CommandParameter="{Binding Author}"
-                        Icon="Character"
+                        Icon="Rename"
                         Text="Change Nickname" />
 
                     <MenuFlyoutItem
@@ -88,6 +82,8 @@
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="LeaveChat"
                         Text="Kick"
+                        Command="{StaticResource KickCommand}"
+                        CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _kickMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
                     <MenuFlyoutItem
@@ -95,6 +91,8 @@
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="Remove"
                         Text="Ban"
+                        Command="{StaticResource BanCommand}"
+                        CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _banMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
                     <MenuFlyoutSeparator
@@ -172,6 +170,7 @@
                         FontWeight="Bold"
                         Foreground="{Binding Author.ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
                         Text="{Binding Author.DisplayName}"
+                        Tapped="AuthorName_Tapped"
                         TextWrapping="NoWrap" />
                     <Border
                         Grid.Column="1"

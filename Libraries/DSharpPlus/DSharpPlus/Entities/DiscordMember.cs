@@ -440,7 +440,47 @@ namespace DSharpPlus.Entities
         /// <param name="channel">Channel to calculate permissions for.</param>
         /// <returns>Calculated permissions for this member in the channel.</returns>
         public Permissions PermissionsIn(DiscordChannel channel)
-            => channel?.PermissionsFor(this) ?? Permissions.None;
+            => channel?.PermissionsFor(this) ?? GetDefaultPermissions();
+
+        private Permissions GetDefaultPermissions()
+        {
+            // default permissions
+            const Permissions def = Permissions.None;
+
+            // future note: might be able to simplify @everyone role checks to just check any role ... but i'm not sure
+            // xoxo, ~uwx
+            //
+            // you should use a single tilde
+            // ~emzi
+
+            // user > role > everyone
+            // allow > deny > undefined
+            // =>
+            // user allow > user deny > role allow > role deny > everyone allow > everyone deny
+            // thanks to meew0
+
+            if (Guild == null)
+            {
+                return def;
+            }
+
+            if (Guild.OwnerId == Id)
+            {
+                return ~def;
+            }
+
+            Permissions perms;
+
+            // assign @everyone permissions
+            var everyoneRole = Guild.EveryoneRole;
+            perms = everyoneRole.Permissions;
+
+            // roles that member is in
+            var mbRoles = Roles.ToArray();
+            perms |= mbRoles.Aggregate(def, (c, role) => c | role.Permissions);
+
+            return perms;
+        }
 
         /// <summary>
         /// Returns a string representation of this member.

@@ -8,5 +8,6 @@
     mc:Ignorable="d" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}"
     Title="Delete this message?"
     PrimaryButtonText="Yeah"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
     SecondaryButtonText="Nah">
 </ContentDialog>

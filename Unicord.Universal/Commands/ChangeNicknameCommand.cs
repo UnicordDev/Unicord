@@ -18,19 +18,15 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
-                var channel = member.Guild.Channels.Values.FirstOrDefault();
-                if (channel != null)
+                var permissions = member.Guild.CurrentMember.PermissionsIn(null);
+                if (member.IsCurrent && (permissions.HasFlag(Permissions.ChangeNickname) || permissions.HasFlag(Permissions.ManageNicknames)))
                 {
-                    var permissions = member.Guild.CurrentMember.PermissionsIn(channel);
-                    if (member.IsCurrent && (permissions.HasFlag(Permissions.ChangeNickname) || permissions.HasFlag(Permissions.ManageNicknames)))
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
-                    if (permissions.HasFlag(Permissions.ManageNicknames) && Tools.CheckRoleHeirarchy(member, member.Guild.CurrentMember))
-                    {
-                        return true;
-                    }
+                if (permissions.HasFlag(Permissions.ManageNicknames) && Tools.CheckRoleHeirarchy(member.Guild.CurrentMember, member))
+                {
+                    return true;
                 }
             }
 

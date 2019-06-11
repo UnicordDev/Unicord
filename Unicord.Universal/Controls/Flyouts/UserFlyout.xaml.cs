@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.Entities;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Unicord.Universal.Controls.Flyouts
 {
@@ -22,6 +23,12 @@ namespace Unicord.Universal.Controls.Flyouts
             Hide();
             Window.Current.Content.FindChild<MainPage>()
                 .ShowUserOverlay(DataContext as DiscordUser, true);
+        }
+
+        // i dislike this
+        private void IconLabelButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Hide();
         }
     }
 }
