@@ -52,6 +52,7 @@ namespace DSharpPlus.Entities
             IsMuted = mbr.IsMuted;
             JoinedAt = mbr.JoinedAt;
             Nickname = mbr.Nickname;
+            PremiumSince = mbr.PremiumSince;
 
             _role_ids = mbr.Roles ?? new List<ulong>();
         }
@@ -138,6 +139,13 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonProperty("joined_at", NullValueHandling = NullValueHandling.Ignore)]
         public DateTimeOffset JoinedAt { get; internal set; }
+
+        /// <summary>
+        /// Date the user started boosting this server
+        /// </summary>
+        [JsonProperty("premium_since", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTimeOffset? PremiumSince { get; internal set; }
+
 
         /// <summary>
         /// If the user is deafened

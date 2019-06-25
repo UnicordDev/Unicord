@@ -279,13 +279,13 @@ namespace Unicord.Universal.Controls
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            ShowDetails.Begin();
-            _timer?.Stop();
+            //ShowDetails.Begin();
+            //_timer?.Stop();
         }
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            _timer?.Start();
+            //_timer?.Start();
         }
     }
 }

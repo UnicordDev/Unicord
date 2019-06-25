@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.VoiceNext;
+using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Utilities;
@@ -60,15 +61,9 @@ namespace Unicord.Universal.Pages.Settings
         {
             if (await UIUtilities.ShowYesNoDialogAsync("Are you sure?", "Are you sure you want to logout?", "\xF3B1"))
             {
-                var vnext = App.Discord.GetVoiceNext();
-                foreach (var connection in vnext.ActiveConnections.Values.ToList())
-                {
-                    connection.Disconnect();
-                }
-
+                await ImageCache.Instance.ClearAsync();
                 await App.Discord.DisconnectAsync();
                 App.Discord.Dispose();
-                App.Discord = null;
 
                 try
                 {

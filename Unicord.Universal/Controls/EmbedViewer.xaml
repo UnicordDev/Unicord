@@ -37,20 +37,20 @@
                 </Grid.RowDefinitions>
 
                 <Grid
-                x:Name="author"
-                Margin="0,0,0,4"
-                x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}"
-                DataContext="{x:Bind _embed.Author}">
+                    x:Name="author"
+                    Margin="0,0,0,4"
+                    x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}"
+                    DataContext="{x:Bind _embed.Author}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Ellipse
-                    Width="20"
-                    Height="20"
-                    Margin="0,0,12,0"
-                    Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,8,0"
+                        Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
                         <Ellipse.Fill>
                             <ImageBrush>
                                 <ImageBrush.ImageSource>
@@ -62,50 +62,50 @@
                             </ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                    <Run Text="{Binding Name}" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="Bold">
+                        <Run Text="{Binding Name}" />
                     </TextBlock>
                 </Grid>
 
                 <wam:MarkdownTextBlock
-                x:Name="title"
-                Grid.Row="1"
-                x:Load="{x:Bind _embed.Title, Converter={StaticResource BoolConverter}}"
-                FontWeight="Bold"
-                Text="{Binding Title}" />
+                    x:Name="title"
+                    Grid.Row="1"
+                    x:Load="{x:Bind _embed.Title, Converter={StaticResource BoolConverter}}"
+                    FontWeight="Bold"
+                    Text="{Binding Title}" />
                 <wam:MarkdownTextBlock
-                x:Name="description"
-                Grid.Row="2"
-                x:Load="{x:Bind _embed.Description, Converter={StaticResource BoolConverter}}"
-                Text="{Binding Description}"
-                TextWrapping="Wrap" />
+                    x:Name="description"
+                    Grid.Row="2"
+                    x:Load="{x:Bind _embed.Description, Converter={StaticResource BoolConverter}}"
+                    Text="{Binding Description}"
+                    TextWrapping="Wrap" />
 
                 <Grid
-                x:Name="fieldsGrid"
-                Grid.Row="3"
-                Margin="0,10" />
+                    x:Name="fieldsGrid"
+                    Grid.Row="3"
+                    Margin="0,10" />
 
                 <Grid x:Name="mainGrid" Grid.Row="4" />
 
                 <Grid
-                x:Name="footer"
-                Grid.Row="5"
-                Margin="0,4,0,0"
-                x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}"
-                DataContext="{x:Bind _embed.Footer}">
+                    x:Name="footer"
+                    Grid.Row="5"
+                    Margin="0,4,0,0"
+                    x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}"
+                    DataContext="{x:Bind _embed.Footer}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Rectangle
-                    Width="20"
-                    Height="20"
-                    Margin="0,0,12,0"
-                    RadiusX="2"
-                    RadiusY="2"
-                    Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
-                        <Rectangle.Fill>
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,12,0"
+                        RadiusX="2"
+                        RadiusY="2"
+                        Visibility="{Binding ProxyIconUrl, Converter={StaticResource HideOnNullConverter}}">
+                            <Rectangle.Fill>
                             <ImageBrush>
                                 <ImageBrush.ImageSource>
                                     <BitmapImage
@@ -116,22 +116,22 @@
                             </ImageBrush>
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                    <Run FontSize="12pt" Text="{Binding Text, Mode=OneWay}" />
+                    <TextBlock Grid.Column="1" FontSize="12pt" VerticalAlignment="Center">
+                        <Run Text="{Binding Text, Mode=OneWay}" />
                     </TextBlock>
                 </Grid>
             </Grid>
 
             <Grid Grid.Column="1">
                 <Image
-                x:Name="thumbnail"
-                Width="96"
-                Height="96"
-                Margin="12,0,0,0"
-                VerticalAlignment="Top"
-                ImageFailed="Thumbnail_ImageFailed"
-                Source="{Binding Thumbnail.Url}"
-                Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" />
+                    x:Name="thumbnail"
+                    Width="96"
+                    Height="96"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Top"
+                    ImageFailed="Thumbnail_ImageFailed"
+                    Source="{Binding Thumbnail.Url}"
+                    Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" />
             </Grid>
         </Grid>
     </Border>

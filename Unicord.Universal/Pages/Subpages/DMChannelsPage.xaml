@@ -28,7 +28,7 @@
             ShowsScrollingPlaceholders="False">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepItemsInView" />
+                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepScrollOffset" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>

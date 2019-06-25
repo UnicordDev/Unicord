@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -16,6 +16,7 @@ using Windows.Graphics.Display;
 using Windows.Security.Credentials;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -79,7 +80,7 @@ namespace Unicord.Universal
 
             if (_isReady)
             {
-                await Discord_Ready(null);
+                await OnFirstDiscordReady(null);
             }
         }
 
@@ -111,7 +112,7 @@ namespace Unicord.Universal
 
                     result.RetrievePassword();
 
-                    await App.LoginAsync(result.Password, Discord_Ready, App.LoginError, false);
+                    await App.LoginAsync(result.Password, OnFirstDiscordReady, App.LoginError, false);
                 }
                 else
                 {
@@ -162,9 +163,13 @@ namespace Unicord.Universal
             // TODO: Guild Overlay
         }
 
-        private async Task Discord_Ready(ReadyEventArgs e)
+        private async Task OnFirstDiscordReady(ReadyEventArgs e)
         {
             _isReady = true;
+
+            App.Discord.Ready += OnDiscordReady;
+            App.Discord.Resumed += OnDiscordResumed;
+            App.Discord.SocketClosed += OnDiscordDisconnected;
 
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
@@ -191,11 +196,42 @@ namespace Unicord.Universal
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     rootFrame.Navigate(typeof(DiscordPage)));
             }
+        }
 
-            if (Arguments.ThemeLoadException != null)
+        private async Task OnDiscordReady(ReadyEventArgs e)
+        {
+            await HideDisconnectingMessage();
+        }
+
+        private async Task OnDiscordResumed(ReadyEventArgs e)
+        {
+            await HideDisconnectingMessage();
+        }
+
+        private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                await UIUtilities.ShowErrorDialogAsync("Theme loading failed!", Arguments.ThemeLoadException.ToString());
-            }
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var status = StatusBar.GetForCurrentView();
+                    status.ProgressIndicator.ProgressValue = null;
+                    status.ProgressIndicator.Text = "Reconnecting...";
+                    await status.ProgressIndicator.ShowAsync();
+                }
+            });
+        }
+
+        private async Task HideDisconnectingMessage()
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var status = StatusBar.GetForCurrentView();
+                    await status.ProgressIndicator.HideAsync();
+                }
+            });
         }
 
         internal async Task GoToChannelAsync(DiscordClient e)

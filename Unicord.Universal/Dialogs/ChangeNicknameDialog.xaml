@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="title" FontSize="16" FontWeight="Bold" TextWrapping="Wrap" Grid.Column="1">Change Nickname</TextBlock>
+        <TextBlock x:Name="title" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Grid.Column="1">Change Nickname</TextBlock>
         <TextBlock x:Name="content" Grid.Row="1" TextWrapping="Wrap" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,12">Nicknames are visible to everyone, so don't be a twat with them yeah?</TextBlock>
         <TextBox x:Name="inputBox" Grid.Row="2"></TextBox>
     </Grid>

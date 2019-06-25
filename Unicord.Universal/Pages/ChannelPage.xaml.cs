@@ -1,13 +1,13 @@
-﻿using System;
+﻿using DSharpPlus.Entities;
+using Microsoft.HockeyApp;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using Microsoft.HockeyApp;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
@@ -476,16 +476,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private async void SelectionHandler(object o, SelectionChangedEventArgs ev)
-        {
-            hidePhotoPicker.Begin();
-
-            foreach (var item in ev.AddedItems.OfType<IStorageFile>())
-            {
-                await uploadItems.AddStorageFileAsync(item);
-            }
-        }
-
         private async void OpenPopoutButton_Click(object sender, RoutedEventArgs e)
         {
             var capture = new CameraCaptureUI();
@@ -498,6 +488,16 @@ namespace Unicord.Universal.Pages
 
                 hidePhotoPicker.Begin();
                 await uploadItems.AddStorageFileAsync(file);
+            }
+        }
+
+        private async void PhotosList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            hidePhotoPicker.Begin();
+
+            if (e.ClickedItem is IStorageFile item)
+            {
+                await uploadItems.AddStorageFileAsync(item);
             }
         }
 
@@ -525,7 +525,7 @@ namespace Unicord.Universal.Pages
             catch { }
         }
 
-        private async void ShowPhotoPicker_Completed(object sender, object e)
+        private void ShowPhotoPicker_Completed(object sender, object e)
         {
 
         }
@@ -670,6 +670,7 @@ namespace Unicord.Universal.Pages
                 }
 
                 messageTextBox.Text += $"{e} ";
+                messageTextBox.Select(messageTextBox.Text.Length, 0);
                 messageTextBox.Focus(FocusState.Programmatic);
             }
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Net.WebSocket;
 using DSharpPlus.VoiceNext;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
@@ -98,7 +99,8 @@ namespace Unicord.Universal.Voice
                     ReconnectIndefinitely = false,
                     AutomaticGuildSync = false,
                     MessageCacheSize = 0,
-                    LightMode = true
+                    LightMode = true,
+                    WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew
                 });
 
                 _discord.Ready += OnReady;

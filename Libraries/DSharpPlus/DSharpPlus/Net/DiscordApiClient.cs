@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -993,7 +994,7 @@ namespace DSharpPlus.Net
 
             var ret = JsonConvert.DeserializeObject<DiscordDmChannel>(res.Response);
             ret.Discord = Discord;
-            ret._recipients = new List<DiscordUser>() { Discord.InternalGetCachedUser(recipient_id) };
+            ret._recipients = new ConcurrentDictionary<ulong, DiscordUser>() { [recipient_id] = Discord.InternalGetCachedUser(recipient_id) };
 
             return ret;
         }

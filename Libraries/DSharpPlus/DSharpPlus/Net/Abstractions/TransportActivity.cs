@@ -114,7 +114,8 @@ namespace DSharpPlus.Net.Abstractions
             StreamUrl = game.StreamUrl;
         }
 
-        public bool IsRichPresence() => Details != null || State != null || ApplicationId != null || Instance != null || Party != null || Assets != null || Secrets != null || Timestamps != null;
+        public bool IsRichPresence() 
+            => Details != null || State != null || ApplicationId != null || Instance != null || Party != null || Assets != null || Secrets != null || Timestamps != null;
 
         /// <summary>
         /// Represents information about assets attached to a rich presence.

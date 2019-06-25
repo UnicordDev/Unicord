@@ -38,7 +38,6 @@ namespace Unicord.Universal.Controls
             _embed = embed;
             _channel = m.Channel;
             InitializeComponent();
-            thumbnail.Visibility = Visibility.Visible;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

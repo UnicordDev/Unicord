@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,6 +22,17 @@ namespace Unicord.Universal.Pages.Settings
 {
     public sealed partial class SettingsPage : Page
     {
+        // these should be kept in order as they appear in the UI
+        private static Dictionary<string, Type> _pages = new Dictionary<string, Type>()
+        {
+            ["Home"] = typeof(AccountsSettingsPage),
+            ["Messaging"] = typeof(MessagingSettingsPage),
+            ["Media"] = typeof(MediaSettingsPage),
+            ["Themes"] = typeof(ThemesSettingsPage),
+            ["Security"] = typeof(SecuritySettingsPage),
+            ["About"] = typeof(AboutSettingsPage),
+        };
+
         public SettingsPage()
         {
             InitializeComponent();
@@ -41,34 +53,28 @@ namespace Unicord.Universal.Pages.Settings
 
         private void NavigationView_ItemInvoked(Lib.NavigationView sender, Lib.NavigationViewItemInvokedEventArgs args)
         {
-            switch (args.InvokedItemContainer.Tag as string)
+            if (args.InvokedItemContainer.Tag is string str)
             {
-                case "Home":
-                    frame.Navigate(typeof(AccountsSettingsPage));
-                    break;
+                if (_pages.TryGetValue(str, out var type))
+                {
+                    var transitionInfo = args.RecommendedNavigationTransitionInfo;
+                    var currentIndex = _pages.Values.ToList().IndexOf(frame.CurrentSourcePageType);
+                    var newIndex = _pages.Keys.ToList().IndexOf(str);
 
-                case "Messaging":
-                    frame.Navigate(typeof(MessagingSettingsPage));
-                    break;
+                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+                    {
+                        if (newIndex > currentIndex)
+                        {
+                            transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight };
+                        }
+                        else if (newIndex < currentIndex)
+                        {
+                            transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft };
+                        }
+                    }
 
-                case "Media":
-                    frame.Navigate(typeof(MediaSettingsPage));
-                    break;
-
-                case "Themes":
-                    frame.Navigate(typeof(ThemesSettingsPage));
-                    break;
-
-                case "Security":
-                    frame.Navigate(typeof(SecuritySettingsPage));
-                    break;
-
-                case "About":
-                    frame.Navigate(typeof(AboutSettingsPage));
-                    break;
-
-                default:
-                    break;
+                    frame.Navigate(type, null, transitionInfo);
+                }
             }
         }
 

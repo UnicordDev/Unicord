@@ -20,7 +20,7 @@ namespace Unicord.Universal.Converters
 
                 if (c.Type == ChannelType.Group)
                 {
-                    return c.Name ?? Strings.NaturalJoin(c.Recipients.Select(r => r.DisplayName));
+                    return c.Name ?? Strings.NaturalJoin(c.Recipients.Values.Select(r => r.DisplayName));
                 }
             }
 

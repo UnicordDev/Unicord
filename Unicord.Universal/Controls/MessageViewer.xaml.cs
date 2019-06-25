@@ -115,6 +115,11 @@ namespace Unicord.Universal.Controls
                 {
                     if (newMessage == null)
                     {
+                        _message = null;
+                        _member = null;
+                        _author = null;
+                        _channel = null;
+
                         embeds?.Children.Clear();
                         markdown.Text = "";
                         grid.DataContext = null;
@@ -124,7 +129,6 @@ namespace Unicord.Universal.Controls
                         _message = newMessage;
                         embeds?.Children.Clear();
 
-                        //bg.Visibility = newMessage.MentionedUsers.Any(me => me != null && me.Id == me.Discord.CurrentUser.Id) ? Visibility.Visible : Visibility.Collapsed;
                         markdown.FontSize = Emoji.IsEmoji(newMessage.Content) ? 26 : 14;
                         grid.DataContext = newMessage;
 
@@ -341,11 +345,6 @@ namespace Unicord.Universal.Controls
         private void EditModeItem_Click(object sender, RoutedEventArgs e)
         {
             this.FindParent<ChannelPage>().EnterEditMode(Message);
-        }
-
-        private void Markdown_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
-        {
-            args.Handled = true;
         }
 
         private void CopyFlyoutItem_Click(object sender, RoutedEventArgs e)

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Net.Abstractions
 {
@@ -29,6 +30,6 @@ namespace DSharpPlus.Net.Abstractions
         /// Gets or sets the data of the payload.
         /// </summary>
         [JsonProperty("d")]
-        public object Data { get; set; }
+        public JToken Data { get; set; }
     }
 }

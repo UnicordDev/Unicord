@@ -581,5 +581,10 @@ namespace Unicord.Universal.Pages
         {
 
         }
+
+        private async void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            await App.Discord.CreateGuildAsync("Penis");
+        }
     }
 }

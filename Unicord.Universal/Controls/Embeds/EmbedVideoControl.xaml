@@ -12,11 +12,7 @@
     
     <Grid x:Name="content">
         <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
-            <Image x:Name="posterImage" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind Thumbnail.ProxyUrl}"/>
-                </Image.Source>
-            </Image>
+            <controls:ImageEx x:Name="posterImage" IsCacheEnabled="True" Source="{Binding Thumbnail.ProxyUrl}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
             <Grid x:Name="posterOverlay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                 <controls:DropShadowPanel HorizontalAlignment="Center" VerticalAlignment="Center" BlurRadius="16" ShadowOpacity="1" Color="Black">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="64">

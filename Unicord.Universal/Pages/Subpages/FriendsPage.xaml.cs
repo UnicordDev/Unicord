@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using DSharpPlus.Entities;
 using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
 
 namespace Unicord.Universal.Pages.Subpages
 {
@@ -23,17 +13,11 @@ namespace Unicord.Universal.Pages.Subpages
             InitializeComponent();
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnItemClick(object sender, ItemClickEventArgs e)
         {
-            var gridView = (sender as GridView);
-
-            foreach (var i in e.AddedItems)
+            if(e.ClickedItem is DiscordRelationship rel)
             {
-                if (gridView.ItemsPanelRoot.Children.FirstOrDefault(c => (c as GridViewItem)?.Content == i) is GridViewItem cont)
-                {
-                    gridView.SelectedItem = null;
-                    this.FindParent<MainPage>().ShowUserOverlay((i as DiscordRelationship).User, true);
-                }
+                this.FindParent<MainPage>().ShowUserOverlay(rel.User, true);
             }
         }
 

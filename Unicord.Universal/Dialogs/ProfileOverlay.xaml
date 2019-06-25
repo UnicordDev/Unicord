@@ -49,11 +49,8 @@
                         <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
                             <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}" Style="{ThemeResource SubtitleTextBlockStyle}">
+                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}" Style="{ThemeResource SubtitleTextBlockStyle}">
                             <Run Text="{x:Bind _member.DisplayName}"/>
-                        </TextBlock>
-                        <TextBlock Grid.Row="2" Visibility="{x:Bind User.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}}">
-                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
                         </TextBlock>
                     </StackPanel>
                     <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
@@ -81,7 +78,7 @@
                     </Pivot.HeaderTemplate>
                     <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}" >
                         <StackPanel>
-                            <StackPanel x:Name="rolesList">
+                            <StackPanel x:Name="rolesList" Visibility="{x:Bind _member.Roles, Converter={StaticResource BoolVisibilityConverter}}">
                                 <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                                 <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
                                     <ItemsControl.ItemsPanel>
@@ -91,8 +88,9 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </StackPanel>
+                            
                             <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
-                            <TextBlock Text="{x:Bind _member.JoinedAt}"/>
+                            <TextBlock Text="{x:Bind _member.JoinedAt, Converter={StaticResource DateTimeConverter}}"/>
                         </StackPanel>
                     </PivotItem>
                     <PivotItem>

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Net.WebSocket;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -15,6 +9,13 @@ using Microsoft.AppCenter.Push;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -159,21 +160,6 @@ namespace Unicord.Universal
 
         private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
-            UpgradeSettings();
-
-            Exception themeLoadException = null; 
-            Analytics.TrackEvent("Launch");
-            WindowManager.SetMainWindow();
-
-            try
-            {
-                ThemeManager.LoadCurrentTheme(Resources);
-            }
-            catch (Exception ex)
-            {
-                themeLoadException = ex;
-            }
-
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
             foreach (var str in rawArgs)
@@ -186,11 +172,26 @@ namespace Unicord.Universal
             }
 
             var channelId = 0ul;
+            Exception themeLoadException = null;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (!(Window.Current.Content is Frame rootFrame))
             {
+                UpgradeSettings();
+
+                Analytics.TrackEvent("Launch");
+                WindowManager.SetMainWindow();
+
+                try
+                {
+                    ThemeManager.LoadCurrentTheme(Resources);
+                }
+                catch (Exception ex)
+                {
+                    themeLoadException = ex;
+                }
+
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
@@ -230,16 +231,24 @@ namespace Unicord.Universal
                 LocalSettings.Save("InstalledThemes", (object)null);
             }
 
-            var localFolder = ApplicationData.Current.LocalFolder.Path;
-            var themesDirectory = Path.Combine(localFolder, "Themes");
-            foreach (var item in Directory.EnumerateDirectories(themesDirectory))
+            try
             {
-                var name = Path.GetFileName(item);
-                var normalisedName = Strings.Normalise(name);
-                if (string.Compare(name, normalisedName, true) != 0)
+                var localFolder = ApplicationData.Current.LocalFolder.Path;
+                var themesDirectory = Path.Combine(localFolder, "Themes");
+                foreach (var item in Directory.EnumerateDirectories(themesDirectory))
                 {
-                    Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                    var name = Path.GetFileName(item);
+                    var normalisedName = Strings.Normalise(name);
+                    if (string.Compare(name, normalisedName, true) != 0)
+                    {
+                        Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Failed to upgrade settings!!");
+                Logger.Log(ex);
             }
         }
 
@@ -291,7 +300,7 @@ namespace Unicord.Universal
 
             await _connectSemaphore.WaitAsync();
 
-            if (Discord == null)
+            if (Discord == null || Discord.IsDisposed)
             {
                 if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))
                 {
@@ -334,7 +343,9 @@ namespace Unicord.Universal
                             AutomaticGuildSync = false,
                             LogLevel = DSharpPlus.LogLevel.Debug,
                             MutedStore = new UnicordMutedStore(),
-                            GatewayCompressionLevel = GatewayCompressionLevel.None
+                            GatewayCompressionLevel = GatewayCompressionLevel.None,
+                            WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
+                            ReconnectIndefinitely = true
                         }));
 
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);

@@ -10,11 +10,6 @@
     mc:Ignorable="d" Placement="Right">
 
     <Grid x:Name="Root" Width="256" Margin="-12">
-        <Grid.Resources>
-            <ThemeResource x:Key="PrimaryBrush" ResourceKey="SystemControlAltMediumLowAcrylicWindowMediumBrush"/>
-            <ThemeResource x:Key="SecondaryBrush" ResourceKey="SystemControlAcrylicWindowMediumHighBrush"/>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -26,9 +21,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Canvas Width="128" Height="128" HorizontalAlignment="Center" Margin="24,24,24,8">
-                <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding NonAnimatedAvatarUrl}"/>
+                <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding AvatarUrl}"/>
                 <Ellipse
                     Canvas.Left="96"
                     Canvas.Top="96"
@@ -41,7 +37,14 @@
                     </Ellipse.Fill>
                 </Ellipse>
             </Canvas>
-            <TextBlock RequestedTheme="Dark" Grid.Row="1" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,24">
+            <StackPanel Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
+                <TextBlock Text="{Binding Nickname}" TextAlignment="Center" FontSize="24"/>
+                <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="16" Margin="0,0,0,24">
+                    @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
+                </TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Visibility="{Binding Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Visible, ConverterParameter=True}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="24" Margin="0,0,0,16">
                 @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
             </TextBlock>
         </Grid>

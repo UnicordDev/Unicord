@@ -10,8 +10,27 @@ namespace DSharpPlus.Entities
     /// <summary>
     /// Represents a Discord emoji.
     /// </summary>
-    public partial class DiscordEmoji : SnowflakeObject, IEquatable<DiscordEmoji>
+    public partial class DiscordEmoji : IEquatable<DiscordEmoji>
     {
+        /// <summary>
+        /// Gets the ID of this object.
+        /// </summary>
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        public ulong Id { get; internal set; }
+
+        /// <summary>
+        /// Gets the date and time this object was created.
+        /// </summary>
+        [JsonIgnore]
+        public DateTimeOffset CreationTimestamp
+            => new DateTimeOffset(2015, 1, 1, 0, 0, 0, TimeSpan.Zero).AddMilliseconds(Id >> 22);
+
+        /// <summary>
+        /// Gets the client instance this object is tied to.
+        /// </summary>
+        [JsonIgnore]
+        public BaseDiscordClient Discord { get; set; }
+
         /// <summary>
         /// Gets the name of this emoji.
         /// </summary>
@@ -26,6 +45,7 @@ namespace DSharpPlus.Entities
 
         [JsonProperty("roles", NullValueHandling = NullValueHandling.Ignore)]
         internal List<ulong> _roles = null;
+        private string _searchName;
 
         /// <summary>
         /// Gets whether this emoji requires colons to use.
@@ -81,6 +101,9 @@ namespace DSharpPlus.Entities
                 return $"https://cdn.discordapp.com/emojis/{Id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
             }
         }
+
+        [JsonIgnore]
+        public string SearchName { get => _searchName ?? Name; private set => _searchName = value; }
 
         /// <summary>
         /// Gets emoji's name in non-Unicode format (eg. :thinking: instead of the Unicode representation of the emoji).
@@ -229,7 +252,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <param name="unicode_entity">Unicode entity to create the object from.</param>
         /// <returns>Create <see cref="DiscordEmoji"/> object.</returns>
-        public static DiscordEmoji FromUnicode(string unicode_entity) => new DiscordEmoji { Name = unicode_entity, Discord = null };
+        public static DiscordEmoji FromUnicode(string unicode_entity, string search_name = null) => new DiscordEmoji { Name = unicode_entity, SearchName = search_name, Discord = null };
 
         /// <summary>
         /// Creates an emoji object from a guild emote.

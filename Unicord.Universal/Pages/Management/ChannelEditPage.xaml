@@ -5,49 +5,85 @@
     xmlns:local="using:Unicord.Universal.Pages.Management"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" Loaded="Page_Loaded"
     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+    <lib:NavigationView x:Name="navigationView"
+                        IsBackEnabled="True"
+                        IsSettingsVisible="False"
+                        PaneDisplayMode="Auto"
+                        OpenPaneLength="250"
+                        Header="{Binding SelectedItem.Content, ElementName=navigationView}">
+        <lib:NavigationView.MenuItems>
+            <lib:NavigationViewItem Content="Overview">
+                <lib:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE179;" />
+                </lib:NavigationViewItem.Icon>
+            </lib:NavigationViewItem>
+            <lib:NavigationViewItem Content="Permissions">
+                <lib:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE192;" />
+                </lib:NavigationViewItem.Icon>
+            </lib:NavigationViewItem>
+            <lib:NavigationViewItem Content="Invites">
+                <lib:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE71B;" />
+                </lib:NavigationViewItem.Icon>
+            </lib:NavigationViewItem>
+            <lib:NavigationViewItem Content="Webhooks">
+                <lib:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE12B;" />
+                </lib:NavigationViewItem.Icon>
+            </lib:NavigationViewItem>
+        </lib:NavigationView.MenuItems>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid x:Name="topGrid" Padding="0,32,0,0" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="42"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="42"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="backButton" Style="{ThemeResource IconButtonStyle}" Click="BackButton_Click">&#xE72B;</Button>
-            <TextBlock Grid.Column="1" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center">Edit Channel</TextBlock>
-            <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource IconButtonStyle}" Click="AcceptButton_Click">&#xE8FB;</Button>
-            <ProgressRing x:Name="progressRing" Grid.Column="2" Margin="2"/>
-        </Grid>
-        <!-- This is retarded. -->
-        <ContentControl x:Name="mainContent" IsEnabled="True" Margin="0,8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Row="1">
+        <ContentControl x:Name="mainContent" IsEnabled="True" HorizontalContentAlignment="Stretch" Grid.Row="1">
             <StackPanel x:Name="mainGrid" HorizontalAlignment="Stretch" Margin="12,0">
-                <TextBlock Style="{ThemeResource TitleTextBlockStyle}" Text="Overview" Margin="0,0,0,4"/>
-
                 <TextBlock>Name</TextBlock>
-                <TextBox Style="{ThemeResource ChannelNameTextBoxStyle}" FontFamily="/Assets/FiraCode-Regular.ttf#Fira Code" TextChanging="TextBox_TextChanging" Padding="8,6" Margin="0,4,0,12" PlaceholderText="something-witty" Text="{Binding Name, Mode=TwoWay}"/>
+                <TextBox TextChanging="TextBox_TextChanging" Margin="0,4,0,12" PlaceholderText="something-witty" Text="{Binding Name, Mode=TwoWay}"/>
 
-                <TextBlock>Topic</TextBlock>
-                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
+                <StackPanel Visibility="{Binding IsText, Converter={StaticResource BoolVisibilityConverter}}">
+                    <TextBlock>Topic</TextBlock>
+                    <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="NSFW Channel" VerticalAlignment="Center"/>
-                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">People will need to confirm they're over 18 before viewing this channel, and the server wide content filter won't apply here.</TextBlock>
-                    </StackPanel>
-                    <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
-                </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="NSFW Channel" VerticalAlignment="Center"/>
+                            <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">People will need to confirm they're over 18 before viewing this channel, and the server wide content filter won't apply here.</TextBlock>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
+                    </Grid>
+                </StackPanel>
 
+                <StackPanel Visibility="{Binding IsVoice, Converter={StaticResource BoolVisibilityConverter}}">
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock>Bitrate</TextBlock>
+                        <Slider x:Name="BitrateSlider" Grid.Row="1" Value="{Binding Bitrate, Mode=TwoWay}" Minimum="8" Maximum="96" StepFrequency="4" Width="{Binding ActualWidth, ElementName=StarColumn}" />
+                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
+                            <Run Text="{Binding Value, ElementName=BitrateSlider}"/>kbps
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" Margin="0,4,0,0">User limit</TextBlock>
+                        <Slider x:Name="UserlimitSlider" Grid.Row="3" Value="{Binding Userlimit, Mode=TwoWay}" Minimum="0" Maximum="99" Width="{Binding ActualWidth, ElementName=StarColumn}" />
+                        <TextBlock Grid.Column="1" Grid.Row="3" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
+                            <Run Text="{Binding Value, ElementName=UserlimitSlider}"/> Users
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
             </StackPanel>
         </ContentControl>
-    </Grid>
+    </lib:NavigationView>
 </Page>

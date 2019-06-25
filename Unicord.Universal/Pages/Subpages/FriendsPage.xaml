@@ -36,7 +36,6 @@
                         <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="1"/>
                         <DoubleAnimation Storyboard.TargetName="overlayContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
                     </Storyboard>
-                    <commands:MessageUserCommand x:Key="messageUserCommand" />
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -76,7 +75,7 @@
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind User}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
@@ -116,8 +115,6 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <!--<TextBlock Text="Recent Places" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="10,0,10,10"/>
-        <TextBlock Grid.Row="1" Margin="10" Text="You've not been anywhere yet! Go have some fun, and we'll show you recent places here!" TextWrapping="Wrap"/>-->
             <Grid Margin="12,12,12,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -126,25 +123,33 @@
                 <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" VerticalAlignment="Center" Style="{ThemeResource IconButtonStyle}" Content="&#xE700;"/>
                 <TextBlock Text="Friends" Style="{ThemeResource SubheaderTextBlockStyle}" Grid.Column="1" Margin="12" Grid.Row="2"/>
             </Grid>
-            <Pivot Margin="12,0,12,12" IsHeaderItemsCarouselEnabled="False" ManipulationMode="None" SelectedIndex="1" Grid.Row="3">
+            <Pivot Margin="12,0,12,12" 
+                   IsHeaderItemsCarouselEnabled="False" 
+                   ManipulationMode="None" 
+                   SelectedIndex="1" 
+                   Grid.Row="3">
                 <Pivot.Items>
                     <PivotItem Header="All">
                         <GridView x:Name="all"
                                   ItemsSource="{Binding All}"
-                                  SelectionChanged="ListView_SelectionChanged"
-                              ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                              b:ListViewBehaviour.MinItemWidth="250"
-                              animations:ReorderGridAnimation.Duration="300"/>
+                                  SelectionMode="None"
+                                  ItemClick="OnItemClick"
+                                  IsItemClickEnabled="True"
+                                  ItemTemplate="{StaticResource userTemplate}"
+                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
+                                  b:ListViewBehaviour.MinItemWidth="250"
+                                  animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
                     <PivotItem Header="Online">
                         <GridView x:Name="online"
                                   ItemsSource="{Binding Online}"
-                              SelectionChanged="ListView_SelectionChanged" 
-                              ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                              b:ListViewBehaviour.MinItemWidth="250"
-                              animations:ReorderGridAnimation.Duration="300"/>
+                                  SelectionMode="None"
+                                  ItemClick="OnItemClick"
+                                  IsItemClickEnabled="True"
+                                  ItemTemplate="{StaticResource userTemplate}"
+                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
+                                  b:ListViewBehaviour.MinItemWidth="250"
+                                  animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
                     <!-- 
                         these two groups should use different templates 
@@ -153,20 +158,24 @@
                     <PivotItem Header="Pending">
                         <GridView x:Name="pending"
                                   ItemsSource="{Binding Pending}"
-                              SelectionChanged="ListView_SelectionChanged" 
-                              ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                              b:ListViewBehaviour.MinItemWidth="250"
-                              animations:ReorderGridAnimation.Duration="300"/>
+                                  SelectionMode="None"
+                                  ItemClick="OnItemClick"
+                                  IsItemClickEnabled="True"
+                                  ItemTemplate="{StaticResource userTemplate}"
+                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
+                                  b:ListViewBehaviour.MinItemWidth="250"
+                                  animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
                     <PivotItem Header="Blocked">
                         <GridView x:Name="blocked"
                                   ItemsSource="{Binding Blocked}"
-                              SelectionChanged="ListView_SelectionChanged" 
-                              ItemTemplate="{StaticResource userTemplate}"
-                              ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                              b:ListViewBehaviour.MinItemWidth="250"
-                              animations:ReorderGridAnimation.Duration="300"/>
+                                  SelectionMode="None"
+                                  ItemClick="OnItemClick"
+                                  IsItemClickEnabled="True"
+                                  ItemTemplate="{StaticResource userTemplate}"
+                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
+                                  b:ListViewBehaviour.MinItemWidth="250"
+                                  animations:ReorderGridAnimation.Duration="300"/>
                     </PivotItem>
                 </Pivot.Items>
             </Pivot>

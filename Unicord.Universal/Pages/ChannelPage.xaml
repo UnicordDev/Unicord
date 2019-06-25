@@ -258,7 +258,6 @@
                                 <TextBlock
                                     x:Name="header"
                                     Grid.Column="2"
-                                    MaxWidth="250"
                                     Margin="8,0,8,0"
                                     VerticalAlignment="Center"
                                     FontSize="15"
@@ -349,7 +348,7 @@
                                     Content="&#xE716;"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="User List"
-                                    Visibility="{Binding ShowUserlistButton}" />
+                                    Visibility="{Binding ShowUserlistButton, Converter={StaticResource BoolVisibilityConverter}}" />
 
                             </StackPanel>
 
@@ -394,17 +393,19 @@
                     <Grid Grid.Row="1">
                         <ListView
                             x:Name="messageList"
-                            IncrementalLoadingThreshold="10"
+                            IncrementalLoadingThreshold="15"
                             ItemTemplate="{StaticResource DefaultMessageTemplate}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"
                             SelectionChanged="MessageList_SelectionChanged"
+                            ShowsScrollingPlaceholders="False"
                             SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel
                                         Margin="0,8"
                                         VerticalAlignment="Bottom"
+                                        CacheLength="4"
                                         ItemsUpdatingScrollMode="KeepLastItemInView" />
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
@@ -417,10 +418,6 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 </Style>
                             </ListView.ItemContainerStyle>
-                            <ListView.ItemContainerTransitions>
-                                <!-- these aniamtions look a little eh? -->
-                                <TransitionCollection/>
-                            </ListView.ItemContainerTransitions>
                         </ListView>
                         <StackPanel
                             x:Name="noMessages"
@@ -483,24 +480,29 @@
                             <ListView
                                 x:Name="photosList"
                                 Grid.Column="1"
+                                ShowsScrollingPlaceholders="False"
+                                SingleSelectionFollowsFocus="False"
+                                SelectionMode="None"
+                                IsItemClickEnabled="True"
+                                ItemClick="PhotosList_ItemClick"
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                 ScrollViewer.HorizontalScrollMode="Enabled"
                                 ScrollViewer.IsHorizontalRailEnabled="True"
                                 ScrollViewer.IsVerticalRailEnabled="False"
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.VerticalScrollMode="Disabled"
-                                SelectionChanged="SelectionHandler">
+                                ScrollViewer.VerticalScrollMode="Disabled">
                                 <ListView.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <ItemsStackPanel Orientation="Horizontal" />
+                                        <ItemsStackPanel Orientation="Horizontal" CacheLength="4" />
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Image
-                                        Height="150"
-                                        MaxWidth="300"
-                                        Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
+                                        <controls:ImageEx
+                                            Height="150"
+                                            MaxWidth="300"
+                                            IsCacheEnabled="True"
+                                            Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -544,10 +546,10 @@
                             Margin="8,4,8,0"
                             ItemTemplate="{StaticResource TypingUserTemplate}"
                             ItemsSource="{Binding TypingUsers}"
-                            Visibility="{Binding ShowTypingUsers}">
+                            Visibility="{Binding ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
+                                    <ItemsStackPanel Orientation="Horizontal" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
@@ -556,7 +558,7 @@
                             x:Name="slowModeTimeout"
                             Grid.Row="2"
                             Maximum="{Binding PerUserRateLimit}"
-                            Visibility="{Binding ShowSlowModeTimeout}"
+                            Visibility="{Binding ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
                             Value="{Binding SlowModeTimeout}" />
 
                         <Grid
@@ -574,7 +576,7 @@
                                 x:Name="uploadButton"
                                 Click="uploadButton_Click"
                                 Content="&#xE898;"
-                                IsEnabled="{Binding CanUpload}"
+                                Visibility="{Binding CanUpload}"
                                 Style="{ThemeResource IconButtonStyle}" />
 
                             <TextBox
@@ -601,7 +603,7 @@
                                 FontFamily="Segoe MDL2 Assets"
                                 Text="&#xE916;"
                                 ToolTipService.ToolTip="{Binding SlowModeText}"
-                                Visibility="{Binding ShowSlowMode}" />
+                                Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
 
                             <ToggleButton
                                 x:Name="emoteButton"
@@ -610,7 +612,7 @@
                                 Content="&#xED54;"
                                 FontSize="18"
                                 Style="{ThemeResource IconToggleButtonStyle}"
-                                Visibility="{Binding ShowSendButton}">
+                                Visibility="{Binding CanSend, Converter={StaticResource BoolVisibilityConverter}}">
                             </ToggleButton>
                             <Button
                                 x:Name="sendButton"

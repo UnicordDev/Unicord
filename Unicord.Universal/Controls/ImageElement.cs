@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.UI.Controls;
+using System;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.UI.Xaml;
@@ -76,7 +77,7 @@ namespace Unicord.Universal.Controls
 
         private static void LoadImage(ImageElement element)
         {
-            var image = element.GetTemplateChild("image") as Image;
+            var image = element.GetTemplateChild("image") as ImageEx;
 
             var width = element.ImageWidth;
             var height = element.ImageHeight;
@@ -115,7 +116,7 @@ namespace Unicord.Universal.Controls
 
         private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Image i && i.Source is BitmapImage image)
+            if (sender is ImageEx i && i.Source is BitmapImage image)
             {
                 image.Stop();
             }
@@ -123,7 +124,7 @@ namespace Unicord.Universal.Controls
 
         private void Image_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Image i && i.Source is BitmapImage image)
+            if (sender is ImageEx i && i.Source is BitmapImage image)
             {
                 image.Play();
             }

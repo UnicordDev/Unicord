@@ -96,6 +96,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock x:Name="relaunchRequired" Visibility="Collapsed" Text="To apply theme changes, Unicord will need to relaunch." Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
+                <TextBlock x:Name="themeLoadError" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
 
                 <controls:DropShadowPanel
                     Grid.Row="1"

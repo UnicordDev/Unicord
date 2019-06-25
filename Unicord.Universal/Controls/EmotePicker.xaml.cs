@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -62,8 +63,11 @@ namespace Unicord.Universal.Controls
                     source.IsSourceGrouped = false;
 
                     var text = searchBox.Text.ToLowerInvariant();
+                    var cult = CultureInfo.InvariantCulture.CompareInfo;
                     source.Source =
-                        enumerable.Where(s => s.Name.ToLowerInvariant().Contains(text));
+                        enumerable.Union(Emoji.Select(e => DiscordEmoji.FromUnicode(e.Char, e.Name)))
+                                  .Where(s => cult.IndexOf(s.SearchName, text, CompareOptions.IgnoreCase) >= 0)
+                                  .OrderBy(s => s.SearchName);
                 }
                 else
                 {

@@ -415,6 +415,17 @@
                             <StackPanel Margin="0,0,0,8">
                                 <lib:NavigationViewItemSeparator />
                                 <ListViewItem
+                                    x:Name="createServerItem"
+                                    MinWidth="0"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Stretch"
+                                    Tapped="CreateServerItem_Tapped">
+                                    <SymbolIcon
+                                        Width="36"
+                                        Height="36"
+                                        Symbol="Add" />
+                                </ListViewItem>
+                                <ListViewItem
                                     x:Name="settingsItem"
                                     MinWidth="0"
                                     Padding="0"

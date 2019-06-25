@@ -34,7 +34,7 @@ namespace DSharpPlus.Net.Abstractions
         [JsonProperty("$browser")]
         public string Browser =>
 #if WINDOWS_UWP
-            "DiscordUWP";
+            "Unicord";
 #else
             "DiscordWPF";
 #endif
@@ -45,7 +45,7 @@ namespace DSharpPlus.Net.Abstractions
         [JsonProperty("$device")]
         public string Device =>
 #if WINDOWS_UWP
-            "{AnalyticsInfo.VersionInfo.DeviceFamily} ({AnalyticsInfo.DeviceForm})";
+            $"{AnalyticsInfo.VersionInfo.DeviceFamily} ({AnalyticsInfo.DeviceForm})";
 #else
             "";
 #endif

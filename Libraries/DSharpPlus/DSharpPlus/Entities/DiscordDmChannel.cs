@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Net.Serialization;
 using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
@@ -18,12 +21,12 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Gets the recipients of this direct message.
         /// </summary>
-        [JsonProperty("recipient", NullValueHandling = NullValueHandling.Ignore)]
-        public IReadOnlyList<DiscordUser> Recipients
-            => new ReadOnlyList<DiscordUser>(_recipients);
+        public IReadOnlyDictionary<ulong, DiscordUser> Recipients
+            => new ReadOnlyConcurrentDictionary<ulong, DiscordUser>(_recipients);
 
-        [JsonIgnore]
-        internal List<DiscordUser> _recipients;
+        [JsonProperty("recipient", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(SnowflakeArrayAsDictionaryJsonConverter))]
+        internal ConcurrentDictionary<ulong, DiscordUser> _recipients;
 
         /// <summary>
         /// Gets the hash of this channel's icon.
@@ -36,10 +39,10 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public string IconUrl
-            => !string.IsNullOrWhiteSpace(IconHash) ? $"https://cdn.discordapp.com/channel-icons/{Id.ToString(CultureInfo.InvariantCulture)}/{IconHash}.png" : (_recipients.Count == 1 ? _recipients[0].AvatarUrl : null);
+            => !string.IsNullOrWhiteSpace(IconHash) ? $"https://cdn.discordapp.com/channel-icons/{Id.ToString(CultureInfo.InvariantCulture)}/{IconHash}.png" : Recipient?.NonAnimatedAvatarUrl;
 
         [JsonIgnore]
-        public DiscordUser Recipient => _recipients?.Count == 1 ? _recipients[0] : null;
+        public DiscordUser Recipient => _recipients?.Count == 1 ? _recipients.Values.ElementAt(0) : null;
 
         /// <summary>
         /// Only use for Group DMs! Whitelised bots only. Requires user's oauth2 access token

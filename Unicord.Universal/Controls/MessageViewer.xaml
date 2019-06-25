@@ -19,65 +19,63 @@
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
-    <Grid>
-        <!--<Rectangle x:Name="bg" Visibility="Collapsed" Fill="{StaticResource MentionBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0"/>-->
+    <!--<Rectangle x:Name="bg" Visibility="Collapsed" Fill="{StaticResource MentionBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0"/>-->
 
-        <Grid
-            x:Name="grid"
-            Background="{Binding Background, ElementName=self}"
-            IsHitTestVisible="True">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Grid.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem
+    <Grid x:Name="grid"
+          Background="{Binding Background, ElementName=self}"
+          IsHitTestVisible="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem
                         x:Name="addReactionMenuItem"
                         x:Load="{x:Bind _canReact}"
                         Icon="Emoji"
                         Text="Add Reaction" />
-                    
-                    <MenuFlyoutItem
+
+                <MenuFlyoutItem
                         Icon="Copy"
                         Text="Copy"
                         Click="CopyFlyoutItem_Click" />
 
-                    <MenuFlyoutSeparator  />
+                <MenuFlyoutSeparator  />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="profileMenuItem"
                         Click="profileMenuItem_Click"
                         Icon="OtherUser"
                         Text="Profile" />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="message"
                         Command="{StaticResource MessageUserCommand}"
                         CommandParameter="{Binding Author}"
                         Icon="Message"
                         Text="Message" />
 
-                    <MenuFlyoutSeparator />
+                <MenuFlyoutSeparator />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="changeNickname"
                         Command="{StaticResource ChangeNicknameCommand}"
                         CommandParameter="{Binding Author}"
                         Icon="Rename"
                         Text="Change Nickname" />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="pinMessage"
                         Command="{StaticResource PinMessageCommand}"
                         CommandParameter="{Binding}"
                         Icon="Pin"
                         Text="Pin Message"/>
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="kick"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="LeaveChat"
@@ -86,7 +84,7 @@
                         CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _kickMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="ban"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="Remove"
@@ -95,17 +93,17 @@
                         CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _banMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
-                    <MenuFlyoutSeparator
+                <MenuFlyoutSeparator
                         Visibility="{x:Bind ShowBottomSeparator, Converter={StaticResource BoolVisibilityConverter}}"  />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="editMenuFlyout"
                         Click="EditItem_Click"
                         Icon="Edit"
                         Text="Edit Message"
                         Visibility="{x:Bind CanEdit, Converter={StaticResource BoolVisibilityConverter}}" />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         x:Name="delete"
                         Command="{StaticResource DeleteMessageCommand}"
                         CommandParameter="{Binding}"
@@ -114,140 +112,127 @@
                         Text="Delete Message"
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
-                    <MenuFlyoutSeparator 
+                <MenuFlyoutSeparator 
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
-                    <MenuFlyoutItem
+                <MenuFlyoutItem
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}"
                         Click="EditModeItem_Click"
                         Text="Edit Mode">
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE762;" />
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                </MenuFlyout>
-            </Grid.ContextFlyout>
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE762;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyout>
+        </Grid.ContextFlyout>
 
-            <Ellipse
+        <Ellipse
                 x:Name="imageContainer"
-                Width="38"
-                Height="38"
+                Width="36"
+                Height="36"
                 VerticalAlignment="Top"
                 Visibility="{Binding CollapsedVisibility, ElementName=self}">
-                <Ellipse.Fill>
-                    <ImageBrush>
-                        <ImageBrush.ImageSource>
-                            <BitmapImage
-                                DecodePixelHeight="38"
-                                DecodePixelWidth="38"
+            <Ellipse.Fill>
+                <ImageBrush>
+                    <ImageBrush.ImageSource>
+                        <BitmapImage
+                                DecodePixelHeight="36"
+                                DecodePixelWidth="36"
                                 UriSource="{Binding Author.NonAnimatedAvatarUrl}" />
-                        </ImageBrush.ImageSource>
-                    </ImageBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+                    </ImageBrush.ImageSource>
+                </ImageBrush>
+            </Ellipse.Fill>
+        </Ellipse>
 
-            <Grid x:Name="mainGrid" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid
-                    x:Name="authorNameContent"
-                    Grid.Row="0"
-                    Margin="8,0,4,2"
-                    Visibility="{x:Bind CollapsedVisibility}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        x:Name="authorName"
-                        VerticalAlignment="Bottom"
-                        FontWeight="Bold"
-                        Foreground="{Binding Author.ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
-                        Text="{Binding Author.DisplayName}"
-                        Tapped="AuthorName_Tapped"
-                        TextWrapping="NoWrap" />
-                    <Border
-                        Grid.Column="1"
+        <Grid x:Name="mainGrid" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="authorNameContent"
+                  Grid.Row="0"
+                  Margin="8,0,4,2"
+                  Visibility="{x:Bind CollapsedVisibility}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="authorName"
+                           VerticalAlignment="Bottom"
+                           FontWeight="Bold"
+                           Foreground="{Binding Author.ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
+                           Text="{Binding Author.DisplayName}"
+                           Tapped="AuthorName_Tapped"
+                           TextWrapping="NoWrap" />
+                <Border Grid.Column="1"
                         Margin="4,0"
                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         CornerRadius="2"
                         Visibility="{Binding Author.IsBot, Converter={StaticResource BoolVisibilityConverter}}">
-                        <TextBlock
-                            Margin="4,2"
-                            FontSize="11"
-                            Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"
-                            Text="Bot" />
-                    </Border>
-                    <TextBlock Grid.Column="2" Margin="8,1" FontSize="11" VerticalAlignment="Bottom" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, Mode=OneWay}" Opacity="0.4"/>
-                </Grid>
-                <Grid Grid.Row="1" Margin="8,0,2,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            x:Name="systemMessageSymbol"
-                            Margin="0,6,10,6"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="20"
-                            Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
-                            Visibility="Collapsed" />
-                        <Grid
-                            x:Name="messageEditContainer"
-                            Grid.Column="1"
-                            x:DeferLoadStrategy="Lazy"
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                            Visibility="Collapsed">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox
-                                x:Name="messageEditBox"
-                                MaxHeight="100"
-                                fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp"
-                                AcceptsReturn="False"
-                                Style="{ThemeResource MessageTextBoxStyle}"
-                                Text="{Binding Content, Mode=OneWay}"
-                                TextWrapping="Wrap" />
-                            <Button
-                                x:Name="messageEditFinishButton"
-                                Grid.Column="1"
-                                Click="messageEditFinishButton_Click"
-                                Content="&#xE73E;"
-                                Style="{ThemeResource IconButtonStyle}" />
-                            <Button
-                                x:Name="messageEditCancelButton"
-                                Grid.Column="2"
-                                Click="messageEditCancelButton_Click"
-                                Content="&#xE711;"
-                                Style="{ThemeResource IconButtonStyle}" />
-                        </Grid>
-
-                        <wam:MarkdownTextBlock
-                            x:Name="markdown"
-                            Grid.Column="1"
-                            Channel="{Binding Channel}"
-                            ContextFlyout="{x:Null}"
-                            ContextRequested="Markdown_ContextRequested"
-                            Text="{Binding Content}"
-                            WrapCodeBlock="True"/>
-                    </Grid>
-                </Grid>
-                <StackPanel x:Name="embeds" Grid.Row="2" />
+                    <TextBlock Margin="4,2" FontSize="11" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" Text="Bot" />
+                </Border>
+                <TextBlock Grid.Column="2" Margin="8,1" FontSize="11" VerticalAlignment="Bottom" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, Mode=OneWay}" Opacity="0.4"/>
             </Grid>
+            <Grid Grid.Row="1" Margin="8,0,2,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        x:Name="systemMessageSymbol"
+                        Margin="0,6,10,6"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
+                        Visibility="Collapsed" />
+                    <Grid
+                        x:Name="messageEditContainer"
+                        Grid.Column="1"
+                        x:DeferLoadStrategy="Lazy"
+                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                        Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="messageEditBox"
+                                 MaxHeight="100"
+                                 fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp"
+                                 AcceptsReturn="False"
+                                 Style="{ThemeResource MessageTextBoxStyle}"
+                                 Text="{Binding Content, Mode=OneWay}"
+                                 TextWrapping="Wrap" />
+                        <Button x:Name="messageEditFinishButton"
+                                Grid.Column="1"
+                                Content="&#xE73E;"
+                                Style="{ThemeResource IconButtonStyle}"
+                                Click="messageEditFinishButton_Click" />
+                        <Button x:Name="messageEditCancelButton"
+                                Grid.Column="2"
+                                Content="&#xE711;"
+                                Style="{ThemeResource IconButtonStyle}"
+                                Click="messageEditCancelButton_Click" />
+                    </Grid>
+
+                    <wam:MarkdownTextBlock x:Name="markdown"
+                                           Grid.Column="1"
+                                           Channel="{Binding Channel}"
+                                           IsTextSelectionEnabled="False"
+                                           Text="{Binding Content}"
+                                           WrapCodeBlock="True"/>
+                </Grid>
+            </Grid>
+            <StackPanel x:Name="embeds" Grid.Row="2" />
         </Grid>
     </Grid>
 </UserControl>

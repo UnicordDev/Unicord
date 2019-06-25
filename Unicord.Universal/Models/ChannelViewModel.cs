@@ -19,6 +19,8 @@ namespace Unicord.Universal.Models
 {
     public class ChannelViewModel : PropertyChangedBase, IDisposable
     {
+        private const int INITIAL_LOAD_LIMIT = 50;
+
         private DiscordChannel _channel;
         private DiscordUser _currentUser;
         private double _slowModeTimeout;
@@ -165,7 +167,7 @@ namespace Unicord.Universal.Models
                     }
                     else
                     {
-                        return Strings.NaturalJoin(dm.Recipients.Select(r => r.Username));
+                        return Strings.NaturalJoin(dm.Recipients.Values.Select(r => r.Username));
                     }
                 }
 
@@ -200,13 +202,24 @@ namespace Unicord.Universal.Models
         public string TitleText => Channel.Guild != null ? $"{FullChannelName} - {Channel.Guild.Name}" : FullChannelName;
 
         /// <summary>
-        /// Should we show the recipient's profile picture?
+        /// The icon to show in the top left of a channel
         /// </summary>
-        public Visibility ShowUserImage =>
-            _channel is DiscordDmChannel c && c.Type == ChannelType.Private ? Visibility.Visible : Visibility.Collapsed;
+        public string UserImageUrl
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    if (dm.Type == ChannelType.Private && dm.Recipient != null)
+                        return dm.Recipient.AvatarUrl;
 
-        public string UserImageUrl =>
-            _channel is DiscordDmChannel c && c.Type == ChannelType.Private ? c.Recipient?.NonAnimatedAvatarUrl : null;
+                    if (dm.Type == ChannelType.Group && dm.IconUrl != null)
+                        return dm.IconUrl;
+                }
+
+                return null;
+            }
+        }
 
         public bool CanSend
         {
@@ -267,37 +280,35 @@ namespace Unicord.Universal.Models
         public double PerUserRateLimit =>
             (_channel.PerUserRateLimit ?? 0) * 1000;
 
-        public Visibility ShowSlowModeTimeout =>
-            SlowModeTimeout > 0 ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowSlowModeTimeout =>
+            SlowModeTimeout > 0;
 
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
 
         // TODO: Componentise?
-        public int UploadLimit => HasNitro ? 50 * 1024 * 1024 : 8 * 1024 * 1024;
+        public int UploadLimit => HasNitro ? 52_428_800 : 8_388_608;
 
         public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
 
-        public string DisplayUploadSize => (UploadSize / (1024d * 1024d)).ToString("F2");
+        public string DisplayUploadSize => (UploadSize / 1_048_576d).ToString("F2");
 
         public double UploadProgressBarValue => Math.Min(UploadSize, (ulong)UploadLimit);
 
         public Brush UploadInfoForeground => !CanSend ? (Brush)Application.Current.Resources["ErrorTextForegroundBrush"] : null;
 
-        public string DisplayUploadLimit => (UploadLimit / (1024d * 1024d)).ToString("F2");
+        public string DisplayUploadLimit => (UploadLimit / 1_048_576d).ToString("F2");
 
         public bool ShowUploads => FileUploads.Any() || IsTranscoding;
 
-        public Visibility ShowSendButton => CanSend ? Visibility.Visible : Visibility.Collapsed;
-
-        public Visibility ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
 
         public bool HasNitro => Channel.Discord.CurrentUser.HasNitro;
 
-        public Visibility ShowEditButton
-            => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels) ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowEditButton
+            => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
 
-        public Visibility ShowSlowMode
-            => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0 ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowSlowMode
+            => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0;
 
         public string SlowModeText
             // BUGBUG: these should be localizable at some point
@@ -307,10 +318,11 @@ namespace Unicord.Universal.Models
 
         private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
-        public Visibility ShowTypingUsers
-            => TypingUsers?.Any() == true ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowTypingUsers
+            => TypingUsers?.Any() == true;
 
-        public Visibility ShowTypingContainer => ShowSlowMode == Visibility.Visible || ShowTypingUsers == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+        public bool ShowTypingContainer =>
+            ShowSlowMode || ShowTypingUsers;
 
         public DateTimeOffset LastAccessed { get; internal set; }
 
@@ -473,7 +485,7 @@ namespace Unicord.Universal.Models
 
         private async Task UnsafeLoadMessages()
         {
-            var messages = await Channel.GetMessagesAsync(50).ConfigureAwait(false);
+            var messages = await Channel.GetMessagesAsync(INITIAL_LOAD_LIMIT).ConfigureAwait(false);
             if (messages.Any())
                 ClearAndAddMessages(messages);
         }
@@ -487,7 +499,7 @@ namespace Unicord.Universal.Models
                 var message = Messages.FirstOrDefault();
                 if (message != null)
                 {
-                    var messages = await Channel.GetMessagesBeforeAsync(message.Id, 50).ConfigureAwait(false);
+                    var messages = await Channel.GetMessagesBeforeAsync(message.Id, INITIAL_LOAD_LIMIT).ConfigureAwait(false);
                     if (messages.Any())
                     {
                         InsertMessages(-1, messages);

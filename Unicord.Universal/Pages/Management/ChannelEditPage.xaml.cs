@@ -39,19 +39,19 @@ namespace Unicord.Universal.Pages.Management
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowManager.HandleTitleBarForGrid(topGrid);
+            //WindowManager.HandleTitleBarForGrid(topGrid);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            acceptButton.Visibility = Visibility.Collapsed;
+            //acceptButton.Visibility = Visibility.Collapsed;
             mainContent.IsEnabled = false;
-            backButton.IsEnabled = false;
-            progressRing.IsActive = true;
+            //backButton.IsEnabled = false;
+            //progressRing.IsActive = true;
 
             await _viewModel.SaveChangesAsync();
 
-            progressRing.IsActive = false;
+            //progressRing.IsActive = false;
             this.FindParent<DiscordPage>().CloseCustomPane();
         }
 

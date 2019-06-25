@@ -140,6 +140,13 @@ namespace Unicord.Universal.Pages.Settings
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            var args = this.FindParent<MainPage>()?.Arguments;
+            if (args != null && args.ThemeLoadException != null)
+            {
+                themeLoadError.Visibility = Visibility.Visible;
+                themeLoadError.Text = $"Loading your currently selected theme failed!\r\n{args.ThemeLoadException.Message}";
+            }
+
             if (DataContext is ThemesSettingsModel model)
             {
                 await model.ReloadThemes();

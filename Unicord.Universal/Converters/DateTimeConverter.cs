@@ -21,7 +21,7 @@ namespace Unicord.Universal.Converters
                 }
             }
 
-            t = t.ToUniversalTime();
+            t = t.ToLocalTime();
             var moment = new Moment(t);
 
             if (t != default)
@@ -29,7 +29,7 @@ namespace Unicord.Universal.Converters
                 switch (setting)
                 {
                     case TimestampStyle.Relative:
-                        return t.Humanize();
+                        return t.Humanize(false);
                     case TimestampStyle.Absolute:
                         return moment.Calendar();
                     case TimestampStyle.Both:

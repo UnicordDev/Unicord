@@ -79,7 +79,6 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="Template" Value="{StaticResource IconButtonTemplate}"/>
-                
             </Style>
 
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
