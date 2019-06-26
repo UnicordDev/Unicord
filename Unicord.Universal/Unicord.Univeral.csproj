@@ -722,10 +722,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj">
-      <Project>{f061f955-5565-4d48-8111-f2f7f2241499}</Project>
-      <Name>DSharpPlus.VoiceNext.UWP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
@@ -734,26 +730,12 @@
       <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
       <Name>MomentSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
-      <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
-      <Name>libopus</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
-      <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
-      <Name>libsodium</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.csproj">
-      <Project>{cd2e900e-41a8-4dec-aff9-2b467e5022bf}</Project>
+    <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.vcxproj">
+      <Project>{e3bc526e-debd-4f76-a669-9adade1d4fc8}</Project>
       <Name>Unicord.Universal.Voice</Name>
     </ProjectReference>
   </ItemGroup>

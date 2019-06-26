@@ -1,0 +1,14 @@
+import "VoiceClientOptions.idl";
+
+namespace Unicord.Universal.Voice
+{ 
+    [default_interface]
+	runtimeclass VoiceClient : Windows.Foundation.IClosable
+    {
+		static String OpusVersion{ get; };
+		static String SodiumVersion{ get; };
+
+		VoiceClient(VoiceClientOptions options);
+		Windows.Foundation.IAsyncAction ConnectAsync();
+	};
+}

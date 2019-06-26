@@ -32,6 +32,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Unicord.Universal.Voice;
 using static Unicord.Constants;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
@@ -63,6 +64,9 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
+
+            Trace.WriteLine(VoiceClient.OpusVersion);
+            Trace.WriteLine(VoiceClient.SodiumVersion);
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {

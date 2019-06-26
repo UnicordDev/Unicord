@@ -1,0 +1,9 @@
+namespace Unicord.Universal.Voice
+{
+	runtimeclass VoiceClientOptions
+	{
+		VoiceClientOptions();
+		String Token;
+		UInt64 ChannelId;
+	};
+}
