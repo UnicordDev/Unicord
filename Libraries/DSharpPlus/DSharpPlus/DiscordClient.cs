@@ -660,7 +660,7 @@ namespace DSharpPlus
 
             if (!to_sync.Any())
             {
-                return Task.Delay(0);
+                return Task.CompletedTask;
             }
 
             var guild_sync = new GatewayPayload
@@ -671,7 +671,7 @@ namespace DSharpPlus
             var guild_syncstr = JsonConvert.SerializeObject(guild_sync);
 
             _webSocketClient.SendMessage(guild_syncstr);
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public async Task UpdateUserSettingsAsync(ulong[] guildPositions = null)

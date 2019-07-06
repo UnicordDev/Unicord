@@ -4,6 +4,10 @@ namespace Unicord.Universal.Voice
 	{
 		VoiceClientOptions();
 		String Token;
+		String SessionId;
+		String Endpoint;
+		UInt64 GuildId;
 		UInt64 ChannelId;
+		UInt64 CurrentUserId;
 	};
 }

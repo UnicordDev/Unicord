@@ -14,6 +14,7 @@
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
     <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0.18362.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.15063.0</WindowsTargetPlatformMinVersion>
+    <CppWinRTNamespaceMergeDepth>3</CppWinRTNamespaceMergeDepth>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ItemGroup Label="ProjectConfigurations">
@@ -149,23 +150,38 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AudioFormat.h" />
+    <ClInclude Include="ConnectionEndpoint.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SodiumWrapper.h" />
+    <ClInclude Include="VoiceBackgroundTask.h">
+      <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
+    </ClInclude>
     <ClInclude Include="VoiceClient.h">
       <DependentUpon>VoiceClient.idl</DependentUpon>
     </ClInclude>
-    <ClInclude Include="VoiceClientOptions.h" />
+    <ClInclude Include="VoiceClientOptions.h">
+      <DependentUpon>VoiceClientOptions.idl</DependentUpon>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SodiumWrapper.cpp" />
+    <ClCompile Include="VoiceBackgroundTask.cpp">
+      <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
+    </ClCompile>
     <ClCompile Include="VoiceClient.cpp">
       <DependentUpon>VoiceClient.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
-    <ClCompile Include="VoiceClientOptions.cpp" />
+    <ClCompile Include="VoiceClientOptions.cpp">
+      <DependentUpon>VoiceClientOptions.idl</DependentUpon>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="VoiceBackgroundTask.idl" />
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />
   </ItemGroup>
@@ -175,9 +191,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertySheet.props" />
-    <Text Include="readme.txt">
-      <DeploymentContent>false</DeploymentContent>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">

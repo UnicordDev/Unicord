@@ -281,7 +281,7 @@ namespace DSharpPlus.VoiceNext
             var vdj = JsonConvert.SerializeObject(vdp, Formatting.None);
             VoiceWs.SendMessage(vdj);
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         internal Task WaitForReadyAsync()
@@ -548,7 +548,7 @@ namespace DSharpPlus.VoiceNext
                     return;
 
                 var tdelta = (int)(((Stopwatch.GetTimestamp() - timestamp) / (double)Stopwatch.Frequency) * 1000);
-                Volatile.Write(ref _wsPing, tdelta);
+                Volatile.Write(ref _udpPing, tdelta);
                 Discord.DebugLogger.LogMessage(LogLevel.Debug, "VNext UDP", $"Received UDP keepalive {keepalive}, ping {tdelta}ms", DateTime.Now);
             }
             catch (Exception ex)
@@ -801,7 +801,7 @@ namespace DSharpPlus.VoiceNext
             IsInitialized = true;
             ReadyWait.SetResult(true);
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         private async Task HandleDispatch(JObject jo)

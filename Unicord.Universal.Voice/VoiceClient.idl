@@ -9,6 +9,8 @@ namespace Unicord.Universal.Voice
 		static String SodiumVersion{ get; };
 
 		VoiceClient(VoiceClientOptions options);
+		UInt32 WebSocketPing{ get; };
+
 		Windows.Foundation.IAsyncAction ConnectAsync();
 	};
 }

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="VoiceClient.cpp" />
+    <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="VoiceBackgroundTask.cpp">
+      <Filter>Background</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceClientOptions.cpp" />
+    <ClCompile Include="SodiumWrapper.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="VoiceClient.h" />
+    <ClInclude Include="VoiceBackgroundTask.h">
+      <Filter>Background</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceClientOptions.h" />
+    <ClInclude Include="ConnectionEndpoint.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioFormat.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="SodiumWrapper.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="VoiceClient.idl" />
+    <Midl Include="VoiceBackgroundTask.idl">
+      <Filter>Background</Filter>
+    </Midl>
+    <Midl Include="VoiceClientOptions.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Unicord.Universal.Voice.def" />
+    <None Include="PropertySheet.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Interop">
+      <UniqueIdentifier>{44826d10-b8c2-4738-88c9-7ecc3a3827c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Background">
+      <UniqueIdentifier>{4e0bb38b-a509-4f87-9842-71817b202c3f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

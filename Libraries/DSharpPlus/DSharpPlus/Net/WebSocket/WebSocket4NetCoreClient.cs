@@ -129,7 +129,7 @@ namespace DSharpPlus.Net.WebSocket
         {
             if (_socket.State != ws4net.WebSocketState.Closed)
                 _socket.Close();
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -153,14 +153,14 @@ namespace DSharpPlus.Net.WebSocket
         /// </summary>
         /// <returns></returns>
         protected override Task OnConnectedAsync()
-            => Task.Delay(0);
+            => Task.CompletedTask;
 
         /// <summary>
         /// Set the Action to call when the connection has been terminated.
         /// </summary>
         /// <returns></returns>
         protected override Task OnDisconnectedAsync(SocketCloseEventArgs e)
-            => Task.Delay(0);
+            => Task.CompletedTask;
 
         /// <summary>
         /// Creates a new instance of <see cref="WebSocket4NetCoreClient"/>.
