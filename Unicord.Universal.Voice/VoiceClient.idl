@@ -1,4 +1,5 @@
 import "VoiceClientOptions.idl";
+import "VoiceOutputStream.idl";
 
 namespace Unicord.Universal.Voice
 { 
@@ -12,5 +13,6 @@ namespace Unicord.Universal.Voice
 		UInt32 WebSocketPing{ get; };
 
 		Windows.Foundation.IAsyncAction ConnectAsync();
+		Windows.Storage.Streams.IOutputStream GetOutputStream();
 	};
 }

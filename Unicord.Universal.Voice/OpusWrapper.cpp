@@ -28,7 +28,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		check_opus_error(opus_encoder_ctl(this->opus_encoder, OPUS_SET_BITRATE_REQUEST, 131072), L"Failed to set bitrate.");
 	}
 
-	size_t OpusWrapper::Encode(array_view<uint8_t> pcm, uint8_t target[], size_t target_offset, size_t target_size)
+	size_t OpusWrapper::Encode(array_view<uint8_t> pcm, array_view<uint8_t> target)
 	{
 		auto duration = audio_format.CalculateSampleDuration(pcm.size());
 		auto frame_size = audio_format.CalculateFrameSize(duration);
@@ -37,7 +37,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		if (pcm.size() != sample_size)
 			throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
 		
-		int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), frame_size, &target[target_offset], target_size);
+		int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), frame_size, target.data(), target.size());
 		if (length < 0) {
 			check_opus_error(length, L"Could not encode PCM to opus!");
 		}

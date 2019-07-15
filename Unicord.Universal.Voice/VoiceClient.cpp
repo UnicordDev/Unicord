@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
-#include "VoiceClient.h"
 #include "Rtp.h"
+#include "VoiceOutputStream.h"
+#include "VoiceClient.h"
 #include "VoiceClient.g.cpp"
 
 using namespace winrt;
@@ -132,7 +133,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		for (size_t i = 0; i < 3; i++)
 		{
-			auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]), 20);
+			auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]));
 			voice_queue.push(VoicePacket(null_packet, 20, false));
 		}
 
@@ -166,13 +167,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			// time.time()
 			//   DateTime.Now
 
-			start_time = high_resolution_clock::now();
 			duration packet_duration = has_packet ? milliseconds(packet.duration) : 20ms;
 			duration current_time_offset = high_resolution_clock::now() - start_time;
 
 			if (current_time_offset < packet_duration) {
 				std::this_thread::sleep_for(packet_duration - current_time_offset);
 			}
+
+			start_time += packet_duration;
 
 			if (!has_packet)
 				continue;
@@ -188,7 +190,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 				for (size_t i = 0; i < 3; i++)
 				{
-					auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]), 20);
+					auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]));
 					voice_queue.push(VoicePacket(null_packet, 20, true));
 				}
 
@@ -203,7 +205,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		}
 	}
 
-	array_view<const uint8_t> VoiceClient::PreparePacket(array_view<uint8_t> pcm, uint32_t duration)
+	array_view<const uint8_t> VoiceClient::PreparePacket(array_view<uint8_t> pcm)
 	{
 		auto audio_size = audio_format.SampleCountToSampleSize(audio_format.GetMaxBufferSize());
 		auto packet_array_size = Rtp::CalculatePacketSize(audio_size, mode.second);
@@ -211,8 +213,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		Rtp::EncodeHeader(seq, timestamp, ssrc, packet_array, packet_array_size);
 
-		auto opus_length = opus->Encode(pcm, packet_array, Rtp::HEADER_SIZE, packet_array_size);
-		array_view<uint8_t> opus(&packet_array[Rtp::HEADER_SIZE], &packet_array[Rtp::HEADER_SIZE + opus_length]);
+		auto opus_length = opus->Encode(pcm, array_view(packet_array + Rtp::HEADER_SIZE, packet_array + packet_array_size));
+		array_view<uint8_t> opus_data(&packet_array[Rtp::HEADER_SIZE], &packet_array[Rtp::HEADER_SIZE + opus_length]);
 
 		auto time = audio_format.CalculateFrameSize(audio_format.CalculateSampleDuration(pcm.size()));
 		this->seq++;
@@ -232,10 +234,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			break;
 		}
 
-		auto encrypted_size = sodium->CalculateTargetSize(opus.size());
+		auto encrypted_size = sodium->CalculateTargetSize(opus_data.size());
 		auto encrypted = new uint8_t[encrypted_size];
 
-		sodium->Encrypt(opus, array_view<uint8_t>(nonce), encrypted, encrypted_size);
+		sodium->Encrypt(opus_data, array_view<uint8_t>(nonce), encrypted, encrypted_size);
 		std::copy(&encrypted[0], &encrypted[encrypted_size], &packet_array[Rtp::HEADER_SIZE]);
 
 		auto new_packet_size = Rtp::CalculatePacketSize(encrypted_size, mode.second);
@@ -246,10 +248,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		delete[] encrypted;
 		delete[] packet_array;
 
-		auto ret = array_view<const uint8_t>(new_packet, new_packet + new_packet_size);
-		std::cout << "ret.size() = " << ret.size() << "\n";
+		return array_view<const uint8_t>(new_packet, new_packet + new_packet_size);
+	}
 
-		return ret;
+	void VoiceClient::EnqueuePacket(VoicePacket packet)
+	{
+		voice_queue.push(packet);
 	}
 
 	IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
@@ -344,6 +348,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		disp.SetNamedValue(L"d", payload);
 
 		co_await SendJsonPayloadAsync(disp);
+	}
+
+	Windows::Storage::Streams::IOutputStream VoiceClient::GetOutputStream()
+	{
+		return make_self<VoiceOutputStream>(*this).as<IOutputStream>();
 	}
 
 	IAsyncAction VoiceClient::OnUdpHeartbeat(ThreadPoolTimer timer)

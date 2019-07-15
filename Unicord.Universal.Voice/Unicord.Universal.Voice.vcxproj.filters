@@ -17,6 +17,7 @@
     <ClCompile Include="OpusWrapper.cpp">
       <Filter>Interop</Filter>
     </ClCompile>
+    <ClCompile Include="VoiceOutputStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="OpusWrapper.h">
       <Filter>Interop</Filter>
     </ClInclude>
+    <ClInclude Include="VoiceOutputStream.h" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoiceClient.idl" />
@@ -47,6 +49,7 @@
       <Filter>Background</Filter>
     </Midl>
     <Midl Include="VoiceClientOptions.idl" />
+    <Midl Include="VoiceOutputStream.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

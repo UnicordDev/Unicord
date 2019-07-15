@@ -165,6 +165,7 @@
     <ClInclude Include="VoiceClientOptions.h">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClInclude>
+    <ClInclude Include="VoiceOutputStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpusWrapper.cpp" />
@@ -183,11 +184,13 @@
     <ClCompile Include="VoiceClientOptions.cpp">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClCompile>
+    <ClCompile Include="VoiceOutputStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoiceBackgroundTask.idl" />
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />
+    <Midl Include="VoiceOutputStream.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

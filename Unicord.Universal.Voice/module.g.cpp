@@ -4,8 +4,8 @@
 #include "winrt/base.h"
 void* winrt_make_Unicord_Universal_Voice_VoiceClient();
 void* winrt_make_Unicord_Universal_Voice_VoiceClientOptions();
+void* winrt_make_Unicord_Universal_Voice_VoiceOutputStream();
 void* winrt_make_Unicord_Universal_Voice_Background_VoiceBackgroundTask();
-void* winrt_make_Unicord_Universal_Voice_Interop_SodiumWrapper();
 
 bool __stdcall winrt_can_unload_now() noexcept
 {
@@ -35,14 +35,14 @@ void* __stdcall winrt_get_activation_factory(std::wstring_view const& name)
         return winrt_make_Unicord_Universal_Voice_VoiceClientOptions();
     }
 
+    if (requal(name, L"Unicord.Universal.Voice.VoiceOutputStream"))
+    {
+        return winrt_make_Unicord_Universal_Voice_VoiceOutputStream();
+    }
+
     if (requal(name, L"Unicord.Universal.Voice.Background.VoiceBackgroundTask"))
     {
         return winrt_make_Unicord_Universal_Voice_Background_VoiceBackgroundTask();
-    }
-
-    if (requal(name, L"Unicord.Universal.Voice.Interop.SodiumWrapper"))
-    {
-        return winrt_make_Unicord_Universal_Voice_Interop_SodiumWrapper();
     }
 
     return nullptr;

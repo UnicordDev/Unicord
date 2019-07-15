@@ -10,7 +10,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		OpusWrapper() = default;
 		OpusWrapper(AudioFormat format);
 
-		size_t Encode(array_view<uint8_t> pcm, uint8_t target[], size_t target_offset, size_t target_size);
+		size_t Encode(array_view<uint8_t> pcm, array_view<uint8_t> target);
 
 		~OpusWrapper();
 	private:

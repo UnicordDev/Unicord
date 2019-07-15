@@ -31,8 +31,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 {
 	struct VoiceClient : VoiceClientT<VoiceClient>
 	{
+	public:
 		VoiceClient() = default;
 		VoiceClient(VoiceClientOptions const& options);
+
+		AudioFormat audio_format;
 
 		static hstring OpusVersion();
 		static hstring SodiumVersion();
@@ -41,7 +44,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		IAsyncAction ConnectAsync();
 		IAsyncAction SendSpeakingAsync(bool speaking);
+		Windows::Storage::Streams::IOutputStream GetOutputStream();
 		void Close();
+
+		array_view<const uint8_t> PreparePacket(array_view<uint8_t> pcm);
+		void EnqueuePacket(VoicePacket packet);
 
 		~VoiceClient();
 	private:
@@ -73,7 +80,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		volatile uint64_t keepalive_count = 0;
 		concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
 
-		AudioFormat audio_format;
 		concurrency::concurrent_queue<VoicePacket> voice_queue;
 		volatile bool cancel_voice_send = false;
 		std::thread voice_thread;
@@ -86,7 +92,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		void Stage2(JsonObject obj);
 
 		void VoiceSendLoop();
-		array_view<const uint8_t> PreparePacket(array_view<uint8_t> pcm, uint32_t duration);
 
 		IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
 		IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
@@ -96,10 +101,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		void HandleUdpHeartbeat(uint64_t reader);
 		IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
 
+		friend struct VoiceOutputStream;
 	};
 }
 
-class dbg_stream_for_cout: public std::stringbuf
+class dbg_stream_for_cout : public std::stringbuf
 {
 public:
 	virtual int_type overflow(int_type c = EOF) {
