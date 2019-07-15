@@ -152,7 +152,9 @@
   <ItemGroup>
     <ClInclude Include="AudioFormat.h" />
     <ClInclude Include="ConnectionEndpoint.h" />
+    <ClInclude Include="OpusWrapper.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Rtp.h" />
     <ClInclude Include="SodiumWrapper.h" />
     <ClInclude Include="VoiceBackgroundTask.h">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -165,9 +167,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="OpusWrapper.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Rtp.cpp" />
     <ClCompile Include="SodiumWrapper.cpp" />
     <ClCompile Include="VoiceBackgroundTask.cpp">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>

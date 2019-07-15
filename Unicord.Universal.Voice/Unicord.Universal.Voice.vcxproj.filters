@@ -11,6 +11,12 @@
     <ClCompile Include="SodiumWrapper.cpp">
       <Filter>Interop</Filter>
     </ClCompile>
+    <ClCompile Include="Rtp.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
+    <ClCompile Include="OpusWrapper.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -26,6 +32,12 @@
       <Filter>Interop</Filter>
     </ClInclude>
     <ClInclude Include="SodiumWrapper.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtp.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusWrapper.h">
       <Filter>Interop</Filter>
     </ClInclude>
   </ItemGroup>

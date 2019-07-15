@@ -218,7 +218,7 @@ namespace Unicord.Universal.Pages
                 ViewModel = last;
                 DataContext = ViewModel;
 
-                await Load();
+                await Load().ConfigureAwait(false);
             }
         }
 
@@ -228,13 +228,13 @@ namespace Unicord.Universal.Pages
 
             try
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                await Dispatcher.AwaitableRunAsync(() =>
                 {
                     loadingProgress.Visibility = Visibility.Visible;
                     loadingProgress.IsIndeterminate = true;
 
                     noMessages.Visibility = Visibility.Collapsed;
-                });
+                }).ConfigureAwait(false);
 
                 await ViewModel.LoadMessagesAsync().ConfigureAwait(false);
 
@@ -246,18 +246,19 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 HockeyClient.Current.TrackException(ex);
+                Logger.Log(ex);
             }
 
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.AwaitableRunAsync(() =>
             {
                 loadingProgress.Visibility = Visibility.Collapsed;
                 loadingProgress.IsIndeterminate = false;
-            });
+            }).ConfigureAwait(false);
 
             if (IsPaneOpen)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel));
+                await Dispatcher.AwaitableRunAsync(() =>
+                    sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
             }
 
             await JumpListManager.AddToListAsync(_viewModel.Channel);
@@ -280,7 +281,7 @@ namespace Unicord.Universal.Pages
                 {
                     //_loading = true;
 
-                    await ViewModel.LoadMessagesBeforeAsync();
+                    await ViewModel.LoadMessagesBeforeAsync().ConfigureAwait(false);
 
                     //_loading = false;
                 }
@@ -375,29 +376,37 @@ namespace Unicord.Universal.Pages
 
         private async Task SendAsync()
         {
-            if (ViewModel.FileUploads.Any())
+            try
             {
-                uploadProgress.Visibility = Visibility.Visible;
-                var progress = new Progress<double?>(d =>
+                if (ViewModel.FileUploads.Any())
                 {
-                    if (d == null && !uploadProgress.IsIndeterminate)
+                    uploadProgress.Visibility = Visibility.Visible;
+                    var progress = new Progress<double?>(d =>
                     {
-                        uploadProgress.IsIndeterminate = true;
-                    }
-                    else
-                    {
-                        uploadProgress.Value = d.Value;
-                    }
-                });
+                        if (d == null && !uploadProgress.IsIndeterminate)
+                        {
+                            uploadProgress.IsIndeterminate = true;
+                        }
+                        else
+                        {
+                            uploadProgress.Value = d.Value;
+                        }
+                    });
 
-                await ViewModel.SendMessageAsync(messageTextBox, progress);
+                    await ViewModel.SendMessageAsync(messageTextBox, progress).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ViewModel.SendMessageAsync(messageTextBox).ConfigureAwait(false);
+                }
+
+                await Dispatcher.AwaitableRunAsync(() => uploadProgress.Visibility = Visibility.Collapsed);
             }
-            else
+            catch (Exception ex)
             {
-                await ViewModel.SendMessageAsync(messageTextBox);
+                // just in case, should realistically never happen
+                Logger.Log(ex);
             }
-
-            uploadProgress.Visibility = Visibility.Collapsed;
         }
 
         private void ChannelPage_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -580,7 +589,7 @@ namespace Unicord.Universal.Pages
                 pane.TryHide();
 
                 _emotePicker.Visibility = Visibility.Visible;
-                await _emotePicker.Load();
+                await _emotePicker.Load().ConfigureAwait(false);
             }
             else
             {

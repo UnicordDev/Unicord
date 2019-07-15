@@ -4,6 +4,7 @@
 #include "SodiumWrapper.h"
 #include "ConnectionEndpoint.h"
 #include "AudioFormat.h"
+#include "OpusWrapper.h"
 
 #include <opus.h>
 #include <sodium.h>
@@ -13,12 +14,12 @@
 #include <sstream>
 #include <debugapi.h>
 #include <concurrent_unordered_map.h>
+#include <concurrent_queue.h>
 
 #include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Storage.Streams.h>
 
 using namespace winrt;
-using namespace concurrency;
 using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Data::Json;
 using namespace winrt::Windows::System::Threading;
@@ -39,53 +40,74 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		uint32_t WebSocketPing();
 
 		IAsyncAction ConnectAsync();
+		IAsyncAction SendSpeakingAsync(bool speaking);
 		void Close();
+
+		~VoiceClient();
 	private:
 		VoiceClientOptions options{ nullptr };
 		MessageWebSocket web_socket{ nullptr };
 		DatagramSocket udp_socket{ nullptr };
 		ThreadPoolTimer heartbeat_timer{ nullptr };
 		ThreadPoolTimer keepalive_timer{ nullptr };
-		SodiumWrapper sodium;
+		SodiumWrapper* sodium = nullptr;
+		OpusWrapper* opus = nullptr;
 
 		std::pair<hstring, EncryptionMode> mode;
 		ConnectionEndpoint endpoint;
-		int32_t ssrc = 0;
-		int32_t heartbeat_interval = 0;
-		int32_t connection_stage = 0;
+
+		bool is_speaking = false;
+
+		uint16_t seq = 0;
+		uint32_t ssrc = 0;
+		uint32_t timestamp = 0;
+		uint32_t nonce = 0;
+
+		uint32_t heartbeat_interval = 0;
+		uint32_t connection_stage = 0;
 
 		volatile uint32_t ws_ping = 0;
 		volatile uint32_t last_heartbeat = 0;
 
 		volatile uint32_t udp_ping = 0;
 		volatile uint64_t keepalive_count = 0;
-		concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
+		concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
+
+		AudioFormat audio_format;
+		concurrency::concurrent_queue<VoicePacket> voice_queue;
+		volatile bool cancel_voice_send = false;
+		std::thread voice_thread;
+
+		bool is_disposed = false;
 
 		IAsyncAction SendIdentifyAsync();
 		IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
 		IAsyncAction Stage1(JsonObject obj);
 		void Stage2(JsonObject obj);
 
-		void HandleUdpHeartbeat(uint64_t reader);
+		void VoiceSendLoop();
+		array_view<const uint8_t> PreparePacket(array_view<uint8_t> pcm, uint32_t duration);
 
 		IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
 		IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
 		void OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
 
 		IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
+		void HandleUdpHeartbeat(uint64_t reader);
 		IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
+
 	};
 }
 
 class dbg_stream_for_cout: public std::stringbuf
 {
 public:
-	~dbg_stream_for_cout() { sync(); }
-	int sync()
-	{
-		::OutputDebugStringA(str().c_str());
-		str(std::string()); // Clear the string buffer
-		return 0;
+	virtual int_type overflow(int_type c = EOF) {
+		if (c != EOF) {
+			TCHAR buf[] = { c, '\0' };
+			OutputDebugString(buf);
+		}
+		return c;
 	}
 };
 

@@ -29,11 +29,11 @@ namespace Unicord.Universal.Models
         public double Userlimit { get; set; }
         public double Bitrate { get; set; }
 
-        public async Task SaveChangesAsync()
+        public Task SaveChangesAsync()
         {
             if (IsText)
             {
-                await _channel.ModifyAsync(m =>
+                return _channel.ModifyAsync(m =>
                 {
                     m.Name = Name;
                     m.Topic = Topic;
@@ -42,13 +42,15 @@ namespace Unicord.Universal.Models
             }
             if (IsVoice)
             {
-                await _channel.ModifyAsync(m =>
+                return _channel.ModifyAsync(m =>
                 {
                     m.Name = Name;
                     m.Userlimit = (int)Userlimit;
                     m.Bitrate = (int)Bitrate * 1000;
                 });
             }
+
+            return Task.CompletedTask;
         }
     }
 }

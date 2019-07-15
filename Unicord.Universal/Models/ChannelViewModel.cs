@@ -1,13 +1,13 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.Storage.Streams;
@@ -345,7 +345,7 @@ namespace Unicord.Universal.Models
 
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
-            await _loadSemaphore.WaitAsync();
+            await _loadSemaphore.WaitAsync().ConfigureAwait(false);
 
             try
             {
@@ -399,14 +399,15 @@ namespace Unicord.Universal.Models
 
         private async Task OnResumed(ReadyEventArgs e)
         {
-            await _loadSemaphore.WaitAsync();
+            await _loadSemaphore.WaitAsync().ConfigureAwait(false);
 
             try
             {
                 // needs work, but it's functional
                 // i also never want to touch it again
 
-                var messages = (await Channel.GetMessagesAsync()).Reverse().ToList();
+                var rawMessages = (await Channel.GetMessagesAsync().ConfigureAwait(false));
+                var messages = rawMessages.Reverse().ToList();
                 var lastMessage = messages.LastOrDefault(m => m.Id == Messages.LastOrDefault()?.Id);
                 if (lastMessage != null)
                 {
@@ -429,19 +430,19 @@ namespace Unicord.Universal.Models
 
         internal async Task LoadMessagesAsync()
         {
-            await _loadSemaphore.WaitAsync();
+            await _loadSemaphore.WaitAsync().ConfigureAwait(false);
 
             try
             {
                 if (!Messages.Any())
                 {
-                    await UnsafeLoadMessages();
+                    await UnsafeLoadMessages().ConfigureAwait(false);
                 }
                 else
                 {
                     var message = Messages.Last();
                     var index = Messages.IndexOf(message);
-                    var messages = await Channel.GetMessagesAfterAsync(message.Id, 100);
+                    var messages = await Channel.GetMessagesAfterAsync(message.Id, 100).ConfigureAwait(false);
                     if (messages.Count < 100)
                     {
                         InsertMessages(index, messages);
@@ -458,30 +459,36 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
+        private void InsertMessages(int index, IEnumerable<DiscordMessage> messages)
         {
-            foreach (var mess in messages)
+            _context.Post(d =>
             {
-                if (!Messages.Any(m => m.Id == mess.Id))
+                foreach (var mess in messages)
                 {
-                    Messages.Insert(index + 1, mess);
+                    if (!Messages.Any(m => m.Id == mess.Id))
+                    {
+                        Messages.Insert(index + 1, mess);
+                    }
                 }
-            }
 
-        }, null);
+            }, null);
+        }
 
-        private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages) => _context.Post(d =>
+        private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages)
         {
-            Messages.Clear();
-
-            foreach (var message in messages.Reverse())
+            _context.Post(d =>
             {
-                if (!Messages.Any(m => m.Id == message.Id))
+                Messages.Clear();
+
+                foreach (var message in messages.Reverse())
                 {
-                    Messages.Add(message);
+                    if (!Messages.Any(m => m.Id == message.Id))
+                    {
+                        Messages.Add(message);
+                    }
                 }
-            }
-        }, null);
+            }, null);
+        }
 
         private async Task UnsafeLoadMessages()
         {
@@ -492,7 +499,7 @@ namespace Unicord.Universal.Models
 
         internal async Task LoadMessagesBeforeAsync()
         {
-            await _loadSemaphore.WaitAsync();
+            await _loadSemaphore.WaitAsync().ConfigureAwait(false);
 
             try
             {
@@ -539,10 +546,10 @@ namespace Unicord.Universal.Models
                             var files = new Dictionary<string, IInputStream>();
                             foreach (var item in models)
                             {
-                                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync());
+                                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                             }
 
-                            await Tools.SendFilesWithProgressAsync(Channel, str, files, progress);
+                            await Tools.SendFilesWithProgressAsync(Channel, str, files, progress).ConfigureAwait(false);
 
                             foreach (var item in files)
                             {
@@ -561,7 +568,7 @@ namespace Unicord.Universal.Models
                         }
                         else
                         {
-                            await Channel.SendMessageAsync(str);
+                            await Channel.SendMessageAsync(str).ConfigureAwait(false);
                         }
 
                         if (!ImmuneToSlowMode)
@@ -592,7 +599,7 @@ namespace Unicord.Universal.Models
 
                 try
                 {
-                    await Channel.TriggerTypingAsync();
+                    await Channel.TriggerTypingAsync().ConfigureAwait(false);
                 }
                 catch { }
             }

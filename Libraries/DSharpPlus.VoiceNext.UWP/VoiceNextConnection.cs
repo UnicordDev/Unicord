@@ -324,6 +324,7 @@ namespace DSharpPlus.VoiceNext
             Span<byte> encrypted = new byte[Sodium.CalculateTargetSize(opus)];
             Sodium.Encrypt(opus, encrypted, nonce);
             encrypted.CopyTo(packet.Slice(Rtp.HeaderSize));
+
             packet = packet.Slice(0, Rtp.CalculatePacketSize(encrypted.Length, SelectedEncryptionMode));
             Sodium.AppendNonce(nonce, packet, SelectedEncryptionMode);
 
@@ -658,8 +659,7 @@ namespace DSharpPlus.VoiceNext
             Rtp?.Dispose();
             Rtp = null;
 
-            if (VoiceDisconnected != null)
-                VoiceDisconnected(Guild);
+            VoiceDisconnected?.Invoke(Guild);
         }
 
         private async Task HeartbeatAsync()
