@@ -4,9 +4,9 @@
 
 namespace winrt::Unicord::Universal::Voice::Interop
 {
-	void Rtp::EncodeHeader(uint16_t sequence, uint32_t timestamp, uint32_t ssrc, uint8_t target[], size_t target_size)
+	void Rtp::EncodeHeader(uint16_t sequence, uint32_t timestamp, uint32_t ssrc, array_view<uint8_t> target)
 	{
-		if (target_size < HEADER_SIZE) {
+		if (target.size() < HEADER_SIZE) {
 			throw hresult_invalid_argument();
 		}
 
@@ -19,44 +19,42 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		std::reverse_copy((uint8_t*)&ssrc, (uint8_t*)&ssrc + sizeof ssrc, &target[8]);
 	}
 
-	bool Rtp::IsRtpHeader(uint8_t source[], size_t source_size)
+	bool Rtp::IsRtpHeader(array_view<const uint8_t> data)
 	{
-		if (source_size < HEADER_SIZE)
+		if (data.size() < HEADER_SIZE)
 			return false;
 
-		if ((source[0] != RTP_NO_EXTENSION && source[0] != RTP_EXTENSION) || source[1] != RTP_VERSION)
+		if ((data[0] != RTP_NO_EXTENSION && data[0] != RTP_EXTENSION) || data[1] != RTP_VERSION)
 			return false;
 
 		return true;
 	}
 
-	void Rtp::DecodeHeader(uint8_t source[], size_t source_size, uint16_t& sequence, uint32_t& timestamp, uint32_t& ssrc, bool& has_extension)
+	void Rtp::DecodeHeader(array_view<const uint8_t> source, uint16_t& sequence, uint32_t& timestamp, uint32_t& ssrc, bool& has_extension)
 	{
-		if (!IsRtpHeader(source, source_size))
+		if (!IsRtpHeader(source))
 			throw hresult_invalid_argument();
 
 		has_extension = source[0] == RTP_EXTENSION;
 
 		// reverse_copy from big endian to little endian 
-		std::reverse_copy(&source[2], &source[2] + sizeof sequence, &sequence);
-		std::reverse_copy(&source[4], &source[4] + sizeof timestamp, &timestamp);
-		std::reverse_copy(&source[8], &source[8] + sizeof ssrc, &ssrc);
+		std::reverse_copy(&source[2], &source[2 + sizeof sequence], (uint8_t*)&sequence);
+		std::reverse_copy(&source[4], &source[4 + sizeof timestamp], (uint8_t*)&timestamp);
+		std::reverse_copy(&source[8], &source[8 + sizeof ssrc], (uint8_t*)&ssrc);
 	}
 
-	void Rtp::GetDataFromPacket(uint8_t source[], size_t source_size, uint8_t destination[], size_t& destination_size, EncryptionMode mode)
+	void Rtp::GetDataFromPacket(array_view<const uint8_t> source, array_view<const uint8_t> &destination, EncryptionMode mode)
 	{
-		destination = &source[HEADER_SIZE];
-
 		switch (mode)
 		{
 		case XSalsa20_Poly1305_Lite:
-			destination_size = source_size - HEADER_SIZE - 4;
+			destination = array_view(source.begin() + HEADER_SIZE, source.end());
 			break;
 		case XSalsa20_Poly1305_Suffix:
-			destination_size = source_size - HEADER_SIZE - crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
+			destination = array_view(source.begin() + HEADER_SIZE, source.end() - crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
 			break;
 		case XSalsa20_Poly1305:
-			destination_size = source_size - HEADER_SIZE;
+			destination = array_view(source.begin() + HEADER_SIZE, source.end() - 4);
 			break;
 		default:
 			throw hresult_invalid_argument();

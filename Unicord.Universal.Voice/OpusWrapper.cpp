@@ -45,6 +45,52 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		return (size_t)length;
 	}
 
+	void OpusWrapper::Decode(AudioSource decoder, array_view<uint8_t> opus, array_view<uint8_t> &target, bool fec, AudioFormat & format)
+	{
+		auto frames = opus_packet_get_nb_frames(opus.data(), opus.size());
+		auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), format.sample_rate);
+		auto channels = opus_packet_get_nb_channels(opus.data());
+
+		if (decoder.format.channel_count != channels || !decoder.IsInitialised()) {
+			format.channel_count = channels;
+			decoder.Initialise(format);
+		}
+
+		auto sample_count = opus_decode(decoder.decoder, opus.data(), opus.size(), (int16_t*)target.data(), frames * samples_per_frame, fec);
+		if (sample_count < 0) {
+			check_opus_error(sample_count, L"Could not decoder opus to PCM!");
+		}
+
+		auto sample_size = format.CalculateSampleSize(sample_count);
+		target = array_view(target.data(), target.data() + sample_size);
+	}
+
+	void OpusWrapper::ProcessPacketLoss(AudioSource decoder, int32_t frameSize, array_view<uint8_t> target)
+	{
+
+	}
+
+	AudioSource* OpusWrapper::GetOrCreateDecoder(uint8_t ssrc)
+	{
+		auto itr = opus_decoders.find(ssrc);
+		if (itr == opus_decoders.end()) {
+			auto source = new AudioSource(ssrc);		
+			opus_decoders[ssrc] = source;
+			return source;
+		}
+		else {
+			return opus_decoders.at(ssrc);
+		}
+	}
+
+	int32_t OpusWrapper::GetLastPacketSampleCount(OpusDecoder* decoder)
+	{
+		int32_t count;
+		opus_decoder_ctl(decoder, OPUS_GET_LAST_PACKET_DURATION_REQUEST, &count);
+
+		return count;
+	}
+
 	OpusWrapper::~OpusWrapper()
 	{
 		if (this->opus_encoder != nullptr)
@@ -54,7 +100,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 		for each (auto decoder in this->opus_decoders)
 		{
-			opus_decoder_destroy(decoder);
+			opus_decoder_destroy(decoder.second->decoder);
+			delete decoder.second;
 		}
 	}
 

@@ -1103,19 +1103,22 @@ namespace DSharpPlus
                 }
             }
 
-            foreach (var dat in readStates.ToObject<DiscordReadState[]>())
+            if (readStates != null)
             {
-                if (ReadStates.TryGetValue(dat.Id, out var state))
+                foreach (var dat in readStates.ToObject<DiscordReadState[]>())
                 {
-                    state.LastMessageId = dat.LastMessageId;
-                    state.LastPinTimestamp = dat.LastPinTimestamp;
-                    state.MentionCount = dat.MentionCount;
-                }
-                else
-                {
-                    dat.Discord = this;
-                    ReadStates[dat.Id] = dat;
-                }
+                    if (ReadStates.TryGetValue(dat.Id, out var state))
+                    {
+                        state.LastMessageId = dat.LastMessageId;
+                        state.LastPinTimestamp = dat.LastPinTimestamp;
+                        state.MentionCount = dat.MentionCount;
+                    }
+                    else
+                    {
+                        dat.Discord = this;
+                        ReadStates[dat.Id] = dat;
+                    }
+                } 
             }
 
             foreach (var g in Guilds.Values)

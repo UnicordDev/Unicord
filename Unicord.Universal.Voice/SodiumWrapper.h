@@ -27,21 +27,29 @@ namespace winrt::Unicord::Universal::Voice::Interop
     struct SodiumWrapper
     {
 		SodiumWrapper() = default;
-        SodiumWrapper(array_view<uint8_t> key_view, EncryptionMode mode);
+        SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode mode);
 
-		void GenerateNonce(array_view<uint8_t> rtpHeader, uint8_t target[], size_t target_size);
-		void GenerateNonce(uint8_t target[], size_t target_size);
-		void GenerateNonce(uint32_t nonce, uint8_t target[], size_t target_size);
+		void GenerateNonce(array_view<const uint8_t> rtpHeader, array_view<uint8_t> target);
+		void GenerateNonce(array_view<uint8_t> target);
+		void GenerateNonce(uint32_t nonce, array_view<uint8_t> target);
 
-		void Encrypt(array_view<uint8_t> source, array_view<uint8_t> nonce, uint8_t target[], size_t target_size);
-		void AppendNonce(array_view<uint8_t> nonce, uint8_t target[], size_t target_size, EncryptionMode mode);
+		void Encrypt(array_view<const uint8_t> source, array_view<const uint8_t> nonce, array_view<uint8_t> target);
+		void Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target);
+
+		void GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode);
+		void AppendNonce(array_view<const uint8_t> nonce, array_view<uint8_t> target, EncryptionMode mode);
 
 		~SodiumWrapper();
 
 		static EncryptionMode GetEncryptionMode(hstring name);
 		static std::pair<hstring, EncryptionMode> SelectEncryptionMode(JsonArray available_modes);
+
 		static const inline size_t CalculateTargetSize(size_t source_length) {
 			return source_length + crypto_secretbox_xsalsa20poly1305_MACBYTES;
+		}
+
+		static const inline size_t CalculateSourceSize(size_t source_length) {
+			return source_length - crypto_secretbox_xsalsa20poly1305_MACBYTES;
 		}
 
 	private:

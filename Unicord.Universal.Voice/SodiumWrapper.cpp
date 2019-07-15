@@ -9,7 +9,7 @@ using namespace winrt::Windows::Data::Json;
 
 namespace winrt::Unicord::Universal::Voice::Interop
 {
-	SodiumWrapper::SodiumWrapper(array_view<uint8_t> key_view, EncryptionMode selected_mode)
+	SodiumWrapper::SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode selected_mode)
     {
 		key_length = crypto_secretbox_xsalsa20poly1305_keybytes();
 		nonce_length = crypto_secretbox_xsalsa20poly1305_noncebytes();
@@ -44,56 +44,90 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		throw hresult_not_implemented();
 	}
 
-	void SodiumWrapper::GenerateNonce(array_view<uint8_t> rtp_header, uint8_t target[], size_t target_size)
+	void SodiumWrapper::GenerateNonce(array_view<const uint8_t> rtp_header, array_view<uint8_t> target)
 	{
-		if (target_size != nonce_length) {
+		if (target.size() != nonce_length) {
 			throw hresult_invalid_argument(L"Target size incorrect!");
 		}
 
-		std::copy(rtp_header.begin(), rtp_header.end(), &target[0]);
+		std::copy(rtp_header.begin(), rtp_header.end(), target.data());
 	}
 
-	void SodiumWrapper::GenerateNonce(uint8_t target[], size_t target_size)
+	void SodiumWrapper::GenerateNonce(array_view<uint8_t> target)
 	{
-		if (target_size != nonce_length) {
+		if (target.size() != nonce_length) {
 			throw hresult_invalid_argument(L"Target size incorrect!");
 		}
 
-		randombytes_buf(target, crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
+		randombytes_buf(target.data(), crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
 	}
 
-	void SodiumWrapper::GenerateNonce(uint32_t nonce, uint8_t target[], size_t target_size)
+	void SodiumWrapper::GenerateNonce(uint32_t nonce, array_view<uint8_t> target)
 	{
-		if (target_size != nonce_length) {
+		if (target.size() != nonce_length) {
 			throw hresult_invalid_argument(L"Target size incorrect!");
 		}
 
-		std::reverse_copy((uint8_t*)&nonce, (uint8_t*)&nonce + sizeof nonce, target);
+		std::reverse_copy((uint8_t*)&nonce, (uint8_t*)&nonce + sizeof nonce, target.data());
 	}
 
-	void SodiumWrapper::Encrypt(array_view<uint8_t> source, array_view<uint8_t> nonce, uint8_t target[], size_t target_size)
+	void SodiumWrapper::Encrypt(array_view<const uint8_t> source, array_view<const uint8_t> nonce, array_view<uint8_t> target)
 	{
 		if (nonce.size() != nonce_length)
 			throw hresult_invalid_argument(L"Invalid nonce size");
 
-		if (target_size != mac_length + source.size())
+		if (target.size() != mac_length + source.size())
 			throw hresult_invalid_argument(L"Invalid target size");
 
-		int result = crypto_secretbox_easy(target, source.begin(), source.size(), nonce.begin(), key);
+		int result = crypto_secretbox_easy(target.data(), source.begin(), source.size(), nonce.begin(), key);
 		if (result != 0) {
 			throw hresult_error(E_FAIL, L"Encryption failed!");
 		}
 	}
 
-	void SodiumWrapper::AppendNonce(array_view<uint8_t> nonce, uint8_t target[], size_t target_size, EncryptionMode mode)
+	void SodiumWrapper::Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target)
+	{
+		if (nonce.size() != nonce_length)
+			throw hresult_invalid_argument(L"Invalid nonce size");
+
+		if (target.size() != mac_length - source.size())
+			throw hresult_invalid_argument(L"Invalid target size");
+
+		int result = crypto_secretbox_open_easy(target.data(), source.data(), source.size(), nonce.data(), key);
+		if (result != 0) {
+			throw hresult_error(E_FAIL, L"Decryption failed!");
+		}
+	}
+
+	void SodiumWrapper::AppendNonce(array_view<const uint8_t> nonce, array_view<uint8_t> target, EncryptionMode mode)
 	{
 		switch (mode)
 		{
 		case XSalsa20_Poly1305_Lite:
-			std::copy(nonce.begin(), &nonce.at(4), &target[target_size - 4]);
+			std::copy(nonce.begin(), &nonce.at(4), &target[target.size() - 4]);
 			break;
 		case XSalsa20_Poly1305_Suffix:
-			std::copy(nonce.begin(), nonce.end(), &target[target_size - 12]);
+			std::copy(nonce.begin(), nonce.end(), &target[target.size() - 12]);
+			break;
+		}
+	}
+
+	void SodiumWrapper::GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode)
+	{
+		if (nonce.size() != nonce_length) {
+			throw hresult_invalid_argument(L"Invalid target size!");
+		}
+
+		switch (mode)
+		{
+		case XSalsa20_Poly1305:
+			std::copy(source.begin(), source.begin() + 12, nonce.data());
+			break;
+		case XSalsa20_Poly1305_Suffix:
+			std::copy(source.end() - 12, source.end(), nonce.data());
+			break;
+		case XSalsa20_Poly1305_Lite:
+			std::copy(source.end() - 4, source.end(), nonce.data());
 			break;
 		}
 	}

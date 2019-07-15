@@ -124,7 +124,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			key[i] = (uint8_t)secret_key.GetNumberAt(i);
 		}
 
-		sodium = new SodiumWrapper(array_view(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(mode));
+		sodium = new SodiumWrapper(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(mode));
 		keepalive_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, milliseconds(5000));
 		voice_thread = std::thread(&VoiceClient::VoiceSendLoop, this);
 
@@ -201,7 +201,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 				SendSpeakingAsync(false).get();
 			}
 
-			// delete[] packet.bytes.begin();
+			delete[] packet.bytes.data();
 		}
 	}
 
@@ -211,49 +211,163 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		auto packet_array_size = Rtp::CalculatePacketSize(audio_size, mode.second);
 		auto packet_array = new uint8_t[packet_array_size]{ 0 };
 
-		Rtp::EncodeHeader(seq, timestamp, ssrc, packet_array, packet_array_size);
+		Rtp::EncodeHeader(seq, timestamp, ssrc, array_view(packet_array, packet_array + packet_array_size));
 
 		auto opus_length = opus->Encode(pcm, array_view(packet_array + Rtp::HEADER_SIZE, packet_array + packet_array_size));
-		array_view<uint8_t> opus_data(&packet_array[Rtp::HEADER_SIZE], &packet_array[Rtp::HEADER_SIZE + opus_length]);
+		array_view<const uint8_t> opus_data(&packet_array[Rtp::HEADER_SIZE], &packet_array[Rtp::HEADER_SIZE + opus_length]);
 
 		auto time = audio_format.CalculateFrameSize(audio_format.CalculateSampleDuration(pcm.size()));
 		this->seq++;
 		this->timestamp += time;
 
-		uint8_t nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES] = { 0 };
+		const size_t size = crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
+		uint8_t nonce[size] = { 0 };
 		switch (mode.second)
 		{
 		case EncryptionMode::XSalsa20_Poly1305:
-			sodium->GenerateNonce(array_view<uint8_t>(packet_array, packet_array + Rtp::HEADER_SIZE), nonce, crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
+			sodium->GenerateNonce(array_view<const uint8_t>(packet_array, packet_array + Rtp::HEADER_SIZE), nonce);
 			break;
 		case EncryptionMode::XSalsa20_Poly1305_Suffix:
-			sodium->GenerateNonce(nonce, crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
+			sodium->GenerateNonce(nonce);
 			break;
 		case EncryptionMode::XSalsa20_Poly1305_Lite:
-			sodium->GenerateNonce(this->nonce++, nonce, crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
+			sodium->GenerateNonce(this->nonce++, nonce);
 			break;
 		}
 
+		array_view<const uint8_t> nonce_view(nonce);
+
 		auto encrypted_size = sodium->CalculateTargetSize(opus_data.size());
 		auto encrypted = new uint8_t[encrypted_size];
+		auto encrypted_view = array_view(encrypted, encrypted + encrypted_size);
 
-		sodium->Encrypt(opus_data, array_view<uint8_t>(nonce), encrypted, encrypted_size);
-		std::copy(&encrypted[0], &encrypted[encrypted_size], &packet_array[Rtp::HEADER_SIZE]);
+		sodium->Encrypt(opus_data, nonce_view, encrypted_view);
+		std::copy(encrypted_view.begin(), encrypted_view.end(), packet_array + Rtp::HEADER_SIZE);
 
 		auto new_packet_size = Rtp::CalculatePacketSize(encrypted_size, mode.second);
 		auto new_packet = new uint8_t[new_packet_size];
-		std::copy(&packet_array[0], &packet_array[new_packet_size], new_packet);
-		sodium->AppendNonce(array_view<uint8_t>(nonce), new_packet, new_packet_size, mode.second);
+		std::copy(packet_array, packet_array + new_packet_size, new_packet);
+
+		auto result_view = array_view(new_packet, new_packet + new_packet_size);
+		sodium->AppendNonce(nonce_view, result_view, mode.second);
 
 		delete[] encrypted;
 		delete[] packet_array;
 
-		return array_view<const uint8_t>(new_packet, new_packet + new_packet_size);
+		return array_view<const uint8_t>(result_view.begin(), result_view.end());
 	}
 
 	void VoiceClient::EnqueuePacket(VoicePacket packet)
 	{
 		voice_queue.push(packet);
+	}
+
+	void VoiceClient::ProcessRawPacket(array_view<uint8_t> data)
+	{
+		AudioSource source;
+		AudioFormat format;
+		std::vector<array_view<uint8_t>> pcm_packets;
+
+		if (ProcessIncomingPacket(array_view<const uint8_t>(data.begin(), data.end()), pcm_packets, source, format)) {
+
+		}
+
+		delete[] data.data();
+	}
+
+	bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<array_view<uint8_t>> pcm, AudioSource & source, AudioFormat & format)
+	{
+		if (!Rtp::IsRtpHeader(data))
+			return false;
+
+		uint16_t packet_seq;
+		uint32_t packet_time;
+		uint32_t packet_ssrc;
+		bool packet_extension;
+
+		// decode header info from RTP
+		Rtp::DecodeHeader(data, packet_seq, packet_time, packet_ssrc, packet_extension);
+
+		auto audio_source = opus->GetOrCreateDecoder(packet_ssrc);
+		if (packet_seq < audio_source->seq) { // out of order
+			return false;
+		}
+
+		uint16_t gap = audio_source->seq != 0 ? packet_seq - 1 - audio_source->seq : 0;
+
+		// get the nonce
+		uint8_t nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES];
+		array_view<uint8_t> nonce_view(nonce);
+		sodium->GetNonce(data, nonce_view, mode.second);
+
+		// get the data
+		array_view<const uint8_t> encrypted_opus;
+		Rtp::GetDataFromPacket(data, encrypted_opus, mode.second);
+
+		// calculate the size of the opus data
+		size_t opus_size = sodium->CalculateSourceSize(encrypted_opus.size());
+		uint8_t* opus_data = new uint8_t[opus_size]{ 0 };
+		array_view<uint8_t> opus_view(opus_data, opus_data + opus_size);
+
+		// decrypt the opus data
+		sodium->Decrypt(encrypted_opus, nonce_view, opus_view);
+
+		if (packet_extension) {
+			// RFC 5285, 4.2 One-Byte header
+			// http://www.rfcreader.com/#rfc5285_line186
+			if (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
+				auto headerLen = opus_view[2] << 8 | opus_view[3];
+				auto i = 4;
+				for (; i < headerLen + 4; i++)
+				{
+					uint8_t b = opus_view[i];
+
+					// ID is currently unused since we skip it anyway
+					// var id = (byte)(@byte >> 4);
+					uint8_t length = (uint8_t)(b & 0x0F) + 1;
+					i += length;
+				}
+
+				// Strip extension padding too
+				while (opus_view[i] == 0)
+					i++;
+
+				uint8_t* new_opus = new uint8_t[opus_size - i]{ 0 };
+				std::copy(opus_view.begin() + i, opus_view.end(), new_opus);
+				delete[] opus_data;
+
+				opus_view = array_view(new_opus, new_opus + (opus_size - i));
+			}
+		}
+
+		AudioFormat packet_format = audio_source->format;
+		int32_t fec_pcm_length = opus->GetLastPacketSampleCount(audio_source->decoder);
+
+		if (gap == 1) {
+			uint8_t* fec_pcm = new byte[fec_pcm_length]{ 0 };
+			array_view fec_view(fec_pcm, fec_pcm + fec_pcm_length);
+			opus->Decode(*audio_source, opus_view, fec_view, true, packet_format);
+			pcm.push_back(fec_view);
+		}
+		else if (gap > 1) {
+			for (size_t i = 0; i < gap; i++) {
+				uint8_t* fec_pcm = new byte[fec_pcm_length]{ 0 };
+				array_view fec_view(fec_pcm, fec_pcm + fec_pcm_length);
+				opus->ProcessPacketLoss(*audio_source, fec_pcm_length, fec_view);
+				pcm.push_back(fec_view);
+			}
+		}
+
+		size_t max_frame_size = format.GetMaxBufferSize();
+		uint8_t* raw_pcm = new uint8_t[max_frame_size]{ 0 };
+		array_view raw_pcm_view(raw_pcm, raw_pcm + max_frame_size);
+		opus->Decode(*audio_source, opus_view, raw_pcm_view, false, packet_format);
+		pcm.push_back(raw_pcm_view);
+		audio_source->seq = packet_seq;
+		source = *audio_source;
+
+		delete[] opus_view.data();
+		return true;
 	}
 
 	IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
@@ -350,7 +464,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		co_await SendJsonPayloadAsync(disp);
 	}
 
-	Windows::Storage::Streams::IOutputStream VoiceClient::GetOutputStream()
+	IOutputStream VoiceClient::GetOutputStream()
 	{
 		return make_self<VoiceOutputStream>(*this).as<IOutputStream>();
 	}
@@ -429,9 +543,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			if (len == 8) {
 				HandleUdpHeartbeat(reader.ReadUInt64());
 			}
-			else {
+			else if (len > 13) {
 				// prolly voice data
-				// TODO: decode packet
+				auto data = new uint8_t[len];
+				auto data_view = array_view<uint8_t>(data, data + len);
+				reader.ReadBytes(data_view);
+
+				ProcessRawPacket(data_view);
 			}
 		}
 	}
@@ -460,6 +578,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		if (sodium != nullptr)
 			delete sodium;
+
+		cancel_voice_send = true;
+		voice_thread.join();
+
+		voice_queue.clear();
+		keepalive_timestamps.clear();
 
 		heartbeat_timer.Cancel();
 		keepalive_timer.Cancel();

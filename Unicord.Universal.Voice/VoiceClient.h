@@ -44,7 +44,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		IAsyncAction ConnectAsync();
 		IAsyncAction SendSpeakingAsync(bool speaking);
-		Windows::Storage::Streams::IOutputStream GetOutputStream();
+		IOutputStream GetOutputStream();
 		void Close();
 
 		array_view<const uint8_t> PreparePacket(array_view<uint8_t> pcm);
@@ -59,6 +59,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		ThreadPoolTimer keepalive_timer{ nullptr };
 		SodiumWrapper* sodium = nullptr;
 		OpusWrapper* opus = nullptr;
+
+		concurrency::concurrent_unordered_map<uint32_t, AudioSource> audio_sources;
 
 		std::pair<hstring, EncryptionMode> mode;
 		ConnectionEndpoint endpoint;
@@ -79,7 +81,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		volatile uint32_t udp_ping = 0;
 		volatile uint64_t keepalive_count = 0;
 		concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
-
 		concurrency::concurrent_queue<VoicePacket> voice_queue;
 		volatile bool cancel_voice_send = false;
 		std::thread voice_thread;
@@ -93,15 +94,16 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		void VoiceSendLoop();
 
+		void ProcessRawPacket(array_view<uint8_t> data);
+		bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<array_view<uint8_t>> pcm, AudioSource &source, AudioFormat &format);
+
 		IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
 		IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
 		void OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
 
 		IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
-		void HandleUdpHeartbeat(uint64_t reader);
 		IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
-
-		friend struct VoiceOutputStream;
+		void HandleUdpHeartbeat(uint64_t reader);
 	};
 }
 
