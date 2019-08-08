@@ -21,10 +21,12 @@ using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Utilities;
+using Unicord.Universal.Voice;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
@@ -32,7 +34,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using Unicord.Universal.Voice;
 using static Unicord.Constants;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
@@ -42,6 +43,7 @@ namespace Unicord.Universal
     {
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
+        private ExtendedExecutionSession _executionSession;
 
         internal static DiscordClient Discord { get; set; }
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
@@ -289,13 +291,35 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            Analytics.TrackEvent("Suspend");
+            if (_executionSession != null)
+            {
+                _executionSession.Revoked -= OnExtendedSessionRevoked;
+                _executionSession.Dispose();
+                _executionSession = null;
+            }
+
+            _executionSession = new ExtendedExecutionSession { Reason = ExtendedExecutionReason.Unspecified };
+            _executionSession.Revoked += OnExtendedSessionRevoked;
+            var result = await _executionSession.RequestExtensionAsync();
+
+            if(result == ExtendedExecutionResult.Denied)
+            {
+                await Discord.DisconnectAsync();
+            }
 
             deferral.Complete();
+        }
+
+        private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
+        {
+            if(args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
+            {
+                await Discord.DisconnectAsync();
+            }
         }
 
         internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)

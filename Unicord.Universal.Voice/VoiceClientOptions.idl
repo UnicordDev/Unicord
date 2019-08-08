@@ -9,5 +9,7 @@ namespace Unicord.Universal.Voice
 		UInt64 GuildId;
 		UInt64 ChannelId;
 		UInt64 CurrentUserId;
+		String PreferredPlaybackDevice;
+		String PreferredRecordingDevice;
 	};
 }

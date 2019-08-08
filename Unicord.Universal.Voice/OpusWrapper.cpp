@@ -28,46 +28,87 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		check_opus_error(opus_encoder_ctl(this->opus_encoder, OPUS_SET_BITRATE_REQUEST, 131072), L"Failed to set bitrate.");
 	}
 
-	size_t OpusWrapper::Encode(array_view<uint8_t> pcm, array_view<uint8_t> target)
+	size_t OpusWrapper::Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
 	{
-		auto duration = audio_format.CalculateSampleDuration(pcm.size());
-		auto frame_size = audio_format.CalculateFrameSize(duration);
-		auto sample_size = audio_format.CalculateSampleSize(duration);
+		try
+		{
+			auto duration = audio_format.CalculateSampleDuration(pcm.size());
+			auto frame_size = audio_format.CalculateFrameSize(duration);
+			auto sample_size = audio_format.CalculateSampleSize(duration);
 
-		if (pcm.size() != sample_size)
-			throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
-		
-		int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), frame_size, target.data(), target.size());
-		if (length < 0) {
-			check_opus_error(length, L"Could not encode PCM to opus!");
+			if (pcm.size() != sample_size)
+				throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
+
+			int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), frame_size, target.data(), target.size());
+			if (length < 0) {
+				check_opus_error(length, L"Could not encode PCM to opus!");
+			}
+
+			return (size_t)length;
 		}
-		
-		return (size_t)length;
+		catch (winrt::hresult_invalid_argument& ex)
+		{
+				
+		}
 	}
 
-	void OpusWrapper::Decode(AudioSource decoder, array_view<uint8_t> opus, array_view<uint8_t> &target, bool fec, AudioFormat & format)
+	size_t OpusWrapper::EncodeFloat(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
+	{
+		try
+		{
+			auto duration = audio_format.CalculateSampleDurationF(pcm.size());
+			auto frame_size = audio_format.CalculateFrameSize(duration);
+			auto sample_size = audio_format.CalculateSampleSizeF(duration);
+
+			if (pcm.size() != sample_size)
+				throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
+
+			int length = opus_encode_float(opus_encoder, (float*)(pcm.data()), frame_size, target.data(), target.size());
+			if (length < 0) {
+				check_opus_error(length, L"Could not encode PCM to opus!");
+			}
+
+			return (size_t)length;
+		}
+		catch (winrt::hresult_invalid_argument& ex)
+		{
+
+		}
+	}
+
+	void OpusWrapper::Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t> &target, bool fec)
 	{
 		auto frames = opus_packet_get_nb_frames(opus.data(), opus.size());
-		auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), format.sample_rate);
+		auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), decoder->format.sample_rate);
 		auto channels = opus_packet_get_nb_channels(opus.data());
 
-		if (decoder.format.channel_count != channels || !decoder.IsInitialised()) {
-			format.channel_count = channels;
-			decoder.Initialise(format);
+		if (decoder->format.channel_count != channels || !decoder->IsInitialised()) {
+			decoder->format.channel_count = channels;
+			decoder->Initialise(decoder->format);
 		}
 
-		auto sample_count = opus_decode(decoder.decoder, opus.data(), opus.size(), (int16_t*)target.data(), frames * samples_per_frame, fec);
+		auto sample_count = opus_decode(decoder->decoder, opus.data(), opus.size(), (int16_t*)target.data(), frames * samples_per_frame, fec);
 		if (sample_count < 0) {
-			check_opus_error(sample_count, L"Could not decoder opus to PCM!");
+			check_opus_error(sample_count, L"Could not decode opus to PCM!");
 		}
 
-		auto sample_size = format.CalculateSampleSize(sample_count);
-		target = array_view(target.data(), target.data() + sample_size);
+		auto sample_size = decoder->format.SampleCountToSampleSize(sample_count);
+		target.resize(sample_size);
 	}
 
-	void OpusWrapper::ProcessPacketLoss(AudioSource decoder, int32_t frameSize, array_view<uint8_t> target)
+	void OpusWrapper::ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t> &target)
 	{
+		if (!decoder->IsInitialised()) {
+			decoder->Initialise(decoder->format);
+		}
 
+		auto sample_count = opus_decode(decoder->decoder, nullptr, 0, (int16_t*)target.data(), frame_size, 1);
+		if (sample_count < 0) {
+			check_opus_error(sample_count, L"Could not decode opus to PCM!");
+		}
+
+		auto sample_size = decoder->format.SampleCountToSampleSize(sample_count);
+		target.resize(sample_size);
 	}
 
 	AudioSource* OpusWrapper::GetOrCreateDecoder(uint8_t ssrc)

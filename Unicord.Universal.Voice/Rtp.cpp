@@ -4,7 +4,7 @@
 
 namespace winrt::Unicord::Universal::Voice::Interop
 {
-	void Rtp::EncodeHeader(uint16_t sequence, uint32_t timestamp, uint32_t ssrc, array_view<uint8_t> target)
+	void Rtp::EncodeHeader(uint16_t sequence, uint32_t timestamp, uint32_t ssrc, gsl::span<uint8_t> target)
 	{
 		if (target.size() < HEADER_SIZE) {
 			throw hresult_invalid_argument();
@@ -47,13 +47,13 @@ namespace winrt::Unicord::Universal::Voice::Interop
 	{
 		switch (mode)
 		{
-		case XSalsa20_Poly1305_Lite:
+		case XSalsa20_Poly1305:
 			destination = array_view(source.begin() + HEADER_SIZE, source.end());
 			break;
 		case XSalsa20_Poly1305_Suffix:
 			destination = array_view(source.begin() + HEADER_SIZE, source.end() - crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
 			break;
-		case XSalsa20_Poly1305:
+		case XSalsa20_Poly1305_Lite:
 			destination = array_view(source.begin() + HEADER_SIZE, source.end() - 4);
 			break;
 		default:

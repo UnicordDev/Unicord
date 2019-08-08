@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include <unknwn.h>
+#include <ppltasks.h>
+#include <pplawait.h>
+#include <gsl/gsl>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Diagnostics.h>
 #include <winrt/Windows.Foundation.Collections.h>

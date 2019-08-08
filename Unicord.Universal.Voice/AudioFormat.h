@@ -15,17 +15,18 @@ namespace winrt::Unicord::Universal::Voice::Interop
 	{
 	public:
 		VoicePacket() { }
-		VoicePacket(array_view<const uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
+		VoicePacket(gsl::span<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
 		{
 			bytes = packet_bytes;
 			duration = packet_duration;
 			is_silence = isSilence;
 		}
 
-		array_view<const uint8_t> bytes;
-		uint32_t length;
-		uint32_t duration;
-		bool is_silence;
+		gsl::span<uint8_t> bytes;
+		uint32_t length = 0;
+		uint32_t duration = 0;
+		bool is_float = false;
+		bool is_silence = false;
 	};
 
 	struct AudioFormat
@@ -38,36 +39,48 @@ namespace winrt::Unicord::Universal::Voice::Interop
 			application = app;
 		}
 
-		uint32_t sample_rate;
-		uint32_t channel_count;
-		VoiceApplication application;
+		uint32_t sample_rate = 0;
+		uint32_t channel_count = 0 ;
+		VoiceApplication application = voip;
 
-		inline bool operator== (AudioFormat& lhs) {
+		inline bool operator== (AudioFormat& lhs) noexcept {
 			return (lhs.sample_rate == sample_rate) && (lhs.channel_count == channel_count) && (lhs.application == application);
 		}
 
-		inline bool operator!= (AudioFormat& lhs) {
+		inline bool operator!= (AudioFormat& lhs) noexcept {
 			return !(lhs == *this);
 		}
 
-		inline size_t CalculateSampleSize(uint32_t duration) {
+		inline size_t CalculateSampleSize(uint32_t duration) noexcept {
 			return duration * channel_count * (sample_rate / 1000) * 2;
 		}
+		
+		inline size_t CalculateSampleSizeF(uint32_t duration) noexcept {
+			return duration * channel_count * (sample_rate / 1000) * 4;
+		}
 
-		inline size_t GetMaxBufferSize() {
+		inline size_t GetMaxBufferSize() noexcept {
 			return  120 * (sample_rate / 1000);
 		}
 
-		inline uint32_t CalculateSampleDuration(uint32_t sampleSize) {
+		inline uint32_t CalculateSampleDuration(uint32_t sampleSize) noexcept {
 			return sampleSize / (sample_rate / 1000) / channel_count / 2;
 		}
+		
+		inline uint32_t CalculateSampleDurationF(uint32_t sampleSize) noexcept {
+			return sampleSize / (sample_rate / 1000) / channel_count / 4;
+		}
 
-		inline size_t CalculateFrameSize(uint32_t sampleDuration) {
+		inline size_t CalculateFrameSize(uint32_t sampleDuration) noexcept {
 			return sampleDuration * (sample_rate / 1000);
 		}
 
-		inline size_t SampleCountToSampleSize(size_t count) {
+		inline size_t SampleCountToSampleSize(size_t count) noexcept {
 			return count * channel_count * 2;
+		}
+		
+		inline size_t SampleCountToSampleSizeF(size_t count) noexcept {
+			return count * channel_count * 4;
 		}
 	};
 
@@ -80,25 +93,28 @@ namespace winrt::Unicord::Universal::Voice::Interop
 			this->ssrc = ssrc;
 		}
 
-		inline void Initialise(AudioFormat format) {
+		void Initialise(AudioFormat format) {
 			int error = 0;
+
 			if (decoder == nullptr) {
 				decoder = opus_decoder_create(format.sample_rate, format.channel_count, &error);
 			}
 			else {
-				error = opus_decoder_init(decoder, format.sample_rate, format.channel_count);
+				opus_decoder_destroy(decoder);
+				decoder = opus_decoder_create(format.sample_rate, format.channel_count, &error);
 			}
 
 			this->format = format;
 		}
 
 		inline bool IsInitialised() {
-			return decoder == nullptr;
+			return decoder != nullptr;
 		}
 
-		uint32_t ssrc;
-		uint64_t user_id;
-		uint16_t seq;
+		uint32_t ssrc = 0;
+		uint64_t user_id = 0;
+		uint16_t seq = 0;
+		uint64_t packets_lost;
 		AudioFormat format;
 		OpusDecoder* decoder = nullptr;
 	};

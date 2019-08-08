@@ -34,7 +34,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 				consumed_buffer_length = 0;
 
 				auto packet = client->PreparePacket(array_view<uint8_t>(pcm_buffer, pcm_buffer + buffer_length));
-				client->EnqueuePacket(VoicePacket(packet, 20));
+				client->EnqueuePacket(packet);
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		std::fill(pcm_buffer + consumed_buffer_length, pcm_buffer + buffer_length, 0);
 
 		auto packet = client->PreparePacket(array_view<uint8_t>(pcm_buffer, pcm_buffer + buffer_length));
-		client->EnqueuePacket(VoicePacket(packet, 20));
+		client->EnqueuePacket(packet);
 
 		co_return true;
 	}

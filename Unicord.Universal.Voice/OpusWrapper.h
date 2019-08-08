@@ -10,9 +10,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		OpusWrapper() = default;
 		OpusWrapper(AudioFormat format);
 
-		size_t Encode(array_view<uint8_t> pcm, array_view<uint8_t> target);
-		void Decode(AudioSource decoder, array_view<uint8_t> opus, array_view<uint8_t> &target, bool fec, AudioFormat& format);
-		void ProcessPacketLoss(AudioSource decoder, int32_t frameSize, array_view<uint8_t> target);
+		size_t Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target);
+		size_t EncodeFloat(array_view<uint8_t> pcm, gsl::span<uint8_t> target);
+		void Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t> &target, bool fec);
+		void ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t> &target);
 
 		AudioSource* GetOrCreateDecoder(uint8_t ssrc);
 		int32_t GetLastPacketSampleCount(OpusDecoder* decoder);

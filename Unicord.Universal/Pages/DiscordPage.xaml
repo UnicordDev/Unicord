@@ -13,6 +13,7 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:settings="using:Unicord.Universal.Pages.Settings"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     x:Name="self"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
@@ -333,7 +334,8 @@
                         ItemsSource="{x:Bind _guilds}"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         SelectionChanged="GuildsList_SelectionChanged"
-                        ShowsScrollingPlaceholders="False">
+                        ShowsScrollingPlaceholders="False"
+                        Width="56">
                         <ListView.Header>
                             <StackPanel Margin="0,8,0,0">
                                 <ListViewItem
@@ -420,11 +422,28 @@
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="CreateServerItem_Tapped">
+                                    <FlyoutBase.AttachedFlyout>
+                                        <Flyout>
+                                            <flyouts:AddServerFlyout />
+                                        </Flyout>
+                                    </FlyoutBase.AttachedFlyout>
                                     <SymbolIcon
                                         Width="36"
                                         Height="36"
                                         Symbol="Add" />
                                 </ListViewItem>
+                                <ListViewItem
+                                    x:Name="findServerIcon"
+                                    MinWidth="0"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Stretch"
+                                    Tapped="FindServerIcon_Tapped">
+                                    <SymbolIcon
+                                        Width="36"
+                                        Height="36"
+                                        Symbol="Find" />
+                                </ListViewItem>
+                                <lib:NavigationViewItemSeparator />
                                 <ListViewItem
                                     x:Name="settingsItem"
                                     MinWidth="0"

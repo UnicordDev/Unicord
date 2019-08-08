@@ -63,4 +63,24 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	{
 		current_user_id = value;
 	}
+
+	hstring VoiceClientOptions::PreferredPlaybackDevice()
+	{
+		return preferred_playback_device;
+	}
+
+	void VoiceClientOptions::PreferredPlaybackDevice(hstring value)
+	{
+		preferred_playback_device = value;
+	}
+
+	hstring VoiceClientOptions::PreferredRecordingDevice()
+	{
+		return preferred_recording_device;
+	}
+
+	void VoiceClientOptions::PreferredRecordingDevice(hstring value)
+	{
+		preferred_recording_device = value;
+	}
 }

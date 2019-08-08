@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
@@ -22,6 +23,7 @@ using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -524,6 +526,8 @@ namespace Unicord.Universal.Pages
             {
                 CloseSettingsMobileStoryboard.Begin();
             }
+
+            this.FindParent<MainPage>().SetScale();
         }
 
         private void CloseSettingsStoryboard_Completed(object sender, object e)
@@ -582,9 +586,22 @@ namespace Unicord.Universal.Pages
 
         }
 
-        private async void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            await App.Discord.CreateGuildAsync("Penis");
+            var element = sender as FrameworkElement;
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
+            {
+                FlyoutBase.GetAttachedFlyout(element).ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
+            }
+            else
+            {
+                FlyoutBase.GetAttachedFlyout(element).ShowAt(element);
+            }
+        }
+
+        private void FindServerIcon_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
         }
     }
 }

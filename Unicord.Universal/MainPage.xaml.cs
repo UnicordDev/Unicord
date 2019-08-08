@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,20 +45,20 @@ namespace Unicord.Universal
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;
         private bool _isReady;
-        private bool _visibility;
         private FrameworkElement _fullscreenElement;
         private Panel _fullscreenParent;
 
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Disabled;
-            Window.Current.VisibilityChanged += Current_VisibilityChanged;
+            NavigationCacheMode = NavigationCacheMode.Disabled;            
+            SetScale();
         }
 
-        private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
+        internal void SetScale()
         {
-            _visibility = e.Visible;
+            AppScale.ScaleX = App.RoamingSettings.Read<double>("ScaleFactor", 1);
+            AppScale.ScaleY = App.RoamingSettings.Read<double>("ScaleFactor", 1);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -73,8 +74,6 @@ namespace Unicord.Universal
                 default:
                     break;
             }
-
-            _visibility = Window.Current.Visible;
 
             WindowManager.HandleTitleBarForWindow(titleBar);
 
@@ -174,7 +173,7 @@ namespace Unicord.Universal
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
 
-            if (Arguments != null && Arguments.ChannelId != 0)
+            if (Arguments != null && (Arguments.ChannelId != 0 || Arguments.UserId != 0))
             {
                 if (Arguments.FullFrame)
                 {
@@ -236,23 +235,35 @@ namespace Unicord.Universal
 
         internal async Task GoToChannelAsync(DiscordClient e)
         {
-            var guildChannels = e.Guilds.Values.SelectMany(g => g.Channels.Values)
-                .Where(c => c.Type == ChannelType.Text && c.PermissionsFor(c.Guild.CurrentMember).HasPermission(Permissions.AccessChannels));
-
-            var dm = e.PrivateChannels.Values
-                .Concat(guildChannels)
-                .FirstOrDefault(c => (c is DiscordDmChannel d && d.Type == ChannelType.Private) ? d.Recipient.Id == Arguments.UserId || c.Id == Arguments.ChannelId : c.Id == Arguments.ChannelId);
-
-            if (dm == null && Arguments.UserId != 0)
+            if (Arguments.ChannelId != 0 && e._channelCache.TryGetValue(Arguments.ChannelId, out var channel))
             {
-                dm = await App.Discord.CreateDmChannelAsync(Arguments.UserId);
+                if (channel.Type == ChannelType.Text && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels) || channel is DiscordDmChannel)
+                {
+                    await Dispatcher.AwaitableRunAsync(() =>
+                    {
+                        rootFrame.Navigate(typeof(ChannelPage), channel);
+                        HideConnectingOverlay();
+                    });
+                }
             }
 
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            try
             {
-                rootFrame.Navigate(typeof(ChannelPage), dm);
-                HideConnectingOverlay();
-            });
+                var dm = e.PrivateChannels.Values
+                    .FirstOrDefault(c => c.Recipient?.Id == Arguments.UserId);
+
+                if (dm == null && Arguments.UserId != 0)
+                {
+                    dm = await App.Discord.CreateDmChannelAsync(Arguments.UserId);
+                }
+
+                await Dispatcher.AwaitableRunAsync(() =>
+                {
+                    rootFrame.Navigate(typeof(ChannelPage), dm);
+                    HideConnectingOverlay();
+                });
+            }
+            catch { }
         }
 
         internal void ShowConnectingOverlay()

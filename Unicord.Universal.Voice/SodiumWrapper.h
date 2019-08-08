@@ -29,15 +29,15 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		SodiumWrapper() = default;
         SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode mode);
 
-		void GenerateNonce(array_view<const uint8_t> rtpHeader, array_view<uint8_t> target);
-		void GenerateNonce(array_view<uint8_t> target);
-		void GenerateNonce(uint32_t nonce, array_view<uint8_t> target);
+		void GenerateNonce(gsl::span<const uint8_t> rtpHeader, gsl::span<uint8_t> target);
+		void GenerateNonce(gsl::span<uint8_t> target);
+		void GenerateNonce(uint32_t nonce, gsl::span<uint8_t> target);
 
-		void Encrypt(array_view<const uint8_t> source, array_view<const uint8_t> nonce, array_view<uint8_t> target);
+		void Encrypt(gsl::span<const uint8_t> source, gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target);
 		void Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target);
 
 		void GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode);
-		void AppendNonce(array_view<const uint8_t> nonce, array_view<uint8_t> target, EncryptionMode mode);
+		void AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode);
 
 		~SodiumWrapper();
 

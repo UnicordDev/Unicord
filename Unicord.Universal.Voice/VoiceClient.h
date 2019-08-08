@@ -4,6 +4,7 @@
 #include "SodiumWrapper.h"
 #include "ConnectionEndpoint.h"
 #include "AudioFormat.h"
+#include "AudioRenderer.h"
 #include "OpusWrapper.h"
 
 #include <opus.h>
@@ -12,6 +13,7 @@
 #include <iostream>
 #include <chrono>
 #include <sstream>
+#include <thread>
 #include <debugapi.h>
 #include <concurrent_unordered_map.h>
 #include <concurrent_queue.h>
@@ -26,6 +28,7 @@ using namespace winrt::Windows::System::Threading;
 using namespace winrt::Windows::Storage::Streams;
 using namespace winrt::Windows::Networking::Sockets;
 using namespace winrt::Unicord::Universal::Voice::Interop;
+using namespace winrt::Unicord::Universal::Voice::Render;
 
 namespace winrt::Unicord::Universal::Voice::implementation
 {
@@ -47,7 +50,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		IOutputStream GetOutputStream();
 		void Close();
 
-		array_view<const uint8_t> PreparePacket(array_view<uint8_t> pcm);
+		VoicePacket PreparePacket(array_view<uint8_t> pcm, bool silence = false, bool is_float = false);
 		void EnqueuePacket(VoicePacket packet);
 
 		~VoiceClient();
@@ -59,6 +62,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		ThreadPoolTimer keepalive_timer{ nullptr };
 		SodiumWrapper* sodium = nullptr;
 		OpusWrapper* opus = nullptr;
+		AudioRenderer* renderer = nullptr;
 
 		concurrency::concurrent_unordered_map<uint32_t, AudioSource> audio_sources;
 
@@ -95,7 +99,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		void VoiceSendLoop();
 
 		void ProcessRawPacket(array_view<uint8_t> data);
-		bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<array_view<uint8_t>> pcm, AudioSource &source, AudioFormat &format);
+		bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource& source);
 
 		IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
 		IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);

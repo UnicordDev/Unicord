@@ -27,8 +27,8 @@ namespace Unicord.Universal.Pages.Settings
         {
             ["Home"] = typeof(AccountsSettingsPage),
             ["Messaging"] = typeof(MessagingSettingsPage),
-            ["Media"] = typeof(MediaSettingsPage),
             ["Themes"] = typeof(ThemesSettingsPage),
+            ["Media"] = typeof(MediaSettingsPage),
             ["Security"] = typeof(SecuritySettingsPage),
             ["About"] = typeof(AboutSettingsPage),
         };
@@ -80,7 +80,6 @@ namespace Unicord.Universal.Pages.Settings
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowManager.HandleTitleBarForControl(nav, true);
         }
     }
 }

@@ -84,5 +84,20 @@ namespace Unicord.Universal.Models
                 InvokePropertyChanged(nameof(ColourScheme));
             }
         }
+
+        public double ScaleFactor
+        {
+            get => App.RoamingSettings.Read<double>("ScaleFactor", 1);
+            set
+            {
+                App.RoamingSettings.Save("ScaleFactor", value);
+                InvokePropertyChanged(nameof(ScaleFactorText));
+            }
+        }
+
+        public string ScaleFactorText
+        {
+            get => $"{Math.Floor(ScaleFactor * 100)}% ";
+        }
     }
 }

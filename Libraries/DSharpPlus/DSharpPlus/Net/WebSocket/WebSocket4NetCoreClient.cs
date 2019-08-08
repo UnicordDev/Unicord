@@ -144,7 +144,7 @@ namespace DSharpPlus.Net.WebSocket
             }
             else
             {
-                Trace.WriteLine("Attempted to send message while socket is closed!!", "WebSocket");
+                // Trace.WriteLine("Attempted to send message while socket is closed!!", "WebSocket");
             }
         }
 

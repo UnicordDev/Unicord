@@ -147,14 +147,19 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Fast</FloatingPointModel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioFormat.h" />
+    <ClInclude Include="AudioRenderer.h" />
     <ClInclude Include="ConnectionEndpoint.h" />
     <ClInclude Include="OpusWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Rtp.h" />
+    <ClInclude Include="ServiceBackgroundTask.h" />
     <ClInclude Include="SodiumWrapper.h" />
     <ClInclude Include="VoiceBackgroundTask.h">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -168,11 +173,13 @@
     <ClInclude Include="VoiceOutputStream.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioRenderer.cpp" />
     <ClCompile Include="OpusWrapper.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Rtp.cpp" />
+    <ClCompile Include="ServiceBackgroundTask.cpp" />
     <ClCompile Include="SodiumWrapper.cpp" />
     <ClCompile Include="VoiceBackgroundTask.cpp">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -187,6 +194,7 @@
     <ClCompile Include="VoiceOutputStream.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="ServiceBackgroundTask.idl" />
     <Midl Include="VoiceBackgroundTask.idl" />
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />

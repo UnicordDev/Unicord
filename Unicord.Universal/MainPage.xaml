@@ -159,26 +159,30 @@
         </Storyboard>
     </Page.Resources>
     <Grid x:Name="everything">
-        <Grid>
-            <Grid x:Name="mainContent" RenderTransformOrigin="0.5, 0.5">
-                <Grid.RenderTransform>
-                    <ScaleTransform x:Name="mainScale" ScaleX="1" ScaleY="1"/>
-                </Grid.RenderTransform>
-                <Frame x:Name="rootFrame" />
-                <Grid x:Name="overlayGrid"/>
-            </Grid>
-            <Grid x:Name="contentOverlay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Opacity="0" AllowDrop="True">
-                <Canvas Background="{StaticResource OverlayBackdrop}" Tapped="contentOverlay_Tapped"/>
-                <Grid x:Name="contentContainer" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20" RenderTransformOrigin="0.5, 0.5">
+        <controls:LayoutTransformControl RenderTransformOrigin="0.5,0.5">
+            <controls:LayoutTransformControl.Transform>
+                <ScaleTransform x:Name="AppScale" ScaleX="1" ScaleY="1"/>
+            </controls:LayoutTransformControl.Transform>
+            <Grid>
+                <Grid x:Name="mainContent" RenderTransformOrigin="0.5, 0.5">
                     <Grid.RenderTransform>
-                        <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1"/>
+                        <ScaleTransform x:Name="mainScale" ScaleX="1" ScaleY="1"/>
                     </Grid.RenderTransform>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <ScrollViewer MinZoomFactor="1" 
+                    <Frame x:Name="rootFrame" />
+                    <Grid x:Name="overlayGrid"/>
+                </Grid>
+                <Grid x:Name="contentOverlay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Opacity="0" AllowDrop="True">
+                    <Canvas Background="{StaticResource OverlayBackdrop}" Tapped="contentOverlay_Tapped"/>
+                    <Grid x:Name="contentContainer" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20" RenderTransformOrigin="0.5, 0.5">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1"/>
+                        </Grid.RenderTransform>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <ScrollViewer MinZoomFactor="1" 
                                       IsVerticalRailEnabled="False"
                                       VerticalScrollBarVisibility="Auto"
                                       VerticalScrollMode="Enabled"
@@ -186,55 +190,56 @@
                                       HorizontalScrollBarVisibility="Auto"
                                       HorizontalScrollMode="Enabled" 
                                       ZoomMode="Enabled">
-                            <Image x:Name="attachmentImage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </ScrollViewer>
-                        <Grid x:Name="contentContainerOverlay" Visibility="Collapsed">
-                            <Grid.Background>
-                                <SolidColorBrush Color="{ThemeResource SystemAltMediumHighColor}" />
-                            </Grid.Background>
-                            <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Image x:Name="attachmentImage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </ScrollViewer>
+                            <Grid x:Name="contentContainerOverlay" Visibility="Collapsed">
+                                <Grid.Background>
+                                    <SolidColorBrush Color="{ThemeResource SystemAltMediumHighColor}" />
+                                </Grid.Background>
+                                <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Grid>
+
+                        <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,4" Visibility="Collapsed" fc:ColumnSpacing="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" Tapped="contentOverlay_Tapped"/>
+                            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE74E;" x:Name="saveButton" Grid.Column="2" ToolTipService.ToolTip="Save"/>
+                            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72D;" x:Name="shareButton" ToolTipService.ToolTip="Share" Grid.Column="3"/>
+                            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE71B;" x:Name="openButton" ToolTipService.ToolTip="Open Original" Grid.Column="4"/>
                         </Grid>
                     </Grid>
+                </Grid>
+                <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
+                    <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource OverlayBackdrop}"/>
+                    <Grid RenderTransformOrigin="0.5, 0.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="userInfoScale" ScaleX="1" ScaleY="1"/>
+                        </Grid.RenderTransform>
 
-                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,4" Visibility="Collapsed" fc:ColumnSpacing="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" Tapped="contentOverlay_Tapped"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE74E;" x:Name="saveButton" Grid.Column="2" ToolTipService.ToolTip="Save"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72D;" x:Name="shareButton" ToolTipService.ToolTip="Share" Grid.Column="3"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE71B;" x:Name="openButton" ToolTipService.ToolTip="Open Original" Grid.Column="4"/>
+                        <dialogs:ProfileOverlay x:Name="userInfoOverlay" Visibility="Visible"/>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
-                <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource OverlayBackdrop}"/>
-                <Grid RenderTransformOrigin="0.5, 0.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Grid.RenderTransform>
-                        <ScaleTransform x:Name="userInfoScale" ScaleX="1" ScaleY="1"/>
-                    </Grid.RenderTransform>
+                <Grid x:Name="fullscreenCanvas" Background="{ThemeResource OverlayBackdrop}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
 
-                    <dialogs:ProfileOverlay x:Name="userInfoOverlay" Visibility="Visible"/>
+                </Grid>
+                <Grid x:Name="connectingOverlay" Visibility="Collapsed" Opacity="0" RenderTransformOrigin="0.5, 0.5" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+                    <Grid.RenderTransform>
+                        <ScaleTransform x:Name="connectingScale" ScaleX="1" ScaleY="1"/>
+                    </Grid.RenderTransform>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20">
+                        <Image MaxWidth="350" Source="{ThemeResource DiscordWordMark}" Margin="0,4"/>
+                        <ProgressBar x:Name="connectingProgress" MaxWidth="350" HorizontalAlignment="Stretch" IsIndeterminate="False" />
+                    </StackPanel>
                 </Grid>
             </Grid>
-            <Grid x:Name="fullscreenCanvas" Background="{ThemeResource OverlayBackdrop}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
+        </controls:LayoutTransformControl>
 
-            </Grid>
-            <Grid x:Name="connectingOverlay" Visibility="Collapsed" Opacity="0" RenderTransformOrigin="0.5, 0.5" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-                <Grid.RenderTransform>
-                    <ScaleTransform x:Name="connectingScale" ScaleX="1" ScaleY="1"/>
-                </Grid.RenderTransform>
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20">
-                    <Image MaxWidth="350" Source="{ThemeResource DiscordWordMark}" Margin="0,4"/>
-                    <ProgressBar x:Name="connectingProgress" MaxWidth="350" HorizontalAlignment="Stretch" IsIndeterminate="False" />
-                </StackPanel>
-            </Grid>
-        </Grid>
-
-        <Grid x:Name="titleBar" Visibility="Collapsed" VerticalAlignment="Top" Background="Transparent"/>
+        <Grid x:Name="titleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="40,0,0,0" Background="Transparent"/>
     </Grid>
 </Page>

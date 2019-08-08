@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewBackRequestedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs;
 
 namespace Unicord.Universal.Pages.Management
 {
@@ -39,7 +41,8 @@ namespace Unicord.Universal.Pages.Management
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            //WindowManager.HandleTitleBarForGrid(topGrid);
+            
+            WindowManager.HandleTitleBarForControl(navigationView, true);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
@@ -67,6 +70,16 @@ namespace Unicord.Universal.Pages.Management
                 sender.Text = sender.Text.Replace(' ', '-');
                 sender.Select(sender.Text.Length, 0);
             }
+        }
+
+        private async void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            if (true && await UIUtilities.ShowYesNoDialogAsync("Save changes?", "Do you want to save your changes?")) // todo: check dirty
+            {
+                await _viewModel.SaveChangesAsync();
+            }
+
+            this.FindParent<DiscordPage>().CloseCustomPane();
         }
     }
 }

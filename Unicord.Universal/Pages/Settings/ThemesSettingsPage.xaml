@@ -10,10 +10,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:universal="using:Unicord.Universal"
     xmlns:models="using:Unicord.Universal.Models"
-    mc:Ignorable="d" Loaded="Page_Loaded">
-    <Page.DataContext>
-        <models:ThemesSettingsModel/>
-    </Page.DataContext>
+    mc:Ignorable="d" x:DefaultBindMode="TwoWay" Loaded="Page_Loaded">
 
     <Page.Resources>
         <Style x:Key="PreviewEllipse" TargetType="Ellipse">
@@ -77,7 +74,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Themes" />
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Appearance" />
         <!--<TextBlock TextWrapping="Wrap" Grid.Row="1" Text="Wanna spice up how Unicord looks? Change some settings here to make things look just how you want them."/>-->
 
         <ContentControl
@@ -183,7 +180,7 @@
 
                 <StackPanel Grid.Row="2" Margin="0,8,0,4">
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Colour Scheme" Margin="0,4"/>
-                    <ComboBox SelectedIndex="{Binding ColourScheme, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="0,4">
+                    <ComboBox SelectedIndex="{x:Bind Model.ColourScheme}" HorizontalAlignment="Stretch" Margin="0,4">
                         <ComboBoxItem Content="System Default"/>
                         <ComboBoxItem Content="Light"/>
                         <ComboBoxItem Content="Dark"/>
@@ -203,7 +200,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox ItemsSource="{Binding AvailableThemes}" SelectedItem="{Binding SelectedTheme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
+                        <ComboBox ItemsSource="{x:Bind Model.AvailableThemes}" SelectedItem="{x:Bind Model.SelectedTheme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="universal:Theme">
                                     <Grid>
@@ -212,8 +209,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Name}"/>
+                                        <Rectangle Width="12" Height="12" Fill="{x:Bind DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Name}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -221,9 +218,21 @@
                         <Button x:Name="installThemeButton" Grid.Column="1" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="InstallThemeButton_Click">
                             &#xE710;
                         </Button>
-                        <Button x:Name="removeThemeButton" Visibility="{Binding CanRemove}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
+                        <Button x:Name="removeThemeButton" Visibility="{x:Bind Model.CanRemove, Mode=OneWay}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
                             &#xE738;
                         </Button>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Margin="0,8,0,4">
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Zoom" Margin="0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0.5" Value="{x:Bind Model.ScaleFactor, UpdateSourceTrigger=PropertyChanged}" StepFrequency="0.1" Maximum="2" SnapsTo="Ticks" TickFrequency="0.1" TickPlacement="Inline"/>
+                        <TextBlock Grid.Column="1" Text="{x:Bind Model.ScaleFactorText, Mode=OneWay}" Margin="12,0,0,0" VerticalAlignment="Center"/>
                     </Grid>
                 </StackPanel>
             </Grid>

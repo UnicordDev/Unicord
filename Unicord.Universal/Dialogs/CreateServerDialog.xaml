@@ -1,0 +1,59 @@
+﻿<ContentDialog
+    x:Class="Unicord.Universal.Dialogs.CreateServerDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:Unicord.Universal.Models"
+    mc:Ignorable="d"
+    Title="Create a Server!"
+    PrimaryButtonText="Create"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
+    <ContentDialog.Resources>
+        <DataTemplate x:Key="SmallHeaderTemplate">
+            <TextBlock Text="{Binding}" FontSize="12"/>
+        </DataTemplate>
+    </ContentDialog.Resources>
+    <ContentDialog.DataContext>
+        <models:CreateServerModel />
+    </ContentDialog.DataContext>
+
+    <Grid x:Name="MainGrid">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel x:Name="ChooseIcon" Tapped="ChooseIcon_Tapped" VerticalAlignment="Center" Margin="8,0,24,0">
+                <Grid>
+                    <lib:PersonPicture DisplayName="{Binding Name, Mode=TwoWay}" ProfilePicture="{Binding Icon}" Width="128" Height="128"/>
+                    <ProgressRing x:Name="IconProgressRing" Width="32" Height="32" />
+                </Grid>
+                <TextBlock FontSize="11" TextWrapping="Wrap" Margin="4" HorizontalAlignment="Center" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                Tap to add an Icon!
+                </TextBlock>
+            </StackPanel>
+            <StackPanel x:Name="MainDetails" Grid.Column="1">
+                <TextBox Text="{Binding Name, Mode=TwoWay}" HeaderTemplate="{StaticResource SmallHeaderTemplate}" Header="Name" HorizontalAlignment="Stretch" PlaceholderText="Witty Server Name" Margin="0,0,0,8"/>
+                <ComboBox SelectedItem="{Binding Region, Mode=TwoWay}" HeaderTemplate="{StaticResource SmallHeaderTemplate}" Header="Region" HorizontalAlignment="Stretch" ItemsSource="{Binding Regions}" Margin="0,0,0,8">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock FontSize="11" TextWrapping="Wrap" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                By creating a server, you agree to Discord's 
+                <Hyperlink NavigateUri="https://discordapp.com/terms">Terms of Service</Hyperlink>
+                and 
+                <Hyperlink NavigateUri="https://discordapp.com/guidelines">Community Guidelines</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ContentDialog>
