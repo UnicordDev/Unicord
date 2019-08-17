@@ -1,6 +1,7 @@
 #pragma once
 #include "AudioFormat.h"
 #include <opus.h>
+#include <mutex>
 
 namespace winrt::Unicord::Universal::Voice::Interop
 {
@@ -15,14 +16,15 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		void Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t> &target, bool fec);
 		void ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t> &target);
 
-		AudioSource* GetOrCreateDecoder(uint8_t ssrc);
+		AudioSource* GetOrCreateDecoder(uint32_t ssrc);
 		int32_t GetLastPacketSampleCount(OpusDecoder* decoder);
 
 		~OpusWrapper();
 	private:
 		AudioFormat audio_format;
+		std::mutex encode_mutex;
 		OpusEncoder* opus_encoder = nullptr;
-		std::map<uint8_t, AudioSource*> opus_decoders;
+		std::map<uint32_t, AudioSource*> opus_decoders;
 
 		void check_opus_error(int error, winrt::hstring message);
 	};

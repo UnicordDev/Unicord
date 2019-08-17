@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <iostream>
 #include "OpusWrapper.h"
 
 namespace winrt::Unicord::Universal::Voice::Interop
@@ -30,6 +31,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 	size_t OpusWrapper::Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
 	{
+		std::unique_lock lock(encode_mutex);
+		
 		try
 		{
 			auto duration = audio_format.CalculateSampleDuration(pcm.size());
@@ -39,7 +42,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 			if (pcm.size() != sample_size)
 				throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
 
-			int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), frame_size, target.data(), target.size());
+			int length = opus_encode(opus_encoder, (int16_t*)(pcm.data()), (int32_t)frame_size, target.data(), (int32_t)target.size());
 			if (length < 0) {
 				check_opus_error(length, L"Could not encode PCM to opus!");
 			}
@@ -48,12 +51,14 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		}
 		catch (winrt::hresult_invalid_argument& ex)
 		{
-				
+			return 0;
 		}
 	}
 
 	size_t OpusWrapper::EncodeFloat(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
 	{
+		std::unique_lock lock(encode_mutex);
+
 		try
 		{
 			auto duration = audio_format.CalculateSampleDurationF(pcm.size());
@@ -63,7 +68,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 			if (pcm.size() != sample_size)
 				throw winrt::hresult_invalid_argument(L"Invalid PCM sample size.");
 
-			int length = opus_encode_float(opus_encoder, (float*)(pcm.data()), frame_size, target.data(), target.size());
+			int length = opus_encode_float(opus_encoder, (float*)(pcm.data()), (int32_t)frame_size, target.data(), (int32_t)target.size());
 			if (length < 0) {
 				check_opus_error(length, L"Could not encode PCM to opus!");
 			}
@@ -72,7 +77,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		}
 		catch (winrt::hresult_invalid_argument& ex)
 		{
-
+			return 0;
 		}
 	}
 
@@ -82,7 +87,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), decoder->format.sample_rate);
 		auto channels = opus_packet_get_nb_channels(opus.data());
 
-		if (decoder->format.channel_count != channels || !decoder->IsInitialised()) {
+		if (decoder->format.channel_count != (uint32_t)channels || !decoder->IsInitialised()) {
 			decoder->format.channel_count = channels;
 			decoder->Initialise(decoder->format);
 		}
@@ -111,7 +116,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		target.resize(sample_size);
 	}
 
-	AudioSource* OpusWrapper::GetOrCreateDecoder(uint8_t ssrc)
+	AudioSource* OpusWrapper::GetOrCreateDecoder(uint32_t ssrc)
 	{
 		auto itr = opus_decoders.find(ssrc);
 		if (itr == opus_decoders.end()) {

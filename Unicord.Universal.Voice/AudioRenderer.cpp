@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <samplerate.h>
 #include "AudioRenderer.h"
 #include "VoiceClient.h"
 
@@ -15,7 +16,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 {
 	AudioRenderer::AudioRenderer(winrt::Unicord::Universal::Voice::implementation::VoiceClient* client)
 	{
-		voice_client = client; 
+		voice_client = client;
 		buffer_length = client->audio_format.CalculateSampleSize(20);
 		pcm_buffer = new uint8_t[buffer_length]{ 0 };
 	}
@@ -27,25 +28,20 @@ namespace winrt::Unicord::Universal::Voice::Render
 		if (!preferred_render_device_id.empty()) {
 			render_device_id = preferred_render_device_id;
 		}
-		else {
-			render_device_id = MediaDevice::GetDefaultAudioRenderId(AudioDeviceRole::Default);
-		}
 
 		if (!preferred_capture_device_id.empty()) {
 			capture_device_id = preferred_capture_device_id;
 		}
-		else {
-			capture_device_id = MediaDevice::GetDefaultAudioCaptureId(AudioDeviceRole::Default);
-		}
+
+		AudioEncodingProperties audio_format = AudioEncodingProperties::CreatePcm(voice_client->audio_format.sample_rate, voice_client->audio_format.channel_count, 16);
+		AudioGraphSettings settings{ AudioRenderCategory::Media };
+		settings.EncodingProperties(audio_format);
 
 		// this is slightly painful ngl
-
-		DeviceInformation render_device_info = co_await DeviceInformation::CreateFromIdAsync(render_device_id);
-		DeviceInformation capture_device_info = co_await DeviceInformation::CreateFromIdAsync(capture_device_id);
-		AudioEncodingProperties audio_format = AudioEncodingProperties::CreatePcm(voice_client->audio_format.sample_rate, 1, 16);
-
-		AudioGraphSettings settings{ AudioRenderCategory::Media };
-		settings.PrimaryRenderDevice(render_device_info);
+		if (!render_device_id.empty()) {
+			DeviceInformation render_device_info = co_await DeviceInformation::CreateFromIdAsync(render_device_id);
+			settings.PrimaryRenderDevice(render_device_info);
+		}
 
 		auto result = co_await AudioGraph::CreateAsync(settings);
 		if (result.Status() != AudioGraphCreationStatus::Success) { // why not just throw an exception for me?
@@ -60,28 +56,30 @@ namespace winrt::Unicord::Universal::Voice::Render
 		}
 
 		render_node = render_node_result.DeviceOutputNode();
-
-		settings = AudioGraphSettings(AudioRenderCategory::Media);
-		settings.EncodingProperties(audio_format);
+		render_submix_node = render_graph.CreateSubmixNode();
+		render_submix_node.AddOutgoingConnection(render_node);
 
 		result = co_await AudioGraph::CreateAsync(settings);
-		if (result.Status() != AudioGraphCreationStatus::Success) { // why not just throw an exception for me?
-			throw hresult_error(E_FAIL, L"Failed to initialize audio input device");
+		if (result.Status() == AudioGraphCreationStatus::Success) { 
+			capture_graph = result.Graph();
+			capture_graph.QuantumStarted({ this, &AudioRenderer::OnQuantumStarted });
+
+			CreateAudioDeviceInputNodeResult capture_node_result{ nullptr };
+
+			if (!capture_device_id.empty()) {
+				DeviceInformation capture_device_info = co_await DeviceInformation::CreateFromIdAsync(capture_device_id);
+				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Media, audio_format, capture_device_info);
+			}
+			else {
+				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Media, audio_format);
+			}
+
+			if (capture_node_result.Status() == AudioDeviceNodeCreationStatus::Success) {
+				capture_node = capture_node_result.DeviceInputNode();
+				capture_frame_node = capture_graph.CreateFrameOutputNode(audio_format);
+				capture_node.AddOutgoingConnection(capture_frame_node);
+			}
 		}
-
-		capture_graph = result.Graph();
-		capture_graph.QuantumStarted({ this, &AudioRenderer::OnQuantumStarted });
-
-		auto capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Media, audio_format, capture_device_info);
-		if (capture_node_result.Status() != AudioDeviceNodeCreationStatus::Success) {
-			throw hresult_error(E_FAIL, L"Failed to initialize audio input device");
-		}
-
-		capture_node = capture_node_result.DeviceInputNode();
-		capture_submix = capture_graph.CreateSubmixNode(audio_format);
-		capture_node.AddOutgoingConnection(capture_submix);
-		capture_frame_node = capture_graph.CreateFrameOutputNode(audio_format);
-		capture_submix.AddOutgoingConnection(capture_frame_node);
 	}
 
 	void AudioRenderer::ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource sender)
@@ -94,9 +92,8 @@ namespace winrt::Unicord::Universal::Voice::Render
 		auto mode_iter = input_nodes.find(sender.ssrc);
 		if (mode_iter == input_nodes.end()) {
 			properties = AudioEncodingProperties::CreatePcm(sender.format.sample_rate, sender.format.channel_count, 16);
-
 			input_node = render_graph.CreateFrameInputNode(properties);
-			input_node.AddOutgoingConnection(render_node);;
+			input_node.AddOutgoingConnection(render_submix_node);
 			input_nodes.insert(std::pair(sender.ssrc, input_node));
 		}
 		else {
@@ -104,19 +101,19 @@ namespace winrt::Unicord::Universal::Voice::Render
 			properties = input_node.EncodingProperties();
 			if (properties.ChannelCount() != sender.format.channel_count)
 			{
-				input_node.RemoveOutgoingConnection(render_node);
+				input_node.RemoveOutgoingConnection(render_submix_node);
 				input_node.Close();
 
 				properties = AudioEncodingProperties::CreatePcm(sender.format.sample_rate, sender.format.channel_count, 16);
 				input_node = render_graph.CreateFrameInputNode(properties);
-				input_node.AddOutgoingConnection(render_node);
+				input_node.AddOutgoingConnection(render_submix_node);
 				input_nodes.insert(std::pair(sender.ssrc, input_node));
 			}
 		}
 
 		try
 		{
-			AudioFrame frame(packet.size());
+			AudioFrame frame((uint32_t)packet.size());
 			AudioBuffer buff = frame.LockBuffer(AudioBufferAccessMode::Write);
 			IMemoryBufferReference buffer_reference = buff.CreateReference();
 			com_ptr<IMemoryBufferByteAccess> byte_buffer_access = buffer_reference.as<IMemoryBufferByteAccess>();
@@ -148,6 +145,21 @@ namespace winrt::Unicord::Universal::Voice::Render
 		render_graph.Start();
 	}
 
+	void AudioRenderer::StopCapture()
+	{
+		capture_graph.Stop();
+	}
+
+	void AudioRenderer::StopRender()
+	{
+		render_graph.Stop();
+	}
+
+	AudioEncodingProperties AudioRenderer::GetRenderProperties()
+	{
+		return render_submix_node.EncodingProperties();
+	}
+
 	AudioEncodingProperties AudioRenderer::GetCaptureProperties()
 	{
 		return capture_frame_node.EncodingProperties();
@@ -166,12 +178,19 @@ namespace winrt::Unicord::Universal::Voice::Render
 			uint32_t buffer_size = 0;
 			winrt::check_hresult(byte_buffer_access->GetBuffer(&buff, &buffer_size));
 
-			auto packet = voice_client->PreparePacket(array_view<uint8_t>(buff, buff + buffer_size), false, true);
-			voice_client->EnqueuePacket(packet);
+			if (buffer_size != 0) {
+			
+				uint8_t* new_buff = new uint8_t[buffer_size];
+				std::copy(buff, buff + buffer_size, new_buff);
+
+				PCMPacket packet(gsl::make_span(new_buff, buffer_size), voice_client->audio_format.CalculateSampleDurationF(buffer_size));
+				packet.is_float = true;
+
+				voice_client->EnqueuePacket(packet);
+			}
 
 			buffer_reference.Close();
 			audio_buff.Close();
-			frame.Close();
 		}
 		catch (const std::exception&)
 		{

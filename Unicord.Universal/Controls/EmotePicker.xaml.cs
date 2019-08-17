@@ -56,40 +56,32 @@ namespace Unicord.Universal.Controls
                     enumerable = Channel.Guild.Emojis.Values;
                 }
 
-                enumerable = enumerable.OrderBy(g => g.Name);
+                enumerable = enumerable.OrderBy(g => g.Name);                
 
-                if (!string.IsNullOrWhiteSpace(searchBox.Text))
+                var text = searchBox.Text.ToLowerInvariant();
+                var cult = CultureInfo.InvariantCulture.CompareInfo;
+                var n = !string.IsNullOrWhiteSpace(text);
+
+                source.IsSourceGrouped = true;
+                source.Source = await Task.Run(() =>
                 {
-                    source.IsSourceGrouped = false;
-
-                    var text = searchBox.Text.ToLowerInvariant();
-                    var cult = CultureInfo.InvariantCulture.CompareInfo;
-                    source.Source =
-                        enumerable.Union(Emoji.Select(e => DiscordEmoji.FromUnicode(e.Char, e.Name)))
-                                  .Where(s => cult.IndexOf(s.SearchName, text, CompareOptions.IgnoreCase) >= 0)
-                                  .OrderBy(s => s.SearchName);
-                }
-                else
-                {
-                    source.IsSourceGrouped = true;
-                    source.Source = await Task.Run(() =>
-                    {
-                        var emojiEnum = Emoji
-                             .GroupBy(e => e.Category)
-                             .Select(g => new EmojiGroup(g.Key, g))
-                             .ToList();
-
-                        var list = enumerable
-                            .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
-                            .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
+                    var emojiEnum = Emoji
+                            .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
+                            .GroupBy(e => e.Category)
                             .Select(g => new EmojiGroup(g.Key, g))
                             .ToList();
 
-                        list.AddRange(emojiEnum);
+                    var list = enumerable
+                        .Where(e => n ? cult.IndexOf(e.SearchName, text, CompareOptions.IgnoreCase) >= 0 : true)
+                        .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
+                        .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
+                        .Select(g => new EmojiGroup(g.Key, g))
+                        .ToList();
 
-                        return list;
-                    });
-                }
+                    list.AddRange(emojiEnum);
+
+                    return list;
+                });
             }
             catch { }
         }

@@ -65,6 +65,12 @@
     <Midl Include="ServiceBackgroundTask.idl">
       <Filter>Background</Filter>
     </Midl>
+    <Midl Include="VoiceServiceRequest.idl">
+      <Filter>Background</Filter>
+    </Midl>
+    <Midl Include="VoiceServiceEvent.idl">
+      <Filter>Background</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <None Include="Unicord.Universal.Voice.def" />

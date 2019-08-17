@@ -37,9 +37,13 @@ namespace winrt::Unicord::Universal::Voice::Render
 		void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource sender);
 
 		void BeginCapture();
-		void BeginRender();
+		void BeginRender();		
+
+		void StopCapture();
+		void StopRender();
 
 		Windows::Media::MediaProperties::AudioEncodingProperties GetCaptureProperties();
+		Windows::Media::MediaProperties::AudioEncodingProperties GetRenderProperties();
 
 		~AudioRenderer();
 	private:
@@ -47,13 +51,13 @@ namespace winrt::Unicord::Universal::Voice::Render
 		std::mutex output_mutex;
 		Windows::Media::Audio::AudioGraph render_graph{ nullptr };
 		Windows::Media::Audio::AudioDeviceOutputNode render_node{ nullptr };
+		Windows::Media::Audio::AudioSubmixNode render_submix_node{ nullptr };
 		concurrency::concurrent_unordered_map<uint32_t, Windows::Media::Audio::AudioFrameInputNode> input_nodes;
 
 		std::mutex input_mutex;
 		Windows::Media::Audio::AudioGraph capture_graph{ nullptr };
 		Windows::Media::Audio::AudioDeviceInputNode capture_node{ nullptr };
 		Windows::Media::Audio::AudioFrameOutputNode capture_frame_node{ nullptr };
-		Windows::Media::Audio::AudioSubmixNode capture_submix{ nullptr };
 
 		uint8_t* pcm_buffer = nullptr;
 		size_t buffer_length = 0;

@@ -15,6 +15,7 @@
     <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0.18362.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.15063.0</WindowsTargetPlatformMinVersion>
     <CppWinRTNamespaceMergeDepth>3</CppWinRTNamespaceMergeDepth>
+    <CppWinRTFastAbi>true</CppWinRTFastAbi>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ItemGroup Label="ProjectConfigurations">
@@ -134,23 +135,57 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
       <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Fast</FloatingPointModel>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Neither</FavorSizeOrSpeed>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Disabled</Optimization>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Configuration)DLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Configuration)DLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioFormat.h" />
@@ -159,7 +194,9 @@
     <ClInclude Include="OpusWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Rtp.h" />
-    <ClInclude Include="ServiceBackgroundTask.h" />
+    <ClInclude Include="ServiceBackgroundTask.h">
+      <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
+    </ClInclude>
     <ClInclude Include="SodiumWrapper.h" />
     <ClInclude Include="VoiceBackgroundTask.h">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -170,7 +207,9 @@
     <ClInclude Include="VoiceClientOptions.h">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClInclude>
-    <ClInclude Include="VoiceOutputStream.h" />
+    <ClInclude Include="VoiceOutputStream.h">
+      <DependentUpon>VoiceOutputStream.idl</DependentUpon>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioRenderer.cpp" />
@@ -179,7 +218,9 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Rtp.cpp" />
-    <ClCompile Include="ServiceBackgroundTask.cpp" />
+    <ClCompile Include="ServiceBackgroundTask.cpp">
+      <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
+    </ClCompile>
     <ClCompile Include="SodiumWrapper.cpp" />
     <ClCompile Include="VoiceBackgroundTask.cpp">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -191,7 +232,9 @@
     <ClCompile Include="VoiceClientOptions.cpp">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClCompile>
-    <ClCompile Include="VoiceOutputStream.cpp" />
+    <ClCompile Include="VoiceOutputStream.cpp">
+      <DependentUpon>VoiceOutputStream.idl</DependentUpon>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ServiceBackgroundTask.idl" />
@@ -199,6 +242,8 @@
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />
     <Midl Include="VoiceOutputStream.idl" />
+    <Midl Include="VoiceServiceEvent.idl" />
+    <Midl Include="VoiceServiceRequest.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -210,12 +255,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
       <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
-      <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
       <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-      <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

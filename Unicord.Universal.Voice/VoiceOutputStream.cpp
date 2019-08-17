@@ -33,7 +33,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			if (consumed_buffer_length == buffer_length) {
 				consumed_buffer_length = 0;
 
-				auto packet = client->PreparePacket(array_view<uint8_t>(pcm_buffer, pcm_buffer + buffer_length));
+				uint8_t* new_buff = new uint8_t[buffer_length];
+				std::copy(pcm_buffer, pcm_buffer + buffer_length, new_buff);
+
+				PCMPacket packet(gsl::make_span(new_buff, buffer_length), client->audio_format.CalculateSampleDurationF((uint32_t)buffer_length));
 				client->EnqueuePacket(packet);
 			}
 		}
@@ -45,7 +48,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	{		
 		std::fill(pcm_buffer + consumed_buffer_length, pcm_buffer + buffer_length, 0);
 
-		auto packet = client->PreparePacket(array_view<uint8_t>(pcm_buffer, pcm_buffer + buffer_length));
+		uint8_t* new_buff = new uint8_t[buffer_length];
+		std::copy(pcm_buffer, pcm_buffer + buffer_length, new_buff);
+
+		PCMPacket packet(gsl::make_span(new_buff, buffer_length), client->audio_format.CalculateSampleDurationF((uint32_t)buffer_length));
 		client->EnqueuePacket(packet);
 
 		co_return true;

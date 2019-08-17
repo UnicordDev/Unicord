@@ -17,7 +17,6 @@
 #include <debugapi.h>
 #include <concurrent_unordered_map.h>
 #include <concurrent_queue.h>
-
 #include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Storage.Streams.h>
 
@@ -48,10 +47,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		IAsyncAction ConnectAsync();
 		IAsyncAction SendSpeakingAsync(bool speaking);
 		IOutputStream GetOutputStream();
-		void Close();
+		void Close();       
+		
+		bool Muted();
+		void Muted(bool value);
+		bool Deafened();
+		void Deafened(bool value);
 
 		VoicePacket PreparePacket(array_view<uint8_t> pcm, bool silence = false, bool is_float = false);
-		void EnqueuePacket(VoicePacket packet);
+		void EnqueuePacket(PCMPacket packet);
 
 		~VoiceClient();
 	private:
@@ -64,12 +68,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		OpusWrapper* opus = nullptr;
 		AudioRenderer* renderer = nullptr;
 
-		concurrency::concurrent_unordered_map<uint32_t, AudioSource> audio_sources;
-
 		std::pair<hstring, EncryptionMode> mode;
 		ConnectionEndpoint endpoint;
 
 		bool is_speaking = false;
+		bool is_muted = false;
+		bool is_deafened = false;
 
 		uint16_t seq = 0;
 		uint32_t ssrc = 0;
@@ -85,7 +89,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		volatile uint32_t udp_ping = 0;
 		volatile uint64_t keepalive_count = 0;
 		concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
-		concurrency::concurrent_queue<VoicePacket> voice_queue;
+		concurrency::concurrent_queue<PCMPacket> voice_queue;
 		volatile bool cancel_voice_send = false;
 		std::thread voice_thread;
 

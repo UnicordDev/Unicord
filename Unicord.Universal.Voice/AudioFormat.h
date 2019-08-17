@@ -15,7 +15,21 @@ namespace winrt::Unicord::Universal::Voice::Interop
 	{
 	public:
 		VoicePacket() { }
-		VoicePacket(gsl::span<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
+		VoicePacket(std::vector<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
+		{
+			bytes = packet_bytes;
+			duration = packet_duration;
+			is_silence = isSilence;
+		}
+
+		std::vector<uint8_t> bytes;
+		uint32_t duration = 0;
+		bool is_silence = false;
+	};
+
+	struct PCMPacket {
+		PCMPacket() { }
+		PCMPacket(gsl::span<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
 		{
 			bytes = packet_bytes;
 			duration = packet_duration;
@@ -23,7 +37,6 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		}
 
 		gsl::span<uint8_t> bytes;
-		uint32_t length = 0;
 		uint32_t duration = 0;
 		bool is_float = false;
 		bool is_silence = false;
@@ -32,7 +45,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 	struct AudioFormat
 	{
 	public:
-		AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = voip)
+		AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = music)
 		{
 			sample_rate = sampleRate;
 			channel_count = channelCount;
@@ -93,18 +106,18 @@ namespace winrt::Unicord::Universal::Voice::Interop
 			this->ssrc = ssrc;
 		}
 
-		void Initialise(AudioFormat format) {
+		void Initialise(AudioFormat new_format) {
 			int error = 0;
 
 			if (decoder == nullptr) {
-				decoder = opus_decoder_create(format.sample_rate, format.channel_count, &error);
+				decoder = opus_decoder_create(new_format.sample_rate, new_format.channel_count, &error);
 			}
 			else {
 				opus_decoder_destroy(decoder);
-				decoder = opus_decoder_create(format.sample_rate, format.channel_count, &error);
+				decoder = opus_decoder_create(new_format.sample_rate, new_format.channel_count, &error);
 			}
 
-			this->format = format;
+			this->format = new_format;
 		}
 
 		inline bool IsInitialised() {
@@ -114,7 +127,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		uint32_t ssrc = 0;
 		uint64_t user_id = 0;
 		uint16_t seq = 0;
-		uint64_t packets_lost;
+		uint64_t packets_lost = 0;
+		bool is_speaking = false;
 		AudioFormat format;
 		OpusDecoder* decoder = nullptr;
 	};

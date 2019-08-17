@@ -3,6 +3,7 @@
 #include "VoiceOutputStream.h"
 #include "VoiceClient.h"
 #include "VoiceClient.g.cpp"
+#include <iomanip>
 
 using namespace winrt;
 using namespace std::chrono;
@@ -31,10 +32,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		if (sodium_init() == -1) {
 			throw hresult_error(E_UNEXPECTED, L"Failed to initialize libsodium!");
 		}
-
-		auto stream = new dbg_stream_for_cout();
-		std::cout.rdbuf(stream);
-		std::cout << std::unitbuf;
 
 		if (options.Token().size() == 0 && options.ChannelId() == 0) {
 			throw hresult_invalid_argument();
@@ -75,13 +72,65 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	IAsyncAction VoiceClient::ConnectAsync()
 	{
 		co_await renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
-		auto format = renderer->GetCaptureProperties();
-		
-		audio_format = AudioFormat(format.SampleRate(), 1);
+
+		auto format = renderer->GetRenderProperties();
+		std::cout << "Render: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
+		format = renderer->GetCaptureProperties();
+		std::cout << "Capture: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
+
+		audio_format = AudioFormat(format.SampleRate(), format.ChannelCount());
 		opus = new OpusWrapper(audio_format);
 
 		Windows::Foundation::Uri url{ L"wss://" + endpoint.hostname + L"/?encoding=json&v=4" };
 		co_await web_socket.ConnectAsync(url);
+	}
+
+	bool VoiceClient::Muted()
+	{
+		return is_muted;
+	}
+
+	void VoiceClient::Muted(bool value)
+	{
+		if (is_muted != value && renderer != nullptr) {
+			if (value) {
+				renderer->StopCapture();
+			}
+			else {
+				renderer->BeginCapture();
+			}
+		}
+
+		is_muted = value;
+	}
+
+	bool VoiceClient::Deafened()
+	{
+		return is_deafened;
+	}
+
+	void VoiceClient::Deafened(bool value)
+	{
+		if (is_muted != value && renderer != nullptr) {
+			if (value) {
+				renderer->StopCapture();
+			}
+			else {
+				renderer->BeginCapture();
+			}
+		}		
+		
+		if (is_deafened != value && renderer != nullptr) {
+			if (value) {
+				renderer->StopRender();
+			}
+			else {
+				renderer->BeginRender();
+			}
+		}
+
+		is_muted = value;
+		is_deafened = value;
 	}
 
 	IAsyncAction VoiceClient::SendIdentifyAsync()
@@ -121,28 +170,24 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	void VoiceClient::Stage2(JsonObject data)
 	{
 		auto secret_key = data.GetNamedArray(L"secret_key");
-		auto mode = data.GetNamedString(L"mode");
+		auto new_mode = data.GetNamedString(L"mode");
 
 		uint8_t key[32];
-		for (size_t i = 0; i < 32; i++)
+		for (uint32_t i = 0; i < 32; i++)
 		{
 			key[i] = (uint8_t)secret_key.GetNumberAt(i);
 		}
 
-		sodium = new SodiumWrapper(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(mode));
+		sodium = new SodiumWrapper(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(new_mode));
 		keepalive_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, milliseconds(5000));
 		voice_thread = std::thread(&VoiceClient::VoiceSendLoop, this);
 
 		auto size = audio_format.CalculateSampleSize(20);
-		auto null_pcm = new uint8_t[size]{ 0 };
-
 		for (size_t i = 0; i < 3; i++)
 		{
-			auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]));
-			voice_queue.push(null_packet);
+			auto null_pcm = new uint8_t[size]{ 0 };
+			voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
 		}
-
-		delete[] null_pcm;
 
 		renderer->BeginRender();
 		renderer->BeginCapture();
@@ -150,12 +195,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 	void VoiceClient::VoiceSendLoop()
 	{
-		VoicePacket packet;
+		PCMPacket packet;
 		DataWriter writer{ udp_socket.OutputStream() };
 
 		auto start_time = high_resolution_clock::now();
 		while (!cancel_voice_send) {
-			bool has_packet = voice_queue.try_pop(packet);
+			bool has_packet = voice_queue.try_pop(packet) && packet.duration != 0;
 
 			gsl::span<uint8_t> packet_array;
 			if (has_packet) {
@@ -187,24 +232,22 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			if (!has_packet)
 				continue;
 
-			SendSpeakingAsync(true).get();
+			auto opus_packet = PreparePacket(array_view(packet_array.data(), packet_array.data() + packet_array.size()), packet.is_silence, packet.is_float);
 
-			writer.WriteBytes(array_view<const uint8_t>(packet_array.data(), packet_array.data() + packet_array.size()));
+			SendSpeakingAsync(true).get();
+			writer.WriteBytes(array_view<const uint8_t>(opus_packet.bytes.data(), opus_packet.bytes.data() + opus_packet.bytes.size()));
 			writer.StoreAsync().get();
+
+			delete[] packet_array.data();
 
 			if (!packet.is_silence && voice_queue.unsafe_size() == 0) {
 				auto size = audio_format.CalculateSampleSize(20);
-				auto null_pcm = new uint8_t[size]{ 0 };
-
 				for (size_t i = 0; i < 3; i++)
 				{
-					auto null_packet = PreparePacket(array_view<uint8_t>(&null_pcm[0], &null_pcm[size]), true);
-					voice_queue.push(null_packet);
+					auto null_pcm = new uint8_t[size]{ 0 };
+					voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
 				}
-
-				delete[] null_pcm;
 			}
-
 			else if (voice_queue.unsafe_size() == 0) {
 				SendSpeakingAsync(false).get();
 			}
@@ -213,49 +256,53 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 	VoicePacket VoiceClient::PreparePacket(array_view<uint8_t> pcm, bool silence, bool is_float)
 	{
-		auto packet_size = is_float ? audio_format.SampleCountToSampleSizeF(audio_format.GetMaxBufferSize()) : audio_format.SampleCountToSampleSize(audio_format.GetMaxBufferSize());
+		if (pcm.size() == 0) {
+			return VoicePacket();
+		}
 
+		auto packet_size = audio_format.GetMaxBufferSize() * 2;
 		auto packet = std::vector<uint8_t>(packet_size);
 		auto packet_span = gsl::make_span(packet);
 
 		auto opus_length = is_float ? opus->EncodeFloat(pcm, packet_span) : opus->Encode(pcm, packet_span);
 		auto encrypted_size = sodium->CalculateTargetSize(opus_length);
-		auto new_packet_size = Rtp::CalculatePacketSize(encrypted_size, mode.second);
-		auto new_packet = new uint8_t[new_packet_size];
-		auto new_packet_span = gsl::make_span(new_packet, new_packet_size);
+		auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, mode.second);
+		auto new_packet = std::vector<uint8_t>(new_packet_size);
+		auto new_packet_span = gsl::make_span(new_packet);
 
 		Rtp::EncodeHeader(seq, timestamp, ssrc, new_packet_span);
 
 		const size_t size = crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
-		uint8_t nonce[size] = { 0 };
+		uint8_t packet_nonce[size] = { 0 };
 		switch (mode.second)
 		{
 		case EncryptionMode::XSalsa20_Poly1305:
-			sodium->GenerateNonce(new_packet_span.subspan(0, Rtp::HEADER_SIZE), nonce);
+			sodium->GenerateNonce(new_packet_span.subspan(0, Rtp::HEADER_SIZE), packet_nonce);
 			break;
 		case EncryptionMode::XSalsa20_Poly1305_Suffix:
-			sodium->GenerateNonce(nonce);
+			sodium->GenerateNonce(packet_nonce);
 			break;
 		case EncryptionMode::XSalsa20_Poly1305_Lite:
-			sodium->GenerateNonce(this->nonce++, nonce);
+			sodium->GenerateNonce(this->nonce++, packet_nonce);
 			break;
 		}
 
-		sodium->Encrypt(packet_span.subspan(0, opus_length), nonce, new_packet_span.subspan(Rtp::HEADER_SIZE, encrypted_size));
-		sodium->AppendNonce(nonce, new_packet_span, mode.second);
+		sodium->Encrypt(packet_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(Rtp::HEADER_SIZE, encrypted_size));
+		sodium->AppendNonce(packet_nonce, new_packet_span, mode.second);
 
 		auto duration = is_float ? audio_format.CalculateSampleDurationF(pcm.size()) : audio_format.CalculateSampleDuration(pcm.size());
 		auto time = audio_format.CalculateFrameSize(duration);
 		this->seq++;
-		this->timestamp += time;
+		this->timestamp += (uint32_t)time;
 
-		VoicePacket voice_packet(new_packet_span, duration, silence);
+		VoicePacket voice_packet(new_packet, duration, silence);
 		return voice_packet;
 	}
 
-	void VoiceClient::EnqueuePacket(VoicePacket packet)
+	void VoiceClient::EnqueuePacket(PCMPacket packet)
 	{
-		voice_queue.push(packet);
+		if (packet.duration != 0)
+			voice_queue.push(packet);
 	}
 
 	void VoiceClient::ProcessRawPacket(array_view<uint8_t> data)
@@ -289,6 +336,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		AudioSource* source_ptr = opus->GetOrCreateDecoder(packet_ssrc);
 		source = *source_ptr;
 
+		if (!source.is_speaking)
+			return false;
+
 		if (packet_seq < source.seq) { // out of order
 			return false;
 		}
@@ -296,8 +346,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		uint16_t gap = source.seq != 0 ? packet_seq - 1 - source.seq : 0;
 
 		// get the nonce
-		uint8_t nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
-		array_view<uint8_t> nonce_view(nonce);
+		uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
+		array_view<uint8_t> nonce_view(packet_nonce);
 		sodium->GetNonce(data, nonce_view, mode.second);
 
 		// get the data
@@ -348,8 +398,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			}
 			else if (gap > 1) {
 				for (size_t i = 0; i < gap; i++) {
+					int32_t sample_count = opus->GetLastPacketSampleCount(source_ptr->decoder);
+					fec_pcm_length = source.format.SampleCountToSampleSize(sample_count);
 					std::vector<uint8_t> fec(fec_pcm_length);
-					opus->ProcessPacketLoss(source_ptr, fec_pcm_length, fec);
+					opus->ProcessPacketLoss(source_ptr, sample_count, fec);
 					pcm.push_back(fec);
 				}
 			}
@@ -395,7 +447,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		auto json_data = reader.ReadString(reader.UnconsumedBufferLength());
 		reader.Close();
 
-		std::cout << "↓ " << to_string(json_data) << "\n";
+		// std::cout << "↓ " << to_string(json_data) << "\n";
 
 		auto json = JsonObject::Parse(json_data);
 		auto op = (int)json.GetNamedNumber(L"op");
@@ -409,13 +461,23 @@ namespace winrt::Unicord::Universal::Voice::implementation
 				co_await SendIdentifyAsync();
 				break;
 			case 2: // ready
-				ssrc = (int32_t)data.GetNamedNumber(L"ssrc");
+				ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
 				endpoint.port = (uint16_t)data.GetNamedNumber(L"port");
 				co_await Stage1(data);
 				break;
 			case 4: // session description
 				Stage2(data);
 				break;
+			case 5: // speaking
+			{
+				uint32_t speaking_ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
+
+				AudioSource* audio_source = opus->GetOrCreateDecoder(speaking_ssrc);
+				audio_source->user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
+				audio_source->is_speaking = data.GetNamedNumber(L"speaking") != 0;
+
+				break;
+			}
 			}
 		}
 
@@ -576,7 +638,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		voice_thread.join();
 		keepalive_timestamps.clear();
 
-		VoicePacket packet;
+		PCMPacket packet;
 		while (voice_queue.try_pop(packet))
 		{
 			delete[] packet.bytes.data();
