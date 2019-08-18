@@ -41,7 +41,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			}
 		}
 
-		co_return buffer_size;
+		co_return (uint32_t)buffer_size;
 	}
 
 	Windows::Foundation::IAsyncOperation<bool> VoiceOutputStream::FlushAsync()

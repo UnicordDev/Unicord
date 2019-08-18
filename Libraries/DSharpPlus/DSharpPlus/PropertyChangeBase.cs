@@ -62,7 +62,7 @@ namespace DSharpPlus.Entities
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void InvokePropertyChanged([CallerMemberName] string property = null)
+        public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);
             var context = SynchronizationContext.Current;

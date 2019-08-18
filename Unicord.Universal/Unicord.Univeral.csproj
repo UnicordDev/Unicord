@@ -263,6 +263,9 @@
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VoiceConnectionControl.xaml.cs">
+      <DependentUpon>VoiceConnectionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -327,6 +330,7 @@
     </Compile>
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
+    <Compile Include="Models\DiscordPageModel.cs" />
     <Compile Include="Models\DMChannelsViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsViewModel.cs" />
@@ -409,8 +413,8 @@
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
-    <Compile Include="Models\VoiceViewModel.cs" />
     <Compile Include="Utilities\WindowManager.cs" />
+    <Compile Include="Voice\VoiceConnectionModel.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
@@ -550,6 +554,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UploadItemsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VoiceConnectionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -744,6 +752,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj">
+      <Project>{F061F955-5565-4D48-8111-F2F7F2241499}</Project>
+      <Name>DSharpPlus.VoiceNext.UWP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>

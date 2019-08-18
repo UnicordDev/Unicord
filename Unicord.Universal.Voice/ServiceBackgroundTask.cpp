@@ -15,6 +15,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 	VoipCallCoordinator ServiceBackgroundTask::voipCoordinator = VoipCallCoordinator{ nullptr };
 	VoipPhoneCall ServiceBackgroundTask::activeCall = VoipPhoneCall{ nullptr };
 	VoiceClient ServiceBackgroundTask::voiceClient = VoiceClient{ nullptr };
+	VoiceClientOptions ServiceBackgroundTask::voiceClientOptions = VoiceClientOptions{ nullptr };
 
 	void ServiceBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance)
 	{
@@ -43,7 +44,6 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		auto def = args.GetDeferral();
 		auto request = args.Request();
 		auto data = request.Message();
-		VoiceClientOptions options{ nullptr };
 
 		// req signifies a request
 		if (data.HasKey(L"req"))
@@ -62,15 +62,15 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 					if (voiceClient == nullptr && activeCall == nullptr) {
 						activeCall = voipCoordinator.RequestNewOutgoingCall(L"", unbox_value<hstring>(data.Lookup(L"contact_name")), Package::Current().DisplayName(), VoipPhoneCallMedia::Audio);
 						if (activeCall != nullptr) {
-							options = make<Voice::implementation::VoiceClientOptions>();
-							options.Token(unbox_value<hstring>(data.Lookup(L"token")));
-							options.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
-							options.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
-							options.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
-							options.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
-							options.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
+							voiceClientOptions = make<Voice::implementation::VoiceClientOptions>();
+							voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
+							voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
+							voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
+							voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
+							voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
+							voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
 
-							voiceClient = make<Voice::implementation::VoiceClient>(options);
+							voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
 							voiceClient.ConnectAsync().get();
 							activeCall.NotifyCallActive();
 
@@ -86,6 +86,16 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 					}
 				}
 				break;
+				case VoiceServiceRequest::StateRequest:
+					if (voiceClient != nullptr) {
+						values.Insert(L"state", box_value((uint32_t)VoiceServiceState::Connected));
+						values.Insert(L"guild_id", box_value(voiceClientOptions.GuildId()));
+						values.Insert(L"channel_id", box_value(voiceClientOptions.ChannelId()));
+					}
+					else {
+						values.Insert(L"state", box_value((uint32_t)VoiceServiceState::ReadyToConnect));
+					}
+					break;
 				case VoiceServiceRequest::MuteRequest:
 					if (voiceClient != nullptr) {
 						auto muted = unbox_value<bool>(data.Lookup(L"muted"));

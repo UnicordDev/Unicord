@@ -5,9 +5,16 @@ namespace Unicord.Universal.Voice.Background
 		RequestSucceeded,
 		RequestFailed,
 
+		StateRequest,
 		GuildConnectRequest,
 		DisconnectRequest,
 		MuteRequest,
 		DeafenRequest,
+	};
+
+	enum VoiceServiceState
+	{
+		Connected,
+		ReadyToConnect
 	};
 }

@@ -14,6 +14,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		static Windows::ApplicationModel::Calls::VoipCallCoordinator voipCoordinator;
 		static Windows::ApplicationModel::Calls::VoipPhoneCall activeCall;
 		static Unicord::Universal::Voice::VoiceClient voiceClient;
+		static Unicord::Universal::Voice::VoiceClientOptions voiceClientOptions;
 
 		void RaiseEvent(Unicord::Universal::Voice::Background::VoiceServiceEvent ev, Windows::Foundation::Collections::ValueSet data);
 		void OnServiceMessage(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceRequestReceivedEventArgs args);

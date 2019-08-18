@@ -91,15 +91,18 @@
                 <Setter Property="MinHeight" Value="42"/>
             </Style>
 
-            <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
+            <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                 <Setter Property="FontSize" Value="18"/>
-                <Setter Property="Width" Value="42"/>
-                <Setter Property="Height" Value="42"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="Template" Value="{StaticResource IconToggleButtonTemplate}"/>
+            </Style>
+
+            <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource StretchyIconToggleButtonStyle}">
+                <Setter Property="Width" Value="42"/>
+                <Setter Property="Height" Value="42"/>
             </Style>
 
         </ResourceDictionary>

@@ -15,6 +15,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
+using Unicord.Universal.Voice;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -401,7 +402,10 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
-                    var voice = await VoiceViewModel.StartNewAsync(channel);
+                    var voice = new VoiceConnectionModel(channel);
+                    await voice.ConnectAsync();
+
+                    (DataContext as DiscordPageModel).VoiceModel = voice;
                     return;
                 }
 

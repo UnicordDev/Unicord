@@ -14,10 +14,14 @@
     xmlns:settings="using:Unicord.Universal.Pages.Settings"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
+    xmlns:models="using:Unicord.Universal.Models"
     x:Name="self"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <models:DiscordPageModel/>
+    </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
         <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
@@ -472,6 +476,8 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid Height="42">
                             <TextBlock
@@ -497,6 +503,24 @@
                             x:Name="sidebarFrame"
                             Grid.Row="2"
                             Width="220" />
+
+                        <controls:VoiceConnectionControl Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}" ConnectionModel="{Binding VoiceModel}" Grid.Row="3"/>
+
+                        <Grid Grid.Row="4" Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <lib:PersonPicture Margin="12,8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding CurrentUser.Username}"/>
+                                <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="9">
+                                    #<Run Text="{Binding CurrentUser.Discriminator}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </controls1:DropShadowPanel>
             </Grid>

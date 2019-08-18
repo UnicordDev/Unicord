@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Name="self"
+    x:Class="Unicord.Universal.Controls.VoiceConnectionControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" x:DefaultBindMode="TwoWay"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <TextBlock Margin="8">
+                Connected to <Run Text="{Binding ConnectionModel.Channel.Name, ElementName=self}" />!
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ToggleButton x:Name="muteToggleButton" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
+            <ToggleButton x:Name="deafenToggleButton" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
+            <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="2" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
+            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
+        </Grid>
+    </Grid>
+</UserControl>
