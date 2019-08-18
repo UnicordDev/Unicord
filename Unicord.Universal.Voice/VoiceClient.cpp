@@ -118,8 +118,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			else {
 				renderer->BeginCapture();
 			}
-		}		
-		
+		}
+
 		if (is_deafened != value && renderer != nullptr) {
 			if (value) {
 				renderer->StopRender();
@@ -229,11 +229,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 			start_time += packet_duration;
 
-			if (!has_packet)
+			if (!has_packet || is_deafened)
+			{
+				SendSpeakingAsync(false).get();
 				continue;
+			}
 
 			auto opus_packet = PreparePacket(array_view(packet_array.data(), packet_array.data() + packet_array.size()), packet.is_silence, packet.is_float);
-
 			SendSpeakingAsync(true).get();
 			writer.WriteBytes(array_view<const uint8_t>(opus_packet.bytes.data(), opus_packet.bytes.data() + opus_packet.bytes.size()));
 			writer.StoreAsync().get();
@@ -256,9 +258,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 	VoicePacket VoiceClient::PreparePacket(array_view<uint8_t> pcm, bool silence, bool is_float)
 	{
-		if (pcm.size() == 0) {
+		if (is_disposed)
 			return VoicePacket();
-		}
+
+		if (pcm.size() == 0)
+			return VoicePacket();
 
 		auto packet_size = audio_format.GetMaxBufferSize() * 2;
 		auto packet = std::vector<uint8_t>(packet_size);
@@ -307,10 +311,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 	void VoiceClient::ProcessRawPacket(array_view<uint8_t> data)
 	{
-		AudioSource source;
+		AudioSource* source;
 		std::vector<std::vector<uint8_t>> pcm_packets;
 
-		if (ProcessIncomingPacket(array_view<const uint8_t>(data.begin(), data.end()), pcm_packets, source)) {
+		if (ProcessIncomingPacket(array_view<const uint8_t>(data.begin(), data.end()), pcm_packets, &source)) {
 			for each (auto raw_packet in pcm_packets)
 			{
 				renderer->ProcessIncomingPacket(raw_packet, source);
@@ -320,9 +324,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		pcm_packets.clear();
 	}
 
-	bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource& source)
+	bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source)
 	{
 		if (!Rtp::IsRtpHeader(data))
+			return false;
+
+		if (is_deafened)
+			return false;
+
+		if (is_disposed)
 			return false;
 
 		uint16_t packet_seq;
@@ -332,18 +342,17 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 		// decode header info from RTP
 		Rtp::DecodeHeader(data, packet_seq, packet_time, packet_ssrc, packet_extension);
+		AudioSource* audio_source = opus->GetOrCreateDecoder(packet_ssrc);
+		*source = audio_source;
 
-		AudioSource* source_ptr = opus->GetOrCreateDecoder(packet_ssrc);
-		source = *source_ptr;
-
-		if (!source.is_speaking)
+		if (!audio_source->is_speaking)
 			return false;
 
-		if (packet_seq < source.seq) { // out of order
+		if (packet_seq < audio_source->seq) { // out of order
 			return false;
 		}
 
-		uint16_t gap = source.seq != 0 ? packet_seq - 1 - source.seq : 0;
+		uint16_t gap = audio_source->seq != 0 ? packet_seq - 1 - audio_source->seq : 0;
 
 		// get the nonce
 		uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
@@ -387,35 +396,34 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		}
 
 		if (gap != 0) {
-			AudioFormat packet_format = source.format;
-			size_t fec_pcm_length = source.format.SampleCountToSampleSize(source.format.GetMaxBufferSize());
+			AudioFormat packet_format = audio_source->format;
+			size_t fec_pcm_length = packet_format.SampleCountToSampleSize(packet_format.GetMaxBufferSize());
 
 			if (gap == 1) {
 				std::vector<uint8_t> fec(fec_pcm_length);
-				opus->Decode(source_ptr, opus_view, fec, true);
+				opus->Decode(audio_source, opus_view, fec, true);
 
 				pcm.push_back(fec);
 			}
 			else if (gap > 1) {
 				for (size_t i = 0; i < gap; i++) {
-					int32_t sample_count = opus->GetLastPacketSampleCount(source_ptr->decoder);
-					fec_pcm_length = source.format.SampleCountToSampleSize(sample_count);
+					int32_t sample_count = opus->GetLastPacketSampleCount(audio_source->decoder);
+					fec_pcm_length = packet_format.SampleCountToSampleSize(sample_count);
 					std::vector<uint8_t> fec(fec_pcm_length);
-					opus->ProcessPacketLoss(source_ptr, sample_count, fec);
+					opus->ProcessPacketLoss(audio_source, sample_count, fec);
 					pcm.push_back(fec);
 				}
 			}
 		}
 
-		size_t max_frame_size = source.format.SampleCountToSampleSize(source.format.GetMaxBufferSize());
+		size_t max_frame_size = audio_source->format.SampleCountToSampleSize(audio_source->format.GetMaxBufferSize());
 		std::vector<uint8_t> raw_pcm(max_frame_size);
 
-		opus->Decode(source_ptr, opus_view, raw_pcm, false);
+		opus->Decode(audio_source, opus_view, raw_pcm, false);
 		pcm.push_back(raw_pcm);
 
-		source_ptr->seq = packet_seq;
-		source_ptr->packets_lost += gap;
-		source = *source_ptr;
+		audio_source->seq = packet_seq;
+		audio_source->packets_lost += gap;
 
 		delete[] opus_data;
 		return true;
@@ -447,7 +455,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		auto json_data = reader.ReadString(reader.UnconsumedBufferLength());
 		reader.Close();
 
-		// std::cout << "↓ " << to_string(json_data) << "\n";
+		std::cout << "↓ " << to_string(json_data) << "\n";
 
 		auto json = JsonObject::Parse(json_data);
 		auto op = (int)json.GetNamedNumber(L"op");
@@ -634,9 +642,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			return;
 
 		is_disposed = true;
+
+		renderer->StopCapture();
+		renderer->StopRender();
+
 		cancel_voice_send = true;
 		voice_thread.join();
-		keepalive_timestamps.clear();
 
 		PCMPacket packet;
 		while (voice_queue.try_pop(packet))
@@ -654,10 +665,16 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			delete renderer;
 
 		heartbeat_timer.Cancel();
+		heartbeat_timer = nullptr;
 		keepalive_timer.Cancel();
+		keepalive_timer = nullptr;
+
+		keepalive_timestamps.clear();
 
 		web_socket.Close();
+		web_socket = nullptr;
 		udp_socket.Close();
+		udp_socket = nullptr;
 	}
 
 	VoiceClient::~VoiceClient()

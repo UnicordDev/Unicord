@@ -103,7 +103,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		void VoiceSendLoop();
 
 		void ProcessRawPacket(array_view<uint8_t> data);
-		bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource& source);
+		bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source);
 
 		IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
 		IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);

@@ -34,7 +34,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 		}
 
 		AudioEncodingProperties audio_format = AudioEncodingProperties::CreatePcm(voice_client->audio_format.sample_rate, voice_client->audio_format.channel_count, 16);
-		AudioGraphSettings settings{ AudioRenderCategory::Media };
+		AudioGraphSettings settings{ AudioRenderCategory::Communications };
 		settings.EncodingProperties(audio_format);
 
 		// this is slightly painful ngl
@@ -60,7 +60,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 		render_submix_node.AddOutgoingConnection(render_node);
 
 		result = co_await AudioGraph::CreateAsync(settings);
-		if (result.Status() == AudioGraphCreationStatus::Success) { 
+		if (result.Status() == AudioGraphCreationStatus::Success) {
 			capture_graph = result.Graph();
 			capture_graph.QuantumStarted({ this, &AudioRenderer::OnQuantumStarted });
 
@@ -68,10 +68,10 @@ namespace winrt::Unicord::Universal::Voice::Render
 
 			if (!capture_device_id.empty()) {
 				DeviceInformation capture_device_info = co_await DeviceInformation::CreateFromIdAsync(capture_device_id);
-				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Media, audio_format, capture_device_info);
+				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format, capture_device_info);
 			}
 			else {
-				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Media, audio_format);
+				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format);
 			}
 
 			if (capture_node_result.Status() == AudioDeviceNodeCreationStatus::Success) {
@@ -82,32 +82,32 @@ namespace winrt::Unicord::Universal::Voice::Render
 		}
 	}
 
-	void AudioRenderer::ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource sender)
+	void AudioRenderer::ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource* sender)
 	{
 		std::unique_lock lock(output_mutex);
 
 		AudioFrameInputNode input_node{ nullptr };
 		AudioEncodingProperties properties{ nullptr };
 
-		auto mode_iter = input_nodes.find(sender.ssrc);
+		auto mode_iter = input_nodes.find(sender->ssrc);
 		if (mode_iter == input_nodes.end()) {
-			properties = AudioEncodingProperties::CreatePcm(sender.format.sample_rate, sender.format.channel_count, 16);
+			properties = AudioEncodingProperties::CreatePcm(sender->format.sample_rate, sender->format.channel_count, 16);
 			input_node = render_graph.CreateFrameInputNode(properties);
 			input_node.AddOutgoingConnection(render_submix_node);
-			input_nodes.insert(std::pair(sender.ssrc, input_node));
+			input_nodes.insert(std::pair(sender->ssrc, input_node));
 		}
 		else {
-			input_node = input_nodes.at(sender.ssrc);
+			input_node = input_nodes.at(sender->ssrc);
 			properties = input_node.EncodingProperties();
-			if (properties.ChannelCount() != sender.format.channel_count)
+			if (properties.ChannelCount() != sender->format.channel_count)
 			{
 				input_node.RemoveOutgoingConnection(render_submix_node);
 				input_node.Close();
 
-				properties = AudioEncodingProperties::CreatePcm(sender.format.sample_rate, sender.format.channel_count, 16);
+				properties = AudioEncodingProperties::CreatePcm(sender->format.sample_rate, sender->format.channel_count, 16);
 				input_node = render_graph.CreateFrameInputNode(properties);
 				input_node.AddOutgoingConnection(render_submix_node);
-				input_nodes.insert(std::pair(sender.ssrc, input_node));
+				input_nodes.insert(std::pair(sender->ssrc, input_node));
 			}
 		}
 
@@ -137,22 +137,26 @@ namespace winrt::Unicord::Universal::Voice::Render
 
 	void AudioRenderer::BeginCapture()
 	{
-		capture_graph.Start();
+		if (capture_graph != nullptr)
+			capture_graph.Start();
 	}
 
 	void AudioRenderer::BeginRender()
 	{
-		render_graph.Start();
+		if (render_graph != nullptr)
+			render_graph.Start();
 	}
 
 	void AudioRenderer::StopCapture()
 	{
-		capture_graph.Stop();
+		if (capture_graph != nullptr)
+			capture_graph.Stop();
 	}
 
 	void AudioRenderer::StopRender()
 	{
-		render_graph.Stop();
+		if (render_graph != nullptr)
+			render_graph.Stop();
 	}
 
 	AudioEncodingProperties AudioRenderer::GetRenderProperties()
@@ -179,7 +183,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 			winrt::check_hresult(byte_buffer_access->GetBuffer(&buff, &buffer_size));
 
 			if (buffer_size != 0) {
-			
+
 				uint8_t* new_buff = new uint8_t[buffer_size];
 				std::copy(buff, buff + buffer_size, new_buff);
 
@@ -200,5 +204,32 @@ namespace winrt::Unicord::Universal::Voice::Render
 
 	AudioRenderer::~AudioRenderer()
 	{
+		std::unique_lock in_lock(input_mutex);
+		std::unique_lock out_lock(output_mutex);
+
+		std::cout << "Freeing AudioRenderer\n";
+
+		for each (auto node in input_nodes) {
+			node.second.Close();
+		}
+
+		render_submix_node.Close();
+		render_submix_node = nullptr;
+		render_node.Close();
+		render_node = nullptr;
+		render_graph.Close();
+		render_graph = nullptr;
+
+		input_nodes.clear();
+
+		capture_frame_node.Close();
+		capture_frame_node = nullptr;
+		capture_node.Close();
+		capture_node = nullptr;
+		capture_graph.Close();
+		capture_graph = nullptr;
+
+		delete[] pcm_buffer;
+		voice_client = nullptr;
 	}
 }

@@ -1,6 +1,8 @@
 #pragma once
 #include "ServiceBackgroundTask.g.h"
 #include <winrt/Windows.ApplicationModel.AppService.h>
+#include <winrt/Windows.ApplicationModel.Calls.h>
+#include <winrt/Windows.ApplicationModel.Calls.Background.h>
 
 namespace winrt::Unicord::Universal::Voice::Background::implementation
 {
@@ -9,7 +11,9 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 	private:
 		Windows::ApplicationModel::Background::BackgroundTaskDeferral taskDeferral{ nullptr };
 		Windows::ApplicationModel::AppService::AppServiceConnection appServiceConnection{ nullptr };
-		Unicord::Universal::Voice::VoiceClient voiceClient{ nullptr };
+		static Windows::ApplicationModel::Calls::VoipCallCoordinator voipCoordinator;
+		static Windows::ApplicationModel::Calls::VoipPhoneCall activeCall;
+		static Unicord::Universal::Voice::VoiceClient voiceClient;
 
 		void RaiseEvent(Unicord::Universal::Voice::Background::VoiceServiceEvent ev, Windows::Foundation::Collections::ValueSet data);
 		void OnServiceMessage(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceRequestReceivedEventArgs args);

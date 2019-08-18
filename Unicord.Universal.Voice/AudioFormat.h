@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <iostream>
 #include <opus.h>
 
 namespace winrt::Unicord::Universal::Voice::Interop
@@ -122,6 +123,12 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 		inline bool IsInitialised() {
 			return decoder != nullptr;
+		}
+
+		~AudioSource() {
+			std::cout << "Freeing AudioSource\n";
+			opus_decoder_destroy(decoder);
+			decoder = nullptr;
 		}
 
 		uint32_t ssrc = 0;

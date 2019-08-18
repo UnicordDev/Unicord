@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SodiumWrapper.h"
 #include "Rtp.h"
+#include <iostream>
 #include <map>
 #include <sodium.h>
 #include <sodium/randombytes.h>
@@ -133,6 +134,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 	SodiumWrapper::~SodiumWrapper()
 	{
+		std::cout << "Freeing SodiumWrapper\n";
 		delete[] key;
 	}
 

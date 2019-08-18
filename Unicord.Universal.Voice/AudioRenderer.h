@@ -34,7 +34,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 		AudioRenderer(implementation::VoiceClient* client);
 
 		Windows::Foundation::IAsyncAction Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id);
-		void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource sender);
+		void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource* sender);
 
 		void BeginCapture();
 		void BeginRender();		

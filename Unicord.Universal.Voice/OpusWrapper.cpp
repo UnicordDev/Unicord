@@ -121,7 +121,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 		auto itr = opus_decoders.find(ssrc);
 		if (itr == opus_decoders.end()) {
 			auto source = new AudioSource(ssrc);		
-			opus_decoders[ssrc] = source;
+			opus_decoders.insert(std::pair(ssrc, source));
 			return source;
 		}
 		else {
@@ -139,6 +139,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 	OpusWrapper::~OpusWrapper()
 	{
+		std::cout << "Freeing OpusWrapper\n";
+
 		if (this->opus_encoder != nullptr)
 		{
 			opus_encoder_destroy(this->opus_encoder);
@@ -146,9 +148,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
 		for each (auto decoder in this->opus_decoders)
 		{
-			opus_decoder_destroy(decoder.second->decoder);
 			delete decoder.second;
 		}
+
+		this->opus_decoders.clear();
 	}
 
 	void OpusWrapper::check_opus_error(int error, winrt::hstring message)
