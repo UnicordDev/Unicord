@@ -103,7 +103,10 @@ namespace DSharpPlus.Entities
         {
             get
             {
-                var role = Roles.OrderByDescending(xr => xr?.Position).FirstOrDefault(xr => xr?.Color.Value != 0);
+                var role = Roles.Where(xr => xr != null)
+                                .OrderByDescending(xr => xr.Position)
+                                .FirstOrDefault(xr => xr.Color.Value != 0);
+
                 if (role != null)
                 {
                     return role.Color;
@@ -569,5 +572,12 @@ namespace DSharpPlus.Entities
         /// <returns>Whether the two members are not equal.</returns>
         public static bool operator !=(DiscordMember e1, DiscordMember e2)
             => !(e1 == e2);
+
+#if WINDOWS_UWP || WINDOWS_WPF
+        ~DiscordMember()
+        {
+            _brush.Dispose();
+        }
+#endif
     }
 }

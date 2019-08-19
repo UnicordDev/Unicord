@@ -62,6 +62,7 @@ namespace Unicord.Universal.Controls
 
                 if (_attachment.Width == 0)
                 {
+                    mediaPlayer.TransportControls.ShowAndHideAutomatically = false;
                     mediaPlayer.VerticalAlignment = VerticalAlignment.Top;
                     mediaPlayer.VerticalContentAlignment = VerticalAlignment.Top;
                     detailsGrid.Visibility = Visibility.Collapsed;
