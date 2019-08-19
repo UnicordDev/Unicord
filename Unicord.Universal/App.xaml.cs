@@ -1,4 +1,11 @@
-﻿using DSharpPlus;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
@@ -8,31 +15,20 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Utilities;
-using Unicord.Universal.Voice;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using static Unicord.Constants;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
@@ -66,9 +62,6 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
-
-            Trace.WriteLine(VoiceClient.OpusVersion);
-            Trace.WriteLine(VoiceClient.SodiumVersion);
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
@@ -305,11 +298,6 @@ namespace Unicord.Universal
             _executionSession = new ExtendedExecutionSession { Reason = ExtendedExecutionReason.Unspecified };
             _executionSession.Revoked += OnExtendedSessionRevoked;
             var result = await _executionSession.RequestExtensionAsync();
-
-            if(result == ExtendedExecutionResult.Denied)
-            {
-                await Discord.DisconnectAsync();
-            }
 
             deferral.Complete();
         }

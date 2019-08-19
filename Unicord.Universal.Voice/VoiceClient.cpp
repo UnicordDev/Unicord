@@ -69,6 +69,31 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		return ws_ping;
 	}
 
+	uint32_t VoiceClient::UdpSocketPing()
+	{
+		return udp_ping;
+	}
+
+	winrt::event_token VoiceClient::WebSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const & handler)
+	{
+		return wsPingUpdated.add(handler);
+	}
+
+	void VoiceClient::WebSocketPingUpdated(winrt::event_token const & token) noexcept
+	{
+		wsPingUpdated.remove(token);
+	}
+
+	winrt::event_token VoiceClient::UdpSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const & handler)
+	{
+		return udpPingUpdated.add(handler);
+	}
+
+	void VoiceClient::UdpSocketPingUpdated(winrt::event_token const & token) noexcept
+	{
+		udpPingUpdated.remove(token);
+	}
+
 	IAsyncAction VoiceClient::ConnectAsync()
 	{
 		co_await renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
@@ -495,7 +520,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			case 6: // heartbeat ack
 				auto now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 				ws_ping = now - last_heartbeat;
-
+				wsPingUpdated(*this, (const uint32_t)ws_ping);
 				std::cout << "- WS Ping " << ws_ping << "ms\n";
 				break;
 			}
@@ -571,6 +596,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		if (itr != keepalive_timestamps.end()) {
 			uint64_t then = keepalive_timestamps.at(count);
 			udp_ping = now - then;
+
+			udpPingUpdated(*this, (const uint32_t)udp_ping);
 			keepalive_timestamps.unsafe_erase(count);
 
 			std::cout << "- UDP Ping " << udp_ping << "ms\n";

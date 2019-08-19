@@ -24,7 +24,7 @@
     <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -283,6 +283,8 @@
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
+    <Compile Include="Converters\VoicePingConverter.cs" />
+    <Compile Include="Converters\VoicePingGlyphConverter.cs" />
     <Compile Include="Dialogs\BanDialog.xaml.cs">
       <DependentUpon>BanDialog.xaml</DependentUpon>
     </Compile>
@@ -415,6 +417,8 @@
     <Compile Include="Utilities\UIUtilities.cs" />
     <Compile Include="Utilities\WindowManager.cs" />
     <Compile Include="Voice\VoiceConnectionModel.cs" />
+    <Compile Include="Voice\VoiceDispatch.cs" />
+    <Compile Include="Voice\VoiceStateUpdatePayload.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
@@ -752,10 +756,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj">
-      <Project>{F061F955-5565-4D48-8111-F2F7F2241499}</Project>
-      <Name>DSharpPlus.VoiceNext.UWP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>

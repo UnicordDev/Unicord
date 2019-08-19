@@ -16,6 +16,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		static Unicord::Universal::Voice::VoiceClient voiceClient;
 		static Unicord::Universal::Voice::VoiceClientOptions voiceClientOptions;
 
+		void OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping);
+		void OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping);
 		void RaiseEvent(Unicord::Universal::Voice::Background::VoiceServiceEvent ev, Windows::Foundation::Collections::ValueSet data);
 		void OnServiceMessage(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceRequestReceivedEventArgs args);
 		void OnCancelled(Windows::ApplicationModel::Background::IBackgroundTaskInstance sender, Windows::ApplicationModel::Background::BackgroundTaskCancellationReason reason);

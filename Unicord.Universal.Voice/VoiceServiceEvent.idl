@@ -6,6 +6,8 @@ namespace Unicord.Universal.Voice.Background
 		Reconnecting,
 		Disconnected,
 		Muted,
-		Deafened
+		Deafened,
+		UdpPing,
+		WebSocketPing
 	};
 }

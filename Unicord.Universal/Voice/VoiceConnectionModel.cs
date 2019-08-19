@@ -25,6 +25,8 @@ namespace Unicord.Universal.Voice
         private VoiceState _state = VoiceState.None;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
+        private uint _webSocketPing;
+        private uint _udpPing;
 
         public DiscordChannel Channel { get; }
 
@@ -43,6 +45,9 @@ namespace Unicord.Universal.Voice
                 InvokePropertyChanged(nameof(Muted));
             }
         }
+
+        public uint WebSocketPing { get => _webSocketPing; set => OnPropertySet(ref _webSocketPing, value); }
+        public uint UdpPing { get => _udpPing; set => OnPropertySet(ref _udpPing, value); }
 
         public event EventHandler<EventArgs> Disconnected;
 
@@ -218,6 +223,12 @@ namespace Unicord.Universal.Voice
                         break;
                     case VoiceServiceEvent.Deafened:
                         SendVoiceStateUpdate(_state, Channel.Id);
+                        break;
+                    case VoiceServiceEvent.UdpPing:
+                        UdpPing = (uint)args.Request.Message["ping"];
+                        break;
+                    case VoiceServiceEvent.WebSocketPing:
+                        WebSocketPing = (uint)args.Request.Message["ping"];
                         break;
                     default:
                         break;

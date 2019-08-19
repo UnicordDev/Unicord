@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.5.5.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.2.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Unicord</DisplayName>
@@ -33,6 +33,7 @@
         <!--<uap5:Extension Category="windows.startupTask" StartPage="EntryPage">
           <uap5:StartupTask TaskId="UnicordStartup" DisplayName="Unicord" />
         </uap5:Extension>-->
+        <uap:Extension Category="windows.voipCall" />
         <uap4:Extension Category="windows.contactPanel">
           <uap4:ContactPanel />
         </uap4:Extension>
@@ -59,6 +60,14 @@
             <uap:DisplayName>Unicord</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
+        <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
+          <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
+        </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.Background.VoiceBackgroundTask">
+          <BackgroundTasks ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
+            <Task Type="systemEvent" />
+          </BackgroundTasks>
+        </Extension>
       </Extensions>
     </Application>
   </Applications>

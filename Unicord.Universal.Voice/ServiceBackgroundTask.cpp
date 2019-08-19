@@ -4,6 +4,7 @@
 #include "VoiceClient.h"
 #include "VoiceClientOptions.h"
 
+using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::AppService;
@@ -31,6 +32,20 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		auto details = taskInstance.TriggerDetails().try_as<AppServiceTriggerDetails>();
 		this->appServiceConnection = details.AppServiceConnection();
 		this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
+	}
+
+	void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
+	{
+		ValueSet values;
+		values.Insert(L"ping", box_value(ping));
+		RaiseEvent(VoiceServiceEvent::UdpPing, values);
+	}
+
+	void ServiceBackgroundTask::OnWsPing(IInspectable sender, uint32_t ping)
+	{
+		ValueSet values;
+		values.Insert(L"ping", box_value(ping));
+		RaiseEvent(VoiceServiceEvent::WebSocketPing, values);
 	}
 
 	void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data)
@@ -71,6 +86,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 							voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
 
 							voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
+							voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
+							voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
 							voiceClient.ConnectAsync().get();
 							activeCall.NotifyCallActive();
 
@@ -101,6 +118,13 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 						auto muted = unbox_value<bool>(data.Lookup(L"muted"));
 						voiceClient.Muted(muted);
 
+						if (muted || voiceClient.Deafened()) {
+							activeCall.NotifyCallHeld();
+						}
+						else {
+							activeCall.NotifyCallActive();
+						}
+
 						event_values.Insert(L"muted", box_value(muted));
 						RaiseEvent(VoiceServiceEvent::Muted, event_values);
 					}
@@ -108,8 +132,15 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 				case VoiceServiceRequest::DeafenRequest:
 					if (voiceClient != nullptr) {
 						auto deafened = unbox_value<bool>(data.Lookup(L"deafened"));
-
 						voiceClient.Deafened(deafened);
+
+						if (deafened || voiceClient.Muted()) {
+							activeCall.NotifyCallHeld();
+						}
+						else {
+							activeCall.NotifyCallActive();
+						}
+
 						event_values.Insert(L"deafened", box_value(deafened));
 						RaiseEvent(VoiceServiceEvent::Deafened, event_values);
 					}
@@ -140,7 +171,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		// ev signifies an event
 		if (data.HasKey(L"ev"))
 		{
-			auto event = unbox_value<VoiceServiceEvent>(data.Lookup(L"i"));
+			auto event = unbox_value<VoiceServiceEvent>(data.Lookup(L"ev"));
 		}
 
 		def.Complete();

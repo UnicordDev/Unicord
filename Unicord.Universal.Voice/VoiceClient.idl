@@ -11,6 +11,10 @@ namespace Unicord.Universal.Voice
 
 		VoiceClient(VoiceClientOptions options);
 		UInt32 WebSocketPing{ get; };
+		UInt32 UdpSocketPing{ get; };
+
+		event Windows.Foundation.EventHandler<UInt32> WebSocketPingUpdated;
+		event Windows.Foundation.EventHandler<UInt32> UdpSocketPingUpdated;
 
 		Windows.Foundation.IAsyncAction ConnectAsync();
 		Windows.Storage.Streams.IOutputStream GetOutputStream();

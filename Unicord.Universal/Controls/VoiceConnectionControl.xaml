@@ -4,11 +4,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:converters="using:Unicord.Universal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" x:DefaultBindMode="TwoWay"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="220">
+    <UserControl.Resources>
+        <converters:VoicePingGlyphConverter x:Name="VoicePingGlyphConverter"/>
+        <converters:VoicePingConverter x:Name="VoicePingConverter"/>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,8 +22,13 @@
         </Grid.RowDefinitions>
 
         <Grid>
-            <TextBlock Margin="8">
-                Connected to <Run Text="{Binding ConnectionModel.Channel.Name, ElementName=self}" />!
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingConverter}, Mode=OneWay}" FontFamily="Segoe MDL2 Assets" Margin="12,8" FontSize="18" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}}"/>
+            <TextBlock Margin="0,8,8,8" Grid.Column="1">
+                Connected to <Run Text="{Binding ConnectionModel.Channel.Name, ElementName=self, Mode=OneWay}" />!
             </TextBlock>
         </Grid>
         <Grid Grid.Row="1">
