@@ -103,7 +103,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		format = renderer->GetCaptureProperties();
 		std::cout << "Capture: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
 
-		audio_format = AudioFormat(format.SampleRate(), format.ChannelCount());
+		audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::low_latency);
 		opus = new OpusWrapper(audio_format);
 
 		Windows::Foundation::Uri url{ L"wss://" + endpoint.hostname + L"/?encoding=json&v=4" };

@@ -29,6 +29,7 @@ namespace Unicord.Universal.Pages.Settings
             ["Messaging"] = typeof(MessagingSettingsPage),
             ["Themes"] = typeof(ThemesSettingsPage),
             ["Media"] = typeof(MediaSettingsPage),
+            ["Voice"] = typeof(VoiceSettingsPage),
             ["Security"] = typeof(SecuritySettingsPage),
             ["About"] = typeof(AboutSettingsPage),
         };
@@ -80,6 +81,10 @@ namespace Unicord.Universal.Pages.Settings
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                WindowManager.HandleTitleBarForControl(nav, true);
+            }
         }
     }
 }

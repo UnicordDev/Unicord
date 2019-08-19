@@ -85,6 +85,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 							voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
 							voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
 
+							if (data.HasKey(L"input_device")) {
+								voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));
+							}
+							
+							if (data.HasKey(L"output_device")) {
+								voiceClientOptions.PreferredPlaybackDevice(unbox_value_or<hstring>(data.Lookup(L"output_device"), L""));
+							}
+
 							voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
 							voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
 							voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });

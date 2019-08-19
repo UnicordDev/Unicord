@@ -163,7 +163,7 @@
             <controls:LayoutTransformControl.Transform>
                 <ScaleTransform x:Name="AppScale" ScaleX="1" ScaleY="1"/>
             </controls:LayoutTransformControl.Transform>
-            <Grid>
+            <Grid UseLayoutRounding="False">
                 <Grid x:Name="mainContent" RenderTransformOrigin="0.5, 0.5">
                     <Grid.RenderTransform>
                         <ScaleTransform x:Name="mainScale" ScaleX="1" ScaleY="1"/>

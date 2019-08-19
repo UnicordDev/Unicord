@@ -402,10 +402,17 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
-                    var voice = new VoiceConnectionModel(channel);
-                    await voice.ConnectAsync();
+                    try
+                    {
+                        var voice = new VoiceConnectionModel(channel);
+                        (DataContext as DiscordPageModel).VoiceModel = voice;
+                        await voice.ConnectAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
+                    }
 
-                    (DataContext as DiscordPageModel).VoiceModel = voice;
                     return;
                 }
 

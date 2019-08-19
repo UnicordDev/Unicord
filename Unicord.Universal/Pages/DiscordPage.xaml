@@ -504,7 +504,9 @@
                             Grid.Row="2"
                             Width="220" />
 
-                        <controls:VoiceConnectionControl Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}" ConnectionModel="{Binding VoiceModel}" Grid.Row="3"/>
+                        <Grid Grid.Row="3"  Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
+                            <controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
+                        </Grid>
 
                         <Grid Grid.Row="4" Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
                             <Grid.ColumnDefinitions>

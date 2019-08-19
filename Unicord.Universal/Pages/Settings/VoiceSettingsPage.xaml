@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Settings.VoiceSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="Page_Loaded">
+    <Page.Resources>
+        <DataTemplate x:Key="DeviceTemplate">
+            <TextBlock Text="{Binding Name,FallbackValue=Default,TargetNullValue=Default}"/>
+        </DataTemplate>
+    </Page.Resources>
+
+    <StackPanel>
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Voice" Margin="0,0,0,12"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Audio Devices"/>
+        <TextBlock TextWrapping="Wrap" Text="Here you can choose the audio devices you want to use for voice calls." Margin="0,0,0,12"/>
+
+        <ComboBox Margin="0,0,0,8" Header="Input Device" ItemTemplate="{StaticResource DeviceTemplate}" SelectedIndex="{x:Bind Model.InputDevice, Mode=TwoWay}" ItemsSource="{x:Bind Model.AvailableInputDevices}" HorizontalAlignment="Stretch" />
+        <ComboBox Margin="0,0,0,8" Header="Output Device" ItemTemplate="{StaticResource DeviceTemplate}" SelectedIndex="{x:Bind Model.OutputDevice, Mode=TwoWay}" ItemsSource="{x:Bind Model.AvailableOutputDevices}" HorizontalAlignment="Stretch" />
+    </StackPanel>
+</Page>

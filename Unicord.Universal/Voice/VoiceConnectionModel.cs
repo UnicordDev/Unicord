@@ -118,6 +118,8 @@ namespace Unicord.Universal.Voice
 
                 var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
                 var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
+                var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
+                var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
 
                 var connectionRequest = new ValueSet()
                 {
@@ -128,7 +130,9 @@ namespace Unicord.Universal.Voice
                     ["endpoint"] = vsru.Endpoint,
                     ["token"] = vsru.VoiceToken,
                     ["session_id"] = vstu.SessionId,
-                    ["contact_name"] = $"{Channel.Name} - {Channel.Guild.Name}"
+                    ["contact_name"] = $"{Channel.Name} - {Channel.Guild.Name}",
+                    ["input_device"] = inputDeviceId,
+                    ["output_device"] = outputDeviceId
                 };
 
                 await SendRequestAsync(connectionRequest);

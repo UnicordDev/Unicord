@@ -62,12 +62,6 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
-
-            if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
-            {
-                HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
-            }
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -214,6 +208,12 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
+
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
+            {
+                HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+            }
         }
 
         /// <summary>
