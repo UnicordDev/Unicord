@@ -576,11 +576,12 @@ namespace Unicord.Universal.Models
                             _messageLastSent = DateTimeOffset.Now;
                             SlowModeTimeout = PerUserRateLimit;
                             InvokePropertyChanged(nameof(CanSend));
-                            _slowModeTimer.Start();
+                            _context.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
                         }
                     }
                     catch
                     {
+                        // TODO: thread marshalling
                         await UIUtilities.ShowErrorDialogAsync(
                             "Failed to send message!",
                             "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");

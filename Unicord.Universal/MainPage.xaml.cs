@@ -51,14 +51,7 @@ namespace Unicord.Universal
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Disabled;            
-            SetScale();
-        }
-
-        internal void SetScale()
-        {
-            AppScale.ScaleX = App.RoamingSettings.Read<double>("ScaleFactor", 1);
-            AppScale.ScaleY = App.RoamingSettings.Read<double>("ScaleFactor", 1);
+            NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

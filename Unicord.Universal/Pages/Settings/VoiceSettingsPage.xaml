@@ -17,7 +17,7 @@
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Audio Devices"/>
         <TextBlock TextWrapping="Wrap" Text="Here you can choose the audio devices you want to use for voice calls." Margin="0,0,0,12"/>
 
-        <ComboBox Margin="0,0,0,8" Header="Input Device" ItemTemplate="{StaticResource DeviceTemplate}" SelectedIndex="{x:Bind Model.InputDevice, Mode=TwoWay}" ItemsSource="{x:Bind Model.AvailableInputDevices}" HorizontalAlignment="Stretch" />
-        <ComboBox Margin="0,0,0,8" Header="Output Device" ItemTemplate="{StaticResource DeviceTemplate}" SelectedIndex="{x:Bind Model.OutputDevice, Mode=TwoWay}" ItemsSource="{x:Bind Model.AvailableOutputDevices}" HorizontalAlignment="Stretch" />
+        <ComboBox x:Name="inputDevices" Margin="0,0,0,8" Header="Input Device" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{x:Bind Model.AvailableInputDevices}" SelectedIndex="{x:Bind Model.InputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+        <ComboBox x:Name="outputDevices" Margin="0,0,0,8" Header="Output Device" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{x:Bind Model.AvailableOutputDevices}" SelectedIndex="{x:Bind Model.OutputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
     </StackPanel>
 </Page>

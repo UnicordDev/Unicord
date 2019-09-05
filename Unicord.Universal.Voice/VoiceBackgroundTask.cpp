@@ -11,7 +11,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		this->taskDeferral = taskInstance.GetDeferral();
 		taskInstance.Canceled({ this, &VoiceBackgroundTask::OnCancelled });
     }
-	void VoiceBackgroundTask::OnCancelled(Windows::ApplicationModel::Background::IBackgroundTaskInstance sender, Windows::ApplicationModel::Background::BackgroundTaskCancellationReason reason)
+	void VoiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
 	{
 		taskDeferral.Complete();
 	}

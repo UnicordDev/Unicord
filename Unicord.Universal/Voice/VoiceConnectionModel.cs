@@ -25,6 +25,7 @@ namespace Unicord.Universal.Voice
         private VoiceState _state = VoiceState.None;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
+        private bool _appServiceConnected;
         private uint _webSocketPing;
         private uint _udpPing;
 
@@ -107,6 +108,7 @@ namespace Unicord.Universal.Voice
                     }
                 }
 
+                _appServiceConnected = true;
                 var status = await ReserveCallResourcesAsync();
                 if (status != VoipPhoneCallResourceReservationStatus.Success)
                     throw new Exception("Unable to reserve call resources!");
@@ -132,7 +134,9 @@ namespace Unicord.Universal.Voice
                     ["session_id"] = vstu.SessionId,
                     ["contact_name"] = $"{Channel.Name} - {Channel.Guild.Name}",
                     ["input_device"] = inputDeviceId,
-                    ["output_device"] = outputDeviceId
+                    ["output_device"] = outputDeviceId,
+                    ["muted"] = Muted,
+                    ["deafened"] = Deafened
                 };
 
                 await SendRequestAsync(connectionRequest);
@@ -156,14 +160,20 @@ namespace Unicord.Universal.Voice
 
         private async Task ToggleMuteAsync()
         {
-            var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.MuteRequest, ["muted"] = Muted };
-            await SendRequestAsync(set);
+            if (_appServiceConnected)
+            {
+                var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.MuteRequest, ["muted"] = Muted };
+                await SendRequestAsync(set);
+            }
         }
 
         private async Task ToggleDeafenAsync()
         {
-            var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DeafenRequest, ["deafened"] = Deafened };
-            await SendRequestAsync(set);
+            if (_appServiceConnected)
+            {
+                var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DeafenRequest, ["deafened"] = Deafened };
+                await SendRequestAsync(set);
+            }
         }
 
         public async Task DisconnectAsync()
@@ -242,7 +252,7 @@ namespace Unicord.Universal.Voice
 
         private void OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
-
+            _appServiceConnected = false;
         }
 
         private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)

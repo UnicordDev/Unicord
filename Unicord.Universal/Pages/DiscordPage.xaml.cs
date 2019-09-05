@@ -537,8 +537,6 @@ namespace Unicord.Universal.Pages
             {
                 CloseSettingsMobileStoryboard.Begin();
             }
-
-            this.FindParent<MainPage>().SetScale();
         }
 
         private void CloseSettingsStoryboard_Completed(object sender, object e)

@@ -73,7 +73,7 @@
                 <Pivot SelectedIndex="0">
                     <Pivot.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                         </DataTemplate>
                     </Pivot.HeaderTemplate>
                     <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}" >

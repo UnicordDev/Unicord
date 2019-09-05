@@ -31,6 +31,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
 		auto details = taskInstance.TriggerDetails().try_as<AppServiceTriggerDetails>();
 		this->appServiceConnection = details.AppServiceConnection();
+		this->appServiceConnected = true;
+		this->appServiceConnection.ServiceClosed({ this, &ServiceBackgroundTask::OnServiceClosed });
 		this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
 	}
 
@@ -50,8 +52,10 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
 	void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data)
 	{
-		data.Insert(L"ev", box_value((uint32_t)ev));
-		this->appServiceConnection.SendMessageAsync(data);
+		if (appServiceConnected) {
+			data.Insert(L"ev", box_value((uint32_t)ev));
+			this->appServiceConnection.SendMessageAsync(data);
+		}
 	}
 
 	void ServiceBackgroundTask::OnServiceMessage(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
@@ -96,6 +100,15 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 							voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
 							voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
 							voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
+
+							if (data.HasKey(L"muted")) {
+								voiceClient.Muted(unbox_value<bool>(data.Lookup(L"muted")));
+							}
+							
+							if (data.HasKey(L"deafened")) {
+								voiceClient.Deafened(unbox_value<bool>(data.Lookup(L"deafened")));
+							}
+
 							voiceClient.ConnectAsync().get();
 							activeCall.NotifyCallActive();
 
@@ -183,6 +196,11 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 		}
 
 		def.Complete();
+	}
+
+	void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
+	{
+		this->appServiceConnected = false;
 	}
 
 	void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)

@@ -36,11 +36,14 @@ namespace Unicord.Universal.Models
             var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
             var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
 
-            _inputDevice = AvailableInputDevices.IndexOf(AvailableInputDevices.FirstOrDefault(d => d?.Id == inputDeviceId) ?? AvailableInputDevices.FirstOrDefault(d => d?.IsDefault == true));
+            InputDevice = AvailableInputDevices.IndexOf(AvailableInputDevices.FirstOrDefault(d => d?.Id == inputDeviceId) ?? AvailableInputDevices.FirstOrDefault(d => d?.IsDefault == true));
             InputDevice = _inputDevice == -1 ? 0 : _inputDevice;
 
-            _outputDevice = AvailableOutputDevices.IndexOf(AvailableOutputDevices.FirstOrDefault(d => d?.Id == outputDeviceId) ?? AvailableOutputDevices.FirstOrDefault(d => d?.IsDefault == true));
+            OutputDevice = AvailableOutputDevices.IndexOf(AvailableOutputDevices.FirstOrDefault(d => d?.Id == outputDeviceId) ?? AvailableOutputDevices.FirstOrDefault(d => d?.IsDefault == true));
             OutputDevice = _outputDevice == -1 ? 0 : _outputDevice;
+
+            InvokePropertyChanged(nameof(InputDevice));
+            InvokePropertyChanged(nameof(OutputDevice));
         }
 
         internal Task SaveAsync()

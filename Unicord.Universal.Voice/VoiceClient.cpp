@@ -38,8 +38,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		}
 
 		this->options = options;
-		web_socket = MessageWebSocket();
-		udp_socket = DatagramSocket();
 
 		std::wstring_view raw_endpoint = options.Endpoint();
 		std::size_t index = raw_endpoint.find_last_of(':');
@@ -55,10 +53,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		}
 
 		audio_format = AudioFormat();
-		renderer = new AudioRenderer(this);
+		udp_socket = DatagramSocket();
 		udp_socket.Control().QualityOfService(SocketQualityOfService::LowLatency);
 		udp_socket.MessageReceived({ this, &VoiceClient::OnUdpMessage });
 
+		web_socket = MessageWebSocket();
 		web_socket.Control().MessageType(SocketMessageType::Utf8);
 		web_socket.MessageReceived({ this, &VoiceClient::OnWsMessage });
 		web_socket.Closed({ this, &VoiceClient::OnWsClosed });
@@ -96,6 +95,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
 	IAsyncAction VoiceClient::ConnectAsync()
 	{
+		renderer = new AudioRenderer(this);
 		co_await renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
 
 		auto format = renderer->GetRenderProperties();
@@ -214,8 +214,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
 		}
 
-		renderer->BeginRender();
-		renderer->BeginCapture();
+		if (!is_deafened)
+			renderer->BeginRender();
+
+		if (!is_muted && !is_deafened)
+			renderer->BeginCapture();
 	}
 
 	void VoiceClient::VoiceSendLoop()

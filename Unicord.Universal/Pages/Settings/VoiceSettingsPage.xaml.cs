@@ -35,6 +35,7 @@ namespace Unicord.Universal.Pages.Settings
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             await Model.LoadAsync();
+            Bindings.Update();
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)

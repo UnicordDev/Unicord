@@ -68,7 +68,7 @@ namespace Unicord.Universal.Pages.Settings
                 var dictionary = new ResourceDictionary();
                 if (!string.IsNullOrWhiteSpace(theme?.Name))
                 {
-                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { }
+                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { model.AvailableThemes.Remove(theme); }
                 }
 
                 // if we invert the theme then set it properly, the element will redraw and reload
