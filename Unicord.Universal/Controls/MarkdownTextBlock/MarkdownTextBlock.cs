@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Microsoft.Toolkit.Uwp.UI.Helpers;
 using WamWooWam.Uwp.UI.Controls.Markdown.Render;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -38,7 +39,7 @@ namespace WamWooWam.Uwp.UI.Controls
             Unloaded += OnUnloaded;
         }
 
-        private void ThemeListener_ThemeChanged(Helpers.ThemeListener sender)
+        private void ThemeListener_ThemeChanged(ThemeListener sender)
         {
             RenderMarkdown();
         }
@@ -100,7 +101,7 @@ namespace WamWooWam.Uwp.UI.Controls
 
         private void RegisterThemeChangedHandler()
         {
-            themeListener = themeListener ?? new Helpers.ThemeListener();
+            themeListener = themeListener ?? new ThemeListener();
             themeListener.ThemeChanged -= ThemeListener_ThemeChanged;
             themeListener.ThemeChanged += ThemeListener_ThemeChanged;
         }

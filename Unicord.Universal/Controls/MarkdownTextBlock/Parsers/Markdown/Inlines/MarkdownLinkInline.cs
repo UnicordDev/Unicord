@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using WamWooWam.Extensions;
+using Microsoft.Toolkit.Extensions;
 using WamWooWam.Parsers.Core;
 using WamWooWam.Parsers.Markdown.Helpers;
 

@@ -193,20 +193,18 @@ namespace Unicord.Universal.Controls
 
                 if (index > 0)
                 {
-                    if (list.Items[index - 1] is DiscordMessage other)
+                    if (list.Items[index - 1] is DiscordMessage other && other.MessageType == MessageType.Default)
                     {
                         var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
                         if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
                         {
                             CollapsedVisibility = Visibility.Collapsed;
-                            //bg.Margin = new Thickness(0, 2, 0, -2);
                             grid.Padding = new Thickness(8, 4, 8, 0);
                             return;
                         }
                     }
                 }
-
-                //bg.Margin = new Thickness(0, 16, 0, -2);
+                
                 grid.Padding = new Thickness(8, 20, 8, 0);
             }
 
@@ -357,7 +355,7 @@ namespace Unicord.Universal.Controls
         private void AuthorName_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var profile = new UserFlyout() { DataContext = _author };
-            profile.ShowAt(sender as TextBlock);
+            profile.ShowAt(sender as FrameworkElement);
         }
     }
 }

@@ -154,6 +154,7 @@ namespace WamWooWam.Uwp.UI.Controls
                     renderer.ImageMaxWidth = ImageMaxWidth;
                     renderer.WrapCodeBlock = WrapCodeBlock;
                     renderer.Channel = Channel;
+                    renderer.IsSystemMessage = IsSystemMessage;
 
                     _rootElement.Child = renderer.Render();
                 }

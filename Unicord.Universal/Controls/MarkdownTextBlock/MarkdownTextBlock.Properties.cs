@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using ColorCode.Styling;
 using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.UI.Helpers;
 using WamWooWam.Uwp.UI.Controls.Markdown.Render;
-using WamWooWam.Uwp.UI.Helpers;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -21,8 +21,8 @@ namespace WamWooWam.Uwp.UI.Controls
     /// </summary>
     public partial class MarkdownTextBlock
     {
-        // SvgImageSource was introduced in Creators Update (15063)
-        private static readonly bool _isSvgImageSupported = ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 4);
+        // SvgImageSource was introduced in Creators Update (15063), our target platform
+        private const bool _isSvgImageSupported = true;
 
         // Used to attach the URL to hyperlinks.
         private static readonly DependencyProperty HyperlinkUrlProperty =
@@ -642,9 +642,17 @@ namespace WamWooWam.Uwp.UI.Controls
             set => SetValue(ChannelProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for Channel.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ChannelProperty =
             DependencyProperty.Register("Channel", typeof(DiscordChannel), typeof(MarkdownTextBlock), new PropertyMetadata(null));
+
+        public bool IsSystemMessage
+        {
+            get => (bool)GetValue(IsSystemMessageProperty);
+            set => SetValue(IsSystemMessageProperty, value);
+        }
+
+        public static readonly DependencyProperty IsSystemMessageProperty =
+            DependencyProperty.Register("IsSystemMessage", typeof(bool), typeof(MarkdownTextBlock), new PropertyMetadata(null));
 
         /// <summary>
         /// Holds a list of hyperlinks we are listening to.

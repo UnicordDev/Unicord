@@ -9,6 +9,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
+    xmlns:controls="using:Unicord.Universal.Controls"
     x:DefaultBindMode="OneWay">
 
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -325,6 +326,7 @@
                         </Ellipse.Fill>
                     </Ellipse>
                 </Canvas>
+                
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
                 <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
@@ -374,10 +376,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBlock
-                    FontWeight="SemiBold"
-                    Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
-                    Text="{Binding DisplayName}" />
+                <controls:UsernameControl User="{Binding}" />
                 <TextBlock
                     Grid.Row="1"
                     FontSize="11"

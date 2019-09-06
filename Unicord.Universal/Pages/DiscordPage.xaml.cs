@@ -175,7 +175,7 @@ namespace Unicord.Universal.Pages
                 App.Discord.DmChannelCreated -= Discord_DmChannelCreated;
                 App.Discord.DmChannelDeleted -= Discord_DmChannelDeleted;
 
-                foreach (var dm in App.Discord.PrivateChannels.Values)
+                foreach (var dm in App.Discord?.PrivateChannels.Values)
                 {
                     dm.PropertyChanged -= Dm_PropertyChanged;
                 }

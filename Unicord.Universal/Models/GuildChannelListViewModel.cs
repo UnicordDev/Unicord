@@ -57,7 +57,7 @@ namespace Unicord.Universal.Models
                 if (e.Channel.Type != ChannelType.Category)
                 {
                     var i = (e.Channel.Parent?.Children ?? e.Guild.Channels.Values)
-                    .OrderBy(c => c.Type)
+                    .OrderBy(c => c.Type == ChannelType.Voice)
                     .ThenBy(c => c.Position)
                     .ToList()
                     .IndexOf(e.Channel);
@@ -104,7 +104,7 @@ namespace Unicord.Universal.Models
                     {
                         // find the position in the new group, and insert it there
                         var i = (e.ChannelAfter.Parent?.Children ?? e.Guild.Channels.Values)
-                            .OrderBy(c => c.Type)
+                            .OrderBy(c => c.Type == ChannelType.Voice)
                             .ThenBy(c => c.Position)
                             .ToList()
                             .IndexOf(e.ChannelAfter);
@@ -136,7 +136,7 @@ namespace Unicord.Universal.Models
                     else
                     {
                         var i = (e.ChannelAfter.Parent?.Children ?? e.Guild.Channels.Values)
-                            .OrderBy(c => c.Type)
+                            .OrderBy(c => c.Type == ChannelType.Voice)
                             .ThenBy(c => c.Position)
                             .ToList()
                             .IndexOf(e.ChannelAfter);
@@ -269,7 +269,7 @@ namespace Unicord.Universal.Models
                 // Use new discord channel category behaviour
                 var groupedChannels = channels
                     .Where(c => !c.IsCategory)
-                    .OrderBy(c => c.Type)
+                    .OrderBy(c => c.Type == ChannelType.Voice)
                     .ThenBy(c => c.Position)
                     .GroupBy(g => g.Parent)
                     .OrderBy(c => c.Key?.Position)
@@ -283,7 +283,7 @@ namespace Unicord.Universal.Models
             {
                 // Use old discord non-category behaviour
                 var orderedChannels = channels
-                    .OrderBy(c => c.Type)
+                    .OrderBy(c => c.Type == ChannelType.Voice)
                     .ThenBy(c => c.Position);
 
                 Channels = new ObservableCollection<DiscordChannel>(orderedChannels);

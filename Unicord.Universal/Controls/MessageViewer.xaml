@@ -161,20 +161,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="authorName"
-                           VerticalAlignment="Bottom"
-                           FontWeight="Bold"
-                           Foreground="{Binding Author.ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
-                           Text="{Binding Author.DisplayName}"
-                           Tapped="AuthorName_Tapped"
-                           TextWrapping="NoWrap" />
-                <Border Grid.Column="1"
-                        Margin="4,0"
-                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-                        CornerRadius="2"
-                        Visibility="{Binding Author.IsBot, Converter={StaticResource BoolVisibilityConverter}}">
-                    <TextBlock Margin="4,2" FontSize="11" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" Text="Bot" />
-                </Border>
+                <local:UsernameControl x:Name="authorName" User="{Binding Author}" FontWeight="Bold" Tapped="AuthorName_Tapped"/>
                 <TextBlock Grid.Column="2" Margin="8,1" FontSize="11" VerticalAlignment="Bottom" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, Mode=OneWay}" Opacity="0.4"/>
             </Grid>
             <Grid Grid.Row="1" Margin="8,0,2,0">
@@ -182,55 +169,40 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        x:Name="systemMessageSymbol"
-                        Margin="0,6,10,6"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
-                        Visibility="Collapsed" />
-                    <Grid
+                <Grid
                         x:Name="messageEditContainer"
-                        Grid.Column="1"
                         x:DeferLoadStrategy="Lazy"
                         Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                         Visibility="Collapsed">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="messageEditBox"
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="messageEditBox"
                                  MaxHeight="100"
                                  fcu:PreviewKeyUp="messageEditBox_PreviewKeyUp"
                                  AcceptsReturn="False"
                                  Style="{ThemeResource MessageTextBoxStyle}"
                                  Text="{Binding Content, Mode=OneWay}"
                                  TextWrapping="Wrap" />
-                        <Button x:Name="messageEditFinishButton"
+                    <Button x:Name="messageEditFinishButton"
                                 Grid.Column="1"
                                 Content="&#xE73E;"
                                 Style="{ThemeResource IconButtonStyle}"
                                 Click="messageEditFinishButton_Click" />
-                        <Button x:Name="messageEditCancelButton"
+                    <Button x:Name="messageEditCancelButton"
                                 Grid.Column="2"
                                 Content="&#xE711;"
                                 Style="{ThemeResource IconButtonStyle}"
                                 Click="messageEditCancelButton_Click" />
-                    </Grid>
+                </Grid>
 
-                    <wam:MarkdownTextBlock x:Name="markdown"
-                                           Grid.Column="1"
+                <wam:MarkdownTextBlock x:Name="markdown"
                                            Channel="{Binding Channel}"
                                            IsTextSelectionEnabled="False"
                                            Text="{Binding Content}"
                                            WrapCodeBlock="True"/>
-                </Grid>
             </Grid>
             <StackPanel x:Name="embeds" Grid.Row="2" />
         </Grid>

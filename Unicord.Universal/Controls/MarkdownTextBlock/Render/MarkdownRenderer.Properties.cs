@@ -227,5 +227,6 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
         public Brush LinkForeground { get; set; }
 
         public DiscordChannel Channel { get; set; }
+        public bool IsSystemMessage { get; set; }
     }
 }

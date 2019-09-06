@@ -172,9 +172,6 @@
     <Compile Include="Controls\IconLabelButton.cs" />
     <Compile Include="Controls\ImageElement.cs" />
     <Compile Include="Controls\MarkdownTextBlock\CodeBlockResolvingEventArgs.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Extensions\StringExtensions.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Extensions\VisualTree.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Helpers\ThemeListener.cs" />
     <Compile Include="Controls\MarkdownTextBlock\ImageResolvingEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\LinkClickedEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\MarkdownRenderedEventArgs.cs" />
@@ -257,9 +254,11 @@
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScaledContainer.cs" />
+    <Compile Include="Controls\SystemMessageViewer.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UsernameControl.cs" />
     <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -273,6 +272,7 @@
     <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
+    <Compile Include="Converters\SystemMessageConverters.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
