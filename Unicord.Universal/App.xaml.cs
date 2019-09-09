@@ -63,7 +63,7 @@ namespace Unicord.Universal
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
 
-            if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
                 AppCenter.LogLevel = Microsoft.AppCenter.LogLevel.Verbose;
                 AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));

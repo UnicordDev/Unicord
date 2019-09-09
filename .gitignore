@@ -25,7 +25,7 @@ bld/
 [Ll]og/
 [Bb]uild/
 
-*.Private.*
+*.priv.*
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
