@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.HockeyApp;
 using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -178,8 +177,9 @@ namespace Unicord.Universal.Controls
             catch (Exception ex)
             {
                 if (!(ex is TaskCanceledException))
-                {
-                    HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
+                {   
+                    // TODO: port
+                    // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
                 }
             }
 

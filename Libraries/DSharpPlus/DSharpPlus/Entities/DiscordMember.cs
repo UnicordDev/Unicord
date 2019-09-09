@@ -41,6 +41,7 @@ namespace DSharpPlus.Entities
             Discord = user.Discord;
 
             Id = user.Id;
+            IsLocal = true;
 
             _role_ids = new List<ulong>();
         }
@@ -85,6 +86,8 @@ namespace DSharpPlus.Entities
         internal IReadOnlyList<ulong> RoleIds
             => new ReadOnlyList<ulong>(_role_ids);
 
+        public bool IsLocal { get; internal set; }
+
         [JsonProperty("roles", NullValueHandling = NullValueHandling.Ignore)]
         internal List<ulong> _role_ids;
 
@@ -119,6 +122,17 @@ namespace DSharpPlus.Entities
         {
             get
             {
+                if (_invalidateBrush)
+                {
+                    lock (_brush)
+                    {
+                        _brush.Dispose();
+                        _brush = new ThreadLocal<SolidColorBrush>();
+
+                        _invalidateBrush = false;
+                    }
+                }
+
                 if (_brush.IsValueCreated)
                 {
                     return _brush.Value;
@@ -165,9 +179,14 @@ namespace DSharpPlus.Entities
         [JsonIgnore]
         public DiscordVoiceState VoiceState
             => Discord.Guilds[_guild_id].VoiceStates.TryGetValue(Id, out var voiceState) ? voiceState : null;
+        
+        [JsonIgnore]
+        internal bool _invalidateBrush;
 
         [JsonIgnore]
         internal ulong _guild_id = 0;
+
+        [JsonIgnore]
         private string _nickname;
 
         /// <summary>
@@ -184,7 +203,7 @@ namespace DSharpPlus.Entities
         public bool IsOwner
             => Id == Guild.OwnerId;
 
-#region Overriden user properties
+        #region Overriden user properties
         [JsonIgnore]
         internal DiscordUser User
             => Discord.UserCache[Id];
@@ -251,7 +270,7 @@ namespace DSharpPlus.Entities
             get => User.Verified;
             internal set => User.Verified = value;
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Sends a direct message to this member. Creates a direct message channel if one does not exist already.

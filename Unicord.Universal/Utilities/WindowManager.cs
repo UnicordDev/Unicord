@@ -63,8 +63,8 @@ namespace Unicord.Universal.Utilities
 
             try
             {
-                var window = _windowChannelDictionary.First(w => w.Value == channel.Id).Key;
-                if (window != ApplicationView.GetForCurrentView().Id)
+                var window = _windowChannelDictionary.FirstOrDefault(w => w.Value == channel.Id).Key;
+                if (window != 0 && window != ApplicationView.GetForCurrentView().Id)
                 {
                     await ApplicationViewSwitcher.SwitchAsync(window);
                     return true;

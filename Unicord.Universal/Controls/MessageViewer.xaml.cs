@@ -12,6 +12,7 @@ using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Utilities;
 using WamWooWam.Uwp.UI.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
@@ -354,8 +355,7 @@ namespace Unicord.Universal.Controls
 
         private void AuthorName_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var profile = new UserFlyout() { DataContext = _author };
-            profile.ShowAt(sender as FrameworkElement);
+            AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(_author, sender as FrameworkElement);
         }
     }
 }

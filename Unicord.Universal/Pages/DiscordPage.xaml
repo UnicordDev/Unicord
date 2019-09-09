@@ -54,7 +54,6 @@
                 EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
-                From="2048"
                 To="0"
                 Duration="00:00:00.50" />
             <DoubleAnimation
@@ -109,8 +108,7 @@
                 EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
-                From="0"
-                To="2048"
+                To="{Binding RenderSize.Height, ElementName=SettingsOverlayGrid}"
                 Duration="00:00:00.33" />
             <DoubleAnimation
                 Storyboard.TargetName="SettingsPaneTransform"
@@ -177,7 +175,6 @@
                 To="1"
                 Duration="00:00:00.66" />
         </Storyboard>
-
         <Storyboard
             x:Key="CloseCustomStoryboard"
             x:Name="CloseCustomStoryboard"
@@ -213,7 +210,6 @@
                 To="0"
                 Duration="00:00:00.25" />
         </Storyboard>
-
         <Storyboard x:Key="OpenCustomMobileStoryboard" x:Name="OpenCustomMobileStoryboard">
             <DoubleAnimation
                 Storyboard.TargetName="CustomPaneScale"
@@ -246,7 +242,6 @@
                 From="0"
                 Duration="00:00:00.66" />
         </Storyboard>
-
         <Storyboard
             x:Key="CloseCustomMobileStoryboard"
             x:Name="CloseCustomMobileStoryboard"
@@ -586,6 +581,7 @@
                     <VisualState.Setters>
                         <Setter Target="closeItem.Visibility" Value="Visible" />
                         <Setter Target="content.Margin" Value="-276,0,0,0" />
+                        <Setter Target="SettingsPaneTransform.Y" Value="{Binding RenderSize.Height, ElementName=SettingsOverlayGrid}" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

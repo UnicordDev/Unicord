@@ -1,13 +1,4 @@
 ﻿#pragma warning disable CS0618
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
-using DSharpPlus.Net;
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Serialization;
-using DSharpPlus.Net.WebSocket;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,6 +12,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
+using DSharpPlus.Net;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Serialization;
+using DSharpPlus.Net.WebSocket;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus
 {
@@ -192,7 +192,7 @@ namespace DSharpPlus
             _userUpdated = new AsyncEvent<UserUpdateEventArgs>(EventErrorHandler, "USER_UPDATED");
             _voiceStateUpdated = new AsyncEvent<VoiceStateUpdateEventArgs>(EventErrorHandler, "VOICE_STATE_UPDATED");
             _voiceServerUpdated = new AsyncEvent<VoiceServerUpdateEventArgs>(EventErrorHandler, "VOICE_SERVER_UPDATED");
-            _guildMembersChunked = new AsyncEvent<GuildMembersChunkEventArgs>(EventErrorHandler, "GUILD_MEMBERS_CHUNKED");
+            _guildMembersChunked = new AsyncEvent<GuildMembersChunkEventArgs>(EventErrorHandler, "GUILD_MEMBERS_CHUNK");
             _unknownEvent = new AsyncEvent<UnknownEventArgs>(EventErrorHandler, "UNKNOWN_EVENT");
             _messageReactionAdded = new AsyncEvent<MessageReactionAddEventArgs>(EventErrorHandler, "MESSAGE_REACTION_ADDED");
             _messageReactionRemoved = new AsyncEvent<MessageReactionRemoveEventArgs>(EventErrorHandler, "MESSAGE_REACTION_REMOVED");
@@ -602,8 +602,8 @@ namespace DSharpPlus
         /// <param name="userStatus">Status of the user.</param>
         /// <param name="idleSince">Since when is the client performing the specified activity.</param>
         /// <returns></returns>
-        public Task UpdateStatusAsync(DiscordActivity activity = null, UserStatus? userStatus = null, DateTimeOffset? idleSince = null)
-            => InternalUpdateStatusAsync(activity, userStatus, idleSince);
+        public Task UpdateStatusAsync(DiscordActivity activity = null, UserStatus? userStatus = null, DateTimeOffset? idleSince = null, bool afk = false)
+            => InternalUpdateStatusAsync(activity, userStatus, idleSince, afk);
 
         /// <summary>
         /// Gets information about specified API application.
@@ -656,22 +656,54 @@ namespace DSharpPlus
                 throw new InvalidOperationException("This can only be done for user tokens.");
             }
 
-            var to_sync = guilds.Where(xg => !xg.IsSynced).Select(xg => xg.Id);
+            var to_sync = guilds.Where(xg => !xg.IsSynced);
 
             if (!to_sync.Any())
             {
-                return Task.Delay(0);
+                return Task.CompletedTask;
             }
 
-            var guild_sync = new GatewayPayload
+            foreach (var guild in to_sync)
             {
-                OpCode = GatewayOpCode.GuildSync,
-                Data = JArray.FromObject(to_sync)
-            };
-            var guild_syncstr = JsonConvert.SerializeObject(guild_sync);
+                var guild_sync = new GatewayPayload
+                {
+                    OpCode = GatewayOpCode.AdvancedGuildSync,
+                    Data = new JObject()
+                    {
+                        ["guild_id"] = new JValue(guild.Id.ToString()),
+                        ["typing"] = new JValue(true),
+                        ["activities"] = new JValue(true),
+                        ["lfg"] = new JValue(true),
+                    }
+                };
 
+                guild.IsSynced = true;
+
+                // TOOD: track most accessed channels for quick stuff
+
+                var guild_syncstr = JsonConvert.SerializeObject(guild_sync);
+                _webSocketClient.SendMessage(guild_syncstr);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public void RequestUserPresences(DiscordGuild guild, IEnumerable<DiscordUser> usersToSync)
+        {
+            var request = new GatewayPayload
+            {
+                OpCode = GatewayOpCode.RequestGuildMembers,
+                Data = new JObject()
+                {
+                    ["guild_id"] = new JArray() { guild.Id.ToString() },
+                    ["user_ids"] = new JArray(usersToSync.Select(u => u.Id.ToString()))
+                }
+            };
+
+            Trace.WriteLine($"Requesting {usersToSync.Count()} members");
+
+            var guild_syncstr = JsonConvert.SerializeObject(request);
             _webSocketClient.SendMessage(guild_syncstr);
-            return Task.Delay(0);
         }
 
         public async Task UpdateUserSettingsAsync(ulong[] guildPositions = null)
@@ -864,7 +896,7 @@ namespace DSharpPlus
                         await OnGuildMemberUpdateEventAsync(dat["user"].ToObject<TransportUser>(), _guilds[gid], dat["roles"].ToObject<IEnumerable<ulong>>(), (string)dat["nick"]).ConfigureAwait(false);
                         break;
 
-                    case "guild_member_chunk":
+                    case "guild_members_chunk":
                         gid = (ulong)dat["guild_id"];
                         await OnGuildMembersChunkEventAsync(dat["members"].ToObject<IEnumerable<TransportMember>>(), _guilds[gid]).ConfigureAwait(false);
                         break;
@@ -1128,19 +1160,6 @@ namespace DSharpPlus
             foreach (var dat in rawPresences)
             {
                 await OnPresenceUpdateEventAsync(dat as JObject, (JObject)dat["user"]).ConfigureAwait(false);
-            }
-
-            if (!Configuration.Token.StartsWith("Bot") && Configuration.TokenType == TokenType.User)
-            {
-                if (Configuration.AutomaticGuildSync)
-                {
-                    await SendGuildSyncAsync().ConfigureAwait(false);
-                }
-                else
-                {
-                    await SyncGuildsAsync(_guilds.Values.Where(g => g.MemberCount <= Configuration.LargeThreshold).ToArray()).ConfigureAwait(false);
-                    Volatile.Write(ref _guildDownloadCompleted, true);
-                }
             }
         }
 
@@ -2192,10 +2211,32 @@ namespace DSharpPlus
             foreach (var xtm in members)
             {
                 var mbr = new DiscordMember(xtm) { Discord = this, _guild_id = guild.Id };
-                guild._members[mbr.Id] = mbr;
+                mbr = guild._members.AddOrUpdate(mbr.Id, mbr, (id, old) =>
+                {
+                    UpdateUser(old, mbr);
+                    old._role_ids = mbr._role_ids ?? new List<ulong>();
+
+                    old.Id = mbr.Id;
+                    old.IsDeafened = mbr.IsDeafened;
+                    old.IsMuted = mbr.IsMuted;
+                    old.JoinedAt = mbr.JoinedAt;
+                    old.Nickname = mbr.Nickname;
+                    old.PremiumSince = mbr.PremiumSince;
+                    old.IsLocal = false;
+                    old._invalidateBrush = true;
+
+                    return old;
+                });
+
+                mbr.InvokePropertyChanged("Roles");
+                mbr.InvokePropertyChanged("Color");
+                mbr.InvokePropertyChanged("ColorBrush");
+                mbr.InvokePropertyChanged("DisplayName");
+
                 mbrs.Add(mbr);
             }
-            guild.MemberCount = guild._members.Count;
+
+            //guild.MemberCount = guild._members.Count;
 
             var ea = new GuildMembersChunkEventArgs(this)
             {
@@ -2454,21 +2495,21 @@ namespace DSharpPlus
             catch (OperationCanceledException) { }
         }
 
-        internal Task InternalUpdateStatusAsync(DiscordActivity activity, UserStatus? userStatus, DateTimeOffset? idleSince)
+        internal Task InternalUpdateStatusAsync(DiscordActivity activity, UserStatus? userStatus, DateTimeOffset? idleSince, bool afk)
         {
             if (activity != null && activity.Name != null && activity.Name.Length > 128)
             {
                 throw new Exception("Game name can't be longer than 128 characters!");
             }
 
-            var since_unix = idleSince != null ? (long?)Utilities.GetUnixTime(idleSince.Value) : null;
+            var since_unix = idleSince != null ? (long?)Utilities.GetUnixTime(idleSince.Value) : 0;
             var act = activity ?? new DiscordActivity();
 
             var status = new StatusUpdate
             {
                 Activity = new TransportActivity(act),
                 IdleSince = since_unix,
-                IsAFK = idleSince != null,
+                IsAFK = idleSince != null || afk,
                 Status = userStatus ?? UserStatus.Online
             };
             var status_update = new GatewayPayload
@@ -2586,7 +2627,6 @@ namespace DSharpPlus
             return Task.CompletedTask;
         }
 
-        internal Task SendGuildSyncAsync() => SyncGuildsAsync(_guilds.Values.ToArray());
         #endregion
 
         //// LINQ :^)

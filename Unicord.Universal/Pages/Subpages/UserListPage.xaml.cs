@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Misc;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -47,19 +48,19 @@ namespace Unicord.Universal.Pages.Subpages
                 {
                     _channel = channel;
 
-                    if (channel.Guild?.Members.Count != channel.Guild?.MemberCount)
-                    {
-                        try
-                        {
-                            _tokenSource = new CancellationTokenSource();
-                            var task = channel.Guild.GetAllMembersAsync(_tokenSource.Token);
-                            await task.ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            return;
-                        }
-                    }
+                    //if (channel.Guild?.Members.Count != channel.Guild?.MemberCount)
+                    //{
+                    //    try
+                    //    {
+                    //        _tokenSource = new CancellationTokenSource();
+                    //        var task = channel.Guild.GetAllMembersAsync(_tokenSource.Token);
+                    //        await task.ConfigureAwait(false);
+                    //    }
+                    //    catch
+                    //    {
+                    //        return;
+                    //    }
+                    //}
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
@@ -94,16 +95,7 @@ namespace Unicord.Universal.Pages.Subpages
             if (item != null)
             {
                 var element = (sender as ListView).ContainerFromItem(item);
-                var value = new UserFlyout() { DataContext = item };
-                if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
-                {
-                    value.ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
-                }
-                else
-                {
-                    value.ShowAt((FrameworkElement)element);
-                }
-
+                AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
                 userList.SelectedItem = null;
             }
         }

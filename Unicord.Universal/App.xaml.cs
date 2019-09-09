@@ -6,7 +6,6 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
-using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -66,7 +65,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true))
             {
-                HockeyClient.Current.Configure(HOCKEYAPP_IDENTIFIER);
+                AppCenter.LogLevel = Microsoft.AppCenter.LogLevel.Verbose;
                 AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
