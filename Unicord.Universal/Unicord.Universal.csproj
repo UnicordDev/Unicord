@@ -140,7 +140,7 @@
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Constants.Private.cs" />
+    <Compile Include="Constants.pub.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>
     </Compile>
