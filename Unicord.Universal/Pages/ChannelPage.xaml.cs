@@ -1,5 +1,4 @@
 ﻿using DSharpPlus.Entities;
-using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
@@ -234,19 +233,19 @@ namespace Unicord.Universal.Pages
                     loadingProgress.IsIndeterminate = true;
 
                     noMessages.Visibility = Visibility.Collapsed;
-                }).ConfigureAwait(false);
+                });
+                
+                if (ViewModel.Channel.Guild?.IsSynced == false && ViewModel.Channel.Guild.IsLarge)
+                {
+                    await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
+                }
 
                 await ViewModel.LoadMessagesAsync().ConfigureAwait(false);
-
-                // if (ViewModel.Channel.Guild?.IsSynced == false)
-                // {
-                //     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
-                // }
             }
             catch (Exception ex)
             {
-                HockeyClient.Current.TrackException(ex);
-                Logger.Log(ex);
+                // TODO: port
+                // HockeyClient.Current.TrackException(ex);
             }
 
             await Dispatcher.AwaitableRunAsync(() =>
@@ -355,7 +354,8 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
-                HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "PasteFailure" });
+                // TODO: Port
+                // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "PasteFailure" });
                 await UIUtilities.ShowErrorDialogAsync(
                     "Failed to upload.",
                     "Whoops, something went wrong while uploading that file, sorry!");
@@ -478,7 +478,8 @@ namespace Unicord.Universal.Pages
                 }
                 catch (Exception ex)
                 {
-                    HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "FileQueryFailure" });
+                    // TODO: Port
+                    // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "FileQueryFailure" });
                 }
 
                 loadingImagesRing.IsActive = false;

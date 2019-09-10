@@ -27,6 +27,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
     /// </summary>
     public partial class MarkdownRenderer
     {
+
         /// <summary>
         /// Renders emoji element.
         /// </summary>
@@ -583,7 +584,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                         {
                             var me = user as DiscordMember;
 
-                            run.Text = $"@{me?.DisplayName ?? user.Username}";
+                            run.Text = IsSystemMessage ? me?.DisplayName ?? user.Username: $"@{me?.DisplayName ?? user.Username}";
                             run.Foreground = me?.ColorBrush ?? Foreground;
                         }
                         else

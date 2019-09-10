@@ -21,15 +21,13 @@ namespace Unicord.Universal.Converters
                 }
             }
 
-            t = t.ToLocalTime();
             var moment = new Moment(t);
-
             if (t != default)
             {
                 switch (setting)
                 {
                     case TimestampStyle.Relative:
-                        return t.Humanize(false);
+                        return t.Humanize(true);
                     case TimestampStyle.Absolute:
                         return moment.Calendar();
                     case TimestampStyle.Both:

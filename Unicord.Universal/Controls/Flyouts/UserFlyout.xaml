@@ -1,4 +1,5 @@
-﻿<Flyout
+﻿<utilities:AdaptiveFlyout
+    xmlns:utilities="using:Unicord.Universal.Utilities"
     x:Class="Unicord.Universal.Controls.Flyouts.UserFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +8,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:controls="using:Unicord.Universal.Controls"
-    mc:Ignorable="d" Placement="Right">
+    mc:Ignorable="d">
 
     <Grid x:Name="Root" Width="256" Margin="-12">
         <Grid.RowDefinitions>
@@ -37,16 +38,12 @@
                     </Ellipse.Fill>
                 </Ellipse>
             </Canvas>
-            <StackPanel Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
-                <TextBlock Text="{Binding Nickname}" TextAlignment="Center" FontSize="24"/>
+            <StackPanel Grid.Row="1" RequestedTheme="Dark" >
+                <controls:UsernameControl User="{Binding}" FontSize="24" IconSize="24" HorizontalAlignment="Center" Margin="12,0" />
                 <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="16" Margin="0,0,0,24">
                     @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
                 </TextBlock>
             </StackPanel>
-
-            <TextBlock Grid.Row="1" Visibility="{Binding Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Visible, ConverterParameter=True}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="24" Margin="0,0,0,16">
-                @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
-            </TextBlock>
         </Grid>
         
         <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
@@ -78,4 +75,4 @@
         </StackPanel>
        
     </Grid>
-</Flyout>
+</utilities:AdaptiveFlyout>

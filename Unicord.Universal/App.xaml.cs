@@ -13,7 +13,6 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
-using Microsoft.HockeyApp;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
@@ -62,6 +61,12 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
+
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
+            {
+                AppCenter.LogLevel = Microsoft.AppCenter.LogLevel.Verbose;
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+            }
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)

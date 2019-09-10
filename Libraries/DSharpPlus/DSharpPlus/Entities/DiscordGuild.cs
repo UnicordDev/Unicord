@@ -406,6 +406,12 @@ namespace DSharpPlus.Entities
         {
         }
 
+        internal void RequestUserPresences(IEnumerable<DiscordUser> usersToSync)
+        {
+           if (Discord is DiscordClient client)
+                client.RequestUserPresences(this, usersToSync);
+        }
+
         #region Guild Methods
         /// <summary>
         /// Adds a new member to this guild

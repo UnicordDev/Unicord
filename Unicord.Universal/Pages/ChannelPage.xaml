@@ -12,6 +12,7 @@
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:converters="using:Unicord.Universal.Converters"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
@@ -170,6 +171,14 @@
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
             <controls1:MessageViewer Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
+        
+        <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
+            <controls1:SystemMessageViewer Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
+        </DataTemplate>
+
+        <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
+                                            MessageTemplate="{StaticResource DefaultMessageTemplate}" 
+                                            SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
 
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
             <controls1:MessageViewer
@@ -394,7 +403,7 @@
                         <ListView
                             x:Name="messageList"
                             IncrementalLoadingThreshold="15"
-                            ItemTemplate="{StaticResource DefaultMessageTemplate}"
+                            ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"
                             SelectionChanged="MessageList_SelectionChanged"

@@ -52,6 +52,8 @@
             <converters:TitleCaseConverter x:Key="TitleCaseConverter"/>
             <converters:UriConverter x:Key="UriConverter"/>
             <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
+            <converters:SystemMessageSymbolConverter x:Key="SystemMessageSymbolConverter"/>
+            <converters:SystemMessageTextConverter x:Key="SystemMessageTextConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

@@ -17,7 +17,10 @@ Firstly, as with all GitHub projects, you'll want to clone the repo, but you wil
 ```
 git submodule update --recursive
 ```
-
+Or if it doesn't work
+```
+git submodule update --init --recursive
+```
 From here, building should be as simple as double clicking `Unicord.sln`, ensuring your targets are appropriate to your testing platform (i.e. Debug x64), and hitting F5. Once built and deployed, it should show in your start menu as "Unicord Canary", data and settings are kept separate from the Store version, so they can be installed side by side.
 
 ![Canary](https://i.imgur.com/NaMdkZ4.png)
@@ -32,8 +35,8 @@ On one specific note, while the project technically targets a minimum of Windows
 ## Contributing
 Unicord accepts contributions! Want a feature that doesn't already exist? Feel free to dig right in and give it a shot. Do be mindful of other ongoing projects, make sure someone isn't already building the feature you want, etc. If you don't have the know how yourself, file an issue, someone might pick up on it.
 
-## Licence
-Unicord is licenced under the MIT License.
+## License
+Unicord is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgements
  - [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) Contributors, for providing a wonderful base on which I've built much of this

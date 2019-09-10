@@ -65,7 +65,6 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                     c = text[index];
                     type = MentionType.User;
                     HandleUser(text, builder, ref index, ref type, c);
-
                     break;
                 case '#':
                     // channel mention
@@ -88,7 +87,6 @@ namespace WamWooWam.Parsers.Markdown.Inlines
                     // normal emote
                     index++;
                     type = MentionType.Emote;
-
                     return HandleEmote(text, builder, index, innerStart, innerEnd);
                 default:
                     return null;

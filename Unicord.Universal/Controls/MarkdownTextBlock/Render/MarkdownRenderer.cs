@@ -5,7 +5,7 @@
 using System;
 using WamWooWam.Parsers.Markdown;
 using WamWooWam.Parsers.Markdown.Render;
-using WamWooWam.Uwp.UI.Extensions;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;

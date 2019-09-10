@@ -1,0 +1,2 @@
+# Research
+This folder contains my own original research into how certain Discord functions work. All research is done in a clean room, black box manner. No source code has been inspected, and all data inspected was gathered by simply using Fiddler, and only from accounts I own and have complete control over. All IDs and personally identifiable information has been scrubbed.

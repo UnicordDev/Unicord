@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{B6C21BFC-7FC8-434B-B6D8-557D7FD32ADF}</ProjectGuid>
+    <ProjectGuid>{9DA969AF-DA57-4723-9A74-8E4E26A325FF}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Unicord.Universal</RootNamespace>
@@ -140,7 +140,7 @@
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Constants.Private.cs" />
+    <Compile Include="Constants.pub.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>
     </Compile>
@@ -175,9 +175,6 @@
     <Compile Include="Controls\IconLabelButton.cs" />
     <Compile Include="Controls\ImageElement.cs" />
     <Compile Include="Controls\MarkdownTextBlock\CodeBlockResolvingEventArgs.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Extensions\StringExtensions.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Extensions\VisualTree.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Helpers\ThemeListener.cs" />
     <Compile Include="Controls\MarkdownTextBlock\ImageResolvingEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\LinkClickedEventArgs.cs" />
     <Compile Include="Controls\MarkdownTextBlock\MarkdownRenderedEventArgs.cs" />
@@ -260,12 +257,14 @@
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScaledContainer.cs" />
+    <Compile Include="Controls\SystemMessageViewer.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\VoiceConnectionControl.xaml.cs">
       <DependentUpon>VoiceConnectionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UsernameControl.cs" />
     <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -279,6 +278,7 @@
     <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
+    <Compile Include="Converters\SystemMessageConverters.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
@@ -413,6 +413,7 @@
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\AdaptiveFlyout.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHelloManager.cs" />
@@ -723,11 +724,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HockeySDK.UWP">
-      <Version>4.1.6</Version>
-    </PackageReference>
     <PackageReference Include="Humanizer">
-      <Version>2.6.2</Version>
+      <Version>2.7.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
       <Version>2.1.1</Version>
@@ -742,7 +740,7 @@
       <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
+      <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>4.0.0</Version>

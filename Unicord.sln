@@ -11,11 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WamWooWam.Core", "Libraries
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharpPlus", "Libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj", "{AF1C3F9F-BCC8-43F2-B476-F3E8E87E431C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Univeral", "Unicord.Universal\Unicord.Univeral.csproj", "{B6C21BFC-7FC8-434B-B6D8-557D7FD32ADF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A185B162-6CB6-4502-B03F-B56F7699A8D9} = {A185B162-6CB6-4502-B03F-B56F7699A8D9}
-		{219EC965-228A-1824-174D-96449D05F88A} = {219EC965-228A-1824-174D-96449D05F88A}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Universal", "Unicord.Universal\Unicord.Universal.csproj", "{B6C21BFC-7FC8-434B-B6D8-557D7FD32ADF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.VoiceNext.UWP", "Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj", "{F061F955-5565-4D48-8111-F2F7F2241499}"
 EndProject
