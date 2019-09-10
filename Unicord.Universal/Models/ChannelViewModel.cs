@@ -1,13 +1,13 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.Storage.Streams;
@@ -459,22 +459,32 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private void InsertMessages(int index, IEnumerable<DiscordMessage> messages)
+        private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
             RequestMissingUsers(messages);
 
             foreach (var mess in messages)
             {
-                foreach (var mess in messages)
+                if (!Messages.Any(m => m.Id == mess.Id))
                 {
-                    if (!Messages.Any(m => m.Id == mess.Id))
-                    {
-                        Messages.Insert(index + 1, mess);
-                    }
+                    Messages.Insert(index + 1, mess);
                 }
+            }
+        }, null);
 
-            }, null);
-        }
+        private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages) => _context.Post(d =>
+        {
+            Messages.Clear();
+
+            RequestMissingUsers(messages);
+            foreach (var message in messages.Reverse())
+            {
+                if (!Messages.Any(m => m.Id == message.Id))
+                {
+                    Messages.Add(message);
+                }
+            }
+        }, null);
 
         private void RequestMissingUsers(IEnumerable<DiscordMessage> messages)
         {
@@ -484,25 +494,6 @@ namespace Unicord.Universal.Models
                 if (usersToSync.Any())
                     Channel.Guild.RequestUserPresences(usersToSync);
             }
-        }
-
-        private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages) => _context.Post(d =>
-        {
-            Messages.Clear();
-
-            RequestMissingUsers(messages);
-            foreach (var message in messages.Reverse())
-            {
-                Messages.Clear();
-
-                foreach (var message in messages.Reverse())
-                {
-                    if (!Messages.Any(m => m.Id == message.Id))
-                    {
-                        Messages.Add(message);
-                    }
-                }
-            }, null);
         }
 
         private async Task UnsafeLoadMessages()
