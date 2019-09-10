@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{B6C21BFC-7FC8-434B-B6D8-557D7FD32ADF}</ProjectGuid>
+    <ProjectGuid>{9DA969AF-DA57-4723-9A74-8E4E26A325FF}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Unicord.Universal</RootNamespace>
