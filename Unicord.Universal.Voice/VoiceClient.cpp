@@ -96,7 +96,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	IAsyncAction VoiceClient::ConnectAsync()
 	{
 		renderer = new AudioRenderer(this);
-		co_await renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
+		renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
 
 		auto format = renderer->GetRenderProperties();
 		std::cout << "Render: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
@@ -535,7 +535,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		try
 		{
 			std::cout << "WebSocket closed with code " << ev.Code() << " and reason " << to_string(ev.Reason()) << "\n";
-			Close();
 		}
 		catch (const std::exception&)
 		{
@@ -564,6 +563,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
 	IOutputStream VoiceClient::GetOutputStream()
 	{
 		return make_self<VoiceOutputStream>(*this).as<IOutputStream>();
+	}
+
+	void VoiceClient::UpdateAudioDevices()
+	{
+		renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
+		renderer->BeginCapture();
+		renderer->BeginRender();
 	}
 
 	IAsyncAction VoiceClient::OnUdpHeartbeat(ThreadPoolTimer timer)
@@ -677,7 +683,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		renderer->StopRender();
 
 		cancel_voice_send = true;
-		voice_thread.join();
+
+		if (voice_thread.joinable())
+			voice_thread.join();
 
 		PCMPacket packet;
 		while (voice_queue.try_pop(packet))

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Models;
+using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -28,8 +29,14 @@ namespace Unicord.Universal.Pages.Settings
         public VoiceSettingsPage()
         {
             Model = new VoiceSettingsModel();
+            Model.PropertyChanged += Model_PropertyChanged;
 
             InitializeComponent();
+        }
+
+        private async void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            await UpdateVoiceSettings();
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -41,6 +48,21 @@ namespace Unicord.Universal.Pages.Settings
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             await Model.SaveAsync();
+            await UpdateVoiceSettings();
+        }
+
+        private async System.Threading.Tasks.Task UpdateVoiceSettings()
+        {
+            try
+            {
+                if (this.FindParent<DiscordPage>().DataContext is DiscordPageModel model)
+                {
+                    var inputInfo = Model.AvailableInputDevices.ElementAtOrDefault(Model.InputDevice);
+                    var outputInfo = Model.AvailableOutputDevices.ElementAtOrDefault(Model.OutputDevice);
+                    await model.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id);
+                }
+            }
+            catch { }
         }
     }
 }

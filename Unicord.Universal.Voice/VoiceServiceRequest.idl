@@ -10,6 +10,7 @@ namespace Unicord.Universal.Voice.Background
 		DisconnectRequest,
 		MuteRequest,
 		DeafenRequest,
+		SettingsUpdate
 	};
 
 	enum VoiceServiceState

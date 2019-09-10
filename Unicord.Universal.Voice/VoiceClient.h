@@ -53,6 +53,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		IAsyncAction ConnectAsync();
 		IAsyncAction SendSpeakingAsync(bool speaking);
 		IOutputStream GetOutputStream();
+		void UpdateAudioDevices();
 		void Close();       
 		
 		bool Muted();

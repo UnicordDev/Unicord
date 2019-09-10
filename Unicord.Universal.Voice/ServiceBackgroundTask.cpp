@@ -79,7 +79,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 				case VoiceServiceRequest::GuildConnectRequest:
 				{
 					if (voiceClient == nullptr && activeCall == nullptr) {
-						activeCall = voipCoordinator.RequestNewOutgoingCall(L"", unbox_value<hstring>(data.Lookup(L"contact_name")), Package::Current().DisplayName(), VoipPhoneCallMedia::Audio);
+						activeCall = voipCoordinator.RequestNewOutgoingCall(
+							L"", unbox_value<hstring>(data.Lookup(L"contact_name")), Package::Current().DisplayName(), VoipPhoneCallMedia::Audio);
 						if (activeCall != nullptr) {
 							voiceClientOptions = make<Voice::implementation::VoiceClientOptions>();
 							voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
@@ -129,6 +130,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 						values.Insert(L"state", box_value((uint32_t)VoiceServiceState::Connected));
 						values.Insert(L"guild_id", box_value(voiceClientOptions.GuildId()));
 						values.Insert(L"channel_id", box_value(voiceClientOptions.ChannelId()));
+						values.Insert(L"muted", box_value(voiceClient.Muted()));
+						values.Insert(L"deafened", box_value(voiceClient.Deafened()));
 					}
 					else {
 						values.Insert(L"state", box_value((uint32_t)VoiceServiceState::ReadyToConnect));
@@ -173,6 +176,20 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 						activeCall = nullptr;
 						voiceClient = nullptr;
 						RaiseEvent(VoiceServiceEvent::Disconnected, event_values);
+					}
+					break;
+
+				case VoiceServiceRequest::SettingsUpdate:
+					if (voiceClient != nullptr) {
+						if (data.HasKey(L"input_device")) {
+							voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));
+						}
+						
+						if (data.HasKey(L"output_device")) {
+							voiceClientOptions.PreferredPlaybackDevice(unbox_value_or<hstring>(data.Lookup(L"output_device"), L""));
+						}
+
+						voiceClient.UpdateAudioDevices();
 					}
 					break;
 				default:

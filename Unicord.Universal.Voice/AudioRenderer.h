@@ -1,7 +1,6 @@
 #pragma once
 
 #include <concurrent_unordered_map.h>
-
 #include <winrt/Windows.Media.h>
 #include <winrt/Windows.Media.Audio.h>
 #include <winrt/Windows.Media.Devices.h>
@@ -9,8 +8,9 @@
 #include <winrt/Windows.Media.MediaProperties.h>
 #include <winrt/Windows.Devices.h>
 #include <winrt/Windows.Devices.Enumeration.h>
-
 #include "AudioFormat.h"
+
+#define SAFE_CLOSE(x) if (x != nullptr) { x.Close(); x = nullptr; }
 
 namespace winrt::Unicord::Universal::Voice::implementation
 {
@@ -33,7 +33,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 	public:
 		AudioRenderer(implementation::VoiceClient* client);
 
-		Windows::Foundation::IAsyncAction Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id);
+		void Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id);
 		void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource* sender);
 
 		void BeginCapture();

@@ -1,5 +1,4 @@
 #include "pch.h"
-#include <samplerate.h>
 #include "AudioRenderer.h"
 #include "VoiceClient.h"
 
@@ -21,7 +20,7 @@ namespace winrt::Unicord::Universal::Voice::Render
 		pcm_buffer = new uint8_t[buffer_length]{ 0 };
 	}
 
-	IAsyncAction AudioRenderer::Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id)
+	void AudioRenderer::Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id)
 	{
 		hstring render_device_id = L"";
 		hstring capture_device_id = L"";
@@ -33,52 +32,84 @@ namespace winrt::Unicord::Universal::Voice::Render
 			capture_device_id = preferred_capture_device_id;
 		}
 
+		std::unique_lock in_lock(input_mutex);
+		std::unique_lock out_lock(output_mutex);
+
 		AudioEncodingProperties audio_format = AudioEncodingProperties::CreatePcm(voice_client->audio_format.sample_rate, voice_client->audio_format.channel_count, 16);
 		AudioGraphSettings settings{ AudioRenderCategory::Communications };
 		settings.EncodingProperties(audio_format);
 
 		// this is slightly painful ngl
 		if (!render_device_id.empty()) {
-			DeviceInformation render_device_info = co_await DeviceInformation::CreateFromIdAsync(render_device_id);
+			DeviceInformation render_device_info = DeviceInformation::CreateFromIdAsync(render_device_id).get();
 			settings.PrimaryRenderDevice(render_device_info);
 		}
 
-		auto result = co_await AudioGraph::CreateAsync(settings);
-		if (result.Status() != AudioGraphCreationStatus::Success) { // why not just throw an exception for me?
-			throw hresult_error(E_FAIL, L"Failed to initialize audio output device");
+		if (render_graph == nullptr) {
+			auto result = AudioGraph::CreateAsync(settings).get();
+			if (result.Status() != AudioGraphCreationStatus::Success) { // why not just throw an exception for me?
+				throw hresult_error(E_FAIL, L"Failed to initialize audio output device");
+			}
+			render_graph = result.Graph();
+		}
+		else{
+			render_graph.Stop();
 		}
 
-		render_graph = result.Graph();
+		if (render_submix_node == nullptr) {
+			render_submix_node = render_graph.CreateSubmixNode();
+		}
 
-		auto render_node_result = co_await render_graph.CreateDeviceOutputNodeAsync();
+		if (render_node != nullptr) {
+			render_submix_node.RemoveOutgoingConnection(render_node);
+			render_node.Close();
+			render_node = nullptr;
+		}
+
+		auto render_node_result = render_graph.CreateDeviceOutputNodeAsync().get();
 		if (render_node_result.Status() != AudioDeviceNodeCreationStatus::Success) {
 			throw hresult_error(E_FAIL, L"Failed to initialize audio output device " + to_hstring((int32_t)render_node_result.Status()));
 		}
 
 		render_node = render_node_result.DeviceOutputNode();
-		render_submix_node = render_graph.CreateSubmixNode();
 		render_submix_node.AddOutgoingConnection(render_node);
 
-		result = co_await AudioGraph::CreateAsync(settings);
-		if (result.Status() == AudioGraphCreationStatus::Success) {
+		if (capture_graph == nullptr) {
+			auto result = AudioGraph::CreateAsync(settings).get();
+			if (result.Status() != AudioGraphCreationStatus::Success) {
+				return;
+			}
+
 			capture_graph = result.Graph();
 			capture_graph.QuantumStarted({ this, &AudioRenderer::OnQuantumStarted });
+		}
+		else {
+			capture_graph.Stop();
+		}
 
-			CreateAudioDeviceInputNodeResult capture_node_result{ nullptr };
+		if (capture_frame_node == nullptr) {
+			capture_frame_node = capture_graph.CreateFrameOutputNode(audio_format);
+		}
 
-			if (!capture_device_id.empty()) {
-				DeviceInformation capture_device_info = co_await DeviceInformation::CreateFromIdAsync(capture_device_id);
-				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format, capture_device_info);
-			}
-			else {
-				capture_node_result = co_await capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format);
-			}
+		if (capture_node != nullptr) {
+			capture_node.RemoveOutgoingConnection(capture_frame_node);
+			capture_node.Close();
+			capture_node = nullptr;
+		}
 
-			if (capture_node_result.Status() == AudioDeviceNodeCreationStatus::Success) {
-				capture_node = capture_node_result.DeviceInputNode();
-				capture_frame_node = capture_graph.CreateFrameOutputNode(audio_format);
-				capture_node.AddOutgoingConnection(capture_frame_node);
-			}
+		CreateAudioDeviceInputNodeResult capture_node_result{ nullptr };
+
+		if (!capture_device_id.empty()) {
+			DeviceInformation capture_device_info = DeviceInformation::CreateFromIdAsync(capture_device_id).get();
+			capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format, capture_device_info).get();
+		}
+		else {
+			capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format).get();
+		}
+
+		if (capture_node_result.Status() == AudioDeviceNodeCreationStatus::Success) {
+			capture_node = capture_node_result.DeviceInputNode();
+			capture_node.AddOutgoingConnection(capture_frame_node);
 		}
 	}
 

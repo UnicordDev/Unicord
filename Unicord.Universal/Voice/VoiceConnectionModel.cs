@@ -28,7 +28,9 @@ namespace Unicord.Universal.Voice
         private bool _appServiceConnected;
         private uint _webSocketPing;
         private uint _udpPing;
+        private string _connectionStatus;
 
+        public string ConnectionStatus { get => _connectionStatus; set => OnPropertySet(ref _connectionStatus, value); }
         public DiscordChannel Channel { get; }
 
         public bool Muted
@@ -49,8 +51,51 @@ namespace Unicord.Universal.Voice
 
         public uint WebSocketPing { get => _webSocketPing; set => OnPropertySet(ref _webSocketPing, value); }
         public uint UdpPing { get => _udpPing; set => OnPropertySet(ref _udpPing, value); }
-
         public event EventHandler<EventArgs> Disconnected;
+
+        /// <summary>
+        /// If voice is connected, returns a VoiceConnectionModel for that connection,
+        /// otherwise null.
+        /// </summary>
+        public static async Task<VoiceConnectionModel> FindExistingConnectionAsync()
+        {
+            var connection = new AppServiceConnection()
+            {
+                AppServiceName = "com.wankerr.Unicord.Voice",
+                PackageFamilyName = Package.Current.Id.FamilyName
+            };
+
+            if (await connection.OpenAsync() != AppServiceConnectionStatus.Success)
+            {
+                connection.Dispose();
+                return null;
+            }
+
+            var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
+            var info = await connection.SendMessageAsync(stateRequest);
+            var state = (VoiceServiceState)(uint)info.Message["state"];
+            if (state == VoiceServiceState.ReadyToConnect)
+            {
+                connection.Dispose();
+                return null;
+            }
+
+            var channel_id = (ulong)info.Message["channel_id"];
+            var guild_id = (ulong)info.Message["guild_id"];
+            var muted = (bool)info.Message["muted"];
+            var deafened = (bool)info.Message["deafened"];
+
+            var channel = App.Discord.Guilds[guild_id].Channels[channel_id];
+            var vstate = VoiceState.None;
+            if (muted)
+                vstate = vstate & VoiceState.Muted;
+            if (deafened)
+                vstate = VoiceState.Muted & VoiceState.Deafened;
+
+            var model = new VoiceConnectionModel(channel, vstate, connection);
+            model.ConnectionStatus = $"Connected to {channel.Name}!";
+            return model;
+        }
 
         public VoiceConnectionModel(DiscordChannel channel)
         {
@@ -59,6 +104,9 @@ namespace Unicord.Universal.Voice
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
 
             Channel = channel;
+            ConnectionStatus = "Getting ready...";
+            PropertyChanged += OnPropertyChanged;
+
             _appServiceConnection = new AppServiceConnection()
             {
                 AppServiceName = "com.wankerr.Unicord.Voice",
@@ -67,8 +115,18 @@ namespace Unicord.Universal.Voice
 
             _appServiceConnection.RequestReceived += OnRequestReceived;
             _appServiceConnection.ServiceClosed += OnServiceClosed;
+        }
 
-            this.PropertyChanged += OnPropertyChanged;
+        private VoiceConnectionModel(DiscordChannel channel, VoiceState vstate, AppServiceConnection connection)
+        {
+            Channel = channel;
+            PropertyChanged += OnPropertyChanged;
+
+            _voipCallCoordinator = VoipCallCoordinator.GetDefault();
+            _appServiceConnection = connection;
+            _appServiceConnection.RequestReceived += OnRequestReceived;
+            _appServiceConnection.ServiceClosed += OnServiceClosed;
+            _state = vstate;
         }
 
         private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -84,10 +142,24 @@ namespace Unicord.Universal.Voice
             }
         }
 
+        public async Task UpdatePreferredAudioDevicesAsync(string audioRender, string audioCapture)
+        {
+            var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.SettingsUpdate };
+            if (audioRender != null)
+                set["output_device"] = audioRender;
+
+            if (audioCapture != null)
+                set["input_device"] = audioCapture;
+
+            await SendRequestAsync(set);
+        }
+
         public async Task ConnectAsync()
         {
             if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus"))
             {
+                ConnectionStatus = "Starting voice process...";
+
                 var appServiceStatus = await _appServiceConnection.OpenAsync();
                 if (appServiceStatus != AppServiceConnectionStatus.Success)
                     throw new Exception("Unable to connect to AppService! " + appServiceStatus);
@@ -103,6 +175,8 @@ namespace Unicord.Universal.Voice
 
                     if (channel_id != Channel.Id && guild_id != Channel.GuildId)
                     {
+                        ConnectionStatus = "Closing current connection...";
+
                         var disconnectRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DisconnectRequest };
                         await SendRequestAsync(disconnectRequest);
                     }
@@ -113,6 +187,8 @@ namespace Unicord.Universal.Voice
                 if (status != VoipPhoneCallResourceReservationStatus.Success)
                     throw new Exception("Unable to reserve call resources!");
 
+                ConnectionStatus = "Talking with Discord...";
+
                 App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
                 App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
 
@@ -122,6 +198,8 @@ namespace Unicord.Universal.Voice
                 var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
                 var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
                 var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
+
+                ConnectionStatus = $"Connecting to {Channel.Name}...";
 
                 var connectionRequest = new ValueSet()
                 {
@@ -225,10 +303,13 @@ namespace Unicord.Universal.Voice
                 switch (serviceEvent)
                 {
                     case VoiceServiceEvent.Connected:
+                        ConnectionStatus = $"Connected to {Channel.Name}!";
                         break;
                     case VoiceServiceEvent.Reconnecting:
+                        ConnectionStatus = $"Reconnecting...";
                         break;
                     case VoiceServiceEvent.Disconnected:
+                        ConnectionStatus = $"Disconnected.";
                         Disconnected?.Invoke(this, null);
                         SendVoiceStateUpdate(VoiceState.None, null);
                         break;

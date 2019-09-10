@@ -18,6 +18,7 @@ namespace Unicord.Universal.Voice
 
 		Windows.Foundation.IAsyncAction ConnectAsync();
 		Windows.Storage.Streams.IOutputStream GetOutputStream();
+		void UpdateAudioDevices();
 
 		Boolean Muted{ get; set; };
 		Boolean Deafened{ get; set; };

@@ -27,9 +27,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingConverter}, Mode=OneWay}" FontFamily="Segoe MDL2 Assets" Margin="16,8,12,8" FontSize="18" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}, Mode=OneWay}"/>
-            <TextBlock Margin="0,8,8,8" Grid.Column="1">
-                Connected to <Run Text="{Binding ConnectionModel.Channel.Name, ElementName=self, Mode=OneWay}" />!
-            </TextBlock>
+            <TextBlock Margin="0,8,8,8" Grid.Column="1" Text="{x:Bind ConnectionModel.ConnectionStatus, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
