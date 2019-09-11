@@ -14,7 +14,23 @@
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         <Setter Property="Color" Value="{ThemeResource SystemChromeBlackMediumLowColor}" />
     </Style>
-
+    
+    <Style TargetType="Thumb" x:Key="SliderThumbStyle">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{ThemeResource SliderThumbCornerRadius}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style x:Key="VideoSliderThumbStyle" TargetType="Thumb">
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
@@ -26,21 +42,6 @@
                         <Border Canvas.Left="12" Canvas.Top="12" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" BorderThickness="1" BorderBrush="{TemplateBinding Background}"/>
                         <Ellipse x:Name="ellipse" Width="26" Height="26" Fill="{TemplateBinding Foreground}" StrokeThickness="2" Stroke="{TemplateBinding Background}"/>
                     </Canvas>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="MediaSliderThumbStyle" TargetType="Thumb">
-        <Setter Property="Width" Value="24"/>
-        <Setter Property="Height" Value="24"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}"/>
-        <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Thumb">
-                    <Ellipse x:Name="ellipse" Fill="{TemplateBinding Foreground}" StrokeThickness="2" Stroke="{TemplateBinding Background}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -230,7 +231,7 @@
                                                         <TickBar x:Name="TopTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,0,0,4" VerticalAlignment="Bottom" Visibility="Collapsed"/>
                                                         <TickBar x:Name="HorizontalInlineTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Visibility="Collapsed"/>
                                                         <TickBar x:Name="BottomTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,4,0,0" Grid.Row="2" VerticalAlignment="Top" Visibility="Collapsed"/>
-                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{ThemeResource MediaSliderThumbStyle}" Width="24">
+                                                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" Grid.RowSpan="3" Grid.Row="0" Style="{ThemeResource SliderThumbStyle}" Height="{ThemeResource SliderHorizontalThumbHeight}" Width="{ThemeResource SliderHorizontalThumbWidth}">
                                                             <Thumb.DataContext>
                                                                 <Grid Height="112" Width="192">
                                                                     <Image x:Name="ThumbnailImage"/>
@@ -262,7 +263,7 @@
                                                         <TickBar x:Name="LeftTickBar" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
                                                         <TickBar x:Name="VerticalInlineTickBar" Grid.Column="1" Fill="{ThemeResource SliderInlineTickBarFill}" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderTrackThemeHeight}"/>
                                                         <TickBar x:Name="RightTickBar" Grid.Column="2" Fill="{ThemeResource SliderTickBarFill}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.RowSpan="3" Visibility="Collapsed" Width="{ThemeResource SliderOutsideTickBarThemeHeight}"/>
-                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{ThemeResource MediaSliderThumbStyle}" Width="24"/>
+                                                        <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="3" Grid.Column="0" DataContext="{TemplateBinding Value}" FocusVisualMargin="-6,-14,-6,-14" Height="8" Grid.Row="1" Style="{ThemeResource SliderThumbStyle}" Width="24"/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>

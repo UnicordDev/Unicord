@@ -12,7 +12,7 @@ namespace Unicord.Universal
         public static void Log(object message, [CallerMemberName] string source = "General")
         {
 #if !STORE
-            Trace.WriteLine(message, source);
+            Debug.WriteLine(message, source);
 #endif
         }
     }

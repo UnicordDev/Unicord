@@ -25,6 +25,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Storage;
 using Windows.System;
+using Windows.System.Profile;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -64,14 +65,13 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.LogLevel = Microsoft.AppCenter.LogLevel.Verbose;
                 AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Log(e.Exception);
+            Logger.Log(e.Message);
             e.Handled = true;
         }
 
@@ -213,11 +213,6 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
-
-            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
-            {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
-            }
         }
 
         /// <summary>
@@ -238,13 +233,16 @@ namespace Unicord.Universal
             {
                 var localFolder = ApplicationData.Current.LocalFolder.Path;
                 var themesDirectory = Path.Combine(localFolder, "Themes");
-                foreach (var item in Directory.EnumerateDirectories(themesDirectory))
+                if (Directory.Exists(themesDirectory))
                 {
-                    var name = Path.GetFileName(item);
-                    var normalisedName = Strings.Normalise(name);
-                    if (string.Compare(name, normalisedName, true) != 0)
+                    foreach (var item in Directory.EnumerateDirectories(themesDirectory))
                     {
-                        Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                        var name = Path.GetFileName(item);
+                        var normalisedName = Strings.Normalise(name);
+                        if (string.Compare(name, normalisedName, true) != 0)
+                        {
+                            Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                        }
                     }
                 }
             }
@@ -364,7 +362,6 @@ namespace Unicord.Universal
                             LogLevel = DSharpPlus.LogLevel.Debug,
                             MutedStore = new UnicordMutedStore(),
                             GatewayCompressionLevel = GatewayCompressionLevel.None,
-                            WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
                             ReconnectIndefinitely = true
                         }));
 
@@ -378,8 +375,7 @@ namespace Unicord.Universal
 
                         _connectSemaphore.Release();
 
-                        await Discord.InitializeAsync();
-                        await Discord.ConnectAsync(status: status);
+                        await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null: DateTimeOffset.Now);
                     }
                     catch (Exception ex)
                     {

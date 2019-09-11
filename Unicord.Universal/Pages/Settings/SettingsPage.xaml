@@ -53,9 +53,9 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
-        <lib:ScrollViewer Background="{ThemeResource MainBackgroundBrush}" HorizontalScrollMode="Disabled" VerticalScrollRailingMode="Enabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Background="{ThemeResource MainBackgroundBrush}" HorizontalScrollMode="Disabled" IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="frame" Margin="12" />
-        </lib:ScrollViewer>
+        </ScrollViewer>
     </lib:NavigationView>
 
 </Page>

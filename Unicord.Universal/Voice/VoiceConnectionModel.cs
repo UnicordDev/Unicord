@@ -54,8 +54,8 @@ namespace Unicord.Universal.Voice
         public event EventHandler<EventArgs> Disconnected;
 
         /// <summary>
-        /// If voice is connected, returns a VoiceConnectionModel for that connection,
-        /// otherwise null.
+        /// If voice is connected before Unicord launched, returns a VoiceConnectionModel for 
+        /// that connection, otherwise null.
         /// </summary>
         public static async Task<VoiceConnectionModel> FindExistingConnectionAsync()
         {
@@ -90,11 +90,9 @@ namespace Unicord.Universal.Voice
             if (muted)
                 vstate = vstate & VoiceState.Muted;
             if (deafened)
-                vstate = VoiceState.Muted & VoiceState.Deafened;
-
-            var model = new VoiceConnectionModel(channel, vstate, connection);
-            model.ConnectionStatus = $"Connected to {channel.Name}!";
-            return model;
+                vstate = VoiceState.Muted | VoiceState.Deafened;
+            
+            return new VoiceConnectionModel(channel, vstate, connection) { ConnectionStatus = $"Connected to {channel.Name}!" };
         }
 
         public VoiceConnectionModel(DiscordChannel channel)

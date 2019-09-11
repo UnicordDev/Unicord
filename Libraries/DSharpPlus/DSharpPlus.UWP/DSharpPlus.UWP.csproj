@@ -576,9 +576,6 @@
     <Compile Include="..\DSharpPlus\Net\WebSocket\SocketLock.cs">
       <Link>Net\WebSocket\SocketLock.cs</Link>
     </Compile>
-    <Compile Include="..\DSharpPlus\Net\WebSocket\WebSocket4NetCoreClient.cs">
-      <Link>Net\WebSocket\WebSocket4NetCoreClient.cs</Link>
-    </Compile>
     <Compile Include="..\DSharpPlus\Net\WebSocket\WebSocketClient.cs">
       <Link>Net\WebSocket\WebSocketClient.cs</Link>
     </Compile>
@@ -608,9 +605,6 @@
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.5.2</Version>
-    </PackageReference>
-    <PackageReference Include="WebSocket4Net">
-      <Version>0.15.2</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">

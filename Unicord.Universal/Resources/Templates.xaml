@@ -294,21 +294,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <lib:SwipeControl Margin="-12,0">
-            <lib:SwipeControl.ContextFlyout>
-                <flyouts:DirectMessageContextFlyout />
-            </lib:SwipeControl.ContextFlyout>
-            <lib:SwipeControl.RightItems>
-                <lib:SwipeItems>
-                    <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close" Invoked="SwipeItem_Invoked">
-                        <lib:SwipeItem.IconSource>
-                            <lib:SymbolIconSource Symbol="Mute" />
-                        </lib:SwipeItem.IconSource>
-                    </lib:SwipeItem>
-                </lib:SwipeItems>
-            </lib:SwipeControl.RightItems>
-
-            <Grid Padding="12,4" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+        <Grid Padding="0,4" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -326,14 +312,13 @@
                         </Ellipse.Fill>
                     </Ellipse>
                 </Canvas>
-                
+
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
 
                 <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
                     <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
                 </Grid>
             </Grid>
-        </lib:SwipeControl>
     </DataTemplate>
 
     <DataTemplate x:Key="UserListTemplate">

@@ -8,17 +8,27 @@ using Windows.Devices.Enumeration;
 
 namespace Unicord.Universal.Models
 {
+    public class DeviceInformationWrapper
+    {
+        public DeviceInformation Info { get; set; }
+
+        public string Id => Info?.Id;
+        public string Name => Info?.Name;
+
+        public static implicit operator DeviceInformationWrapper(DeviceInformation info) { return new DeviceInformationWrapper() { Info = info }; }
+    }
+
     public class VoiceSettingsModel : PropertyChangedBase
     {
-        private int _inputDevice;
-        private int _outputDevice;
+        private DeviceInformationWrapper _inputDevice;
+        private DeviceInformationWrapper _outputDevice;
 
         public VoiceSettingsModel()
         {
-            AvailableInputDevices = new List<DeviceInformation>();
-            AvailableOutputDevices = new List<DeviceInformation>();
-            AvailableInputDevices.Add(null);
-            AvailableOutputDevices.Add(null);
+            AvailableInputDevices = new List<DeviceInformationWrapper>();
+            AvailableOutputDevices = new List<DeviceInformationWrapper>();
+            AvailableInputDevices.Add(new DeviceInformationWrapper());
+            AvailableOutputDevices.Add(new DeviceInformationWrapper());
         }
 
         public async Task LoadAsync()
@@ -36,34 +46,33 @@ namespace Unicord.Universal.Models
             var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
             var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
 
-            InputDevice = AvailableInputDevices.IndexOf(AvailableInputDevices.FirstOrDefault(d => d?.Id == inputDeviceId) ?? AvailableInputDevices.FirstOrDefault(d => d?.IsDefault == true));
-            InputDevice = _inputDevice == -1 ? 0 : _inputDevice;
+            _inputDevice = AvailableInputDevices.FirstOrDefault(d => d?.Id == inputDeviceId);
+            _outputDevice = AvailableOutputDevices.FirstOrDefault(d => d?.Id == outputDeviceId);
 
-            OutputDevice = AvailableOutputDevices.IndexOf(AvailableOutputDevices.FirstOrDefault(d => d?.Id == outputDeviceId) ?? AvailableOutputDevices.FirstOrDefault(d => d?.IsDefault == true));
-            OutputDevice = _outputDevice == -1 ? 0 : _outputDevice;
-
+            InvokePropertyChanged(nameof(AvailableInputDevices));
+            InvokePropertyChanged(nameof(AvailableOutputDevices));
             InvokePropertyChanged(nameof(InputDevice));
             InvokePropertyChanged(nameof(OutputDevice));
         }
 
         internal Task SaveAsync()
         {
-            App.LocalSettings.Save("InputDevice", AvailableInputDevices.ElementAtOrDefault(InputDevice)?.Id);
-            App.LocalSettings.Save("OutputDevice", AvailableOutputDevices.ElementAtOrDefault(OutputDevice)?.Id);
+            App.LocalSettings.Save("InputDevice", InputDevice?.Id);
+            App.LocalSettings.Save("OutputDevice", OutputDevice?.Id);
 
             return Task.CompletedTask;
         }
 
-        public List<DeviceInformation> AvailableInputDevices { get; set; }
-        public List<DeviceInformation> AvailableOutputDevices { get; set; }
+        public List<DeviceInformationWrapper> AvailableInputDevices { get; set; }
+        public List<DeviceInformationWrapper> AvailableOutputDevices { get; set; }
 
-        public int InputDevice
+        public DeviceInformationWrapper InputDevice
         {
             get => _inputDevice;
             set => OnPropertySet(ref _inputDevice, value);
         }
 
-        public int OutputDevice
+        public DeviceInformationWrapper OutputDevice
         {
             get => _outputDevice;
             set => OnPropertySet(ref _outputDevice, value);

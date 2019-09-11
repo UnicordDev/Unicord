@@ -42,7 +42,8 @@ namespace Unicord.Universal.Pages.Settings
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             await Model.LoadAsync();
-            Bindings.Update();
+            DataContext = Model;
+            Model.InvokePropertyChanged("");
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
@@ -57,8 +58,8 @@ namespace Unicord.Universal.Pages.Settings
             {
                 if (this.FindParent<DiscordPage>().DataContext is DiscordPageModel model)
                 {
-                    var inputInfo = Model.AvailableInputDevices.ElementAtOrDefault(Model.InputDevice);
-                    var outputInfo = Model.AvailableOutputDevices.ElementAtOrDefault(Model.OutputDevice);
+                    var inputInfo = Model.InputDevice;
+                    var outputInfo = Model.OutputDevice;
                     await model.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id);
                 }
             }

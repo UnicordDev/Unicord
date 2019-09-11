@@ -138,6 +138,12 @@ namespace Unicord.Universal.Pages
                 unreadDms.ItemsSource = _unreadDms;
                 unreadDms.Visibility = _unreadDms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
+                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
+                if (possibleConnection != null)
+                {
+                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
+                }
+
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
                 //if (App.ThemeLoadException != null)
@@ -148,7 +154,7 @@ namespace Unicord.Universal.Pages
                 if (_args != null)
                 {
                     var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
-                    Navigate(channel, new DrillInNavigationTransitionInfo());
+                    Navigate(channel);
                 }
                 else
                 {

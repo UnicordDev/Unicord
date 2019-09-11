@@ -421,11 +421,11 @@
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="CreateServerItem_Tapped">
-                                    <FlyoutBase.AttachedFlyout>
+                                    <!--<FlyoutBase.AttachedFlyout>
                                         <Flyout>
                                             <flyouts:AddServerFlyout />
                                         </Flyout>
-                                    </FlyoutBase.AttachedFlyout>
+                                    </FlyoutBase.AttachedFlyout>-->
                                     <SymbolIcon
                                         Width="36"
                                         Height="36"
