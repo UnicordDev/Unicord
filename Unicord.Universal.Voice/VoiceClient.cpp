@@ -183,8 +183,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         mode = SodiumWrapper::SelectEncryptionMode(obj.GetNamedArray(L"modes"));
 
-        uint8_t buff[70];
-        memcpy_s(&buff, 70, &ssrc, sizeof(uint16_t));
+        uint8_t buff[70]{ 0 };
+        std::copy(&ssrc, &ssrc + sizeof ssrc, buff);
 
         DataWriter writer{ udp_socket.OutputStream() };
         writer.WriteBytes(buff);

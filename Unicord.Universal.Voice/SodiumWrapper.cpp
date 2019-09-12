@@ -20,8 +20,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
         if (key_view.size() != key_length)
             throw hresult_invalid_argument();
 
-        key = new uint8_t[key_view.size()];
-        memcpy_s(key, key_length, key_view.data(), key_view.size());
+        key = new uint8_t[key_view.size()]{ 0 };
+        std::copy(key_view.begin(), key_view.end(), key);
     }
 
     EncryptionMode SodiumWrapper::GetEncryptionMode(hstring name)

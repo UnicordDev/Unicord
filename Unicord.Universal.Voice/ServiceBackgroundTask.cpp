@@ -27,8 +27,6 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         this->taskDeferral = taskInstance.GetDeferral();
         taskInstance.Canceled({ this, &ServiceBackgroundTask::OnCancelled });
 
-        this->voipCoordinator = VoipCallCoordinator::GetDefault();
-
         auto details = taskInstance.TriggerDetails().try_as<AppServiceTriggerDetails>();
         this->appServiceConnection = details.AppServiceConnection();
         this->appServiceConnected = true;
@@ -79,6 +77,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 case VoiceServiceRequest::GuildConnectRequest:
                 {
                     if (voiceClient == nullptr && activeCall == nullptr) {
+                        voipCoordinator = VoipCallCoordinator::GetDefault();
                         activeCall = voipCoordinator.RequestNewOutgoingCall(
                             L"", unbox_value<hstring>(data.Lookup(L"contact_name")), Package::Current().DisplayName(), VoipPhoneCallMedia::Audio);
                         if (activeCall != nullptr) {

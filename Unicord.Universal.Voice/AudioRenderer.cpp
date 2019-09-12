@@ -122,23 +122,18 @@ namespace winrt::Unicord::Universal::Voice::Render
 
         auto mode_iter = input_nodes.find(sender->ssrc);
         if (mode_iter == input_nodes.end()) {
-            properties = AudioEncodingProperties::CreatePcm(sender->format.sample_rate, sender->format.channel_count, 16);
-            input_node = render_graph.CreateFrameInputNode(properties);
-            input_node.AddOutgoingConnection(render_submix_node);
-            input_nodes.insert(std::pair(sender->ssrc, input_node));
+            CreateAudioInputNode(properties, sender, input_node);
         }
         else {
             input_node = input_nodes.at(sender->ssrc);
             properties = input_node.EncodingProperties();
             if (properties.ChannelCount() != sender->format.channel_count)
             {
+                input_nodes.unsafe_erase(sender->ssrc);
                 input_node.RemoveOutgoingConnection(render_submix_node);
                 input_node.Close();
 
-                properties = AudioEncodingProperties::CreatePcm(sender->format.sample_rate, sender->format.channel_count, 16);
-                input_node = render_graph.CreateFrameInputNode(properties);
-                input_node.AddOutgoingConnection(render_submix_node);
-                input_nodes.insert(std::pair(sender->ssrc, input_node));
+                CreateAudioInputNode(properties, sender, input_node);
             }
         }
 
@@ -164,6 +159,16 @@ namespace winrt::Unicord::Universal::Voice::Render
         {
             input_node.DiscardQueuedFrames();
         }
+    }
+
+    void AudioRenderer::CreateAudioInputNode(AudioEncodingProperties &properties, AudioSource * sender, AudioFrameInputNode &input_node)
+    {
+        properties = AudioEncodingProperties::CreatePcm(sender->format.sample_rate, sender->format.channel_count, 16);
+        input_node = render_graph.CreateFrameInputNode(properties);
+        input_node.AddOutgoingConnection(render_submix_node);
+        input_node.Start();
+
+        input_nodes.insert(std::pair(sender->ssrc, input_node));
     }
 
     void AudioRenderer::BeginCapture()

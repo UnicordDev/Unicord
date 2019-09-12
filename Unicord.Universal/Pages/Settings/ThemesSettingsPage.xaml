@@ -200,7 +200,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox ItemsSource="{x:Bind Model.AvailableThemes}" SelectedItem="{x:Bind Model.SelectedTheme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
+                        <ComboBox ItemsSource="{x:Bind Model.AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{x:Bind Model.SelectedTheme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="universal:Theme">
                                     <Grid>
@@ -209,16 +209,16 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Rectangle Width="12" Height="12" Fill="{x:Bind DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
+                                        <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
                                         <TextBlock Grid.Column="1" Text="{x:Bind Name}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <Button x:Name="installThemeButton" Grid.Column="1" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="InstallThemeButton_Click">
+                        <Button x:Name="installThemeButton" w1809:CornerRadius="0" Grid.Column="1" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="InstallThemeButton_Click">
                             &#xE710;
                         </Button>
-                        <Button x:Name="removeThemeButton" Visibility="{x:Bind Model.CanRemove, Mode=OneWay}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
+                        <Button x:Name="removeThemeButton" w1809:CornerRadius="0,3,3,0" IsEnabled="{x:Bind Model.CanRemove, Mode=OneWay}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
                             &#xE738;
                         </Button>
                     </Grid>

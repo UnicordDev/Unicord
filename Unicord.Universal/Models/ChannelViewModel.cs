@@ -461,30 +461,32 @@ namespace Unicord.Universal.Models
 
         private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
-            RequestMissingUsers(messages);
+            var t = d as ChannelViewModel;
+            t.RequestMissingUsers(messages);
 
             foreach (var mess in messages)
             {
-                if (!Messages.Any(m => m.Id == mess.Id))
+                if (!t.Messages.Any(m => m.Id == mess.Id))
                 {
-                    Messages.Insert(index + 1, mess);
+                    t.Messages.Insert(index + 1, mess);
                 }
             }
-        }, null);
+        }, this);
 
         private void ClearAndAddMessages(IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
-            Messages.Clear();
+            var t = d as ChannelViewModel;
+            t.Messages.Clear();
 
-            RequestMissingUsers(messages);
+            t.RequestMissingUsers(messages);
             foreach (var message in messages.Reverse())
             {
-                if (!Messages.Any(m => m.Id == message.Id))
+                if (!t.Messages.Any(m => m.Id == message.Id))
                 {
-                    Messages.Add(message);
+                    t.Messages.Add(message);
                 }
             }
-        }, null);
+        }, this);
 
         private void RequestMissingUsers(IEnumerable<DiscordMessage> messages)
         {

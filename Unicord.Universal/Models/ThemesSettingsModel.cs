@@ -73,7 +73,7 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public Visibility CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true ? Visibility.Collapsed : Visibility.Visible;
+        public bool CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true;
 
         public int ColourScheme
         {

@@ -5,6 +5,7 @@
     xmlns:local="using:Unicord.Universal.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     Loaded="Page_Loaded">
     <Grid>
@@ -17,8 +18,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="loadFileButton" Click="loadFileButton_Click" MinWidth="150" Content="Load from file..." HorizontalAlignment="Stretch" />
-                <Button x:Name="loginButton" Grid.Column="1" Click="Button_Click" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" Content="Login" HorizontalAlignment="Stretch"/>
+                <Button x:Name="loadFileButton" Click="loadFileButton_Click" w1809:CornerRadius="3,0,0,3" MinWidth="150" Content="Load from file..." HorizontalAlignment="Stretch" />
+                <Button x:Name="loginButton" Grid.Column="1" Click="Button_Click" w1809:CornerRadius="0,3,3,0" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" Content="Login" HorizontalAlignment="Stretch"/>
             </Grid>
         </StackPanel>
     </Grid>
