@@ -150,10 +150,10 @@ namespace DSharpPlus.VoiceNext
         {
             var gld = e.Guild;
             if (gld == null)
-                return Task.Delay(0);
+                return Task.CompletedTask;
 
             if (e.User == null)
-                return Task.Delay(0);
+                return Task.CompletedTask;
 
             if (e.User.Id == Client.CurrentUser.Id && ActiveConnections.TryGetValue(e.Guild.Id, out var vnc))
             {
@@ -166,7 +166,7 @@ namespace DSharpPlus.VoiceNext
                 xe.SetResult(e);
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         private async Task Client_VoiceServerUpdate(VoiceServerUpdateEventArgs e)

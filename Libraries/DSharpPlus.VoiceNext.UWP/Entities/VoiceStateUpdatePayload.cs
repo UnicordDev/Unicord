@@ -2,7 +2,7 @@
 
 namespace DSharpPlus.VoiceNext.Entities
 {
-    internal sealed class VoiceStateUpdatePayload
+    public sealed class VoiceStateUpdatePayload
     {
         [JsonProperty("guild_id")]
         public ulong GuildId { get; set; }
@@ -16,10 +16,10 @@ namespace DSharpPlus.VoiceNext.Entities
         [JsonProperty("session_id", NullValueHandling = NullValueHandling.Ignore)]
         public string SessionId { get; set; }
 
-        [JsonProperty("self_deaf")]
-        public bool Deafened { get; set; }
+        [JsonProperty("self_deaf", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Deafened { get; set; }
 
-        [JsonProperty("self_mute")]
-        public bool Muted { get; set; }
+        [JsonProperty("self_mute", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Muted { get; set; }
     }
 }

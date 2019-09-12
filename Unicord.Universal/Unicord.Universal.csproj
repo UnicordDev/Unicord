@@ -18,13 +18,13 @@
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>Unicord.Univeral_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -157,6 +157,9 @@
       <DependentUpon>EmotePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FileViewer.cs" />
+    <Compile Include="Controls\Flyouts\AddServerFlyout.xaml.cs">
+      <DependentUpon>AddServerFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Flyouts\ChannelContextFlyout.xaml.cs">
       <DependentUpon>ChannelContextFlyout.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,9 @@
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VoiceConnectionControl.xaml.cs">
+      <DependentUpon>VoiceConnectionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UsernameControl.cs" />
     <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
@@ -277,11 +283,16 @@
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
+    <Compile Include="Converters\VoicePingConverter.cs" />
+    <Compile Include="Converters\VoicePingGlyphConverter.cs" />
     <Compile Include="Dialogs\BanDialog.xaml.cs">
       <DependentUpon>BanDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ChangeNicknameDialog.xaml.cs">
       <DependentUpon>ChangeNicknameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CreateServerDialog.xaml.cs">
+      <DependentUpon>CreateServerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\DeleteMessageDialog.xaml.cs">
       <DependentUpon>DeleteMessageDialog.xaml</DependentUpon>
@@ -320,6 +331,8 @@
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChannelViewModel.cs" />
+    <Compile Include="Models\CreateServerModel.cs" />
+    <Compile Include="Models\DiscordPageModel.cs" />
     <Compile Include="Models\DMChannelsViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsViewModel.cs" />
@@ -327,6 +340,7 @@
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Models\ThemesSettingsModel.cs" />
+    <Compile Include="Models\VoiceSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
@@ -364,6 +378,9 @@
     <Compile Include="Pages\Settings\ThemesSettingsPage.xaml.cs">
       <DependentUpon>ThemesSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\VoiceSettingsPage.xaml.cs">
+      <DependentUpon>VoiceSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SharePage.xaml.cs">
       <DependentUpon>SharePage.xaml</DependentUpon>
     </Compile>
@@ -381,6 +398,9 @@
     </Compile>
     <Compile Include="Pages\Subpages\PinsPage.xaml.cs">
       <DependentUpon>PinsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Subpages\ServerSearchPage.xaml.cs">
+      <DependentUpon>ServerSearchPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Subpages\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
@@ -400,8 +420,10 @@
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
-    <Compile Include="Models\VoiceViewModel.cs" />
     <Compile Include="Utilities\WindowManager.cs" />
+    <Compile Include="Voice\VoiceConnectionModel.cs" />
+    <Compile Include="Voice\VoiceDispatch.cs" />
+    <Compile Include="Voice\VoiceStateUpdatePayload.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
@@ -512,6 +534,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Flyouts\AddServerFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Flyouts\ChannelContextFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -540,6 +566,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\VoiceConnectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\BanDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -551,6 +581,10 @@
     <Page Include="Dialogs\ConfirmationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CreateServerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\DeleteMessageDialog.xaml">
       <SubType>Designer</SubType>
@@ -632,6 +666,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Settings\VoiceSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\SharePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -653,6 +691,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Subpages\PinsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Subpages\ServerSearchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -691,9 +733,6 @@
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>2.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>2.1.1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Push">
       <Version>2.1.1</Version>
     </PackageReference>
@@ -710,7 +749,7 @@
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.2.190611001-prerelease</Version>
+      <Version>2.2.190830001</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
@@ -720,10 +759,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DSharpPlus.VoiceNext.UWP\DSharpPlus.VoiceNext.UWP.csproj">
-      <Project>{f061f955-5565-4d48-8111-f2f7f2241499}</Project>
-      <Name>DSharpPlus.VoiceNext.UWP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>
@@ -732,26 +767,12 @@
       <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
       <Name>MomentSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
-      <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
-      <Name>libopus</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
-      <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
-      <Name>libsodium</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.csproj">
-      <Project>{cd2e900e-41a8-4dec-aff9-2b467e5022bf}</Project>
+    <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.vcxproj">
+      <Project>{e3bc526e-debd-4f76-a669-9adade1d4fc8}</Project>
       <Name>Unicord.Universal.Voice</Name>
     </ProjectReference>
   </ItemGroup>

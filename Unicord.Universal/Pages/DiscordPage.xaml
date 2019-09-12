@@ -13,10 +13,15 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:settings="using:Unicord.Universal.Pages.Settings"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
+    xmlns:models="using:Unicord.Universal.Models"
     x:Name="self"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <models:DiscordPageModel/>
+    </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
         <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
@@ -328,7 +333,8 @@
                         ItemsSource="{x:Bind _guilds}"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         SelectionChanged="GuildsList_SelectionChanged"
-                        ShowsScrollingPlaceholders="False">
+                        ShowsScrollingPlaceholders="False"
+                        Width="56">
                         <ListView.Header>
                             <StackPanel Margin="0,8,0,0">
                                 <ListViewItem
@@ -415,11 +421,28 @@
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="CreateServerItem_Tapped">
+                                    <!--<FlyoutBase.AttachedFlyout>
+                                        <Flyout>
+                                            <flyouts:AddServerFlyout />
+                                        </Flyout>
+                                    </FlyoutBase.AttachedFlyout>-->
                                     <SymbolIcon
                                         Width="36"
                                         Height="36"
                                         Symbol="Add" />
                                 </ListViewItem>
+                                <ListViewItem
+                                    x:Name="findServerIcon"
+                                    MinWidth="0"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Stretch"
+                                    Tapped="FindServerIcon_Tapped">
+                                    <SymbolIcon
+                                        Width="36"
+                                        Height="36"
+                                        Symbol="Find" />
+                                </ListViewItem>
+                                <lib:NavigationViewItemSeparator />
                                 <ListViewItem
                                     x:Name="settingsItem"
                                     MinWidth="0"
@@ -448,6 +471,8 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid Height="42">
                             <TextBlock
@@ -473,6 +498,26 @@
                             x:Name="sidebarFrame"
                             Grid.Row="2"
                             Width="220" />
+
+                        <Grid Grid.Row="3"  Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
+                            <controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
+                        </Grid>
+
+                        <Grid Grid.Row="4" Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <lib:PersonPicture Margin="12,8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding CurrentUser.Username}"/>
+                                <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="9">
+                                    #<Run Text="{Binding CurrentUser.Discriminator}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </controls1:DropShadowPanel>
             </Grid>

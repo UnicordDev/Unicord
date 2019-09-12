@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using DSharpPlus.VoiceNext;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;

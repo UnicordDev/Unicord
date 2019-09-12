@@ -13,6 +13,7 @@
                         IsSettingsVisible="False"
                         PaneDisplayMode="Auto"
                         OpenPaneLength="250"
+                        BackRequested="NavigationView_BackRequested"
                         Header="{Binding SelectedItem.Content, ElementName=navigationView}">
         <lib:NavigationView.MenuItems>
             <lib:NavigationViewItem Content="Overview">

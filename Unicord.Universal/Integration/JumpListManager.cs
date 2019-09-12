@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
 using Windows.Storage;
 using Windows.UI.StartScreen;
 
@@ -68,7 +69,10 @@ namespace Unicord.Universal.Integration
                     await list.SaveAsync();
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Log(ex);
+            }
         }
     }
 }

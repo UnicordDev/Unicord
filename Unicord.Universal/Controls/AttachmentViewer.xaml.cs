@@ -7,6 +7,7 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -62,6 +63,11 @@ namespace Unicord.Universal.Controls
 
                 if (_attachment.Width == 0)
                 {
+                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+                    {
+                        mediaPlayer.TransportControls.ShowAndHideAutomatically = false;
+                    }
+
                     mediaPlayer.VerticalAlignment = VerticalAlignment.Top;
                     mediaPlayer.VerticalContentAlignment = VerticalAlignment.Top;
                     detailsGrid.Visibility = Visibility.Collapsed;

@@ -11,7 +11,9 @@ namespace Unicord.Universal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General")
         {
-            Trace.WriteLine(message, source);
+#if !STORE
+            Debug.WriteLine(message, source);
+#endif
         }
     }
 }

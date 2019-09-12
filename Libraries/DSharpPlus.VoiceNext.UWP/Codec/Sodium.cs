@@ -61,8 +61,7 @@ namespace DSharpPlus.VoiceNext.Codec
             // Zero rest of the span.
             Helpers.ZeroFill(target.Slice(rtpHeader.Length));
         }
-
-#if !NETSTANDARD1_1
+        
         public void GenerateNonce(Span<byte> target)
         {
             if (target.Length != Interop.SodiumNonceSize)
@@ -71,7 +70,6 @@ namespace DSharpPlus.VoiceNext.Codec
             CSPRNG.GetBytes(Buffer);
             Buffer.AsSpan().CopyTo(target);
         }
-#endif
 
         public void GenerateNonce(uint nonce, Span<byte> target)
         {

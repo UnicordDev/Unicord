@@ -73,7 +73,7 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public Visibility CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true ? Visibility.Collapsed : Visibility.Visible;
+        public bool CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true;
 
         public int ColourScheme
         {
@@ -83,6 +83,21 @@ namespace Unicord.Universal.Models
                 App.LocalSettings.Save("RequestedTheme", (ElementTheme)value);
                 InvokePropertyChanged(nameof(ColourScheme));
             }
+        }
+
+        public double ScaleFactor
+        {
+            get => App.RoamingSettings.Read<double>("ScaleFactor", 1);
+            set
+            {
+                App.RoamingSettings.Save("ScaleFactor", value);
+                InvokePropertyChanged(nameof(ScaleFactorText));
+            }
+        }
+
+        public string ScaleFactorText
+        {
+            get => $"{Math.Floor(ScaleFactor * 100)}% ";
         }
     }
 }

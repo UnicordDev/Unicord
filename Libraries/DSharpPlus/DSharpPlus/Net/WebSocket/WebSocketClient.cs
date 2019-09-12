@@ -151,7 +151,7 @@ namespace DSharpPlus.Net.WebSocket
         protected override Task OnDisconnectedAsync(SocketCloseEventArgs e)
         {
             _ = _on_disconnect.InvokeAsync(e).ConfigureAwait(false);
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         internal async Task ListenAsync()

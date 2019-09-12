@@ -37,7 +37,7 @@
                     <FontIcon Glyph="&#xEA69;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem ToolTipService.ToolTip="Voice">
+            <lib:NavigationViewItem Tag="Voice" ToolTipService.ToolTip="Voice">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE720;" />
                 </lib:NavigationViewItem.Icon>
@@ -53,7 +53,7 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.MenuItems>
-        <ScrollViewer Background="{ThemeResource MainBackgroundBrush}" IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Background="{ThemeResource MainBackgroundBrush}" HorizontalScrollMode="Disabled" IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="frame" Margin="12" />
         </ScrollViewer>
     </lib:NavigationView>

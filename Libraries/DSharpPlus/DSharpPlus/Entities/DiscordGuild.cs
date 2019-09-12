@@ -1563,7 +1563,7 @@ namespace DSharpPlus.Entities
         /// </summary>
         /// <returns></returns>
         public Task SyncAsync()
-            => Discord is DiscordClient dc ? dc.SyncGuildsAsync(this) : Task.Delay(0);
+            => Discord is DiscordClient dc ? dc.SyncGuildsAsync(this) : Task.CompletedTask;
 
         /// <summary>
         /// Acknowledges all the messages in this guild. This is available to user tokens only.

@@ -17,7 +17,6 @@ namespace Unicord.Universal.Utilities
             try
             {
                 var dialog = new ErrorDialog() { Title = title, Content = content };
-
                 if (icon != null)
                 {
                     dialog.Icon = icon;

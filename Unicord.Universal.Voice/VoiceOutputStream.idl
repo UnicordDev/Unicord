@@ -1,0 +1,10 @@
+import "VoiceClient.idl";
+
+namespace Unicord.Universal.Voice
+{
+    [default_interface]
+    runtimeclass VoiceOutputStream : Windows.Storage.Streams.IOutputStream
+    {
+        VoiceOutputStream(VoiceClient client);
+    };
+}

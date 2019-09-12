@@ -1,0 +1,26 @@
+import "VoiceClientOptions.idl";
+import "VoiceOutputStream.idl";
+
+namespace Unicord.Universal.Voice
+{
+    [default_interface]
+    runtimeclass VoiceClient : Windows.Foundation.IClosable
+    {
+        static String OpusVersion{ get; };
+        static String SodiumVersion{ get; };
+
+        VoiceClient(VoiceClientOptions options);
+        UInt32 WebSocketPing{ get; };
+        UInt32 UdpSocketPing{ get; };
+
+        event Windows.Foundation.EventHandler<UInt32> WebSocketPingUpdated;
+        event Windows.Foundation.EventHandler<UInt32> UdpSocketPingUpdated;
+
+        Windows.Foundation.IAsyncAction ConnectAsync();
+        Windows.Storage.Streams.IOutputStream GetOutputStream();
+        void UpdateAudioDevices();
+
+        Boolean Muted{ get; set; };
+        Boolean Deafened{ get; set; };
+    };
+}

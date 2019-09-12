@@ -32,8 +32,13 @@ namespace Unicord.Universal.Pages.Settings
         private string _initialTheme;
         private int _initialColour;
 
+        public ThemesSettingsModel Model { get; }
+
         public ThemesSettingsPage()
         {
+            Model = new ThemesSettingsModel();
+            Model.PropertyChanged += ThemesSettingsPage_PropertyChanged;
+
             InitializeComponent();
 
             _initialTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
@@ -41,8 +46,6 @@ namespace Unicord.Universal.Pages.Settings
                 _initialTheme = "Default";
 
             _initialColour = (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
-
-            (DataContext as ThemesSettingsModel).PropertyChanged += ThemesSettingsPage_PropertyChanged;
         }
 
         private async void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -65,7 +68,7 @@ namespace Unicord.Universal.Pages.Settings
                 var dictionary = new ResourceDictionary();
                 if (!string.IsNullOrWhiteSpace(theme?.Name))
                 {
-                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { }
+                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { model.AvailableThemes.Remove(theme); }
                 }
 
                 // if we invert the theme then set it properly, the element will redraw and reload
@@ -91,7 +94,7 @@ namespace Unicord.Universal.Pages.Settings
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (DataContext is ThemesSettingsModel model && model.SelectedTheme is Theme theme)
+            if (Model.SelectedTheme is Theme theme)
             {
                 App.LocalSettings.Save("SelectedThemeName", theme.IsDefault ? string.Empty : theme.Name);
             }
@@ -125,16 +128,15 @@ namespace Unicord.Universal.Pages.Settings
                 }
             }
 
-            await (DataContext as ThemesSettingsModel).ReloadThemes();
+            await Model.ReloadThemes();
         }
 
         private async void RemoveThemeButton_Click(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as ThemesSettingsModel;
-            if (model.SelectedTheme is Theme theme)
+            if (Model.SelectedTheme is Theme theme)
             {
                 await ThemeManager.RemoveThemeAsync(theme.Name);
-                await model.ReloadThemes();
+                await Model.ReloadThemes();
             }
         }
 
@@ -147,10 +149,7 @@ namespace Unicord.Universal.Pages.Settings
                 themeLoadError.Text = $"Loading your currently selected theme failed!\r\n{args.ThemeLoadException.Message}";
             }
 
-            if (DataContext is ThemesSettingsModel model)
-            {
-                await model.ReloadThemes();
-            }
+            await Model.ReloadThemes();
         }
     }
 }

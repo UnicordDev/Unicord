@@ -1,20 +1,18 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Net.WebSocket;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Push;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Net.WebSocket;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Push;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -23,13 +21,13 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Storage;
 using Windows.System;
+using Windows.System.Profile;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using static Unicord.Constants;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
@@ -65,14 +63,13 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.LogLevel = Microsoft.AppCenter.LogLevel.Verbose;
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics));
             }
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Log(e.Exception);
+            Logger.Log(e.Message);
             e.Handled = true;
         }
 
@@ -234,13 +231,16 @@ namespace Unicord.Universal
             {
                 var localFolder = ApplicationData.Current.LocalFolder.Path;
                 var themesDirectory = Path.Combine(localFolder, "Themes");
-                foreach (var item in Directory.EnumerateDirectories(themesDirectory))
+                if (Directory.Exists(themesDirectory))
                 {
-                    var name = Path.GetFileName(item);
-                    var normalisedName = Strings.Normalise(name);
-                    if (string.Compare(name, normalisedName, true) != 0)
+                    foreach (var item in Directory.EnumerateDirectories(themesDirectory))
                     {
-                        Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                        var name = Path.GetFileName(item);
+                        var normalisedName = Strings.Normalise(name);
+                        if (string.Compare(name, normalisedName, true) != 0)
+                        {
+                            Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
+                        }
                     }
                 }
             }
@@ -287,10 +287,15 @@ namespace Unicord.Universal
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-
-            Analytics.TrackEvent("Suspend");
-
             deferral.Complete();
+        }
+
+        private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
+        {
+            if(args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
+            {
+                await Discord.DisconnectAsync();
+            }
         }
 
         internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
@@ -343,7 +348,6 @@ namespace Unicord.Universal
                             LogLevel = DSharpPlus.LogLevel.Debug,
                             MutedStore = new UnicordMutedStore(),
                             GatewayCompressionLevel = GatewayCompressionLevel.None,
-                            WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
                             ReconnectIndefinitely = true
                         }));
 
@@ -357,8 +361,7 @@ namespace Unicord.Universal
 
                         _connectSemaphore.Release();
 
-                        await Discord.InitializeAsync();
-                        await Discord.ConnectAsync(status: status);
+                        await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null: DateTimeOffset.Now);
                     }
                     catch (Exception ex)
                     {

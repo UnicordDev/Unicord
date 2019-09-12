@@ -61,14 +61,14 @@
             <uap:DisplayName>Unicord</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.VoiceBackgroundTask">
-          <BackgroundTasks>
+        <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
+          <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
+        </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.Background.VoiceBackgroundTask">
+          <BackgroundTasks ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" >
             <Task Type="systemEvent" />
           </BackgroundTasks>
         </Extension>
-        <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.ServiceBackgroundTask">
-          <uap:AppService Name="com.wankerr.Unicord.Voice" />
-        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

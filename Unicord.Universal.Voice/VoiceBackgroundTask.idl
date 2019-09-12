@@ -1,0 +1,8 @@
+namespace Unicord.Universal.Voice.Background
+{
+    [default_interface]
+    runtimeclass VoiceBackgroundTask : Windows.ApplicationModel.Background.IBackgroundTask
+    {
+        VoiceBackgroundTask();
+    }
+}

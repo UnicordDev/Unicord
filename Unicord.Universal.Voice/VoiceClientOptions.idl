@@ -1,0 +1,15 @@
+namespace Unicord.Universal.Voice
+{
+    runtimeclass VoiceClientOptions
+    {
+        VoiceClientOptions();
+        String Token;
+        String SessionId;
+        String Endpoint;
+        UInt64 GuildId;
+        UInt64 ChannelId;
+        UInt64 CurrentUserId;
+        String PreferredPlaybackDevice;
+        String PreferredRecordingDevice;
+    };
+}

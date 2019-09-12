@@ -1,0 +1,21 @@
+namespace Unicord.Universal.Voice.Background
+{
+    enum VoiceServiceRequest
+    {
+        RequestSucceeded,
+        RequestFailed,
+
+        StateRequest,
+        GuildConnectRequest,
+        DisconnectRequest,
+        MuteRequest,
+        DeafenRequest,
+        SettingsUpdate
+    };
+
+    enum VoiceServiceState
+    {
+        Connected,
+        ReadyToConnect
+    };
+}

@@ -1,0 +1,13 @@
+namespace Unicord.Universal.Voice.Background
+{
+    enum VoiceServiceEvent
+    {
+        Connected,
+        Reconnecting,
+        Disconnected,
+        Muted,
+        Deafened,
+        UdpPing,
+        WebSocketPing
+    };
+}

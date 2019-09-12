@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="VoiceClient.cpp" />
+    <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="VoiceBackgroundTask.cpp">
+      <Filter>Background</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceClientOptions.cpp" />
+    <ClCompile Include="SodiumWrapper.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtp.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
+    <ClCompile Include="OpusWrapper.cpp">
+      <Filter>Interop</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceOutputStream.cpp" />
+    <ClCompile Include="AudioRenderer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceBackgroundTask.cpp">
+      <Filter>Background</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="VoiceClient.h" />
+    <ClInclude Include="VoiceBackgroundTask.h">
+      <Filter>Background</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceClientOptions.h" />
+    <ClInclude Include="ConnectionEndpoint.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioFormat.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="SodiumWrapper.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtp.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusWrapper.h">
+      <Filter>Interop</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceOutputStream.h" />
+    <ClInclude Include="AudioRenderer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceBackgroundTask.h">
+      <Filter>Background</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="VoiceClient.idl" />
+    <Midl Include="VoiceBackgroundTask.idl">
+      <Filter>Background</Filter>
+    </Midl>
+    <Midl Include="VoiceClientOptions.idl" />
+    <Midl Include="VoiceOutputStream.idl" />
+    <Midl Include="ServiceBackgroundTask.idl">
+      <Filter>Background</Filter>
+    </Midl>
+    <Midl Include="VoiceServiceRequest.idl">
+      <Filter>Background</Filter>
+    </Midl>
+    <Midl Include="VoiceServiceEvent.idl">
+      <Filter>Background</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Unicord.Universal.Voice.def" />
+    <None Include="PropertySheet.props" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Interop">
+      <UniqueIdentifier>{44826d10-b8c2-4738-88c9-7ecc3a3827c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Background">
+      <UniqueIdentifier>{4e0bb38b-a509-4f87-9842-71817b202c3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{b51b0a0b-5007-4025-b7bb-4cd447566a6b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

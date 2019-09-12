@@ -9,11 +9,13 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
+using Unicord.Universal.Voice;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -22,6 +24,7 @@ using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -135,6 +138,12 @@ namespace Unicord.Universal.Pages
                 unreadDms.ItemsSource = _unreadDms;
                 unreadDms.Visibility = _unreadDms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
+                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
+                if (possibleConnection != null)
+                {
+                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
+                }
+
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
                 //if (App.ThemeLoadException != null)
@@ -145,7 +154,7 @@ namespace Unicord.Universal.Pages
                 if (_args != null)
                 {
                     var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
-                    Navigate(channel, new DrillInNavigationTransitionInfo());
+                    Navigate(channel);
                 }
                 else
                 {
@@ -399,7 +408,17 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
-                    var voice = await VoiceViewModel.StartNewAsync(channel);
+                    try
+                    {
+                        var voice = new VoiceConnectionModel(channel);
+                        (DataContext as DiscordPageModel).VoiceModel = voice;
+                        await voice.ConnectAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
+                    }
+
                     return;
                 }
 
@@ -582,9 +601,22 @@ namespace Unicord.Universal.Pages
 
         }
 
-        private async void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            await App.Discord.CreateGuildAsync("Penis");
+            var element = sender as FrameworkElement;
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
+            {
+                FlyoutBase.GetAttachedFlyout(element).ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
+            }
+            else
+            {
+                FlyoutBase.GetAttachedFlyout(element).ShowAt(element);
+            }
+        }
+
+        private void FindServerIcon_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -80,7 +80,9 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { });
+                if (selectedTheme?.UseCompact == true)
+                    target.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml") });
             }
         }
 
@@ -126,7 +128,9 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { });
+                if (selectedTheme?.UseCompact == true)
+                    target.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml") });
             }
         }
 
@@ -249,7 +253,7 @@ namespace Unicord.Universal
         [JsonIgnore]
         public string NormalisedName =>
             Strings.Normalise(Name);
-        
+
         /// <summary>
         /// The short display name of your theme
         /// </summary>
