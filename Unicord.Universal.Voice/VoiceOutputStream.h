@@ -11,13 +11,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         Windows::Foundation::IAsyncOperationWithProgress<uint32_t, uint32_t> WriteAsync(Windows::Storage::Streams::IBuffer buffer);
         Windows::Foundation::IAsyncOperation<bool> FlushAsync();
-		void Close();
+        void Close();
 
-	private:
-		winrt::Unicord::Universal::Voice::implementation::VoiceClient* client = nullptr;
-		uint8_t* pcm_buffer = nullptr;
-		size_t buffer_length = 0;
-		size_t consumed_buffer_length = 0;
+    private:
+        winrt::Unicord::Universal::Voice::implementation::VoiceClient* client = nullptr;
+        uint8_t* pcm_buffer = nullptr;
+        size_t buffer_length = 0;
+        size_t consumed_buffer_length = 0;
     };
 }
 namespace winrt::Unicord::Universal::Voice::factory_implementation

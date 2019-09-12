@@ -24,15 +24,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
         hstring PreferredRecordingDevice();
         void PreferredRecordingDevice(hstring value);
 
-	private:
-		hstring token = L"";
-		hstring session_id = L"";
-		hstring endpoint = L"";
-		uint64_t guild_id = 0;
-		uint64_t channel_id = 0;
-		uint64_t current_user_id = 0;
-		hstring preferred_playback_device = L"";
-		hstring preferred_recording_device = L"";		
+    private:
+        hstring token = L"";
+        hstring session_id = L"";
+        hstring endpoint = L"";
+        uint64_t guild_id = 0;
+        uint64_t channel_id = 0;
+        uint64_t current_user_id = 0;
+        hstring preferred_playback_device = L"";
+        hstring preferred_recording_device = L"";
     };
 }
 namespace winrt::Unicord::Universal::Voice::factory_implementation

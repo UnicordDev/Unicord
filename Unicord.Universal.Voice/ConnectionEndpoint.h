@@ -6,9 +6,9 @@
 using namespace winrt;
 namespace winrt::Unicord::Universal::Voice::Interop
 {
-	struct ConnectionEndpoint
-	{
-		hstring hostname;
-		uint16_t port;
-	};
+    struct ConnectionEndpoint
+    {
+        hstring hostname;
+        uint16_t port;
+    };
 }

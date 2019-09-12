@@ -11,7 +11,6 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
@@ -39,7 +38,6 @@ namespace Unicord.Universal
     {
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
-        private ExtendedExecutionSession _executionSession;
 
         internal static DiscordClient Discord { get; set; }
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
@@ -65,7 +63,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics));
             }
         }
 
@@ -286,21 +284,9 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-
-            if (_executionSession != null)
-            {
-                _executionSession.Revoked -= OnExtendedSessionRevoked;
-                _executionSession.Dispose();
-                _executionSession = null;
-            }
-
-            _executionSession = new ExtendedExecutionSession { Reason = ExtendedExecutionReason.Unspecified };
-            _executionSession.Revoked += OnExtendedSessionRevoked;
-            var result = await _executionSession.RequestExtensionAsync();
-
             deferral.Complete();
         }
 
