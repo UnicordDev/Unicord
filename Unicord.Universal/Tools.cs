@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Unicord.Universal.Shared;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
@@ -163,36 +164,6 @@ namespace Unicord.Universal
             }
 
             return file;
-        }
-
-        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
-        {
-            var httpRequestMessage
-                = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
-            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
-
-            var cont = new HttpMultipartFormDataContent();
-
-            if (!string.IsNullOrWhiteSpace(message))
-            {
-                cont.Add(new HttpStringContent(message), "content");
-            }
-
-            for (var i = 0; i < files.Count; i++)
-            {
-                var file = files.ElementAt(i);
-                cont.Add(new HttpStreamContent(file.Value), $"file{i}", file.Key);
-            }
-
-            httpRequestMessage.Content = cont;
-
-            var send = _httpClient.Value.SendRequestAsync(httpRequestMessage);
-            send.Progress += new AsyncOperationProgressHandler<HttpResponseMessage, HttpProgress>((o, e) =>
-            {
-                progress.Report((e.BytesSent / (double)e.TotalBytesToSend) * 100);
-            });
-
-            await send;
         }
 
         /// <summary>

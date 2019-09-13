@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using Unicord.Universal.Shared;
+using Windows.Storage.Streams;
 
 namespace DSharpPlus.CommandsNext
 {
@@ -17,34 +19,34 @@ namespace DSharpPlus.CommandsNext
         /// Gets the client which received the message.
         /// </summary>
         public DiscordClient Client { get; internal set; }
-        
+
         /// <summary>
         /// Gets the message that triggered the execution.
         /// </summary>
         public DiscordMessage Message { get; internal set; }
-        
+
         /// <summary>
         /// Gets the channel in which the execution was triggered,
         /// </summary>
-        public DiscordChannel Channel 
+        public DiscordChannel Channel
             => Message.Channel;
 
         /// <summary>
         /// Gets the guild in which the execution was triggered. This property is null for commands sent over direct messages.
         /// </summary>
-        public DiscordGuild Guild 
+        public DiscordGuild Guild
             => Channel.Guild;
 
         /// <summary>
         /// Gets the user who triggered the execution.
         /// </summary>
-        public DiscordUser User 
+        public DiscordUser User
             => Message.Author;
 
         /// <summary>
         /// Gets the member who triggered the execution. This property is null for commands sent over direct messages.
         /// </summary>
-        public DiscordMember Member 
+        public DiscordMember Member
             => _lazyAssMember.Value;
 
         private Lazy<DiscordMember> _lazyAssMember;
@@ -87,6 +89,9 @@ namespace DSharpPlus.CommandsNext
         internal CommandsNextConfiguration Config { get; set; }
 
         internal ServiceContext ServiceScopeContext { get; set; }
+        public string ResponseMessage { get; private set; }
+        public Dictionary<string, IInputStream> Attachments { get; set; }
+        public IProgress<double?> Progress { get; set; }
 
         internal CommandContext()
         {
@@ -100,8 +105,22 @@ namespace DSharpPlus.CommandsNext
         /// <param name="isTTS">Whether the message is to be spoken aloud.</param>
         /// <param name="embed">Embed to attach.</param>
         /// <returns></returns>
-        public Task<DiscordMessage> RespondAsync(string content = null, bool isTTS = false, DiscordEmbed embed = null) 
-            => Message.RespondAsync(content, isTTS, embed);
+        public async Task<DiscordMessage> RespondAsync(string content = null, bool isTTS = false, DiscordEmbed embed = null)
+        {
+            if (!Attachments.Any())
+            {
+                return await Message.RespondAsync(content, isTTS, embed);
+            }
+            else
+            {
+                return await SharedTools.SendFilesWithProgressAsync(Channel, content, Attachments, Progress);
+            }
+        }
+
+        public void RespondWithSystemMessage(string content)
+        {
+            this.ResponseMessage = content;
+        }
 
         /// <summary>
         /// Quickly respond with a file to the message that triggered the command.
@@ -112,8 +131,18 @@ namespace DSharpPlus.CommandsNext
         /// <param name="isTTS">Whether the message is to be spoken aloud.</param>
         /// <param name="embed">Embed to attach to the message.</param>
         /// <returns>Message that was sent.</returns>
-        // public Task<DiscordMessage> RespondWithFileAsync(string fileName, Stream fileData, string content = null, bool isTTS = false, DiscordEmbed embed = null) 
-        //    => this.Message.RespondWithFileAsync(fileName, fileData, content, isTTS, embed);
+        public Task<DiscordMessage> RespondWithFileAsync(string fileName, Stream fileData, string content = null, bool isTTS = false, DiscordEmbed embed = null)
+        {
+            if (!Attachments.Any())
+            {
+                return Message.RespondWithFileAsync(fileData, fileName, content, isTTS, embed);
+            }
+            else
+            {
+                Attachments.Add(fileName, fileData.AsInputStream());
+                return SharedTools.SendFilesWithProgressAsync(Channel, content, Attachments, Progress);
+            }
+        }
 
 #if !NETSTANDARD1_1
         /// <summary>
@@ -124,8 +153,18 @@ namespace DSharpPlus.CommandsNext
         /// <param name="isTTS">Whether the message is to be spoken aloud.</param>
         /// <param name="embed">Embed to attach to the message.</param>
         /// <returns>Message that was sent.</returns>
-        public Task<DiscordMessage> RespondWithFileAsync(FileStream fileData, string content = null, bool isTTS = false, DiscordEmbed embed = null) 
-            => Message.RespondWithFileAsync(fileData, content, isTTS, embed);
+        public Task<DiscordMessage> RespondWithFileAsync(FileStream fileData, string content = null, bool isTTS = false, DiscordEmbed embed = null)
+        {
+            if (!Attachments.Any())
+            {
+                return Message.RespondWithFileAsync(fileData, content, isTTS, embed);
+            }
+            else
+            {
+                Attachments.Add(fileData.Name, fileData.AsInputStream());
+                return SharedTools.SendFilesWithProgressAsync(Channel, content, Attachments, Progress);
+            }
+        }
 
         /// <summary>
         /// Quickly respond with a file to the message that triggered the command.
@@ -149,14 +188,28 @@ namespace DSharpPlus.CommandsNext
         /// <param name="isTTS">Whether the message is to be spoken aloud.</param>
         /// <param name="embed">Embed to attach to the message.</param>
         /// <returns>Message that was sent.</returns>
-        public Task<DiscordMessage> RespondWithFilesAsync(Dictionary<string, Stream> files, string content = null, bool isTTS = false, DiscordEmbed embed = null) 
-            => Message.RespondWithFilesAsync(files, content, isTTS, embed);
+        public Task<DiscordMessage> RespondWithFilesAsync(Dictionary<string, Stream> files, string content = null, bool isTTS = false, DiscordEmbed embed = null)
+        {
+            if (!Attachments.Any())
+            {
+                return Message.RespondWithFilesAsync(files, content, isTTS, embed);
+            }
+            else
+            {
+                foreach (var file in files)
+                {
+                    Attachments.Add(file.Key, file.Value.AsInputStream());
+                }
+
+                return SharedTools.SendFilesWithProgressAsync(Channel, content, Attachments, Progress);
+            }
+        }
 
         /// <summary>
         /// Triggers typing in the channel containing the message that triggered the command.
         /// </summary>
         /// <returns></returns>
-        public Task TriggerTypingAsync() 
+        public Task TriggerTypingAsync()
             => Channel.TriggerTypingAsync();
 
         internal struct ServiceContext : IDisposable

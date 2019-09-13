@@ -301,6 +301,7 @@
     <Compile Include="..\DSharpPlus.CommandsNext\Polyfills.cs">
       <Link>Polyfills.cs</Link>
     </Compile>
+    <Compile Include="Attributes\IncludeAttachmentsAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\DSharpPlus.CommandsNext.UWP.rd.xml" />
   </ItemGroup>
@@ -316,6 +317,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Unicord.Universal.Shared\Unicord.Universal.Shared.csproj">
+      <Project>{7892dc69-a18e-46b7-a560-52d52c171d08}</Project>
+      <Name>Unicord.Universal.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>

@@ -14,6 +14,7 @@ using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
+using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.Foundation;

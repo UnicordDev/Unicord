@@ -4,6 +4,7 @@ using System.Linq;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
@@ -163,7 +164,7 @@ namespace Unicord.Universal.Pages
                         var progress = new Progress<double?>(p => ring.Value = p ?? 0d);
                         var stream = await _file.OpenReadAsync();
                         var dictionary = new Dictionary<string, IInputStream>() { [_file.Name] = stream };
-                        await Tools.SendFilesWithProgressAsync(channel, captionText.Text, dictionary, progress);
+                        await SharedTools.SendFilesWithProgressAsync(channel, captionText.Text, dictionary, progress);
                     }
                     else if (!string.IsNullOrWhiteSpace(captionText.Text))
                     {

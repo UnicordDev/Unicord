@@ -254,9 +254,8 @@ namespace DSharpPlus.CommandsNext
                 return cmd;
             }
             
-            while (cmd is CommandGroup)
+            while (cmd is CommandGroup cm2)
             {
-                var cm2 = cmd as CommandGroup;
                 var oldPos = pos;
                 next = commandString.ExtractNextArgument(ref pos);
                 if (next == null)
@@ -329,7 +328,7 @@ namespace DSharpPlus.CommandsNext
                 await RunAllChecksAsync(cmd, ctx).ConfigureAwait(false);
 
                 var res = await cmd.ExecuteAsync(ctx).ConfigureAwait(false);
-
+                
                 if (res.IsSuccessful)
                     await _executed.InvokeAsync(new CommandExecutionEventArgs { Context = res.Context }).ConfigureAwait(false);
                 else

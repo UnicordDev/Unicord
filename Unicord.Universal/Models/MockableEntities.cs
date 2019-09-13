@@ -43,6 +43,7 @@ namespace Unicord.Universal.Models
             Channel = channel;
             Timestamp = timestamp;
             Discord = App.Discord;
+            MessageType = DSharpPlus.Entities.MessageType.Default;
         }
 
         public override DiscordUser Author { get; internal set; }

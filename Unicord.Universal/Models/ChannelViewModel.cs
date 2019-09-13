@@ -7,8 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.Storage.Streams;
@@ -553,39 +555,46 @@ namespace Unicord.Universal.Models
                         Command command = null;
                         if (_commands.FindCommandPrefix(str, out var pfx, out var cnt) && (command = _commands.FindCommand(cnt, out var args)) != null)
                         {
+                            var models = FileUploads.ToArray();
+                            var files = await GetAttachmentsDictionary(models);
                             var ctx = _commands.CreateFakeContext(App.Discord.CurrentUser, Channel, cnt, pfx, command, args);
+                            var hasAttachments = command.CustomAttributes.OfType<IncludeAttachmentsAttribute>().Any();
+
+                            if (hasAttachments)
+                            {
+                                FileUploads.Clear();
+                                ctx.Attachments = files;
+                                ctx.Progress = progress;
+                            }
+
                             try
                             {
-                                await _commands.ExecuteCommandAsync(ctx);
+                                await _commands.ExecuteCommandAsync(ctx).ConfigureAwait(false);
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex)
+                            {
+                                AddSystemMessage($"Failed to execute that command! {ex.Message}!");
+                            }
+
+                            if (ctx.ResponseMessage != null)
+                            {
+                                var message = ctx.ResponseMessage;
+                                AddSystemMessage(message);
+                            }
+
+                            if (hasAttachments)
+                            {
+                                await CleanupAttachments(models, files);
+                            }
                         }
                         else if (FileUploads.Any())
                         {
                             var models = FileUploads.ToArray();
                             FileUploads.Clear();
-                            var files = new Dictionary<string, IInputStream>();
-                            foreach (var item in models)
-                            {
-                                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
-                            }
 
-                            await Tools.SendFilesWithProgressAsync(Channel, str, files, progress).ConfigureAwait(false);
-
-                            foreach (var item in files)
-                            {
-                                item.Value.Dispose();
-                            }
-
-                            foreach (var item in models)
-                            {
-                                if (item.IsTemporary && item.StorageFile != null)
-                                {
-                                    await item.StorageFile.DeleteAsync();
-                                }
-
-                                item.Dispose();
-                            }
+                            var files = await GetAttachmentsDictionary(models).ConfigureAwait(false);
+                            await SharedTools.SendFilesWithProgressAsync(Channel, str, files, progress).ConfigureAwait(false);
+                            await CleanupAttachments(models, files);
                         }
                         else
                         {
@@ -602,14 +611,47 @@ namespace Unicord.Universal.Models
                     }
                     catch
                     {
+                        AddSystemMessage("Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
                         // TODO: thread marshalling
-                        await UIUtilities.ShowErrorDialogAsync(
-                            "Failed to send message!",
-                            "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
+                        // await UIUtilities.ShowErrorDialogAsync(
+                        //     "Failed to send message!",
+                        //     "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
                     }
                 }
             }
         }
+
+        private static async Task CleanupAttachments(FileUploadModel[] models, Dictionary<string, IInputStream> files)
+        {
+            foreach (var item in files)
+            {
+                item.Value.Dispose();
+            }
+
+            foreach (var item in models)
+            {
+                if (item.IsTemporary && item.StorageFile != null)
+                {
+                    await item.StorageFile.DeleteAsync();
+                }
+
+                item.Dispose();
+            }
+        }
+
+        private static async Task<Dictionary<string, IInputStream>> GetAttachmentsDictionary(FileUploadModel[] models)
+        {
+            var files = new Dictionary<string, IInputStream>();
+            foreach (var item in models)
+            {
+                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
+            }
+
+            return files;
+        }
+
+        private void AddSystemMessage(string message) =>
+            _context.Post(d => Messages.Add(new MockMessage(message, new MockUser("Unicord", "1337"), Channel)), null);
 
         #region Typing
 
