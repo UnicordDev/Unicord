@@ -126,19 +126,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\AcknowledgeCommand.cs" />
-    <Compile Include="Commands\BanCommand.cs" />
-    <Compile Include="Commands\CopyUrlCommand.cs" />
-    <Compile Include="Commands\CopyIdCommand.cs" />
-    <Compile Include="Commands\EditChannelCommand.cs" />
-    <Compile Include="Commands\ChangeNicknameCommand.cs" />
-    <Compile Include="Commands\DeleteMessageCommand.cs" />
-    <Compile Include="Commands\KickCommand.cs" />
-    <Compile Include="Commands\MuteCommand.cs" />
-    <Compile Include="Commands\OpenNewWindowCommand.cs" />
-    <Compile Include="Commands\PinMessageCommand.cs" />
-    <Compile Include="Commands\MessageUserCommand.cs" />
-    <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Commands\SlashCommands.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Constants.pub.cs" />
@@ -413,6 +400,19 @@
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UICommands\AcknowledgeCommand.cs" />
+    <Compile Include="UICommands\BanCommand.cs" />
+    <Compile Include="UICommands\ChangeNicknameCommand.cs" />
+    <Compile Include="UICommands\CopyIdCommand.cs" />
+    <Compile Include="UICommands\CopyUrlCommand.cs" />
+    <Compile Include="UICommands\DeleteMessageCommand.cs" />
+    <Compile Include="UICommands\EditChannelCommand.cs" />
+    <Compile Include="UICommands\KickCommand.cs" />
+    <Compile Include="UICommands\MessageUserCommand.cs" />
+    <Compile Include="UICommands\MuteCommand.cs" />
+    <Compile Include="UICommands\OpenNewWindowCommand.cs" />
+    <Compile Include="UICommands\PinMessageCommand.cs" />
+    <Compile Include="UICommands\ShowUserOverlayCommand.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Tools.cs" />
