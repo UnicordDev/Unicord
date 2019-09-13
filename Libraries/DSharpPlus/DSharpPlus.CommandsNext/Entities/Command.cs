@@ -63,7 +63,7 @@ namespace DSharpPlus.CommandsNext
         /// </summary>
         public IReadOnlyList<Attribute> CustomAttributes { get; internal set; }
 
-        internal Command() { }
+        public Command() { }
 
         /// <summary>
         /// Executes this command with specified context.

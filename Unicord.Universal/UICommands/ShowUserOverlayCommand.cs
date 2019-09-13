@@ -7,7 +7,7 @@ using System.Windows.Input;
 using DSharpPlus.Entities;
 using Windows.UI.Xaml;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     public class ShowUserOverlayCommand : ICommand
     {

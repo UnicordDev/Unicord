@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus.Entities;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class AcknowledgeCommand : ICommand
     {

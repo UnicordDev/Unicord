@@ -8,7 +8,7 @@
     xmlns:b="using:Unicord.Universal.Behaviours"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
-    xmlns:commands="using:Unicord.Universal.Commands"
+    xmlns:commands="using:Unicord.Universal.UICommands"
     xmlns:discord="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"

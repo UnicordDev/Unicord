@@ -11,7 +11,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System.Profile;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class OpenNewWindowCommand : ICommand
     {

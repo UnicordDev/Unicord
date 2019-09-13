@@ -6,7 +6,7 @@ using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;
 using Windows.UI.Xaml;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class EditChannelCommand : ICommand
     {

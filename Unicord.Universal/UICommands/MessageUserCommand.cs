@@ -7,7 +7,7 @@ using Unicord.Universal.Pages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class MessageUserCommand : ICommand
     {

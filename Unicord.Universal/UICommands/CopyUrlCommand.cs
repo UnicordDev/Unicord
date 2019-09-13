@@ -3,7 +3,7 @@ using System.Windows.Input;
 using DSharpPlus.Entities;
 using Windows.ApplicationModel.DataTransfer;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class CopyUrlCommand : ICommand
     {

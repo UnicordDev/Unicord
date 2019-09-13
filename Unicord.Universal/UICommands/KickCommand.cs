@@ -6,9 +6,9 @@ using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Controls;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
-    class BanCommand : ICommand
+    public class KickCommand : ICommand
     {
 #pragma warning disable 67 // the event <event> is never used
         public event EventHandler CanExecuteChanged;
@@ -24,7 +24,7 @@ namespace Unicord.Universal.Commands
                 if (!Tools.CheckRoleHeirarchy(member.Guild.CurrentMember, member))
                     return false;
 
-                return member.Guild.CurrentMember.PermissionsIn(null).HasPermission(Permissions.BanMembers);
+                return member.Guild.CurrentMember.PermissionsIn(null).HasPermission(Permissions.KickMembers);
             }
 
             return false;
@@ -34,11 +34,11 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
-                var banDialog = new BanDialog(member);
-                var result = await banDialog.ShowAsync();
+                var kickDialog = new KickDialog(member);
+                var result = await kickDialog.ShowAsync();
 
-                if (result == ContentDialogResult.Primary)
-                    await member.BanAsync(banDialog.DeleteMessageDays, banDialog.BanReason);
+                if (result != ContentDialogResult.Primary)
+                    await member.RemoveAsync(kickDialog.KickReason);
             }
         }
     }

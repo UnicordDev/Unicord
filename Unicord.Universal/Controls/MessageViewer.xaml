@@ -2,7 +2,7 @@
     x:Class="Unicord.Universal.Controls.MessageViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:commands="using:Unicord.Universal.Commands"
+    xmlns:commands="using:Unicord.Universal.UICommands"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dc="using:Unicord.Universal.Controls"

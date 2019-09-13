@@ -6,7 +6,7 @@ using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.UICommands
 {
     class ChangeNicknameCommand : ICommand
     {

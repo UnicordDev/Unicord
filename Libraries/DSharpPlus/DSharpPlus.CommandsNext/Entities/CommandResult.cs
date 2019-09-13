@@ -10,16 +10,16 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets whether the command execution succeeded.
         /// </summary>
-        public bool IsSuccessful { get; internal set; }
+        public bool IsSuccessful { get; set; }
         
         /// <summary>
         /// Gets the exception (if any) that occured when executing the command.
         /// </summary>
-        public Exception Exception { get; internal set; }
+        public Exception Exception { get; set; }
 
         /// <summary>
         /// Gets the context in which the command was executed.
         /// </summary>
-        public CommandContext Context { get; internal set; }
+        public CommandContext Context { get; set; }
     }
 }

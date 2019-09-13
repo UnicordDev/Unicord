@@ -9,7 +9,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using NeoSmart.Unicode;
-using Unicord.Universal.Commands;
+using Unicord.Universal.UICommands;
 using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Utilities;

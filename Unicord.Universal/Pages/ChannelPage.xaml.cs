@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Unicord.Universal.Commands;
+using Unicord.Universal.UICommands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;

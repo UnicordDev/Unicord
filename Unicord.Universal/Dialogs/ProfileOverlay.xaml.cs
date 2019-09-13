@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
-using Unicord.Universal.Commands;
+using Unicord.Universal.UICommands;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;

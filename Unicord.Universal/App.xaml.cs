@@ -14,7 +14,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Push;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Unicord.Universal.Commands;
+using Unicord.Universal.UICommands;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
