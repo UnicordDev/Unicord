@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
@@ -29,6 +30,7 @@ namespace Unicord.Universal.Models
         private DateTimeOffset _messageLastSent;
         private SynchronizationContext _context;
         private SemaphoreSlim _loadSemaphore;
+        private CommandsNextExtension _commands;
         private DispatcherTimer _slowModeTimer;
         private bool _isTranscoding;
 
@@ -38,6 +40,7 @@ namespace Unicord.Universal.Models
                 throw new InvalidOperationException("Unable to create a view model for a voice chanel"); // no op this
 
             _loadSemaphore = new SemaphoreSlim(1, 1);
+            _commands = App.Discord.GetCommandsNext();
             _context = SynchronizationContext.Current;
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
@@ -547,7 +550,17 @@ namespace Unicord.Universal.Models
 
                     try
                     {
-                        if (FileUploads.Any())
+                        Command command = null;
+                        if (_commands.FindCommandPrefix(str, out var pfx, out var cnt) && (command = _commands.FindCommand(cnt, out var args)) != null)
+                        {
+                            var ctx = _commands.CreateFakeContext(App.Discord.CurrentUser, Channel, cnt, pfx, command, args);
+                            try
+                            {
+                                await _commands.ExecuteCommandAsync(ctx);
+                            }
+                            catch (Exception ex) { }
+                        }
+                        else if (FileUploads.Any())
                         {
                             var models = FileUploads.ToArray();
                             FileUploads.Clear();

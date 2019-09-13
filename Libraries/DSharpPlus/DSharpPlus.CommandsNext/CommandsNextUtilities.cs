@@ -40,6 +40,24 @@ namespace DSharpPlus.CommandsNext
         }
 
         /// <summary>
+        /// Checks whether the message has a specified string prefix.
+        /// </summary>
+        /// <param name="msg">Message to check.</param>
+        /// <param name="str">String to check for.</param>
+        /// <param name="comparisonType">Method of string comparison for the purposes of finding prefixes.</param>
+        /// <returns>Positive number if the prefix is present, -1 otherwise.</returns>
+        public static int GetStringPrefixLength(this string content, string str, StringComparison comparisonType = StringComparison.Ordinal)
+        {
+            if (str.Length >= content.Length)
+                return -1;
+
+            if (!content.StartsWith(str, comparisonType))
+                return -1;
+
+            return str.Length;
+        }
+
+        /// <summary>
         /// Checks whether the message contains a specified mention prefix.
         /// </summary>
         /// <param name="msg">Message to check.</param>

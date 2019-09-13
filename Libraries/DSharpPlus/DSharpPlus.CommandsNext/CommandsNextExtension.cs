@@ -183,23 +183,8 @@ namespace DSharpPlus.CommandsNext
             if (!Config.EnableDms && e.Channel.IsPrivate)
                 return;
 
-            var mpos = -1;
-            if (Config.EnableMentionPrefix)
-                mpos = e.Message.GetMentionPrefixLength(Client.CurrentUser);
-
-            if (Config.StringPrefixes?.Any() == true)
-                foreach (var pfix in Config.StringPrefixes)
-                    if (mpos == -1 && !string.IsNullOrWhiteSpace(pfix))
-                        mpos = e.Message.GetStringPrefixLength(pfix, Config.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
-
-            if (mpos == -1 && Config.PrefixResolver != null)
-                mpos = await Config.PrefixResolver(e.Message).ConfigureAwait(false);
-
-            if (mpos == -1)
+            if (!FindCommandPrefix(e.Message.Content, out var pfx, out var cnt))
                 return;
-
-            var pfx = e.Message.Content.Substring(0, mpos);
-            var cnt = e.Message.Content.Substring(mpos);
 
             var __ = 0;
             var fname = cnt.ExtractNextArgument(ref __);
@@ -213,6 +198,25 @@ namespace DSharpPlus.CommandsNext
             }
 
             _ = Task.Run(async () => await ExecuteCommandAsync(ctx));
+        }
+
+        public bool FindCommandPrefix(string text, out string pfx, out string cnt)
+        {
+            var mpos = -1;
+            pfx = null;
+            cnt = null;
+
+            if (Config.StringPrefixes?.Any() == true)
+                foreach (var pfix in Config.StringPrefixes)
+                    if (mpos == -1 && !string.IsNullOrWhiteSpace(pfix))
+                        mpos = text.GetStringPrefixLength(pfix, Config.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            
+            if (mpos == -1)
+                return false;
+
+            pfx = text.Substring(0, mpos);
+            cnt = text.Substring(mpos);
+            return true;
         }
 
         /// <summary>
@@ -329,11 +333,7 @@ namespace DSharpPlus.CommandsNext
                 if (res.IsSuccessful)
                     await _executed.InvokeAsync(new CommandExecutionEventArgs { Context = res.Context }).ConfigureAwait(false);
                 else
-                    await _error.InvokeAsync(new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception }).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                await _error.InvokeAsync(new CommandErrorEventArgs { Context = ctx, Exception = ex }).ConfigureAwait(false);
+                    throw res.Exception;
             }
             finally
             {
@@ -759,9 +759,9 @@ namespace DSharpPlus.CommandsNext
             {
                 if (msg.Channel.Guild != null)
                 {
-                    mentionedUsers = Utilities.GetUserMentions(msg).Select(xid => msg.Channel.Guild._members.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList();
-                    mentionedRoles = Utilities.GetRoleMentions(msg).Select(xid => msg.Channel.Guild._roles.FirstOrDefault(xr => xr.Id == xid)).ToList();
-                    mentionedChannels = Utilities.GetChannelMentions(msg).Select(xid => msg.Channel.Guild._channels.FirstOrDefault(xc => xc.Id == xid)).ToList();
+                    mentionedUsers = Utilities.GetUserMentions(msg).Select(xid => msg.Channel.Guild._members.Values.FirstOrDefault(xm => xm.Id == xid)).Cast<DiscordUser>().ToList();
+                    mentionedRoles = Utilities.GetRoleMentions(msg).Select(xid => msg.Channel.Guild._roles.Values.FirstOrDefault(xr => xr.Id == xid)).ToList();
+                    mentionedChannels = Utilities.GetChannelMentions(msg).Select(xid => msg.Channel.Guild._channels.Values.FirstOrDefault(xc => xc.Id == xid)).ToList();
                 }
                 else
                 {

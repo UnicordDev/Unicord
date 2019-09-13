@@ -90,7 +90,7 @@ namespace DSharpPlus.CommandsNext
 
         internal CommandContext()
         {
-            _lazyAssMember = new Lazy<DiscordMember>(() => Guild?.Members.FirstOrDefault(xm => xm.Id == User.Id) ?? Guild?.GetMemberAsync(User.Id).ConfigureAwait(false).GetAwaiter().GetResult());
+            _lazyAssMember = new Lazy<DiscordMember>(() => Guild?.Members.Values.FirstOrDefault(xm => xm.Id == User.Id) ?? Guild?.GetMemberAsync(User.Id).ConfigureAwait(false).GetAwaiter().GetResult());
         }
 
         /// <summary>

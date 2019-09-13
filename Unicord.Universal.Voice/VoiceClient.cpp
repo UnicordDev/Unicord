@@ -402,7 +402,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         if (packet_extension) {
             // RFC 5285, 4.2 One-Byte header
             // http://www.rfcreader.com/#rfc5285_line186
-            if (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
+            while (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
                 uint16_t headerLen = opus_view[2] << 8 | opus_view[3];
                 uint8_t i = 4;
                 for (; i < headerLen + 4; i++)

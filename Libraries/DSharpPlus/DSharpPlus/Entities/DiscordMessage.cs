@@ -18,8 +18,11 @@ namespace DSharpPlus.Entities
         internal bool _mentionsInvalidated;
 
         private string _content;
-        private List<DiscordRole> _mentionedRoles;
-        private ReadOnlyCollection<DiscordChannel> _mentionedChannels;
+
+        [JsonIgnore]
+        internal List<DiscordRole> _mentionedRoles;
+        [JsonIgnore]
+        internal List<DiscordChannel> _mentionedChannels;
 
         internal DiscordMessage() { }
 

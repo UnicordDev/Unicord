@@ -139,6 +139,7 @@
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
+    <Compile Include="Commands\SlashCommands.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Constants.pub.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
@@ -759,6 +760,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.CommandsNext.UWP\DSharpPlus.CommandsNext.UWP.csproj">
+      <Project>{EEDD7EE7-FAC8-4D2F-9DF0-3B422310BFFB}</Project>
+      <Name>DSharpPlus.CommandsNext.UWP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
       <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
       <Name>DSharpPlus.UWP</Name>

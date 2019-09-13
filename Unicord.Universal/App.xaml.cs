@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
@@ -13,6 +14,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Push;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Unicord.Universal.Commands;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -292,7 +294,7 @@ namespace Unicord.Universal
 
         private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
         {
-            if(args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
+            if (args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
             {
                 await Discord.DisconnectAsync();
             }
@@ -351,6 +353,9 @@ namespace Unicord.Universal
                             ReconnectIndefinitely = true
                         }));
 
+                        var cnext = Discord.UseCommandsNext(new CommandsNextConfiguration() { StringPrefixes = new[] { "/" }, DmHelp = false, UseDefaultCommandHandler = false });
+                        cnext.RegisterCommands<SlashCommands>();
+
                         Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
                         Discord.Ready += ReadyHandler;
                         Discord.SocketErrored += SocketErrored;
@@ -361,7 +366,7 @@ namespace Unicord.Universal
 
                         _connectSemaphore.Release();
 
-                        await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null: DateTimeOffset.Now);
+                        await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null : DateTimeOffset.Now);
                     }
                     catch (Exception ex)
                     {

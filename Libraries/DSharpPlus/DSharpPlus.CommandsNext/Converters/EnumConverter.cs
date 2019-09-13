@@ -19,9 +19,9 @@ namespace DSharpPlus.CommandsNext.Converters
                 throw new InvalidOperationException("Cannot convert non-enum value to an enum.");
 
             if (Enum.TryParse<T>(value, !ctx.Config.CaseSensitive, out T ev))
-                return Task.FromResult(Optional<T>.FromValue(ev));
+                return Task.FromResult(Optional.FromValue<T>(ev));
 
-            return Task.FromResult(Optional<T>.FromNoValue());
+            return Task.FromResult(Optional.FromNoValue<T>());
         }
     }
 }
