@@ -442,6 +442,9 @@
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\emoji.json" />
+    <PRIResource Include="Resources\en-GB\Resources.resw" />
+    <PRIResource Include="Resources\en-GB\LoginPage.resw" />
+    <PRIResource Include="Resources\en-GB\Dialogs.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>

@@ -22,6 +22,7 @@ using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.ExtendedExecution;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
@@ -303,10 +304,11 @@ namespace Unicord.Universal
             Exception taskEx = null;
 
             await _connectSemaphore.WaitAsync();
+            var loader = ResourceLoader.GetForViewIndependentUse("LoginPage");
 
             if (Discord == null || Discord.IsDisposed)
             {
-                if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, "Verify your identitiy to login to Unicord!"))
+                if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
                 {
                     try
                     {
@@ -395,7 +397,8 @@ namespace Unicord.Universal
         {
             if (ex != null)
             {
-                await UIUtilities.ShowErrorDialogAsync("Unable to login!", "Something went wrong logging you in! Check your details and try again!");
+                var loader = ResourceLoader.GetForViewIndependentUse("LoginPage");
+                await UIUtilities.ShowErrorDialogAsync(loader.GetString("LoginFailedDialogTitle"), loader.GetString("LoginFailedDialogMessage"));
                 RoamingSettings.Save(VERIFY_LOGIN, false);
             }
 

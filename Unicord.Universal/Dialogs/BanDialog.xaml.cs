@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Dialogs
@@ -27,7 +28,8 @@ namespace Unicord.Universal.Dialogs
         public BanDialog(DiscordMember member)
         {
             InitializeComponent();
-            headerTextBlock.Text = $"Ban @{member.Username}#{member.Discriminator}?";
+            var resources = ResourceLoader.GetForCurrentView("Dialogs");
+            headerTextBlock.Text = string.Format(resources.GetString("BanDialogHeaderFormat"), member.Username, member.Discriminator);
         }
     }
 }

@@ -11,15 +11,15 @@
     <Grid>
         <StackPanel MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
             <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12"/>
-            <PasswordBox x:Name="tokenTextBox" PlaceholderText="Token"/>
+            <PasswordBox x:Name="tokenTextBox" x:Uid="/LoginPage/TokenTextBox" />
             <Grid Margin="0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="loadFileButton" Click="loadFileButton_Click" w1809:CornerRadius="3,0,0,3" MinWidth="150" Content="Load from file..." HorizontalAlignment="Stretch" />
-                <Button x:Name="loginButton" Grid.Column="1" Click="Button_Click" w1809:CornerRadius="0,3,3,0" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" Content="Login" HorizontalAlignment="Stretch"/>
+                <Button x:Name="loadFileButton" x:Uid="/LoginPage/LoadFileButton" Click="loadFileButton_Click" w1809:CornerRadius="3,0,0,3" MinWidth="150" HorizontalAlignment="Stretch" />
+                <Button x:Name="loginButton" x:Uid="/LoginPage/LoginButton" Grid.Column="1" Click="Button_Click" w1809:CornerRadius="0,3,3,0" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
             </Grid>
         </StackPanel>
     </Grid>

@@ -1,5 +1,6 @@
 ﻿<ContentDialog
     x:Class="Unicord.Universal.Dialogs.ConfirmationDialog"
+    x:Uid="/Dialogs/ConfirmationDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Dialogs"
@@ -7,9 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
-    PrimaryButtonText="Yes"
-    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
-    SecondaryButtonText="No">
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
 
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>

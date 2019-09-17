@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
-      <uap:VisualElements DisplayName="Unicord" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="A Discord client for Windows 10 and Windows 10 Mobile." BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="ms-resource:AppDisplayName" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="ms-resource:AppDisplayDescription" BackgroundColor="transparent">
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png" />
         <uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" Square310x310Logo="Assets\Store\LargeTile.png" Square71x71Logo="Assets\Store\SmallTile.png" ShortName="Unicord">
           <uap:ShowNameOnTiles>
