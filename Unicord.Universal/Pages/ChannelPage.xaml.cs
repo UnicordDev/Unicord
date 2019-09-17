@@ -1,12 +1,11 @@
-﻿using DSharpPlus.Entities;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
@@ -15,11 +14,8 @@ using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Imaging;
-using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
@@ -889,6 +885,11 @@ namespace Unicord.Universal.Pages
         {
             topGrid.Visibility = Visibility.Collapsed;
             footerGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void CallButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

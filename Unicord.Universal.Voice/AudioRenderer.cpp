@@ -100,8 +100,15 @@ namespace winrt::Unicord::Universal::Voice::Render
         CreateAudioDeviceInputNodeResult capture_node_result{ nullptr };
 
         if (!capture_device_id.empty()) {
-            DeviceInformation capture_device_info = DeviceInformation::CreateFromIdAsync(capture_device_id).get();
-            capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format, capture_device_info).get();
+            try
+            {
+                DeviceInformation capture_device_info = DeviceInformation::CreateFromIdAsync(capture_device_id).get();
+                capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format, capture_device_info).get();
+            }
+            catch (const std::exception&)
+            {
+                capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format).get();
+            }
         }
         else {
             capture_node_result = capture_graph.CreateDeviceInputNodeAsync(MediaCategory::Communications, audio_format).get();
@@ -110,6 +117,18 @@ namespace winrt::Unicord::Universal::Voice::Render
         if (capture_node_result.Status() == AudioDeviceNodeCreationStatus::Success) {
             capture_node = capture_node_result.DeviceInputNode();
             capture_node.AddOutgoingConnection(capture_frame_node);
+        }
+    }
+
+    void AudioRenderer::RemoveAudioSource(uint32_t ssrc)
+    {
+        std::unique_lock lock(output_mutex);
+        auto mode_iter = input_nodes.find(ssrc);
+        if (mode_iter != input_nodes.end()) {
+            AudioFrameInputNode input_node = input_nodes.at(ssrc);
+            input_nodes.unsafe_erase(ssrc);
+            input_node.RemoveOutgoingConnection(render_submix_node);
+            input_node.Close();
         }
     }
 

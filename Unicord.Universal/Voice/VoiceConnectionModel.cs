@@ -85,7 +85,7 @@ namespace Unicord.Universal.Voice
             var muted = (bool)info.Message["muted"];
             var deafened = (bool)info.Message["deafened"];
 
-            var channel = App.Discord.Guilds[guild_id].Channels[channel_id];
+            var channel = App.Discord._channelCache[channel_id];
             var vstate = VoiceState.None;
             if (muted)
                 vstate = vstate & VoiceState.Muted;
@@ -282,7 +282,7 @@ namespace Unicord.Universal.Voice
                 OpCode = 4,
                 Payload = new VoiceStateUpdatePayload
                 {
-                    GuildId = Channel.Guild.Id,
+                    GuildId = Channel.Guild?.Id,
                     ChannelId = channel_id,
                     Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
                     Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null

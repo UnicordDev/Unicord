@@ -302,6 +302,8 @@ namespace Unicord.Universal.Models
 
         public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
 
+        public bool ShowCallButton => Channel.Type == ChannelType.Group || Channel.Type == ChannelType.Private;
+
         public bool HasNitro => Channel.Discord.CurrentUser.HasNitro;
 
         public bool ShowEditButton

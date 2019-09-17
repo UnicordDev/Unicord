@@ -17,6 +17,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         void ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t> &target);
 
         AudioSource* GetOrCreateDecoder(uint32_t ssrc);
+        AudioSource * GetAssociatedAudioSource(uint64_t user_id, bool remove = false);
         int32_t GetLastPacketSampleCount(OpusDecoder* decoder);
 
         ~OpusWrapper();

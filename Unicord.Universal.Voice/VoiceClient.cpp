@@ -493,25 +493,39 @@ namespace winrt::Unicord::Universal::Voice::implementation
             auto data = value.GetObject();
             switch (op) {
             case 8: // hello
+            {
                 heartbeat_interval = (int32_t)data.GetNamedNumber(L"heartbeat_interval");
                 co_await SendIdentifyAsync();
                 break;
+            }
             case 2: // ready
+            {
                 ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
                 endpoint.port = (uint16_t)data.GetNamedNumber(L"port");
                 co_await Stage1(data);
                 break;
+            }
             case 4: // session description
+            {
                 Stage2(data);
                 break;
+            }
             case 5: // speaking
             {
                 uint32_t speaking_ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
-
                 AudioSource* audio_source = opus->GetOrCreateDecoder(speaking_ssrc);
                 audio_source->user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
                 audio_source->is_speaking = data.GetNamedNumber(L"speaking") != 0;
 
+                break;
+            }
+            case 13: // client_disconnected
+            {
+                uint64_t user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
+                AudioSource* source = opus->GetAssociatedAudioSource(user_id, true);
+                renderer->RemoveAudioSource(source->ssrc);
+
+                delete source;                
                 break;
             }
             }
@@ -631,9 +645,22 @@ namespace winrt::Unicord::Universal::Voice::implementation
             data.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
             data.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
 
+            JsonObject opus;
+            opus.SetNamedValue(L"name", JsonValue::CreateStringValue(L"opus"));
+            opus.SetNamedValue(L"type", JsonValue::CreateStringValue(L"audio"));
+            opus.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1000));
+            opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(120));
+            
+            JsonArray codecs;
+            codecs.Append(opus);
+
             JsonObject protocol_select;
             protocol_select.SetNamedValue(L"protocol", JsonValue::CreateStringValue(L"udp"));
             protocol_select.SetNamedValue(L"data", data);
+            protocol_select.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
+            protocol_select.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
+            protocol_select.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
+            protocol_select.SetNamedValue(L"codecs", codecs);
 
             JsonObject dispatch;
             dispatch.SetNamedValue(L"op", JsonValue::CreateNumberValue(1));

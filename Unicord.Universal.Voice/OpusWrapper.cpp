@@ -129,6 +129,23 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
+    AudioSource* OpusWrapper::GetAssociatedAudioSource(uint64_t user_id, bool remove)
+    {
+        for each (auto el in opus_decoders)
+        {
+            if (el.second->user_id == user_id) {
+                if (remove) {
+                    opus_decoders.erase(el.first);
+                }
+
+                return el.second;
+            }
+        }
+        
+
+        return nullptr;
+    }
+
     int32_t OpusWrapper::GetLastPacketSampleCount(OpusDecoder* decoder)
     {
         int32_t count;

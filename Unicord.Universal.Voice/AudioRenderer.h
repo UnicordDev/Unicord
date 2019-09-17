@@ -34,6 +34,7 @@ namespace winrt::Unicord::Universal::Voice::Render
         AudioRenderer(implementation::VoiceClient* client);
 
         void Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id);
+        void RemoveAudioSource(uint32_t ssrc);
         void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource* sender);
 
         void CreateAudioInputNode(winrt::Windows::Media::MediaProperties::AudioEncodingProperties &properties, winrt::Unicord::Universal::Voice::Interop::AudioSource * sender, winrt::Windows::Media::Audio::AudioFrameInputNode &input_node);

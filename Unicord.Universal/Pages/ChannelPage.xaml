@@ -334,6 +334,13 @@
                                     </ui:DropDownButton.Flyout>
                                 </ui:DropDownButton>
 
+                                <Button x:Name="callButton"
+                                        Click="CallButton_Click"
+                                        Content="&#xE717;"
+                                        Style="{ThemeResource IconButtonStyle}"
+                                        ToolTipService.ToolTip="Call"
+                                        Visibility="{Binding ShowCallButton, Converter={StaticResource BoolVisibilityConverter}}"/>
+
                                 <ToggleButton
                                     x:Name="muteButton"
                                     Content="&#xE74F;"
