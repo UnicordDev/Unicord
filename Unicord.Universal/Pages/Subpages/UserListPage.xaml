@@ -23,20 +23,19 @@
 
         <Grid x:Name="topGrid" Height="42">
             <TextBlock
+                x:Uid="/UserListPage/UserListHeader"
                 Margin="10,0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                FontWeight="Bold">
-                Users
-            </TextBlock>
+                FontWeight="Bold"/>
         </Grid>
 
         <AutoSuggestBox
             x:Name="userSearch"
+            x:Uid="/UserListPage/UserSearchBox"
             Grid.Row="1"
             Margin="8"
             BorderThickness="1"
-            PlaceholderText="Search Users"
             QueryIcon="Find"
             Style="{StaticResource CleanAutoSuggestBox}" />
 

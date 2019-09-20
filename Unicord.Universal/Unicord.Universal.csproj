@@ -449,6 +449,13 @@
     <PRIResource Include="Resources\en-GB\AccountsSettingsPage.resw" />
     <PRIResource Include="Resources\en-GB\MediaSettingsPage.resw" />
     <PRIResource Include="Resources\en-GB\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\SettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\ChannelWarningPage.resw" />
+    <PRIResource Include="Resources\en-GB\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\en-GB\FriendsPage.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
