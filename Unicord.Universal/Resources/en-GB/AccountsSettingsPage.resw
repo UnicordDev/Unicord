@@ -117,19 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDisplayDescription" xml:space="preserve">
-    <value>A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience.</value>
+  <data name="ContactsUnavailable.Text" xml:space="preserve">
+    <value>Contact syncing is not available on this device.</value>
   </data>
-  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
-    <value>A Discord client for the Universal Windows Platform</value>
+  <data name="FriendsText.Text" xml:space="preserve">
+    <value>Friends</value>
   </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Unicord</value>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Logout</value>
   </data>
-  <data name="AppDisplayNameText.Text" xml:space="preserve">
-    <value>Unicord</value>
-  </data>
-  <data name="DevAppDisplayName" xml:space="preserve">
-    <value>Unicord Canary</value>
+  <data name="SyncPeopleText.Text" xml:space="preserve">
+    <value>Sync my friends with [Windows People](ms-people:)</value>
+    <comment>Markdown capable</comment>
   </data>
 </root>

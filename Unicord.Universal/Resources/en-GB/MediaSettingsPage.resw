@@ -117,19 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDisplayDescription" xml:space="preserve">
-    <value>A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience.</value>
+  <data name="AdvancedHeader.Header" xml:space="preserve">
+    <value>Advanced</value>
   </data>
-  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
-    <value>A Discord client for the Universal Windows Platform</value>
+  <data name="AlwaysCompress.Content" xml:space="preserve">
+    <value>Always compress before sending</value>
   </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Unicord</value>
+  <data name="AudioOptionsHeader.Text" xml:space="preserve">
+    <value>Audio Options</value>
   </data>
-  <data name="AppDisplayNameText.Text" xml:space="preserve">
-    <value>Unicord</value>
+  <data name="BitrateSlider.Header" xml:space="preserve">
+    <value>Bitrate</value>
   </data>
-  <data name="DevAppDisplayName" xml:space="preserve">
-    <value>Unicord Canary</value>
+  <data name="CompressIfNeeded.Content" xml:space="preserve">
+    <value>Compress if the file is above your upload limit</value>
+  </data>
+  <data name="EncoderPriorityBox.Header" xml:space="preserve">
+    <value>Encoder Priority</value>
+  </data>
+  <data name="EncoderPriorityQuality.Content" xml:space="preserve">
+    <value>Prioritise quality, smaller file sizes</value>
+  </data>
+  <data name="EncoderPrioritySpeed.Content" xml:space="preserve">
+    <value>Prioritise speed, larger file sizes</value>
+  </data>
+  <data name="MediaCompressionHeader.Text" xml:space="preserve">
+    <value>Media Compression</value>
+  </data>
+  <data name="MediaCompressionSubheader.Text" xml:space="preserve">
+    <value>This feature automatically shrinks down audio and video files to fit within your upload limit!</value>
+  </data>
+  <data name="NeverCompress.Content" xml:space="preserve">
+    <value>Never compress media</value>
+  </data>
+  <data name="ResolutionBox.Header" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>Audio and Video</value>
+  </data>
+  <data name="VideoOptionsHeader.Text" xml:space="preserve">
+    <value>Video Options</value>
+  </data>
+  <data name="VideoOptionsSubheader.Text" xml:space="preserve">
+    <value>If you need to, you can adjust the output resolution and quality of the compressed video here.</value>
   </data>
 </root>

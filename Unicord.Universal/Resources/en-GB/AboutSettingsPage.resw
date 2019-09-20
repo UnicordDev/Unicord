@@ -117,19 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDisplayDescription" xml:space="preserve">
-    <value>A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience.</value>
-  </data>
-  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
-    <value>A Discord client for the Universal Windows Platform</value>
-  </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Unicord</value>
-  </data>
-  <data name="AppDisplayNameText.Text" xml:space="preserve">
-    <value>Unicord</value>
-  </data>
-  <data name="DevAppDisplayName" xml:space="preserve">
-    <value>Unicord Canary</value>
+  <data name="AcknowledgementsText.Text" xml:space="preserve">
+    <value>Acknowledgements</value>
   </data>
 </root>

@@ -117,19 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDisplayDescription" xml:space="preserve">
-    <value>A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience.</value>
+  <data name="AutoPlayGIFs.Text" xml:space="preserve">
+    <value>Automatically Play GIFs</value>
   </data>
-  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
-    <value>A Discord client for the Universal Windows Platform</value>
+  <data name="ChatHeader.Text" xml:space="preserve">
+    <value>Chat</value>
   </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Unicord</value>
+  <data name="EnableSpoilers.Text" xml:space="preserve">
+    <value>Enable Spoilers</value>
   </data>
-  <data name="AppDisplayNameText.Text" xml:space="preserve">
-    <value>Unicord</value>
+  <data name="MessagingSettingsHeader.Text" xml:space="preserve">
+    <value>Text and Images</value>
   </data>
-  <data name="DevAppDisplayName" xml:space="preserve">
-    <value>Unicord Canary</value>
+  <data name="PromptLinks.Text" xml:space="preserve">
+    <value>Prompt for Untrusted Links</value>
+  </data>
+  <data name="PromptLinks.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>With this option enabled, you will be prompted by Windows before opening insecure links.</value>
+    <comment>Tooltip for previous text</comment>
+  </data>
+  <data name="TimestampsHeader.Text" xml:space="preserve">
+    <value>Timestamps</value>
+  </data>
+  <data name="TimestampsSubheader.Text" xml:space="preserve">
+    <value>How do you want timestamps on messages to appear?</value>
+  </data>
+  <data name="TimestampStyleAbsolute.Text" xml:space="preserve">
+    <value>Absolute</value>
+  </data>
+  <data name="TimestampStyleBoth.Text" xml:space="preserve">
+    <value>Both</value>
+  </data>
+  <data name="TimestampStyleRelative.Text" xml:space="preserve">
+    <value>Relative</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Toolkit.Parsers.Markdown;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
@@ -28,6 +29,8 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
             DataContext = App.Discord.CurrentUser;
+
+            MarkdownDocument.KnownSchemes.Add("ms-people");
 
             syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);
             syncContactsSwitch.Toggled += SyncContactsSwitch_Toggled;
@@ -80,6 +83,11 @@ namespace Unicord.Universal.Pages.Settings
                 frame.ForwardStack.Clear();
                 frame.Navigate(typeof(MainPage));
             }
+        }
+
+        private void Md_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        {
+
         }
     }
 }
