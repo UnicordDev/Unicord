@@ -321,42 +321,42 @@
                                     ToolTipService.ToolTip="Edit Channel" />-->
                                 <ui:DropDownButton
                                     x:Name="newWindowButton"
+                                    x:Uid="/ChannelPage/NewWindowButton"
                                     Content="&#xE78B;"
                                     Style="{ThemeResource IconButtonStyle}"
                                     IsEnabled="{Binding ShowPopoutButton}"
-                                    Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
-                                    ToolTipService.ToolTip="Open in a New Window">
+                                    Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}">
                                     <ui:DropDownButton.Flyout>
                                         <ui:MenuBarItemFlyout>
-                                            <MenuFlyoutItem Icon="Add" Text="Normal Window" Click="NewWindowButton_Click" />
-                                            <MenuFlyoutItem Icon="BackToWindow" Text="Overlay Window" Click="NewCompactWindowButton_Click" />
+                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal" Icon="Add" Click="NewWindowButton_Click" />
+                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" Icon="BackToWindow" Click="NewCompactWindowButton_Click" />
                                         </ui:MenuBarItemFlyout>
                                     </ui:DropDownButton.Flyout>
                                 </ui:DropDownButton>
 
                                 <ToggleButton
                                     x:Name="muteButton"
+                                    x:Uid="/ChannelPage/MuteButton"
                                     Content="&#xE74F;"
                                     IsChecked="{Binding Channel.Muted, Mode=TwoWay}"
-                                    Style="{ThemeResource IconToggleButtonStyle}"
-                                    ToolTipService.ToolTip="Mute" />
+                                    Style="{ThemeResource IconToggleButtonStyle}"/>
                                 <Button
                                     x:Name="searchButton"
+                                    x:Uid="/ChannelPage/SearchButton"
                                     Content="&#xE721;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Search" />
+                                    Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
                                     x:Name="pinsButton"
+                                    x:Uid="/ChannelPage/PinsButton"
                                     Click="pinsButton_Click"
                                     Content="&#xE718;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Pinned Messages" />
+                                    Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
                                     x:Name="userListButton"
+                                    x:Uid="/ChannelPage/UserListButton"
                                     Click="UserListButton_Click"
                                     Content="&#xE716;"
                                     Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="User List"
                                     Visibility="{Binding ShowUserlistButton, Converter={StaticResource BoolVisibilityConverter}}" />
 
                             </StackPanel>
@@ -375,16 +375,16 @@
 
                                 <Button
                                     x:Name="deleteAllButton"
+                                    x:Uid="/ChannelPage/DeleteAllButton"
                                     Click="DeleteAllButton_Click"
                                     Content="&#xE74D;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Delete" />
+                                    Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
                                     x:Name="closeEditButton"
+                                    x:Uid="/ChannelPage/CloseEditButton"
                                     Click="CloseEditButton_Click"
                                     Content="&#xE711;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Close" />
+                                    Style="{ThemeResource IconButtonStyle}"/>
 
                             </StackPanel>
 
@@ -435,8 +435,8 @@
                             VerticalAlignment="Center"
                             Visibility="Collapsed">
                             <TextBlock FontSize="110" Text=":(" />
-                            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Nothing to see here!</TextBlock>
-                            <TextBlock TextWrapping="Wrap">I couldn't load any messages for this channel, sorry!</TextBlock>
+                            <TextBlock x:Uid="/ChannelPage/NoMessagesHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+                            <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
                     
@@ -471,6 +471,7 @@
                                 </Grid.RowDefinitions>
                                 <Button
                                     x:Name="openPopoutButton"
+                                    x:Uid="/ChannelPage/OpenPopoutButton"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     Click="OpenPopoutButton_Click"
@@ -478,6 +479,7 @@
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                                 <Button
                                     x:Name="openLocalButton"
+                                    x:Uid="/ChannelPage/OpenLocalButton"
                                     Grid.Row="2"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
@@ -515,15 +517,6 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-
-                            <TextBlock
-                                x:Name="noPhotos"
-                                Grid.Column="1"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Style="{ThemeResource TitleTextBlockStyle}"
-                                Text="Nothing to see here!"
-                                Visibility="Collapsed" />
 
                             <ProgressRing
                                 x:Name="loadingImagesRing"

@@ -132,4 +132,19 @@
   <data name="DevAppDisplayName" xml:space="preserve">
     <value>Unicord Canary</value>
   </data>
+  <data name="LoginFailedDialogMessage" xml:space="preserve">
+    <value>Something went wrong logging you in! Check your details and try again!</value>
+  </data>
+  <data name="LoginFailedDialogTitle" xml:space="preserve">
+    <value>Unable to login!</value>
+  </data>
+  <data name="VerifyLoginDisplayReason" xml:space="preserve">
+    <value>Verify your identitiy to login to Unicord!</value>
+  </data>
+  <data name="VerifyNSFWDisplayReason" xml:space="preserve">
+    <value>Verify your identity to access this channel!</value>
+  </data>
+  <data name="VerifySettingsDisplayReason" xml:space="preserve">
+    <value>Verify your identity to open settings!</value>
+  </data>
 </root>

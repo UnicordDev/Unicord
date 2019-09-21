@@ -456,6 +456,10 @@
     <PRIResource Include="Resources\en-GB\ChannelWarningPage.resw" />
     <PRIResource Include="Resources\en-GB\DMChannelsPage.resw" />
     <PRIResource Include="Resources\en-GB\FriendsPage.resw" />
+    <PRIResource Include="Resources\en-GB\PinsPage.resw" />
+    <PRIResource Include="Resources\en-GB\UserListPage.resw" />
+    <PRIResource Include="Resources\en-GB\ChannelPage.resw" />
+    <PRIResource Include="Resources\en-GB\Voice.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>

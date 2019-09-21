@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -28,6 +29,7 @@ namespace Unicord.Universal.Models
         private DateTimeOffset _typingLastSent;
         private DateTimeOffset _messageLastSent;
         private SynchronizationContext _context;
+        private ResourceLoader _strings;
         private SemaphoreSlim _loadSemaphore;
         private DispatcherTimer _slowModeTimer;
         private bool _isTranscoding;
@@ -37,6 +39,7 @@ namespace Unicord.Universal.Models
             if (channel.Type == ChannelType.Voice)
                 throw new InvalidOperationException("Unable to create a view model for a voice chanel"); // no op this
 
+            _strings = ResourceLoader.GetForCurrentView("ChannelPage");
             _loadSemaphore = new SemaphoreSlim(1, 1);
             _context = SynchronizationContext.Current;
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
@@ -191,8 +194,9 @@ namespace Unicord.Universal.Models
         /// The current placeholder to display in the message text box
         /// </summary>
         public string ChannelPlaceholder =>
-           // BUGBUG: these should be localizable at some point
-           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ? $"Message {ChannelPrefix}{ChannelName}" : "This channel is read-only";
+           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ? 
+            string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, ChannelName) : 
+            _strings.GetString("ChannelReadonlyText");
 
         public bool CanType => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
 
@@ -311,10 +315,7 @@ namespace Unicord.Universal.Models
             => Channel.PerUserRateLimit.HasValue && Channel.PerUserRateLimit != 0;
 
         public string SlowModeText
-            // BUGBUG: these should be localizable at some point
-            => $"Messages can be sent every " +
-            $"{TimeSpan.FromSeconds(Channel.PerUserRateLimit.GetValueOrDefault()).ToNaturalString()}!" +
-            (ImmuneToSlowMode ? " But, you're immune!" : "");
+            => string.Format(_strings.GetString(ImmuneToSlowMode ? "ImmuneSlowModeFormat" : "SlowModeFormat"), TimeSpan.FromSeconds(Channel.PerUserRateLimit ?? 0).ToNaturalString());
 
         private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
@@ -589,7 +590,7 @@ namespace Unicord.Universal.Models
                     }
                     catch
                     {
-                        // TODO: thread marshalling
+                        // TODO: this is shite
                         await UIUtilities.ShowErrorDialogAsync(
                             "Failed to send message!",
                             "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");

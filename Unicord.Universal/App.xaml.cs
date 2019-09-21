@@ -40,7 +40,7 @@ namespace Unicord.Universal
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
-        internal static DiscordClient Discord { get; set; }
+        internal static DiscordClient Discord { get; private set; }
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
 
@@ -304,7 +304,7 @@ namespace Unicord.Universal
             Exception taskEx = null;
 
             await _connectSemaphore.WaitAsync();
-            var loader = ResourceLoader.GetForViewIndependentUse("LoginPage");
+            var loader = ResourceLoader.GetForViewIndependentUse();
 
             if (Discord == null || Discord.IsDisposed)
             {
@@ -397,7 +397,7 @@ namespace Unicord.Universal
         {
             if (ex != null)
             {
-                var loader = ResourceLoader.GetForViewIndependentUse("LoginPage");
+                var loader = ResourceLoader.GetForViewIndependentUse();
                 await UIUtilities.ShowErrorDialogAsync(loader.GetString("LoginFailedDialogTitle"), loader.GetString("LoginFailedDialogMessage"));
                 RoamingSettings.Save(VERIFY_LOGIN, false);
             }

@@ -195,64 +195,8 @@ namespace Unicord.Universal.Utilities
 
         }
 
-        public static void HandleTitleBarForGrid(Grid element, ApplicationViewMode mode = ApplicationViewMode.Default)
-        {
-            lock (_handledElements)
-            {
-                //if (_handledElements.Contains(element))
-                //    return;
-
-                var applicationView = ApplicationView.GetForCurrentView();
-                var coreApplicationView = CoreApplication.GetCurrentView();
-
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                {
-                    var statusBar = StatusBar.GetForCurrentView();
-                    if (statusBar != null)
-                    {
-                        var rect = statusBar.OccludedRect;
-                        element.Padding = new Thickness(0, rect.Height, 0, 0);
-                    }
-                }
-                else
-                {
-                    var coreTitleBar = coreApplicationView.TitleBar;
-
-                    // this method captures "element" meaning the GC might not be able to collect it. 
-                    void UpdateTitleBarLayout(CoreApplicationViewTitleBar titleBar, object ev)
-                    {
-                        if (applicationView.ViewMode == ApplicationViewMode.CompactOverlay)
-                        {
-                            element.Padding = new Thickness(titleBar.SystemOverlayLeftInset / 2, 0, titleBar.SystemOverlayRightInset / 2, 0);
-                        }
-                        else
-                        {
-                            element.Padding = new Thickness(0, titleBar.Height, 0, 0);
-                        }
-                    }
-
-                    // i *believe* this handles it? not 100% sure
-                    void ElementUnloaded(object sender, RoutedEventArgs e)
-                    {
-                        coreTitleBar.LayoutMetricsChanged -= UpdateTitleBarLayout;
-                        (sender as FrameworkElement).Unloaded -= ElementUnloaded;
-
-                        lock (_handledElements)
-                        {
-                            _handledElements.Remove(sender as FrameworkElement);
-                        }
-                    }
-
-                    coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
-                    element.Unloaded += ElementUnloaded;
-
-                    UpdateTitleBarLayout(coreTitleBar, null);
-                }
-            }
-        }
-
         // for some reason Grid doesn't inherit from Control???
-        public static void HandleTitleBarForControl(Control element, bool margin = false)
+        public static void HandleTitleBarForControl(FrameworkElement element, bool margin = false)
         {
             lock (_handledElements)
             {
@@ -268,10 +212,8 @@ namespace Unicord.Universal.Utilities
                     if (statusBar != null)
                     {
                         var rect = statusBar.OccludedRect;
-                        if (margin)
-                            element.Margin = new Thickness(0, rect.Height, 0, 0);
-                        else
-                            element.Padding = new Thickness(0, rect.Height, 0, 0);
+                        var padding = new Thickness(0, rect.Height, 0, 0);
+                        ApplyPadding(element, margin, padding);
                     }
                 }
                 else
@@ -281,10 +223,8 @@ namespace Unicord.Universal.Utilities
                     // this method captures "element" meaning the GC might not be able to collect it. 
                     void UpdateTitleBarLayout(CoreApplicationViewTitleBar titleBar, object ev)
                     {
-                        if (margin)
-                            element.Margin = new Thickness(0, titleBar.Height, 0, 0);
-                        else
-                            element.Padding = new Thickness(0, titleBar.Height, 0, 0);
+                        var padding = new Thickness(0, titleBar.Height, 0, 0);
+                        ApplyPadding(element, margin, padding);
                     }
 
                     // i *believe* this handles it? not 100% sure
@@ -297,6 +237,8 @@ namespace Unicord.Universal.Utilities
                         {
                             _handledElements.Remove(sender as FrameworkElement);
                         }
+
+                        element = null;
                     }
 
                     coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
@@ -304,6 +246,21 @@ namespace Unicord.Universal.Utilities
 
                     UpdateTitleBarLayout(coreTitleBar, null);
                 }
+            }
+        }
+
+        private static void ApplyPadding(FrameworkElement element, bool margin, Thickness padding)
+        {
+            if (margin)
+            {
+                element.Margin = padding;
+            }
+            else
+            {
+                if (element is Grid grid)
+                    grid.Padding = padding;
+                if (element is Control control)
+                    control.Padding = padding;
             }
         }
     }

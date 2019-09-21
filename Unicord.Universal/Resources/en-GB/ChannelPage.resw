@@ -117,10 +117,56 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UserListHeader.Text" xml:space="preserve">
-    <value>Users</value>
+  <data name="ChannelReadonlyText" xml:space="preserve">
+    <value>This channel is read-only.</value>
   </data>
-  <data name="UserSearchBox.PlaceholderText" xml:space="preserve">
-    <value>Search Users</value>
+  <data name="CloseEditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="DeleteAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ImmuneSlowModeFormat" xml:space="preserve">
+    <value>You're immune to the {0} slow mode in this channel!</value>
+  </data>
+  <data name="MessageChannelFormat" xml:space="preserve">
+    <value>Message {0}{1}</value>
+    <comment>Message {ChannelPrefix}{ChannelName}</comment>
+  </data>
+  <data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="NewWindowButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open in a New Window</value>
+  </data>
+  <data name="NewWindowNormal.Text" xml:space="preserve">
+    <value>Normal Window</value>
+  </data>
+  <data name="NewWindowOverlay.Text" xml:space="preserve">
+    <value>Overlay Window</value>
+  </data>
+  <data name="NoMessagesHeader.Text" xml:space="preserve">
+    <value>Nothing to see here!</value>
+  </data>
+  <data name="NoMessagesSubheader.Text" xml:space="preserve">
+    <value>I couldn't load any messages for this channel, sorry!</value>
+  </data>
+  <data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="OpenPopoutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Take a Photo or Video</value>
+  </data>
+  <data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Pinned Messages</value>
+  </data>
+  <data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SlowModeFormat" xml:space="preserve">
+    <value>Messages can be sent every {0}!</value>
+  </data>
+  <data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>User List</value>
   </data>
 </root>

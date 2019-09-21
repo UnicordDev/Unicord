@@ -117,10 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UserListHeader.Text" xml:space="preserve">
-    <value>Users</value>
+  <data name="ConnectedStateFormat" xml:space="preserve">
+    <value>Connected to {0}!</value>
   </data>
-  <data name="UserSearchBox.PlaceholderText" xml:space="preserve">
-    <value>Search Users</value>
+  <data name="ConnectionState1" xml:space="preserve">
+    <value>Starting voice process...</value>
+  </data>
+  <data name="ConnectionState2" xml:space="preserve">
+    <value>Closing current connection...</value>
+  </data>
+  <data name="ConnectionState3" xml:space="preserve">
+    <value>Talking with Discord...</value>
+  </data>
+  <data name="ConnectionState4Format" xml:space="preserve">
+    <value>Connecting to {0}...</value>
+  </data>
+  <data name="DisconnectedState" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="InitialConnectionState" xml:space="preserve">
+    <value>Getting ready...</value>
+  </data>
+  <data name="ReconnectingState" xml:space="preserve">
+    <value>Reconnecting...</value>
   </data>
 </root>

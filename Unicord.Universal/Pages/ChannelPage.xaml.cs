@@ -134,7 +134,7 @@ namespace Unicord.Universal.Pages
                 }
 
                 var args = this.FindParent<MainPage>()?.Arguments;
-                WindowManager.HandleTitleBarForGrid(topGrid, args?.ViewMode ?? ApplicationViewMode.Default);
+                WindowManager.HandleTitleBarForControl(topGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 ViewModel = model;
