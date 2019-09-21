@@ -139,18 +139,7 @@ namespace Unicord.Universal.Pages
                 unreadDms.ItemsSource = _unreadDms;
                 unreadDms.Visibility = _unreadDms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
-                if (possibleConnection != null)
-                {
-                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
-                }
-
                 this.FindParent<MainPage>().HideConnectingOverlay();
-
-                //if (App.ThemeLoadException != null)
-                //{
-                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
-                //}
 
                 if (_args != null)
                 {
@@ -162,6 +151,17 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     friendsItem_Tapped(null, null);
                 }
+
+                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
+                if (possibleConnection != null)
+                {
+                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
+                }
+
+                //if (App.ThemeLoadException != null)
+                //{
+                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
+                //}
 
                 await ContactListManager.UpdateContactsListAsync();
             }
@@ -353,7 +353,8 @@ namespace Unicord.Universal.Pages
                 else
                 {
                     guildsList.SelectedItem = null;
-                    await UIUtilities.ShowErrorDialogAsync("This server is unavailable!", "It seems this having some problems, and is currently unavailable, sorry!");
+                    var loader = ResourceLoader.GetForViewIndependentUse();
+                    await UIUtilities.ShowErrorDialogAsync(loader.GetString("ServerUnavailableTitle"), loader.GetString("ServerUnavailableMessage"));
                 }
             }
         }

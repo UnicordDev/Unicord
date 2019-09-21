@@ -17,6 +17,7 @@ using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
 using Windows.Media;
@@ -755,7 +756,8 @@ namespace Unicord.Universal.Pages
 
         private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await UIUtilities.ShowYesNoDialogAsync("Delete these messages?", "Are you sure you wanna delete all these messages?", "\xE74D"))
+            var loader = ResourceLoader.GetForCurrentView("ChannelPage");
+            if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("MassDeleteTitle"), loader.GetString("MassDeleteMessage"), "\xE74D"))
             {
                 var items = messageList.SelectedItems.OfType<DiscordMessage>().ToArray();
 

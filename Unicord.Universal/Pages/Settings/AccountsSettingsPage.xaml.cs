@@ -8,6 +8,7 @@ using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Utilities;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -61,7 +62,8 @@ namespace Unicord.Universal.Pages.Settings
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await UIUtilities.ShowYesNoDialogAsync("Are you sure?", "Are you sure you want to logout?", "\xF3B1"))
+            var loader = ResourceLoader.GetForCurrentView("AccountsSettingsPage");
+            if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("LogoutPromptTitle"), loader.GetString("LogoutPromptMessage"), "\xF3B1"))
             {
                 await ImageCache.Instance.ClearAsync();
                 await App.Discord.DisconnectAsync();

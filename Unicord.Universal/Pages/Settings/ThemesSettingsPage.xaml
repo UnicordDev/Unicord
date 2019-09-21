@@ -198,7 +198,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox ItemsSource="{x:Bind Model.AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{x:Bind Model.SelectedTheme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
+                        <ComboBox ItemsSource="{Binding AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{Binding SelectedTheme, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>

@@ -138,6 +138,18 @@
   <data name="LoginFailedDialogTitle" xml:space="preserve">
     <value>Unable to login!</value>
   </data>
+  <data name="RecentChannelsJumpListGroup" xml:space="preserve">
+    <value>Recent Channels</value>
+  </data>
+  <data name="RecentPeopleJumpListGroup" xml:space="preserve">
+    <value>Recent People</value>
+  </data>
+  <data name="ServerUnavailableMessage" xml:space="preserve">
+    <value>It seems this server is having some problems, and is currently unavailable, sorry!</value>
+  </data>
+  <data name="ServerUnavailableTitle" xml:space="preserve">
+    <value>This server is unavailable!</value>
+  </data>
   <data name="VerifyLoginDisplayReason" xml:space="preserve">
     <value>Verify your identitiy to login to Unicord!</value>
   </data>

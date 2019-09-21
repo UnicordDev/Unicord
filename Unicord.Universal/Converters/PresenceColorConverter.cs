@@ -1,5 +1,6 @@
 ﻿using System;
 using DSharpPlus.Entities;
+using Windows.ApplicationModel.Resources;
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 
@@ -42,6 +43,13 @@ namespace Unicord.Universal.Converters
 
     class PresenceTextConverter : IValueConverter
     {
+        private ResourceLoader _strings;
+
+        public PresenceTextConverter()
+        {
+            _strings = ResourceLoader.GetForViewIndependentUse("Converters");
+        }
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (!(value is DiscordActivity activity))
@@ -53,13 +61,13 @@ namespace Unicord.Universal.Converters
             switch (activity?.ActivityType)
             {
                 case ActivityType.Playing:
-                    return "Playing";
+                    return _strings.GetString("PlayingStatus");
                 case ActivityType.Streaming:
-                    return "Streaming";
+                    return _strings.GetString("StreamingStatus");
                 case ActivityType.ListeningTo:
-                    return "Listening to";
+                    return _strings.GetString("ListeningStatus");
                 case ActivityType.Watching:
-                    return "Watching";
+                    return _strings.GetString("WatchingStatus");
                 default:
                     break;
             }

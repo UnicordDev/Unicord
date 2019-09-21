@@ -117,46 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AttachmentCopyUrlButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Copy URL</value>
+  <data name="ListeningStatus" xml:space="preserve">
+    <value>Listening to</value>
   </data>
-  <data name="AttachmentDownloadFailedText" xml:space="preserve">
-    <value>Something went wrong downloading that, maybe try again later?</value>
+  <data name="PlayingStatus" xml:space="preserve">
+    <value>Playing</value>
+    <comment>these don't localise well</comment>
   </data>
-  <data name="AttachmentDownloadFailedTitle" xml:space="preserve">
-    <value>Failed to download!</value>
+  <data name="StreamingStatus" xml:space="preserve">
+    <value>Streaming</value>
+    <comment>i'll refactor this at some point i promise</comment>
   </data>
-  <data name="AttachmentExtensionFormat" xml:space="preserve">
-    <value>Attachment Extension (*{0})</value>
+  <data name="UserChannelIconChangeFormat" xml:space="preserve">
+    <value>{0} changed the channel icon.</value>
   </data>
-  <data name="AttachmentSaveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Save</value>
+  <data name="UserChannelNameChangeFormat" xml:space="preserve">
+    <value>(0} changed the channel name.</value>
   </data>
-  <data name="AttachmentShareButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Share</value>
+  <data name="UserJoinedGroupFormat" xml:space="preserve">
+    <value>{0} joined the group.</value>
   </data>
-  <data name="EditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Edit this clip</value>
+  <data name="UserLeftGroupFormat" xml:space="preserve">
+    <value>{0} left the group.</value>
   </data>
-  <data name="EmoteSearchBox.PlaceholderText" xml:space="preserve">
-    <value>Search emotes...</value>
+  <data name="UserMessagePinFormat" xml:space="preserve">
+    <value>{0} pinned a message to this channel.</value>
   </data>
-  <data name="RemoveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Remove</value>
+  <data name="UserStartedCallFormat" xml:space="preserve">
+    <value>{0} started a call.</value>
   </data>
-  <data name="SharingTitleFormat" xml:space="preserve">
-    <value>Sharing {0}</value>
-  </data>
-  <data name="SpoilerButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Mark as Spoiler</value>
-  </data>
-  <data name="TranscodeFailedButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Transcode failed!</value>
-  </data>
-  <data name="TranscodingCancelButton.Content" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="TranscodingProgressHeader.Text" xml:space="preserve">
-    <value>Transcoding</value>
+  <data name="WatchingStatus" xml:space="preserve">
+    <value>Watching</value>
   </data>
 </root>

@@ -177,7 +177,7 @@
   <data name="InstallThemeDialog.PrimaryButtonText" xml:space="preserve">
     <value>Install</value>
   </data>
-  <data name="InstallThemeDialog.SecondayButtonText" xml:space="preserve">
+  <data name="InstallThemeDialog.SecondaryButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="KickDialog.PrimaryButtonText" xml:space="preserve">

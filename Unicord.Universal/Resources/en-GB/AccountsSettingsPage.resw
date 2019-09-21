@@ -126,6 +126,12 @@
   <data name="LogoutButton.Content" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="LogoutPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to logout?</value>
+  </data>
+  <data name="LogoutPromptTitle" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
   <data name="SyncPeopleText.Text" xml:space="preserve">
     <value>Sync my friends with [Windows People](ms-people:)</value>
     <comment>Markdown capable</comment>

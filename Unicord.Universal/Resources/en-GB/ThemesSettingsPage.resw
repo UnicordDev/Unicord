@@ -141,7 +141,38 @@
   <data name="RelaunchRequired.Text" xml:space="preserve">
     <value>To apply theme changes, Unicord will need to relaunch.</value>
   </data>
+  <data name="ThemeAlreadyInstalledMessage" xml:space="preserve">
+    <value>This theme is already installed, do you want to overwrite it?</value>
+  </data>
+  <data name="ThemeAlreadyInstalledTitle" xml:space="preserve">
+    <value>Theme already installed!</value>
+  </data>
+  <data name="ThemeChangedMessage" xml:space="preserve">
+    <value>In order to update your theme, Unicord must restart. Do you want to restart now?</value>
+  </data>
+  <data name="ThemeChangedTitle" xml:space="preserve">
+    <value>Theme changed!</value>
+  </data>
+  <data name="ThemeInvalidDoesNotExist" xml:space="preserve">
+    <value>Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.</value>
+  </data>
+  <data name="ThemeInvalidNoJson" xml:space="preserve">
+    <value>This file does not appear to be a Unicord theme, missing theme.json!</value>
+  </data>
+  <data name="ThemeInvalidNoLogo" xml:space="preserve">
+    <value>This theme specifies a logo file that doesn't exist!</value>
+  </data>
+  <data name="ThemeLoadFailedFormat" xml:space="preserve">
+    <value>Loading your currently selected theme failed!
+{0}</value>
+  </data>
+  <data name="ThemePreInstallCheckFailed" xml:space="preserve">
+    <value>A pre-install check failed! This probably means your device or the version of Windows you're running is not supported by this theme. Sorry!</value>
+  </data>
   <data name="ThemesSettingsHeader.Text" xml:space="preserve">
     <value>Appearence</value>
+  </data>
+  <data name="ThemeUnsupportedWindowsVersion" xml:space="preserve">
+    <value>The version of Windows you're running is not supported by this theme. Sorry!</value>
   </data>
 </root>

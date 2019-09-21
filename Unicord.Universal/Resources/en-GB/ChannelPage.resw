@@ -129,6 +129,12 @@
   <data name="ImmuneSlowModeFormat" xml:space="preserve">
     <value>You're immune to the {0} slow mode in this channel!</value>
   </data>
+  <data name="MassDeleteMessage" xml:space="preserve">
+    <value>Are you sure you wanna delete all these messages?</value>
+  </data>
+  <data name="MassDeleteTitle" xml:space="preserve">
+    <value>Delete these messages?</value>
+  </data>
   <data name="MessageChannelFormat" xml:space="preserve">
     <value>Message {0}{1}</value>
     <comment>Message {ChannelPrefix}{ChannelName}</comment>

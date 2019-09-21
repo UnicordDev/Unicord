@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -48,6 +49,7 @@ namespace Unicord.Universal
             // because synchronous I/O is not allowed on the UI thread, and this code must assume
             // it's running on the UI thread, because otherwise it would be asynchronous... bleh
 
+            var resources = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
             var selectedTheme = Theme.Default;
 
             try
@@ -62,7 +64,7 @@ namespace Unicord.Universal
                 if (!Directory.Exists(themePath))
                 {
                     App.LocalSettings.Save("SelectedThemeName", string.Empty);
-                    throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
+                    throw new Exception(resources.GetString("ThemeInvalidDoesNotExist"));
                 }
 
                 selectedTheme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, "theme.json")));
@@ -80,14 +82,13 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { });
-                if (selectedTheme?.UseCompact == true)
-                    target.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml") });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
             }
         }
 
         public static async Task LoadAsync(string themeName, ResourceDictionary target)
         {
+            var resources = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
             var selectedTheme = Theme.Default;
 
             try
@@ -96,7 +97,7 @@ namespace Unicord.Universal
                 if (!(await localFolder.TryGetItemAsync(Strings.Normalise(themeName)) is StorageFolder themeFolder) ||
                     !(await themeFolder.TryGetItemAsync("theme.json") is StorageFile themeDefinitionFile))
                 {
-                    throw new Exception("Tried to load a theme that doesn't exist on disk. The theme has been uninstalled.");
+                    throw new Exception(resources.GetString("ThemeInvalidDoesNotExist"));
                 }
 
                 selectedTheme = JsonConvert.DeserializeObject<Theme>(await FileIO.ReadTextAsync(themeDefinitionFile));
@@ -128,9 +129,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { });
-                if (selectedTheme?.UseCompact == true)
-                    target.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml") });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = selectedTheme?.UseCompact ?? false });
             }
         }
 
@@ -160,6 +159,7 @@ namespace Unicord.Universal
         public static async Task InstallFromFileAsync(StorageFile file)
         {
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var resources = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
 
             // open the archive
             using (var fileStream = await file.OpenReadAsync())
@@ -169,14 +169,14 @@ namespace Unicord.Universal
                 Theme theme = null;
                 var themeDefinitionFile = archive.GetEntry("theme.json");
                 if (themeDefinitionFile == null)
-                    throw new InvalidOperationException("This file does not appear to be a Unicord theme, missing theme.json!");
+                    throw new InvalidOperationException(resources.GetString("ThemeInvalidNoJson"));
 
                 using (var reader = new StreamReader(themeDefinitionFile.Open()))
                     theme = JsonConvert.DeserializeObject<Theme>(await reader.ReadToEndAsync());
 
                 if (await themesDirectory.TryGetItemAsync(theme.NormalisedName) is StorageFolder directory)
                 {
-                    if (await UIUtilities.ShowYesNoDialogAsync("Theme already installed!", "This theme is already installed, do you want to overwrite it?"))
+                    if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeAlreadyInstalledTitle"), resources.GetString("ThemeAlreadyInstalledMessage")))
                     {
                         await directory.DeleteAsync();
                     }
@@ -191,8 +191,8 @@ namespace Unicord.Universal
                     if (!ApiInformation.IsApiContractPresent(check.Key, check.Value))
                         throw new InvalidOperationException(
                             check.Key == "Windows.Foundation.UniversalApiContract" ?
-                            "The version of Windows you're running is not supported by this theme. Sorry!" :
-                            "A pre-install check failed! This probably means your device or the version of Windows you're running is not supported by this theme. Sorry!");
+                            resources.GetString("ThemeUnsupportedWindowsVersion") :
+                            resources.GetString("ThemePreInstallCheckFailed"));
                 }
 
                 // if the theme specifies a logo
@@ -213,9 +213,10 @@ namespace Unicord.Universal
         private static async Task LoadDisplayLogo(ZipArchive archive, Theme theme)
         {
             // try and find it in the archive
+            var resources = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
             var entry = archive.GetEntry(theme.DisplayLogo);
             if (entry == null)
-                throw new InvalidOperationException("This theme specifies a logo file that doesn't exist!");
+                throw new InvalidOperationException(resources.GetString("ThemeInvalidNoLogo"));
 
             // then load it into an image source            
             using (var stream = new InMemoryRandomAccessStream())
