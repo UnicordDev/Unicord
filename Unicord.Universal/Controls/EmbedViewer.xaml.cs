@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Embeds;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -195,6 +196,7 @@ namespace Unicord.Universal.Controls
 
         private async void save_Click(object sender, RoutedEventArgs e)
         {
+            var resources = ResourceLoader.GetForCurrentView("Controls");
             var control = sender as Control;
             control.IsEnabled = false;
 
@@ -209,7 +211,7 @@ namespace Unicord.Universal.Controls
                     DefaultFileExtension = extension
                 };
 
-                picker.FileTypeChoices.Add($"Attachment Extension (*{extension})", new List<string>() { extension });
+                picker.FileTypeChoices.Add(string.Format(resources.GetString("AttachmentExtensionFormat"), extension), new List<string>() { extension });
 
                 var file = await picker.PickSaveFileAsync();
 
@@ -221,8 +223,8 @@ namespace Unicord.Universal.Controls
             catch
             {
                 await UIUtilities.ShowErrorDialogAsync(
-                    "Failed to download image",
-                    "Something went wrong downloading that image, maybe try again later?");
+                    resources.GetString("AttachmentDownloadFailedTitle"),
+                    resources.GetString("AttachmentDownloadFailedText"));
             }
 
             control.IsEnabled = true;
@@ -230,6 +232,7 @@ namespace Unicord.Universal.Controls
 
         private async void share_Click(object sender, RoutedEventArgs e)
         {
+            var resources = ResourceLoader.GetForCurrentView("Controls");
             var control = sender as Control;
             control.IsEnabled = false;
 
@@ -242,7 +245,7 @@ namespace Unicord.Universal.Controls
                 void DataRequested(DataTransferManager manager, DataRequestedEventArgs args)
                 {
                     var data = args.Request.Data;
-                    data.Properties.Title = $"Sharing {fileName}";
+                    data.Properties.Title = string.Format(resources.GetString("SharingTitleFormat"), fileName);
                     data.Properties.Description = fileName;
 
                     data.SetWebLink(_embed.Thumbnail.Url);
@@ -258,8 +261,8 @@ namespace Unicord.Universal.Controls
             catch
             {
                 await UIUtilities.ShowErrorDialogAsync(
-                    "Failed to download image",
-                    "Something went wrong downloading that image, maybe try again later?");
+                    resources.GetString("AttachmentDownloadFailedTitle"),
+                    resources.GetString("AttachmentDownloadFailedText"));
             }
 
             control.IsEnabled = true;

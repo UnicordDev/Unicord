@@ -16,6 +16,7 @@ using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -79,8 +80,8 @@ namespace Unicord.Universal.Pages
         {
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                WindowManager.HandleTitleBarForGrid(sidebarMainGrid);
-                WindowManager.HandleTitleBarForGrid(sidebarSecondaryGrid);
+                WindowManager.HandleTitleBarForControl(sidebarMainGrid);
+                WindowManager.HandleTitleBarForControl(sidebarSecondaryGrid);
             }
             else
             {
@@ -138,18 +139,7 @@ namespace Unicord.Universal.Pages
                 unreadDms.ItemsSource = _unreadDms;
                 unreadDms.Visibility = _unreadDms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
-                if (possibleConnection != null)
-                {
-                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
-                }
-
                 this.FindParent<MainPage>().HideConnectingOverlay();
-
-                //if (App.ThemeLoadException != null)
-                //{
-                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
-                //}
 
                 if (_args != null)
                 {
@@ -161,6 +151,17 @@ namespace Unicord.Universal.Pages
                     friendsItem.IsSelected = true;
                     friendsItem_Tapped(null, null);
                 }
+
+                var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
+                if (possibleConnection != null)
+                {
+                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
+                }
+
+                //if (App.ThemeLoadException != null)
+                //{
+                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
+                //}
 
                 await ContactListManager.UpdateContactsListAsync();
             }
@@ -352,7 +353,8 @@ namespace Unicord.Universal.Pages
                 else
                 {
                     guildsList.SelectedItem = null;
-                    await UIUtilities.ShowErrorDialogAsync("This server is unavailable!", "It seems this having some problems, and is currently unavailable, sorry!");
+                    var loader = ResourceLoader.GetForViewIndependentUse();
+                    await UIUtilities.ShowErrorDialogAsync(loader.GetString("ServerUnavailableTitle"), loader.GetString("ServerUnavailableMessage"));
                 }
             }
         }
@@ -426,7 +428,8 @@ namespace Unicord.Universal.Pages
                 {
                     if (channel.IsNSFW)
                     {
-                        if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, "Verify your identity to access this channel"))
+                        var loader = ResourceLoader.GetForViewIndependentUse();
+                        if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, loader.GetString("VerifyNSFWDisplayReason")))
                         {
                             if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) || !App.RoamingSettings.Read($"NSFW_All", false))
                             {
@@ -509,7 +512,8 @@ namespace Unicord.Universal.Pages
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, "Verify your identity to open settings."))
+            var loader = ResourceLoader.GetForViewIndependentUse();
+            if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, loader.GetString("VerifySettingsDisplayReason")))
             {
                 SettingsOverlayGrid.Visibility = Visibility.Visible;
 

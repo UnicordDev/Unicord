@@ -14,34 +14,35 @@
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Text and Images" Margin="0,0,0,12"/>
+        <TextBlock x:Uid="/MessagingSettingsPage/MessagingSettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,12"/>
 
         <controls1:MessageViewer x:Name="messageViewer" Message="{Binding ExampleMessage,Mode=OneWay}" IsEnabled="False" Background="Transparent" Margin="0,0,0,8" />
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Timestamps"/>
-        <TextBlock TextWrapping="Wrap" Text="How do you want timestamps on messages to appear?"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/TimestampsHeader" Text="Timestamps"/>
+        <TextBlock TextWrapping="Wrap" x:Uid="/MessagingSettingsPage/TimestampsSubheader"/>
+        <!-- TODO: Use binding to display timestamps -->
         <ComboBox SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,4,0,8">
             <ComboBoxItem>
                 <Grid>
-                    <TextBlock Text="Relative" />
+                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleRelative" />
                     <TextBlock Text="3 minutes ago" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
                 </Grid>
             </ComboBoxItem>
             <ComboBoxItem>
                 <Grid>
-                    <TextBlock Text="Absolute" />
+                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleAbsolute" />
                     <TextBlock Text="Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
                 </Grid>
             </ComboBoxItem>
             <ComboBoxItem>
                 <Grid>
-                    <TextBlock Text="Both" />
+                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleBoth" />
                     <TextBlock Text="3 minutes ago - Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
                 </Grid>
             </ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Chat"/>
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/ChatHeader" />
 
         <Grid Grid.Row="1" Margin="0,4,0,8">
             <Grid.ColumnDefinitions>
@@ -54,13 +55,13 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Automatically Play GIFs" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AutoPlayGIFs" />
             <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AutoPlayGifs, Mode=TwoWay}" />
 
-            <TextBlock Grid.Row="1" Text="Enable Spoilers" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/EnableSpoilers" />
             <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
 
-            <TextBlock Grid.Row="2" Text="Prompt for Untrusted Links" VerticalAlignment="Center" ToolTipService.ToolTip="With this option enabled, you will be prompted by Windows before opening insecure links."/>
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/PromptLinks" />
             <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
         </Grid>
 

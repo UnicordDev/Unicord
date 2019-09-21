@@ -25,13 +25,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Security and Privacy" />
+        <TextBlock x:Uid="/SecuritySettingsPage/SecuritySettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}"  />
 
-        <TextBlock
-            Grid.Row="1"
-            Margin="0,8,0,0"
-            Style="{ThemeResource SubtitleTextBlockStyle}"
-            Text="Diagnostic and Usage data" />
+        <TextBlock x:Uid="/SecuritySettingsPage/DiagnosticDataHeader" 
+                   Grid.Row="1"
+                   Margin="0,8,0,0"
+                   Style="{ThemeResource SubtitleTextBlockStyle}"/>
 
         <Grid Grid.Row="2" Margin="0,4,0,12">
             <Grid.ColumnDefinitions>
@@ -43,7 +42,7 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock VerticalAlignment="Center" Text="Send Diagnostic and Usage data" />
+            <TextBlock x:Uid="/SecuritySettingsPage/DiagnosticDataToggle" VerticalAlignment="Center"/>
             <ToggleSwitch
                 Grid.Column="1"
                 IsOn="{Binding EnableAnalytics, Mode=TwoWay}"
@@ -51,28 +50,24 @@
                 Toggled="ToggleSwitch_Toggled" />
         </Grid>
 
-        <TextBlock
-            Grid.Row="3"
-            Style="{ThemeResource SubtitleTextBlockStyle}"
-            Text="Windows Hello" />
+        <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"
+                   Grid.Row="3"
+                   Style="{ThemeResource SubtitleTextBlockStyle}" />
 
         <TextBlock
             x:Name="unavailableText"
+            x:Uid="/SecuritySettingsPage/WindowsHelloUnavailable"
             Grid.Row="4"
             Margin="0,12,0,0"
             Foreground="{StaticResource ErrorTextForegroundBrush}"
-            TextWrapping="Wrap">
-            <Run Text="Windows Hello is not available on this device. Wanna" /> <Hyperlink NavigateUri="ms-settings:signinoptions">
-                <Run>change this?</Run>
-            </Hyperlink>
-        </TextBlock>
+            TextWrapping="Wrap"/>
         <ContentControl
             x:Name="settingsContent"
             Grid.Row="5"
             Margin="0,12"
             HorizontalContentAlignment="Stretch">
             <StackPanel>
-                <TextBlock Text="Require Windows Hello authentication to:" TextWrapping="Wrap" />
+                <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloOptionsHeader" TextWrapping="Wrap" />
 
                 <Grid Margin="0,12">
                     <Grid.ColumnDefinitions>
@@ -86,23 +81,22 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock VerticalAlignment="Center" Text="Login" />
+                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloLogin" VerticalAlignment="Center" />
                     <ToggleSwitch
                         Grid.Column="1"
                         IsOn="{Binding HelloForLogin, Mode=TwoWay}"
                         Style="{ThemeResource NoTextToggleSwitchStyle}" />
 
-                    <TextBlock
+                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloSettings"
                         Grid.Row="1"
-                        VerticalAlignment="Center"
-                        Text="Change settings" />
+                        VerticalAlignment="Center"/>
                     <ToggleSwitch
                         Grid.Row="1"
                         Grid.Column="1"
                         IsOn="{Binding HelloForSettings, Mode=TwoWay}"
                         Style="{ThemeResource NoTextToggleSwitchStyle}" />
 
-                    <TextBlock
+                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloNSFW"
                         Grid.Row="2"
                         VerticalAlignment="Center"
                         Text="Access NSFW channels" />
@@ -114,9 +108,8 @@
 
                 </Grid>
 
-                <TimePicker
+                <TimePicker x:Uid="/SecuritySettingsPage/WindowsHelloAuthenticationTimeout"
                     HorizontalAlignment="Stretch"
-                    Header="Keep me authenticated for"
                     Time="{Binding AuthenticationTime, Mode=TwoWay}" />
             </StackPanel>
         </ContentControl>

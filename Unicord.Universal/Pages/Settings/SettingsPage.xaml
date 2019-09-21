@@ -17,37 +17,37 @@
         ItemInvoked="NavigationView_ItemInvoked"
         PaneDisplayMode="Top">
         <lib:NavigationView.MenuItems>
-            <lib:NavigationViewItem Tag="Home" ToolTipService.ToolTip="Home">
+            <lib:NavigationViewItem Tag="Home" x:Uid="/SettingsPage/HomeItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE80F;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Messaging" ToolTipService.ToolTip="Text and Images">
+            <lib:NavigationViewItem Tag="Messaging" x:Uid="/SettingsPage/MessagingItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE70F;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Themes" ToolTipService.ToolTip="Themes">
+            <lib:NavigationViewItem Tag="Themes" x:Uid="/SettingsPage/ThemesItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE771;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Media" ToolTipService.ToolTip="Audio and Video">
+            <lib:NavigationViewItem Tag="Media" x:Uid="/SettingsPage/MediaItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xEA69;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Voice" ToolTipService.ToolTip="Voice">
+            <lib:NavigationViewItem Tag="Voice" x:Uid="/SettingsPage/VoiceItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE720;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Security" ToolTipService.ToolTip="Security and Privacy">
+            <lib:NavigationViewItem Tag="Security" x:Uid="/SettingsPage/SecurityItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE72E;" />
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="About" ToolTipService.ToolTip="About Unicord">
+            <lib:NavigationViewItem Tag="About" x:Uid="/SettingsPage/AboutItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE946;" />
                 </lib:NavigationViewItem.Icon>

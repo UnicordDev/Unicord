@@ -13,66 +13,47 @@
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Audio and Video" Margin="0,0,0,12"/>
+        <TextBlock x:Uid="/MediaSettingsPage/Title" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,12"/>
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Photo Capture"/>
-        <Grid Grid.Row="1" Margin="0,4,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Text="Save photos after capturing" VerticalAlignment="Center"/>
-            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding SavePhotos, Mode=TwoWay}" />
-        </Grid>
-
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Media Compression" Margin="0,0,0,8"/>
-        <TextBlock TextWrapping="Wrap">
-            This feature allows me to automatically shrink down audio and video files to fit within your upload limit!
-        </TextBlock>
+        <TextBlock x:Uid="/MediaSettingsPage/MediaCompressionHeader" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,8"/>
+        <TextBlock x:Uid="/MediaSettingsPage/MediaCompressionSubheader" TextWrapping="Wrap"/>
         <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AutoTranscodeMedia, Mode=TwoWay}" Margin="0,12">
             <ComboBox.Items>
-                <ComboBoxItem Content="Always compress before sending"/>
-                <ComboBoxItem Content="Compress if the file is above your upload limit"/>
-                <ComboBoxItem Content="Never compress media"/>
+                <ComboBoxItem x:Uid="/MediaSettingsPage/AlwaysCompress"/>
+                <ComboBoxItem x:Uid="/MediaSettingsPage/CompressIfNeeded"/>
+                <ComboBoxItem x:Uid="/MediaSettingsPage/NeverCompress"/>
             </ComboBox.Items>
         </ComboBox>
 
-        <controls:Expander Margin="-12,0" Style="{ThemeResource TransparentExpanderStyle}" Header="Advanced" Background="Transparent">
+        <controls:Expander x:Uid="/MediaSettingsPage/AdvancedHeader" Margin="-12,0" Style="{ThemeResource TransparentExpanderStyle}" Background="Transparent">
             <Grid Padding="4,0">
                 <StackPanel>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Video Options" Margin="0,4"/>
-                    <TextBlock TextWrapping="Wrap">
-                    If you need to, you can adjust the output resolution and quality of the compressed video here.
-                    </TextBlock>
-                    <ComboBox Margin="0,12" Header="Resolution" ItemsSource="{Binding AvailableResolutions}" SelectedValue="{Binding Resolution}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch"/>
+                    <TextBlock x:Uid="/MediaSettingsPage/VideoOptionsHeader" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,4"/>
+                    <TextBlock x:Uid="/MediaSettingsPage/VideoOptionsSubheader" TextWrapping="Wrap"/>
+                    <ComboBox Margin="0,12" x:Uid="/MediaSettingsPage/ResolutionBox" ItemsSource="{Binding AvailableResolutions}" SelectedValue="{Binding Resolution}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Slider x:Name="bitrateSlider" Header="Video Bitrate" TickFrequency="256" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
+                        <Slider x:Name="bitrateSlider" x:Uid="/MediaSettingsPage/BitrateSlider" TickFrequency="256" StepFrequency="64" Value="{Binding VideoBitrate, Mode=TwoWay}" Minimum="256" Maximum="4096" />
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="4,20,0,0">
-                        <Run Text="{Binding Value, ElementName=bitrateSlider}"/>kbps
+                            <Run Text="{Binding Value, ElementName=bitrateSlider}"/>kbps
                         </TextBlock>
                     </Grid>
-                    <ComboBox HorizontalAlignment="Stretch" Header="Encoder Priority" SelectedIndex="{Binding ProcessingAlgorithm, Mode=TwoWay}" Margin="0,12">
+                    <ComboBox HorizontalAlignment="Stretch" x:Uid="/MediaSettingsPage/EncoderPriorityBox" SelectedIndex="{Binding ProcessingAlgorithm, Mode=TwoWay}" Margin="0,12">
                         <ComboBox.Items>
-                            <ComboBoxItem Content="Prioritise speed, larger file sizes"/>
-                            <ComboBoxItem Content="Prioritise quality, smaller file sizes"/>
+                            <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPrioritySpeed" />
+                            <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPriorityQuality" />
                         </ComboBox.Items>
                     </ComboBox>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Audio Options" Margin="0,0,0,4"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MediaSettingsPage/AudioOptionsHeader" Margin="0,0,0,4"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Slider x:Name="audioBitrateSlider" Header="Audio Bitrate" TickFrequency="32" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
+                        <Slider x:Name="audioBitrateSlider" x:Uid="/MediaSettingsPage/BitrateSlider" TickFrequency="32" StepFrequency="32" Value="{Binding AudioBitrate, Mode=TwoWay}" Minimum="32" Maximum="320" />
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" MinWidth="60" TextAlignment="Right" Margin="4,20,0,0">
                             <Run Text="{Binding Value, ElementName=audioBitrateSlider}"/>kbps
                         </TextBlock>

@@ -2,13 +2,8 @@
     x:Class="Unicord.Universal.Controls.MessageViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:commands="using:Unicord.Universal.Commands"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dc="using:Unicord.Universal.Controls"
-    xmlns:entities="using:DSharpPlus.Entities"
     xmlns:fcu="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:local="using:Unicord.Universal.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
@@ -36,59 +31,60 @@
                 <MenuFlyoutItem
                         x:Name="addReactionMenuItem"
                         x:Load="{x:Bind _canReact}"
-                        Icon="Emoji"
-                        Text="Add Reaction" />
+                        x:Uid="/Flyouts/AddReaction"
+                        Icon="Emoji" />
 
                 <MenuFlyoutItem
                         Icon="Copy"
-                        Text="Copy"
+                        x:Uid="/Flyouts/Copy"
                         Click="CopyFlyoutItem_Click" />
 
                 <MenuFlyoutSeparator  />
 
                 <MenuFlyoutItem
                         x:Name="profileMenuItem"
+                        x:Uid="/Flyouts/Profile"
                         Click="profileMenuItem_Click"
                         Icon="OtherUser"
                         Text="Profile" />
 
                 <MenuFlyoutItem
                         x:Name="message"
+                        x:Uid="/Flyouts/Message"
                         Command="{StaticResource MessageUserCommand}"
                         CommandParameter="{Binding Author}"
-                        Icon="Message"
-                        Text="Message" />
+                        Icon="Message"/>
 
                 <MenuFlyoutSeparator />
 
                 <MenuFlyoutItem
                         x:Name="changeNickname"
+                        x:Uid="/Flyouts/ChangeNickname"
                         Command="{StaticResource ChangeNicknameCommand}"
                         CommandParameter="{Binding Author}"
-                        Icon="Rename"
-                        Text="Change Nickname" />
+                        Icon="Rename"/>
 
                 <MenuFlyoutItem
                         x:Name="pinMessage"
+                        x:Uid="/Flyouts/Pin"
                         Command="{StaticResource PinMessageCommand}"
                         CommandParameter="{Binding}"
-                        Icon="Pin"
-                        Text="Pin Message"/>
+                        Icon="Pin"/>
 
                 <MenuFlyoutItem
                         x:Name="kick"
+                        x:Uid="/Flyouts/Kick"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="LeaveChat"
-                        Text="Kick"
                         Command="{StaticResource KickCommand}"
                         CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _kickMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
 
                 <MenuFlyoutItem
                         x:Name="ban"
+                        x:Uid="/Flyouts/Ban"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
                         Icon="Remove"
-                        Text="Ban"
                         Command="{StaticResource BanCommand}"
                         CommandParameter="{Binding Author}"
                         Visibility="{x:Bind _banMembers, Converter={StaticResource BoolVisibilityConverter}}"  />
@@ -100,15 +96,15 @@
                         x:Name="editMenuFlyout"
                         Click="EditItem_Click"
                         Icon="Edit"
-                        Text="Edit Message"
+                        x:Uid="/Flyouts/Edit"
                         Visibility="{x:Bind CanEdit, Converter={StaticResource BoolVisibilityConverter}}" />
 
                 <MenuFlyoutItem
                         x:Name="delete"
+                        x:Uid="/Flyouts/Delete"
                         Command="{StaticResource DeleteMessageCommand}"
                         CommandParameter="{Binding}"
                         Foreground="{ThemeResource ErrorTextForegroundBrush}"
-                        Icon="Delete"
                         Text="Delete Message"
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
@@ -116,6 +112,7 @@
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}" />
 
                 <MenuFlyoutItem
+                        x:Uid="/Flyouts/EditMode"
                         Visibility="{Binding IsEnabled, ElementName=delete, Converter={StaticResource BoolVisibilityConverter}}"
                         Click="EditModeItem_Click"
                         Text="Edit Mode">

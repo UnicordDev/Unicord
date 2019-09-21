@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
 
     <Grid>
@@ -37,7 +38,7 @@
             </Grid>
             <Button Grid.Column="1" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
         </Grid>
-        <TextBlock Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" Text="Friends" Margin="0,12,0,0"/>
+        <TextBlock x:Uid="/AccountsSettingsPage/FriendsText"  Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -50,16 +51,13 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="contactsUnavailable" Grid.ColumnSpan="2" Visibility="Collapsed" Text="Contact syncing is not supported on this device" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+            <TextBlock x:Name="contactsUnavailable" x:Uid="/AccountsSettingsPage/ContactsUnavailable"  Grid.ColumnSpan="2" Visibility="Collapsed" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
 
             <ProgressBar Grid.Row="1" x:Name="syncingProgressBar" Visibility="Collapsed" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-            <TextBlock Grid.Row="1" VerticalAlignment="Center" TextWrapping="WrapWholeWords">
-                <Run Text="Sync my friends with" />
-                <Hyperlink NavigateUri="ms-people:">Windows People</Hyperlink>
-            </TextBlock>
+            <toolkit:MarkdownTextBlock x:Name="md" x:Uid="/AccountsSettingsPage/SyncPeopleText" Grid.Row="1" VerticalAlignment="Center" LinkClicked="Md_LinkClicked" TextWrapping="WrapWholeWords"/>
             <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
         </Grid>
 
-        <Button x:Name="logoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Content="Logout" Click="LogoutButton_Click"/>
+        <Button x:Name="logoutButton" x:Uid="/AccountsSettingsPage/LogoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Click="LogoutButton_Click"/>
     </Grid>
 </Page>

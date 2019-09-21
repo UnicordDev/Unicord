@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Toolkit.Parsers.Markdown;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Utilities;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -28,6 +30,8 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
             DataContext = App.Discord.CurrentUser;
+
+            MarkdownDocument.KnownSchemes.Add("ms-people");
 
             syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);
             syncContactsSwitch.Toggled += SyncContactsSwitch_Toggled;
@@ -58,7 +62,8 @@ namespace Unicord.Universal.Pages.Settings
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await UIUtilities.ShowYesNoDialogAsync("Are you sure?", "Are you sure you want to logout?", "\xF3B1"))
+            var loader = ResourceLoader.GetForCurrentView("AccountsSettingsPage");
+            if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("LogoutPromptTitle"), loader.GetString("LogoutPromptMessage"), "\xF3B1"))
             {
                 await ImageCache.Instance.ClearAsync();
                 await App.Discord.DisconnectAsync();
@@ -80,6 +85,11 @@ namespace Unicord.Universal.Pages.Settings
                 frame.ForwardStack.Clear();
                 frame.Navigate(typeof(MainPage));
             }
+        }
+
+        private void Md_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        {
+
         }
     }
 }

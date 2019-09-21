@@ -52,7 +52,7 @@
         
         <Grid Grid.Row="2" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
             <StackPanel Margin="12,8,12,12" Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
-                <TextBlock Text="Roles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,0,0,8"/>
+                <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,0,0,8"/>
                 <ItemsControl ItemTemplate="{ThemeResource RoleTemplate}" ItemsSource="{Binding Roles}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -65,12 +65,10 @@
 
         <StackPanel HorizontalAlignment="Stretch" Grid.Row="3" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
             <controls:IconLabelButton Icon="&#xE7EE;" Tapped="IconLabelButton_Tapped" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}">
-                <TextBlock TextTrimming="CharacterEllipsis" Text="Show Full Profile"/>
+                <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/ShowFullProfile"/>
             </controls:IconLabelButton>
             <controls:IconLabelButton Icon="&#xE724;" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}">
-                <TextBlock TextTrimming="CharacterEllipsis">
-                    <Run Text="Message @"/><Run Text="{Binding Username}"/><Run Text="#"/><Run Text="{Binding Discriminator}" />
-                </TextBlock>
+                <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/SendMessage"/>
             </controls:IconLabelButton>
         </StackPanel>
        
