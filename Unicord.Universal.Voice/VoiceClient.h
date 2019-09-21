@@ -76,7 +76,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         AudioRenderer* renderer = nullptr;
 
         std::pair<hstring, EncryptionMode> mode;
-        ConnectionEndpoint endpoint;
+        ConnectionEndpoint ws_endpoint;
+        ConnectionEndpoint udp_endpoint;
 
         bool is_speaking = false;
         bool is_muted = false;
