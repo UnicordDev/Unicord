@@ -118,14 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ListeningStatus" xml:space="preserve">
-    <value>Listening to</value>
+    <value>Listening to {0}</value>
   </data>
-  <data name="PlayingStatus" xml:space="preserve">
-    <value>Playing</value>
+  <data name="PlayingStatusFormat" xml:space="preserve">
+    <value>Playing {0}</value>
     <comment>these don't localise well</comment>
   </data>
   <data name="StreamingStatus" xml:space="preserve">
-    <value>Streaming</value>
+    <value>Streaming {0}</value>
     <comment>i'll refactor this at some point i promise</comment>
   </data>
   <data name="UserChannelIconChangeFormat" xml:space="preserve">
@@ -147,6 +147,6 @@
     <value>{0} started a call.</value>
   </data>
   <data name="WatchingStatus" xml:space="preserve">
-    <value>Watching</value>
+    <value>Watching {0}</value>
   </data>
 </root>

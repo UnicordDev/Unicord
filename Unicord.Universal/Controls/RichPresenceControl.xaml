@@ -25,7 +25,7 @@
             </Grid>
             <StackPanel VerticalAlignment="Center" Grid.Column="1">
                 <TextBlock Style="{ThemeResource BaseTextBlockStyle}" TextWrapping="Wrap">
-                    <Run Text="{Binding Converter={StaticResource PresenceTextConverter}}"/> <Run Text="{Binding Name}"/>
+                    <Run Text="{Binding Converter={StaticResource PresenceTextConverter}}"/>
                 </TextBlock>
                 <TextBlock Visibility="{Binding RichPresence.Details, Converter={StaticResource HideOnNullConverter}}" Text="{Binding RichPresence.Details}" TextWrapping="Wrap"/>
                 <TextBlock Visibility="{Binding RichPresence.State, Converter={StaticResource HideOnNullConverter}}" Text="{Binding RichPresence.State}" TextWrapping="Wrap"/>

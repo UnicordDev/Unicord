@@ -65,7 +65,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Name="text" Text="{x:Bind User.Username}" FontWeight="Bold"/>
                         <TextBlock Grid.Row="1" FontSize="12" x:Name="presenceActivity" x:Load="{x:Bind User.Presence.Activity.Name, Converter={StaticResource BoolConverter}, FallbackValue=False}">
-                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> <Run FontWeight="Bold" Text="{x:Bind User.Presence.Activity.Name}"/>
+                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> 
                         </TextBlock>
                     </Grid>
                     <StackPanel x:Name="overlayContent" x:Phase="10" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">

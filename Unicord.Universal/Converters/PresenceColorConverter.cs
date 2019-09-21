@@ -61,13 +61,13 @@ namespace Unicord.Universal.Converters
             switch (activity?.ActivityType)
             {
                 case ActivityType.Playing:
-                    return _strings.GetString("PlayingStatus");
+                    return string.Format(_strings.GetString("PlayingStatusFormat"), activity.Name);
                 case ActivityType.Streaming:
-                    return _strings.GetString("StreamingStatus");
+                    return string.Format(_strings.GetString("StreamingStatusFormat"), activity.Name);
                 case ActivityType.ListeningTo:
-                    return _strings.GetString("ListeningStatus");
+                    return string.Format(_strings.GetString("ListeningStatusFormat"), activity.Name);
                 case ActivityType.Watching:
-                    return _strings.GetString("WatchingStatus");
+                    return string.Format(_strings.GetString("WatchingStatusFormat"), activity.Name);
                 default:
                     break;
             }
