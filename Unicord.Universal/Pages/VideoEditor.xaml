@@ -74,7 +74,7 @@
                     <ColumnDefinition Width="42"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="backButton" Style="{ThemeResource IconButtonStyle}" Click="BackButton_Click">&#xE72B;</Button>
-                <TextBlock Grid.Column="1" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center">Trim Video</TextBlock>
+                <TextBlock x:Uid="/VideoEditor/VideoEditorHeader" Grid.Column="1" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource IconButtonStyle}" Click="AcceptButton_Click">&#xE8FB;</Button>
             </Grid>
             <Grid Grid.Row="1" Margin="0">
@@ -129,7 +129,7 @@
                     </TextBlock>
                 </Grid>
 
-                <TextBlock Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" Text="Processing Video"/>
+                <TextBlock x:Uid="/VideoEditor/ProcessingVideoheader" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" />
                 <Button x:Name="cancelButton" Click="CancelButton_Click" Style="{ThemeResource TextBlockButtonStyle}" HorizontalAlignment="Center" Content="Cancel" />
 
             </StackPanel>

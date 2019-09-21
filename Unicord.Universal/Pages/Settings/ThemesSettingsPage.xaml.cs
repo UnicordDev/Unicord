@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Models;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -40,6 +41,7 @@ namespace Unicord.Universal.Pages.Settings
             Model.PropertyChanged += ThemesSettingsPage_PropertyChanged;
 
             InitializeComponent();
+            DataContext = Model;
 
             _initialTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
             if (string.IsNullOrWhiteSpace(_initialTheme))
@@ -66,7 +68,7 @@ namespace Unicord.Universal.Pages.Settings
 
 
                 var dictionary = new ResourceDictionary();
-                if (!string.IsNullOrWhiteSpace(theme?.Name))
+                if (!string.IsNullOrWhiteSpace(theme?.Name) && !theme.IsDefault)
                 {
                     try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { model.AvailableThemes.Remove(theme); }
                 }
@@ -99,10 +101,11 @@ namespace Unicord.Universal.Pages.Settings
                 App.LocalSettings.Save("SelectedThemeName", theme.IsDefault ? string.Empty : theme.Name);
             }
 
+            var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
             var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
             if (_changedTheme && autoRestart)
             {
-                if (await UIUtilities.ShowYesNoDialogAsync("Theme changed!", "In order to update your theme, Unicord must restart. Do you want to restart now?"))
+                if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeChangedTitle"), resources.GetString("ThemeChangedMessage")))
                 {
                     await CoreApplication.RequestRestartAsync("");
                 }
@@ -143,10 +146,11 @@ namespace Unicord.Universal.Pages.Settings
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var args = this.FindParent<MainPage>()?.Arguments;
+            var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
             if (args != null && args.ThemeLoadException != null)
             {
                 themeLoadError.Visibility = Visibility.Visible;
-                themeLoadError.Text = $"Loading your currently selected theme failed!\r\n{args.ThemeLoadException.Message}";
+                themeLoadError.Text = string.Format(resources.GetString("ThemeLoadFailedFormat"), args.ThemeLoadException.Message);
             }
 
             await Model.ReloadThemes();

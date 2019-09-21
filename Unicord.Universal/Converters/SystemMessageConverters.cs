@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -43,6 +44,8 @@ namespace Unicord.Universal.Converters
 
     public class SystemMessageTextConverter : IValueConverter
     {
+        private ResourceLoader _strings;
+
         static SystemMessageTextConverter()
         {
             WelcomeStrings = ImmutableArray.Create(
@@ -89,6 +92,11 @@ namespace Unicord.Universal.Converters
 
         public static ImmutableArray<string> WelcomeStrings { get; }
 
+        public SystemMessageTextConverter()
+        {
+            _strings = ResourceLoader.GetForViewIndependentUse("Converters");
+        }
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is DiscordMessage message)
@@ -96,17 +104,17 @@ namespace Unicord.Universal.Converters
                 switch (message.MessageType)
                 {
                     case MessageType.RecipientAdd:
-                        return $"{message.Author.Mention} joined the group.";
+                        return string.Format(_strings.GetString("UserJoinedGroupFormat"), message.Author.Mention);
                     case MessageType.RecipientRemove:
-                        return $"{message.Author.Mention} left the group.";
+                        return string.Format(_strings.GetString("UserLeftGroupFormat"), message.Author.Mention);
                     case MessageType.Call:
-                        return $"{message.Author.Mention} started a call.";
+                        return string.Format(_strings.GetString("UserStartedCallFormat"), message.Author.Mention);
                     case MessageType.ChannelNameChange:
-                        return $"{message.Author.Mention} changed the channel name.";
+                        return string.Format(_strings.GetString("UserChannelNameChangeFormat"), message.Author.Mention);
                     case MessageType.ChannelIconChange:
-                        return $"{message.Author.Mention} changed the channel icon.";
+                        return string.Format(_strings.GetString("UserChannelIconChangeFormat"), message.Author.Mention);
                     case MessageType.ChannelPinnedMessage:
-                        return $"{message.Author.Mention} pinned a message to this channel.";
+                        return string.Format(_strings.GetString("UserMessagePinFormat"), message.Author.Mention);
                     case MessageType.GuildMemberJoin:
                         return string.Format(WelcomeStrings[(int)(message.CreationTimestamp.ToUnixTimeMilliseconds() % WelcomeStrings.Count())], message.Author.Mention);
                 }

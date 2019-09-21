@@ -12,6 +12,7 @@ using Unicord.Universal.Voice.Background;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 
@@ -21,6 +22,7 @@ namespace Unicord.Universal.Voice
     {
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
+        private ResourceLoader _strings;
         private VoipPhoneCall _voipPhoneCall;
         private VoiceState _state = VoiceState.None;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
@@ -71,6 +73,7 @@ namespace Unicord.Universal.Voice
                 return null;
             }
 
+            var strings = ResourceLoader.GetForViewIndependentUse("Voice");
             var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
             var info = await connection.SendMessageAsync(stateRequest);
             var state = (VoiceServiceState)(uint)info.Message["state"];
@@ -92,7 +95,7 @@ namespace Unicord.Universal.Voice
             if (deafened)
                 vstate = VoiceState.Muted | VoiceState.Deafened;
             
-            return new VoiceConnectionModel(channel, vstate, connection) { ConnectionStatus = $"Connected to {channel.Name}!" };
+            return new VoiceConnectionModel(channel, vstate, connection) { ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name), _strings = strings };
         }
 
         public VoiceConnectionModel(DiscordChannel channel)
@@ -100,9 +103,10 @@ namespace Unicord.Universal.Voice
             _voiceStateUpdateCompletion = new TaskCompletionSource<VoiceStateUpdateEventArgs>();
             _voiceServerUpdateCompletion = new TaskCompletionSource<VoiceServerUpdateEventArgs>();
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
+            _strings = ResourceLoader.GetForViewIndependentUse("Voice");
 
             Channel = channel;
-            ConnectionStatus = "Getting ready...";
+            ConnectionStatus = _strings.GetString("InitialConnectionState");
             PropertyChanged += OnPropertyChanged;
 
             _appServiceConnection = new AppServiceConnection()
@@ -156,7 +160,7 @@ namespace Unicord.Universal.Voice
         {
             if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus"))
             {
-                ConnectionStatus = "Starting voice process...";
+                ConnectionStatus = _strings.GetString("ConnectionState1");
 
                 var appServiceStatus = await _appServiceConnection.OpenAsync();
                 if (appServiceStatus != AppServiceConnectionStatus.Success)
@@ -173,7 +177,7 @@ namespace Unicord.Universal.Voice
 
                     if (channel_id != Channel.Id && guild_id != Channel.GuildId)
                     {
-                        ConnectionStatus = "Closing current connection...";
+                        ConnectionStatus = _strings.GetString("ConnectionState2");
 
                         var disconnectRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DisconnectRequest };
                         await SendRequestAsync(disconnectRequest);
@@ -185,11 +189,10 @@ namespace Unicord.Universal.Voice
                 if (status != VoipPhoneCallResourceReservationStatus.Success)
                     throw new Exception("Unable to reserve call resources!");
 
-                ConnectionStatus = "Talking with Discord...";
+                ConnectionStatus = _strings.GetString("ConnectionState3");
 
                 App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
                 App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
-
                 SendVoiceStateUpdate(_state, Channel.Id);
 
                 var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
@@ -197,7 +200,7 @@ namespace Unicord.Universal.Voice
                 var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
                 var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
 
-                ConnectionStatus = $"Connecting to {Channel.Name}...";
+                ConnectionStatus = string.Format(_strings.GetString("ConnectionState4Format"), Channel.Name);
 
                 var connectionRequest = new ValueSet()
                 {
@@ -301,13 +304,13 @@ namespace Unicord.Universal.Voice
                 switch (serviceEvent)
                 {
                     case VoiceServiceEvent.Connected:
-                        ConnectionStatus = $"Connected to {Channel.Name}!";
+                        ConnectionStatus = string.Format(_strings.GetString("ConnectedStateFormat"), Channel.Name);
                         break;
                     case VoiceServiceEvent.Reconnecting:
-                        ConnectionStatus = $"Reconnecting...";
+                        ConnectionStatus = _strings.GetString("ReconnectingState");
                         break;
                     case VoiceServiceEvent.Disconnected:
-                        ConnectionStatus = $"Disconnected.";
+                        ConnectionStatus = _strings.GetString("DisconnectedState");
                         Disconnected?.Invoke(this, null);
                         SendVoiceStateUpdate(VoiceState.None, null);
                         break;

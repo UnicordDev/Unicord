@@ -15,22 +15,22 @@
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem Text="Mark as Read" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
+    <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
         <MenuFlyoutItem.Icon>
             <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
-    <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-    <MenuFlyoutItem Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Unmute" Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Text="Unmute" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem Text="Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem Text="Open in a New Window" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem Text="Copy ID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
 
 </MenuFlyout>

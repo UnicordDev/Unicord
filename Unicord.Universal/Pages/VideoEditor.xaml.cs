@@ -9,6 +9,7 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -50,10 +51,12 @@ namespace Unicord.Universal.Pages
         private DispatcherTimer _resizeTimer;
         private double _startPosition;
         private bool _createdNew;
+        private ResourceLoader _strings;
 
         public VideoEditor()
         {
             InitializeComponent();
+            _strings = ResourceLoader.GetForCurrentView("VideoEditor");
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -73,12 +76,12 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                WindowManager.HandleTitleBarForGrid(topGrid);
+                WindowManager.HandleTitleBarForControl(topGrid);
             }
 
             if (_model.StorageFile == null)
             {
-                await UIUtilities.ShowErrorDialogAsync("This clip cannot be edited.", "Currently, you can only edit video clips from files. Sorry!");
+                await UIUtilities.ShowErrorDialogAsync(_strings.GetString("CannotEditClipTitle"), _strings.GetString("CannotEditClipMessage"));
                 Close();
                 return;
             }
@@ -91,7 +94,7 @@ namespace Unicord.Universal.Pages
                 try
                 {
                     _model.CompositionFile = _model.CompositionFile ?? await ApplicationData.Current.LocalFolder.GetFileAsync(name);
-                    if (await UIUtilities.ShowYesNoDialogAsync("Load previous edit?", "It looks like you've edited this file before, do you want to load your previous edits?"))
+                    if (await UIUtilities.ShowYesNoDialogAsync(_strings.GetString("LoadPreviousEditsTitle"), _strings.GetString("LoadPreviousEditsMessage")))
                     {
                         _model.Composition = await MediaComposition.LoadAsync(_model.CompositionFile);
                     }
@@ -155,7 +158,7 @@ namespace Unicord.Universal.Pages
 
         private async void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await UIUtilities.ShowYesNoDialogAsync("Save your changes?", "Do you want to save your changes? They'll be loaded the next time you edit this clip."))
+            if (await UIUtilities.ShowYesNoDialogAsync(_strings.GetString("SaveChangesTitle"), _strings.GetString("SaveChangesMessage")))
             {
                 await SaveComposition();
             }
@@ -363,8 +366,10 @@ namespace Unicord.Universal.Pages
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
                 await StatusBar.GetForCurrentView().ShowAsync();
             }
-
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
+            else
+            {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
+            }
 
             GC.Collect();
         }

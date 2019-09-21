@@ -366,7 +366,7 @@
                     Grid.Row="1"
                     FontSize="11"
                     Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                    <Run Text="{Binding Presence, Converter={StaticResource PresenceTextConverter}}" /> <Run FontWeight="Bold" Text="{Binding Presence.Activity.Name}" />
+                    <Run Text="{Binding Presence, Converter={StaticResource PresenceTextConverter}}" />
                 </TextBlock>
             </Grid>
         </Grid>

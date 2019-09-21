@@ -21,32 +21,27 @@
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="120"
                     Text="&#xE7BA;" />
-                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">NSFW Content Ahead!</TextBlock>
-                <TextBlock TextWrapping="Wrap">
-                    <Run>Hey, there's probably NSFW content ahead, so I'm legally obliged to make sure you're over 18.</Run><LineBreak />
-                    <LineBreak /><Run>Are you over 18 and willing to see NSFW content?</Run>
-                </TextBlock>
+                <TextBlock x:Uid="/ChannelWarningPage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+                <TextBlock x:Uid="/ChannelWarningPage/ChannelWarningSubheader" TextWrapping="Wrap"/>
 
                 <Grid Margin="0,8,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button
+                    <Button x:Uid="/ChannelWarningPage/BackButton" 
                         HorizontalAlignment="Stretch"
                         Click="BackButton_Click"
-                        w1809:CornerRadius="3,0,0,3"
-                        Content="Back to safety!" />
-                    <Button
+                        w1809:CornerRadius="3,0,0,3"/>
+                    <Button x:Uid="/ChannelWarningPage/ContinueButton" 
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         Click="ContinueButton_Click"
-                        Content="Take me there!"
                         w1809:CornerRadius="0,3,3,0"
                         Style="{ThemeResource AccentButtonStyle}" />
                 </Grid>
 
-                <CheckBox
+                <CheckBox x:Uid="/ChannelWarningPage/DontAskAgain" 
                     x:Name="notAgain"
                     Margin="0,8"
                     Content="Don't ask me again!" />

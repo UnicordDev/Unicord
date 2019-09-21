@@ -19,12 +19,11 @@
 
         <Grid x:Name="topGrid" Height="42">
             <TextBlock
+                x:Uid="/PinsPage/PinsHeader"
                 Margin="10,0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                FontWeight="Bold">
-                Pinned Messages
-            </TextBlock>
+                FontWeight="Bold"/>
         </Grid>
 
         <StackPanel
@@ -35,8 +34,8 @@
             VerticalAlignment="Center"
             Visibility="Collapsed">
             <TextBlock FontSize="110" Text=":(" />
-            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">No pins!</TextBlock>
-            <TextBlock TextWrapping="Wrap">This channel has no pins! If you have the permissions, go pin something!</TextBlock>
+            <TextBlock x:Uid="/PinsPage/NoPinsHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <TextBlock x:Uid="/PinsPage/NoPinsSubheader" TextWrapping="Wrap"/>
         </StackPanel>
 
         <StackPanel
@@ -47,8 +46,8 @@
             VerticalAlignment="Center"
             Visibility="Collapsed">
             <TextBlock FontSize="110" Text=":/" />
-            <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}">Whoops!</TextBlock>
-            <TextBlock TextWrapping="Wrap">Oi! Slow down there, you're being ratelimited!</TextBlock>
+            <TextBlock x:Uid="/PinsPage/RatelimitedHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <TextBlock x:Uid="/PinsPage/RatelimitedSubheader" TextWrapping="Wrap"/>
         </StackPanel>
 
         <ListView

@@ -74,7 +74,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Text="Appearance" />
+        <TextBlock x:Uid="/ThemesSettingsPage/ThemesSettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" />
         <!--<TextBlock TextWrapping="Wrap" Grid.Row="1" Text="Wanna spice up how Unicord looks? Change some settings here to make things look just how you want them."/>-->
 
         <ContentControl
@@ -92,7 +92,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="relaunchRequired" Visibility="Collapsed" Text="To apply theme changes, Unicord will need to relaunch." Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
+                <TextBlock x:Name="relaunchRequired" x:Uid="/ThemesSettingsPage/RelaunchRequired" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
                 <TextBlock x:Name="themeLoadError" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
 
                 <controls:DropShadowPanel
@@ -179,30 +179,28 @@
                 </controls:DropShadowPanel>
 
                 <StackPanel Grid.Row="2" Margin="0,8,0,4">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Colour Scheme" Margin="0,4"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/ThemesSettingsPage/ColourScheme" Margin="0,4"/>
                     <ComboBox SelectedIndex="{x:Bind Model.ColourScheme}" HorizontalAlignment="Stretch" Margin="0,4">
-                        <ComboBoxItem Content="System Default"/>
-                        <ComboBoxItem Content="Light"/>
-                        <ComboBoxItem Content="Dark"/>
+                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDefault" />
+                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeLight" />
+                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDark" />
                     </ComboBox>
-                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="This setting won't be synced with Discord"/>
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" x:Uid="/ThemesSettingsPage/ColourSchemeCaption" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Margin="0,4,0,4">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Main Theme" Margin="0,4"/>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/ThemesSettingsPage/MainThemeHeader" Margin="0,4"/>
                     <!-- links TBD -->
-                    <TextBlock TextWrapping="WrapWholeWords">
-                        Wanna spice things up? You can <Hyperlink>download some themes</Hyperlink> or learn how to <Hyperlink>make your own</Hyperlink>!
-                    </TextBlock>
+                    <TextBlock x:Uid="/ThemesSettingsPage/MainThemeSubheader" TextWrapping="WrapWholeWords"/>
                     <Grid Margin="0,4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox ItemsSource="{x:Bind Model.AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{x:Bind Model.SelectedTheme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
+                        <ComboBox ItemsSource="{Binding AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{Binding SelectedTheme, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="universal:Theme">
+                                <DataTemplate>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -210,7 +208,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
-                                        <TextBlock Grid.Column="1" Text="{x:Bind Name}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -221,18 +219,6 @@
                         <Button x:Name="removeThemeButton" w1809:CornerRadius="0,3,3,0" IsEnabled="{x:Bind Model.CanRemove, Mode=OneWay}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
                             &#xE738;
                         </Button>
-                    </Grid>
-                </StackPanel>
-
-                <StackPanel Grid.Row="4" Margin="0,8,0,4">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Zoom" Margin="0,4"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Slider Minimum="0.5" Value="{x:Bind Model.ScaleFactor, UpdateSourceTrigger=PropertyChanged}" StepFrequency="0.1" Maximum="2" SnapsTo="Ticks" TickFrequency="0.1" TickPlacement="Inline"/>
-                        <TextBlock Grid.Column="1" Text="{x:Bind Model.ScaleFactorText, Mode=OneWay}" Margin="12,0,0,0" VerticalAlignment="Center"/>
                     </Grid>
                 </StackPanel>
             </Grid>

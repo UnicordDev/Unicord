@@ -1,5 +1,6 @@
 ﻿<ContentDialog
     x:Class="Unicord.Universal.Dialogs.KickDialog"
+    x:Uid="/Dialogs/KickDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Dialogs"
@@ -7,12 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"    
     Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
-    PrimaryButtonText="Yeah!"
-    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
-    SecondaryButtonText="Nah">
+    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
 
     <StackPanel>
-        <TextBlock x:Name="headerTextBlock" Text="Kick @WamWooWam#6402?" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-        <TextBox x:Name="kickReasonText" Margin="0,8,0,0" MaxLength="512" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" Header="Kick Reason"/>
+        <TextBlock x:Name="headerTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <TextBox x:Name="kickReasonText" x:Uid="/Dialogs/KickReason" Margin="0,8,0,0" MaxLength="512" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap"/>
     </StackPanel>
 </ContentDialog>

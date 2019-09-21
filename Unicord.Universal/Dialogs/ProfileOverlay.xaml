@@ -79,7 +79,7 @@
                     <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}" >
                         <StackPanel>
                             <StackPanel x:Name="rolesList" Visibility="{x:Bind _member.Roles, Converter={StaticResource BoolVisibilityConverter}}">
-                                <TextBlock Text="Roles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
+                                <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                                 <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -89,14 +89,11 @@
                                 </ItemsControl>
                             </StackPanel>
                             
-                            <TextBlock Text="Joined Server" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
+                            <TextBlock x:Uid="/Dialogs/ProfileJoinedServer" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
                             <TextBlock Text="{x:Bind _member.JoinedAt, Converter={StaticResource DateTimeConverter}}"/>
                         </StackPanel>
                     </PivotItem>
-                    <PivotItem>
-                        <PivotItem.Header>
-                            Mutual Servers
-                        </PivotItem.Header>
+                    <PivotItem x:Uid="/Dialogs/ProfileMutualServers">
                         <PivotItem.Content>
                             <ListView x:Name="mutualServers" SelectionMode="None">
                                 <ListView.ItemTemplate>
@@ -115,10 +112,7 @@
                             </ListView>
                         </PivotItem.Content>
                     </PivotItem>
-                    <PivotItem>
-                        <PivotItem.Header>
-                            Social Connections
-                        </PivotItem.Header>
+                    <PivotItem x:Uid="/Dialogs/ProfileConnections">
                     </PivotItem>
                 </Pivot>
             </Grid>

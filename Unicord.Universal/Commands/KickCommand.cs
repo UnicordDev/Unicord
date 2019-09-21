@@ -37,7 +37,7 @@ namespace Unicord.Universal.Commands
                 var kickDialog = new KickDialog(member);
                 var result = await kickDialog.ShowAsync();
 
-                if (result != ContentDialogResult.Primary)
+                if (result == ContentDialogResult.Primary)
                     await member.RemoveAsync(kickDialog.KickReason);
             }
         }

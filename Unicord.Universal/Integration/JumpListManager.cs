@@ -29,15 +29,15 @@ namespace Unicord.Universal.Integration
 
                     if (channel.Guild != null)
                     {
-                        group = "Recent Channels";
+                        group = "ms-resource:RecentChannelsJumpListGroup";
                         title = $"#{channel.Name} - {channel.Guild.Name}";
 
                         file = await folder.CreateFileAsync($"server-{channel.Guild.IconHash}.png", CreationCollisionOption.ReplaceExisting);
-                        await Tools.DownloadToFileAsync(new Uri(channel.Guild.IconUrl + "?size=32"), file);
+                        await Tools.DownloadToFileAsync(new Uri(channel.Guild.IconUrl + "?size=64"), file);
                     }
                     else if (channel is DiscordDmChannel dm && dm.Type == ChannelType.Private)
                     {
-                        group = "Recent People";
+                        group = "ms-resource:RecentPeopleJumpListGroup";
                         title = $"@{dm.Recipient.Username}";
 
                         file = await folder.CreateFileAsync($"user-{dm.Recipient.AvatarHash}.png", CreationCollisionOption.ReplaceExisting);
