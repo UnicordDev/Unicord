@@ -109,6 +109,7 @@
 
                                 <Button
                                     x:Name="transcodeFailedButton"
+                                    x:Uid="/Controls/TranscodeFailedButton"
                                     Grid.Column="1"
                                     Click="TranscodeFailedButton_Click"
                                     Content="&#xE783;"
@@ -118,6 +119,7 @@
                                     Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" />
                                 <Button
                                     x:Name="editButton"
+                                    x:Uid="/Controls/EditButton"
                                     Grid.Column="2"
                                     Click="EditButton_Click"
                                     Content="&#xE8B2;"
@@ -127,6 +129,7 @@
                                 </Button>
                                 <ToggleButton
                                     x:Name="spoilerButton"
+                                    x:Uid="/Controls/SpoilerButton"
                                     Grid.Column="3"
                                     Content="&#xE890;"
                                     IsChecked="{Binding Spoiler, Mode=TwoWay}"
@@ -153,18 +156,18 @@
             <Grid>
                 <StackPanel Margin="10" VerticalAlignment="Center">
                     <TextBlock
+                        x:Uid="/Controls/TranscodingProgressHeader"
                         Margin="10"
                         Style="{ThemeResource TitleTextBlockStyle}"
-                        Text="Transcoding"
                         TextAlignment="Center" />
                     <ProgressBar
                         x:Name="transcodeProgress"
                         MaxWidth="350"
                         IsIndeterminate="False" />
                     <Button
+                        x:Uid="/Controls/TranscodingCancelButton"
                         HorizontalAlignment="Center"
                         Click="Button_Click"
-                        Content="Cancel"
                         Style="{ThemeResource TextBlockButtonStyle}" />
                 </StackPanel>
             </Grid>

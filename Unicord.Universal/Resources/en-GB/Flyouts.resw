@@ -117,28 +117,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CannotEditClipMessage" xml:space="preserve">
-    <value>Currently, you can only edit video clips from files. Sorry!</value>
+  <data name="AddReaction.Text" xml:space="preserve">
+    <value>Add Reaction</value>
   </data>
-  <data name="CannotEditClipTitle" xml:space="preserve">
-    <value>This clip cannot be edited.</value>
+  <data name="Ban.Text" xml:space="preserve">
+    <value>Ban</value>
   </data>
-  <data name="LoadPreviousEditsMessage" xml:space="preserve">
-    <value>It looks like you've edited this file before, do you want to load your previous edits?</value>
+  <data name="ChangeNickname.Text" xml:space="preserve">
+    <value>Change Nickname</value>
   </data>
-  <data name="LoadPreviousEditsTitle" xml:space="preserve">
-    <value>Load previous edit?</value>
+  <data name="Copy.Text" xml:space="preserve">
+    <value>Copy</value>
   </data>
-  <data name="ProcessingVideoHeader.Text" xml:space="preserve">
-    <value>Processing Video </value>
+  <data name="CopyID.Text" xml:space="preserve">
+    <value>Copy ID</value>
   </data>
-  <data name="SaveChangesMessage" xml:space="preserve">
-    <value>Do you want to save your changes? They'll be loaded the next time you edit this clip.</value>
+  <data name="CopyLink.Text" xml:space="preserve">
+    <value>Copy URL</value>
   </data>
-  <data name="SaveChangesTitle" xml:space="preserve">
-    <value>Save your changes?</value>
+  <data name="CreateServerSubtitle.Text" xml:space="preserve">
+    <value>It's free!</value>
   </data>
-  <data name="VideoEditorHeader.Text" xml:space="preserve">
-    <value>Trim Video</value>
+  <data name="CreateServerTitle.Text" xml:space="preserve">
+    <value>Create a new server</value>
+  </data>
+  <data name="Delete.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Edit.Text" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditMode.Text" xml:space="preserve">
+    <value>Edit Mode</value>
+  </data>
+  <data name="JoinExistingServerSubtitle.Text" xml:space="preserve">
+    <value>Use your invites!</value>
+  </data>
+  <data name="JoinExistingServerTitle.Text" xml:space="preserve">
+    <value>Join an existing server</value>
+  </data>
+  <data name="Kick.Text" xml:space="preserve">
+    <value>Kick</value>
+  </data>
+  <data name="LeaveServer.Text" xml:space="preserve">
+    <value>Leave Server</value>
+  </data>
+  <data name="MarkAsRead.Text" xml:space="preserve">
+    <value>Mark as Read</value>
+  </data>
+  <data name="Message.Text" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Mute.Text" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="NewWindow.Text" xml:space="preserve">
+    <value>Open in a new Window</value>
+  </data>
+  <data name="Pin.Text" xml:space="preserve">
+    <value>Pin Message</value>
+  </data>
+  <data name="Profile.Text" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="SendMessage.Text" xml:space="preserve">
+    <value>Send Message</value>
+  </data>
+  <data name="ShowFullProfile.Text" xml:space="preserve">
+    <value>Show Full Profile</value>
+  </data>
+  <data name="Unmute.Text" xml:space="preserve">
+    <value>Unmute</value>
   </data>
 </root>

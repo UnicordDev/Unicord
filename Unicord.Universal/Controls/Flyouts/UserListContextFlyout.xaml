@@ -16,31 +16,31 @@
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem Icon="OtherUser" Text="Profile" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem Icon="Message" Text="Message" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Profile" Icon="OtherUser" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/Message" Icon="Message" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}"/>
     
     <MenuFlyoutSeparator x:Name="managementSeparator" 
                          Visibility="{Binding ShowManagementSeparator, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}" />
-    
-    <MenuFlyoutItem Foreground="{ThemeResource ErrorTextForegroundBrush}" 
+
+    <MenuFlyoutItem x:Uid="/Flyouts/Kick"
+                    Foreground="{ThemeResource ErrorTextForegroundBrush}" 
                     Command="{StaticResource KickCommand}"
                     CommandParameter="{Binding}"
                     Icon="LeaveChat" 
-                    Text="Kick" 
                     Visibility="{Binding CanKick, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}"  />
 
     <MenuFlyoutItem x:Name="ban"
+                    x:Uid="/Flyouts/Ban"
                     Foreground="{ThemeResource ErrorTextForegroundBrush}"
                     Command="{StaticResource BanCommand}"
                     CommandParameter="{Binding}"
                     Icon="Remove"
-                    Text="Ban"
                     Visibility="{Binding CanBan, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}"  />
     
     <MenuFlyoutItem x:Name="changeNickname"
+                    x:Uid="/Flyouts/ChangeNickname"
                     Command="{StaticResource ChangeNicknameCommand}"
                     CommandParameter="{Binding}"
-                    Icon="Rename"
-                    Text="Change Nickname" />
+                    Icon="Rename"/>
 
 </MenuFlyout>

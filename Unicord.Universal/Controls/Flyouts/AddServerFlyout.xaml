@@ -14,14 +14,14 @@
     <StackPanel>
         <controls:IconLabelButton x:Name="createServerButton" Icon="&#xE109;" Click="CreateServerButton_Click">
             <StackPanel Margin="4,-4">
-                <TextBlock Text="Create a new server"/>
-                <TextBlock Text="It's free!" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="11"/>
+                <TextBlock x:Uid="/Flyouts/CreateServerTitle"/>
+                <TextBlock x:Uid="/Flyouts/CreateServerSubtitle" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="11"/>
             </StackPanel>
         </controls:IconLabelButton>
         <controls:IconLabelButton Grid.Row="1" Icon="&#xE71B;">
             <StackPanel Margin="4,-4">
-                <TextBlock Text="Join an existing server"/>
-                <TextBlock Text="Use your invites!" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="11"/>
+                <TextBlock x:Uid="/Flyouts/JoinExistingServerTitle" />
+                <TextBlock x:Uid="/Flyouts/JoinExistingServerSubtitle" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontSize="11"/>
             </StackPanel>
         </controls:IconLabelButton>
     </StackPanel>

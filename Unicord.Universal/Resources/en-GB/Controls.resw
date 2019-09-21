@@ -117,28 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CannotEditClipMessage" xml:space="preserve">
-    <value>Currently, you can only edit video clips from files. Sorry!</value>
+  <data name="AttachmentCopyUrlButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy URL</value>
   </data>
-  <data name="CannotEditClipTitle" xml:space="preserve">
-    <value>This clip cannot be edited.</value>
+  <data name="AttachmentSaveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Save</value>
   </data>
-  <data name="LoadPreviousEditsMessage" xml:space="preserve">
-    <value>It looks like you've edited this file before, do you want to load your previous edits?</value>
+  <data name="AttachmentShareButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Share</value>
   </data>
-  <data name="LoadPreviousEditsTitle" xml:space="preserve">
-    <value>Load previous edit?</value>
+  <data name="EditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit this clip</value>
   </data>
-  <data name="ProcessingVideoHeader.Text" xml:space="preserve">
-    <value>Processing Video </value>
+  <data name="EmoteSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search emotes...</value>
   </data>
-  <data name="SaveChangesMessage" xml:space="preserve">
-    <value>Do you want to save your changes? They'll be loaded the next time you edit this clip.</value>
+  <data name="RemoveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove</value>
   </data>
-  <data name="SaveChangesTitle" xml:space="preserve">
-    <value>Save your changes?</value>
+  <data name="SpoilerButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Mark as Spoiler</value>
   </data>
-  <data name="VideoEditorHeader.Text" xml:space="preserve">
-    <value>Trim Video</value>
+  <data name="TranscodeFailedButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Transcode failed!</value>
+  </data>
+  <data name="TranscodingCancelButton.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TranscodingProgressHeader.Text" xml:space="preserve">
+    <value>Transcoding</value>
   </data>
 </root>

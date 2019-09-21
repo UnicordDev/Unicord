@@ -70,9 +70,9 @@
             </Grid.RenderTransform>
             <TextBlock Padding="12,0" Text="{Binding FileName}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontWeight="Bold"/>
             <!--<Button Grid.Column="1" Content="&#xE8C8;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="c"/>-->
-            <Button Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="shareMenuItem_Click"/>
-            <Button Grid.Column="3" Content="&#xE71B;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="CopyUrlItem_Click"/>
-            <Button Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
+            <Button x:Uid="/Controls/AttachmentShareButton" Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="shareMenuItem_Click"/>
+            <Button x:Uid="/Controls/AttachmentCopyUrlButton" Grid.Column="3" Content="&#xE71B;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="CopyUrlItem_Click"/>
+            <Button x:Uid="/Controls/AttachmentSaveButton" Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
         </Grid>
 
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>

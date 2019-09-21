@@ -460,6 +460,9 @@
     <PRIResource Include="Resources\en-GB\UserListPage.resw" />
     <PRIResource Include="Resources\en-GB\ChannelPage.resw" />
     <PRIResource Include="Resources\en-GB\Voice.resw" />
+    <PRIResource Include="Resources\en-GB\VideoEditor.resw" />
+    <PRIResource Include="Resources\en-GB\Flyouts.resw" />
+    <PRIResource Include="Resources\en-GB\Controls.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
