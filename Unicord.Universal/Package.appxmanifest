@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.4.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.6.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Unicord</DisplayName>
+    <DisplayName>ms-resource:AppDisplayName</DisplayName>
     <PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
     <Logo>Assets\Store\StoreLogo.png</Logo>
   </Properties>
@@ -33,7 +33,8 @@
         <!--<uap5:Extension Category="windows.startupTask" StartPage="EntryPage">
           <uap5:StartupTask TaskId="UnicordStartup" DisplayName="Unicord" />
         </uap5:Extension>-->
-        <uap:Extension Category="windows.voipCall" />
+        <uap:Extension Category="windows.voipCall">
+        </uap:Extension>
         <uap4:Extension Category="windows.contactPanel">
           <uap4:ContactPanel />
         </uap4:Extension>
@@ -76,6 +77,8 @@
     <uap:Capability Name="videosLibrary" />
     <uap:Capability Name="picturesLibrary" />
     <uap:Capability Name="contacts" />
+    <uap:Capability Name="voipCall" />
+    <uap:Capability Name="phoneCall" />
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
   </Capabilities>

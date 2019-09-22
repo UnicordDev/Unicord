@@ -148,6 +148,6 @@
     <value />
   </data>
   <data name="WindowsHelloUnavailable.Text" xml:space="preserve">
-    <value>Windwos Hello is not available on this device. Wanna [change that?](ms-settings:signinoptions)</value>
+    <value>Windows Hello is not available on this device. Wanna [change that?](ms-settings:signinoptions)</value>
   </data>
 </root>

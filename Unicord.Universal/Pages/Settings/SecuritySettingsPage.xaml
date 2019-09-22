@@ -54,7 +54,7 @@
                    Grid.Row="3"
                    Style="{ThemeResource SubtitleTextBlockStyle}" />
 
-        <TextBlock
+        <controls:MarkdownTextBlock
             x:Name="unavailableText"
             x:Uid="/SecuritySettingsPage/WindowsHelloUnavailable"
             Grid.Row="4"
