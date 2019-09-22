@@ -62,6 +62,8 @@ namespace Unicord.Universal.Voice
 
         public uint WebSocketPing { get => _webSocketPing; set => OnPropertySet(ref _webSocketPing, value); }
         public uint UdpPing { get => _udpPing; set => OnPropertySet(ref _udpPing, value); }
+        public bool IsDisposed { get; private set; }
+
         public event EventHandler<EventArgs> Disconnected;
 
         /// <summary>
@@ -281,10 +283,18 @@ namespace Unicord.Universal.Voice
         {
             var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DisconnectRequest };
             await SendRequestAsync(set);
+
+            await PlayCueAsync("self_disconnected");
+            ConnectionStatus = _strings.GetString("DisconnectedState");
+            Disconnected?.Invoke(this, null);
+            SendVoiceStateUpdate(null);
         }
 
         private async Task<ValueSet> SendRequestAsync(ValueSet request)
         {
+            if (IsDisposed)
+                return null;
+
             var response = await _appServiceConnection.SendMessageAsync(request);
             if (response.Message != null)
             {
@@ -338,7 +348,6 @@ namespace Unicord.Universal.Voice
                         ConnectionStatus = _strings.GetString("DisconnectedState");
                         Disconnected?.Invoke(this, null);
                         SendVoiceStateUpdate(null);
-                        Dispose();
                         break;
                     case VoiceServiceEvent.Muted:
                         await PlayCueAsync(_muted ? "mute" : "unmute");
@@ -363,6 +372,7 @@ namespace Unicord.Universal.Voice
         private void OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
             _appServiceConnected = false;
+            _appServiceConnection = null;
         }
 
         private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)
@@ -421,7 +431,12 @@ namespace Unicord.Universal.Voice
 
         public void Dispose()
         {
+            IsDisposed = true;
+
+            _appServiceConnected = false;
+
             _appServiceConnection?.Dispose();
+            _appServiceConnection = null;
             _mediaPlayer.MediaPlayer?.Dispose();
             App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
         }

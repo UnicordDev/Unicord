@@ -410,28 +410,27 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
+                    if (!channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.UseVoice))
+                        return;
+
                     var model = DataContext as DiscordPageModel;
                     var voiceModel = model.VoiceModel;
 
                     try
                     {
-                        if (voiceModel == null)
+                        if (voiceModel == null || voiceModel.Channel.Guild != channel.Guild || voiceModel.IsDisposed)
                         {
-                            voiceModel = new VoiceConnectionModel(channel);
-                            model.VoiceModel = voiceModel;
-                            await voiceModel.ConnectAsync();
-                        }
-                        else if (voiceModel.Channel.Guild == channel.Guild)
-                        {
-                            await voiceModel.MoveAsync(channel);
-                        }
-                        else
-                        {
-                            await voiceModel.DisconnectAsync();
+                            await (voiceModel?.DisconnectAsync() ?? Task.CompletedTask);
+                            voiceModel?.Dispose();
 
                             voiceModel = new VoiceConnectionModel(channel);
+                            voiceModel.Disconnected += (o, ev) => model.VoiceModel = null;
                             model.VoiceModel = voiceModel;
                             await voiceModel.ConnectAsync();
+                        }
+                        else 
+                        {
+                            await voiceModel.MoveAsync(channel);
                         }
                     }
                     catch (Exception ex)

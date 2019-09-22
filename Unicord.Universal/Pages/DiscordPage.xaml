@@ -494,7 +494,7 @@
                             Width="220" />
 
                         <Grid Grid.Row="3"  Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">
-                            <controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
+                            <controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}" Visibility="{Binding VoiceModel, Converter={StaticResource HideOnNullConverter}}"/>
                         </Grid>
 
                         <Grid Grid.Row="4" Background="{ThemeResource SidebarPrimaryAcrylicWindowBrush}">

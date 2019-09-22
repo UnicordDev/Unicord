@@ -28,15 +28,16 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         taskInstance.Canceled({ this, &ServiceBackgroundTask::OnCancelled });
 
         auto details = taskInstance.TriggerDetails().try_as<AppServiceTriggerDetails>();
+
         this->appServiceConnection = details.AppServiceConnection();
-        this->appServiceConnected = true;
         this->appServiceConnection.ServiceClosed({ this, &ServiceBackgroundTask::OnServiceClosed });
         this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
+        this->appServiceConnected = true;
     }
 
     void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
     {
-        if (this->appServiceConnected) {
+        if (appServiceConnected && appServiceConnection != nullptr) {
             ValueSet values;
             values.Insert(L"ping", box_value(ping));
             RaiseEvent(VoiceServiceEvent::UdpPing, values);
@@ -45,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
     void ServiceBackgroundTask::OnWsPing(IInspectable sender, uint32_t ping)
     {
-        if (this->appServiceConnected) {
+        if (appServiceConnected && appServiceConnection != nullptr) {
             ValueSet values;
             values.Insert(L"ping", box_value(ping));
             RaiseEvent(VoiceServiceEvent::WebSocketPing, values);
@@ -55,7 +56,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     void ServiceBackgroundTask::OnDisconnected(IInspectable sender, bool args)
     {
         ValueSet valueSet;
-        if (this->appServiceConnected) {
+       if (appServiceConnected && appServiceConnection != nullptr) {
             if (args) { // we're attempting to reconnect
                 RaiseEvent(VoiceServiceEvent::Reconnecting, valueSet);
             }
@@ -68,14 +69,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     void ServiceBackgroundTask::OnConnected(Windows::Foundation::IInspectable sender, bool args)
     {
         ValueSet valueSet;
-        if (this->appServiceConnected) {
+        if (appServiceConnected && appServiceConnection != nullptr) {
             RaiseEvent(VoiceServiceEvent::Connected, valueSet);
         }
     }
 
     void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data)
     {
-        if (appServiceConnected) {
+        if (appServiceConnected && appServiceConnection != nullptr) {
             data.Insert(L"ev", box_value((uint32_t)ev));
             this->appServiceConnection.SendMessageAsync(data);
         }
@@ -256,6 +257,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
     {
         this->appServiceConnected = false;
+        this->appServiceConnection = nullptr;
     }
 
     void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
