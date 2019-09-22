@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Net.Abstractions;
 using DSharpPlus.Net.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSharpPlus.Entities
 {
@@ -203,6 +204,23 @@ namespace DSharpPlus.Entities
         }
 
         public int UserCount => ConnectedUsers.Count();
+
+        public void RequestCallInfo()
+        {
+            if (!IsPrivate)
+                throw new InvalidOperationException();
+
+            if (Discord is DiscordClient client)
+            {
+                var payload = new GatewayPayload()
+                {
+                    OpCode = GatewayOpCode.CallStatusRequest,
+                    Data = new JObject() { ["channel_id"] = Id.ToString() }
+                };
+
+                client._webSocketClient.SendMessage(JsonConvert.SerializeObject(payload));
+            }
+        }
 
         /// <summary>
         /// Gets whether this channel is an NSFW channel.

@@ -285,6 +285,7 @@
     <Compile Include="Converters\UriConverter.cs" />
     <Compile Include="Converters\VoicePingConverter.cs" />
     <Compile Include="Converters\VoicePingGlyphConverter.cs" />
+    <Compile Include="Converters\VoiceStateGlyphConverter.cs" />
     <Compile Include="Dialogs\BanDialog.xaml.cs">
       <DependentUpon>BanDialog.xaml</DependentUpon>
     </Compile>
@@ -384,6 +385,9 @@
     <Compile Include="Pages\SharePage.xaml.cs">
       <DependentUpon>SharePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Subpages\CallPage.xaml.cs">
+      <DependentUpon>CallPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Subpages\ChannelWarningPage.xaml.cs">
       <DependentUpon>ChannelWarningPage.xaml</DependentUpon>
     </Compile>
@@ -464,6 +468,7 @@
     <PRIResource Include="Resources\en-GB\Flyouts.resw" />
     <PRIResource Include="Resources\en-GB\Controls.resw" />
     <PRIResource Include="Resources\en-GB\Converters.resw" />
+    <PRIResource Include="Resources\en-GB\CallPage.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
@@ -702,6 +707,10 @@
     <Page Include="Pages\SharePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Subpages\CallPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Subpages\ChannelWarningPage.xaml">
       <SubType>Designer</SubType>

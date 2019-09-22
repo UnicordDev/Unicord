@@ -54,6 +54,7 @@
             <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
             <converters:SystemMessageSymbolConverter x:Key="SystemMessageSymbolConverter"/>
             <converters:SystemMessageTextConverter x:Key="SystemMessageTextConverter"/>
+            <converters:VoiceStateGlyphConverter x:Key="VoiceStateGlyphConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

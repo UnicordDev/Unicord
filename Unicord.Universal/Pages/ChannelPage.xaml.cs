@@ -130,6 +130,9 @@ namespace Unicord.Universal.Pages
                     model = new ChannelViewModel(chan);
                 }
 
+                if (model.Channel.IsPrivate)
+                    model.Channel.RequestCallInfo();
+
                 var args = this.FindParent<MainPage>()?.Arguments;
                 WindowManager.HandleTitleBarForControl(topGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);

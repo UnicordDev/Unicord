@@ -71,6 +71,11 @@
         GuildSync = 12,
 
         /// <summary>
+        /// Requests call statuses?
+        /// </summary>
+        CallStatusRequest = 13,
+
+        /// <summary>
         /// 
         /// </summary>
         AdvancedGuildSync = 14

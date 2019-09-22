@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Subpages.CallPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Subpages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:discord="using:DSharpPlus.Entities"
+    mc:Ignorable="d">
+
+    <Grid Margin="20">
+        <ListView
+            BorderThickness="0"
+            ShowsScrollingPlaceholders="False"
+            SingleSelectionFollowsFocus="False"
+            VerticalAlignment="Center"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollMode="Enabled"
+            ScrollViewer.IsHorizontalRailEnabled="True"
+            ScrollViewer.IsVerticalRailEnabled="False"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollMode="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="discord:DiscordVoiceState">
+                    <PersonPicture Width="64" Height="64" DisplayName="{Binding User.DisplayName}" ProfilePicture="{Binding User.AvatarUrl}" BadgeGlyph="{Binding Converter={StaticResource VoiceStateGlyphConverter}}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

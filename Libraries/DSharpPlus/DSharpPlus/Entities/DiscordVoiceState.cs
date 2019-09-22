@@ -13,6 +13,7 @@ namespace DSharpPlus.Entities
         private bool _isServerMuted;
         private bool _isSelfDeafened;
         private bool _isSelfMuted;
+        private bool _isSelfVideo;
 
         internal DiscordClient Discord { get; set; }
 
@@ -84,25 +85,31 @@ namespace DSharpPlus.Entities
         /// Gets whether this user is deafened.
         /// </summary>
         [JsonProperty("deaf", NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsServerDeafened { get => _isServerDeafened; internal set => OnPropertySet(ref _isServerDeafened, value); }
+        public bool IsServerDeafened { get => _isServerDeafened; internal set { OnPropertySet(ref _isServerDeafened, value); InvokePropertyChanged(string.Empty); } }
 
         /// <summary>
         /// Gets whether this user is muted.
         /// </summary>
         [JsonProperty("mute", NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsServerMuted { get => _isServerMuted; internal set => OnPropertySet(ref _isServerMuted, value); }
+        public bool IsServerMuted { get => _isServerMuted; internal set { OnPropertySet(ref _isServerMuted, value); InvokePropertyChanged(string.Empty); } }
 
         /// <summary>
         /// Gets whether this user is locally deafened.
         /// </summary>
         [JsonProperty("self_deaf", NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsSelfDeafened { get => _isSelfDeafened; internal set => OnPropertySet(ref _isSelfDeafened, value); }
+        public bool IsSelfDeafened { get => _isSelfDeafened; internal set { OnPropertySet(ref _isSelfDeafened, value); InvokePropertyChanged(string.Empty); } }
 
         /// <summary>
         /// Gets whether this user is locally muted.
         /// </summary>
         [JsonProperty("self_mute", NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsSelfMuted { get => _isSelfMuted; internal set => OnPropertySet(ref _isSelfMuted, value); }
+        public bool IsSelfMuted { get => _isSelfMuted; internal set { OnPropertySet(ref _isSelfMuted, value); InvokePropertyChanged(string.Empty); } }
+
+        /// <summary>
+        /// Gets whether this user is transmitting video
+        /// </summary>
+        [JsonProperty("self_video", NullValueHandling = NullValueHandling.Ignore)]
+        public bool IsSelfVideo { get => _isSelfVideo; internal set { OnPropertySet(ref _isSelfVideo, value); InvokePropertyChanged(string.Empty); } }
 
         /// <summary>
         /// Gets whether the current user has suppressed this user.

@@ -17,6 +17,7 @@ namespace DSharpPlus.Entities
     public class DiscordDmChannel : DiscordChannel
     {
         private string _iconHash;
+        private DiscordCall _ongoingCall;
 
         /// <summary>
         /// Gets the recipients of this direct message.
@@ -43,6 +44,9 @@ namespace DSharpPlus.Entities
 
         [JsonIgnore]
         public DiscordUser Recipient => _recipients?.Count == 1 ? _recipients.Values.ElementAt(0) : null;
+
+        [JsonIgnore]
+        public DiscordCall OngoingCall { get => _ongoingCall; internal set => OnPropertySet(ref _ongoingCall, value); }
 
         /// <summary>
         /// Only use for Group DMs! Whitelised bots only. Requires user's oauth2 access token

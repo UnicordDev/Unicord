@@ -109,6 +109,9 @@ namespace DSharpPlus
         internal ConcurrentDictionary<ulong, DiscordChannel> _channelCache
             = new ConcurrentDictionary<ulong, DiscordChannel>();
 
+        internal ConcurrentDictionary<ulong, DiscordCall> _calls
+            = new ConcurrentDictionary<ulong, DiscordCall>();
+
         /// <summary>
         /// Gets the WS latency for this client.
         /// </summary>
@@ -197,6 +200,9 @@ namespace DSharpPlus
             _messageReactionAdded = new AsyncEvent<MessageReactionAddEventArgs>(EventErrorHandler, "MESSAGE_REACTION_ADDED");
             _messageReactionRemoved = new AsyncEvent<MessageReactionRemoveEventArgs>(EventErrorHandler, "MESSAGE_REACTION_REMOVED");
             _messageReactionsCleared = new AsyncEvent<MessageReactionsClearEventArgs>(EventErrorHandler, "MESSAGE_REACTIONS_CLEARED");
+            _callCreated = new AsyncEvent<CallCreateEventArgs>(EventErrorHandler, "CALL_CREATE");
+            _callUpdated = new AsyncEvent<CallUpdateEventArgs>(EventErrorHandler, "CALL_UPDATED");
+            _callDeleted = new AsyncEvent<CallDeleteEventArgs>(EventErrorHandler, "CALL_DELETED");
             _webhooksUpdated = new AsyncEvent<WebhooksUpdateEventArgs>(EventErrorHandler, "WEBHOOKS_UPDATED");
             _heartbeated = new AsyncEvent<HeartbeatEventArgs>(EventErrorHandler, "HEARTBEATED");
             _onDispatch = new AsyncEvent<string>(EventErrorHandler, "DISPATCH");
@@ -959,6 +965,15 @@ namespace DSharpPlus
                     case "relationship_remove":
                         await OnRelationshipRemoveAsync(dat).ConfigureAwait(false);
                         break;
+                    case "call_create":
+                        await OnCallCreateAsync(dat).ConfigureAwait(false);
+                        break;
+                    case "call_update":
+                        await OnCallUpdateAsync(dat).ConfigureAwait(false);
+                        break;
+                    case "call_delete":
+                        await OnCallDeleteAsync(dat).ConfigureAwait(false);
+                        break;
                     default:
                         await OnUnknownEventAsync(payload).ConfigureAwait(false);
                         DebugLogger.LogMessage(LogLevel.Warning, "Websocket", $"Unknown event: {payload.EventName}\n{payload.Data}", DateTime.Now);
@@ -1150,7 +1165,7 @@ namespace DSharpPlus
                         dat.Discord = this;
                         ReadStates[dat.Id] = dat;
                     }
-                } 
+                }
             }
 
             foreach (var g in Guilds.Values)
@@ -1197,6 +1212,63 @@ namespace DSharpPlus
 
             if (_relationships.TryRemove(rel.Id, out rel))
                 await _relationshipAdded?.InvokeAsync(new RelationshipEventArgs() { Relationship = rel });
+        }
+
+        private async Task OnCallCreateAsync(JObject dat)
+        {
+            var channelId = dat["channel_id"].ToObject<ulong>();
+            if (_channelCache.TryGetValue(channelId, out var channel) && channel is DiscordDmChannel dm)
+            {
+                var call = dat.ToDiscordObject<DiscordCall>();
+                call.Discord = this;
+
+                _calls[call._channelId] = call;
+                dm.OngoingCall = call;
+
+                DebugLogger.LogMessage(LogLevel.Info, "Calls", dm.OngoingCall.ToString(), DateTime.Now);
+
+                await _callCreated.InvokeAsync(new CallCreateEventArgs(this) { Call = call, Channel = dm });
+            }
+        }
+
+        private async Task OnCallUpdateAsync(JObject dat)
+        {
+            var channelId = dat["channel_id"].ToObject<ulong>();
+            if (_channelCache.TryGetValue(channelId, out var channel) && channel is DiscordDmChannel dm)
+            {
+                var call = dat.ToDiscordObject<DiscordCall>();
+                var oldCall = dm.OngoingCall;
+                if (oldCall == null)
+                {
+                    dm.OngoingCall = call;
+                }
+                else
+                {
+                    oldCall.Ringing.Clear();
+                    oldCall.Ringing.AddRange(call.Ringing);
+                    oldCall._voiceRegion = call._voiceRegion;
+                    oldCall.InvokePropertyChanged(string.Empty);
+                }
+
+                DebugLogger.LogMessage(LogLevel.Info, "Calls", dm.OngoingCall.ToString(), DateTime.Now);
+
+                await _callUpdated.InvokeAsync(new CallUpdateEventArgs(this) { CallAfter = oldCall, Channel = dm });
+            }
+        }
+
+        private async Task OnCallDeleteAsync(JObject dat)
+        {
+            var channelId = dat["channel_id"].ToObject<ulong>();
+            if (_channelCache.TryGetValue(channelId, out var channel) && channel is DiscordDmChannel dm)
+            {
+                var call = dm.OngoingCall;
+                dm.OngoingCall = null;
+                _calls.TryRemove(channelId, out _);
+
+                DebugLogger.LogMessage(LogLevel.Info, "Calls", dm.OngoingCall?.ToString(), DateTime.Now);
+
+                await _callDeleted.InvokeAsync(new CallDeleteEventArgs(this) { Call = call, Channel = dm });
+            }
         }
 
         internal async Task OnChannelCreateEventAsync(DiscordChannel channel, JArray rawRecipients)
@@ -2157,45 +2229,82 @@ namespace DSharpPlus
 
         internal async Task OnVoiceStateUpdateEventAsync(JObject raw)
         {
-            var gid = (ulong)raw["guild_id"];
             var uid = (ulong)raw["user_id"];
-            var gld = _guilds[gid];
+            DiscordVoiceState vstateOld = null;
+            DiscordVoiceState vstateNew = null;
 
-            var vstateHasNew = gld._voice_states.TryGetValue(uid, out var vstateNew);
-            DiscordVoiceState vstateOld;
-            if (vstateHasNew)
+            if (raw.TryGetValue("guild_id", out var gid) && gid.Type != JTokenType.Null)
             {
-                vstateOld = new DiscordVoiceState(vstateNew);
-                DiscordJson.PopulateObject(raw, vstateNew);
+                var gld = _guilds[gid.ToObject<ulong>()];
+
+                var vstateHasNew = gld._voice_states.TryGetValue(uid, out vstateNew);
+                if (vstateHasNew)
+                {
+                    vstateOld = new DiscordVoiceState(vstateNew);
+                    DiscordJson.PopulateObject(raw, vstateNew);
+                }
+                else
+                {
+                    vstateOld = null;
+                    vstateNew = raw.ToObject<DiscordVoiceState>();
+                    vstateNew.Discord = this;
+                    gld._voice_states[vstateNew.UserId] = vstateNew;
+                }
+
+                if (gld._members.TryGetValue(uid, out var mbr))
+                {
+                    mbr.IsMuted = vstateNew.IsServerMuted;
+                    mbr.IsDeafened = vstateNew.IsServerDeafened;
+                }
+            }
+            else if (raw.TryGetValue("channel_id", out var cid) && cid.Type != JTokenType.Null)
+            {
+                if (_channelCache.TryGetValue(cid.ToObject<ulong>(), out var c) && c is DiscordDmChannel dm && dm.OngoingCall != null)
+                {
+                    if (dm.OngoingCall._voice_states.TryGetValue(uid, out vstateNew))
+                    {
+                        vstateOld = new DiscordVoiceState(vstateNew);
+                        DiscordJson.PopulateObject(raw, vstateNew);
+                    }
+                    else
+                    {
+                        vstateOld = null;
+                        vstateNew = raw.ToObject<DiscordVoiceState>();
+                        vstateNew.Discord = this;
+                        dm.OngoingCall._voice_states[vstateNew.UserId] = vstateNew;
+                    }
+
+                    dm.OngoingCall.InvokePropertyChanged(string.Empty);
+                    dm.InvokePropertyChanged(string.Empty);
+                }
             }
             else
             {
-                vstateOld = null;
-                vstateNew = raw.ToObject<DiscordVoiceState>();
-                vstateNew.Discord = this;
-                gld._voice_states[vstateNew.UserId] = vstateNew;
+                var call = _calls.Values.FirstOrDefault(c => c.VoiceStates.ContainsKey(uid));
+                if (call != null)
+                {
+                    call._voice_states.TryRemove(uid, out vstateOld);
+                    await _callUpdated.InvokeAsync(new CallUpdateEventArgs(this) { CallAfter = call, Channel = call.Channel });
+                }
             }
 
-            if (gld._members.TryGetValue(uid, out var mbr))
+            if (vstateNew != null)
             {
-                mbr.IsMuted = vstateNew.IsServerMuted;
-                mbr.IsDeafened = vstateNew.IsServerDeafened;
+                vstateOld?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
+                vstateNew?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
+
+                var ea = new VoiceStateUpdateEventArgs(this)
+                {
+                    Guild = vstateNew.Guild,
+                    Channel = vstateNew.Channel,
+                    User = vstateNew.User,
+                    SessionId = vstateNew.SessionId,
+
+                    Before = vstateOld,
+                    After = vstateNew
+                };
+                await _voiceStateUpdated.InvokeAsync(ea).ConfigureAwait(false);
             }
-
-            vstateOld?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
-            vstateNew?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
-
-            var ea = new VoiceStateUpdateEventArgs(this)
-            {
-                Guild = vstateNew.Guild,
-                Channel = vstateNew.Channel,
-                User = vstateNew.User,
-                SessionId = vstateNew.SessionId,
-
-                Before = vstateOld,
-                After = vstateNew
-            };
-            await _voiceStateUpdated.InvokeAsync(ea).ConfigureAwait(false);
         }
 
         internal async Task OnVoiceServerUpdateEventAsync(string endpoint, string token, DiscordGuild guild)
@@ -3221,6 +3330,36 @@ namespace DSharpPlus
             remove { _voiceServerUpdated.Unregister(value); }
         }
         private AsyncEvent<VoiceServerUpdateEventArgs> _voiceServerUpdated;
+
+        /// <summary>
+        /// Fired when a call is created
+        /// </summary>
+        public event AsyncEventHandler<CallCreateEventArgs> CallCreated
+        {
+            add { _callCreated.Register(value); }
+            remove { _callCreated.Unregister(value); }
+        }
+        private AsyncEvent<CallCreateEventArgs> _callCreated;
+
+        /// <summary>
+        /// Fired when a call is updated
+        /// </summary>
+        public event AsyncEventHandler<CallUpdateEventArgs> CallUpdated
+        {
+            add { _callUpdated.Register(value); }
+            remove { _callUpdated.Unregister(value); }
+        }
+        private AsyncEvent<CallUpdateEventArgs> _callUpdated;
+
+        /// <summary>
+        /// Fired when a call is deleted
+        /// </summary>
+        public event AsyncEventHandler<CallDeleteEventArgs> CallDeleted
+        {
+            add { _callDeleted.Register(value); }
+            remove { _callDeleted.Unregister(value); }
+        }
+        private AsyncEvent<CallDeleteEventArgs> _callDeleted;
 
         /// <summary>
         /// Fired in response to Gateway Request Guild Members.

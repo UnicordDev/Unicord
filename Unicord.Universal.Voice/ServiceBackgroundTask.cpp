@@ -100,6 +100,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 auto request_op = (VoiceServiceRequest)unbox_value<uint32_t>(data.Lookup(L"req"));
                 switch (request_op)
                 {
+                case VoiceServiceRequest::CallConnectRequest:
                 case VoiceServiceRequest::GuildConnectRequest:
                 {
                     if (voiceClient == nullptr && activeCall == nullptr) {

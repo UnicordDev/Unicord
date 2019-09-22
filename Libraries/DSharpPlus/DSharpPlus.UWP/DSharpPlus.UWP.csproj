@@ -159,6 +159,9 @@
     <Compile Include="..\DSharpPlus\Entities\DiscordBan.cs">
       <Link>Entities\DiscordBan.cs</Link>
     </Compile>
+    <Compile Include="..\DSharpPlus\Entities\DiscordCall.cs">
+      <Link>Entities\DiscordCall.cs</Link>
+    </Compile>
     <Compile Include="..\DSharpPlus\Entities\DiscordChannel.cs">
       <Link>Entities\DiscordChannel.cs</Link>
     </Compile>
@@ -305,6 +308,15 @@
     </Compile>
     <Compile Include="..\DSharpPlus\Enums\TokenType.cs">
       <Link>Enums\TokenType.cs</Link>
+    </Compile>
+    <Compile Include="..\DSharpPlus\EventArgs\CallCreateEventArgs.cs">
+      <Link>EventArgs\CallCreateEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\DSharpPlus\EventArgs\CallDeleteEventArgs.cs">
+      <Link>EventArgs\CallDeleteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\DSharpPlus\EventArgs\CallUpdateEventArgs.cs">
+      <Link>EventArgs\CallUpdateEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\DSharpPlus\EventArgs\ChannelCreateEventArgs.cs">
       <Link>EventArgs\ChannelCreateEventArgs.cs</Link>

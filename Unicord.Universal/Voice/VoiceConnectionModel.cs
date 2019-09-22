@@ -221,10 +221,9 @@ namespace Unicord.Universal.Voice
                 var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
 
                 ConnectionStatus = string.Format(_strings.GetString("ConnectionState4Format"), Channel.Name);
-
                 var connectionRequest = new ValueSet()
                 {
-                    ["req"] = (uint)VoiceServiceRequest.GuildConnectRequest,
+                    ["req"] = Channel.Guild != null ? (uint)VoiceServiceRequest.GuildConnectRequest : (uint)VoiceServiceRequest.CallConnectRequest,
                     ["channel_id"] = Channel.Id,
                     ["guild_id"] = Channel.Guild?.Id ?? 0,
                     ["user_id"] = App.Discord.CurrentUser.Id,
@@ -438,6 +437,8 @@ namespace Unicord.Universal.Voice
             _appServiceConnection?.Dispose();
             _appServiceConnection = null;
             _mediaPlayer.MediaPlayer?.Dispose();
+            _mediaPlayer = null;
+
             App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
         }
     }
