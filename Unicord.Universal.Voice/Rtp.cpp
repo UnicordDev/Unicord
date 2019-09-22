@@ -19,11 +19,15 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     void Rtp::EncodeHeader(const RtpHeader& header, gsl::span<uint8_t> target)
     {
-        if (target.size() < header.size()) {
+        if ((size_t)target.size() < header.size()) {
             throw hresult_invalid_argument();
         }
 
-        target[0] = (header.extension ? RTP_EXTENSION : RTP_NO_EXTENSION) | header.contributing_ssrcs.size();
+        if (header.contributing_ssrcs.size() > 127) {
+            throw hresult_invalid_argument();
+        }
+
+        target[0] = (header.extension ? RTP_EXTENSION : RTP_NO_EXTENSION) | (uint8_t)header.contributing_ssrcs.size();
         target[1] = header.type;
 
         // reverse_copy from big endian to little endian 
@@ -79,7 +83,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
-    int Rtp::CalculatePacketSize(uint32_t encrypted_length, const RtpHeader& header, EncryptionMode encryption_mode)
+    size_t Rtp::CalculatePacketSize(uint32_t encrypted_length, const RtpHeader& header, EncryptionMode encryption_mode)
     {
         switch (encryption_mode)
         {

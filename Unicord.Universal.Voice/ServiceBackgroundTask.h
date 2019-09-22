@@ -20,6 +20,9 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
         void OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping);
         void OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping);
+        void OnDisconnected(Windows::Foundation::IInspectable sender, bool args);
+        void OnConnected(Windows::Foundation::IInspectable sender, bool args);
+
         void RaiseEvent(Unicord::Universal::Voice::Background::VoiceServiceEvent ev, Windows::Foundation::Collections::ValueSet data);
         void OnServiceMessage(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceRequestReceivedEventArgs args);
         void OnServiceClosed(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceClosedEventArgs args);

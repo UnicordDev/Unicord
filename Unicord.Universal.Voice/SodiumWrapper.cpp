@@ -46,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     void SodiumWrapper::GenerateNonce(gsl::span<const uint8_t> rtp_header, gsl::span<uint8_t> target)
     {
-        if (target.size() != nonce_length) {
+        if ((size_t)target.size() != nonce_length) {
             throw hresult_invalid_argument(L"Target size incorrect!");
         }
 
@@ -55,7 +55,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     void SodiumWrapper::GenerateNonce(gsl::span<uint8_t> target)
     {
-        if (target.size() != nonce_length) {
+        if ((size_t)target.size() != nonce_length) {
             throw hresult_invalid_argument(L"Target size incorrect!");
         }
 
@@ -64,7 +64,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     void SodiumWrapper::GenerateNonce(uint32_t nonce, gsl::span<uint8_t> target)
     {
-        if (target.size() != nonce_length) {
+        if ((size_t)target.size() != nonce_length) {
             throw hresult_invalid_argument(L"Target size incorrect!");
         }
 
@@ -73,10 +73,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     void SodiumWrapper::Encrypt(gsl::span<const uint8_t> source, gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target)
     {
-        if (nonce.size() != nonce_length)
+        if ((size_t)nonce.size() != nonce_length)
             throw hresult_invalid_argument(L"Invalid nonce size");
 
-        if (target.size() != mac_length + source.size())
+        if ((size_t)target.size() != mac_length + (size_t)source.size())
             throw hresult_invalid_argument(L"Invalid target size");
 
         int result = crypto_secretbox_easy(target.data(), source.data(), source.size(), nonce.data(), key);

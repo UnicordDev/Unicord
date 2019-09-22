@@ -36,16 +36,41 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
     void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
     {
-        ValueSet values;
-        values.Insert(L"ping", box_value(ping));
-        RaiseEvent(VoiceServiceEvent::UdpPing, values);
+        if (this->appServiceConnected) {
+            ValueSet values;
+            values.Insert(L"ping", box_value(ping));
+            RaiseEvent(VoiceServiceEvent::UdpPing, values);
+        }
     }
 
     void ServiceBackgroundTask::OnWsPing(IInspectable sender, uint32_t ping)
     {
-        ValueSet values;
-        values.Insert(L"ping", box_value(ping));
-        RaiseEvent(VoiceServiceEvent::WebSocketPing, values);
+        if (this->appServiceConnected) {
+            ValueSet values;
+            values.Insert(L"ping", box_value(ping));
+            RaiseEvent(VoiceServiceEvent::WebSocketPing, values);
+        }
+    }
+
+    void ServiceBackgroundTask::OnDisconnected(IInspectable sender, bool args)
+    {
+        ValueSet valueSet;
+        if (this->appServiceConnected) {
+            if (args) { // we're attempting to reconnect
+                RaiseEvent(VoiceServiceEvent::Reconnecting, valueSet);
+            }
+            else {
+                RaiseEvent(VoiceServiceEvent::Disconnected, valueSet);
+            }
+        }
+    }
+
+    void ServiceBackgroundTask::OnConnected(Windows::Foundation::IInspectable sender, bool args)
+    {
+        ValueSet valueSet;
+        if (this->appServiceConnected) {
+            RaiseEvent(VoiceServiceEvent::Connected, valueSet);
+        }
     }
 
     void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data)
@@ -109,6 +134,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                                 voiceClient.Deafened(unbox_value<bool>(data.Lookup(L"deafened")));
                             }
 
+                            voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
+                            voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
                             voiceClient.ConnectAsync().get();
                             activeCall.NotifyCallActive();
 
@@ -215,6 +242,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
         def.Complete();
     }
+
 
     void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
     {

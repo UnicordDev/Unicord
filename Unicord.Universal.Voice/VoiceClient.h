@@ -45,13 +45,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
         uint32_t WebSocketPing();
         uint32_t UdpSocketPing();
 
-        winrt::event_token WebSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const& handler);
+        event_token WebSocketPingUpdated(EventHandler<uint32_t> const& handler);
         void WebSocketPingUpdated(winrt::event_token const& token) noexcept;
-        winrt::event_token UdpSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const& handler);
+        event_token UdpSocketPingUpdated(EventHandler<uint32_t> const& handler);
         void UdpSocketPingUpdated(winrt::event_token const& token) noexcept;
-
-        winrt::event_token Disconnected(Windows::Foundation::EventHandler<bool> const& handler);
-        void Disconnected(winrt::event_token const& token) noexcept;
+        event_token Connected(EventHandler<bool> const& handler);
+        void Connected(event_token const& token) noexcept;
+        event_token Disconnected(EventHandler<bool> const& handler);
+        void Disconnected(event_token const& token) noexcept;
 
         IAsyncAction ConnectAsync();
         IAsyncAction SendSpeakingAsync(bool speaking);
@@ -88,7 +89,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         bool ws_closed = true;
         bool can_resume = false;
-        winrt::event<Windows::Foundation::EventHandler<bool>> disconnected;
+        winrt::event<EventHandler<bool>> connected;
+        winrt::event<EventHandler<bool>> disconnected;
 
         uint16_t seq = 0;
         uint32_t ssrc = 0;
@@ -100,11 +102,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         volatile uint32_t ws_ping = 0;
         volatile uint32_t last_heartbeat = 0;
-        winrt::event<Windows::Foundation::EventHandler<uint32_t>> wsPingUpdated;
+        winrt::event<EventHandler<uint32_t>> wsPingUpdated;
 
         volatile uint32_t udp_ping = 0;
         volatile uint64_t keepalive_count = 0;
-        winrt::event<Windows::Foundation::EventHandler<uint32_t>> udpPingUpdated;
+        winrt::event<EventHandler<uint32_t>> udpPingUpdated;
 
         concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
         concurrency::concurrent_queue<PCMPacket> voice_queue;
@@ -118,6 +120,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
         IAsyncAction Stage1(JsonObject obj);
         void Stage2(JsonObject obj);
+        IAsyncAction Stage3(std::string &ip, const uint16_t &port);
 
         void VoiceSendLoop();
 

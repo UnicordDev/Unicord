@@ -46,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     Windows::Foundation::IAsyncOperation<bool> VoiceOutputStream::FlushAsync()
     {
-        std::fill(pcm_buffer + consumed_buffer_length, pcm_buffer + buffer_length, 0);
+        std::fill(pcm_buffer + consumed_buffer_length, pcm_buffer + buffer_length, (uint8_t)0);
 
         uint8_t* new_buff = new uint8_t[buffer_length];
         std::copy(pcm_buffer, pcm_buffer + buffer_length, new_buff);

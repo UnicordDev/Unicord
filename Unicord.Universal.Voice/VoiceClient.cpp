@@ -99,6 +99,16 @@ namespace winrt::Unicord::Universal::Voice::implementation
         udpPingUpdated.remove(token);
     }
 
+    winrt::event_token VoiceClient::Connected(Windows::Foundation::EventHandler<bool> const & handler)
+    {
+        return connected.add(handler);
+    }
+
+    void VoiceClient::Connected(winrt::event_token const & token) noexcept
+    {
+        connected.remove(token);
+    }
+
     winrt::event_token VoiceClient::Disconnected(Windows::Foundation::EventHandler<bool> const & handler)
     {
         return disconnected.add(handler);
@@ -179,8 +189,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
         heartbeat_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnWsHeartbeat }, milliseconds(heartbeat_interval));
 
         JsonObject payload;
-        if (options.GuildId() != 0)
+        if (options.GuildId() != 0) {
             payload.SetNamedValue(L"server_id", JsonValue::CreateStringValue(to_hstring(options.GuildId())));
+        }
+        else {
+            payload.SetNamedValue(L"server_id", JsonValue::CreateNullValue());
+        }
 
         if (!isResume)
             payload.SetNamedValue(L"user_id", JsonValue::CreateStringValue(to_hstring(options.CurrentUserId())));
@@ -198,7 +212,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     IAsyncAction VoiceClient::Stage1(JsonObject obj)
     {
-        if(obj != nullptr) {
+        if (obj != nullptr) {
             udp_endpoint.hostname = obj.GetNamedString(L"ip");
             udp_endpoint.port = (uint16_t)obj.GetNamedNumber(L"port");
         }
@@ -221,8 +235,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
     void VoiceClient::Stage2(JsonObject data)
     {
         if (data != nullptr) {
-            auto secret_key = data.GetNamedArray(L"secret_key");
-            auto new_mode = data.GetNamedString(L"mode");
+            JsonArray secret_key = data.GetNamedArray(L"secret_key");
+            hstring new_mode = data.GetNamedString(L"mode");
 
             uint8_t key[32];
             for (uint32_t i = 0; i < 32; i++)
@@ -239,7 +253,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         auto size = audio_format.CalculateSampleSize(20);
         for (size_t i = 0; i < 3; i++)
         {
-            auto null_pcm = new uint8_t[size]{ 0 };
+            uint8_t* null_pcm = new uint8_t[size]{ 0 };
             voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
         }
 
@@ -248,6 +262,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         if (!is_muted && !is_deafened)
             renderer->BeginCapture();
+
+        connected(*this, true);
     }
 
     void VoiceClient::VoiceSendLoop()
@@ -269,15 +285,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 // Provided by Laura#0090 (214796473689178133); this is Python, but adaptable:
                 // 
                 // delay = max(0, self.delay + ((start_time + self.delay * loops) + - time.time()))
-                // 
-                // self.delay
-                //   sample size
-                // start_time
-                //   time since streaming started
-                // loops
-                //   number of samples sent
-                // time.time()
-                //   DateTime.Now
 
                 duration packet_duration = has_packet ? milliseconds(packet.duration) : 20ms;
                 duration current_time_offset = high_resolution_clock::now() - start_time;
@@ -335,7 +342,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         header.ssrc = ssrc;
         header.seq = seq;
         header.timestamp = timestamp;
-        header.type = 120; // opus audio
+        header.type = Rtp::RTP_TYPE_OPUS; // opus audio
 
         auto packet_size = audio_format.GetMaxBufferSize() * 2;
         auto packet = std::vector<uint8_t>(packet_size);
@@ -372,8 +379,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         this->seq++;
         this->timestamp += (uint32_t)time;
 
-        VoicePacket voice_packet(new_packet, duration, silence);
-        return voice_packet;
+        return VoicePacket{ new_packet, duration, silence };
     }
 
     void VoiceClient::EnqueuePacket(PCMPacket packet)
@@ -426,7 +432,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         array_view<const uint8_t> encrypted_data;
         Rtp::GetDataFromPacket(data, encrypted_data, header, mode.second);
 
-        if (header.type == 120) {
+        if (header.type == Rtp::RTP_TYPE_OPUS) {
             return DecodeOpusPacket(header, source, encrypted_data, nonce_view, pcm);
         }
 
@@ -516,7 +522,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
     {
-        auto stamp = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+        uint32_t stamp = (uint32_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
         last_heartbeat = stamp;
 
         JsonObject disp;
@@ -571,17 +577,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
                     break;
                 }
-                case 9:
-                {
-                    Stage2(nullptr);
-                    break;
-                }
                 case 13: // client_disconnected
                 {
                     uint64_t user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
                     AudioSource* source = opus->GetAssociatedAudioSource(user_id, true);
-                    
-                    if(source != nullptr){
+
+                    if (source != nullptr) {
                         renderer->RemoveAudioSource(source->ssrc);
                         delete source;
                     }
@@ -600,6 +601,21 @@ namespace winrt::Unicord::Universal::Voice::implementation
                     wsPingUpdated(*this, (const uint32_t)ws_ping);
                     std::cout << "- WS Ping " << ws_ping << "ms\n";
                     break;
+                }
+            }
+
+            if (value.ValueType() == JsonValueType::Null) {
+                switch (op) {
+                case 9:
+                {
+                    HostName remoteHost{ udp_endpoint.hostname };
+                    EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udp_endpoint.port) };
+                    co_await udp_socket.ConnectAsync(pair);
+
+                    Stage2(nullptr);
+                    connected(*this, true);
+                    break;
+                }
                 }
             }
         }
@@ -621,7 +637,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
             if (ev.Code() == 4006 || ev.Code() == 4009) {
                 disconnected(*this, false);
                 Close();
-                return;
             }
             else {
                 disconnected(*this, true);
@@ -647,8 +662,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 std::cout << "- Reconnecting in " << timeout.count() << "s!" << std::endl;
 
                 co_await timeout;
-
-                is_disposed = false;
                 cancel_voice_send = false;
                 InitialiseSockets();
 
@@ -750,55 +763,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
             uint16_t port = *(uint16_t*)&buff[68];
 
-            JsonObject data;
-            data.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
-            data.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
-            data.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
-
-            JsonObject opus;
-            opus.SetNamedValue(L"name", JsonValue::CreateStringValue(L"opus"));
-            opus.SetNamedValue(L"type", JsonValue::CreateStringValue(L"audio"));
-            opus.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1000));
-            opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(120));
-
-            JsonObject h264;
-            h264.SetNamedValue(L"name", JsonValue::CreateStringValue(L"H264"));
-            h264.SetNamedValue(L"type", JsonValue::CreateStringValue(L"video"));
-            h264.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1001));
-            h264.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(101));
-            h264.SetNamedValue(L"rtx_payload_type", JsonValue::CreateNumberValue(102));
-
-            JsonArray codecs;
-            codecs.Append(h264);
-            codecs.Append(opus);
-
-            JsonObject protocol_select;
-            protocol_select.SetNamedValue(L"protocol", JsonValue::CreateStringValue(L"udp"));
-            protocol_select.SetNamedValue(L"data", data);
-            protocol_select.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
-            protocol_select.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
-            protocol_select.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
-            protocol_select.SetNamedValue(L"codecs", codecs);
-
-            JsonObject dispatch;
-            dispatch.SetNamedValue(L"op", JsonValue::CreateNumberValue(1));
-            dispatch.SetNamedValue(L"d", protocol_select);
-
-            co_await SendJsonPayloadAsync(dispatch);
-
-            JsonObject ssrc_info;
-            ssrc_info.SetNamedValue(L"audio_ssrc", JsonValue::CreateNumberValue(ssrc));
-            ssrc_info.SetNamedValue(L"video_ssrc", JsonValue::CreateNumberValue(0));
-            ssrc_info.SetNamedValue(L"rx_ssrc", JsonValue::CreateNumberValue(0));
-
-            JsonObject dispatch2;
-            dispatch2.SetNamedValue(L"op", JsonValue::CreateNumberValue(12));
-            dispatch2.SetNamedValue(L"d", ssrc_info);
-
-            co_await SendJsonPayloadAsync(dispatch2);
-
-
-            connection_stage = 1;
+            co_await Stage3(ip, port);
         }
         else {
             auto len = reader.UnconsumedBufferLength();
@@ -816,6 +781,57 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 delete[] data;
             }
         }
+    }
+
+    IAsyncAction VoiceClient::Stage3(std::string &ip, const uint16_t &port)
+    {
+        JsonObject data;
+        data.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
+        data.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
+        data.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
+
+        JsonObject opus;
+        opus.SetNamedValue(L"name", JsonValue::CreateStringValue(L"opus"));
+        opus.SetNamedValue(L"type", JsonValue::CreateStringValue(L"audio"));
+        opus.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1000));
+        opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(120));
+
+        JsonObject h264;
+        h264.SetNamedValue(L"name", JsonValue::CreateStringValue(L"H264"));
+        h264.SetNamedValue(L"type", JsonValue::CreateStringValue(L"video"));
+        h264.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1001));
+        h264.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(101));
+        h264.SetNamedValue(L"rtx_payload_type", JsonValue::CreateNumberValue(102));
+
+        JsonArray codecs;
+        codecs.Append(h264);
+        codecs.Append(opus);
+
+        JsonObject protocol_select;
+        protocol_select.SetNamedValue(L"protocol", JsonValue::CreateStringValue(L"udp"));
+        protocol_select.SetNamedValue(L"data", data);
+        protocol_select.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
+        protocol_select.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
+        protocol_select.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
+        protocol_select.SetNamedValue(L"codecs", codecs);
+
+        JsonObject dispatch;
+        dispatch.SetNamedValue(L"op", JsonValue::CreateNumberValue(1));
+        dispatch.SetNamedValue(L"d", protocol_select);
+
+        co_await SendJsonPayloadAsync(dispatch);
+
+        JsonObject ssrc_info;
+        ssrc_info.SetNamedValue(L"audio_ssrc", JsonValue::CreateNumberValue(ssrc));
+        ssrc_info.SetNamedValue(L"video_ssrc", JsonValue::CreateNumberValue(0));
+        ssrc_info.SetNamedValue(L"rx_ssrc", JsonValue::CreateNumberValue(0));
+
+        JsonObject dispatch2;
+        dispatch2.SetNamedValue(L"op", JsonValue::CreateNumberValue(12));
+        dispatch2.SetNamedValue(L"d", ssrc_info);
+
+        co_await SendJsonPayloadAsync(dispatch2);
+        connection_stage = 1;
     }
 
     IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject &payload)
@@ -842,7 +858,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
             std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
-        
+
     }
 
     void VoiceClient::Close()
