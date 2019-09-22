@@ -23,6 +23,10 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         void OnDisconnected(Windows::Foundation::IInspectable sender, bool args);
         void OnConnected(Windows::Foundation::IInspectable sender, bool args);
 
+        void OnAnswerRequested(Windows::ApplicationModel::Calls::VoipPhoneCall call, Windows::ApplicationModel::Calls::CallAnswerEventArgs args);
+        void OnRejectRequested(Windows::ApplicationModel::Calls::VoipPhoneCall call, Windows::ApplicationModel::Calls::CallRejectEventArgs args);
+
+        void SetupCall(winrt::Windows::Foundation::Collections::ValueSet &data);
         void RaiseEvent(Unicord::Universal::Voice::Background::VoiceServiceEvent ev, Windows::Foundation::Collections::ValueSet data);
         void OnServiceMessage(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceRequestReceivedEventArgs args);
         void OnServiceClosed(Windows::ApplicationModel::AppService::AppServiceConnection sender, Windows::ApplicationModel::AppService::AppServiceClosedEventArgs args);

@@ -8,6 +8,8 @@ namespace Unicord.Universal.Voice.Background
         Muted,
         Deafened,
         UdpPing,
-        WebSocketPing
+        WebSocketPing,
+        AnswerRequested,
+        RejectRequested
     };
 }

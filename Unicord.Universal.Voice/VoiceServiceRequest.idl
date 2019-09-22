@@ -6,6 +6,7 @@ namespace Unicord.Universal.Voice.Background
         RequestFailed,
 
         StateRequest,
+        NotifyIncomingCallRequest,
         GuildConnectRequest,
         CallConnectRequest,
         GuildMoveRequest,

@@ -8,6 +8,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
@@ -102,6 +103,8 @@ namespace Unicord.Universal.Pages
                 App.Discord.GuildDeleted += Discord_GuildDeleted;
                 App.Discord.DmChannelCreated += Discord_DmChannelCreated;
                 App.Discord.DmChannelDeleted += Discord_DmChannelDeleted;
+                App.Discord.CallCreated += Discord_CallCreated;
+                App.Discord.CallUpdated += Discord_CallUpdated;
 
                 UpdateTitleBar();
                 CheckSettingsPane();
@@ -168,6 +171,23 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
+            }
+        }
+
+        private async Task Discord_CallCreated(CallCreateEventArgs e)
+        {
+
+        }
+
+        private async Task Discord_CallUpdated(CallUpdateEventArgs e)
+        {
+            if (e.CallAfter.Ringing.Contains(App.Discord.CurrentUser.Id))
+            {
+                await Dispatcher.AwaitableRunAsync(async () =>
+                {
+                    var model = new VoiceConnectionModel(e.CallAfter);
+                    await model.NotifyIncomingCallAsync();
+                });
             }
         }
 

@@ -481,6 +481,7 @@
     <None Include="Package.xml" />
     <Content Include="Assets\Sounds\connected.mp3" />
     <Content Include="Assets\Sounds\deafen.mp3" />
+    <Content Include="Assets\Sounds\incoming_call.mp3" />
     <Content Include="Assets\Sounds\mute.mp3" />
     <Content Include="Assets\Sounds\self_disconnected.mp3" />
     <Content Include="Assets\Sounds\undeafen.mp3" />
@@ -779,9 +780,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer">
-      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>4.0.0</Version>

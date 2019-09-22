@@ -1,9 +1,11 @@
 #include "pch.h"
+#include <chrono>
 #include "ServiceBackgroundTask.h"
 #include "ServiceBackgroundTask.g.cpp"
 #include "VoiceClient.h"
 #include "VoiceClientOptions.h"
 
+using namespace std::chrono_literals;
 using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel;
@@ -66,11 +68,28 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         }
     }
 
-    void ServiceBackgroundTask::OnConnected(Windows::Foundation::IInspectable sender, bool args)
+    void ServiceBackgroundTask::OnConnected(IInspectable sender, bool args)
     {
         ValueSet valueSet;
         if (appServiceConnected && appServiceConnection != nullptr) {
             RaiseEvent(VoiceServiceEvent::Connected, valueSet);
+        }
+    }
+
+    void ServiceBackgroundTask::OnAnswerRequested(VoipPhoneCall call, CallAnswerEventArgs args)
+    {
+        ValueSet valueSet;
+        if (appServiceConnected && appServiceConnection != nullptr) {
+            RaiseEvent(VoiceServiceEvent::AnswerRequested, valueSet);
+        }
+    }
+
+    void ServiceBackgroundTask::OnRejectRequested(VoipPhoneCall call, CallRejectEventArgs args)
+    {
+        ValueSet valueSet;
+        if (appServiceConnected && appServiceConnection != nullptr) {
+            RaiseEvent(VoiceServiceEvent::RejectRequested, valueSet);
+            activeCall = nullptr;
         }
     }
 
@@ -100,46 +119,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 auto request_op = (VoiceServiceRequest)unbox_value<uint32_t>(data.Lookup(L"req"));
                 switch (request_op)
                 {
-                case VoiceServiceRequest::CallConnectRequest:
                 case VoiceServiceRequest::GuildConnectRequest:
                 {
-                    if (voiceClient == nullptr && activeCall == nullptr) {
+                    if (voiceClient == nullptr) {
                         voipCoordinator = VoipCallCoordinator::GetDefault();
                         activeCall = voipCoordinator.RequestNewOutgoingCall(
                             L"", unbox_value<hstring>(data.Lookup(L"contact_name")), Package::Current().DisplayName(), VoipPhoneCallMedia::Audio);
                         if (activeCall != nullptr) {
-                            voiceClientOptions = make<Voice::implementation::VoiceClientOptions>();
-                            voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
-                            voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
-                            voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
-                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
-                            voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
-                            voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
-
-                            if (data.HasKey(L"input_device")) {
-                                voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));
-                            }
-
-                            if (data.HasKey(L"output_device")) {
-                                voiceClientOptions.PreferredPlaybackDevice(unbox_value_or<hstring>(data.Lookup(L"output_device"), L""));
-                            }
-
-                            voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
-                            voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
-                            voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
-
-                            if (data.HasKey(L"muted")) {
-                                voiceClient.Muted(unbox_value<bool>(data.Lookup(L"muted")));
-                            }
-
-                            if (data.HasKey(L"deafened")) {
-                                voiceClient.Deafened(unbox_value<bool>(data.Lookup(L"deafened")));
-                            }
-
-                            voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
-                            voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
-                            voiceClient.ConnectAsync().get();
-                            activeCall.NotifyCallActive();
+                            SetupCall(data);
                         }
                         else {
                             throw std::exception("Unable to get call");
@@ -148,6 +135,33 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                     else {
                         // already connected, so raise the event again
                         RaiseEvent(VoiceServiceEvent::Connected, event_values);
+                    }
+                }
+                break;
+                case VoiceServiceRequest::CallConnectRequest:
+                {
+                    if(activeCall != nullptr){
+                        SetupCall(data);
+                    }
+                }
+                break;
+                case VoiceServiceRequest::NotifyIncomingCallRequest:
+                {
+                    voipCoordinator = VoipCallCoordinator::GetDefault();
+                    activeCall = voipCoordinator.RequestNewIncomingCall(L"",
+                        unbox_value<hstring>(data.Lookup(L"contact_name")),
+                        unbox_value<hstring>(data.Lookup(L"contact_number")),
+                        Uri{ unbox_value<hstring>(data.Lookup(L"contact_image")) },
+                        Package::Current().DisplayName(),
+                        Uri{ unbox_value<hstring>(data.Lookup(L"branding_image")) },
+                        unbox_value<hstring>(data.Lookup(L"call_details")),
+                        Uri{ unbox_value<hstring>(data.Lookup(L"ringtone")) },
+                        VoipPhoneCallMedia::Audio,
+                        90s);
+
+                    if (activeCall != nullptr) {
+                        activeCall.AnswerRequested({ this, &ServiceBackgroundTask::OnAnswerRequested });
+                        activeCall.RejectRequested({ this, &ServiceBackgroundTask::OnRejectRequested });
                     }
                 }
                 break;
@@ -252,6 +266,42 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         }
 
         def.Complete();
+    }
+
+    void ServiceBackgroundTask::SetupCall(winrt::Windows::Foundation::Collections::ValueSet &data)
+    {
+        voiceClientOptions = make<Voice::implementation::VoiceClientOptions>();
+        voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
+        voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
+        voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
+        voiceClientOptions.GuildId(unbox_value_or<uint64_t>(data.Lookup(L"guild_id"), 0));
+        voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
+        voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
+
+        if (data.HasKey(L"input_device")) {
+            voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));
+        }
+
+        if (data.HasKey(L"output_device")) {
+            voiceClientOptions.PreferredPlaybackDevice(unbox_value_or<hstring>(data.Lookup(L"output_device"), L""));
+        }
+
+        voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
+        voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
+        voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
+
+        if (data.HasKey(L"muted")) {
+            voiceClient.Muted(unbox_value<bool>(data.Lookup(L"muted")));
+        }
+
+        if (data.HasKey(L"deafened")) {
+            voiceClient.Deafened(unbox_value<bool>(data.Lookup(L"deafened")));
+        }
+
+        voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
+        voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
+        voiceClient.ConnectAsync().get();
+        activeCall.NotifyCallActive();
     }
 
 
