@@ -15,6 +15,7 @@ namespace Unicord.Universal.Voice
 
         event Windows.Foundation.EventHandler<UInt32> WebSocketPingUpdated;
         event Windows.Foundation.EventHandler<UInt32> UdpSocketPingUpdated;
+        event Windows.Foundation.EventHandler<Boolean> Disconnected;
 
         Windows.Foundation.IAsyncAction ConnectAsync();
         Windows.Storage.Streams.IOutputStream GetOutputStream();

@@ -37,6 +37,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         VoiceClient() = default;
         VoiceClient(VoiceClientOptions const& options);
 
+        void InitialiseSockets();
+
         AudioFormat audio_format;
 
         static hstring OpusVersion();
@@ -50,11 +52,16 @@ namespace winrt::Unicord::Universal::Voice::implementation
         winrt::event_token UdpSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const& handler);
         void UdpSocketPingUpdated(winrt::event_token const& token) noexcept;
 
+        winrt::event_token Disconnected(Windows::Foundation::EventHandler<bool> const& handler);
+        void Disconnected(winrt::event_token const& token) noexcept;
+
         IAsyncAction ConnectAsync();
         IAsyncAction SendSpeakingAsync(bool speaking);
         IOutputStream GetOutputStream();
         void UpdateAudioDevices();
         void Close();
+
+        void SaveClose();
 
         bool Muted();
         void Muted(bool value);
@@ -83,6 +90,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
         bool is_muted = false;
         bool is_deafened = false;
 
+        bool ws_closed = true;
+        bool can_resume = false;
+        winrt::event<Windows::Foundation::EventHandler<bool>> disconnected;
+
         uint16_t seq = 0;
         uint32_t ssrc = 0;
         uint32_t timestamp = 0;
@@ -106,7 +117,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         bool is_disposed = false;
 
-        IAsyncAction SendIdentifyAsync();
+        IAsyncAction SendIdentifyAsync(bool isResume = false);
         IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
         IAsyncAction Stage1(JsonObject obj);
         void Stage2(JsonObject obj);
@@ -116,9 +127,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
         void ProcessRawPacket(array_view<uint8_t> data);
         bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source);
 
+        bool DecodeOpusPacket(winrt::Unicord::Universal::Voice::Interop::AudioSource ** source, const winrt::array_view<const uint8_t> &data, std::vector<std::vector<uint8_t>> & pcm, const uint32_t &packet_ssrc, const uint16_t &packet_seq, bool packet_extension);
+
         IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
         IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
-        void OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
+        IAsyncAction OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
+        IAsyncAction ReconnectLoop();
 
         IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
         IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);

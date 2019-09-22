@@ -24,20 +24,22 @@ namespace winrt::Unicord::Universal::Voice::Interop
         if (data.size() < HEADER_SIZE)
             return false;
 
-        if ((data[0] != RTP_NO_EXTENSION && data[0] != RTP_EXTENSION) || data[1] != RTP_VERSION)
+        uint8_t header_magic = (data[0] & 0b11110000);
+        if ((header_magic != RTP_NO_EXTENSION && header_magic != RTP_EXTENSION))
             return false;
 
         return true;
     }
 
-    void Rtp::DecodeHeader(array_view<const uint8_t> source, uint16_t& sequence, uint32_t& timestamp, uint32_t& ssrc, bool& has_extension)
+    void Rtp::DecodeHeader(array_view<const uint8_t> source, uint16_t& sequence, uint32_t& timestamp, uint32_t& ssrc, uint8_t& type, bool& has_extension)
     {
         if (!IsRtpHeader(source))
             throw hresult_invalid_argument();
 
-        has_extension = source[0] == RTP_EXTENSION;
+        has_extension = (source[0] & 0b11110000) == RTP_EXTENSION;
 
         // reverse_copy from big endian to little endian 
+        type = source[1] & 0b01111111;
         std::reverse_copy(&source[2], &source[2 + sizeof sequence], (uint8_t*)&sequence);
         std::reverse_copy(&source[4], &source[4 + sizeof timestamp], (uint8_t*)&timestamp);
         std::reverse_copy(&source[8], &source[8 + sizeof ssrc], (uint8_t*)&ssrc);

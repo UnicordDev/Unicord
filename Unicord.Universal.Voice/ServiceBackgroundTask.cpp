@@ -174,6 +174,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         activeCall.NotifyCallEnded();
                         activeCall = nullptr;
                         voiceClient = nullptr;
+
+                        event_values.Insert(L"is_reconnecting", box_value(false));
                         RaiseEvent(VoiceServiceEvent::Disconnected, event_values);
                     }
                     break;
