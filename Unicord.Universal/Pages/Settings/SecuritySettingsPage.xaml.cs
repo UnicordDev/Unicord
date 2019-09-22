@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AppCenter;
+using Microsoft.Toolkit.Parsers.Markdown;
 using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -24,6 +25,7 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
             DataContext = new SecuritySettingsModel();
+            MarkdownDocument.KnownSchemes.Add("ms-settings");
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
