@@ -2182,6 +2182,8 @@ namespace DSharpPlus
                 mbr.IsDeafened = vstateNew.IsServerDeafened;
             }
 
+            vstateOld?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
+            vstateNew?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
 
             var ea = new VoiceStateUpdateEventArgs(this)
             {

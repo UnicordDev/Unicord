@@ -149,6 +149,17 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                     }
                 }
                 break;
+                case VoiceServiceRequest::GuildMoveRequest:
+                {
+                    if (voiceClient != nullptr && activeCall != nullptr) {
+                        activeCall.ContactName(unbox_value<hstring>(data.Lookup(L"contact_name")));
+                        voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
+
+                        // already connected, so raise the event again
+                        RaiseEvent(VoiceServiceEvent::Connected, event_values);
+                    }
+                }
+                break;
                 case VoiceServiceRequest::StateRequest:
                     if (voiceClient != nullptr) {
                         values.Insert(L"state", box_value((uint32_t)VoiceServiceState::Connected));

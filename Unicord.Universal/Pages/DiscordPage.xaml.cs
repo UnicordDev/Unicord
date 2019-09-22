@@ -410,11 +410,29 @@ namespace Unicord.Universal.Pages
 
                 if (channel.Type == ChannelType.Voice)
                 {
+                    var model = DataContext as DiscordPageModel;
+                    var voiceModel = model.VoiceModel;
+
                     try
                     {
-                        var voice = new VoiceConnectionModel(channel);
-                        (DataContext as DiscordPageModel).VoiceModel = voice;
-                        await voice.ConnectAsync();
+                        if (voiceModel == null)
+                        {
+                            voiceModel = new VoiceConnectionModel(channel);
+                            model.VoiceModel = voiceModel;
+                            await voiceModel.ConnectAsync();
+                        }
+                        else if (voiceModel.Channel.Guild == channel.Guild)
+                        {
+                            await voiceModel.MoveAsync(channel);
+                        }
+                        else
+                        {
+                            await voiceModel.DisconnectAsync();
+
+                            voiceModel = new VoiceConnectionModel(channel);
+                            model.VoiceModel = voiceModel;
+                            await voiceModel.ConnectAsync();
+                        }
                     }
                     catch (Exception ex)
                     {

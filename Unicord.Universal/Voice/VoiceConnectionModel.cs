@@ -30,6 +30,7 @@ namespace Unicord.Universal.Voice
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
         private ResourceLoader _strings;
+
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
 
@@ -41,7 +42,7 @@ namespace Unicord.Universal.Voice
         private string _connectionStatus;
 
         public string ConnectionStatus { get => _connectionStatus; set => OnPropertySet(ref _connectionStatus, value); }
-        public DiscordChannel Channel { get; }
+        public DiscordChannel Channel { get; private set; }
 
         public bool Muted
         {
@@ -146,6 +147,32 @@ namespace Unicord.Universal.Voice
                 set["input_device"] = audioCapture;
 
             await SendRequestAsync(set);
+        }
+
+        public async Task MoveAsync(DiscordChannel newChannel)
+        {
+            if (Channel.Guild != newChannel.Guild)
+            {
+                throw new InvalidOperationException("Can only move inside a guild");
+            }
+
+            Channel = newChannel;
+            ConnectionStatus = _strings.GetString("ConnectionState3");
+
+            App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
+            SendVoiceStateUpdate(Channel.Id);
+
+            var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
+            ConnectionStatus = string.Format(_strings.GetString("ConnectionState4Format"), Channel.Name);
+
+            var connectionRequest = new ValueSet()
+            {
+                ["req"] = (uint)VoiceServiceRequest.GuildMoveRequest,
+                ["channel_id"] = Channel.Id,
+                ["contact_name"] = Channel.Guild != null ? $"{Channel.Name} - {Channel.Guild.Name}" : DMNameConverter.Instance.Convert(Channel, null, null, null),
+            };
+
+            await SendRequestAsync(connectionRequest);
         }
 
         public async Task ConnectAsync()
@@ -311,6 +338,7 @@ namespace Unicord.Universal.Voice
                         ConnectionStatus = _strings.GetString("DisconnectedState");
                         Disconnected?.Invoke(this, null);
                         SendVoiceStateUpdate(null);
+                        Dispose();
                         break;
                     case VoiceServiceEvent.Muted:
                         await PlayCueAsync(_muted ? "mute" : "unmute");
@@ -395,6 +423,7 @@ namespace Unicord.Universal.Voice
         {
             _appServiceConnection?.Dispose();
             _mediaPlayer.MediaPlayer?.Dispose();
+            App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
         }
     }
 
