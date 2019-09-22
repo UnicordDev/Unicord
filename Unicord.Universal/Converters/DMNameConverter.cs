@@ -9,6 +9,8 @@ namespace Unicord.Universal.Converters
 {
     class DMNameConverter : IValueConverter
     {
+        public static DMNameConverter Instance { get; } = new DMNameConverter();
+        
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is DiscordDmChannel c)

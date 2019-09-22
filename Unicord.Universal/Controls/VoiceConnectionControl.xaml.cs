@@ -65,5 +65,15 @@ namespace Unicord.Universal.Controls
         {
             await ConnectionModel?.DisconnectAsync();
         }
+
+        private async void MuteToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ConnectionModel?.ToggleMuteAsync();
+        }
+
+        private async void DeafenToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ConnectionModel?.ToggleDeafenAsync();
+        }
     }
 }

@@ -138,8 +138,6 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                             voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
                             voiceClient.ConnectAsync().get();
                             activeCall.NotifyCallActive();
-
-                            RaiseEvent(VoiceServiceEvent::Connected, event_values);
                         }
                         else {
                             throw std::exception("Unable to get call");

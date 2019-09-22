@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.VoiceNext.Entities;
 using Newtonsoft.Json;
+using Unicord.Universal.Converters;
 using Unicord.Universal.Voice.Background;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
@@ -15,18 +16,25 @@ using Windows.ApplicationModel.Calls;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.Media.Core;
+using Windows.Media.Playback;
+using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Voice
 {
-    public class VoiceConnectionModel : PropertyChangedBase
+    public class VoiceConnectionModel : PropertyChangedBase, IDisposable
     {
+        private MediaPlayerElement _mediaPlayer;
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
         private ResourceLoader _strings;
-        private VoipPhoneCall _voipPhoneCall;
-        private VoiceState _state = VoiceState.None;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
+
+        private bool _muted;
+        private bool _deafened;
         private bool _appServiceConnected;
         private uint _webSocketPing;
         private uint _udpPing;
@@ -37,16 +45,16 @@ namespace Unicord.Universal.Voice
 
         public bool Muted
         {
-            get => _state != VoiceState.None;
-            set => OnPropertySet(ref _state, _state ^ VoiceState.Muted);
+            get => _muted || _deafened;
+            set => OnPropertySet(ref _muted, value);
         }
 
         public bool Deafened
         {
-            get => _state.HasFlag(VoiceState.Deafened);
+            get => _deafened;
             set
             {
-                OnPropertySet(ref _state, _state ^ VoiceState.Deafened);
+                OnPropertySet(ref _deafened, value);
                 InvokePropertyChanged(nameof(Muted));
             }
         }
@@ -90,25 +98,25 @@ namespace Unicord.Universal.Voice
 
             var channel = App.Discord._channelCache[channel_id];
             var vstate = VoiceState.None;
-            if (muted)
-                vstate = vstate & VoiceState.Muted;
-            if (deafened)
-                vstate = VoiceState.Muted | VoiceState.Deafened;
-            
-            return new VoiceConnectionModel(channel, vstate, connection) { ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name), _strings = strings };
+
+            var model = new VoiceConnectionModel(channel, connection) { Muted = muted, Deafened = deafened, ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name), _strings = strings };
+            return model;
         }
 
-        public VoiceConnectionModel(DiscordChannel channel)
+        private VoiceConnectionModel()
         {
+            _mediaPlayer = new MediaPlayerElement() { AutoPlay = true };
+            _strings = ResourceLoader.GetForViewIndependentUse("Voice");
             _voiceStateUpdateCompletion = new TaskCompletionSource<VoiceStateUpdateEventArgs>();
             _voiceServerUpdateCompletion = new TaskCompletionSource<VoiceServerUpdateEventArgs>();
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
-            _strings = ResourceLoader.GetForViewIndependentUse("Voice");
 
-            Channel = channel;
             ConnectionStatus = _strings.GetString("InitialConnectionState");
-            PropertyChanged += OnPropertyChanged;
+        }
 
+        public VoiceConnectionModel(DiscordChannel channel) : this()
+        {
+            Channel = channel;
             _appServiceConnection = new AppServiceConnection()
             {
                 AppServiceName = "com.wankerr.Unicord.Voice",
@@ -119,29 +127,13 @@ namespace Unicord.Universal.Voice
             _appServiceConnection.ServiceClosed += OnServiceClosed;
         }
 
-        private VoiceConnectionModel(DiscordChannel channel, VoiceState vstate, AppServiceConnection connection)
+        private VoiceConnectionModel(DiscordChannel channel, AppServiceConnection connection) : this()
         {
             Channel = channel;
-            PropertyChanged += OnPropertyChanged;
-
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
             _appServiceConnection = connection;
             _appServiceConnection.RequestReceived += OnRequestReceived;
             _appServiceConnection.ServiceClosed += OnServiceClosed;
-            _state = vstate;
-        }
-
-        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Muted))
-            {
-                await ToggleMuteAsync();
-            }
-
-            if (e.PropertyName == nameof(Deafened))
-            {
-                await ToggleDeafenAsync();
-            }
         }
 
         public async Task UpdatePreferredAudioDevicesAsync(string audioRender, string audioCapture)
@@ -161,7 +153,6 @@ namespace Unicord.Universal.Voice
             if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus"))
             {
                 ConnectionStatus = _strings.GetString("ConnectionState1");
-
                 var appServiceStatus = await _appServiceConnection.OpenAsync();
                 if (appServiceStatus != AppServiceConnectionStatus.Success)
                     throw new Exception("Unable to connect to AppService! " + appServiceStatus);
@@ -193,7 +184,7 @@ namespace Unicord.Universal.Voice
 
                 App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
                 App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
-                SendVoiceStateUpdate(_state, Channel.Id);
+                SendVoiceStateUpdate(Channel.Id);
 
                 var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
                 var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
@@ -206,12 +197,12 @@ namespace Unicord.Universal.Voice
                 {
                     ["req"] = (uint)VoiceServiceRequest.GuildConnectRequest,
                     ["channel_id"] = Channel.Id,
-                    ["guild_id"] = Channel.Guild.Id,
+                    ["guild_id"] = Channel.Guild?.Id ?? 0,
                     ["user_id"] = App.Discord.CurrentUser.Id,
                     ["endpoint"] = vsru.Endpoint,
                     ["token"] = vsru.VoiceToken,
                     ["session_id"] = vstu.SessionId,
-                    ["contact_name"] = $"{Channel.Name} - {Channel.Guild.Name}",
+                    ["contact_name"] = Channel.Guild != null ? $"{Channel.Name} - {Channel.Guild.Name}" : DMNameConverter.Instance.Convert(Channel, null, null, null),
                     ["input_device"] = inputDeviceId,
                     ["output_device"] = outputDeviceId,
                     ["muted"] = Muted,
@@ -237,8 +228,10 @@ namespace Unicord.Universal.Voice
             }
         }
 
-        private async Task ToggleMuteAsync()
+        public async Task ToggleMuteAsync()
         {
+            Muted = !Muted;
+
             if (_appServiceConnected)
             {
                 var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.MuteRequest, ["muted"] = Muted };
@@ -246,8 +239,10 @@ namespace Unicord.Universal.Voice
             }
         }
 
-        private async Task ToggleDeafenAsync()
+        public async Task ToggleDeafenAsync()
         {
+            Deafened = !Deafened;
+
             if (_appServiceConnected)
             {
                 var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DeafenRequest, ["deafened"] = Deafened };
@@ -278,7 +273,7 @@ namespace Unicord.Universal.Voice
             return null;
         }
 
-        private void SendVoiceStateUpdate(VoiceState state, ulong? channel_id)
+        private void SendVoiceStateUpdate(ulong? channel_id)
         {
             var vsd = new VoiceDispatch
             {
@@ -287,8 +282,8 @@ namespace Unicord.Universal.Voice
                 {
                     GuildId = Channel.Guild?.Id,
                     ChannelId = channel_id,
-                    Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
-                    Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
+                    Deafened = _muted,
+                    Muted = _deafened
                 }
             };
 
@@ -296,7 +291,7 @@ namespace Unicord.Universal.Voice
             App.Discord._webSocketClient.SendMessage(vsj);
         }
 
-        private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        private async void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (args.Request.Message.TryGetValue("ev", out var ev))
             {
@@ -304,21 +299,26 @@ namespace Unicord.Universal.Voice
                 switch (serviceEvent)
                 {
                     case VoiceServiceEvent.Connected:
+                        await PlayCueAsync("connected");
                         ConnectionStatus = string.Format(_strings.GetString("ConnectedStateFormat"), Channel.Name);
                         break;
                     case VoiceServiceEvent.Reconnecting:
+                        await PlayCueAsync("self_disconnected");
                         ConnectionStatus = _strings.GetString("ReconnectingState");
                         break;
                     case VoiceServiceEvent.Disconnected:
+                        await PlayCueAsync("self_disconnected");
                         ConnectionStatus = _strings.GetString("DisconnectedState");
                         Disconnected?.Invoke(this, null);
-                        SendVoiceStateUpdate(VoiceState.None, null);
+                        SendVoiceStateUpdate(null);
                         break;
                     case VoiceServiceEvent.Muted:
-                        SendVoiceStateUpdate(_state, Channel.Id);
+                        await PlayCueAsync(_muted ? "mute" : "unmute");
+                        SendVoiceStateUpdate(Channel.Id);
                         break;
                     case VoiceServiceEvent.Deafened:
-                        SendVoiceStateUpdate(_state, Channel.Id);
+                        await PlayCueAsync(_deafened ? "deafen" : "undeafen");
+                        SendVoiceStateUpdate(Channel.Id);
                         break;
                     case VoiceServiceEvent.UdpPing:
                         UdpPing = (uint)args.Request.Message["ping"];
@@ -339,10 +339,22 @@ namespace Unicord.Universal.Voice
 
         private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)
         {
-            if (e.Channel == Channel && e.User == App.Discord.CurrentUser)
+            if (e.Channel == Channel && e.User == App.Discord.CurrentUser && !_voiceStateUpdateCompletion.Task.IsCompleted)
             {
                 _voiceStateUpdateCompletion.SetResult(e);
-                App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
+            }
+
+            if (e.User != App.Discord.CurrentUser)
+            {
+                if (e.After?.Channel == Channel && e.Before?.Channel == null)
+                {
+                    return PlayCueAsync("connected");
+                }
+
+                if (e.Before?.Channel == Channel && e.After?.Channel == null)
+                {
+                    return PlayCueAsync("user_disconnected");
+                }
             }
 
             return Task.CompletedTask;
@@ -357,6 +369,32 @@ namespace Unicord.Universal.Voice
             }
 
             return Task.CompletedTask;
+        }
+
+        private async Task PlayCueAsync(string cue)
+        {
+            try
+            {
+                var folder = await (await Package.Current.InstalledLocation.GetFolderAsync("Assets")).GetFolderAsync("Sounds");
+                var file = await folder.GetFileAsync($"{cue}.mp3");
+
+                await _mediaPlayer.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    _mediaPlayer.Source = MediaSource.CreateFromStorageFile(file);
+                    _mediaPlayer.MediaPlayer.Play();
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Failed to play sound cue \'{cue}\'");
+                Logger.Log(ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            _appServiceConnection?.Dispose();
+            _mediaPlayer.MediaPlayer?.Dispose();
         }
     }
 

@@ -474,6 +474,13 @@
     <Content Include="Assets\DiscordLogo.Default.svg" />
     <Content Include="Assets\DiscordLogo.Light.svg" />
     <None Include="Package.xml" />
+    <Content Include="Assets\Sounds\connected.mp3" />
+    <Content Include="Assets\Sounds\deafen.mp3" />
+    <Content Include="Assets\Sounds\mute.mp3" />
+    <Content Include="Assets\Sounds\self_disconnected.mp3" />
+    <Content Include="Assets\Sounds\undeafen.mp3" />
+    <Content Include="Assets\Sounds\unmute.mp3" />
+    <Content Include="Assets\Sounds\user_disconnected.mp3" />
     <Content Include="Assets\StoreLogo.backup.png" />
     <Content Include="Assets\Store\BadgeLogo.scale-100.png" />
     <Content Include="Assets\Store\BadgeLogo.scale-125.png" />

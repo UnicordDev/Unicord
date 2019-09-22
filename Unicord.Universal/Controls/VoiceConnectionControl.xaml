@@ -36,8 +36,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ToggleButton x:Name="muteToggleButton" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
-            <ToggleButton x:Name="deafenToggleButton" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
+            <ToggleButton x:Name="muteToggleButton" Click="MuteToggleButton_Click" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
+            <ToggleButton x:Name="deafenToggleButton" Click="DeafenToggleButton_Click" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
             <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="2" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
             <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
