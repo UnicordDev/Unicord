@@ -1,6 +1,7 @@
 #pragma once
 #include <winrt/Windows.Data.Json.h>
 #include <sodium.h>
+#include "Rtp.h"
 
 using namespace winrt::Windows::Data::Json;
 
@@ -36,7 +37,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         void Encrypt(gsl::span<const uint8_t> source, gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target);
         void Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target);
 
-        void GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode);
+        void GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, const RtpHeader& header, EncryptionMode mode);
         void AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode);
 
         ~SodiumWrapper();

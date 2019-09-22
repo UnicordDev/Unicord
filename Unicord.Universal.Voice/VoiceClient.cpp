@@ -331,24 +331,30 @@ namespace winrt::Unicord::Universal::Voice::implementation
         if (pcm.size() == 0)
             return VoicePacket();
 
+        RtpHeader header;
+        header.ssrc = ssrc;
+        header.seq = seq;
+        header.timestamp = timestamp;
+        header.type = 120; // opus audio
+
         auto packet_size = audio_format.GetMaxBufferSize() * 2;
         auto packet = std::vector<uint8_t>(packet_size);
         auto packet_span = gsl::make_span(packet);
 
         auto opus_length = is_float ? opus->EncodeFloat(pcm, packet_span) : opus->Encode(pcm, packet_span);
         auto encrypted_size = sodium->CalculateTargetSize(opus_length);
-        auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, mode.second);
+        auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, header, mode.second);
         auto new_packet = std::vector<uint8_t>(new_packet_size);
         auto new_packet_span = gsl::make_span(new_packet);
 
-        Rtp::EncodeHeader(seq, timestamp, ssrc, new_packet_span);
+        Rtp::EncodeHeader(header, new_packet_span);
 
         const size_t size = crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
         uint8_t packet_nonce[size] = { 0 };
         switch (mode.second)
         {
         case EncryptionMode::XSalsa20_Poly1305:
-            sodium->GenerateNonce(new_packet_span.subspan(0, Rtp::HEADER_SIZE), packet_nonce);
+            sodium->GenerateNonce(new_packet_span.subspan(0, header.size()), packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Suffix:
             sodium->GenerateNonce(packet_nonce);
@@ -358,7 +364,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
             break;
         }
 
-        sodium->Encrypt(packet_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(Rtp::HEADER_SIZE, encrypted_size));
+        sodium->Encrypt(packet_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(header.size(), encrypted_size));
         sodium->AppendNonce(packet_nonce, new_packet_span, mode.second);
 
         auto duration = is_float ? audio_format.CalculateSampleDurationF(pcm.size()) : audio_format.CalculateSampleDuration(pcm.size());
@@ -402,58 +408,55 @@ namespace winrt::Unicord::Universal::Voice::implementation
         if (is_disposed)
             return false;
 
-        uint8_t packet_type;
-        uint16_t packet_seq;
-        uint32_t packet_time;
-        uint32_t packet_ssrc;
-        bool packet_extension;
+        // decode RTP header
+        RtpHeader header;
+        Rtp::DecodeHeader(data, header);
 
-        // decode header info from RTP
-        Rtp::DecodeHeader(data, packet_seq, packet_time, packet_ssrc, packet_type, packet_extension);
+        //std::cout << "Packet Type: " << (uint32_t)header.type << " SSRC: " << header.ssrc << " Contributing: ";
+        //for each (uint32_t ssrc in header.contributing_ssrcs)
+        //    std::cout << ssrc << "; ";
+        //std::cout << std::endl;
 
-        std::cout << "Packet Type: " << (uint32_t)packet_type << " Packet Size: " << data.size() << std::endl;
+        // get the nonce
+        uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
+        array_view<uint8_t> nonce_view(packet_nonce);
+        sodium->GetNonce(data, nonce_view, header, mode.second);
 
-        if (packet_type == 120) {
-            return DecodeOpusPacket(source, data, pcm, packet_ssrc, packet_seq, packet_extension);
+        // get the data
+        array_view<const uint8_t> encrypted_data;
+        Rtp::GetDataFromPacket(data, encrypted_data, header, mode.second);
+
+        if (header.type == 120) {
+            return DecodeOpusPacket(header, source, encrypted_data, nonce_view, pcm);
         }
 
         return false;
     }
 
-    // TODO: RTP data struct
-    bool VoiceClient::DecodeOpusPacket(AudioSource** source, const array_view<const uint8_t> &data, std::vector<std::vector<uint8_t>> & pcm, const uint32_t &packet_ssrc, const uint16_t &packet_seq, bool packet_extension)
+    bool VoiceClient::DecodeOpusPacket(const RtpHeader &header, AudioSource** source, array_view<const uint8_t> &encrypted_data, const array_view<uint8_t> &nonce_view, std::vector<std::vector<uint8_t>> & pcm)
     {
-        AudioSource* audio_source = opus->GetOrCreateDecoder(packet_ssrc);
+        AudioSource* audio_source = opus->GetOrCreateDecoder(header.ssrc);
         *source = audio_source;
 
         if (!audio_source->is_speaking) {
             return false;
         }
 
-        if (packet_seq < audio_source->seq) { // out of order
+        if (header.seq < audio_source->seq) { // out of order
             return false;
         }
 
-        uint16_t gap = audio_source->seq != 0 ? packet_seq - 1 - audio_source->seq : 0;
-
-        // get the nonce
-        uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
-        array_view<uint8_t> nonce_view(packet_nonce);
-        sodium->GetNonce(data, nonce_view, mode.second);
-
-        // get the data
-        array_view<const uint8_t> encrypted_opus;
-        Rtp::GetDataFromPacket(data, encrypted_opus, mode.second);
+        uint16_t gap = audio_source->seq != 0 ? header.seq - 1 - audio_source->seq : 0;
 
         // calculate the size of the opus data
-        size_t opus_size = sodium->CalculateSourceSize(encrypted_opus.size());
+        size_t opus_size = sodium->CalculateSourceSize(encrypted_data.size());
         uint8_t* opus_data = new uint8_t[opus_size]{ 0 };
         array_view<uint8_t> opus_view(opus_data, opus_data + opus_size);
 
         // decrypt the opus data
-        sodium->Decrypt(encrypted_opus, nonce_view, opus_view);
+        sodium->Decrypt(encrypted_data, nonce_view, opus_view);
 
-        if (packet_extension) {
+        if (header.extension) {
             // RFC 5285, 4.2 One-Byte header
             // http://www.rfcreader.com/#rfc5285_line186
             if (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
@@ -504,7 +507,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         opus->Decode(audio_source, opus_view, raw_pcm, false);
         pcm.push_back(raw_pcm);
 
-        audio_source->seq = packet_seq;
+        audio_source->seq = header.seq;
         audio_source->packets_lost += gap;
 
         delete[] opus_data;
@@ -638,7 +641,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         while (!connected) {
             try {
-                SaveClose();
+                Reset();
 
                 std::chrono::seconds timeout = std::min<std::chrono::seconds>(5s * reconnection_count, 30s);
                 std::cout << "- Reconnecting in " << timeout.count() << "s!" << std::endl;
@@ -807,6 +810,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 auto data = new uint8_t[len];
                 auto data_view = array_view<uint8_t>(data, data + len);
                 reader.ReadBytes(data_view);
+
                 ProcessRawPacket(data_view);
 
                 delete[] data;
@@ -848,7 +852,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         is_disposed = true;
 
-        SaveClose();
+        Reset();
 
         if (sodium != nullptr) {
             SecureZeroMemory(sodium, sizeof sodium);
@@ -857,7 +861,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    void VoiceClient::SaveClose()
+    void VoiceClient::Reset()
     {
         if (heartbeat_timer != nullptr) {
             heartbeat_timer.Cancel();

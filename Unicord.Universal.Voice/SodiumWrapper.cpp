@@ -112,7 +112,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
-    void SodiumWrapper::GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode)
+    void SodiumWrapper::GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, const RtpHeader& header, EncryptionMode mode)
     {
         if (nonce.size() != nonce_length) {
             throw hresult_invalid_argument(L"Invalid target size!");
@@ -121,7 +121,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         switch (mode)
         {
         case XSalsa20_Poly1305:
-            std::copy(source.begin(), source.begin() + 12, nonce.begin());
+            std::copy(source.begin(), source.begin() + min(header.size(), crypto_secretbox_xsalsa20poly1305_NONCEBYTES), nonce.begin());
             break;
         case XSalsa20_Poly1305_Suffix:
             std::copy(source.end() - 12, source.end(), nonce.begin());

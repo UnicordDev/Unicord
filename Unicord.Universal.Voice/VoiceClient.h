@@ -37,8 +37,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         VoiceClient() = default;
         VoiceClient(VoiceClientOptions const& options);
 
-        void InitialiseSockets();
-
         AudioFormat audio_format;
 
         static hstring OpusVersion();
@@ -60,8 +58,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         IOutputStream GetOutputStream();
         void UpdateAudioDevices();
         void Close();
-
-        void SaveClose();
 
         bool Muted();
         void Muted(bool value);
@@ -117,6 +113,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         bool is_disposed = false;
 
+        void InitialiseSockets();
         IAsyncAction SendIdentifyAsync(bool isResume = false);
         IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
         IAsyncAction Stage1(JsonObject obj);
@@ -127,7 +124,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         void ProcessRawPacket(array_view<uint8_t> data);
         bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source);
 
-        bool DecodeOpusPacket(winrt::Unicord::Universal::Voice::Interop::AudioSource ** source, const winrt::array_view<const uint8_t> &data, std::vector<std::vector<uint8_t>> & pcm, const uint32_t &packet_ssrc, const uint16_t &packet_seq, bool packet_extension);
+        bool DecodeOpusPacket(const RtpHeader &header, AudioSource** source, array_view<const uint8_t> &encrypted_data, const array_view<uint8_t> &nonce_view, std::vector<std::vector<uint8_t>> & pcm);
 
         IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
         IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
@@ -137,6 +134,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
         IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
         void HandleUdpHeartbeat(uint64_t reader);
+        void Reset();
     };
 }
 
