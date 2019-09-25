@@ -192,7 +192,7 @@ namespace Unicord.Universal.Voice
             };
 
             await SendRequestAsync(connectionRequest);
-        } 
+        }
 
         public async Task NotifyIncomingCallAsync()
         {
@@ -207,24 +207,44 @@ namespace Unicord.Universal.Voice
             await Tools.DownloadToFileAsync(new Uri(Call.Channel.Recipient.GetAvatarUrl(ImageFormat.Png, 128)), tempFile);
 
             var assetsFolder = await Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            var brandingFolder = await assetsFolder.GetFolderAsync("Store");
-            var brandingFile = await brandingFolder.GetFileAsync("BadgeLogo.scale-200.png");
+            var brandingFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Store/BadgeLogo.png"));
 
             var mediaFolder = await assetsFolder.GetFolderAsync("Sounds");
             var mediaFile = await mediaFolder.GetFileAsync("incoming_call.mp3");
 
-            var request = new ValueSet()
+            var temp = tempFile.Path;
+            var brand = brandingFile.Path;
+            var media = mediaFile.Path;
+            var call = _voipCallCoordinator.RequestNewIncomingCall(
+                "ass",
+                (string)DMNameConverter.Instance.Convert(Channel, null, null, null),
+                "ass",
+                new Uri(temp),
+               "Unicord",
+                new Uri(brand),
+                $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
+                new Uri(media),
+                VoipPhoneCallMedia.Audio,
+                TimeSpan.FromSeconds(60));
+
+            call.AnswerRequested += (o, e) =>
             {
-                ["req"] = (uint)VoiceServiceRequest.NotifyIncomingCallRequest,
-                ["contact_name"] = DMNameConverter.Instance.Convert(Channel, null, null, null),
-                ["contact_number"] = "",
-                ["contact_image"] = new Uri(tempFile.Path).ToString(),
-                ["branding_image"] = new Uri(brandingFile.Path).ToString(),
-                ["call_details"] = $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
-                ["ringtone"] = new Uri(mediaFile.Path).ToString()
+                
             };
-            
-            await SendRequestAsync(request);
+
+
+            //var request = new ValueSet()
+            //{
+            //    ["req"] = (uint)VoiceServiceRequest.NotifyIncomingCallRequest,
+            //    ["contact_name"] = DMNameConverter.Instance.Convert(Channel, null, null, null),
+            //    ["contact_number"] = "",
+            //    ["contact_image"] = new Uri(tempFile.Path).ToString(),
+            //    ["branding_image"] = new Uri(brandingFile.Path).ToString(),
+            //    ["call_details"] = $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
+            //    ["ringtone"] = new Uri(mediaFile.Path).ToString()
+            //};
+
+            //await SendRequestAsync(request);
         }
 
         public async Task ConnectAsync()
@@ -292,7 +312,7 @@ namespace Unicord.Universal.Voice
                 if (appServiceStatus != AppServiceConnectionStatus.Success)
                     throw new Exception("Unable to connect to AppService! " + appServiceStatus);
             }
-            
+
             _appServiceConnected = true;
             var status = await ReserveCallResourcesAsync(_voipCallCoordinator);
             if (status != VoipPhoneCallResourceReservationStatus.Success)

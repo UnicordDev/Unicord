@@ -11,6 +11,9 @@ namespace Unicord
         {
             bool willNotify = false;
 
+            if (message.MessageType == MessageType.Call)
+                return false;
+
             if (message.MentionedUsers.Any(m => m?.Id == message.Discord.CurrentUser.Id))
             {
                 willNotify = true;
