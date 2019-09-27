@@ -3,7 +3,7 @@
 #include "SodiumWrapper.h"
 #include <sodium.h>
 
-namespace winrt::Unicord::Universal::Voice::Interop
+namespace winrt::Unicord::Universal::Voice::Transport
 {
     bool Rtp::IsRtpHeader(array_view<const uint8_t> data)
     {
@@ -47,17 +47,17 @@ namespace winrt::Unicord::Universal::Voice::Interop
         if (!IsRtpHeader(source)) {
             throw hresult_invalid_argument();
         }
-
         header.type = source[1] & 0b01111111;
         header.extension = (source[0] & 0b11110000) == RTP_EXTENSION;
+        header.marker = (source[1] >> 7) & 0x01 != 0;
 
         // reverse_copy from big endian to little endian 
         std::reverse_copy(&source[2], &source[2 + sizeof header.seq], (uint8_t*)&header.seq);
         std::reverse_copy(&source[4], &source[4 + sizeof header.timestamp], (uint8_t*)&header.timestamp);
         std::reverse_copy(&source[8], &source[8 + sizeof header.ssrc], (uint8_t*)&header.ssrc);
 
-        uint8_t contributing_count = source[0] & 0b00001111;
-        for (uint8_t i = 0; i < contributing_count; i++)
+        header.csrcs = (source[0] >> 0) & 0x0F;
+        for (uint8_t i = 0; i < header.csrcs; i++)
         {
             uint32_t ssrc = 0;
             std::reverse_copy(&source[12 + (4 * i)], &source[12 + (4 * i) + sizeof ssrc], (uint8_t*)&ssrc);

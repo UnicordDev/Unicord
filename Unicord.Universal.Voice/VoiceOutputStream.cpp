@@ -17,8 +17,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         auto buff = buffer.data();
         auto buffer_size = buffer.Length();
 
-        auto remaining = buffer_size;
-        auto index = 0;
+        size_t remaining = buffer_size;
+        size_t index = 0;
         while (remaining > 0) {
             auto len = min(buffer_length - consumed_buffer_length, remaining);
             auto tgt = array_view<uint8_t>(pcm_buffer + consumed_buffer_length, pcm_buffer + buffer_length);

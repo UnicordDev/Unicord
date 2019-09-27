@@ -5,12 +5,15 @@
 #include "VoiceClient.g.cpp"
 #include <iomanip>
 #include <bitset>
+#include <VideoEventArgs.h>
+using namespace winrt::Unicord::Universal::Voice::Transport;
 
 using namespace winrt;
 using namespace std::chrono;
 using namespace winrt::Windows::Data::Json;
 using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Sockets;
+using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Storage::Streams;
 using namespace winrt::Unicord::Universal::Voice::Interop;
 
@@ -30,6 +33,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     VoiceClient::VoiceClient(VoiceClientOptions const& options)
     {
+        auto stream = new dbg_stream_for_cout();
+        std::cout.rdbuf(stream);
+        std::cout << std::unitbuf;
+
         if (sodium_init() == -1) {
             throw hresult_error(E_UNEXPECTED, L"Failed to initialize libsodium!");
         }
@@ -39,18 +46,20 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
 
         this->options = options;
+        this->opusDecoder = new Decode::OpusDecoder();
+        this->h264Decoder = new Decode::H264Decoder();
 
         std::wstring_view raw_endpoint = options.Endpoint();
         std::size_t index = raw_endpoint.find_last_of(':');
 
         if (index != std::wstring::npos) {
             std::wstring str(raw_endpoint.substr(index + 1));
-            ws_endpoint.hostname = raw_endpoint.substr(0, index);
-            ws_endpoint.port = (uint16_t)std::stoi(str);
+            wsEndpoint.hostname = raw_endpoint.substr(0, index);
+            wsEndpoint.port = (uint16_t)std::stoi(str);
         }
         else {
-            ws_endpoint.hostname = raw_endpoint;
-            ws_endpoint.port = 443;
+            wsEndpoint.hostname = raw_endpoint;
+            wsEndpoint.port = 443;
         }
 
         InitialiseSockets();
@@ -59,64 +68,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
     void VoiceClient::InitialiseSockets()
     {
         audio_format = AudioFormat();
-        udp_socket = DatagramSocket();
-        udp_socket.Control().QualityOfService(SocketQualityOfService::LowLatency);
-        udp_socket.MessageReceived({ this, &VoiceClient::OnUdpMessage });
+        udpSocket = DatagramSocket();
+        udpSocket.Control().QualityOfService(SocketQualityOfService::LowLatency);
+        udpSocket.MessageReceived({ this, &VoiceClient::OnUdpMessage });
 
-        web_socket = MessageWebSocket();
-        web_socket.Control().MessageType(SocketMessageType::Utf8);
-        web_socket.MessageReceived({ this, &VoiceClient::OnWsMessage });
-        web_socket.Closed({ this, &VoiceClient::OnWsClosed });
-    }
-
-    uint32_t VoiceClient::WebSocketPing()
-    {
-        return ws_ping;
-    }
-
-    uint32_t VoiceClient::UdpSocketPing()
-    {
-        return udp_ping;
-    }
-
-    winrt::event_token VoiceClient::WebSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const & handler)
-    {
-        return wsPingUpdated.add(handler);
-    }
-
-    void VoiceClient::WebSocketPingUpdated(winrt::event_token const & token) noexcept
-    {
-        wsPingUpdated.remove(token);
-    }
-
-    winrt::event_token VoiceClient::UdpSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const & handler)
-    {
-        return udpPingUpdated.add(handler);
-    }
-
-    void VoiceClient::UdpSocketPingUpdated(winrt::event_token const & token) noexcept
-    {
-        udpPingUpdated.remove(token);
-    }
-
-    winrt::event_token VoiceClient::Connected(Windows::Foundation::EventHandler<bool> const & handler)
-    {
-        return connected.add(handler);
-    }
-
-    void VoiceClient::Connected(winrt::event_token const & token) noexcept
-    {
-        connected.remove(token);
-    }
-
-    winrt::event_token VoiceClient::Disconnected(Windows::Foundation::EventHandler<bool> const & handler)
-    {
-        return disconnected.add(handler);
-    }
-
-    void VoiceClient::Disconnected(winrt::event_token const & token) noexcept
-    {
-        disconnected.remove(token);
+        webSocket = MessageWebSocket();
+        webSocket.Control().MessageType(SocketMessageType::Utf8);
+        webSocket.MessageReceived({ this, &VoiceClient::OnWsMessage });
+        webSocket.Closed({ this, &VoiceClient::OnWsClosed });
     }
 
     IAsyncAction VoiceClient::ConnectAsync()
@@ -130,10 +89,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
         std::cout << "Capture: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
 
         audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::low_latency);
-        opus = new OpusWrapper(audio_format);
+        opusEncoder = new Encode::OpusEncoder(audio_format);
 
-        Windows::Foundation::Uri url{ L"wss://" + ws_endpoint.hostname + L"/?encoding=json&v=4" };
-        co_await web_socket.ConnectAsync(url);
+        Windows::Foundation::Uri url{ L"wss://" + wsEndpoint.hostname + L"/?encoding=json&v=4" };
+        co_await webSocket.ConnectAsync(url);
     }
 
     bool VoiceClient::Muted()
@@ -186,14 +145,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     IAsyncAction VoiceClient::SendIdentifyAsync(bool isResume)
     {
-        heartbeat_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnWsHeartbeat }, milliseconds(heartbeat_interval));
+        heartbeatTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnWsHeartbeat }, milliseconds(heartbeatInterval));
 
         JsonObject payload;
         if (options.GuildId() != 0) {
             payload.SetNamedValue(L"server_id", JsonValue::CreateStringValue(to_hstring(options.GuildId())));
         }
         else {
-            payload.SetNamedValue(L"server_id", JsonValue::CreateNullValue());
+            payload.SetNamedValue(L"server_id", JsonValue::CreateStringValue(to_hstring(options.ChannelId())));
         }
 
         if (!isResume)
@@ -213,20 +172,20 @@ namespace winrt::Unicord::Universal::Voice::implementation
     IAsyncAction VoiceClient::Stage1(JsonObject obj)
     {
         if (obj != nullptr) {
-            udp_endpoint.hostname = obj.GetNamedString(L"ip");
-            udp_endpoint.port = (uint16_t)obj.GetNamedNumber(L"port");
+            udpEndpoint.hostname = obj.GetNamedString(L"ip");
+            udpEndpoint.port = (uint16_t)obj.GetNamedNumber(L"port");
         }
 
-        HostName remoteHost{ udp_endpoint.hostname };
-        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udp_endpoint.port) };
-        co_await udp_socket.ConnectAsync(pair);
+        HostName remoteHost{ udpEndpoint.hostname };
+        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udpEndpoint.port) };
+        co_await udpSocket.ConnectAsync(pair);
 
         mode = SodiumWrapper::SelectEncryptionMode(obj.GetNamedArray(L"modes"));
 
         uint8_t buff[70]{ 0 };
-        std::copy(&ssrc, &ssrc + sizeof ssrc, buff);
+        std::copy(&audioSSRC, &audioSSRC + sizeof audioSSRC, buff);
 
-        DataWriter writer{ udp_socket.OutputStream() };
+        DataWriter writer{ udpSocket.OutputStream() };
         writer.WriteBytes(buff);
         co_await writer.StoreAsync();
         writer.DetachStream();
@@ -247,7 +206,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
             sodium = new SodiumWrapper(array_view<const uint8_t>(key), SodiumWrapper::GetEncryptionMode(new_mode));
         }
 
-        keepalive_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, 5000ms);
+        keepaliveTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, 5000ms);
         voice_thread = std::thread(&VoiceClient::VoiceSendLoop, this);
 
         auto size = audio_format.CalculateSampleSize(20);
@@ -271,7 +230,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         try
         {
             PCMPacket packet;
-            DataWriter writer{ udp_socket.OutputStream() };
+            DataWriter writer{ udpSocket.OutputStream() };
 
             auto start_time = high_resolution_clock::now();
             while (!cancel_voice_send) {
@@ -322,10 +281,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 }
             }
         }
-        catch (const winrt::hresult_error& ex)
+        catch (const winrt::hresult_error & ex)
         {
             if (!ws_closed)
-                web_socket.Close();
+                webSocket.Close();
             std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
     }
@@ -338,17 +297,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
         if (pcm.size() == 0)
             return VoicePacket();
 
-        RtpHeader header;
-        header.ssrc = ssrc;
-        header.seq = seq;
-        header.timestamp = timestamp;
-        header.type = Rtp::RTP_TYPE_OPUS; // opus audio
-
+        RtpHeader header{ Rtp::RTP_TYPE_OPUS,audioSequence, audioTimestamp, audioSSRC };
         auto packet_size = audio_format.GetMaxBufferSize() * 2;
         auto packet = std::vector<uint8_t>(packet_size);
         auto packet_span = gsl::make_span(packet);
 
-        auto opus_length = is_float ? opus->EncodeFloat(pcm, packet_span) : opus->Encode(pcm, packet_span);
+        auto opus_length = is_float ? opusEncoder->EncodeFloat(pcm, packet_span) : opusEncoder->Encode(pcm, packet_span);
         auto encrypted_size = sodium->CalculateTargetSize(opus_length);
         auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, header, mode.second);
         auto new_packet = std::vector<uint8_t>(new_packet_size);
@@ -376,8 +330,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         auto duration = is_float ? audio_format.CalculateSampleDurationF(pcm.size()) : audio_format.CalculateSampleDuration(pcm.size());
         auto time = audio_format.CalculateFrameSize(duration);
-        this->seq++;
-        this->timestamp += (uint32_t)time;
+        this->audioSequence++;
+        this->audioTimestamp += (uint32_t)time;
 
         return VoicePacket{ new_packet, duration, silence };
     }
@@ -403,12 +357,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
         pcm_packets.clear();
     }
 
-    bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source)
+    bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>>& pcm, AudioSource** source)
     {
-        if (!Rtp::IsRtpHeader(data))
-            return false;
+        bool ret = false;
 
-        if (is_deafened)
+        if (!Rtp::IsRtpHeader(data))
             return false;
 
         if (is_disposed)
@@ -417,11 +370,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         // decode RTP header
         RtpHeader header;
         Rtp::DecodeHeader(data, header);
-
-        //std::cout << "Packet Type: " << (uint32_t)header.type << " SSRC: " << header.ssrc << " Contributing: ";
-        //for each (uint32_t ssrc in header.contributing_ssrcs)
-        //    std::cout << ssrc << "; ";
-        //std::cout << std::endl;
 
         // get the nonce
         uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
@@ -432,94 +380,91 @@ namespace winrt::Unicord::Universal::Voice::implementation
         array_view<const uint8_t> encrypted_data;
         Rtp::GetDataFromPacket(data, encrypted_data, header, mode.second);
 
-        if (header.type == Rtp::RTP_TYPE_OPUS) {
-            return DecodeOpusPacket(header, source, encrypted_data, nonce_view, pcm);
-        }
+        if (header.type == 73 || header.type == 72) { // control packet ?
+#if DEBUG // don't *really* wanna dump this in prod
+            std::cout << std::hex;
+            for (size_t i = 0; i < encrypted_data.size(); i++) {
+                std::cout << (uint32_t)encrypted_data[i] << " ";
+            }
+            std::cout << std::endl << std::dec;
+#endif 
 
-        return false;
-    }
-
-    bool VoiceClient::DecodeOpusPacket(const RtpHeader &header, AudioSource** source, array_view<const uint8_t> &encrypted_data, const array_view<uint8_t> &nonce_view, std::vector<std::vector<uint8_t>> & pcm)
-    {
-        AudioSource* audio_source = opus->GetOrCreateDecoder(header.ssrc);
-        *source = audio_source;
-
-        if (!audio_source->is_speaking) {
             return false;
         }
 
-        if (header.seq < audio_source->seq) { // out of order
-            return false;
-        }
 
-        uint16_t gap = audio_source->seq != 0 ? header.seq - 1 - audio_source->seq : 0;
+        // calculate the size of the decrypted data
+        size_t decrypted_size = sodium->CalculateSourceSize(encrypted_data.size());
+        uint8_t* decrypted_data = new uint8_t[decrypted_size]{ 0 };
+        array_view<uint8_t> decrypted_view(decrypted_data, decrypted_data + decrypted_size);
 
-        // calculate the size of the opus data
-        size_t opus_size = sodium->CalculateSourceSize(encrypted_data.size());
-        uint8_t* opus_data = new uint8_t[opus_size]{ 0 };
-        array_view<uint8_t> opus_view(opus_data, opus_data + opus_size);
+        // decrypt the recieved data
+        try
+        {
+            sodium->Decrypt(encrypted_data, nonce_view, decrypted_view);
 
-        // decrypt the opus data
-        sodium->Decrypt(encrypted_data, nonce_view, opus_view);
+            // strip extensions
+            if (header.extension) {
+                // RFC 5285, 4.2 One-Byte header
+                // http://www.rfcreader.com/#rfc5285_line186
+                if (decrypted_view[0] == 0xBE && decrypted_view[1] == 0xDE) {
+                    uint16_t headerLen = decrypted_view[2] << 8 | decrypted_view[3];
+                    uint8_t i = 4;
+                    for (; i < headerLen + 4; i++)
+                    {
+                        uint8_t b = decrypted_view[i];
 
-        if (header.extension) {
-            // RFC 5285, 4.2 One-Byte header
-            // http://www.rfcreader.com/#rfc5285_line186
-            if (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
-                uint16_t headerLen = opus_view[2] << 8 | opus_view[3];
-                uint8_t i = 4;
-                for (; i < headerLen + 4; i++)
-                {
-                    uint8_t b = opus_view[i];
+                        // ID is currently unused since we skip it anyway
+                        uint8_t id = (uint8_t)(b >> 4);
+                        uint8_t length = (uint8_t)(b & 0x0F) + 1;
+                        i += length;
+                    }
 
-                    // ID is currently unused since we skip it anyway
-                    // var id = (byte)(@byte >> 4);
-                    uint8_t length = (uint8_t)(b & 0x0F) + 1;
-                    i += length;
-                }
+                    // Strip extension padding too
+                    while (decrypted_view[i] == 0)
+                        i++;
 
-                // Strip extension padding too
-                while (opus_view[i] == 0)
-                    i++;
+                    // array_view<uint8_t> extension_view = array_view(decrypted_view.begin(), decrypted_view.begin() + i);
+                    // std::ostringstream str;
+                    // str << std::setfill('0') << std::setw(2) << std::hex;
+                    // for (size_t i = 0; i < extension_view.size(); i++)
+                    // {
+                    //     str << (uint32_t)extension_view[i] << " ";
+                    // }
+                    // std::cout << str.str() << std::endl;
 
-                opus_view = array_view(opus_view.begin() + i, opus_view.end());
-            }
-        }
-
-        if (gap != 0) {
-            AudioFormat packet_format = audio_source->format;
-            size_t fec_pcm_length = packet_format.SampleCountToSampleSize(packet_format.GetMaxBufferSize());
-
-            if (gap == 1) {
-                std::vector<uint8_t> fec(fec_pcm_length);
-                opus->Decode(audio_source, opus_view, fec, true);
-
-                pcm.push_back(fec);
-            }
-            else if (gap > 1) {
-                for (size_t i = 0; i < gap; i++) {
-                    int32_t sample_count = opus->GetLastPacketSampleCount(audio_source->decoder);
-                    fec_pcm_length = packet_format.SampleCountToSampleSize(sample_count);
-                    std::vector<uint8_t> fec(fec_pcm_length);
-                    opus->ProcessPacketLoss(audio_source, sample_count, fec);
-                    pcm.push_back(fec);
+                    decrypted_view = array_view(decrypted_view.begin() + i, decrypted_view.end());
                 }
             }
+
+            if (header.type == Rtp::RTP_TYPE_OPUS) { // opus data
+
+                if (is_deafened) {
+                    ret = false;
+                }
+                else {
+                    ret = opusDecoder->ProcessPacket(header, source, decrypted_view, pcm);
+                }
+            }
+
+            if (header.type == Rtp::RTP_TYPE_H264) { // video data
+                H264Frame frame;
+                if (h264Decoder->ProcessPacket(header, decrypted_view, frame)) {
+                    std::cout << "packets:" << frame.data.size() << " pps:" << frame.pps.size() << " sps:" << frame.sps.size() << std::endl;
+                }
+            }
+        }
+        catch (const winrt::hresult_error & ex)
+        {
+            std::cout << (uint32_t)header.type << " " << header.ssrc << " " << data.size() << "\n";
         }
 
-        size_t max_frame_size = audio_source->format.SampleCountToSampleSize(audio_source->format.GetMaxBufferSize());
-        std::vector<uint8_t> raw_pcm(max_frame_size);
+        delete[] decrypted_data;
 
-        opus->Decode(audio_source, opus_view, raw_pcm, false);
-        pcm.push_back(raw_pcm);
-
-        audio_source->seq = header.seq;
-        audio_source->packets_lost += gap;
-
-        delete[] opus_data;
-        return true;
+        return ret;
     }
 
+   
     IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
     {
         uint32_t stamp = (uint32_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
@@ -553,13 +498,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 switch (op) {
                 case 8: // hello
                 {
-                    heartbeat_interval = (int32_t)data.GetNamedNumber(L"heartbeat_interval");
+                    heartbeatInterval = (int32_t)data.GetNamedNumber(L"heartbeat_interval");
                     co_await SendIdentifyAsync(can_resume);
                     break;
                 }
                 case 2: // ready
                 {
-                    ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
+                    audioSSRC = (uint32_t)data.GetNamedNumber(L"ssrc");
                     co_await Stage1(data);
                     break;
                 }
@@ -571,7 +516,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 case 5: // speaking
                 {
                     uint32_t speaking_ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
-                    AudioSource* audio_source = opus->GetOrCreateDecoder(speaking_ssrc);
+                    AudioSource* audio_source = opusDecoder->GetOrCreateDecoder(speaking_ssrc);
                     audio_source->user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
                     audio_source->is_speaking = data.GetNamedNumber(L"speaking") != 0;
 
@@ -580,7 +525,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 case 13: // client_disconnected
                 {
                     uint64_t user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
-                    AudioSource* source = opus->GetAssociatedAudioSource(user_id, true);
+                    AudioSource* source = opusDecoder->GetAssociatedAudioSource(user_id, true);
 
                     if (source != nullptr) {
                         renderer->RemoveAudioSource(source->ssrc);
@@ -596,7 +541,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 auto data = value.GetString();
                 switch (op) {
                 case 6: // heartbeat ack
-                    auto now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+                    uint32_t now = (uint32_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
                     ws_ping = now - last_heartbeat;
                     wsPingUpdated(*this, (const uint32_t)ws_ping);
                     std::cout << "- WS Ping " << ws_ping << "ms\n";
@@ -608,9 +553,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 switch (op) {
                 case 9:
                 {
-                    HostName remoteHost{ udp_endpoint.hostname };
-                    EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udp_endpoint.port) };
-                    co_await udp_socket.ConnectAsync(pair);
+                    HostName remoteHost{ udpEndpoint.hostname };
+                    EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udpEndpoint.port) };
+                    co_await udpSocket.ConnectAsync(pair);
 
                     Stage2(nullptr);
                     connected(*this, true);
@@ -619,10 +564,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 }
             }
         }
-        catch (const winrt::hresult_error& ex)
+        catch (const winrt::hresult_error & ex)
         {
-            if (!ws_closed && web_socket != nullptr)
-                web_socket.Close();
+            if (!ws_closed && webSocket != nullptr)
+                webSocket.Close();
             std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
     }
@@ -643,7 +588,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 co_await ReconnectLoop();
             }
         }
-        catch (const winrt::hresult_error& ex)
+        catch (const winrt::hresult_error & ex)
         {
             std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
@@ -671,7 +616,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 co_await this->ConnectAsync();
                 connected = true;
             }
-            catch (const winrt::hresult_error& ex) {
+            catch (const winrt::hresult_error & ex) {
                 ws_closed = true;
                 std::cout << "ERROR: " << to_string(ex.message()) << "\n";
             }
@@ -714,7 +659,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
     {
         try
         {
-            DataWriter writer{ udp_socket.OutputStream() };
+            DataWriter writer{ udpSocket.OutputStream() };
 
             uint64_t now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
             uint64_t count = keepalive_count;
@@ -727,7 +672,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
             co_await writer.StoreAsync();
             writer.DetachStream();
         }
-        catch (const winrt::hresult_error& ex)
+        catch (const winrt::hresult_error & ex)
         {
             std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
@@ -754,7 +699,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
     {
         auto reader = ev.GetDataReader();
 
-        if (connection_stage == 0) {
+        if (connectionStage == 0) {
             uint8_t buff[70];
             reader.ReadBytes(buff);
 
@@ -783,7 +728,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    IAsyncAction VoiceClient::Stage3(std::string &ip, const uint16_t &port)
+    IAsyncAction VoiceClient::Stage3(std::string& ip, const uint16_t& port)
     {
         JsonObject data;
         data.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
@@ -794,14 +739,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
         opus.SetNamedValue(L"name", JsonValue::CreateStringValue(L"opus"));
         opus.SetNamedValue(L"type", JsonValue::CreateStringValue(L"audio"));
         opus.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1000));
-        opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(120));
+        opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_OPUS));
 
         JsonObject h264;
         h264.SetNamedValue(L"name", JsonValue::CreateStringValue(L"H264"));
         h264.SetNamedValue(L"type", JsonValue::CreateStringValue(L"video"));
         h264.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1001));
-        h264.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(101));
-        h264.SetNamedValue(L"rtx_payload_type", JsonValue::CreateNumberValue(102));
+        h264.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_H264));
+        h264.SetNamedValue(L"rtx_payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_H264_RTX));
 
         JsonArray codecs;
         codecs.Append(h264);
@@ -822,7 +767,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         co_await SendJsonPayloadAsync(dispatch);
 
         JsonObject ssrc_info;
-        ssrc_info.SetNamedValue(L"audio_ssrc", JsonValue::CreateNumberValue(ssrc));
+        ssrc_info.SetNamedValue(L"audio_ssrc", JsonValue::CreateNumberValue(audioSSRC));
         ssrc_info.SetNamedValue(L"video_ssrc", JsonValue::CreateNumberValue(0));
         ssrc_info.SetNamedValue(L"rx_ssrc", JsonValue::CreateNumberValue(0));
 
@@ -831,15 +776,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
         dispatch2.SetNamedValue(L"d", ssrc_info);
 
         co_await SendJsonPayloadAsync(dispatch2);
-        connection_stage = 1;
+        connectionStage = 1;
     }
 
-    IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject &payload)
+    IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject& payload)
     {
         try
         {
             if (!ws_closed) {
-                DataWriter writer{ web_socket.OutputStream() };
+                DataWriter writer{ webSocket.OutputStream() };
                 auto str = payload.Stringify();
 
                 std::cout << "< " << to_string(str) << "\n";
@@ -849,10 +794,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 writer.DetachStream();
             }
         }
-        catch (const winrt::hresult_error& ex)
+        catch (const winrt::hresult_error & ex)
         {
-            if (!ws_closed && web_socket != nullptr) {
-                web_socket.Close();
+            if (!ws_closed && webSocket != nullptr) {
+                webSocket.Close();
                 ws_closed = true;
             }
 
@@ -879,15 +824,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     void VoiceClient::Reset()
     {
-        if (heartbeat_timer != nullptr) {
-            heartbeat_timer.Cancel();
-            heartbeat_timer = nullptr;
-        }
-
-        if (keepalive_timer != nullptr) {
-            keepalive_timer.Cancel();
-            keepalive_timer = nullptr;
-        }
+        SAFE_CANCEL(heartbeatTimer);
+        SAFE_CANCEL(keepaliveTimer);
 
         if (renderer != nullptr) {
             renderer->StopCapture();
@@ -907,18 +845,21 @@ namespace winrt::Unicord::Universal::Voice::implementation
             delete[] packet.bytes.data();
         }
 
-        if (opus != nullptr) {
-            delete opus;
-            opus = nullptr;
+        if (opusDecoder != nullptr) {
+            delete opusDecoder;
+            opusDecoder = nullptr;
+        }
+        
+        if (opusEncoder != nullptr) {
+            delete opusEncoder;
+            opusEncoder = nullptr;
         }
 
         keepalive_timestamps.clear();
 
         try {
-            web_socket.Close();
-            web_socket = nullptr;
-            udp_socket.Close();
-            udp_socket = nullptr;
+            SAFE_CLOSE(webSocket);
+            SAFE_CLOSE(udpSocket);
         }
         catch (const winrt::hresult_error&) {}
     }

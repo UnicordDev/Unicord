@@ -117,7 +117,7 @@ namespace Unicord.Universal
                 {
                     return t;
                 }
-                else if ((child = FindChild<T>(child, controlName)) != default)
+                else if ((child = FindChild<T>(child, controlName)) != null)
                 {
                     return child as T;
                 }

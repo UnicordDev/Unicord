@@ -5,7 +5,7 @@
 
 using namespace winrt::Windows::Data::Json;
 
-namespace winrt::Unicord::Universal::Voice::Interop
+namespace winrt::Unicord::Universal::Voice::Transport
 {
     enum EncryptionMode {
         /// <summary>

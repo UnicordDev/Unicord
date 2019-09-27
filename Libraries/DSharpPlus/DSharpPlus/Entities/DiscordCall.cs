@@ -23,11 +23,12 @@ namespace DSharpPlus.Entities
         /// </summary>
         [JsonIgnore]
         public IReadOnlyDictionary<ulong, DiscordVoiceState> VoiceStates
-            => new ReadOnlyConcurrentDictionary<ulong, DiscordVoiceState>(_voice_states);
+            => new ReadOnlyConcurrentDictionary<ulong, DiscordVoiceState>(_voiceStates);
 
         [JsonProperty("voice_states", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(SnowflakeArrayAsDictionaryJsonConverter))]
-        internal ConcurrentDictionary<ulong, DiscordVoiceState> _voice_states;
+        internal ConcurrentDictionary<ulong, DiscordVoiceState> _voiceStates
+            = new ConcurrentDictionary<ulong, DiscordVoiceState>();
 
         [JsonProperty("ringing")]
         public List<ulong> Ringing { get; internal set; }
@@ -43,7 +44,7 @@ namespace DSharpPlus.Entities
 
         public override string ToString()
         {
-            return $"Call with {Channel.Recipient.DisplayName} ({Channel.Id}). {Ringing.Count} ringing. {_voice_states.Count} states.";
+            return $"Call with {Channel.Recipient.DisplayName} ({Channel.Id}). {Ringing.Count} ringing. {_voiceStates.Count} states.";
         }
     }
 }

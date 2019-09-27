@@ -7,6 +7,8 @@
     xmlns:converters="using:Unicord.Universal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:phone="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Phone.PhoneContract, 1)"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" x:DefaultBindMode="TwoWay"
     d:DesignHeight="300"
     d:DesignWidth="220">
@@ -20,7 +22,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -34,12 +35,34 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <phone:ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <ToggleButton x:Name="muteToggleButton" Click="MuteToggleButton_Click" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
             <ToggleButton x:Name="deafenToggleButton" Click="DeafenToggleButton_Click" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
             <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="2" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
-            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
+            <lib:DropDownButton x:Name="toggleSpeakerButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE7F5;">
+                <lib:DropDownButton.Flyout>
+                    <MenuFlyout Opening="MenuFlyout_Opening">
+                        <ToggleMenuFlyoutItem x:Uid="/Voice/Earpiece" Click="Earpiece_Click" Name="Earpiece">
+                            <ToggleMenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="CellPhone"/>
+                            </ToggleMenuFlyoutItem.Icon>
+                        </ToggleMenuFlyoutItem>
+                        <ToggleMenuFlyoutItem x:Uid="/Voice/Speaker" Click="Speakerphone_Click" Name="Speakerphone">
+                            <ToggleMenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="Volume"/>
+                            </ToggleMenuFlyoutItem.Icon>
+                        </ToggleMenuFlyoutItem>
+                        <ToggleMenuFlyoutItem x:Uid="/Voice/Bluetooth" Click="Bluetooth_Click" Name="Bluetooth">
+                            <ToggleMenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE702;"/>
+                            </ToggleMenuFlyoutItem.Icon>
+                        </ToggleMenuFlyoutItem>
+                    </MenuFlyout>
+                </lib:DropDownButton.Flyout>
+            </lib:DropDownButton>
+            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
     </Grid>
 </UserControl>

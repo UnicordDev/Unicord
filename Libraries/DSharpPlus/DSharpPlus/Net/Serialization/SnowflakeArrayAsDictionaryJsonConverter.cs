@@ -44,7 +44,7 @@ namespace DSharpPlus.Net.Serialization
 
             var entries = (IEnumerable)serializer.Deserialize(reader, objectType.GenericTypeArguments[1].MakeArrayType());
             foreach (var entry in entries)
-            {
+            { 
                 properties.SetValue(dict, entry, new object[]
                 {
                     (entry as SnowflakeObject)?.Id

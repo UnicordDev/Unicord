@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include "winrt/base.h"
 
-using namespace winrt;
-namespace winrt::Unicord::Universal::Voice::Interop
+namespace winrt::Unicord::Universal::Voice
 {
     struct ConnectionEndpoint
     {

@@ -1,5 +1,6 @@
 import "VoiceClientOptions.idl";
 import "VoiceOutputStream.idl";
+import "VideoEventArgs.idl";
 
 namespace Unicord.Universal.Voice
 {
@@ -17,6 +18,7 @@ namespace Unicord.Universal.Voice
         event Windows.Foundation.EventHandler<UInt32> UdpSocketPingUpdated;
         event Windows.Foundation.EventHandler<Boolean> Connected;
         event Windows.Foundation.EventHandler<Boolean> Disconnected;
+        event Windows.Foundation.EventHandler<VideoEventArgs> VideoDataRecieved;
 
         Windows.Foundation.IAsyncAction ConnectAsync();
         Windows.Storage.Streams.IOutputStream GetOutputStream();

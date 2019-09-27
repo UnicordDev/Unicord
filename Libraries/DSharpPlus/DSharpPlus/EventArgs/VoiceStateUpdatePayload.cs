@@ -2,7 +2,7 @@
 
 namespace DSharpPlus.VoiceNext.Entities
 {
-    internal sealed class VoiceStateUpdatePayload
+    public sealed class VoiceStateUpdatePayload
     {
         [JsonProperty("guild_id")]
         public ulong? GuildId { get; set; }

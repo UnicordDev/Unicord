@@ -151,8 +151,15 @@ namespace Unicord.Universal.Pages
                 }
                 else
                 {
-                    friendsItem.IsSelected = true;
-                    friendsItem_Tapped(null, null);
+                    if (!(sidebarFrame.Content is DMChannelsPage))
+                    {
+                        sidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
+                    }
+
+                    if (!(mainFrame.Content is FriendsPage) || (mainFrame.Content is ChannelPage cp && cp.ViewModel?.Channel.IsPrivate == true))
+                    {
+                        mainFrame.Navigate(typeof(FriendsPage), null);
+                    }
                 }
 
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();

@@ -1,0 +1,9 @@
+namespace Unicord.Universal.Voice
+{
+    [default_interface]
+    runtimeclass VideoEventArgs : Windows.Foundation.IClosable
+    {
+        UInt8[] Data{ get; };
+        UInt32 SSRC{ get; };
+    };
+}

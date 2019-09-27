@@ -21,6 +21,7 @@ namespace DSharpPlus.EventArgs
         /// Gets the voice connection token.
         /// </summary>
         internal string VoiceToken { get; set; }
+        public DiscordChannel Channel { get; internal set; }
 
         internal VoiceServerUpdateEventArgs(DiscordClient client) : base(client) { }
     }

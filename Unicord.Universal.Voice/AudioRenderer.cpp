@@ -268,21 +268,15 @@ namespace winrt::Unicord::Universal::Voice::Render
             node.second.Close();
         }
 
-        render_submix_node.Close();
-        render_submix_node = nullptr;
-        render_node.Close();
-        render_node = nullptr;
-        render_graph.Close();
-        render_graph = nullptr;
+        SAFE_CLOSE(render_submix_node);
+        SAFE_CLOSE(render_node);
+        SAFE_CLOSE(render_graph);
 
         input_nodes.clear();
 
-        capture_frame_node.Close();
-        capture_frame_node = nullptr;
-        capture_node.Close();
-        capture_node = nullptr;
-        capture_graph.Close();
-        capture_graph = nullptr;
+        SAFE_CLOSE(capture_frame_node);
+        SAFE_CLOSE(capture_node);
+        SAFE_CLOSE(capture_graph);
 
         delete[] pcm_buffer;
         voice_client = nullptr;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Net.Abstractions;
 using DSharpPlus.VoiceNext.Entities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Unicord.Universal.Converters;
 using Unicord.Universal.Voice.Background;
 using Windows.ApplicationModel;
@@ -27,11 +30,10 @@ namespace Unicord.Universal.Voice
 {
     public class VoiceConnectionModel : PropertyChangedBase, IDisposable
     {
-        private MediaPlayerElement _mediaPlayer;
-        private AppServiceConnection _appServiceConnection;
-        private VoipCallCoordinator _voipCallCoordinator;
         private ResourceLoader _strings;
-
+        private MediaPlayerElement _mediaPlayer;
+        private VoipCallCoordinator _voipCallCoordinator;
+        private AppServiceConnection _appServiceConnection;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
 
@@ -45,6 +47,7 @@ namespace Unicord.Universal.Voice
         public string ConnectionStatus { get => _connectionStatus; set => OnPropertySet(ref _connectionStatus, value); }
         public DiscordChannel Channel { get; private set; }
         public DiscordCall Call { get; }
+
         public bool Muted
         {
             get => _muted || _deafened;
@@ -104,7 +107,14 @@ namespace Unicord.Universal.Voice
             var deafened = (bool)info.Message["deafened"];
 
             var channel = App.Discord._channelCache[channel_id];
-            var model = new VoiceConnectionModel(channel, connection) { Muted = muted, Deafened = deafened, ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name), _strings = strings };
+            var model = new VoiceConnectionModel(channel, connection)
+            {
+                Muted = muted,
+                Deafened = deafened,
+                ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name),
+                _strings = strings
+            };
+
             return model;
         }
 
@@ -116,6 +126,15 @@ namespace Unicord.Universal.Voice
             _voiceServerUpdateCompletion = new TaskCompletionSource<VoiceServerUpdateEventArgs>();
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
 
+            _appServiceConnection = new AppServiceConnection()
+            {
+                AppServiceName = "com.wankerr.Unicord.Voice",
+                PackageFamilyName = Package.Current.Id.FamilyName
+            };
+
+            _appServiceConnection.RequestReceived += OnRequestReceived;
+            _appServiceConnection.ServiceClosed += OnServiceClosed;
+
             ConnectionStatus = _strings.GetString("InitialConnectionState");
         }
 
@@ -123,34 +142,21 @@ namespace Unicord.Universal.Voice
         {
             Channel = call.Channel;
             Call = call;
-
-            _appServiceConnection = new AppServiceConnection()
-            {
-                AppServiceName = "com.wankerr.Unicord.Voice",
-                PackageFamilyName = Package.Current.Id.FamilyName
-            };
-
-            _appServiceConnection.RequestReceived += OnRequestReceived;
-            _appServiceConnection.ServiceClosed += OnServiceClosed;
         }
 
         public VoiceConnectionModel(DiscordChannel channel) : this()
         {
             Channel = channel;
-            _appServiceConnection = new AppServiceConnection()
-            {
-                AppServiceName = "com.wankerr.Unicord.Voice",
-                PackageFamilyName = Package.Current.Id.FamilyName
-            };
-
-            _appServiceConnection.RequestReceived += OnRequestReceived;
-            _appServiceConnection.ServiceClosed += OnServiceClosed;
         }
 
         private VoiceConnectionModel(DiscordChannel channel, AppServiceConnection connection) : this()
         {
             Channel = channel;
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
+
+            _appServiceConnection?.Dispose();
+
+            _appServiceConnected = true;
             _appServiceConnection = connection;
             _appServiceConnection.RequestReceived += OnRequestReceived;
             _appServiceConnection.ServiceClosed += OnServiceClosed;
@@ -207,44 +213,23 @@ namespace Unicord.Universal.Voice
             await Tools.DownloadToFileAsync(new Uri(Call.Channel.Recipient.GetAvatarUrl(ImageFormat.Png, 128)), tempFile);
 
             var assetsFolder = await Package.Current.InstalledLocation.GetFolderAsync("Assets");
-            var brandingFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Store/BadgeLogo.png"));
+            var brandingFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Store/StoreLogo.png"));
 
             var mediaFolder = await assetsFolder.GetFolderAsync("Sounds");
             var mediaFile = await mediaFolder.GetFileAsync("incoming_call.mp3");
 
-            var temp = tempFile.Path;
-            var brand = brandingFile.Path;
-            var media = mediaFile.Path;
-            var call = _voipCallCoordinator.RequestNewIncomingCall(
-                "ass",
-                (string)DMNameConverter.Instance.Convert(Channel, null, null, null),
-                "ass",
-                new Uri(temp),
-               "Unicord",
-                new Uri(brand),
-                $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
-                new Uri(media),
-                VoipPhoneCallMedia.Audio,
-                TimeSpan.FromSeconds(60));
-
-            call.AnswerRequested += (o, e) =>
+            var request = new ValueSet()
             {
-                
+                ["req"] = (uint)VoiceServiceRequest.NotifyIncomingCallRequest,
+                ["contact_name"] = DMNameConverter.Instance.Convert(Channel, null, null, null),
+                ["contact_number"] = "",
+                ["contact_image"] = new Uri(tempFile.Path).ToString(),
+                ["branding_image"] = new Uri(brandingFile.Path).ToString(),
+                ["call_details"] = $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
+                ["ringtone"] = new Uri(mediaFile.Path).ToString()
             };
 
-
-            //var request = new ValueSet()
-            //{
-            //    ["req"] = (uint)VoiceServiceRequest.NotifyIncomingCallRequest,
-            //    ["contact_name"] = DMNameConverter.Instance.Convert(Channel, null, null, null),
-            //    ["contact_number"] = "",
-            //    ["contact_image"] = new Uri(tempFile.Path).ToString(),
-            //    ["branding_image"] = new Uri(brandingFile.Path).ToString(),
-            //    ["call_details"] = $"@{Call.Channel.Recipient.Username}#{Call.Channel.Recipient.Discriminator}",
-            //    ["ringtone"] = new Uri(mediaFile.Path).ToString()
-            //};
-
-            //await SendRequestAsync(request);
+            await SendRequestAsync(request);
         }
 
         public async Task ConnectAsync()
@@ -389,16 +374,16 @@ namespace Unicord.Universal.Voice
 
         private void SendVoiceStateUpdate(ulong? channel_id)
         {
-            var vsd = new VoiceDispatch
+            var vsd = new GatewayPayload
             {
-                OpCode = 4,
-                Payload = new VoiceStateUpdatePayload
+                OpCode = (GatewayOpCode)4,
+                Data = JToken.FromObject(new VoiceStateUpdatePayload
                 {
                     GuildId = Channel.Guild?.Id,
                     ChannelId = channel_id,
-                    Deafened = _muted,
-                    Muted = _deafened
-                }
+                    Deafened = Deafened,
+                    Muted = Muted
+                })
             };
 
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
@@ -440,6 +425,12 @@ namespace Unicord.Universal.Voice
                     case VoiceServiceEvent.WebSocketPing:
                         WebSocketPing = (uint)args.Request.Message["ping"];
                         break;
+                    case VoiceServiceEvent.AnswerRequested:
+                        await ConnectAsync();
+                        break;
+                    case VoiceServiceEvent.RejectRequested:
+
+                        break;
                     default:
                         break;
                 }
@@ -448,8 +439,9 @@ namespace Unicord.Universal.Voice
 
         private void OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
-            _appServiceConnected = false;
-            _appServiceConnection = null;
+            Disconnected?.Invoke(this, null);
+            SendVoiceStateUpdate(null);
+            Dispose();
         }
 
         private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)
@@ -477,7 +469,7 @@ namespace Unicord.Universal.Voice
 
         private Task OnVoiceServerUpdated(VoiceServerUpdateEventArgs e)
         {
-            if (e.Guild == Channel.Guild)
+            if (e.Guild == Channel.Guild || e.Channel == Channel)
             {
                 _voiceServerUpdateCompletion.SetResult(e);
                 App.Discord.VoiceServerUpdated -= OnVoiceServerUpdated;
@@ -490,9 +482,7 @@ namespace Unicord.Universal.Voice
         {
             try
             {
-                var folder = await (await Package.Current.InstalledLocation.GetFolderAsync("Assets")).GetFolderAsync("Sounds");
-                var file = await folder.GetFileAsync($"{cue}.mp3");
-
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/Sounds/{cue}.mp3"));
                 await _mediaPlayer.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     _mediaPlayer.Source = MediaSource.CreateFromStorageFile(file);
@@ -511,7 +501,6 @@ namespace Unicord.Universal.Voice
             IsDisposed = true;
 
             _appServiceConnected = false;
-
             _appServiceConnection?.Dispose();
             _appServiceConnection = null;
             _mediaPlayer.MediaPlayer?.Dispose();

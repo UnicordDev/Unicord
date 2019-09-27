@@ -8,7 +8,7 @@
 
 using namespace winrt::Windows::Data::Json;
 
-namespace winrt::Unicord::Universal::Voice::Interop
+namespace winrt::Unicord::Universal::Voice::Transport
 {
     SodiumWrapper::SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode selected_mode)
     {

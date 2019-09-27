@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Bluetooth.Text" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
   <data name="ConnectedStateFormat" xml:space="preserve">
     <value>Connected to {0}!</value>
   </data>
@@ -135,10 +138,16 @@
   <data name="DisconnectedState" xml:space="preserve">
     <value>Disconnected</value>
   </data>
+  <data name="Earpiece.Text" xml:space="preserve">
+    <value>Earpiece</value>
+  </data>
   <data name="InitialConnectionState" xml:space="preserve">
     <value>Getting ready...</value>
   </data>
   <data name="ReconnectingState" xml:space="preserve">
     <value>Reconnecting...</value>
+  </data>
+  <data name="Speaker.Text" xml:space="preserve">
+    <value>Speaker</value>
   </data>
 </root>

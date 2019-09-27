@@ -87,7 +87,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         else
                         {
                             // Collects the Programming Language from the end of the starting ticks.
-                            while (pos < lineInfo.EndOfLine && !codeLanguage.EndsWith(' '))
+                            while (pos < lineInfo.EndOfLine && !codeLanguage.EndsWith(" "))
                             {
                                 codeLanguage += markdown[pos];
                                 pos++;

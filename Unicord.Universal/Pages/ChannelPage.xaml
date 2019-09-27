@@ -3,7 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:wNone="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 32)"
     xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -190,7 +189,7 @@
 
     </Page.Resources>
     <Grid>
-        <Grid>
+        <Grid x:Name="content">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -446,7 +445,7 @@
                             <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
-                    
+
                     <Grid Grid.Row="2">
                         <controls1:UploadItemsControl
                             x:Name="uploadItems"
@@ -535,10 +534,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid
-                        x:Name="footerGrid"
-                        Grid.Row="3"
-                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid x:Name="footerGrid" Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -633,12 +629,12 @@
                         </Grid>
                     </Grid>
 
-                   
+
                 </Grid>
             </controls:DropShadowPanel>
         </Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <VisualStateGroup x:Name="SizeGroups">
                 <VisualState x:Name="VeryWideState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="1025" />
@@ -675,4 +671,13 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+            <VisualState x:Name="Normal">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding }"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 </Page>

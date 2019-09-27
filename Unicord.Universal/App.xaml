@@ -24,10 +24,11 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Colours.xaml"/>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+                <ResourceDictionary Source="/Resources/Colours.xaml"/>
                 <!-- Resource dictionaries with code behinds must be instantated like this for InitializeComponent to be called -->
-                <ResourceDictionary Source="Resources/Generic.xaml"/>
-                <ResourceDictionary Source="Resources/CustomStyles.xaml"/>
+                <ResourceDictionary Source="/Resources/Generic.xaml"/>
+                <ResourceDictionary Source="/Resources/CustomStyles.xaml"/>
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
             </ResourceDictionary.MergedDictionaries>
 

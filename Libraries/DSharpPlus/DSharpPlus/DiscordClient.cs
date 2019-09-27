@@ -706,7 +706,7 @@ namespace DSharpPlus
                 }
             };
 
-            Trace.WriteLine($"Requesting {usersToSync.Count()} members");
+            Debug.WriteLine($"Requesting {usersToSync.Count()} members");
 
             var guild_syncstr = JsonConvert.SerializeObject(request);
             _webSocketClient.SendMessage(guild_syncstr);
@@ -935,8 +935,7 @@ namespace DSharpPlus
                         break;
 
                     case "voice_server_update":
-                        gid = (ulong)dat["guild_id"];
-                        await OnVoiceServerUpdateEventAsync((string)dat["endpoint"], (string)dat["token"], _guilds[gid]).ConfigureAwait(false);
+                        await OnVoiceServerUpdateEventAsync(dat, (string)dat["endpoint"], (string)dat["token"]).ConfigureAwait(false);
                         break;
 
                     case "message_reaction_add":
@@ -1222,6 +1221,11 @@ namespace DSharpPlus
                 var call = dat.ToDiscordObject<DiscordCall>();
                 call.Discord = this;
 
+                foreach (var state in call._voiceStates.Values)
+                {
+                    state.Discord = this;
+                }
+
                 _calls[call._channelId] = call;
                 dm.OngoingCall = call;
 
@@ -1237,6 +1241,12 @@ namespace DSharpPlus
             if (_channelCache.TryGetValue(channelId, out var channel) && channel is DiscordDmChannel dm)
             {
                 var call = dat.ToDiscordObject<DiscordCall>();
+                call.Discord = this;
+                foreach (var state in call._voiceStates.Values)
+                {
+                    state.Discord = this;
+                }
+
                 var oldCall = dm.OngoingCall;
                 if (oldCall == null)
                 {
@@ -2241,6 +2251,7 @@ namespace DSharpPlus
                 if (vstateHasNew)
                 {
                     vstateOld = new DiscordVoiceState(vstateNew);
+                    vstateOld.Discord = this;
                     DiscordJson.PopulateObject(raw, vstateNew);
                 }
                 else
@@ -2261,9 +2272,10 @@ namespace DSharpPlus
             {
                 if (_channelCache.TryGetValue(cid.ToObject<ulong>(), out var c) && c is DiscordDmChannel dm && dm.OngoingCall != null)
                 {
-                    if (dm.OngoingCall._voice_states.TryGetValue(uid, out vstateNew))
+                    if (dm.OngoingCall._voiceStates.TryGetValue(uid, out vstateNew))
                     {
                         vstateOld = new DiscordVoiceState(vstateNew);
+                        vstateOld.Discord = this;
                         DiscordJson.PopulateObject(raw, vstateNew);
                     }
                     else
@@ -2271,7 +2283,7 @@ namespace DSharpPlus
                         vstateOld = null;
                         vstateNew = raw.ToObject<DiscordVoiceState>();
                         vstateNew.Discord = this;
-                        dm.OngoingCall._voice_states[vstateNew.UserId] = vstateNew;
+                        dm.OngoingCall._voiceStates[vstateNew.UserId] = vstateNew;
                     }
 
                     dm.OngoingCall.InvokePropertyChanged(string.Empty);
@@ -2283,7 +2295,7 @@ namespace DSharpPlus
                 var call = _calls.Values.FirstOrDefault(c => c.VoiceStates.ContainsKey(uid));
                 if (call != null)
                 {
-                    call._voice_states.TryRemove(uid, out vstateOld);
+                    call._voiceStates.TryRemove(uid, out vstateOld);
                     await _callUpdated.InvokeAsync(new CallUpdateEventArgs(this) { CallAfter = call, Channel = call.Channel });
                 }
             }
@@ -2307,13 +2319,17 @@ namespace DSharpPlus
             }
         }
 
-        internal async Task OnVoiceServerUpdateEventAsync(string endpoint, string token, DiscordGuild guild)
+        internal async Task OnVoiceServerUpdateEventAsync(JObject dat, string endpoint, string token)
         {
+            var gid = (ulong?)dat["guild_id"];
+            var cid = (ulong?)dat["channel_id"];
+
             var ea = new VoiceServerUpdateEventArgs(this)
             {
                 Endpoint = endpoint,
                 VoiceToken = token,
-                Guild = guild
+                Guild = gid != null ? _guilds[gid.Value] : null,
+                Channel = cid != null ? _privateChannels[cid.Value] : null
             };
             await _voiceServerUpdated.InvokeAsync(ea).ConfigureAwait(false);
         }

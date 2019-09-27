@@ -19,7 +19,7 @@ namespace Unicord.Universal.Integration
                 {
                     var list = await JumpList.LoadCurrentAsync();
                     var data = ApplicationData.Current.LocalFolder;
-                    var folder = await data.CreateFolderAsync("recents", CreationCollisionOption.OpenIfExists);
+                    var folder = await data.CreateFolderAsync("Recents", CreationCollisionOption.OpenIfExists);
 
                     string title = null;
                     string group = null;
@@ -51,7 +51,7 @@ namespace Unicord.Universal.Integration
                         {
                             item = JumpListItem.CreateWithArguments(arguments, title);
                             item.GroupName = group;
-                            item.Logo = new Uri($"ms-appdata:///local/recents/{file.Name}");
+                            item.Logo = new Uri($"ms-appdata:///local/Recents/{file.Name}");
                             list.Items.Add(item);
                         }
                         else

@@ -8,21 +8,28 @@
       <Filter>Background</Filter>
     </ClCompile>
     <ClCompile Include="VoiceClientOptions.cpp" />
-    <ClCompile Include="SodiumWrapper.cpp">
-      <Filter>Interop</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtp.cpp">
-      <Filter>Interop</Filter>
-    </ClCompile>
-    <ClCompile Include="OpusWrapper.cpp">
-      <Filter>Interop</Filter>
-    </ClCompile>
     <ClCompile Include="VoiceOutputStream.cpp" />
     <ClCompile Include="AudioRenderer.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="ServiceBackgroundTask.cpp">
       <Filter>Background</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoEventArgs.cpp" />
+    <ClCompile Include="OpusDecoder.cpp">
+      <Filter>Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="OpusEncoder.cpp">
+      <Filter>Encode</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtp.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="SodiumWrapper.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="H264Decoder.cpp">
+      <Filter>Decode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,21 +45,29 @@
     <ClInclude Include="AudioFormat.h">
       <Filter>Interop</Filter>
     </ClInclude>
-    <ClInclude Include="SodiumWrapper.h">
-      <Filter>Interop</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtp.h">
-      <Filter>Interop</Filter>
-    </ClInclude>
-    <ClInclude Include="OpusWrapper.h">
-      <Filter>Interop</Filter>
-    </ClInclude>
     <ClInclude Include="VoiceOutputStream.h" />
     <ClInclude Include="AudioRenderer.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="ServiceBackgroundTask.h">
       <Filter>Background</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoEventArgs.h" />
+    <ClInclude Include="OpusDecoder.h">
+      <Filter>Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusEncoder.h">
+      <Filter>Encode</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtp.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusUtil.h" />
+    <ClInclude Include="SodiumWrapper.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="H264Decoder.h">
+      <Filter>Decode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +86,7 @@
     <Midl Include="VoiceServiceEvent.idl">
       <Filter>Background</Filter>
     </Midl>
+    <Midl Include="VideoEventArgs.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Unicord.Universal.Voice.def" />
@@ -86,6 +102,15 @@
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{b51b0a0b-5007-4025-b7bb-4cd447566a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Decode">
+      <UniqueIdentifier>{70f94bec-b5b7-49d8-af79-c1ff713beb31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encode">
+      <UniqueIdentifier>{b3d857b7-c49c-4d79-91b3-3e8f1484a8af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transport">
+      <UniqueIdentifier>{e4c7025c-a533-4adf-a899-480f2ed7d944}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

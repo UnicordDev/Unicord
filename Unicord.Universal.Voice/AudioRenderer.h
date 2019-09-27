@@ -10,8 +10,6 @@
 #include <winrt/Windows.Devices.Enumeration.h>
 #include "AudioFormat.h"
 
-#define SAFE_CLOSE(x) if (x != nullptr) { x.Close(); x = nullptr; }
-
 namespace winrt::Unicord::Universal::Voice::implementation
 {
     struct VoiceClient;

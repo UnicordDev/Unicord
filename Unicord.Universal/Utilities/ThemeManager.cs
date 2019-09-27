@@ -205,7 +205,7 @@ namespace Unicord.Universal
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
                     var themeRoot = await themesDirectory.CreateFolderAsync(theme.NormalisedName);
-                    await Task.Run(() => archive.ExtractToDirectory(themeRoot.Path, true));
+                    await Task.Run(() => archive.ExtractToDirectory(themeRoot.Path));
                 }
             }
         }
@@ -284,7 +284,7 @@ namespace Unicord.Universal
         /// The accent colour for your theme, used behind <see cref="DisplayLogo"/>
         /// </summary>
         [JsonProperty("display_colour")]
-        public System.Drawing.Color DisplayColour { get; set; }
+        public Color DisplayColour { get; set; }
 
         /// <summary>
         /// A path to a logo for your theme, relative to the root of 

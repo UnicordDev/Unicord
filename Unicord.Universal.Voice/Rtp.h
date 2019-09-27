@@ -1,6 +1,6 @@
 #pragma once
 
-namespace winrt::Unicord::Universal::Voice::Interop
+namespace winrt::Unicord::Universal::Voice::Transport
 {
     enum EncryptionMode;
 
@@ -10,6 +10,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
         uint32_t timestamp = 0;
         uint32_t ssrc = 0;
         bool extension = false;
+        bool marker = false;
+        uint8_t csrcs = 0;
         std::vector<uint32_t> contributing_ssrcs;
 
         inline size_t size() const noexcept {
@@ -23,6 +25,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
         static const uint8_t RTP_NO_EXTENSION = 0x80;
         static const uint8_t RTP_EXTENSION = 0x90;
         static const uint8_t RTP_TYPE_OPUS = 0x78;
+        static const uint8_t RTP_TYPE_H264 = 101;
+        static const uint8_t RTP_TYPE_H264_RTX = 102;
 
         static bool IsRtpHeader(array_view<const uint8_t> data);
         static void EncodeHeader(const RtpHeader& header, gsl::span<uint8_t> target);

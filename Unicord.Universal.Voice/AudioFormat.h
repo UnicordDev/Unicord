@@ -137,7 +137,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         uint64_t packets_lost = 0;
         bool is_speaking = false;
         AudioFormat format;
-        OpusDecoder* decoder = nullptr;
+        ::OpusDecoder* decoder = nullptr;
     };
 
 }

@@ -528,8 +528,7 @@
                         x:Name="mainFrame"
                         HorizontalAlignment="Stretch"
                         Background="{ThemeResource MainBackgroundBrush}"
-                        Navigated="mainFrame_Navigated"
-                        SourcePageType="sub:FriendsPage" />
+                        Navigated="mainFrame_Navigated"/>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -598,6 +597,7 @@
                 </Frame>
             </Grid>
         </Grid>
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="WideState">
@@ -620,7 +620,7 @@
                     <VisualState.Setters>
                         <Setter Target="closeItem.Visibility" Value="Visible" />
                         <Setter Target="content.Margin" Value="-276,0,0,0" />
-                        <Setter Target="SettingsPaneTransform.Y" Value="{Binding RenderSize.Height, ElementName=SettingsOverlayGrid}" />
+                        <Setter Target="SettingsPaneTransform.Y" Value="1000" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

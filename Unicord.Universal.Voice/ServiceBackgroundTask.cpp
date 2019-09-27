@@ -1,9 +1,9 @@
 #include "pch.h"
 #include <chrono>
-#include "ServiceBackgroundTask.h"
-#include "ServiceBackgroundTask.g.cpp"
 #include "VoiceClient.h"
 #include "VoiceClientOptions.h"
+#include "ServiceBackgroundTask.h"
+#include "ServiceBackgroundTask.g.cpp"
 
 using namespace std::chrono_literals;
 using namespace winrt::Windows::Foundation;
@@ -15,10 +15,13 @@ using namespace winrt::Windows::ApplicationModel::Calls;
 
 namespace winrt::Unicord::Universal::Voice::Background::implementation
 {
-    VoipCallCoordinator ServiceBackgroundTask::voipCoordinator = VoipCallCoordinator{ nullptr };
-    VoipPhoneCall ServiceBackgroundTask::activeCall = VoipPhoneCall{ nullptr };
     VoiceClient ServiceBackgroundTask::voiceClient = VoiceClient{ nullptr };
     VoiceClientOptions ServiceBackgroundTask::voiceClientOptions = VoiceClientOptions{ nullptr };
+
+    bool ServiceBackgroundTask::appServiceConnected = false;
+    VoipPhoneCall ServiceBackgroundTask::activeCall = VoipPhoneCall{ nullptr };
+    VoipCallCoordinator ServiceBackgroundTask::voipCoordinator = VoipCallCoordinator{ nullptr };
+    AppServiceConnection ServiceBackgroundTask::appServiceConnection = AppServiceConnection{ nullptr };
 
     void ServiceBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance)
     {
@@ -30,11 +33,18 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         taskInstance.Canceled({ this, &ServiceBackgroundTask::OnCancelled });
 
         auto details = taskInstance.TriggerDetails().try_as<AppServiceTriggerDetails>();
+        appServiceConnection = details.AppServiceConnection();
+        appServiceConnection.ServiceClosed({ this, &ServiceBackgroundTask::OnServiceClosed });
+        appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
 
-        this->appServiceConnection = details.AppServiceConnection();
-        this->appServiceConnection.ServiceClosed({ this, &ServiceBackgroundTask::OnServiceClosed });
-        this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
-        this->appServiceConnected = true;
+        if (voiceClient != nullptr) {
+            ws_ping = voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
+            udp_ping = voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
+            on_connect = voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
+            on_disconnect = voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
+        }
+
+        appServiceConnected = true;
     }
 
     void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
@@ -58,7 +68,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     void ServiceBackgroundTask::OnDisconnected(IInspectable sender, bool args)
     {
         ValueSet valueSet;
-       if (appServiceConnected && appServiceConnection != nullptr) {
+        if (appServiceConnected && appServiceConnection != nullptr) {
             if (args) { // we're attempting to reconnect
                 RaiseEvent(VoiceServiceEvent::Reconnecting, valueSet);
             }
@@ -80,6 +90,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     {
         ValueSet valueSet;
         if (appServiceConnected && appServiceConnection != nullptr) {
+            valueSet.Insert(L"media", box_value((uint32_t)args.AcceptedMedia()));
             RaiseEvent(VoiceServiceEvent::AnswerRequested, valueSet);
         }
     }
@@ -97,7 +108,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     {
         if (appServiceConnected && appServiceConnection != nullptr) {
             data.Insert(L"ev", box_value((uint32_t)ev));
-            this->appServiceConnection.SendMessageAsync(data);
+            appServiceConnection.SendMessageAsync(data);
         }
     }
 
@@ -140,7 +151,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 break;
                 case VoiceServiceRequest::CallConnectRequest:
                 {
-                    if(activeCall != nullptr){
+                    if (activeCall != nullptr) {
                         SetupCall(data);
                     }
                 }
@@ -156,7 +167,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         Uri{ unbox_value<hstring>(data.Lookup(L"branding_image")) },
                         unbox_value<hstring>(data.Lookup(L"call_details")),
                         Uri{ unbox_value<hstring>(data.Lookup(L"ringtone")) },
-                        VoipPhoneCallMedia::Audio,
+                        VoipPhoneCallMedia::Audio | VoipPhoneCallMedia::Video,
                         90s);
 
                     if (activeCall != nullptr) {
@@ -192,12 +203,17 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                     if (voiceClient != nullptr) {
                         auto muted = unbox_value<bool>(data.Lookup(L"muted"));
                         voiceClient.Muted(muted);
-
-                        if (muted || voiceClient.Deafened()) {
-                            activeCall.NotifyCallHeld();
+                       
+                        try {
+                            if (muted || voiceClient.Deafened()) {
+                                activeCall.NotifyCallHeld();
+                            }
+                            else {
+                                activeCall.NotifyCallActive();
+                            }
                         }
-                        else {
-                            activeCall.NotifyCallActive();
+                        catch (winrt::hresult_error ex) {
+                            // for now ignore
                         }
 
                         event_values.Insert(L"muted", box_value(muted));
@@ -209,11 +225,16 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         auto deafened = unbox_value<bool>(data.Lookup(L"deafened"));
                         voiceClient.Deafened(deafened);
 
-                        if (deafened || voiceClient.Muted()) {
-                            activeCall.NotifyCallHeld();
+                        try {
+                            if (deafened || voiceClient.Muted()) {
+                                activeCall.NotifyCallHeld();
+                            }
+                            else {
+                                activeCall.NotifyCallActive();
+                            }
                         }
-                        else {
-                            activeCall.NotifyCallActive();
+                        catch (winrt::hresult_error ex) {
+                            // for now ignore
                         }
 
                         event_values.Insert(L"deafened", box_value(deafened));
@@ -223,9 +244,15 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 case VoiceServiceRequest::DisconnectRequest:
                     if (voiceClient != nullptr) {
                         voiceClient.Close();
-                        activeCall.NotifyCallEnded();
-                        activeCall = nullptr;
                         voiceClient = nullptr;
+
+                        try {
+                            activeCall.NotifyCallEnded();
+                            activeCall = nullptr;
+                        }
+                        catch (winrt::hresult_error ex) {
+                            // for now ignore
+                        }
 
                         event_values.Insert(L"is_reconnecting", box_value(false));
                         RaiseEvent(VoiceServiceEvent::Disconnected, event_values);
@@ -249,10 +276,10 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                     break;
                 }
             }
-            catch (const std::exception& ex)
+            catch (const winrt::hresult_error& ex)
             {
                 ev = VoiceServiceRequest::RequestFailed;
-                values.Insert(L"msg", box_value(to_hstring(ex.what())));
+                values.Insert(L"msg", box_value(to_hstring(ex.message())));
             }
 
             values.Insert(L"req", box_value((uint32_t)ev));
@@ -287,8 +314,12 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         }
 
         voiceClient = make<Voice::implementation::VoiceClient>(voiceClientOptions);
-        voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
-        voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
+
+        if (!udp_ping)
+            udp_ping = voiceClient.UdpSocketPingUpdated({ this, &ServiceBackgroundTask::OnUdpPing });
+
+        if (!ws_ping)
+            ws_ping = voiceClient.WebSocketPingUpdated({ this, &ServiceBackgroundTask::OnWsPing });
 
         if (data.HasKey(L"muted")) {
             voiceClient.Muted(unbox_value<bool>(data.Lookup(L"muted")));
@@ -298,8 +329,11 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
             voiceClient.Deafened(unbox_value<bool>(data.Lookup(L"deafened")));
         }
 
-        voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
-        voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
+        if (!on_connect)
+            on_connect = voiceClient.Connected({ this, &ServiceBackgroundTask::OnConnected });
+        if (!on_disconnect)
+            on_disconnect = voiceClient.Disconnected({ this, &ServiceBackgroundTask::OnDisconnected });
+
         voiceClient.ConnectAsync().get();
         activeCall.NotifyCallActive();
     }
@@ -307,13 +341,27 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
 
     void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
     {
-        this->appServiceConnected = false;
-        this->appServiceConnection = nullptr;
+        appServiceConnected = false;
+        appServiceConnection = nullptr;
     }
 
     void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
     {
         if (this->taskDeferral != nullptr) {
+            appServiceConnected = false;
+            appServiceConnection = nullptr;
+
+            if (voiceClient != nullptr) {
+                if (udp_ping)
+                    voiceClient.UdpSocketPingUpdated(udp_ping);
+                if (ws_ping)
+                    voiceClient.WebSocketPingUpdated(ws_ping);
+                if (on_connect)
+                    voiceClient.Connected(on_connect);
+                if (on_disconnect)
+                    voiceClient.Disconnected(on_disconnect);
+            }
+
             this->taskDeferral.Complete();
         }
     }

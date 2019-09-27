@@ -48,14 +48,21 @@ namespace Unicord.Universal.Models
             Channel = channel;
             CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
 
+            if (channel.IsPrivate)
+            {
+                App.Discord.CallCreated += OnCallCreated;
+                App.Discord.CallUpdated += OnCallUpdated;
+                App.Discord.CallDeleted += OnCallDeleted;
+            }
+
             App.Discord.TypingStarted += OnTypingStarted;
             App.Discord.MessageCreated += OnMessageCreated;
             App.Discord.MessageDeleted += OnMessageDeleted;
             App.Discord.ChannelUpdated += OnChannelUpdated;
             App.Discord.Resumed += OnResumed;
 
-            TypingUsers = new ObservableCollection<DiscordUser>();
             Messages = new ObservableCollection<DiscordMessage>();
+            TypingUsers = new ObservableCollection<DiscordUser>();
             FileUploads = new ObservableCollection<FileUploadModel>();
 
             FileUploads.CollectionChanged += (o, e) =>
@@ -78,16 +85,7 @@ namespace Unicord.Universal.Models
             }
 
             _slowModeTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1 / 30) };
-            _slowModeTimer.Tick += (o, e) =>
-            {
-                SlowModeTimeout = Math.Max(0, PerUserRateLimit - (DateTimeOffset.Now - _messageLastSent).TotalMilliseconds);
-                InvokePropertyChanged(nameof(ShowSlowModeTimeout));
-                if (SlowModeTimeout == 0)
-                {
-                    InvokePropertyChanged(nameof(CanSend));
-                    _slowModeTimer.Stop();
-                }
-            };
+            _slowModeTimer.Tick += OnSlowModeTimerTick;
         }
 
         public ObservableCollection<DiscordMessage> Messages { get; set; }
@@ -133,6 +131,8 @@ namespace Unicord.Universal.Models
         }
 
         public Permissions Permissions { get; set; }
+
+        public DiscordCall OngoingCall => (Channel is DiscordDmChannel dm) ? dm.OngoingCall : null;
 
         public DiscordUser Recipient => Channel.Type == ChannelType.Private ? (Channel as DiscordDmChannel).Recipient : null;
 
@@ -431,6 +431,31 @@ namespace Unicord.Universal.Models
             }
         }
 
+        private Task OnCallCreated(CallCreateEventArgs e)
+        {
+            if (Channel.Id == e.Channel.Id)
+            {
+
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnCallUpdated(CallUpdateEventArgs e)
+        {
+            return Task.CompletedTask;
+        }
+
+        private Task OnCallDeleted(CallDeleteEventArgs e)
+        {
+            if (Channel.Id == e.Channel.Id)
+            {
+
+            }
+
+            return Task.CompletedTask;
+        }
+
         internal async Task LoadMessagesAsync()
         {
             await _loadSemaphore.WaitAsync().ConfigureAwait(false);
@@ -601,6 +626,17 @@ namespace Unicord.Universal.Models
             }
         }
 
+        private void OnSlowModeTimerTick(object sender, object e)
+        {
+            SlowModeTimeout = Math.Max(0, PerUserRateLimit - (DateTimeOffset.Now - _messageLastSent).TotalMilliseconds);
+            InvokePropertyChanged(nameof(ShowSlowModeTimeout));
+            if (SlowModeTimeout == 0)
+            {
+                InvokePropertyChanged(nameof(CanSend));
+                _slowModeTimer.Stop();
+            }
+        }
+
         #region Typing
 
         public async Task TriggerTypingAsync(string text)
@@ -661,6 +697,13 @@ namespace Unicord.Universal.Models
 
             if (Channel.Type != ChannelType.Voice)
             {
+                if (Channel.IsPrivate)
+                {
+                    App.Discord.CallCreated -= OnCallCreated;
+                    App.Discord.CallUpdated -= OnCallUpdated;
+                    App.Discord.CallDeleted -= OnCallDeleted;
+                }
+
                 App.Discord.TypingStarted -= OnTypingStarted;
                 App.Discord.MessageCreated -= OnMessageCreated;
                 App.Discord.MessageDeleted -= OnMessageDeleted;

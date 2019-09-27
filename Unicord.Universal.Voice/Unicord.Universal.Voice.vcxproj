@@ -13,7 +13,7 @@
     <ApplicationType>Windows Store</ApplicationType>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
     <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0.18362.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformMinVersion>10.0.16299.0</WindowsTargetPlatformMinVersion>
+    <WindowsTargetPlatformMinVersion>10.0.15063.0</WindowsTargetPlatformMinVersion>
     <CppWinRTNamespaceMergeDepth>3</CppWinRTNamespaceMergeDepth>
     <CppWinRTFastAbi>true</CppWinRTFastAbi>
   </PropertyGroup>
@@ -82,36 +82,36 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -191,13 +191,17 @@
     <ClInclude Include="AudioFormat.h" />
     <ClInclude Include="AudioRenderer.h" />
     <ClInclude Include="ConnectionEndpoint.h" />
-    <ClInclude Include="OpusWrapper.h" />
+    <ClInclude Include="H264Decoder.h" />
+    <ClInclude Include="OpusDecoder.h" />
+    <ClInclude Include="OpusEncoder.h" />
+    <ClInclude Include="OpusUtil.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Rtp.h" />
     <ClInclude Include="ServiceBackgroundTask.h">
       <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
     </ClInclude>
     <ClInclude Include="SodiumWrapper.h" />
+    <ClInclude Include="VideoEventArgs.h" />
     <ClInclude Include="VoiceBackgroundTask.h">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
     </ClInclude>
@@ -213,7 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioRenderer.cpp" />
-    <ClCompile Include="OpusWrapper.cpp" />
+    <ClCompile Include="H264Decoder.cpp" />
+    <ClCompile Include="OpusDecoder.cpp" />
+    <ClCompile Include="OpusEncoder.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -222,6 +228,7 @@
       <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="SodiumWrapper.cpp" />
+    <ClCompile Include="VideoEventArgs.cpp" />
     <ClCompile Include="VoiceBackgroundTask.cpp">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
     </ClCompile>
@@ -238,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ServiceBackgroundTask.idl" />
+    <Midl Include="VideoEventArgs.idl" />
     <Midl Include="VoiceBackgroundTask.idl" />
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />

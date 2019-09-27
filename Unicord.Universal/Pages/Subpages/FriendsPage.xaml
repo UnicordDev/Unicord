@@ -46,14 +46,14 @@
                         <Ellipse.Fill>
                             <ImageBrush>
                                 <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{x:Bind User.NonAnimatedAvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
+                                    <BitmapImage UriSource="{Binding User.NonAnimatedAvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
                     <Ellipse Width="20" Height="20" Canvas.Left="44" Canvas.Top="44" StrokeThickness="2" Stroke="#FF171717">
                         <Ellipse.Fill>
-                            <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                            <SolidColorBrush Color="{Binding User.Presence, Converter={StaticResource PresenceColourConverter}}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                 </Canvas>
@@ -63,19 +63,19 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Name="text" Text="{x:Bind User.Username}" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="1" FontSize="12" x:Name="presenceActivity" x:Load="{x:Bind User.Presence.Activity.Name, Converter={StaticResource BoolConverter}, FallbackValue=False}">
-                            <Run Text="{x:Bind User.Presence, Converter={StaticResource PresenceTextConverter}}"/> 
+                        <TextBlock Name="text" Text="{Binding User.Username}" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" FontSize="12" x:Name="presenceActivity" Visibility="{Binding User.Presence.Activity.Name, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
+                            <Run Text="{Binding User.Presence, Converter={StaticResource PresenceTextConverter}}"/> 
                         </TextBlock>
                     </Grid>
-                    <StackPanel x:Name="overlayContent" x:Phase="10" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="VideoChat"/>
                         </Button>
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind User}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
@@ -85,29 +85,6 @@
     </Page.Resources>
     
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="769" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                    </VisualState.Setters>
-                </VisualState>
-
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
 
         <Grid Background="{ThemeResource MainBackgroundBrush}">
             <Grid.RowDefinitions>
@@ -180,6 +157,29 @@
                     </PivotItem>
                 </Pivot.Items>
             </Pivot>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="WideState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="769" />
+                        </VisualState.StateTriggers>
+
+                        <VisualState.Setters>
+                            <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                        </VisualState.Setters>
+                    </VisualState>
+
+                    <VisualState x:Name="NarrowState">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+
+                        <VisualState.Setters>
+                            <Setter Target="showSidebarButton.Visibility" Value="Visible" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
         </Grid>
     </controls:DropShadowPanel>
 </Page>

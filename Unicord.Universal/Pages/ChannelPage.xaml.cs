@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
@@ -38,8 +39,15 @@ namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private List<ChannelViewModel> _channelHistory
             = new List<ChannelViewModel>();
+
+        private EmotePicker _emotePicker;
+        private ChannelViewModel _viewModel;
+        private DispatcherTimer _titleBarTimer;
+        private bool _scrollHandlerAdded;
 
         public ChannelViewModel ViewModel
         {
@@ -52,13 +60,6 @@ namespace Unicord.Universal.Pages
         }
 
         public bool IsPaneOpen { get; private set; }
-
-        private EmotePicker _emotePicker;
-        private ChannelViewModel _viewModel;
-        private bool _scrollHandlerAdded;
-        private DispatcherTimer _titleBarTimer;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ChannelPage()
         {
@@ -102,6 +103,7 @@ namespace Unicord.Universal.Pages
             if (e.Parameter is DiscordChannel chan)
             {
                 Application.Current.Suspending += OnSuspending;
+
                 var navigation = SystemNavigationManager.GetForCurrentView();
                 navigation.BackRequested += Navigation_BackRequested;
 
@@ -128,12 +130,8 @@ namespace Unicord.Universal.Pages
                 else
                 {
                     model = new ChannelViewModel(chan);
-                }
+                } 
 
-                if (model.Channel.IsPrivate)
-                    model.Channel.RequestCallInfo();
-
-                var args = this.FindParent<MainPage>()?.Arguments;
                 WindowManager.HandleTitleBarForControl(topGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
 
@@ -141,13 +139,16 @@ namespace Unicord.Universal.Pages
                 DataContext = ViewModel;
 
                 if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
+                {
                     messageTextBox.Focus(FocusState.Keyboard);
+                }
 
                 while (_channelHistory.Count > 10)
                 {
                     var oldModel = _channelHistory.ElementAt(0);
-                    oldModel.Dispose();
                     _channelHistory.RemoveAt(0);
+
+                    oldModel.Dispose();
                 }
 
                 await Load();
@@ -160,7 +161,6 @@ namespace Unicord.Universal.Pages
             var navigation = SystemNavigationManager.GetForCurrentView();
             navigation.BackRequested -= Navigation_BackRequested;
         }
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -233,11 +233,19 @@ namespace Unicord.Universal.Pages
                     loadingProgress.IsIndeterminate = true;
 
                     noMessages.Visibility = Visibility.Collapsed;
-                });
-                
+                }).ConfigureAwait(false);
+
                 if (ViewModel.Channel.Guild?.IsSynced == false && ViewModel.Channel.Guild.IsLarge)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
+                }
+
+                if (ViewModel.Channel is DiscordDmChannel dm)
+                {
+                    if (dm.OngoingCall == null)
+                    {
+                        dm.RequestCallInfo();
+                    }
                 }
 
                 await ViewModel.LoadMessagesAsync().ConfigureAwait(false);
@@ -260,7 +268,7 @@ namespace Unicord.Universal.Pages
                     sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
             }
 
-            await JumpListManager.AddToListAsync(_viewModel.Channel);
+            await JumpListManager.AddToListAsync(_viewModel.Channel).ConfigureAwait(false);
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
