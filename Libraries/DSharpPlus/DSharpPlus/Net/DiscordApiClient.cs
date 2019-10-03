@@ -998,6 +998,39 @@ namespace DSharpPlus.Net
 
             return ret;
         }
+
+        internal async Task CreateCallAsync(ulong channel_id, ulong[] recipients = null)
+        {
+            // https://discordapp.com/api/v6/channels/:channel_id/call/ring
+
+            var headers = Utilities.GetBaseHeaders();
+
+            var route = $"{Endpoints.CHANNELS}/:channel_id/call/ring";
+            var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
+
+            var obj = new JObject()
+            {
+                ["recipients"] = JToken.FromObject(recipients)
+            };
+
+            var url = Utilities.GetApiUriFor(path);
+            var res = await DoRequestAsync(Discord, bucket, url, RestRequestMethod.POST, headers, obj.ToString()).ConfigureAwait(false);
+        }
+
+        internal async Task DeclineCallAsync(ulong channel_id, ulong[] recipients = null)
+        {
+            // https://discordapp.com/api/v6/channels/:channel_id/call/stop-ringing
+
+            var headers = Utilities.GetBaseHeaders();
+
+            var route = $"{Endpoints.CHANNELS}/:channel_id/call/stop-ringing";
+            var bucket = Rest.GetBucket(RestRequestMethod.POST, route, new { channel_id }, out var path);
+
+            var obj = new JObject() { };
+            var url = Utilities.GetApiUriFor(path);
+            var res = await DoRequestAsync(Discord, bucket, url, RestRequestMethod.POST, headers, obj.ToString()).ConfigureAwait(false);
+        }
+
         #endregion
 
         #region Member

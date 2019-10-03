@@ -217,7 +217,11 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid x:Name="topGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid x:Name="CallView" MinHeight="300" Background="{ThemeResource SidebarPrimaryBrush}">
+                        <controls1:CallControl Call="{Binding Channel.OngoingCall}"/>
+                    </Grid>
+                    
+                    <Grid x:Name="topGrid" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -669,15 +673,29 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState x:Name="Normal">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{Binding Channel.OngoingCall, Converter={StaticResource BoolConverter}, ConverterParameter=True, FallbackValue=True}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="topGrid.Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+                        <Setter Target="CallView.Visibility" Value="Collapsed"/>
+                        <Setter Target="callButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="InCall">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{Binding Channel.OngoingCall, Converter={StaticResource BoolConverter}, FallbackValue=False}"/>
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="topGrid.Background" Value="Transparent" />
+                        <Setter Target="CallView.Visibility" Value="Visible"/>
+                        <Setter Target="callButton.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup>
-            <VisualState x:Name="Normal">
-                <VisualState.StateTriggers>
-                    <StateTrigger IsActive="{Binding }"/>
-                </VisualState.StateTriggers>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
 </Page>

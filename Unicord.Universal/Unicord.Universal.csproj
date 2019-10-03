@@ -144,6 +144,9 @@
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CallControl.xaml.cs">
+      <DependentUpon>CallControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EmbedViewer.xaml.cs">
       <DependentUpon>EmbedViewer.xaml</DependentUpon>
     </Compile>
@@ -155,6 +158,9 @@
     </Compile>
     <Compile Include="Controls\EmotePicker.xaml.cs">
       <DependentUpon>EmotePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EndpointSelectionMenu.xaml.cs">
+      <DependentUpon>EndpointSelectionMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FileViewer.cs" />
     <Compile Include="Controls\Flyouts\AddServerFlyout.xaml.cs">
@@ -331,6 +337,7 @@
     <Compile Include="Controls\Flyouts\UserFlyout.xaml.cs">
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\CallViewModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageModel.cs" />
@@ -384,9 +391,6 @@
     </Compile>
     <Compile Include="Pages\SharePage.xaml.cs">
       <DependentUpon>SharePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Subpages\CallPage.xaml.cs">
-      <DependentUpon>CallPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Subpages\ChannelWarningPage.xaml.cs">
       <DependentUpon>ChannelWarningPage.xaml</DependentUpon>
@@ -467,6 +471,29 @@
     <PRIResource Include="Resources\en-GB\Controls.resw" />
     <PRIResource Include="Resources\en-GB\Converters.resw" />
     <PRIResource Include="Resources\en-GB\CallPage.resw" />
+    <PRIResource Include="Resources\fr\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\ChannelPage.resw" />
+    <PRIResource Include="Resources\fr\ChannelWarningPage.resw" />
+    <PRIResource Include="Resources\fr\Controls.resw" />
+    <PRIResource Include="Resources\fr\Converters.resw" />
+    <PRIResource Include="Resources\fr\Dialogs.resw" />
+    <PRIResource Include="Resources\fr\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\fr\Flyouts.resw" />
+    <PRIResource Include="Resources\fr\FriendsPage.resw" />
+    <PRIResource Include="Resources\fr\LoginPage.resw" />
+    <PRIResource Include="Resources\fr\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\PinsPage.resw" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
+    <PRIResource Include="Resources\fr\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\fr\SettingsPage.resw" />
+    <PRIResource Include="Resources\fr\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\UserListPage.resw" />
+    <PRIResource Include="Resources\fr\VideoEditor.resw" />
+    <PRIResource Include="Resources\fr\Voice.resw" />
+    <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\Calls.resw" />
     <None Include="Unicord.Univeral_StoreKey.pfx" />
     <None Include="Unicord.Univeral_TemporaryKey.pfx" />
   </ItemGroup>
@@ -551,6 +578,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\CallControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\EmbedViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -564,6 +595,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\EmotePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EndpointSelectionMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -706,10 +741,6 @@
     <Page Include="Pages\SharePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\CallPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Subpages\ChannelWarningPage.xaml">
       <SubType>Designer</SubType>

@@ -427,10 +427,10 @@ namespace Unicord.Universal
             ApplicationView.GetForCurrentView().ExitFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
-            fullscreenCanvas.Children.Remove(element);
-            parent.Children.Insert(0, element);
             element.Width = double.NaN;
             element.Height = double.NaN;
+            fullscreenCanvas.Children.Remove(element);
+            parent.Children.Add(element);
 
             _fullscreenElement = null;
             _fullscreenParent = null;

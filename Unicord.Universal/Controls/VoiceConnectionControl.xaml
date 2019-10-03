@@ -41,27 +41,7 @@
             <ToggleButton x:Name="muteToggleButton" Click="MuteToggleButton_Click" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
             <ToggleButton x:Name="deafenToggleButton" Click="DeafenToggleButton_Click" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened, Mode=OneWay}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
             <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="2" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
-            <lib:DropDownButton x:Name="toggleSpeakerButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE7F5;">
-                <lib:DropDownButton.Flyout>
-                    <MenuFlyout Opening="MenuFlyout_Opening">
-                        <ToggleMenuFlyoutItem x:Uid="/Voice/Earpiece" Click="Earpiece_Click" Name="Earpiece">
-                            <ToggleMenuFlyoutItem.Icon>
-                                <SymbolIcon Symbol="CellPhone"/>
-                            </ToggleMenuFlyoutItem.Icon>
-                        </ToggleMenuFlyoutItem>
-                        <ToggleMenuFlyoutItem x:Uid="/Voice/Speaker" Click="Speakerphone_Click" Name="Speakerphone">
-                            <ToggleMenuFlyoutItem.Icon>
-                                <SymbolIcon Symbol="Volume"/>
-                            </ToggleMenuFlyoutItem.Icon>
-                        </ToggleMenuFlyoutItem>
-                        <ToggleMenuFlyoutItem x:Uid="/Voice/Bluetooth" Click="Bluetooth_Click" Name="Bluetooth">
-                            <ToggleMenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE702;"/>
-                            </ToggleMenuFlyoutItem.Icon>
-                        </ToggleMenuFlyoutItem>
-                    </MenuFlyout>
-                </lib:DropDownButton.Flyout>
-            </lib:DropDownButton>
+            <local:EndpointSelectionMenu Padding="0,8" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
     </Grid>

@@ -4,11 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Net;
 using DSharpPlus.Net.Serialization;
 using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
+    public class DiscordCallState
+    {
+        public DiscordUser User { get; set; }
+        public DiscordVoiceState VoiceState { get; set; }
+        public bool Ringing { get; set; }
+    }
+
     public class DiscordCall : PropertyChangedBase
     {
         internal DiscordClient Discord { get; set; }
@@ -33,6 +41,10 @@ namespace DSharpPlus.Entities
         [JsonProperty("ringing")]
         public List<ulong> Ringing { get; internal set; }
 
+        public IEnumerable<DiscordCallState> CallStates =>
+            Ringing.Select(s => Discord.UserCache.TryGetValue(s, out var u) ? new DiscordCallState() { User = u, Ringing = true } : null)
+                   .Union(VoiceStates.Values.Select(s => new DiscordCallState() { User = s.User, VoiceState = s }));
+
         [JsonProperty("message_id")]
         public ulong MessageId { get; set; }
 
@@ -45,6 +57,11 @@ namespace DSharpPlus.Entities
         public override string ToString()
         {
             return $"Call with {Channel.Recipient.DisplayName} ({Channel.Id}). {Ringing.Count} ringing. {_voiceStates.Count} states.";
+        }
+
+        public async Task DeclineAsync()
+        {
+            await Discord.ApiClient.DeclineCallAsync(_channelId);
         }
     }
 }

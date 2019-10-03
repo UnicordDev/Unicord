@@ -109,6 +109,8 @@ namespace Unicord.Universal.Pages
                 UpdateTitleBar();
                 CheckSettingsPane();
 
+                this.FindParent<MainPage>().HideConnectingOverlay();
+
                 _loaded = true;
 
                 var guildPositions = App.Discord.UserSettings?.GuildPositions;
@@ -142,7 +144,6 @@ namespace Unicord.Universal.Pages
                 unreadDms.ItemsSource = _unreadDms;
                 unreadDms.Visibility = _unreadDms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
-                this.FindParent<MainPage>().HideConnectingOverlay();
 
                 if (_args != null)
                 {
@@ -183,19 +184,33 @@ namespace Unicord.Universal.Pages
 
         private async Task Discord_CallCreated(CallCreateEventArgs e)
         {
-
+            if (!VoiceConnectionModel.OngoingCalls.TryGetValue(e.Channel, out var model))
+            {
+                model = await Dispatcher.AwaitableRunAsync(() => new VoiceConnectionModel(e.Call));
+                VoiceConnectionModel.OngoingCalls[e.Channel] = model;
+            }
         }
 
         private async Task Discord_CallUpdated(CallUpdateEventArgs e)
         {
-            if (e.CallAfter.Ringing.Contains(App.Discord.CurrentUser.Id))
+            if (!VoiceConnectionModel.OngoingCalls.TryGetValue(e.Channel, out var model))
             {
-                await Dispatcher.AwaitableRunAsync(async () =>
-                {
-                    var model = new VoiceConnectionModel(e.CallAfter);
-                    await model.NotifyIncomingCallAsync();
-                });
+                model = await Dispatcher.AwaitableRunAsync(() => new VoiceConnectionModel(e.CallAfter));
+                VoiceConnectionModel.OngoingCalls[e.Channel] = model;
             }
+
+            try
+            {
+                if (e.CallAfter.Ringing.Contains(App.Discord.CurrentUser.Id))
+                {
+                    await model.NotifyIncomingCallAsync();
+                }
+                else
+                {
+                    await model.NotifyCallEndAsync();
+                }
+            }
+            catch { }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)

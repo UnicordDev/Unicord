@@ -1,0 +1,41 @@
+﻿<UserControl
+    x:Class="Unicord.Universal.Controls.CallControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d" Unloaded="UserControl_Unloaded"
+    x:DefaultBindMode="OneWay"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid Padding="12">
+        <ItemsControl MinHeight="96" ItemsSource="{x:Bind Model.CallStates}" VerticalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel HorizontalAlignment="Center" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <lib:PersonPicture Width="112" Height="112" Margin="12,0" DisplayName="{Binding User.DisplayName}" ProfilePicture="{Binding User.AvatarUrl}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <StackPanel x:Name="InCallControls" Visibility="{Binding IsActive, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <ToggleButton x:Name="MuteButton" Click="MuteButton_Click" Content="&#xE720;" Width="34" Height="34" FontSize="16" Style="{ThemeResource StretchyIconToggleButtonStyle}"/>
+            <ToggleButton x:Name="DeafenButton" Click="DeafenButton_Click" Content="&#xE74F;" Width="34" Height="34" FontSize="16" Style="{ThemeResource StretchyIconToggleButtonStyle}"/>
+            <local:EndpointSelectionMenu Width="34" Height="34" FontSize="16"/>
+            <Button x:Name="LeaveCallButton" Click="DisconnectButton_Click" Style="{StaticResource AccentButtonStyle}" Content="Leave Call" Margin="8,0" Padding="16,5"/>
+            <Button x:Name="FullScreenButton" Click="FullScreenButton_Click" Content="&#xE740;" Width="34" Height="34" FontSize="16" Style="{ThemeResource StretchyIconButtonStyle}"/>
+            <Button Content="&#xE713;" Width="34" Height="34" FontSize="16" Style="{ThemeResource StretchyIconButtonStyle}"/>
+        </StackPanel>
+
+        <StackPanel x:Name="OutOfCallControls" Visibility="{Binding IsNotActive, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"  Height="34" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Button x:Name="JoinCallButton" Click="JoinCallButton_Click" Style="{StaticResource AccentButtonStyle}" Content="Join Call" Padding="16,5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

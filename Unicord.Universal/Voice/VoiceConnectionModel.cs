@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -33,9 +35,13 @@ namespace Unicord.Universal.Voice
         private ResourceLoader _strings;
         private MediaPlayerElement _mediaPlayer;
         private VoipCallCoordinator _voipCallCoordinator;
-        private AppServiceConnection _appServiceConnection;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
+
+        private static SemaphoreSlim _appServiceSemaphore;
+        private static AppServiceConnection _appServiceConnection;
+        public static ConcurrentDictionary<DiscordChannel, VoiceConnectionModel> OngoingCalls
+            = new ConcurrentDictionary<DiscordChannel, VoiceConnectionModel>();
 
         private bool _muted;
         private bool _deafened;
@@ -67,6 +73,7 @@ namespace Unicord.Universal.Voice
         public uint WebSocketPing { get => _webSocketPing; set => OnPropertySet(ref _webSocketPing, value); }
         public uint UdpPing { get => _udpPing; set => OnPropertySet(ref _udpPing, value); }
         public bool IsDisposed { get; private set; }
+        public bool IsConnected { get; internal set; }
 
         public event EventHandler<EventArgs> Disconnected;
 
@@ -76,11 +83,11 @@ namespace Unicord.Universal.Voice
         /// </summary>
         public static async Task<VoiceConnectionModel> FindExistingConnectionAsync()
         {
-            var connection = new AppServiceConnection()
+            var connection = await Task.Run(() => new AppServiceConnection()
             {
                 AppServiceName = "com.wankerr.Unicord.Voice",
                 PackageFamilyName = Package.Current.Id.FamilyName
-            };
+            });
 
             if (await connection.OpenAsync() != AppServiceConnectionStatus.Success)
             {
@@ -89,7 +96,7 @@ namespace Unicord.Universal.Voice
                 return null;
             }
 
-            await ReserveCallResourcesAsync(VoipCallCoordinator.GetDefault());
+            await ReserveCallResourcesAsync();
 
             var strings = ResourceLoader.GetForViewIndependentUse("Voice");
             var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
@@ -120,20 +127,13 @@ namespace Unicord.Universal.Voice
 
         private VoiceConnectionModel()
         {
+            _appServiceSemaphore = new SemaphoreSlim(1);
             _mediaPlayer = new MediaPlayerElement() { AutoPlay = true };
             _strings = ResourceLoader.GetForViewIndependentUse("Voice");
             _voiceStateUpdateCompletion = new TaskCompletionSource<VoiceStateUpdateEventArgs>();
             _voiceServerUpdateCompletion = new TaskCompletionSource<VoiceServerUpdateEventArgs>();
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
 
-            _appServiceConnection = new AppServiceConnection()
-            {
-                AppServiceName = "com.wankerr.Unicord.Voice",
-                PackageFamilyName = Package.Current.Id.FamilyName
-            };
-
-            _appServiceConnection.RequestReceived += OnRequestReceived;
-            _appServiceConnection.ServiceClosed += OnServiceClosed;
 
             ConnectionStatus = _strings.GetString("InitialConnectionState");
         }
@@ -155,11 +155,11 @@ namespace Unicord.Universal.Voice
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
 
             _appServiceConnection?.Dispose();
-
-            _appServiceConnected = true;
             _appServiceConnection = connection;
             _appServiceConnection.RequestReceived += OnRequestReceived;
             _appServiceConnection.ServiceClosed += OnServiceClosed;
+
+            _appServiceConnected = true;
         }
 
         public async Task UpdatePreferredAudioDevicesAsync(string audioRender, string audioCapture)
@@ -232,76 +232,103 @@ namespace Unicord.Universal.Voice
             await SendRequestAsync(request);
         }
 
-        public async Task ConnectAsync()
+        public async Task NotifyCallEndAsync()
         {
-            if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus"))
-            {
-                ConnectionStatus = _strings.GetString("ConnectionState1");
-                await EnsureAppServiceConnectedAsync();
+            if (Call == null)
+                throw new InvalidProgramException("This isn't a call, dummy!");
 
-                var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
-                var response = await SendRequestAsync(stateRequest);
-                var state = (VoiceServiceState)(uint)response["state"];
+            await EnsureAppServiceConnectedAsync();
 
-                if (state == VoiceServiceState.Connected)
-                {
-                    var channel_id = (ulong)response["channel_id"];
-                    var guild_id = (ulong)response["guild_id"];
+            var request = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.NotifyCallEndRequest };
 
-                    if (channel_id != Channel.Id && guild_id != Channel.GuildId)
-                    {
-                        ConnectionStatus = _strings.GetString("ConnectionState2");
-
-                        var disconnectRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DisconnectRequest };
-                        await SendRequestAsync(disconnectRequest);
-                    }
-                }
-
-                ConnectionStatus = _strings.GetString("ConnectionState3");
-
-                App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
-                App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
-                SendVoiceStateUpdate(Channel.Id);
-
-                var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
-                var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
-                var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
-                var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
-
-                ConnectionStatus = string.Format(_strings.GetString("ConnectionState4Format"), Channel.Name);
-                var connectionRequest = new ValueSet()
-                {
-                    ["req"] = Channel.Guild != null ? (uint)VoiceServiceRequest.GuildConnectRequest : (uint)VoiceServiceRequest.CallConnectRequest,
-                    ["channel_id"] = Channel.Id,
-                    ["guild_id"] = Channel.Guild?.Id ?? 0,
-                    ["user_id"] = App.Discord.CurrentUser.Id,
-                    ["endpoint"] = vsru.Endpoint,
-                    ["token"] = vsru.VoiceToken,
-                    ["session_id"] = vstu.SessionId,
-                    ["contact_name"] = Channel.Guild != null ? $"{Channel.Name} - {Channel.Guild.Name}" : DMNameConverter.Instance.Convert(Channel, null, null, null),
-                    ["input_device"] = inputDeviceId,
-                    ["output_device"] = outputDeviceId,
-                    ["muted"] = Muted,
-                    ["deafened"] = Deafened
-                };
-
-                await SendRequestAsync(connectionRequest);
-            }
+            await SendRequestAsync(request);
         }
 
-        private async Task EnsureAppServiceConnectedAsync()
+        public async Task ConnectAsync()
         {
-            if (!_appServiceConnected)
+            ConnectionStatus = _strings.GetString("ConnectionState1");
+            await EnsureAppServiceConnectedAsync();
+
+            var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
+            var response = await SendRequestAsync(stateRequest);
+            var state = (VoiceServiceState)(uint)response["state"];
+
+            if (state == VoiceServiceState.Connected)
             {
-                var appServiceStatus = await _appServiceConnection.OpenAsync();
-                if (appServiceStatus != AppServiceConnectionStatus.Success)
-                    throw new Exception("Unable to connect to AppService! " + appServiceStatus);
+                var channel_id = (ulong)response["channel_id"];
+                var guild_id = (ulong)response["guild_id"];
+
+                if (channel_id != Channel.Id && guild_id != Channel.GuildId)
+                {
+                    ConnectionStatus = _strings.GetString("ConnectionState2");
+
+                    var disconnectRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DisconnectRequest };
+                    await SendRequestAsync(disconnectRequest);
+                }
             }
 
-            _appServiceConnected = true;
-            var status = await ReserveCallResourcesAsync(_voipCallCoordinator);
-            if (status != VoipPhoneCallResourceReservationStatus.Success)
-                throw new Exception("Unable to reserve call resources!");
+            ConnectionStatus = _strings.GetString("ConnectionState3");
+
+            App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
+            App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
+            SendVoiceStateUpdate(Channel.Id);
+
+            var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
+            var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
+            var inputDeviceId = App.LocalSettings.Read<string>("InputDevice", null);
+            var outputDeviceId = App.LocalSettings.Read<string>("OutputDevice", null);
+
+            ConnectionStatus = string.Format(_strings.GetString("ConnectionState4Format"), Channel.Name);
+            var connectionRequest = new ValueSet()
+            {
+                ["req"] = Channel.Guild != null ? (uint)VoiceServiceRequest.GuildConnectRequest : (uint)VoiceServiceRequest.CallConnectRequest,
+                ["channel_id"] = Channel.Id,
+                ["guild_id"] = Channel.Guild?.Id ?? 0,
+                ["user_id"] = App.Discord.CurrentUser.Id,
+                ["endpoint"] = vsru.Endpoint,
+                ["token"] = vsru.VoiceToken,
+                ["session_id"] = vstu.SessionId,
+                ["contact_name"] = Channel.Guild != null ? $"{Channel.Name} - {Channel.Guild.Name}" : DMNameConverter.Instance.Convert(Channel, null, null, null),
+                ["input_device"] = inputDeviceId,
+                ["output_device"] = outputDeviceId,
+                ["muted"] = Muted,
+                ["deafened"] = Deafened
+            };
+
+            await SendRequestAsync(connectionRequest);
+        }
+
+        private static async Task EnsureAppServiceConnectedAsync()
+        {
+            await _appServiceSemaphore.WaitAsync();
+
+            try
+            {
+                if (_appServiceConnection == null || !_appServiceConnected)
+                {
+                    _appServiceConnection = await Task.Run(() => new AppServiceConnection()
+                    {
+                        AppServiceName = "com.wankerr.Unicord.Voice",
+                        PackageFamilyName = Package.Current.Id.FamilyName
+                    });
+
+                    _appServiceConnection.RequestReceived += OnRequestReceived;
+                    _appServiceConnection.ServiceClosed += OnServiceClosed;
+
+                    var appServiceStatus = await _appServiceConnection.OpenAsync();
+                    if (appServiceStatus != AppServiceConnectionStatus.Success)
+                        throw new Exception("Unable to connect to AppService! " + appServiceStatus);
+                }
+
+                _appServiceConnected = true;
+                var status = await ReserveCallResourcesAsync(_voipCallCoordinator);
+                if (status != VoipPhoneCallResourceReservationStatus.Success)
+                    throw new Exception("Unable to reserve call resources!");
+            }
+            finally
+            {
+                _appServiceSemaphore.Release();
+            }
         }
 
         private static async Task<VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(VoipCallCoordinator coordinator)
@@ -357,16 +384,25 @@ namespace Unicord.Universal.Voice
             if (IsDisposed)
                 return null;
 
-            var response = await _appServiceConnection.SendMessageAsync(request);
-            if (response.Message != null)
-            {
-                // double cast because C#
-                if ((VoiceServiceRequest)(uint)response.Message["req"] == VoiceServiceRequest.RequestFailed)
-                {
-                    throw new Exception((string)response.Message["msg"]);
-                }
+            await _appServiceSemaphore.WaitAsync();
 
-                return response.Message;
+            try
+            {
+                var response = await _appServiceConnection.SendMessageAsync(request);
+                if (response.Message != null)
+                {
+                    // double cast because C#
+                    if ((VoiceServiceRequest)(uint)response.Message["req"] == VoiceServiceRequest.RequestFailed)
+                    {
+                        throw new Exception((string)response.Message["msg"]);
+                    }
+
+                    return response.Message;
+                }
+            }
+            finally
+            {
+                _appServiceSemaphore.Release();
             }
 
             return null;
@@ -399,6 +435,7 @@ namespace Unicord.Universal.Voice
                 {
                     case VoiceServiceEvent.Connected:
                         await PlayCueAsync("connected");
+                        IsConnected = true;
                         ConnectionStatus = string.Format(_strings.GetString("ConnectedStateFormat"), Channel.Name);
                         break;
                     case VoiceServiceEvent.Reconnecting:
@@ -408,6 +445,8 @@ namespace Unicord.Universal.Voice
                     case VoiceServiceEvent.Disconnected:
                         await PlayCueAsync("self_disconnected");
                         ConnectionStatus = _strings.GetString("DisconnectedState");
+
+                        IsConnected = false;
                         Disconnected?.Invoke(this, null);
                         SendVoiceStateUpdate(null);
                         break;
@@ -426,10 +465,16 @@ namespace Unicord.Universal.Voice
                         WebSocketPing = (uint)args.Request.Message["ping"];
                         break;
                     case VoiceServiceEvent.AnswerRequested:
-                        await ConnectAsync();
+                        if (Call != null)
+                        {
+                            await ConnectAsync();
+                        }
                         break;
                     case VoiceServiceEvent.RejectRequested:
-
+                        if (Call != null)
+                        {
+                            await Call.DeclineAsync();
+                        }
                         break;
                     default:
                         break;
@@ -439,6 +484,9 @@ namespace Unicord.Universal.Voice
 
         private void OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
+            _appServiceConnected = false;
+            _appServiceConnection = null;
+
             Disconnected?.Invoke(this, null);
             SendVoiceStateUpdate(null);
             Dispose();
@@ -500,6 +548,8 @@ namespace Unicord.Universal.Voice
         {
             IsDisposed = true;
 
+            _appServiceSemaphore.Dispose();
+            _appServiceSemaphore = null;
             _appServiceConnected = false;
             _appServiceConnection?.Dispose();
             _appServiceConnection = null;

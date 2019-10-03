@@ -2299,24 +2299,21 @@ namespace DSharpPlus
                     await _callUpdated.InvokeAsync(new CallUpdateEventArgs(this) { CallAfter = call, Channel = call.Channel });
                 }
             }
+            
+            vstateOld?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
+            vstateNew?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
 
-            if (vstateNew != null)
+            var ea = new VoiceStateUpdateEventArgs(this)
             {
-                vstateOld?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
-                vstateNew?.Channel?.InvokePropertyChanged(nameof(vstateNew.Channel.ConnectedUsers));
+                Guild = vstateNew?.Guild ?? vstateOld?.Guild,
+                Channel = vstateNew?.Channel ?? vstateOld?.Channel,
+                User = vstateNew?.User ?? vstateOld?.User,
+                SessionId = vstateNew?.SessionId,
 
-                var ea = new VoiceStateUpdateEventArgs(this)
-                {
-                    Guild = vstateNew.Guild,
-                    Channel = vstateNew.Channel,
-                    User = vstateNew.User,
-                    SessionId = vstateNew.SessionId,
-
-                    Before = vstateOld,
-                    After = vstateNew
-                };
-                await _voiceStateUpdated.InvokeAsync(ea).ConfigureAwait(false);
-            }
+                Before = vstateOld,
+                After = vstateNew
+            };
+            await _voiceStateUpdated.InvokeAsync(ea).ConfigureAwait(false);
         }
 
         internal async Task OnVoiceServerUpdateEventAsync(JObject dat, string endpoint, string token)

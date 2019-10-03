@@ -152,6 +152,8 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                 case VoiceServiceRequest::CallConnectRequest:
                 {
                     if (activeCall != nullptr) {
+                        try { activeCall.NotifyCallAccepted(VoipPhoneCallMedia::Audio); }
+                        catch (winrt::hresult_error&) {}
                         SetupCall(data);
                     }
                 }
@@ -167,12 +169,19 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         Uri{ unbox_value<hstring>(data.Lookup(L"branding_image")) },
                         unbox_value<hstring>(data.Lookup(L"call_details")),
                         Uri{ unbox_value<hstring>(data.Lookup(L"ringtone")) },
-                        VoipPhoneCallMedia::Audio | VoipPhoneCallMedia::Video,
+                        VoipPhoneCallMedia::Audio,
                         90s);
 
                     if (activeCall != nullptr) {
                         activeCall.AnswerRequested({ this, &ServiceBackgroundTask::OnAnswerRequested });
                         activeCall.RejectRequested({ this, &ServiceBackgroundTask::OnRejectRequested });
+                    }
+                }
+                break;
+                case VoiceServiceRequest::NotifyCallEndRequest:
+                {
+                    if (activeCall != nullptr && voiceClient != nullptr) {
+                        activeCall.NotifyCallEnded();
                     }
                 }
                 break;
@@ -343,6 +352,18 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
     {
         appServiceConnected = false;
         appServiceConnection = nullptr;
+
+        if (voiceClient != nullptr) {
+            if (udp_ping)
+                voiceClient.UdpSocketPingUpdated(udp_ping);
+            if (ws_ping)
+                voiceClient.WebSocketPingUpdated(ws_ping);
+            if (on_connect)
+                voiceClient.Connected(on_connect);
+            if (on_disconnect)
+                voiceClient.Disconnected(on_disconnect);
+        }
+
     }
 
     void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)

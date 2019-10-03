@@ -5,6 +5,7 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SidebarPrimaryBrush" Color="#FFF0F0F0" />
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
@@ -13,6 +14,7 @@
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="SidebarPrimaryBrush" Color="#FF0F0F0F" />
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
