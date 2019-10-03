@@ -4,6 +4,7 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 
@@ -58,11 +59,8 @@ namespace Unicord.Universal.Commands
                     {
                         page.HideOverlay();
 
-                        var discordPage = page.FindChild<DiscordPage>();
-                        if (discordPage != null)
-                        {
-                            discordPage.Navigate(channel, new DrillInNavigationTransitionInfo());
-                        }
+                        var service = DiscordNavigationService.GetForCurrentView();
+                        await service.NavigateAsync(channel);
                     }
                 }
             }

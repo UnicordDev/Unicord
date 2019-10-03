@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -52,7 +53,7 @@ namespace Unicord.Universal.Pages.Subpages
             dmsList.SelectedIndex = -1;
         }
 
-        private void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dataContext = DataContext as DMChannelsViewModel;
             if (dataContext.UpdatingIndex)
@@ -61,7 +62,8 @@ namespace Unicord.Universal.Pages.Subpages
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
             if (channel != null)
             {
-                this.FindParent<DiscordPage>()?.Navigate(channel, null);
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(channel);
             }
         }
     }

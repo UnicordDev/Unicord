@@ -13,6 +13,7 @@ using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
@@ -868,7 +869,9 @@ namespace Unicord.Universal.Pages
                 WindowManager.SetChannelForCurrentWindow(0);
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
 
-                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(null);
+
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);
             }
@@ -881,7 +884,9 @@ namespace Unicord.Universal.Pages
                 WindowManager.SetChannelForCurrentWindow(0);
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
 
-                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(null);
+
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);
             }

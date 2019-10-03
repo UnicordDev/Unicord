@@ -8,6 +8,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -43,12 +44,13 @@ namespace Unicord.Universal.Pages.Subpages
             DataContext = new GuildChannelListViewModel(Guild);
         }
 
-        private void channelsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void channelsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
             if (channel != null)
             {
-                this.FindParent<DiscordPage>().Navigate(channel, null);
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(channel);
             }
         }
     }
