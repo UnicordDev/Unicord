@@ -316,7 +316,6 @@
                     </Grid>
 
                     <ListView
-                        x:Name="guildsList"
                         Grid.Row="1"
                         AllowDrop="True"
                         CanDrag="True"
@@ -347,6 +346,7 @@
                                     x:Name="friendsItem"
                                     MinWidth="0"
                                     Padding="0"
+                                    IsSelected="{Binding IsFriendsSelected}"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="friendsItem_Tapped">
                                     <SymbolIcon
@@ -356,7 +356,6 @@
                                 </ListViewItem>
 
                                 <ListView
-                                    x:Name="unreadDms"
                                     ItemsSource="{Binding UnreadDMs}"
                                     SelectedItem="{Binding SelectedDM}"
                                     Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"

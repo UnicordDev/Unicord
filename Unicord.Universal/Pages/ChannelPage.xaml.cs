@@ -208,7 +208,7 @@ namespace Unicord.Universal.Pages
             if (e.Handled)
                 return;
 
-            this.FindParent<MainPage>()?.LeaveFullscreen();
+            FullscreenService.GetForCurrentView()?.LeaveFullscreen();
             var last = _channelHistory.ElementAtOrDefault(_channelHistory.Count - 1);
             if (last != null)
             {

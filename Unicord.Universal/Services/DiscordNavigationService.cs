@@ -11,11 +11,18 @@ using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Resources;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace Unicord.Universal.Services
 {
+    internal class NavigationEvent
+    {
+        public object args;
+        public Action<NavigationEvent> action;
+    }
+
     /// <summary>
     /// A service to handle navigation between channels and servers
     /// </summary>
@@ -23,6 +30,8 @@ namespace Unicord.Universal.Services
     {
         private DiscordPage _page;
         private DiscordPageModel _pageModel;
+        private SystemNavigationManager _navigation;
+        private Stack<NavigationEvent> _navigationStack;
 
         protected override void Initialise()
         {
@@ -30,11 +39,15 @@ namespace Unicord.Universal.Services
 
             _page = Window.Current.Content.FindChild<DiscordPage>();
             _pageModel = _page.DataContext as DiscordPageModel;
+
+            _navigationStack = new Stack<NavigationEvent>();
+            _navigation = SystemNavigationManager.GetForCurrentView();
+            _navigation.BackRequested += OnBackRequested;
         }
 
         internal async Task NavigateAsync(DiscordChannel channel)
         {
-            if (_pageModel.CurrentChannel != channel)
+            if (_pageModel.CurrentChannel != channel && !channel.IsVoice)
             {
                 _pageModel.Navigating = true;
                 _page.CloseSplitPane(); // pane service?
@@ -42,11 +55,11 @@ namespace Unicord.Universal.Services
                 _pageModel.SelectedGuild = null;
                 _pageModel.SelectedDM = null;
 
-                // friendsItem.IsSelected = false;
+                _pageModel.IsFriendsSelected = false;
 
                 if (channel == null)
                 {
-                    // friendsItem.IsSelected = true;
+                    _pageModel.IsFriendsSelected = true;
                     _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                     _page.MainFrame.Navigate(typeof(FriendsPage));
 
@@ -59,7 +72,7 @@ namespace Unicord.Universal.Services
                 if (channel is DiscordDmChannel dm)
                 {
                     _pageModel.SelectedDM = dm;
-                    // friendsItem.IsSelected = true;
+                    _pageModel.IsFriendsSelected = true;
 
                     if (!(_page.SidebarFrame.Content is DMChannelsPage))
                         _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
@@ -106,6 +119,14 @@ namespace Unicord.Universal.Services
                 {
                     await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
                 }
+            }
+        }
+
+        private void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (_navigationStack.TryPop(out var ev))
+            {
+                ev.action(ev);
             }
         }
     }

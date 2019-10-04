@@ -56,6 +56,7 @@ namespace Unicord.Universal.Models
         public bool Navigating { get; internal set; }
         public DiscordDmChannel SelectedDM { get; internal set; }
         public DiscordGuild SelectedGuild { get; internal set; }
+        public bool IsFriendsSelected { get; internal set; }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
         {

@@ -15,7 +15,7 @@ namespace Unicord.Universal.Services
         public static T GetForCurrentView()
         {
             var val = _serviceStore.Value;
-            if (!val.isInitialised)
+            if (!val._isInitialised)
             {
                 val.Initialise();
             }
@@ -23,10 +23,10 @@ namespace Unicord.Universal.Services
             return val;
         }
 
-        protected bool isInitialised;
+        protected bool _isInitialised;
         protected virtual void Initialise()
         {
-            isInitialised = true;
+            _isInitialised = true;
         }
     }
 }

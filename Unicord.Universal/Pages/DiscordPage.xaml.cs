@@ -41,6 +41,9 @@ namespace Unicord.Universal.Pages
 
         private MainPageArgs _args;
         private bool _loaded;
+
+        internal DiscordPageModel Model { get; }
+
         private bool _visibility;
 
         private bool _isPaneOpen => ContentTransform.X != 0;
@@ -49,6 +52,7 @@ namespace Unicord.Universal.Pages
         {
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Required;
+            Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
 
@@ -95,9 +99,6 @@ namespace Unicord.Universal.Pages
         {
             try
             {
-                var navigation = SystemNavigationManager.GetForCurrentView();
-                navigation.BackRequested += Navigation_BackRequested;
-
                 App.Discord.MessageCreated += Notification_MessageCreated;
                 
                 UpdateTitleBar();
@@ -116,7 +117,7 @@ namespace Unicord.Universal.Pages
                 }
                 else
                 {
-                    friendsItem.IsSelected = true;
+                    Model.IsFriendsSelected = true;
                     SidebarFrame.Navigate(typeof(DMChannelsPage));
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
@@ -142,9 +143,6 @@ namespace Unicord.Universal.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            var navigation = SystemNavigationManager.GetForCurrentView();
-            navigation.BackRequested -= Navigation_BackRequested;
-
             if (App.Discord != null)
             {
                 App.Discord.MessageCreated -= Notification_MessageCreated;
@@ -242,7 +240,7 @@ namespace Unicord.Universal.Pages
 
         private async void GuildsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((DataContext as DiscordPageModel).Navigating)
+            if (Model.Navigating)
                 return;
 
             if (e.AddedItems.FirstOrDefault() is DiscordGuild g)
@@ -250,11 +248,11 @@ namespace Unicord.Universal.Pages
                 if (!g.IsUnavailable)
                 {
                     sidebarFrame.Navigate(typeof(GuildChannelListPage), g);
-                    friendsItem.IsSelected = false;
+                    Model.IsFriendsSelected = false;
                 }
                 else
                 {
-                    guildsList.SelectedItem = null;
+                    Model.SelectedGuild = null;
                     var loader = ResourceLoader.GetForViewIndependentUse();
                     await UIUtilities.ShowErrorDialogAsync(loader.GetString("ServerUnavailableTitle"), loader.GetString("ServerUnavailableMessage"));
                 }
@@ -263,7 +261,7 @@ namespace Unicord.Universal.Pages
 
         private async void UnreadDms_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((DataContext as DiscordPageModel).Navigating)
+            if (Model.Navigating)
                 return;
 
             if (e.AddedItems.FirstOrDefault() is DiscordDmChannel c)
@@ -274,22 +272,17 @@ namespace Unicord.Universal.Pages
 
         private void mainFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            var view = ApplicationView.GetForCurrentView();
-            if (view.IsFullScreenMode)
+            var service = FullscreenService.GetForCurrentView();
+            if (service.IsFullscreenMode)
             {
-                var page = this.FindParent<MainPage>();
-                if (page != null)
-                {
-                    page.LeaveFullscreen();
-                }
-                view.ExitFullScreenMode();
+                service.LeaveFullscreen();
             }
         }
 
         private void friendsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            friendsItem.IsSelected = true;
-            guildsList.SelectedItem = null;
+            Model.IsFriendsSelected = true;
+            Model.SelectedGuild = null;
             if (!(sidebarFrame.Content is DMChannelsPage))
             {
                 sidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());

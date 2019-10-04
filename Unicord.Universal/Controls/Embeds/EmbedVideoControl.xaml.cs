@@ -1,11 +1,12 @@
-using DSharpPlus.Entities;
-using Microsoft.QueryStringDotNET;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Web;
+using DSharpPlus.Entities;
+using Microsoft.QueryStringDotNET;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
@@ -68,17 +69,14 @@ namespace Unicord.Universal.Controls.Embeds
 
         private void Browser_ContainsFullScreenElementChanged(WebView sender, object args)
         {
-            var page = this.FindParent<MainPage>();
+            var service = FullscreenService.GetForCurrentView();
             if (sender.ContainsFullScreenElement)
             {
-                if (page != null)
-                {
-                    page.EnterFullscreen(sender, content);
-                }
+                service.EnterFullscreen(sender, content);
             }
             else
             {
-                page.LeaveFullscreen(sender, content);
+                service.LeaveFullscreen(sender, content);
             }
         }
 

@@ -45,8 +45,6 @@ namespace Unicord.Universal
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;
         private bool _isReady;
-        private FrameworkElement _fullscreenElement;
-        private Panel _fullscreenParent;
 
         public MainPage()
         {
@@ -393,51 +391,6 @@ namespace Unicord.Universal
             hideUserOverlay.Begin();
         }
 
-        internal void EnterFullscreen(FrameworkElement element, Panel parent)
-        {
-            var view = ApplicationView.GetForCurrentView();
-            view.TryEnterFullScreenMode();
-
-            fullscreenCanvas.Visibility = Visibility.Visible;
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
-
-            _fullscreenElement = element;
-            _fullscreenParent = parent;
-
-            parent.Children.Remove(element);
-            fullscreenCanvas.Children.Add(element);
-            element.Width = double.NaN;
-            element.Height = double.NaN;
-        }
-
-        internal void LeaveFullscreen()
-        {
-            ApplicationView.GetForCurrentView().ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            _fullscreenElement = null;
-            _fullscreenParent = null;
-
-            fullscreenCanvas.Children.Clear();
-            fullscreenCanvas.Visibility = Visibility.Collapsed;
-        }
-
-        internal void LeaveFullscreen(FrameworkElement element, Panel parent)
-        {
-            ApplicationView.GetForCurrentView().ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            fullscreenCanvas.Children.Remove(element);
-            parent.Children.Insert(0, element);
-            element.Width = double.NaN;
-            element.Height = double.NaN;
-
-            _fullscreenElement = null;
-            _fullscreenParent = null;
-
-            fullscreenCanvas.Visibility = Visibility.Collapsed;
-        }
-
         private void Pane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {
             everything.Margin = new Thickness(0, 0, 0, args.OccludedRect.Height);
@@ -452,20 +405,6 @@ namespace Unicord.Universal
 
         private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (fullscreenCanvas.Visibility == Visibility.Visible)
-            {
-                if (_fullscreenElement != null && _fullscreenParent != null)
-                {
-                    LeaveFullscreen(_fullscreenElement, _fullscreenParent);
-                }
-                else
-                {
-                    LeaveFullscreen();
-                }
-
-                e.Handled = true;
-            }
-
             if (contentOverlay.Visibility == Visibility.Visible)
             {
                 e.Handled = true;
