@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Resources;
@@ -32,7 +33,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
 {
-    public sealed partial class VideoEditor : Page
+    public sealed partial class VideoEditor : Page, IOverlay
     {
         public const string PLAY_GLYPH = "\xE768";
         public const string PAUSE_GLYPH = "\xE769";
@@ -353,7 +354,8 @@ namespace Unicord.Universal.Pages
 
         private async void Close()
         {
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            OverlayService.GetForCurrentView().CloseOverlay();
+
             mediaElement.Source = null;
             _mediaStreamSource = null;
             _playTimer?.Stop();

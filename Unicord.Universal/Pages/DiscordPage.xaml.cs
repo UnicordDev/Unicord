@@ -371,51 +371,6 @@ namespace Unicord.Universal.Pages
             CloseSplitPane();
         }
 
-        public void OpenCustomPane(Type pageType, object parameter)
-        {
-            CustomOverlayGrid.Visibility = Visibility.Visible;
-
-            if (ActualWidth > 768)
-            {
-                CustomContainer.RenderTransformOrigin = new Point(0.5, 0.5);
-                OpenCustomStoryboard.Begin();
-            }
-            else
-            {
-                CustomContainer.RenderTransformOrigin = new Point(0, 0);
-                CustomOpenAnimation.From = ActualWidth;
-                CustomOpenAnimation2.To = -ActualWidth;
-                OpenCustomMobileStoryboard.Begin();
-            }
-
-            CustomGrid.Navigate(pageType, parameter, new SuppressNavigationTransitionInfo());
-        }
-
-        public void CloseCustomPane()
-        {
-            if (ActualWidth > 768)
-            {
-                CustomContainer.RenderTransformOrigin = new Point(0.5, 0.5);
-                CloseCustomStoryboard.Begin();
-            }
-            else
-            {
-                CustomContainer.RenderTransformOrigin = new Point(0, 0);
-                CustomCloseAnimation.To = ActualWidth;
-                CloseCustomMobileStoryboard.Begin();
-            }
-        }
-
-        private void CloseCustomMobileStoryboard_Completed(object sender, object e)
-        {
-            CustomOverlayGrid.Visibility = Visibility.Collapsed;
-        }
-
-        private void OpenSettingsStoryboard_Completed(object sender, object e)
-        {
-
-        }
-
         private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var element = sender as FrameworkElement;

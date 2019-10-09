@@ -26,31 +26,33 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class DMChannelsPage : Page
     {
-        private DiscordDmChannel _currentChannel;
+        private DMChannelsViewModel _model;
 
         public DMChannelsPage()
         {
             InitializeComponent();
+            _model = DataContext as DMChannelsViewModel;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            _model.UpdatingIndex = true;
+
             if (e.Parameter is DiscordDmChannel channel)
             {
-                _currentChannel = channel;
-                dmsList.SelectedItem = channel;
+                _model.SelectedIndex = _model.DMChannels.IndexOf(channel);
             }
             else
             {
-                _currentChannel = null;
-                dmsList.SelectedIndex = -1;
+                _model.SelectedIndex = -1;
             }
+
+            _model.UpdatingIndex = false;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _currentChannel = null;
-            dmsList.SelectedIndex = -1;
+            _model.SelectedIndex = -1;
         }
 
         private async void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

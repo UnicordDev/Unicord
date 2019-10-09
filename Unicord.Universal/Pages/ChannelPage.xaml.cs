@@ -859,7 +859,7 @@ namespace Unicord.Universal.Pages
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
+            //this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
         }
 
         private async void NewWindowButton_Click(object sender, RoutedEventArgs e)

@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Hosting;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,6 +39,7 @@ namespace Unicord.Universal
     {
         public bool IsOverlayShown { get; internal set; }
         public Frame RootFrame => rootFrame;
+        public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
         internal MainPageArgs Arguments { get; private set; }
@@ -150,11 +152,6 @@ namespace Unicord.Universal
             userInfoPopup.Visibility = Visibility.Visible;
 
             showUserOverlay.Begin();
-        }
-
-        internal void ShowGuildOverlay(DiscordGuild guild, bool animate)
-        {
-            // TODO: Guild Overlay
         }
 
         private async Task OnFirstDiscordReady(ReadyEventArgs e)
@@ -420,6 +417,23 @@ namespace Unicord.Universal
                 e.Handled = true;
                 hideUserOverlay.Begin();
             }
+        }
+
+        public void ShowCustomOverlay()
+        {
+            CustomOverlayGrid.Visibility = Visibility.Visible;
+            ShowOverlayStoryboard.Begin();
+        }
+
+        public void HideCustomOverlay()
+        {
+            HideOverlayStoryboard.Begin();
+        }
+
+
+        private void HideOverlayStoryboard_Completed(object sender, object e)
+        {
+            CustomOverlayGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

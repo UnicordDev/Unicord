@@ -60,7 +60,7 @@ namespace Unicord.Universal.Services
                 if (channel == null)
                 {
                     _pageModel.IsFriendsSelected = true;
-                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
                     _page.MainFrame.Navigate(typeof(FriendsPage));
 
                     return;
@@ -73,9 +73,7 @@ namespace Unicord.Universal.Services
                 {
                     _pageModel.SelectedDM = dm;
                     _pageModel.IsFriendsSelected = true;
-
-                    if (!(_page.SidebarFrame.Content is DMChannelsPage))
-                        _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
                 else if (channel.Guild != null)
                 {

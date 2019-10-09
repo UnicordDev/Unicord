@@ -17,6 +17,10 @@ namespace Unicord.Universal.Models
         private readonly SynchronizationContext _synchronisation;
         private VoiceConnectionModel _voiceModel;
         private DiscordUser _currentUser;
+        private DiscordChannel _currentChannel;
+        private DiscordDmChannel _selectedDM;
+        private DiscordGuild _selectedGuild;
+        private bool _isFriendsSelected;
 
         public DiscordPageModel()
         {
@@ -52,11 +56,12 @@ namespace Unicord.Universal.Models
 
         public DiscordUser CurrentUser { get => _currentUser; set => OnPropertySet(ref _currentUser, value); }
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
-        public DiscordChannel CurrentChannel { get; internal set; }
         public bool Navigating { get; internal set; }
-        public DiscordDmChannel SelectedDM { get; internal set; }
-        public DiscordGuild SelectedGuild { get; internal set; }
-        public bool IsFriendsSelected { get; internal set; }
+
+        public DiscordChannel CurrentChannel { get => _currentChannel; internal set => OnPropertySet(ref _currentChannel, value); }
+        public DiscordDmChannel SelectedDM { get => _selectedDM; internal set => OnPropertySet(ref _selectedDM, value); }
+        public DiscordGuild SelectedGuild { get => _selectedGuild; internal set => OnPropertySet(ref _selectedGuild, value); }
+        public bool IsFriendsSelected { get => _isFriendsSelected; internal set => OnPropertySet(ref _isFriendsSelected, value); }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
         {

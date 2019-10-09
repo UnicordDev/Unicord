@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -20,7 +21,7 @@ using NavigationViewBackRequestedEventArgs = Microsoft.UI.Xaml.Controls.Navigati
 
 namespace Unicord.Universal.Pages.Management
 {
-    public sealed partial class ChannelEditPage : Page
+    public sealed partial class ChannelEditPage : Page, IOverlay
     {
         private ChannelEditViewModel _viewModel;
 
@@ -42,25 +43,25 @@ namespace Unicord.Universal.Pages.Management
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             
-            WindowManager.HandleTitleBarForControl(navigationView, true);
+            WindowManager.HandleTitleBarForControl(topGrid);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            //acceptButton.Visibility = Visibility.Collapsed;
+            acceptButton.Visibility = Visibility.Collapsed;
             mainContent.IsEnabled = false;
-            //backButton.IsEnabled = false;
-            //progressRing.IsActive = true;
+            backButton.IsEnabled = false;
+            progressRing.IsActive = true;
 
             await _viewModel.SaveChangesAsync();
 
-            //progressRing.IsActive = false;
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            progressRing.IsActive = false;
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
         private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
@@ -79,7 +80,7 @@ namespace Unicord.Universal.Pages.Management
                 await _viewModel.SaveChangesAsync();
             }
 
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
     }
 }
