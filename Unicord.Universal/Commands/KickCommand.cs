@@ -21,7 +21,7 @@ namespace Unicord.Universal.Commands
                 if (member.IsCurrent)
                     return false;
 
-                if (!Tools.CheckRoleHeirarchy(member.Guild.CurrentMember, member))
+                if (!Tools.CheckRoleHierarchy(member.Guild.CurrentMember, member))
                     return false;
 
                 return member.Guild.CurrentMember.PermissionsIn(null).HasPermission(Permissions.KickMembers);

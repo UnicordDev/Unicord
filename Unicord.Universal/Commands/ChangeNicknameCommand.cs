@@ -24,7 +24,7 @@ namespace Unicord.Universal.Commands
                     return true;
                 }
 
-                if (permissions.HasFlag(Permissions.ManageNicknames) && Tools.CheckRoleHeirarchy(member.Guild.CurrentMember, member))
+                if (permissions.HasFlag(Permissions.ManageNicknames) && Tools.CheckRoleHierarchy(member.Guild.CurrentMember, member))
                 {
                     return true;
                 }
