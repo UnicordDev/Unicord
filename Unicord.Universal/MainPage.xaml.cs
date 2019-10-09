@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Services.Store.Engagement;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,6 +79,9 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            var engagementManager = StoreServicesEngagementManager.GetDefault();
+            await engagementManager.RegisterNotificationChannelAsync();
+
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;
             pane.Hiding += Pane_Hiding;
