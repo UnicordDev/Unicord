@@ -15,7 +15,7 @@ namespace Unicord.Universal.Models
 
         public int ProcessingAlgorithm
         {
-            get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.MrfCrf444);
+            get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default);
             set => App.RoamingSettings.Save(VIDEO_PROCESSING, (MediaTranscodeOptions)value);
         }
 

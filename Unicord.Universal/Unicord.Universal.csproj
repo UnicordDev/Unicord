@@ -24,7 +24,7 @@
     <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -418,6 +418,7 @@
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
+    <Compile Include="Utilities\SwipeOpenHelper.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHelloManager.cs" />

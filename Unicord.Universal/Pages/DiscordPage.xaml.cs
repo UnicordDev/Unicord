@@ -22,6 +22,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -45,16 +46,17 @@ namespace Unicord.Universal.Pages
         internal DiscordPageModel Model { get; }
 
         private bool _visibility;
+        private SwipeOpenHelper _helper;
 
         private bool _isPaneOpen => ContentTransform.X != 0;
 
         public DiscordPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Required;
             Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
+            _helper = new SwipeOpenHelper(content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
@@ -387,6 +389,11 @@ namespace Unicord.Universal.Pages
         private void FindServerIcon_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
+        }
+
+        private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _helper.IsEnabled = e.NewSize.Width <= 768;
         }
     }
 }

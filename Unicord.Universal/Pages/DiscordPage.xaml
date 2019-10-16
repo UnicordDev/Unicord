@@ -9,9 +9,11 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
     xmlns:models="using:Unicord.Universal.Models"
+    NavigationCacheMode="Required"
     x:Name="self"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
+    SizeChanged="Self_SizeChanged"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:DiscordPageModel/>

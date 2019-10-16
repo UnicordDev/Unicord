@@ -47,6 +47,17 @@ namespace Unicord.Universal.Services
 
         internal async Task NavigateAsync(DiscordChannel channel)
         {
+            if (channel == null)
+            {
+                _pageModel.SelectedGuild = null;
+                _pageModel.SelectedDM = null;
+                _pageModel.IsFriendsSelected = true;
+                _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
+                _page.MainFrame.Navigate(typeof(FriendsPage));
+
+                return;
+            }
+
             if (_pageModel.CurrentChannel != channel && !channel.IsVoice)
             {
                 _pageModel.Navigating = true;
@@ -54,17 +65,7 @@ namespace Unicord.Universal.Services
 
                 _pageModel.SelectedGuild = null;
                 _pageModel.SelectedDM = null;
-
                 _pageModel.IsFriendsSelected = false;
-
-                if (channel == null)
-                {
-                    _pageModel.IsFriendsSelected = true;
-                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
-                    _page.MainFrame.Navigate(typeof(FriendsPage));
-
-                    return;
-                }
 
                 if (await WindowManager.ActivateOtherWindow(channel))
                     return;

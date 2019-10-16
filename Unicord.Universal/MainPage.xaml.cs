@@ -1,11 +1,11 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Services.Store.Engagement;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.Services.Store.Engagement;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -23,10 +23,10 @@ using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Hosting;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -52,7 +52,6 @@ namespace Unicord.Universal
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -156,11 +155,14 @@ namespace Unicord.Universal
 
         private async Task OnFirstDiscordReady(ReadyEventArgs e)
         {
-            _isReady = true;
+            if (!_isReady)
+            {
+                App.Discord.Ready += OnDiscordReady;
+                App.Discord.Resumed += OnDiscordResumed;
+                App.Discord.SocketClosed += OnDiscordDisconnected;
+            }
 
-            App.Discord.Ready += OnDiscordReady;
-            App.Discord.Resumed += OnDiscordResumed;
-            App.Discord.SocketClosed += OnDiscordDisconnected;
+            _isReady = true;
 
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
