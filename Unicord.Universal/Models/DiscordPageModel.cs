@@ -62,6 +62,7 @@ namespace Unicord.Universal.Models
         public DiscordDmChannel SelectedDM { get => _selectedDM; internal set => OnPropertySet(ref _selectedDM, value); }
         public DiscordGuild SelectedGuild { get => _selectedGuild; internal set => OnPropertySet(ref _selectedGuild, value); }
         public bool IsFriendsSelected { get => _isFriendsSelected; internal set => OnPropertySet(ref _isFriendsSelected, value); }
+        public DiscordDmChannel PreviousDM { get; internal set; }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
         {

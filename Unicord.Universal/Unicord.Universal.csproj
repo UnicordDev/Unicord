@@ -355,6 +355,12 @@
     </Compile>
     <Compile Include="Models\ChannelEditViewModel.cs" />
     <Compile Include="Models\MessagingSettingsModel.cs" />
+    <Compile Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml.cs">
+      <DependentUpon>ChannelEditOverviewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml.cs">
+      <DependentUpon>ChannelEditPermissionsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
       <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
     </Compile>
@@ -413,6 +419,7 @@
     <Compile Include="Services\DiscordNavigationService.cs" />
     <Compile Include="Services\FullscreenService.cs" />
     <Compile Include="Services\OverlayService.cs" />
+    <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="SharedTools.cs" />
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
@@ -687,6 +694,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings\MessagingSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -842,6 +857,7 @@
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

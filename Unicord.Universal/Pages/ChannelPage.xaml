@@ -408,6 +408,9 @@
                             ReorderMode="Disabled"
                             SelectionChanged="MessageList_SelectionChanged"
                             ShowsScrollingPlaceholders="False"
+                            ScrollViewer.IsVerticalRailEnabled="True"
+                            ScrollViewer.HorizontalScrollMode="Disabled"
+                            ScrollViewer.IsHorizontalScrollChainingEnabled="True"
                             SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -612,7 +615,7 @@
                                 Grid.Column="2"
                                 Click="emoteButton_Click"
                                 Content="&#xED54;"
-                                FontSize="18"
+                                FontSize="16"
                                 Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding CanSend, Converter={StaticResource BoolVisibilityConverter}}">
                             </ToggleButton>

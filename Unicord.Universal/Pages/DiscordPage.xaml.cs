@@ -46,7 +46,7 @@ namespace Unicord.Universal.Pages
         internal DiscordPageModel Model { get; }
 
         private bool _visibility;
-        private SwipeOpenHelper _helper;
+        internal SwipeOpenHelper helper;
 
         private bool _isPaneOpen => ContentTransform.X != 0;
 
@@ -56,7 +56,7 @@ namespace Unicord.Universal.Pages
             Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
-            _helper = new SwipeOpenHelper(content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
+            helper = new SwipeOpenHelper(content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
@@ -203,6 +203,7 @@ namespace Unicord.Universal.Pages
         {
             if (ActualWidth <= 768)
             {
+                helper.Cancel();
                 OpenPaneMobileStoryboard.Begin();
             }
         }
@@ -211,6 +212,7 @@ namespace Unicord.Universal.Pages
         {
             if (ActualWidth <= 768 || ContentTransform.X < 0)
             {
+                helper.Cancel();
                 ClosePaneMobileStoryboard.Begin();
             }
         }
@@ -281,19 +283,10 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void friendsItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void friendsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Model.IsFriendsSelected = true;
-            Model.SelectedGuild = null;
-            if (!(sidebarFrame.Content is DMChannelsPage))
-            {
-                sidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
-            }
-
-            if (!(mainFrame.Content is FriendsPage) || (mainFrame.Content is ChannelPage cp && cp.ViewModel?.Channel.IsPrivate == true))
-            {
-                mainFrame.Navigate(typeof(FriendsPage), null, new SlideNavigationTransitionInfo());
-            }
+            var service = DiscordNavigationService.GetForCurrentView();
+            await service.NavigateAsync(null);
         }
 
         private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
@@ -393,7 +386,7 @@ namespace Unicord.Universal.Pages
 
         private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _helper.IsEnabled = e.NewSize.Width <= 768;
+            helper.IsEnabled = e.NewSize.Width <= 768;
         }
     }
 }

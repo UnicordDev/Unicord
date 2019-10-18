@@ -1,12 +1,12 @@
-﻿using DSharpPlus.Entities;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
@@ -170,6 +170,10 @@ namespace Unicord.Universal.Pages
             {
                 var scrollViewer = MessageList.FindChild<ScrollViewer>("ScrollViewer");
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+                scrollViewer.ManipulationMode = ManipulationModes.System | ManipulationModes.TranslateX;
+
+                var swipeService = SwipeOpenService.GetForCurrentView();
+                swipeService.AddAdditionalElement(scrollViewer);
 
                 ShowSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
 
@@ -236,7 +240,7 @@ namespace Unicord.Universal.Pages
 
                     NoMessages.Visibility = Visibility.Collapsed;
                 });
-                
+
                 if (ViewModel.Channel.Guild?.IsSynced == false && ViewModel.Channel.Guild.IsLarge)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
@@ -787,6 +791,10 @@ namespace Unicord.Universal.Pages
 
         private void OpenPane(Type t = null, object parameter = null)
         {
+            var helper = SwipeOpenService.GetForCurrentView().Helper;
+            if (helper != null)
+                helper.IsEnabled = false;
+
             IsPaneOpen = true;
             SidebarGrid.Visibility = Visibility.Visible;
             if (Window.Current.Bounds.Width <= 1024)
@@ -802,6 +810,10 @@ namespace Unicord.Universal.Pages
 
         private void ClosePane()
         {
+            var helper = SwipeOpenService.GetForCurrentView().Helper;
+            if (helper != null)
+                helper.IsEnabled = true;
+
             IsPaneOpen = false;
             if (Window.Current.Bounds.Width > 1024)
             {
@@ -870,7 +882,7 @@ namespace Unicord.Universal.Pages
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
 
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(null);
+                await service.NavigateAsync(null, true);
 
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);
@@ -885,7 +897,7 @@ namespace Unicord.Universal.Pages
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
 
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(null);
+                await service.NavigateAsync(null, true);
 
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);

@@ -26,8 +26,8 @@ namespace Unicord.Universal.Models
         public bool NSFW { get; set; }
 
         public bool IsVoice => _channel.Type == ChannelType.Voice;
-        public double Userlimit { get; set; }
-        public double Bitrate { get; set; }
+        public int Userlimit { get; set; }
+        public int Bitrate { get; set; }
 
         public Task SaveChangesAsync()
         {

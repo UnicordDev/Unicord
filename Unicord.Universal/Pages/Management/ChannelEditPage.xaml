@@ -7,105 +7,162 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:pages="using:Unicord.Universal.Pages.Management.Channel"
     MaxWidth="1024" MaxHeight="768"
     mc:Ignorable="d" Loaded="Page_Loaded">
+    <Page.Resources>
+        <Style x:Key="CustomPaneToggleButtonStyle" BasedOn="{StaticResource IconButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="MinHeight" Value="{StaticResource PaneToggleButtonHeight}" />
+            <Setter Property="MinWidth" Value="{StaticResource PaneToggleButtonWidth}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="LayoutRoot"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        Height="{TemplateBinding MinHeight}"
+                        Margin="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                              HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="LayoutRoot"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="LayoutRoot.(media:RevealBrush.State)" Value="PointerOver"/>
+                                            <Setter Target="RevealBorder.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}"/>
+                                            <Setter Target="RevealBorder.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}"/>
+                                            <Setter Target="Icon.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}"/>
+                                        </VisualState.Setters>
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="LayoutRoot"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="LayoutRoot.(media:RevealBrush.State)" Value="Pressed"/>
+                                            <Setter Target="RevealBorder.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}"/>
+                                            <Setter Target="RevealBorder.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}"/>
+                                            <Setter Target="Icon.Foreground" Value="{ThemeResource ButtonForegroundPressed}"/>
+                                        </VisualState.Setters>
+                                        <Storyboard>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="LayoutRoot"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="RevealBorder.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushDisabled}"/>
+                                            <Setter Target="Icon.Foreground" Value="{ThemeResource ButtonForegroundDisabled}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <TextBlock
+                                x:Name="Icon"
+                                Text="&#xE700;"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="{TemplateBinding FontSize}"
+                                AutomationProperties.AccessibilityView="Raw"/>
+
+                            <ContentPresenter
+                            x:Name="ContentPresenter"
+                            VerticalContentAlignment="Center"
+                            Content="{TemplateBinding Content}"
+                            FontSize="{TemplateBinding FontSize}"
+                            Grid.Column="1"
+                            AutomationProperties.AccessibilityView="Raw"/>
+
+                            <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Grid.ColumnSpan="2"/>
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}" Color="{ThemeResource SystemChromeBlackMediumColor}">
         <Grid x:Name="MainGrid" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
 
-            <Grid x:Name="topGrid" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid x:Name="topGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="42"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="42"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="backButton" Style="{ThemeResource IconButtonStyle}" Click="BackButton_Click">&#xE72B;</Button>
-                <TextBlock x:Uid="/VideoEditor/VideoEditorHeader" Grid.Column="1" Style="{ThemeResource BaseTextBlockStyle}" Text="Editing Channel" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource IconButtonStyle}" Click="AcceptButton_Click">&#xE8FB;</Button>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource StretchyIconButtonStyle}" Width="40" Height="40" Click="AcceptButton_Click">&#xE8FB;</Button>
                 <ProgressRing x:Name="progressRing" Grid.Column="2" Margin="2"/>
             </Grid>
 
             <lib:NavigationView x:Name="navigationView"
-                            Grid.Row="1"
-                            IsBackButtonVisible="Collapsed"
-                            IsSettingsVisible="False"
-                            PaneDisplayMode="Auto"
-                            OpenPaneLength="250"
-                            BackRequested="NavigationView_BackRequested"
-                            Header="{Binding SelectedItem.Content, ElementName=navigationView}">
+                                IsBackEnabled="True"
+                                IsBackButtonVisible="Visible"
+                                IsSettingsVisible="False"
+                                PaneDisplayMode="Auto"
+                                OpenPaneLength="250"
+                                BackRequested="NavigationView_BackRequested"
+                                ItemInvoked="NavigationView_ItemInvoked"
+                                IsTitleBarAutoPaddingEnabled="False"
+                                PaneToggleButtonStyle="{StaticResource CustomPaneToggleButtonStyle}"
+                                Header="{Binding SelectedItem.Content, ElementName=navigationView}">
+                <lib:NavigationView.Resources>
+                    <Style x:Key="NavigationBackButtonNormalStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
+                        <Setter Property="Content" Value="&#xE72B;"/>
+                    </Style>
+                    <Style x:Key="NavigationBackButtonSmallStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
+                        <Setter Property="Content" Value="&#xE72B;"/>
+                    </Style>
+                </lib:NavigationView.Resources>
                 <lib:NavigationView.MenuItems>
-                    <lib:NavigationViewItem Content="Overview">
+                    <lib:NavigationViewItem Content="Overview" Tag="Overview" IsSelected="True">
                         <lib:NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE179;" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
-                    <lib:NavigationViewItem Content="Permissions">
+                    <lib:NavigationViewItem Content="Permissions" Tag="Permissions">
                         <lib:NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE192;" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
-                    <lib:NavigationViewItem Content="Invites">
+                    <lib:NavigationViewItem Content="Invites" Tag="Invites">
                         <lib:NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE71B;" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
-                    <lib:NavigationViewItem Content="Webhooks">
+                    <lib:NavigationViewItem Content="Webhooks" Tag="Webhooks">
                         <lib:NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE12B;" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
                 </lib:NavigationView.MenuItems>
 
-                <ContentControl x:Name="mainContent" IsEnabled="True" Margin="0,12" HorizontalContentAlignment="Stretch" Grid.Row="1">
-                    <StackPanel x:Name="mainGrid" HorizontalAlignment="Stretch" Margin="12,0">
-                        <TextBlock>Name</TextBlock>
-                        <TextBox TextChanging="TextBox_TextChanging" Margin="0,4,0,12" PlaceholderText="something-witty" Text="{Binding Name, Mode=TwoWay}"/>
-
-                        <StackPanel Visibility="{Binding IsText, Converter={StaticResource BoolVisibilityConverter}}">
-                            <TextBlock>Topic</TextBlock>
-                            <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="NSFW Channel" VerticalAlignment="Center"/>
-                                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">People will need to confirm they're over 18 before viewing this channel, and the server wide content filter won't apply here.</TextBlock>
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
-                            </Grid>
-                        </StackPanel>
-
-                        <StackPanel Visibility="{Binding IsVoice, Converter={StaticResource BoolVisibilityConverter}}">
-                            <Grid Margin="0,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock>Bitrate</TextBlock>
-                                <Slider x:Name="BitrateSlider" Grid.Row="1" Value="{Binding Bitrate, Mode=TwoWay}" Minimum="8" Maximum="96" StepFrequency="4" Width="{Binding ActualWidth, ElementName=StarColumn}" />
-                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
-                            <Run Text="{Binding Value, ElementName=BitrateSlider}"/>kbps
-                                </TextBlock>
-                                <TextBlock Grid.Row="2" Margin="0,4,0,0">User limit</TextBlock>
-                                <Slider x:Name="UserlimitSlider" Grid.Row="3" Value="{Binding Userlimit, Mode=TwoWay}" Minimum="0" Maximum="99" Width="{Binding ActualWidth, ElementName=StarColumn}" />
-                                <TextBlock Grid.Column="1" Grid.Row="3" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
-                            <Run Text="{Binding Value, ElementName=UserlimitSlider}"/> Users
-                                </TextBlock>
-                            </Grid>
-                        </StackPanel>
-                    </StackPanel>
+                <ContentControl x:Name="mainContent" IsEnabled="True" Margin="0,8,0,12" HorizontalContentAlignment="Stretch" Grid.Row="1">
+                    <Frame x:Name="MainFrame" SourcePageType="pages:ChannelEditOverviewPage"/>
                 </ContentControl>
             </lib:NavigationView>
         </Grid>

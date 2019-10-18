@@ -45,15 +45,27 @@ namespace Unicord.Universal.Services
             _navigation.BackRequested += OnBackRequested;
         }
 
-        internal async Task NavigateAsync(DiscordChannel channel)
+        internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
+            var page = _page.MainFrame.Content as ChannelPage;
+
             if (channel == null)
             {
                 _pageModel.SelectedGuild = null;
-                _pageModel.SelectedDM = null;
                 _pageModel.IsFriendsSelected = true;
-                _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
-                _page.MainFrame.Navigate(typeof(FriendsPage));
+
+                if (_pageModel.PreviousDM != null && (page?.ViewModel.Channel != _pageModel.PreviousDM) && !skipPreviousDm)
+                {
+                    _pageModel.SelectedDM = _pageModel.PreviousDM;
+                    _page.MainFrame.Navigate(typeof(ChannelPage), _pageModel.PreviousDM);
+                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), _pageModel.PreviousDM, new DrillInNavigationTransitionInfo());
+                }
+                else if (page != null || !(_page.SidebarFrame.Content is DMChannelsPage))
+                {
+                    _pageModel.PreviousDM = null;
+                    _page.MainFrame.Navigate(typeof(FriendsPage));
+                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
+                }
 
                 return;
             }
@@ -73,6 +85,7 @@ namespace Unicord.Universal.Services
                 if (channel is DiscordDmChannel dm)
                 {
                     _pageModel.SelectedDM = dm;
+                    _pageModel.PreviousDM = dm;
                     _pageModel.IsFriendsSelected = true;
                     _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
