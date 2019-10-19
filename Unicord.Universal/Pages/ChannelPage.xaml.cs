@@ -1,18 +1,19 @@
-﻿using DSharpPlus.Entities;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
@@ -77,17 +78,17 @@ namespace Unicord.Universal.Pages
                 }
 
                 this.AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
-                emoteButton.AddAccelerator(VirtualKey.E, VirtualKeyModifiers.Control);
-                pinsButton.AddAccelerator(VirtualKey.P, VirtualKeyModifiers.Control);
-                userListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
-                uploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
-                searchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
-                newWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
+                EmoteButton.AddAccelerator(VirtualKey.E, VirtualKeyModifiers.Control);
+                PinsButton.AddAccelerator(VirtualKey.P, VirtualKeyModifiers.Control);
+                UserListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
+                UploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
+                SearchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
+                NewWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
             }
 
-            uploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
-            messageTextBox.KeyDown += messageTextBox_KeyDown;
-            messageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
+            UploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
+            MessageTextBox.KeyDown += messageTextBox_KeyDown;
+            MessageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -135,14 +136,14 @@ namespace Unicord.Universal.Pages
                 }
 
                 var args = this.FindParent<MainPage>()?.Arguments;
-                WindowManager.HandleTitleBarForControl(topGrid);
+                WindowManager.HandleTitleBarForControl(TopGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
 
                 ViewModel = model;
                 DataContext = ViewModel;
 
                 if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
-                    messageTextBox.Focus(FocusState.Keyboard);
+                    MessageTextBox.Focus(FocusState.Keyboard);
 
                 while (_channelHistory.Count > 10)
                 {
@@ -167,10 +168,14 @@ namespace Unicord.Universal.Pages
         {
             if (!_scrollHandlerAdded)
             {
-                var scrollViewer = messageList.FindChild<ScrollViewer>("ScrollViewer");
+                var scrollViewer = MessageList.FindChild<ScrollViewer>("ScrollViewer");
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+                scrollViewer.ManipulationMode = ManipulationModes.System | ManipulationModes.TranslateX;
 
-                showSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
+                var swipeService = SwipeOpenService.GetForCurrentView();
+                swipeService.AddAdditionalElement(scrollViewer);
+
+                ShowSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
 
                 _scrollHandlerAdded = true;
             }
@@ -207,7 +212,7 @@ namespace Unicord.Universal.Pages
             if (e.Handled)
                 return;
 
-            this.FindParent<MainPage>()?.LeaveFullscreen();
+            FullscreenService.GetForCurrentView()?.LeaveFullscreen();
             var last = _channelHistory.ElementAtOrDefault(_channelHistory.Count - 1);
             if (last != null)
             {
@@ -230,12 +235,12 @@ namespace Unicord.Universal.Pages
             {
                 await Dispatcher.AwaitableRunAsync(() =>
                 {
-                    loadingProgress.Visibility = Visibility.Visible;
-                    loadingProgress.IsIndeterminate = true;
+                    LoadingProgress.Visibility = Visibility.Visible;
+                    LoadingProgress.IsIndeterminate = true;
 
-                    noMessages.Visibility = Visibility.Collapsed;
+                    NoMessages.Visibility = Visibility.Collapsed;
                 });
-                
+
                 if (ViewModel.Channel.Guild?.IsSynced == false && ViewModel.Channel.Guild.IsLarge)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
@@ -251,14 +256,14 @@ namespace Unicord.Universal.Pages
 
             await Dispatcher.AwaitableRunAsync(() =>
             {
-                loadingProgress.Visibility = Visibility.Collapsed;
-                loadingProgress.IsIndeterminate = false;
+                LoadingProgress.Visibility = Visibility.Collapsed;
+                LoadingProgress.IsIndeterminate = false;
             }).ConfigureAwait(false);
 
             if (IsPaneOpen)
             {
                 await Dispatcher.AwaitableRunAsync(() =>
-                    sidebarFrame.Navigate(sidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
+                    SidebarFrame.Navigate(SidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
             }
 
             await JumpListManager.AddToListAsync(_viewModel.Channel);
@@ -271,7 +276,7 @@ namespace Unicord.Universal.Pages
             {
                 if (scroll.VerticalOffset >= (scroll.ScrollableHeight - scroll.ViewportHeight) && ViewModel.Channel.ReadState?.Unread != false)
                 {
-                    var message = messageList.Items.LastOrDefault() as DiscordMessage;
+                    var message = MessageList.Items.LastOrDefault() as DiscordMessage;
                     if (message != null)
                     {
                         await message.AcknowledgeAsync().ConfigureAwait(false);
@@ -311,10 +316,10 @@ namespace Unicord.Universal.Pages
                 var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
                 if (lastMessage != null)
                 {
-                    var container = messageList.ContainerFromItem(lastMessage);
+                    var container = MessageList.ContainerFromItem(lastMessage);
                     if (container != null)
                     {
-                        messageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
+                        MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
                         var viewer = container.FindChild<MessageViewer>();
                         viewer.BeginEditing();
                     }
@@ -324,7 +329,7 @@ namespace Unicord.Universal.Pages
 
         private async void messageTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            await ViewModel.TriggerTypingAsync(messageTextBox.Text).ConfigureAwait(false);
+            await ViewModel.TriggerTypingAsync(MessageTextBox.Text).ConfigureAwait(false);
         }
 
         private async void messageTextBox_Paste(object sender, TextControlPasteEventArgs e)
@@ -338,7 +343,7 @@ namespace Unicord.Universal.Pages
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
                     {
-                        await uploadItems.AddStorageFileAsync(item);
+                        await UploadItems.AddStorageFileAsync(item);
                     }
 
                     return;
@@ -348,7 +353,7 @@ namespace Unicord.Universal.Pages
                 {
                     e.Handled = true;
                     var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
-                    await uploadItems.AddStorageFileAsync(file, true);
+                    await UploadItems.AddStorageFileAsync(file, true);
 
                     return;
                 }
@@ -365,13 +370,13 @@ namespace Unicord.Universal.Pages
 
         internal void FocusTextBox()
         {
-            messageTextBox.Focus(FocusState.Keyboard);
-            messageTextBox.SelectionStart = messageTextBox.Text.Length;
+            MessageTextBox.Focus(FocusState.Keyboard);
+            MessageTextBox.SelectionStart = MessageTextBox.Text.Length;
         }
 
         private async void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            messageTextBox.Focus(FocusState.Keyboard);
+            MessageTextBox.Focus(FocusState.Keyboard);
             await SendAsync();
         }
 
@@ -381,27 +386,27 @@ namespace Unicord.Universal.Pages
             {
                 if (ViewModel.FileUploads.Any())
                 {
-                    uploadProgress.Visibility = Visibility.Visible;
+                    UploadProgress.Visibility = Visibility.Visible;
                     var progress = new Progress<double?>(d =>
                     {
-                        if (d == null && !uploadProgress.IsIndeterminate)
+                        if (d == null && !UploadProgress.IsIndeterminate)
                         {
-                            uploadProgress.IsIndeterminate = true;
+                            UploadProgress.IsIndeterminate = true;
                         }
                         else
                         {
-                            uploadProgress.Value = d.Value;
+                            UploadProgress.Value = d.Value;
                         }
                     });
 
-                    await ViewModel.SendMessageAsync(messageTextBox, progress).ConfigureAwait(false);
+                    await ViewModel.SendMessageAsync(MessageTextBox, progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ViewModel.SendMessageAsync(messageTextBox).ConfigureAwait(false);
+                    await ViewModel.SendMessageAsync(MessageTextBox).ConfigureAwait(false);
                 }
 
-                await Dispatcher.AwaitableRunAsync(() => uploadProgress.Visibility = Visibility.Collapsed);
+                await Dispatcher.AwaitableRunAsync(() => UploadProgress.Visibility = Visibility.Collapsed);
             }
             catch (Exception ex)
             {
@@ -427,8 +432,8 @@ namespace Unicord.Universal.Pages
 
         private void BeginShowTitleBar()
         {
-            topGrid.Visibility = Visibility.Visible;
-            footerGrid.Visibility = Visibility.Visible;
+            TopGrid.Visibility = Visibility.Visible;
+            FooterGrid.Visibility = Visibility.Visible;
             _titleBarTimer?.Stop();
 
             HideTitleBar.Stop();
@@ -438,7 +443,7 @@ namespace Unicord.Universal.Pages
         private void BeginHideTitleBar()
         {
             ShowTitleBar.Stop();
-            HideTitleBarAnimation.To = -topGrid.RenderSize.Height;
+            HideTitleBarAnimation.To = -TopGrid.RenderSize.Height;
             HideTitleBar.Begin();
         }
 
@@ -446,36 +451,36 @@ namespace Unicord.Universal.Pages
         {
             if ((bool)e.NewValue == true)
             {
-                uploadItems.Visibility = Visibility.Visible;
-                hideUploadPanel.Stop();
-                showUploadPanel.Begin();
+                UploadItems.Visibility = Visibility.Visible;
+                HideUploadPanel.Stop();
+                ShowUploadPanel.Begin();
             }
             else
             {
-                showUploadPanel.Stop();
-                hideUploadPanel.Begin();
+                ShowUploadPanel.Stop();
+                HideUploadPanel.Begin();
             }
         }
 
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
-            if (photoPicker.Visibility == Visibility.Visible)
+            if (PhotoPicker.Visibility == Visibility.Visible)
             {
-                hidePhotoPicker.Begin();
+                HidePhotoPicker.Begin();
             }
             else
             {
-                photoPicker.Visibility = Visibility.Visible;
-                showPhotoPicker.Begin();
+                PhotoPicker.Visibility = Visibility.Visible;
+                ShowPhotoPicker.Begin();
 
-                loadingImagesRing.IsActive = true;
+                LoadingImagesRing.IsActive = true;
 
                 try
                 {
                     var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif" }) { FolderDepth = FolderDepth.Deep };
                     var photosQuery = KnownFolders.PicturesLibrary.CreateFileQueryWithOptions(queryOption);
                     var factory = new FileInformationFactory(photosQuery, ThumbnailMode.SingleItem, 256);
-                    photosList.ItemsSource = factory.GetVirtualizedFilesVector();
+                    PhotosList.ItemsSource = factory.GetVirtualizedFilesVector();
                 }
                 catch (Exception ex)
                 {
@@ -483,7 +488,7 @@ namespace Unicord.Universal.Pages
                     // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "FileQueryFailure" });
                 }
 
-                loadingImagesRing.IsActive = false;
+                LoadingImagesRing.IsActive = false;
             }
         }
 
@@ -497,18 +502,18 @@ namespace Unicord.Universal.Pages
                 var folder = App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder;
                 await file.MoveAsync(folder, fileName, NameCollisionOption.GenerateUniqueName);
 
-                hidePhotoPicker.Begin();
-                await uploadItems.AddStorageFileAsync(file);
+                HidePhotoPicker.Begin();
+                await UploadItems.AddStorageFileAsync(file);
             }
         }
 
         private async void PhotosList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            hidePhotoPicker.Begin();
+            HidePhotoPicker.Begin();
 
             if (e.ClickedItem is IStorageFile item)
             {
-                await uploadItems.AddStorageFileAsync(item);
+                await UploadItems.AddStorageFileAsync(item);
             }
         }
 
@@ -527,10 +532,10 @@ namespace Unicord.Universal.Pages
 
                 var files = await picker.PickMultipleFilesAsync();
 
-                hidePhotoPicker.Begin();
+                HidePhotoPicker.Begin();
                 foreach (var file in files)
                 {
-                    await uploadItems.AddStorageFileAsync(file);
+                    await UploadItems.AddStorageFileAsync(file);
                 }
             }
             catch { }
@@ -543,26 +548,26 @@ namespace Unicord.Universal.Pages
 
         private void HidePhotoPicker_Completed(object sender, object e)
         {
-            photosList.ItemsSource = null;
-            loadingImagesRing.IsActive = false;
-            photoPicker.Visibility = Visibility.Collapsed;
+            PhotosList.ItemsSource = null;
+            LoadingImagesRing.IsActive = false;
+            PhotoPicker.Visibility = Visibility.Collapsed;
         }
 
         private void ShowUploadPanel_Completed(object sender, object e)
         {
             // just to make sure
-            uploadItems.Visibility = Visibility.Visible;
+            UploadItems.Visibility = Visibility.Visible;
         }
 
         private void HideUploadPanel_Completed(object sender, object e)
         {
-            photoPicker.Visibility = Visibility.Collapsed;
-            uploadItems.Visibility = Visibility.Collapsed;
+            PhotoPicker.Visibility = Visibility.Collapsed;
+            UploadItems.Visibility = Visibility.Collapsed;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            hidePhotoPicker.Begin();
+            HidePhotoPicker.Begin();
         }
 
         private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
@@ -583,7 +588,7 @@ namespace Unicord.Universal.Pages
             EnsureEmotePicker();
 
             var pane = InputPane.GetForCurrentView();
-            var flyout = FlyoutBase.GetAttachedFlyout(emoteButton);
+            var flyout = FlyoutBase.GetAttachedFlyout(EmoteButton);
 
             if (button.IsChecked == true)
             {
@@ -618,13 +623,13 @@ namespace Unicord.Universal.Pages
                 _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
             }
 
-            var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(emoteButton);
+            var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(EmoteButton);
 
             if (Window.Current.CoreWindow.Bounds.Width > 400)
             {
-                if (footerGrid.Children.Contains(_emotePicker))
+                if (FooterGrid.Children.Contains(_emotePicker))
                 {
-                    footerGrid.Children.Remove(_emotePicker);
+                    FooterGrid.Children.Remove(_emotePicker);
                 }
 
                 _emotePicker.Width = 300;
@@ -637,11 +642,11 @@ namespace Unicord.Universal.Pages
                     flyout = new Flyout { Content = _emotePicker };
                     flyout.Closed += (o, ev) =>
                     {
-                        emoteButton.IsChecked = false;
+                        EmoteButton.IsChecked = false;
                         _emotePicker.Unload();
                     };
 
-                    FlyoutBase.SetAttachedFlyout(emoteButton, flyout);
+                    FlyoutBase.SetAttachedFlyout(EmoteButton, flyout);
                 }
                 else if (flyout.Content != _emotePicker)
                 {
@@ -661,10 +666,10 @@ namespace Unicord.Universal.Pages
                 _emotePicker.Visibility = Visibility.Collapsed;
                 _emotePicker.Padding = new Thickness(10, 0, 10, 0);
 
-                if (!footerGrid.Children.Contains(_emotePicker))
+                if (!FooterGrid.Children.Contains(_emotePicker))
                 {
                     Grid.SetRow(_emotePicker, 4);
-                    footerGrid.Children.Add(_emotePicker);
+                    FooterGrid.Children.Add(_emotePicker);
                 }
             }
 
@@ -675,14 +680,14 @@ namespace Unicord.Universal.Pages
         {
             if (e != null)
             {
-                if (messageTextBox.Text.Length > 0 && !char.IsWhiteSpace(messageTextBox.Text[messageTextBox.Text.Length - 1]))
+                if (MessageTextBox.Text.Length > 0 && !char.IsWhiteSpace(MessageTextBox.Text[MessageTextBox.Text.Length - 1]))
                 {
-                    messageTextBox.Text += " ";
+                    MessageTextBox.Text += " ";
                 }
 
-                messageTextBox.Text += $"{e} ";
-                messageTextBox.Select(messageTextBox.Text.Length, 0);
-                messageTextBox.Focus(FocusState.Programmatic);
+                MessageTextBox.Text += $"{e} ";
+                MessageTextBox.Select(MessageTextBox.Text.Length, 0);
+                MessageTextBox.Focus(FocusState.Programmatic);
             }
         }
 
@@ -690,7 +695,7 @@ namespace Unicord.Universal.Pages
         {
             if (sender.FocusState != FocusState.Programmatic)
             {
-                emoteButton.IsChecked = false;
+                EmoteButton.IsChecked = false;
                 if (_emotePicker != null)
                 {
                     _emotePicker.Unload();
@@ -729,14 +734,14 @@ namespace Unicord.Universal.Pages
         {
             _viewModel.IsEditMode = true;
 
-            messageList.SelectionMode = ListViewSelectionMode.Multiple;
+            MessageList.SelectionMode = ListViewSelectionMode.Multiple;
 
             if (message != null)
             {
-                messageList.SelectedItems.Add(message);
+                MessageList.SelectedItems.Add(message);
             }
 
-            messageList.ItemTemplate = (DataTemplate)Resources["EditingMessageTemplate"];
+            MessageList.ItemTemplate = (DataTemplate)Resources["EditingMessageTemplate"];
             ShowEditControls.Begin();
         }
 
@@ -744,8 +749,8 @@ namespace Unicord.Universal.Pages
         {
             _viewModel.IsEditMode = false;
 
-            messageList.SelectionMode = ListViewSelectionMode.None;
-            messageList.ItemTemplate = (DataTemplate)Resources["DefaultMessageTemplate"];
+            MessageList.SelectionMode = ListViewSelectionMode.None;
+            MessageList.ItemTemplate = (DataTemplate)Resources["DefaultMessageTemplate"];
             HideEditControls.Begin();
         }
 
@@ -759,7 +764,7 @@ namespace Unicord.Universal.Pages
             var loader = ResourceLoader.GetForCurrentView("ChannelPage");
             if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("MassDeleteTitle"), loader.GetString("MassDeleteMessage"), "\xE74D"))
             {
-                var items = messageList.SelectedItems.OfType<DiscordMessage>().ToArray();
+                var items = MessageList.SelectedItems.OfType<DiscordMessage>().ToArray();
 
                 LeaveEditMode();
 
@@ -779,42 +784,50 @@ namespace Unicord.Universal.Pages
             {
                 if (!command.CanExecute(item))
                 {
-                    messageList.SelectedItems.Remove(item);
+                    MessageList.SelectedItems.Remove(item);
                 }
             }
         }
 
         private void OpenPane(Type t = null, object parameter = null)
         {
+            var helper = SwipeOpenService.GetForCurrentView().Helper;
+            if (helper != null)
+                helper.IsEnabled = false;
+
             IsPaneOpen = true;
-            sidebarGrid.Visibility = Visibility.Visible;
+            SidebarGrid.Visibility = Visibility.Visible;
             if (Window.Current.Bounds.Width <= 1024)
             {
                 OpenPaneStoryboard.Begin();
             }
 
-            if (t != null && sidebarFrame.CurrentSourcePageType != t)
+            if (t != null && SidebarFrame.CurrentSourcePageType != t)
             {
-                sidebarFrame.Navigate(t, parameter);
+                SidebarFrame.Navigate(t, parameter);
             }
         }
 
         private void ClosePane()
         {
+            var helper = SwipeOpenService.GetForCurrentView().Helper;
+            if (helper != null)
+                helper.IsEnabled = true;
+
             IsPaneOpen = false;
             if (Window.Current.Bounds.Width > 1024)
             {
-                sidebarGrid.Visibility = Visibility.Collapsed;
+                SidebarGrid.Visibility = Visibility.Collapsed;
             }
 
             ClosePaneStoryboard.Begin();
 
-            sidebarFrame.Navigate(typeof(Page));
+            SidebarFrame.Navigate(typeof(Page));
         }
 
         public void TogglePane(Type t = null, object parameter = null)
         {
-            if (IsPaneOpen && sidebarFrame.CurrentSourcePageType == t)
+            if (IsPaneOpen && SidebarFrame.CurrentSourcePageType == t)
             {
                 ClosePane();
             }
@@ -826,7 +839,7 @@ namespace Unicord.Universal.Pages
 
         private void ClosePaneStoryboard_Completed(object sender, object e)
         {
-            sidebarGrid.Visibility = Visibility.Collapsed;
+            SidebarGrid.Visibility = Visibility.Collapsed;
         }
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
@@ -858,7 +871,7 @@ namespace Unicord.Universal.Pages
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
+            //this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
         }
 
         private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
@@ -868,7 +881,9 @@ namespace Unicord.Universal.Pages
                 WindowManager.SetChannelForCurrentWindow(0);
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
 
-                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(null, true);
+
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);
             }
@@ -881,7 +896,9 @@ namespace Unicord.Universal.Pages
                 WindowManager.SetChannelForCurrentWindow(0);
                 await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
 
-                this.FindParent<DiscordPage>().Navigate(null, new DrillInNavigationTransitionInfo());
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(null, true);
+
                 _viewModel.Dispose();
                 _channelHistory.Remove(_viewModel);
             }
@@ -889,8 +906,8 @@ namespace Unicord.Universal.Pages
 
         private void HideTitleBar_Completed(object sender, object e)
         {
-            topGrid.Visibility = Visibility.Collapsed;
-            footerGrid.Visibility = Visibility.Collapsed;
+            TopGrid.Visibility = Visibility.Collapsed;
+            FooterGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

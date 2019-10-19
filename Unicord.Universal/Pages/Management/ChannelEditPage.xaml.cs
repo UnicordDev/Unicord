@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models;
+using Unicord.Universal.Pages.Management.Channel;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
 using NavigationViewBackRequestedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs;
+using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
 
 namespace Unicord.Universal.Pages.Management
 {
-    public sealed partial class ChannelEditPage : Page
+    public sealed partial class ChannelEditPage : Page, IOverlay
     {
+        private static readonly IReadOnlyDictionary<string, Type> TypeMap
+            = new Dictionary<string, Type>()
+            {
+                ["Overview"] = typeof(ChannelEditOverviewPage),
+                ["Permissions"] = typeof(ChannelEditPermissionsPage)
+            };
+
         private ChannelEditViewModel _viewModel;
 
         public ChannelEditPage()
@@ -40,46 +41,42 @@ namespace Unicord.Universal.Pages.Management
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            
+        {            
+            WindowManager.HandleTitleBarForControl(topGrid);
             WindowManager.HandleTitleBarForControl(navigationView, true);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            //acceptButton.Visibility = Visibility.Collapsed;
+            acceptButton.Visibility = Visibility.Collapsed;
             mainContent.IsEnabled = false;
-            //backButton.IsEnabled = false;
-            //progressRing.IsActive = true;
+            progressRing.IsActive = true;
 
             await _viewModel.SaveChangesAsync();
 
-            //progressRing.IsActive = false;
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            progressRing.IsActive = false;
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<DiscordPage>().CloseCustomPane();
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
-        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+        private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-            if (sender.Text.Contains(" "))
-            {
-                sender.Text = sender.Text.Replace(' ', '-');
-                sender.Select(sender.Text.Length, 0);
-            }
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
-        private async void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            if (true && await UIUtilities.ShowYesNoDialogAsync("Save changes?", "Do you want to save your changes?")) // todo: check dirty
+            if (args.InvokedItemContainer.Tag is string str)
             {
-                await _viewModel.SaveChangesAsync();
+                if (TypeMap.TryGetValue(str, out var type))
+                {
+                    MainFrame.Navigate(type);
+                }
             }
-
-            this.FindParent<DiscordPage>().CloseCustomPane();
         }
     }
 }

@@ -9,9 +9,11 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
     xmlns:models="using:Unicord.Universal.Models"
+    NavigationCacheMode="Required"
     x:Name="self"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
+    SizeChanged="Self_SizeChanged"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:DiscordPageModel/>
@@ -21,7 +23,7 @@
         <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
         <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
 
-        <Storyboard x:Key="OpenSettingsDesktopStoryboard" x:Name="OpenSettingsDesktopStoryboard" Completed="OpenSettingsStoryboard_Completed">
+        <Storyboard x:Key="OpenSettingsDesktopStoryboard" x:Name="OpenSettingsDesktopStoryboard">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="SettingsPaneTransform"
@@ -139,141 +141,7 @@
                 To="0"
                 Duration="00:00:00.33" />
         </Storyboard>
-
-        <Storyboard x:Key="OpenCustomStoryboard" x:Name="OpenCustomStoryboard">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomPaneTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleX"
-                From="1.1"
-                To="1"
-                Duration="00:00:00.66" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleY"
-                From="1.1"
-                To="1"
-                Duration="00:00:00.66" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomOverlayGrid"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.66" />
-        </Storyboard>
-        <Storyboard
-            x:Key="CloseCustomStoryboard"
-            x:Name="CloseCustomStoryboard"
-            Completed="CloseCustomMobileStoryboard_Completed">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="CustomPaneTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleX"
-                To="1.1"
-                Duration="00:00:00.25" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleY"
-                To="1.1"
-                Duration="00:00:00.25" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="CustomOverlayGrid"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.25" />
-        </Storyboard>
-        <Storyboard x:Key="OpenCustomMobileStoryboard" x:Name="OpenCustomMobileStoryboard">
-            <DoubleAnimation
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleX"
-                To="1"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleY"
-                To="1"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                Storyboard.TargetName="CustomOverlayGrid"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.00" />
-
-            <DoubleAnimation
-                x:Name="CustomOpenAnimation"
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomPaneTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.66" />
-            <DoubleAnimation
-                x:Name="CustomOpenAnimation2"
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                From="0"
-                Duration="00:00:00.66" />
-        </Storyboard>
-        <Storyboard
-            x:Key="CloseCustomMobileStoryboard"
-            x:Name="CloseCustomMobileStoryboard"
-            Completed="CloseCustomMobileStoryboard_Completed">
-            <DoubleAnimation
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleX"
-                To="1"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                Storyboard.TargetName="CustomPaneScale"
-                Storyboard.TargetProperty="ScaleY"
-                To="1"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                Storyboard.TargetName="CustomOverlayGrid"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.00" />
-            <DoubleAnimation
-                x:Name="CustomCloseAnimation"
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CustomPaneTranslate"
-                Storyboard.TargetProperty="X"
-                From="0"
-                Duration="00:00:00.66" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.66" />
-        </Storyboard>
+       
     </Page.Resources>
     <Grid>
         <Grid x:Name="grid">
@@ -316,7 +184,6 @@
                     </Grid>
 
                     <ListView
-                        x:Name="guildsList"
                         Grid.Row="1"
                         AllowDrop="True"
                         CanDrag="True"
@@ -324,7 +191,8 @@
                         CanReorderItems="True"
                         DragItemsCompleted="guildsList_DragItemsCompleted"
                         ItemTemplate="{StaticResource GuildsListTemplate}"
-                        ItemsSource="{x:Bind _guilds}"
+                        ItemsSource="{Binding Guilds}"
+                        SelectedItem="{Binding SelectedGuild, Mode=TwoWay}"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         SelectionChanged="GuildsList_SelectionChanged"
                         ShowsScrollingPlaceholders="False"
@@ -346,6 +214,7 @@
                                     x:Name="friendsItem"
                                     MinWidth="0"
                                     Padding="0"
+                                    IsSelected="{Binding IsFriendsSelected}"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="friendsItem_Tapped">
                                     <SymbolIcon
@@ -355,7 +224,9 @@
                                 </ListViewItem>
 
                                 <ListView
-                                    x:Name="unreadDms"
+                                    ItemsSource="{Binding UnreadDMs}"
+                                    SelectedItem="{Binding SelectedDM}"
+                                    Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"
                                     ScrollViewer.VerticalScrollMode="Disabled"
                                     SelectionChanged="UnreadDms_SelectionChanged">
                                     <ListView.HeaderTemplate>
@@ -559,25 +430,6 @@
                         </controls1:InAppNotification.ContentTemplate>
                     </controls1:InAppNotification>
                 </Grid>
-            </Grid>
-        </Grid>
-
-        <Grid
-            x:Name="CustomOverlayGrid"
-            Opacity="0"
-            Visibility="Collapsed">
-            <Grid
-                x:Name="CustomContainer"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="{ThemeResource MainBackgroundBrush}">
-                <Grid.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
-                        <TranslateTransform x:Name="CustomPaneTranslate" X="0" Y="0" />
-                    </TransformGroup>
-                </Grid.RenderTransform>
-                <Frame x:Name="CustomGrid" />
             </Grid>
         </Grid>
 

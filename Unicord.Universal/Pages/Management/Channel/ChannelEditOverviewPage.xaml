@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Management.Channel.ChannelEditOverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Management.Channel"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel x:Name="mainGrid" HorizontalAlignment="Stretch" Margin="12,0">
+            <TextBlock>Name</TextBlock>
+            <TextBox TextChanging="TextBox_TextChanging" Margin="0,4,0,12" PlaceholderText="something-witty" Text="{Binding Name, Mode=TwoWay}"/>
+
+            <StackPanel Visibility="{Binding IsText, Converter={StaticResource BoolVisibilityConverter}}">
+                <TextBlock>Topic</TextBlock>
+                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="NSFW Channel" VerticalAlignment="Center"/>
+                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">People will need to confirm they're over 18 before viewing this channel, and the server wide content filter won't apply here.</TextBlock>
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1" Margin="12,0,0,0" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding NSFW, Mode=TwoWay}" />
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding IsVoice, Converter={StaticResource BoolVisibilityConverter}}">
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock>Bitrate</TextBlock>
+                    <Slider x:Name="BitrateSlider" Grid.Row="1" Value="{Binding Bitrate, Mode=TwoWay}" Minimum="8" Maximum="96" StepFrequency="4" Width="{Binding ActualWidth, ElementName=StarColumn}" />
+                    <TextBlock Grid.Column="1" Grid.Row="1" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
+                            <Run Text="{Binding Value, ElementName=BitrateSlider}"/>kbps
+                    </TextBlock>
+                    <TextBlock Grid.Row="2" Margin="0,4,0,0">User limit</TextBlock>
+                    <Slider x:Name="UserlimitSlider" Grid.Row="3" Value="{Binding Userlimit, Mode=TwoWay}" Minimum="0" Maximum="99" Width="{Binding ActualWidth, ElementName=StarColumn}" />
+                    <TextBlock Grid.Column="1" Grid.Row="3" Margin="8,0,0,0" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=AutoColumn}">
+                            <Run Text="{Binding Value, ElementName=UserlimitSlider}"/> Users
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

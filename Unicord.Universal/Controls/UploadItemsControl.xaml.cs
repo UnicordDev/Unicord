@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
@@ -214,7 +215,7 @@ namespace Unicord.Universal.Controls
             bigModel.FileUploads.Remove(model);
             bigModel.FileUploads.Add(newModel);
 
-            this.FindParent<DiscordPage>().OpenCustomPane(typeof(VideoEditor), newModel);
+            OverlayService.GetForCurrentView().ShowOverlay<VideoEditor>(newModel);
         }
 
         private void EditButton_Loaded(object sender, RoutedEventArgs e)

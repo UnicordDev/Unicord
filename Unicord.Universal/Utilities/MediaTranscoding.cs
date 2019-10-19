@@ -16,11 +16,6 @@ namespace Unicord.Universal.Utilities
 {
     internal static class MediaTranscoding
     {
-        private static Lazy<MediaTranscoder> _transcoderLazy
-            = new Lazy<MediaTranscoder>(() => new MediaTranscoder() { VideoProcessingAlgorithm = App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.MrfCrf444) });
-
-        public static MediaTranscoder Transcoder => _transcoderLazy.Value;
-
         public static async Task<bool> TryTranscodeVideoAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
             var props = await (input as IStorageItemProperties).Properties.GetVideoPropertiesAsync();
@@ -66,7 +61,8 @@ namespace Unicord.Universal.Utilities
 
         public static async Task<bool> TryTranscodeMediaAsync(IStorageFile input, IStorageFile output, MediaEncodingProfile profile, IProgress<double?> progress, CancellationToken token = default)
         {
-            var prep = await Transcoder.PrepareFileTranscodeAsync(input, output, profile);
+            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default) };
+            var prep = await transcoder.PrepareFileTranscodeAsync(input, output, profile);
 
             if (prep.CanTranscode)
             {
@@ -74,11 +70,12 @@ namespace Unicord.Universal.Utilities
 
                 token.Register(() => task.Cancel());
                 task.Progress = new AsyncActionProgressHandler<double>((a, p) => progress.Report(p));
-
                 await task;
 
                 return task.Status == AsyncStatus.Completed;
             }
+
+            transcoder = null;
 
             return false;
         }

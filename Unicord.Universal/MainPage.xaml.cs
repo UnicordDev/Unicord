@@ -1,11 +1,11 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Services.Store.Engagement;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.Services.Store.Engagement;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -23,6 +23,7 @@ using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
@@ -38,6 +39,7 @@ namespace Unicord.Universal
     {
         public bool IsOverlayShown { get; internal set; }
         public Frame RootFrame => rootFrame;
+        public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
         internal MainPageArgs Arguments { get; private set; }
@@ -46,13 +48,10 @@ namespace Unicord.Universal
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;
         private bool _isReady;
-        private FrameworkElement _fullscreenElement;
-        private Panel _fullscreenParent;
 
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -154,18 +153,16 @@ namespace Unicord.Universal
             showUserOverlay.Begin();
         }
 
-        internal void ShowGuildOverlay(DiscordGuild guild, bool animate)
-        {
-            // TODO: Guild Overlay
-        }
-
         private async Task OnFirstDiscordReady(ReadyEventArgs e)
         {
-            _isReady = true;
+            if (!_isReady)
+            {
+                App.Discord.Ready += OnDiscordReady;
+                App.Discord.Resumed += OnDiscordResumed;
+                App.Discord.SocketClosed += OnDiscordDisconnected;
+            }
 
-            App.Discord.Ready += OnDiscordReady;
-            App.Discord.Resumed += OnDiscordResumed;
-            App.Discord.SocketClosed += OnDiscordDisconnected;
+            _isReady = true;
 
             // TODO: This doesn't work?
             //await e.Client.UpdateStatusAsync(userStatus: UserStatus.Online);
@@ -397,51 +394,6 @@ namespace Unicord.Universal
             hideUserOverlay.Begin();
         }
 
-        internal void EnterFullscreen(FrameworkElement element, Panel parent)
-        {
-            var view = ApplicationView.GetForCurrentView();
-            view.TryEnterFullScreenMode();
-
-            fullscreenCanvas.Visibility = Visibility.Visible;
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
-
-            _fullscreenElement = element;
-            _fullscreenParent = parent;
-
-            parent.Children.Remove(element);
-            fullscreenCanvas.Children.Add(element);
-            element.Width = double.NaN;
-            element.Height = double.NaN;
-        }
-
-        internal void LeaveFullscreen()
-        {
-            ApplicationView.GetForCurrentView().ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            _fullscreenElement = null;
-            _fullscreenParent = null;
-
-            fullscreenCanvas.Children.Clear();
-            fullscreenCanvas.Visibility = Visibility.Collapsed;
-        }
-
-        internal void LeaveFullscreen(FrameworkElement element, Panel parent)
-        {
-            ApplicationView.GetForCurrentView().ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            fullscreenCanvas.Children.Remove(element);
-            parent.Children.Insert(0, element);
-            element.Width = double.NaN;
-            element.Height = double.NaN;
-
-            _fullscreenElement = null;
-            _fullscreenParent = null;
-
-            fullscreenCanvas.Visibility = Visibility.Collapsed;
-        }
-
         private void Pane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {
             everything.Margin = new Thickness(0, 0, 0, args.OccludedRect.Height);
@@ -456,20 +408,6 @@ namespace Unicord.Universal
 
         private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (fullscreenCanvas.Visibility == Visibility.Visible)
-            {
-                if (_fullscreenElement != null && _fullscreenParent != null)
-                {
-                    LeaveFullscreen(_fullscreenElement, _fullscreenParent);
-                }
-                else
-                {
-                    LeaveFullscreen();
-                }
-
-                e.Handled = true;
-            }
-
             if (contentOverlay.Visibility == Visibility.Visible)
             {
                 e.Handled = true;
@@ -481,6 +419,23 @@ namespace Unicord.Universal
                 e.Handled = true;
                 hideUserOverlay.Begin();
             }
+        }
+
+        public void ShowCustomOverlay()
+        {
+            CustomOverlayGrid.Visibility = Visibility.Visible;
+            ShowOverlayStoryboard.Begin();
+        }
+
+        public void HideCustomOverlay()
+        {
+            HideOverlayStoryboard.Begin();
+        }
+
+
+        private void HideOverlayStoryboard_Completed(object sender, object e)
+        {
+            CustomOverlayGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

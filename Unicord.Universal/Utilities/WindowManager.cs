@@ -92,10 +92,9 @@ namespace Unicord.Universal.Utilities
             {
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
+                try { ThemeManager.LoadCurrentTheme(App.Current.Resources); } catch { }
 
                 var frame = new Frame();
-                try { ThemeManager.LoadCurrentTheme(frame.Resources); } catch { }
-
                 window.Content = frame;
                 window.Activate();
 
@@ -119,7 +118,6 @@ namespace Unicord.Universal.Utilities
                 applicationView.Consolidated += OnConsolidated;
             });
 
-            //var prefs = ViewModePreferences.CreateDefault(ApplicationViewMode.Default);
             await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
         }
 
