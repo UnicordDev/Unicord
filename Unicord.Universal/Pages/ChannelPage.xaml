@@ -467,7 +467,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Grid Width="42" Margin="0,0,4,0">
+                            <Grid Width="40" Margin="0,0,4,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
@@ -615,7 +615,6 @@
                                 Grid.Column="2"
                                 Click="emoteButton_Click"
                                 Content="&#xED54;"
-                                FontSize="16"
                                 Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding CanSend, Converter={StaticResource BoolVisibilityConverter}}">
                             </ToggleButton>
