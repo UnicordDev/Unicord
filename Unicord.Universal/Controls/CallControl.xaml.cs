@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -72,17 +73,17 @@ namespace Unicord.Universal.Controls
 
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
-            var page = this.FindParent<MainPage>();
+            var service = FullscreenService.GetForCurrentView();
 
             if (!_isFullScreen)
             {
                 _panel = this.Parent as Grid;
-                page.EnterFullscreen(this, _panel);
+                service.EnterFullscreen(this, _panel);
                 (sender as Button).Content = "\xE73F";
             }
             else
             {
-                page.LeaveFullscreen(this, _panel);
+                service.LeaveFullscreen(this, _panel);
                 (sender as Button).Content = "\xE740";
             }
 
@@ -91,8 +92,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            Model.Dispose();
-            Model = null;
+
         }
 
         private async void JoinCallButton_Click(object sender, RoutedEventArgs e)

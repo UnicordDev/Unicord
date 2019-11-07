@@ -34,18 +34,18 @@ namespace Unicord.Universal.Voice
     {
         private ResourceLoader _strings;
         private MediaPlayerElement _mediaPlayer;
-        private VoipCallCoordinator _voipCallCoordinator;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
 
+        private static bool _appServiceConnected;
         private static SemaphoreSlim _appServiceSemaphore;
         private static AppServiceConnection _appServiceConnection;
+        private static VoipCallCoordinator _voipCallCoordinator;
         public static ConcurrentDictionary<DiscordChannel, VoiceConnectionModel> OngoingCalls
             = new ConcurrentDictionary<DiscordChannel, VoiceConnectionModel>();
 
         private bool _muted;
         private bool _deafened;
-        private bool _appServiceConnected;
         private uint _webSocketPing;
         private uint _udpPing;
         private string _connectionStatus;
@@ -114,7 +114,8 @@ namespace Unicord.Universal.Voice
             var deafened = (bool)info.Message["deafened"];
 
             var channel = App.Discord._channelCache[channel_id];
-            var model = new VoiceConnectionModel(channel, connection)
+            _appServiceConnection = connection;
+            var model = new VoiceConnectionModel(channel)
             {
                 Muted = muted,
                 Deafened = deafened,
@@ -134,7 +135,6 @@ namespace Unicord.Universal.Voice
             _voiceServerUpdateCompletion = new TaskCompletionSource<VoiceServerUpdateEventArgs>();
             _voipCallCoordinator = VoipCallCoordinator.GetDefault();
 
-
             ConnectionStatus = _strings.GetString("InitialConnectionState");
         }
 
@@ -147,19 +147,6 @@ namespace Unicord.Universal.Voice
         public VoiceConnectionModel(DiscordChannel channel) : this()
         {
             Channel = channel;
-        }
-
-        private VoiceConnectionModel(DiscordChannel channel, AppServiceConnection connection) : this()
-        {
-            Channel = channel;
-            _voipCallCoordinator = VoipCallCoordinator.GetDefault();
-
-            _appServiceConnection?.Dispose();
-            _appServiceConnection = connection;
-            _appServiceConnection.RequestReceived += OnRequestReceived;
-            _appServiceConnection.ServiceClosed += OnServiceClosed;
-
-            _appServiceConnected = true;
         }
 
         public async Task UpdatePreferredAudioDevicesAsync(string audioRender, string audioCapture)
@@ -205,7 +192,11 @@ namespace Unicord.Universal.Voice
             if (Call == null)
                 throw new InvalidProgramException("This isn't a call, dummy!");
 
-            await EnsureAppServiceConnectedAsync();
+            if (await EnsureAppServiceConnectedAsync())
+            {
+                _appServiceConnection.RequestReceived += OnRequestReceived;
+                _appServiceConnection.ServiceClosed += OnServiceClosed;
+            }
 
             // I hate all of this.
             var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("CallTemp", CreationCollisionOption.OpenIfExists);
@@ -237,7 +228,11 @@ namespace Unicord.Universal.Voice
             if (Call == null)
                 throw new InvalidProgramException("This isn't a call, dummy!");
 
-            await EnsureAppServiceConnectedAsync();
+            if (await EnsureAppServiceConnectedAsync())
+            {
+                _appServiceConnection.RequestReceived += OnRequestReceived;
+                _appServiceConnection.ServiceClosed += OnServiceClosed;
+            }
 
             var request = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.NotifyCallEndRequest };
 
@@ -247,7 +242,11 @@ namespace Unicord.Universal.Voice
         public async Task ConnectAsync()
         {
             ConnectionStatus = _strings.GetString("ConnectionState1");
-            await EnsureAppServiceConnectedAsync();
+            if (await EnsureAppServiceConnectedAsync())
+            {
+                _appServiceConnection.RequestReceived += OnRequestReceived;
+                _appServiceConnection.ServiceClosed += OnServiceClosed;
+            }
 
             var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
             var response = await SendRequestAsync(stateRequest);
@@ -298,7 +297,11 @@ namespace Unicord.Universal.Voice
             await SendRequestAsync(connectionRequest);
         }
 
-        private static async Task EnsureAppServiceConnectedAsync()
+        /// <summary>
+        /// Ensures the static <see cref="AppServiceConnection"/> is alive.
+        /// </summary>
+        /// <returns>If a new connection was established or not</returns>
+        private static async Task<bool> EnsureAppServiceConnectedAsync()
         {
             await _appServiceSemaphore.WaitAsync();
 
@@ -312,18 +315,19 @@ namespace Unicord.Universal.Voice
                         PackageFamilyName = Package.Current.Id.FamilyName
                     });
 
-                    _appServiceConnection.RequestReceived += OnRequestReceived;
-                    _appServiceConnection.ServiceClosed += OnServiceClosed;
-
                     var appServiceStatus = await _appServiceConnection.OpenAsync();
                     if (appServiceStatus != AppServiceConnectionStatus.Success)
                         throw new Exception("Unable to connect to AppService! " + appServiceStatus);
+
+                    return true;
                 }
 
                 _appServiceConnected = true;
-                var status = await ReserveCallResourcesAsync(_voipCallCoordinator);
+                var status = await ReserveCallResourcesAsync();
                 if (status != VoipPhoneCallResourceReservationStatus.Success)
                     throw new Exception("Unable to reserve call resources!");
+
+                return false;
             }
             finally
             {
@@ -331,11 +335,11 @@ namespace Unicord.Universal.Voice
             }
         }
 
-        private static async Task<VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(VoipCallCoordinator coordinator)
+        private static async Task<VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync()
         {
             try
             {
-                return await coordinator.ReserveCallResourcesAsync("Unicord.Universal.Voice.Background.VoiceBackgroundTask");
+                return await VoipCallCoordinator.GetDefault().ReserveCallResourcesAsync("Unicord.Universal.Voice.Background.VoiceBackgroundTask");
             }
             catch (Exception ex)
             {

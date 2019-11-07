@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Web;
+using DSharpPlus.Entities;
+using Microsoft.QueryStringDotNET;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
@@ -37,7 +41,7 @@ namespace Unicord.Universal.Controls.Embeds
             if (provider == "youtube")
             {
                 var embedBuilder = new UriBuilder(uri);
-                var query = QueryString.Parse(System.Net.WebUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
+                var query = QueryString.Parse(WebUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
                 query.Add("autoplay", "1");
                 embedBuilder.Query = query.ToString();
 

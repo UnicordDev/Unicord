@@ -220,8 +220,8 @@
                     <Grid x:Name="CallView" MinHeight="300" Background="{ThemeResource SidebarPrimaryBrush}">
                         <controls1:CallControl Call="{Binding Channel.OngoingCall}"/>
                     </Grid>
-                    
-                    <Grid x:Name="topGrid" VerticalAlignment="Top">
+
+                    <Grid x:Name="TopGrid" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
