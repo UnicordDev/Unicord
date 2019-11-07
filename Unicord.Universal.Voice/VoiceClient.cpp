@@ -423,6 +423,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
             }
         }
 
+        if (opus_view[0] == 0x90) {
+            opus_view = array_view(opus_view.begin() + 2, opus_view.end());
+        }
+
         if (gap != 0) {
             AudioFormat packet_format = audio_source->format;
             size_t fec_pcm_length = packet_format.SampleCountToSampleSize(packet_format.GetMaxBufferSize());
