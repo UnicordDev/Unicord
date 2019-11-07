@@ -371,6 +371,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
         RtpHeader header;
         Rtp::DecodeHeader(data, header);
 
+        if (header.type == 73 || header.type == 72) {
+            return false;
+        }
+
         // get the nonce
         uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
         array_view<uint8_t> nonce_view(packet_nonce);
@@ -379,19 +383,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         // get the data
         array_view<const uint8_t> encrypted_data;
         Rtp::GetDataFromPacket(data, encrypted_data, header, mode.second);
-
-        if (header.type == 73 || header.type == 72) { // control packet ?
-#if DEBUG // don't *really* wanna dump this in prod
-            std::cout << std::hex;
-            for (size_t i = 0; i < encrypted_data.size(); i++) {
-                std::cout << (uint32_t)encrypted_data[i] << " ";
-            }
-            std::cout << std::endl << std::dec;
-#endif 
-
-            return false;
-        }
-
 
         // calculate the size of the decrypted data
         size_t decrypted_size = sodium->CalculateSourceSize(encrypted_data.size());
@@ -424,19 +415,22 @@ namespace winrt::Unicord::Universal::Voice::implementation
                     while (decrypted_view[i] == 0)
                         i++;
 
-                    // array_view<uint8_t> extension_view = array_view(decrypted_view.begin(), decrypted_view.begin() + i);
-                    // std::ostringstream str;
-                    // str << std::setfill('0') << std::setw(2) << std::hex;
-                    // for (size_t i = 0; i < extension_view.size(); i++)
-                    // {
-                    //     str << (uint32_t)extension_view[i] << " ";
-                    // }
-                    // std::cout << str.str() << std::endl;
-
                     decrypted_view = array_view(decrypted_view.begin() + i, decrypted_view.end());
                 }
             }
 
+            if (decrypted_view[0] == 0x90) {
+                decrypted_view = array_view(decrypted_view.begin() + 2, decrypted_view.end());
+            }
+
+             /*std::ostringstream str;
+             str << std::setfill('0') << std::setw(2) << std::hex;
+             for (size_t i = 0; i < decrypted_view.size(); i++)
+             {
+                 str << (uint32_t)decrypted_view[i] << " ";
+             }
+             std::cout << str.str() << std::endl;
+*/
             if (header.type == Rtp::RTP_TYPE_OPUS) { // opus data
 
                 if (is_deafened) {
@@ -697,34 +691,41 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     IAsyncAction VoiceClient::OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev)
     {
-        auto reader = ev.GetDataReader();
+        try
+        {
+            auto reader = ev.GetDataReader();
 
-        if (connectionStage == 0) {
-            uint8_t buff[70];
-            reader.ReadBytes(buff);
+            if (connectionStage == 0) {
+                uint8_t buff[70];
+                reader.ReadBytes(buff);
 
-            std::string ip{ &buff[4], &buff[64] };
-            ip = ip.substr(0, ip.find_first_of('\0'));
+                std::string ip{ &buff[4], &buff[64] };
+                ip = ip.substr(0, ip.find_first_of('\0'));
 
-            uint16_t port = *(uint16_t*)&buff[68];
+                uint16_t port = *(uint16_t*)&buff[68];
 
-            co_await Stage3(ip, port);
+                co_await Stage3(ip, port);
+            }
+            else {
+                auto len = reader.UnconsumedBufferLength();
+                if (len == 8) {
+                    HandleUdpHeartbeat(reader.ReadUInt64());
+                }
+                else if (len > 13) {
+                    // prolly voice data
+                    auto data = new uint8_t[len];
+                    auto data_view = array_view<uint8_t>(data, data + len);
+                    reader.ReadBytes(data_view);
+
+                    ProcessRawPacket(data_view);
+
+                    delete[] data;
+                }
+            }
         }
-        else {
-            auto len = reader.UnconsumedBufferLength();
-            if (len == 8) {
-                HandleUdpHeartbeat(reader.ReadUInt64());
-            }
-            else if (len > 13) {
-                // prolly voice data
-                auto data = new uint8_t[len];
-                auto data_view = array_view<uint8_t>(data, data + len);
-                reader.ReadBytes(data_view);
+        catch (const winrt::hresult_error&)
+        {
 
-                ProcessRawPacket(data_view);
-
-                delete[] data;
-            }
         }
     }
 
