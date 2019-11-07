@@ -337,7 +337,7 @@
                                     </ui:DropDownButton.Flyout>
                                 </ui:DropDownButton>
 
-                                <Button x:Name="callButton"
+                                <Button x:Name="CallButton"
                                         Click="CallButton_Click"
                                         Content="&#xE717;"
                                         Style="{ThemeResource IconButtonStyle}"
@@ -684,9 +684,9 @@
                         <StateTrigger IsActive="{Binding Channel.OngoingCall, Converter={StaticResource BoolConverter}, ConverterParameter=True, FallbackValue=True}"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="topGrid.Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+                        <Setter Target="TopGrid.Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
                         <Setter Target="CallView.Visibility" Value="Collapsed"/>
-                        <Setter Target="callButton.Visibility" Value="Visible"/>
+                        <Setter Target="CallButton.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="InCall">
@@ -695,9 +695,9 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="topGrid.Background" Value="Transparent" />
+                        <Setter Target="TopGrid.Background" Value="Transparent" />
                         <Setter Target="CallView.Visibility" Value="Visible"/>
-                        <Setter Target="callButton.Visibility" Value="Collapsed"/>
+                        <Setter Target="CallButton.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

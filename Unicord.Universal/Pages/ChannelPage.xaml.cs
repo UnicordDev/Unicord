@@ -83,6 +83,8 @@ namespace Unicord.Universal.Pages
                 NewWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
             }
 
+            VisualStateManager.GoToState(this, "Normal", false);
+
             UploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
             MessageTextBox.KeyDown += messageTextBox_KeyDown;
             MessageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);

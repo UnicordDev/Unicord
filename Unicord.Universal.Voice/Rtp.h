@@ -24,7 +24,8 @@ namespace winrt::Unicord::Universal::Voice::Transport
     public:
         static const uint8_t RTP_NO_EXTENSION = 0x80;
         static const uint8_t RTP_EXTENSION = 0x90;
-        static const uint8_t RTP_TYPE_OPUS = 0x78;
+
+        static const uint8_t RTP_TYPE_OPUS = 120;
         static const uint8_t RTP_TYPE_H264 = 101;
         static const uint8_t RTP_TYPE_H264_RTX = 102;
 

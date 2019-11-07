@@ -37,7 +37,7 @@ namespace Unicord.Universal.Voice
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
 
-        private static bool _appServiceConnected;
+        private static bool AppServiceConnected { get; set; }
         private static SemaphoreSlim _appServiceSemaphore;
         private static AppServiceConnection _appServiceConnection;
         private static VoipCallCoordinator _voipCallCoordinator;
@@ -115,6 +115,7 @@ namespace Unicord.Universal.Voice
 
             var channel = App.Discord._channelCache[channel_id];
             _appServiceConnection = connection;
+            AppServiceConnected = true;
             var model = new VoiceConnectionModel(channel)
             {
                 Muted = muted,
@@ -307,7 +308,7 @@ namespace Unicord.Universal.Voice
 
             try
             {
-                if (_appServiceConnection == null || !_appServiceConnected)
+                if (_appServiceConnection == null || !AppServiceConnected)
                 {
                     _appServiceConnection = await Task.Run(() => new AppServiceConnection()
                     {
@@ -319,14 +320,15 @@ namespace Unicord.Universal.Voice
                     if (appServiceStatus != AppServiceConnectionStatus.Success)
                         throw new Exception("Unable to connect to AppService! " + appServiceStatus);
 
+                    AppServiceConnected = true;
                     return true;
                 }
 
-                _appServiceConnected = true;
                 var status = await ReserveCallResourcesAsync();
                 if (status != VoipPhoneCallResourceReservationStatus.Success)
                     throw new Exception("Unable to reserve call resources!");
 
+                AppServiceConnected = true;
                 return false;
             }
             finally
@@ -354,7 +356,13 @@ namespace Unicord.Universal.Voice
         {
             Muted = !Muted;
 
-            if (_appServiceConnected)
+            if (await EnsureAppServiceConnectedAsync())
+            {
+                _appServiceConnection.RequestReceived += OnRequestReceived;
+                _appServiceConnection.ServiceClosed += OnServiceClosed;
+            }
+
+            if (AppServiceConnected)
             {
                 var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.MuteRequest, ["muted"] = Muted };
                 await SendRequestAsync(set);
@@ -365,7 +373,13 @@ namespace Unicord.Universal.Voice
         {
             Deafened = !Deafened;
 
-            if (_appServiceConnected)
+            if (await EnsureAppServiceConnectedAsync())
+            {
+                _appServiceConnection.RequestReceived += OnRequestReceived;
+                _appServiceConnection.ServiceClosed += OnServiceClosed;
+            }
+
+            if (AppServiceConnected)
             {
                 var set = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.DeafenRequest, ["deafened"] = Deafened };
                 await SendRequestAsync(set);
@@ -488,7 +502,7 @@ namespace Unicord.Universal.Voice
 
         private void OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
-            _appServiceConnected = false;
+            AppServiceConnected = false;
             _appServiceConnection = null;
 
             Disconnected?.Invoke(this, null);
@@ -554,7 +568,7 @@ namespace Unicord.Universal.Voice
 
             _appServiceSemaphore.Dispose();
             _appServiceSemaphore = null;
-            _appServiceConnected = false;
+            AppServiceConnected = false;
             _appServiceConnection?.Dispose();
             _appServiceConnection = null;
             _mediaPlayer.MediaPlayer?.Dispose();
