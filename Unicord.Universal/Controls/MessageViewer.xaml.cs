@@ -254,7 +254,7 @@ namespace Unicord.Universal.Controls
 
         private bool CheckPermission(Permissions permission)
         {
-            return _currentMember?.IsOwner == true || _permissions.HasPermission(permission) && Tools.CheckRoleHeirarchy(_currentMember, _member);
+            return _currentMember?.IsOwner == true || _permissions.HasPermission(permission) && Tools.CheckRoleHierarchy(_currentMember, _member);
         }
 
         private void profileMenuItem_Click(object sender, RoutedEventArgs e)

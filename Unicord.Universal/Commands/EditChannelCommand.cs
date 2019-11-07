@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Commands
@@ -42,7 +43,7 @@ namespace Unicord.Universal.Commands
                 var page = Window.Current.Content.FindChild<DiscordPage>();
                 if (page != null)
                 {
-                    page.OpenCustomPane(typeof(ChannelEditPage), channel);
+                    OverlayService.GetForCurrentView().ShowOverlay<ChannelEditPage>(channel);
                 }
             }
         }

@@ -10,11 +10,16 @@
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
-    xmlns:controls1="using:Unicord.Universal.Controls" 
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" NavigationCacheMode="Required"
+    xmlns:controls1="using:Unicord.Universal.Controls"
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded"
+    NavigationCacheMode="Required"
     Background="{ThemeResource MainBackgroundBrush}">
     <Page.Resources>
-        <CircleEase x:Key="ease" EasingMode="EaseInOut"/>
+        <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
+        
+        <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
+        <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
 
         <Storyboard x:Name="showConnecting" x:Key="showConnecting">
 
@@ -22,29 +27,29 @@
                              Storyboard.TargetName="connectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1.25" To="1" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="1.25" To="1" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
         <Storyboard x:Name="hideConnecting" x:Key="hideConnecting"
@@ -53,29 +58,29 @@
                              Storyboard.TargetName="connectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation To="1" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation To="1" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation To="1.25" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation To="1.25" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
 
         <Storyboard x:Name="showContent" x:Key="showContent">
@@ -84,18 +89,18 @@
                              Storyboard.TargetName="contentOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.25"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
         <Storyboard x:Name="hideContent" x:Key="hideContent"
@@ -104,18 +109,18 @@
                              Storyboard.TargetName="contentOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.25"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.15"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.15"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
 
         <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay">
@@ -124,18 +129,18 @@
                              Storyboard.TargetName="userInfoPopup"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.25"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
         <Storyboard x:Name="hideUserOverlay" x:Key="hideUserOverlay"
@@ -144,22 +149,62 @@
                              Storyboard.TargetName="userInfoPopup"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.25"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.20"
-                             EasingFunction="{StaticResource ease}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
+        </Storyboard>
+
+        <Storyboard x:Name="ShowOverlayStoryboard" x:Key="ShowOverlayStoryboard">
+
+            <DoubleAnimation From="0" To="1"
+                             Storyboard.TargetName="CustomOverlayGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0.25"
+                             EasingFunction="{StaticResource EaseEnter}"/>
+
+            <DoubleAnimation From="0.85" To="1" 
+                             Storyboard.TargetName="CustomPaneScale"
+                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                             Duration="0:0:0.20"
+                             EasingFunction="{StaticResource EaseEnter}"/>
+            <DoubleAnimation From="0.85" To="1" 
+                             Storyboard.TargetName="CustomPaneScale"
+                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                             Duration="0:0:0.20"
+                             EasingFunction="{StaticResource EaseEnter}"/>
+
+        </Storyboard>
+        <Storyboard x:Name="HideOverlayStoryboard" x:Key="HideOverlayStoryboard"
+                    Completed="HideOverlayStoryboard_Completed">
+            <DoubleAnimation From="1" To="0"
+                             Storyboard.TargetName="CustomOverlayGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0.25"
+                             EasingFunction="{StaticResource EaseExit}"/>
+
+            <DoubleAnimation From="1" To="0.85" 
+                             Storyboard.TargetName="CustomPaneScale"
+                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                             Duration="0:0:0.20"
+                             EasingFunction="{StaticResource EaseExit}"/>
+            <DoubleAnimation From="1" To="0.85" 
+                             Storyboard.TargetName="CustomPaneScale"
+                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                             Duration="0:0:0.20"
+                             EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
     </Page.Resources>
     <Grid x:Name="everything">
-        <Grid UseLayoutRounding="False">
+        <Grid>
             <Grid x:Name="mainContent" RenderTransformOrigin="0.5, 0.5">
                 <Grid.RenderTransform>
                     <ScaleTransform x:Name="mainScale" ScaleX="1" ScaleY="1"/>
@@ -185,6 +230,8 @@
                                       IsHorizontalRailEnabled="False"
                                       HorizontalScrollBarVisibility="Auto"
                                       HorizontalScrollMode="Enabled" 
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
                                       ZoomMode="Enabled">
                             <Image x:Name="attachmentImage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </ScrollViewer>
@@ -222,7 +269,22 @@
                     <dialogs:ProfileOverlay x:Name="userInfoOverlay" Visibility="Visible"/>
                 </Grid>
             </Grid>
-            
+
+            <Grid x:Name="CustomOverlayGrid"
+                  Opacity="0"
+                  Background="{ThemeResource OverlayBackdrop}" 
+                  Visibility="Collapsed">
+                <Grid x:Name="CustomContainer"
+                      RenderTransformOrigin="0.5,0.5">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <Frame x:Name="CustomOverlayFrame" />
+                </Grid>
+            </Grid>
+
             <Grid x:Name="fullscreenCanvas" Background="{ThemeResource OverlayBackdrop}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
             
             <Grid x:Name="connectingOverlay" Visibility="Collapsed" Opacity="0" RenderTransformOrigin="0.5, 0.5" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">

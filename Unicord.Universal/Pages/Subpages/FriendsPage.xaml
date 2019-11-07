@@ -83,7 +83,7 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    
+
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
 
         <Grid Background="{ThemeResource MainBackgroundBrush}">

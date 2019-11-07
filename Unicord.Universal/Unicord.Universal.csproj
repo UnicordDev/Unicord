@@ -11,7 +11,7 @@
     <AssemblyName>Unicord.Universal</AssemblyName>
     <DefaultLanguage>en-GB</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
@@ -24,16 +24,20 @@
     <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
-    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <HockeyAppResourceId>b87a8458e7a24a688e6c3a2d11d08657</HockeyAppResourceId>
     <AppxWinMdCacheEnabled>false</AppxWinMdCacheEnabled>
     <AppxBundleAutoResourcePackageQualifiers>
     </AppxBundleAutoResourcePackageQualifiers>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <PackageCertificatePassword />
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -363,6 +367,12 @@
     </Compile>
     <Compile Include="Models\ChannelEditViewModel.cs" />
     <Compile Include="Models\MessagingSettingsModel.cs" />
+    <Compile Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml.cs">
+      <DependentUpon>ChannelEditOverviewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml.cs">
+      <DependentUpon>ChannelEditPermissionsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
       <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
     </Compile>
@@ -417,11 +427,17 @@
       <DependentUpon>VideoEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BaseService.cs" />
+    <Compile Include="Services\DiscordNavigationService.cs" />
+    <Compile Include="Services\FullscreenService.cs" />
+    <Compile Include="Services\OverlayService.cs" />
+    <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="SharedTools.cs" />
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
+    <Compile Include="Utilities\SwipeOpenHelper.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Integration\WindowsHelloManager.cs" />
@@ -706,6 +722,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings\MessagingSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -793,7 +817,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer">
-      <Version>2.7.2</Version>
+      <Version>2.7.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
       <Version>2.1.1</Version>
@@ -806,6 +830,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.9</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Services.Store.Engagement">
+      <Version>10.1901.28001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>5.1.1</Version>
@@ -842,6 +869,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Microsoft.Services.Store.Engagement, Version=10.0">
+      <Name>Microsoft Engagement Framework</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
+    </SDKReference>
     <SDKReference Include="WindowsDesktop, Version=10.0.18362.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
@@ -849,6 +882,7 @@
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

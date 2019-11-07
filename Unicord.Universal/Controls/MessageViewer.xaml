@@ -196,10 +196,11 @@
                 </Grid>
 
                 <wam:MarkdownTextBlock x:Name="markdown"
-                                           Channel="{Binding Channel}"
-                                           IsTextSelectionEnabled="False"
-                                           Text="{Binding Content}"
-                                           WrapCodeBlock="True"/>
+                                       UseLayoutRounding="False"
+                                       Channel="{Binding Channel}"
+                                        IsTextSelectionEnabled="False"
+                                        Text="{Binding Content}"
+                                        WrapCodeBlock="True"/>
             </Grid>
             <StackPanel x:Name="embeds" Grid.Row="2" />
         </Grid>

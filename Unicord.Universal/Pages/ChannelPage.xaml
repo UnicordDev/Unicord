@@ -27,35 +27,35 @@
         
         <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
 
-        <Storyboard x:Name="showPhotoPicker" Completed="ShowPhotoPicker_Completed">
+        <Storyboard x:Name="ShowPhotoPicker" Completed="ShowPhotoPicker_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="photoTransform"
+                Storyboard.TargetName="PhotoTransform"
                 Storyboard.TargetProperty="Y"
                 To="0"
                 Duration="00:00:00.50" />
         </Storyboard>
-        <Storyboard x:Name="hidePhotoPicker" Completed="HidePhotoPicker_Completed">
+        <Storyboard x:Name="HidePhotoPicker" Completed="HidePhotoPicker_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="photoTransform"
+                Storyboard.TargetName="PhotoTransform"
                 Storyboard.TargetProperty="Y"
                 To="200"
                 Duration="00:00:00.15" />
         </Storyboard>
 
-        <Storyboard x:Name="showUploadPanel" Completed="ShowUploadPanel_Completed">
+        <Storyboard x:Name="ShowUploadPanel" Completed="ShowUploadPanel_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="uploadsTransform"
+                Storyboard.TargetName="UploadsTransform"
                 Storyboard.TargetProperty="Y"
                 To="0"
                 Duration="00:00:00.50" />
         </Storyboard>
-        <Storyboard x:Name="hideUploadPanel" Completed="HideUploadPanel_Completed">
+        <Storyboard x:Name="HideUploadPanel" Completed="HideUploadPanel_Completed">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="uploadsTransform"
+                Storyboard.TargetName="UploadsTransform"
                 Storyboard.TargetProperty="Y"
                 To="200"
                 Duration="00:00:00.15" />
@@ -196,13 +196,13 @@
             </Grid.ColumnDefinitions>
 
             <Grid
-                x:Name="sidebarGrid"
+                x:Name="SidebarGrid"
                 Width="276"
-                Padding="{Binding Padding, ElementName=topGrid}"
+                Padding="{Binding Padding, ElementName=TopGrid}"
                 HorizontalAlignment="Right"
                 Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"
                 Visibility="Collapsed">
-                <Frame x:Name="sidebarFrame" />
+                <Frame x:Name="SidebarFrame" />
             </Grid>
 
             <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
@@ -246,16 +246,16 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!--  because VisualStateManager is wank  -->
-                                <Grid x:Name="showSidebarButtonContainer" Margin="0,0,-4,0">
+                                <Grid x:Name="ShowSidebarButtonContainer" Margin="0,0,-4,0">
                                     <Button
-                                        x:Name="showSidebarButton"
+                                        x:Name="ShowSidebarButton"
                                         Click="ShowSidebarButton_Click"
                                         Content="&#xE700;"
                                         Style="{ThemeResource IconButtonStyle}" />
                                 </Grid>
 
                                 <Ellipse
-                                    x:Name="userImage"
+                                    x:Name="UserImage"
                                     Grid.Column="1"
                                     Width="24"
                                     Height="24"
@@ -268,7 +268,7 @@
                                 </Ellipse>
 
                                 <TextBlock
-                                    x:Name="header"
+                                    x:Name="Header"
                                     Grid.Column="2"
                                     Margin="8,0,8,0"
                                     VerticalAlignment="Center"
@@ -323,7 +323,7 @@
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
                                 <ui:DropDownButton
-                                    x:Name="newWindowButton"
+                                    x:Name="NewWindowButton"
                                     x:Uid="/ChannelPage/NewWindowButton"
                                     Content="&#xE78B;"
                                     Style="{ThemeResource IconButtonStyle}"
@@ -345,24 +345,24 @@
                                         Visibility="{Binding ShowCallButton, Converter={StaticResource BoolVisibilityConverter}}"/>
 
                                 <ToggleButton
-                                    x:Name="muteButton"
+                                    x:Name="MuteButton"
                                     x:Uid="/ChannelPage/MuteButton"
                                     Content="&#xE74F;"
                                     IsChecked="{Binding Channel.Muted, Mode=TwoWay}"
                                     Style="{ThemeResource IconToggleButtonStyle}"/>
                                 <Button
-                                    x:Name="searchButton"
+                                    x:Name="SearchButton"
                                     x:Uid="/ChannelPage/SearchButton"
                                     Content="&#xE721;"
                                     Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
-                                    x:Name="pinsButton"
+                                    x:Name="PinsButton"
                                     x:Uid="/ChannelPage/PinsButton"
                                     Click="pinsButton_Click"
                                     Content="&#xE718;"
                                     Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
-                                    x:Name="userListButton"
+                                    x:Name="UserListButton"
                                     x:Uid="/ChannelPage/UserListButton"
                                     Click="UserListButton_Click"
                                     Content="&#xE716;"
@@ -384,13 +384,13 @@
                                 </StackPanel.RenderTransform>
 
                                 <Button
-                                    x:Name="deleteAllButton"
+                                    x:Name="DeleteAllButton"
                                     x:Uid="/ChannelPage/DeleteAllButton"
                                     Click="DeleteAllButton_Click"
                                     Content="&#xE74D;"
                                     Style="{ThemeResource IconButtonStyle}"/>
                                 <Button
-                                    x:Name="closeEditButton"
+                                    x:Name="CloseEditButton"
                                     x:Uid="/ChannelPage/CloseEditButton"
                                     Click="CloseEditButton_Click"
                                     Content="&#xE711;"
@@ -400,24 +400,27 @@
 
                         </Grid>
                         <ProgressBar
-                            x:Name="loadingProgress"
+                            x:Name="LoadingProgress"
                             Grid.Row="1"
                             Visibility="Collapsed" />
                         <ProgressBar
-                            x:Name="uploadProgress"
+                            x:Name="UploadProgress"
                             Grid.Row="2"
                             Visibility="Collapsed" />
                     </Grid>
 
                     <Grid Grid.Row="1">
                         <ListView
-                            x:Name="messageList"
+                            x:Name="MessageList"
                             IncrementalLoadingThreshold="15"
                             ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"
                             SelectionChanged="MessageList_SelectionChanged"
                             ShowsScrollingPlaceholders="False"
+                            ScrollViewer.IsVerticalRailEnabled="True"
+                            ScrollViewer.HorizontalScrollMode="Disabled"
+                            ScrollViewer.IsHorizontalScrollChainingEnabled="True"
                             SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -439,7 +442,7 @@
                             </ListView.ItemContainerStyle>
                         </ListView>
                         <StackPanel
-                            x:Name="noMessages"
+                            x:Name="NoMessages"
                             Margin="16"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -452,35 +455,35 @@
 
                     <Grid Grid.Row="2">
                         <controls1:UploadItemsControl
-                            x:Name="uploadItems"
+                            x:Name="UploadItems"
                             Height="150"
                             Visibility="Collapsed"
                             IsEnabled="{Binding ShowUploads, UpdateSourceTrigger=PropertyChanged}">
                             <controls1:UploadItemsControl.RenderTransform>
-                                <TranslateTransform x:Name="uploadsTransform" Y="250" />
+                                <TranslateTransform x:Name="UploadsTransform" Y="250" />
                             </controls1:UploadItemsControl.RenderTransform>
                         </controls1:UploadItemsControl>
 
                         <Grid
-                            x:Name="photoPicker"
+                            x:Name="PhotoPicker"
                             Height="150"
                             Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                             Visibility="Collapsed">
                             <Grid.RenderTransform>
-                                <TranslateTransform x:Name="photoTransform" Y="200" />
+                                <TranslateTransform x:Name="PhotoTransform" Y="200" />
                             </Grid.RenderTransform>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Grid Width="42" Margin="0,0,4,0">
+                            <Grid Width="40" Margin="0,0,4,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Button
-                                    x:Name="openPopoutButton"
+                                    x:Name="OpenPopoutButton"
                                     x:Uid="/ChannelPage/OpenPopoutButton"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
@@ -488,7 +491,7 @@
                                     Content="&#xE8A7;"
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                                 <Button
-                                    x:Name="openLocalButton"
+                                    x:Name="OpenLocalButton"
                                     x:Uid="/ChannelPage/OpenLocalButton"
                                     Grid.Row="2"
                                     HorizontalAlignment="Stretch"
@@ -499,7 +502,7 @@
                             </Grid>
 
                             <ListView
-                                x:Name="photosList"
+                                x:Name="PhotosList"
                                 Grid.Column="1"
                                 ShowsScrollingPlaceholders="False"
                                 SingleSelectionFollowsFocus="False"
@@ -529,7 +532,7 @@
                             </ListView>
 
                             <ProgressRing
-                                x:Name="loadingImagesRing"
+                                x:Name="LoadingImagesRing"
                                 Grid.Column="1"
                                 Width="42"
                                 Height="42"
@@ -538,7 +541,10 @@
                         </Grid>
                     </Grid>
 
-                    <Grid x:Name="footerGrid" Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid
+                        x:Name="FooterGrid"
+                        Grid.Row="3"
+                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -564,7 +570,7 @@
                         </ItemsControl>
 
                         <ProgressBar
-                            x:Name="slowModeTimeout"
+                            x:Name="SlowModeTimeout"
                             Grid.Row="2"
                             Maximum="{Binding PerUserRateLimit}"
                             Visibility="{Binding ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
@@ -582,14 +588,14 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Button
-                                x:Name="uploadButton"
+                                x:Name="UploadButton"
                                 Click="uploadButton_Click"
                                 Content="&#xE898;"
                                 Visibility="{Binding CanUpload}"
                                 Style="{ThemeResource IconButtonStyle}" />
 
                             <TextBox
-                                x:Name="messageTextBox"
+                                x:Name="MessageTextBox"
                                 Grid.Column="1"
                                 MaxHeight="90"
                                 Padding="10"
@@ -615,16 +621,15 @@
                                 Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
 
                             <ToggleButton
-                                x:Name="emoteButton"
+                                x:Name="EmoteButton"
                                 Grid.Column="2"
                                 Click="emoteButton_Click"
                                 Content="&#xED54;"
-                                FontSize="18"
                                 Style="{ThemeResource IconToggleButtonStyle}"
                                 Visibility="{Binding CanSend, Converter={StaticResource BoolVisibilityConverter}}">
                             </ToggleButton>
                             <Button
-                                x:Name="sendButton"
+                                x:Name="SendButton"
                                 Grid.Column="3"
                                 Click="sendButton_Click"
                                 Content="&#xE724;"
@@ -645,8 +650,8 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                        <Setter Target="sidebarGrid.(Grid.Column)" Value="1" />
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
+                        <Setter Target="SidebarGrid.(Grid.Column)" Value="1" />
                         <Setter Target="ContentTransform.X" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
@@ -657,8 +662,8 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                        <Setter Target="sidebarGrid.(Grid.Column)" Value="0" />
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
+                        <Setter Target="SidebarGrid.(Grid.Column)" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -668,8 +673,8 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Visible" />
-                        <Setter Target="sidebarGrid.(Grid.Column)" Value="0" />
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
+                        <Setter Target="SidebarGrid.(Grid.Column)" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

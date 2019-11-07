@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -25,34 +26,36 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class DMChannelsPage : Page
     {
-        private DiscordDmChannel _currentChannel;
+        private DMChannelsViewModel _model;
 
         public DMChannelsPage()
         {
             InitializeComponent();
+            _model = DataContext as DMChannelsViewModel;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            _model.UpdatingIndex = true;
+
             if (e.Parameter is DiscordDmChannel channel)
             {
-                _currentChannel = channel;
-                dmsList.SelectedItem = channel;
+                _model.SelectedIndex = _model.DMChannels.IndexOf(channel);
             }
             else
             {
-                _currentChannel = null;
-                dmsList.SelectedIndex = -1;
+                _model.SelectedIndex = -1;
             }
+
+            _model.UpdatingIndex = false;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _currentChannel = null;
-            dmsList.SelectedIndex = -1;
+            _model.SelectedIndex = -1;
         }
 
-        private void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void dmsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dataContext = DataContext as DMChannelsViewModel;
             if (dataContext.UpdatingIndex)
@@ -61,7 +64,8 @@ namespace Unicord.Universal.Pages.Subpages
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
             if (channel != null)
             {
-                this.FindParent<DiscordPage>()?.Navigate(channel, null);
+                var service = DiscordNavigationService.GetForCurrentView();
+                await service.NavigateAsync(channel);
             }
         }
     }

@@ -167,8 +167,7 @@ namespace Unicord.Universal
 
         public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
         {
-            var httpRequestMessage
-                = new HttpRequestMessage(HttpMethod.Post, new Uri("https://discordapp.com/api/v7" + string.Format("/channels/{0}/messages", channel.Id)));
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v7/channels/{channel.Id}/messages"));
             httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
 
             var cont = new HttpMultipartFormDataContent();
@@ -189,18 +188,19 @@ namespace Unicord.Universal
             var send = _httpClient.Value.SendRequestAsync(httpRequestMessage);
             send.Progress += new AsyncOperationProgressHandler<HttpResponseMessage, HttpProgress>((o, e) =>
             {
-                progress.Report((e.BytesSent / (double)e.TotalBytesToSend) * 100);
+                if (e.TotalBytesToSend != null)
+                    progress.Report((e.BytesSent / (double)e.TotalBytesToSend) * 100);
             });
 
             await send;
         }
 
         /// <summary>
-        /// Returns true if <paramref name="current"/> is higher in the role heirarchy than <paramref name="member"/>.
+        /// Returns true if <paramref name="current"/> is higher in the role hierarchy than <paramref name="member"/>.
         /// </summary>
         /// <param name="current">The current guild member</param>
         /// <param name="member">The guild member to check against</param>
-        public static bool CheckRoleHeirarchy(DiscordMember current, DiscordMember member)
+        public static bool CheckRoleHierarchy(DiscordMember current, DiscordMember member)
         {
             if (member == null || current == null)
             {
