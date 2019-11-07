@@ -44,12 +44,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         if (index != std::wstring::npos) {
             std::wstring str(raw_endpoint.substr(index + 1));
-            endpoint.hostname = raw_endpoint.substr(0, index);
-            endpoint.port = (uint16_t)std::stoi(str);
+            ws_endpoint.hostname = raw_endpoint.substr(0, index);
+            ws_endpoint.port = (uint16_t)std::stoi(str);
         }
         else {
-            endpoint.hostname = raw_endpoint;
-            endpoint.port = 80;
+            ws_endpoint.hostname = raw_endpoint;
+            ws_endpoint.port = 443;
         }
 
         audio_format = AudioFormat();
@@ -106,7 +106,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::low_latency);
         opus = new OpusWrapper(audio_format);
 
-        Windows::Foundation::Uri url{ L"wss://" + endpoint.hostname + L"/?encoding=json&v=4" };
+        Windows::Foundation::Uri url{ L"wss://" + ws_endpoint.hostname + L"/?encoding=json&v=4" };
         co_await web_socket.ConnectAsync(url);
     }
 
@@ -177,8 +177,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     IAsyncAction VoiceClient::Stage1(JsonObject obj)
     {
-        HostName remoteHost{ endpoint.hostname };
-        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(endpoint.port) };
+        HostName remoteHost{ udp_endpoint.hostname };
+        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udp_endpoint.port) };
         co_await udp_socket.ConnectAsync(pair);
 
         mode = SodiumWrapper::SelectEncryptionMode(obj.GetNamedArray(L"modes"));
@@ -498,7 +498,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 break;
             case 2: // ready
                 ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
-                endpoint.port = (uint16_t)data.GetNamedNumber(L"port");
+                udp_endpoint = ConnectionEndpoint{};
+                udp_endpoint.hostname = data.GetNamedString(L"ip");
+                udp_endpoint.port = (uint16_t)data.GetNamedNumber(L"port");
                 co_await Stage1(data);
                 break;
             case 4: // session description
