@@ -780,7 +780,13 @@ namespace DSharpPlus
                         var glds = (JArray)dat["guilds"];
                         var dmcs = (JArray)dat["private_channels"];
 
-                        await OnReadyEventAsync(dat.ToObject<ReadyPayload>(), glds, dmcs, dat.TryGetValue("relationships", out var t) ? t as JArray : new JArray(), dat.TryGetValue("presences", out var p) ? p as JArray : new JArray(), dat.TryGetValue("user_settings", out var s) ? s as JObject : null, dat.TryGetValue("read_state", out var read) ? read as JArray : null).ConfigureAwait(false);
+                        await OnReadyEventAsync(dat.ToObject<ReadyPayload>(),
+                            glds, 
+                            dmcs, 
+                            dat.TryGetValue("relationships", out var t) ? t as JArray : new JArray(), 
+                            dat.TryGetValue("presences", out var p) ? p as JArray : new JArray(), 
+                            dat.TryGetValue("user_settings", out var s) ? s as JObject : null, 
+                            dat.TryGetValue("read_state", out var read) ? read as JArray : null).ConfigureAwait(false);
                         break;
 
                     case "resumed":
@@ -1150,7 +1156,7 @@ namespace DSharpPlus
                         dat.Discord = this;
                         ReadStates[dat.Id] = dat;
                     }
-                } 
+                }
             }
 
             foreach (var g in Guilds.Values)
@@ -2789,6 +2795,7 @@ namespace DSharpPlus
             CurrentUser = null;
 
             _cancelTokenSource?.Cancel();
+            _cancelTokenSource?.Dispose();
             _guilds = null;
             _heartbeatTask = null;
             _extensions = null;

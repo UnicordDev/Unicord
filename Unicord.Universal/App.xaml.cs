@@ -137,11 +137,10 @@ namespace Unicord.Universal
                     var dialog = new MessageDialog("Something went wrong trying to find this person, sorry!", "Whoops!");
                     await dialog.ShowAsync();
                 }
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
             }
 
+            // Place the frame in the current Window
+            Window.Current.Content = rootFrame;
             Window.Current.Activate();
         }
 
@@ -289,14 +288,6 @@ namespace Unicord.Universal
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
-        }
-
-        private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
-        {
-            if(args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
-            {
-                await Discord.DisconnectAsync();
-            }
         }
 
         internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)

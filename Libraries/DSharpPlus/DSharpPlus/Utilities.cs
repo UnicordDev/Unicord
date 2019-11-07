@@ -18,11 +18,11 @@ namespace DSharpPlus
         /// Gets the version of the library
         /// </summary>
         private static string VersionHeader { get; set; }
-        private static Dictionary<Permissions, string> PermissionStrings { get; set; }
+        public static IReadOnlyDictionary<Permissions, string> PermissionStrings { get; private set; }
 
         static Utilities()
         {
-            PermissionStrings = new Dictionary<Permissions, string>();
+            var permissions = new Dictionary<Permissions, string>();
             var t = typeof(Permissions);
             var ti = t.GetTypeInfo();
             var vals = Enum.GetValues(t).Cast<Permissions>();
@@ -33,8 +33,10 @@ namespace DSharpPlus
                 var xmv = ti.DeclaredMembers.FirstOrDefault(xm => xm.Name == xsv);
                 var xav = xmv.GetCustomAttribute<PermissionStringAttribute>();
 
-                PermissionStrings[xv] = xav.String;
+                permissions[xv] = xav.String;
             }
+
+            PermissionStrings = permissions;
 
             var a = typeof(DiscordClient).GetTypeInfo().Assembly;
 
@@ -51,7 +53,7 @@ namespace DSharpPlus
             }
 
             // edgy
-            VersionHeader = $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17758";
+            VersionHeader = $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18999";
         }
 
         internal static T AddOrUpdate<T>(this List<T> list, T add, Action<T, T> update, Func<T, T, bool> equal) where T : class
@@ -146,10 +148,14 @@ namespace DSharpPlus
             return regex.IsMatch(message);
         }
 
+        internal static readonly Regex UserRegex = new Regex(@"<@!?(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
+        internal static readonly Regex RoleRegex = new Regex(@"<@&(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
+        internal static readonly Regex ChannelRegex = new Regex(@"<#(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
+        internal static readonly Regex EmojiRegex = new Regex(@"<:([a-zA-Z0-9_]+):(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
+
         internal static IEnumerable<ulong> GetUserMentions(DiscordMessage message)
         {
-            var regex = new Regex(@"<@!?(\d+)>", RegexOptions.ECMAScript);
-            var matches = regex.Matches(message.Content);
+            var matches = UserRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
                 yield return ulong.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -158,8 +164,7 @@ namespace DSharpPlus
 
         internal static IEnumerable<ulong> GetRoleMentions(DiscordMessage message)
         {
-            var regex = new Regex(@"<@&(\d+)>", RegexOptions.ECMAScript);
-            var matches = regex.Matches(message.Content);
+            var matches = RoleRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
                 yield return ulong.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -168,8 +173,7 @@ namespace DSharpPlus
 
         internal static IEnumerable<ulong> GetChannelMentions(DiscordMessage message)
         {
-            var regex = new Regex(@"<#(\d+)>", RegexOptions.ECMAScript);
-            var matches = regex.Matches(message.Content);
+            var matches = ChannelRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
                 yield return ulong.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -178,8 +182,7 @@ namespace DSharpPlus
 
         internal static IEnumerable<ulong> GetEmojis(DiscordMessage message)
         {
-            var regex = new Regex(@"<:([a-zA-Z0-9_]+):(\d+)>", RegexOptions.ECMAScript);
-            var matches = regex.Matches(message.Content);
+            var matches = EmojiRegex.Matches(message.Content);
             foreach (Match match in matches)
             {
                 yield return ulong.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
