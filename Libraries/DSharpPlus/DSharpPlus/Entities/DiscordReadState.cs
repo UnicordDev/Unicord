@@ -30,10 +30,15 @@ namespace DSharpPlus.Entities
                 if (channel == null)
                     return false;
 
-                if (channel?.Type == ChannelType.Text || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group || channel.Type == ChannelType.News)
+                if (channel.Type == ChannelType.Text || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group || channel.Type == ChannelType.News)
                 {
                     if (channel.Muted)
                         return false;
+
+                    if (channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
+                    {
+                        return MentionCount > 0;
+                    }
 
                     return (MentionCount > 0 || (channel.LastMessageId != 0 ? channel.LastMessageId > _lastMessageId : false));
                 }

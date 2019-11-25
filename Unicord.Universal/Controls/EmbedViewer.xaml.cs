@@ -285,7 +285,6 @@ namespace Unicord.Universal.Controls
             if (Content is ScaledContentControl scc && scc.Content is MediaPlayerElement element)
             {
                 element.Source = null;
-                try { UnloadObject(element); } catch { }
                 Window.Current.VisibilityChanged -= OnWindowVisibilityChanged;
             }
 

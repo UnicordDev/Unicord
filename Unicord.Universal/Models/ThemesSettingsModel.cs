@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,24 +15,20 @@ namespace Unicord.Universal.Models
     // not super useful considering most things here can't nicely be MMVMed
     public class ThemesSettingsModel : PropertyChangedBase
     {
-        private object _selectedTheme;
-        private List<Theme> _availableThemes;
-
         public ThemesSettingsModel()
         {
-            SelectedTheme = Theme.Default;
+            AvailableThemes = new ObservableCollection<Theme>();
+            SelectedThemes = new ObservableCollection<Theme>();
+            AvailableThemes.CollectionChanged += OnAvailableThemesUpdated;
         }
 
         public async Task ReloadThemes()
         {
-            var themesList = new List<Theme>();
+            IsLoading = true;
 
-            var selectedTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
-            if (string.IsNullOrWhiteSpace(selectedTheme))
-                selectedTheme = "Default";
-
-            themesList.Add(Theme.Default);
-
+            var availableThemes = new List<Theme>();
+            var selectedThemeNames = App.LocalSettings.Read("SelectedThemeNames", new List<string>());
+            var availableThemeNames = App.LocalSettings.Read("AvailableThemeNames", new List<string>());
             var themeDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
             var directories = await themeDirectory.GetFoldersAsync();
             foreach (var directory in directories)
@@ -40,40 +38,44 @@ namespace Unicord.Universal.Models
                     try
                     {
                         var theme = JsonConvert.DeserializeObject<Theme>(await FileIO.ReadTextAsync(themeJson));
-                        themesList.Add(theme);
+                        availableThemes.Add(theme);
+
+                        if (!availableThemeNames.Contains(theme.NormalisedName))
+                        {
+                            availableThemeNames.Add(theme.NormalisedName);
+                        }
                     }
                     catch { }
                 }
             }
 
-            AvailableThemes = themesList;
-            SelectedTheme = themesList.FirstOrDefault(t => t.Name == selectedTheme) ?? Theme.Default;
-        }
-
-        public ElementTheme PreviewRequestedTheme { get; set; }
-
-        public List<Theme> AvailableThemes
-        {
-            get => _availableThemes;
-            set
+            AvailableThemes.Clear();
+            foreach (var theme in availableThemes.OrderBy(t => availableThemeNames.IndexOf(t.NormalisedName)))
             {
-                OnPropertySet(ref _availableThemes, value);
-                InvokePropertyChanged(nameof(SelectedTheme));
-                InvokePropertyChanged(nameof(CanRemove));
+                AvailableThemes.Add(theme);
             }
-        }
 
-        public object SelectedTheme
-        {
-            get => _selectedTheme;
-            set
+            SelectedThemes.Clear();
+            foreach (var theme in availableThemes.Where(t => selectedThemeNames.Contains(t.NormalisedName)))
             {
-                OnPropertySet(ref _selectedTheme, value);
-                InvokePropertyChanged(nameof(CanRemove));
+                SelectedThemes.Add(theme);
             }
+
+            IsLoading = false;
+            InvokePropertyChanged(nameof(ShowThemesPlaceholder));
+            App.LocalSettings.Save("AvailableThemeNames", availableThemeNames);
         }
 
-        public bool CanRemove => (SelectedTheme as Theme)?.IsDefault ?? true;
+        private void OnAvailableThemesUpdated(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            App.LocalSettings.Save("AvailableThemeNames", AvailableThemes.ToList().Select(t => t.NormalisedName));
+        }
+
+        public bool IsLoading { get; internal set; }
+        public bool ShowThemesPlaceholder => !AvailableThemes.Any();
+        public ElementTheme PreviewRequestedTheme { get; private set; }
+        public ObservableCollection<Theme> AvailableThemes { get; private set; }
+        public ObservableCollection<Theme> SelectedThemes { get; private set; }
 
         public int ColourScheme
         {
@@ -85,19 +87,6 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public double ScaleFactor
-        {
-            get => App.RoamingSettings.Read<double>("ScaleFactor", 1);
-            set
-            {
-                App.RoamingSettings.Save("ScaleFactor", value);
-                InvokePropertyChanged(nameof(ScaleFactorText));
-            }
-        }
-
-        public string ScaleFactorText
-        {
-            get => $"{Math.Floor(ScaleFactor * 100)}% ";
-        }
+        public bool IsDirty { get; internal set; }
     }
 }

@@ -137,7 +137,7 @@ namespace Unicord.Universal.Controls
                         _author = newMessage.Author;
                         _member = _author as DiscordMember;
 
-                        if (newMessage.Channel.Guild != null)
+                        if (newMessage.Channel?.Guild != null)
                         {
                             _currentMember = newMessage.Channel.Guild.CurrentMember;
                             _permissions = newMessage.Channel.PermissionsFor(_currentMember);

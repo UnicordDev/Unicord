@@ -1,10 +1,9 @@
 {
-    "name": "Lavender (Compact)",
-    "short_description": "Compact and Purple.",
+    "name": "Lavender",
+    "short_description": "Purple.",
     "author": "WamWooWam",
     "display_colour": "#FF8961CC",
     "display_logo": "images/logo.png",
-    "use_compact": true,
     "contract_checks": {
         "Windows.Foundation.UniversalApiContract": 7
     }

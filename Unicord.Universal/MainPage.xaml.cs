@@ -187,7 +187,7 @@ namespace Unicord.Universal
             else
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    rootFrame.Navigate(typeof(DiscordPage)));
+                    rootFrame.Navigate(typeof(DiscordPage), Arguments));
             }
         }
 

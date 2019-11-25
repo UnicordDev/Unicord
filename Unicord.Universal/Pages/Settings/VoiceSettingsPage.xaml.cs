@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Unicord.Universal.Models;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
@@ -52,7 +53,7 @@ namespace Unicord.Universal.Pages.Settings
             await UpdateVoiceSettings();
         }
 
-        private async System.Threading.Tasks.Task UpdateVoiceSettings()
+        private async Task UpdateVoiceSettings()
         {
             try
             {
@@ -60,7 +61,7 @@ namespace Unicord.Universal.Pages.Settings
                 {
                     var inputInfo = Model.InputDevice;
                     var outputInfo = Model.OutputDevice;
-                    await model.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id);
+                    await (model?.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id) ?? Task.CompletedTask);
                 }
             }
             catch { }
