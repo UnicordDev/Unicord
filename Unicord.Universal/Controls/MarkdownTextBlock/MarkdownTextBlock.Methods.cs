@@ -353,7 +353,7 @@ namespace WamWooWam.Uwp.UI.Controls
 
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
-                await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = App.RoamingSettings.Read(Constants.WARN_UNSAFE_LINKS, true) && uri.Scheme != Uri.UriSchemeHttps });
+                await Launcher.LaunchUriAsync(uri, new LauncherOptions() { TreatAsUntrusted = App.RoamingSettings.Read(Constants.WARN_UNSAFE_LINKS, true) && uri.Scheme != "https" });
             }
         }
     }

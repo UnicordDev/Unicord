@@ -59,6 +59,7 @@ namespace Unicord.Universal.Controls
                     PosterSource = _attachment.Width != 0 ? new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg")) : null
                 };
 
+                mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
                 mediaPlayer.TransportControls.IsCompact = true;
 
                 if (_attachment.Width == 0)
@@ -106,8 +107,8 @@ namespace Unicord.Universal.Controls
         {
             if (_attachment.Width != 0)
             {
-                var width = _attachment.Width;
-                var height = _attachment.Height;
+                double width = _attachment.Width;
+                double height = _attachment.Height;
 
                 Drawing.ScaleProportions(ref width, ref height, 640, 480);
                 Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);

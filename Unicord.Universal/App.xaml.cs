@@ -21,12 +21,15 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -225,7 +228,43 @@ namespace Unicord.Universal
             {
                 LocalSettings.Save("SelectedThemeName", (string)null);
                 LocalSettings.Save("SelectedThemeNames", new List<string>() { theme });
-            }   
+            }
+        }
+
+        protected override async void OnFileActivated(FileActivatedEventArgs args)
+        {
+            if (Window.Current.Content != null)
+            {
+                ApplicationView view = null;
+                var coreView = CoreApplication.CreateNewView();
+                await coreView.Dispatcher.AwaitableRunAsync(() => view = SetupCurrentView());
+                await ApplicationViewSwitcher.TryShowAsStandaloneAsync(view.Id, ViewSizePreference.UseMinimum);
+                await coreView.Dispatcher.AwaitableRunAsync(() => OnFileActivatedForWindow(args));
+            }
+            else
+            {
+                SetupCurrentView();
+                OnFileActivatedForWindow(args);
+            }            
+        }
+
+        private static ApplicationView SetupCurrentView()
+        {
+            var view = ApplicationView.GetForCurrentView();
+            view.SetPreferredMinSize(new Size(480, 480));
+
+            var frame = new Frame();
+            Window.Current.Content = frame;
+            Window.Current.Activate();
+            return view;
+        }
+
+        private void OnFileActivatedForWindow(FileActivatedEventArgs args)
+        {
+            if (Window.Current.Content is Frame f)
+            {
+                f.Navigate(typeof(InstallThemePage), args);
+            }
         }
 
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)

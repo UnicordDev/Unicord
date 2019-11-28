@@ -24,8 +24,8 @@ Requests a chunk of guild members, quite advanced, can be used for searching as 
 {"op":8,"d":{"guild_id":["guild_id"],"user_ids":["user_id"]}}
 ```
 
-## 14: Fetch User Presences
-Sorta equivelent of `OP 12`, but much more optimised, used for the user list.
+## 14: FUCKING EVERYTHING
+So Discord seem to use this opcode for like 50 different things, it's used for requesting presences, statuses, and so on, but also activating typing and activity events in guilds?! Like jesus what the fuck is with the focus on 14
 
  JSON Parameter | Type                           | Default | Details 
  -------------- | ------------------------------ | ------- | ------- 
@@ -36,9 +36,13 @@ Sorta equivelent of `OP 12`, but much more optimised, used for the user list.
  `channels`     | `map<snowflake, list<range>>?` | n/a     | Map of Channel ID to range of user presences to fetch
 
 
+Requests Discord send typing events for the specified `guild_id`:
 ```json
-{"op":14,"d":{"guild_id":"guild_id","typing":true,"activities":true,"lfg":true}}
+{"op":14,"d":{"guild_id":"guild_id","typing":true,"activities":true}}
+```
 
+Requests members for the last 99 messages? in the specified channels. Could also be top 99 in the user list. Not 100% sure.
+```json
 {"op":14,"d":{"guild_id":"guild_id","typing":true,"activities":true,"lfg":true,"channels":{"channel_id":[[0,99]]}}}
 
 {"op":14,"d":{"guild_id":"guild_id","channels":{"channel_id":[[0,99]],"channel_id":[[0,99]]}}}

@@ -214,15 +214,15 @@
             </Grid>
             <Grid x:Name="contentOverlay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Opacity="0" AllowDrop="True">
                 <Canvas Background="{StaticResource OverlayBackdrop}" Tapped="contentOverlay_Tapped"/>
-                <Grid x:Name="contentContainer" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20" RenderTransformOrigin="0.5, 0.5">
-                    <Grid.RenderTransform>
-                        <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1"/>
-                    </Grid.RenderTransform>
+                <Grid x:Name="contentContainer">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Grid>
+                    <Grid RenderTransformOrigin="0.5, 0.5">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1"/>
+                        </Grid.RenderTransform>
                         <ScrollViewer MinZoomFactor="1" 
                                       IsVerticalRailEnabled="False"
                                       VerticalScrollBarVisibility="Auto"
@@ -232,18 +232,21 @@
                                       HorizontalScrollMode="Enabled" 
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
-                                      ZoomMode="Enabled">
-                            <Image x:Name="attachmentImage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch"
+                                      ZoomMode="Enabled"
+                                      Tapped="contentOverlay_Tapped">
+                            <controls1:ScaledContentControl x:Name="scaledControl">
+                                <Image x:Name="attachmentImage"/>
+                            </controls1:ScaledContentControl>
                         </ScrollViewer>
-                        <Grid x:Name="contentContainerOverlay" Visibility="Collapsed">
-                            <Grid.Background>
-                                <SolidColorBrush Color="{ThemeResource SystemAltMediumHighColor}" />
-                            </Grid.Background>
+
+                        <Grid x:Name="contentContainerOverlay" Grid.RowSpan="2" Visibility="Collapsed">
                             <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>
                     </Grid>
 
-                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,4" Visibility="Collapsed" fc:ColumnSpacing="2">
+                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="4" Visibility="Collapsed" fc:ColumnSpacing="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="*"/>

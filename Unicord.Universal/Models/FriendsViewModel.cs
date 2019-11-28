@@ -10,7 +10,7 @@ using DSharpPlus.EventArgs;
 
 namespace Unicord.Universal.Models
 {
-    public class FriendsViewModel : PropertyChangedBase, IDisposable
+    public class FriendsViewModel : ViewModelBase, IDisposable
     {
         private SynchronizationContext _syncContext;
 
@@ -63,11 +63,8 @@ namespace Unicord.Universal.Models
         }
 
         public ObservableCollection<DiscordRelationship> All { get; set; }
-
         public ObservableCollection<DiscordRelationship> Online { get; set; }
-
         public ObservableCollection<DiscordRelationship> Blocked { get; set; }
-
         public ObservableCollection<DiscordRelationship> Pending { get; set; }
 
         private void SortRelationship(DiscordRelationship rel, bool skipAll = false)

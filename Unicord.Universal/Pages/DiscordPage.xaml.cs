@@ -56,7 +56,7 @@ namespace Unicord.Universal.Pages
             Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
-            helper = new SwipeOpenHelper(content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
+            helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }

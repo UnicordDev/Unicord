@@ -90,6 +90,8 @@ namespace Unicord.Universal.Utilities
             var coreView = CoreApplication.CreateNewView();
             await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                coreView.Properties["channel_id"] = channel.Id;
+
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
                 try { ThemeManager.LoadCurrentTheme(App.Current.Resources); } catch { }

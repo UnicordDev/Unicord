@@ -66,7 +66,7 @@
         <Setter Property="IsTextScaleFactorEnabled" Value="False"/>
     </Style>
 
-    <Style TargetType="MediaTransportControls">
+    <Style x:Key="MediaTransportControlsStyle" TargetType="MediaTransportControls">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -443,6 +443,9 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="MediaTransportControls" BasedOn="{StaticResource MediaTransportControlsStyle}">
     </Style>
 
     <Style x:Key="RangeSliderThumbStyle" TargetType="Thumb">

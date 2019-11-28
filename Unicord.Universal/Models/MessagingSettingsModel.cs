@@ -5,7 +5,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    class MessagingSettingsModel : PropertyChangedBase
+    class MessagingSettingsModel : ViewModelBase
     {
         public MessagingSettingsModel()
         {

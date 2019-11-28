@@ -15,6 +15,8 @@ namespace Unicord.Universal.Models
     // not super useful considering most things here can't nicely be MMVMed
     public class ThemesSettingsModel : PropertyChangedBase
     {
+        private bool _isDirty;
+
         public ThemesSettingsModel()
         {
             AvailableThemes = new ObservableCollection<Theme>();
@@ -87,6 +89,6 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public bool IsDirty { get; internal set; }
+        public bool IsDirty { get => _isDirty; internal set => OnPropertySet(ref _isDirty, value); }
     }
 }

@@ -56,35 +56,15 @@ namespace Unicord.Universal.Pages.Settings
             _initialColour = (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
         }
 
-        private async void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is ThemesSettingsModel model)
             {
-                //var theme = model.SelectedTheme as Theme;
-                //if (model.ColourScheme != _initialColour || theme?.Name != _initialTheme)
-                //{
-                //    _changedTheme = true;
-                //    relaunchRequired.Visibility = Visibility.Visible;
-                //}
-                //else
-                //{
-                //    _changedTheme = false;
-                //    relaunchRequired.Visibility = Visibility.Collapsed;
-                //}
-
-                //var dictionary = new ResourceDictionary();
-                //if (!string.IsNullOrWhiteSpace(theme?.Name) && !theme.IsDefault)
-                //{
-                //    try
-                //    {
-                //        await ThemeManager.LoadAsync(theme.Name, dictionary);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        await UIUtilities.ShowErrorDialogAsync("Failed to load theme!", ex.Message);
-                //    }
-                //}
-
+                if (model.ColourScheme != _initialColour)
+                {
+                    model.IsDirty = true;
+                }
+                
                 // if we invert the theme then set it properly, the element will redraw and reload
                 // it's resources. as far as i know there's no better way to do this.
 
@@ -101,8 +81,7 @@ namespace Unicord.Universal.Pages.Settings
                         break;
                 }
 
-                //Resources = dictionary;
-                RequestedTheme = (ElementTheme)model.ColourScheme;
+                preview.RequestedTheme = (ElementTheme)model.ColourScheme;
             }
         }
 
@@ -112,7 +91,7 @@ namespace Unicord.Universal.Pages.Settings
 
             var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
             var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
-            if (_changedTheme && autoRestart)
+            if (Model.IsDirty && autoRestart)
             {
                 if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeChangedTitle"), resources.GetString("ThemeChangedMessage")))
                 {
@@ -168,7 +147,7 @@ namespace Unicord.Universal.Pages.Settings
             {
                 try
                 {
-                    var theme = await ThemeManager.InstallFromFileAsync(file);
+                    var theme = await ThemeManager.InstallFromArchiveAsync(file);
                 }
                 catch (Exception ex)
                 {
@@ -217,7 +196,7 @@ namespace Unicord.Universal.Pages.Settings
                     deferral?.Complete();
                     deferral = null;
 
-                    await ThemeManager.InstallFromFileAsync(theme);
+                    await ThemeManager.InstallFromArchiveAsync(theme);
                 }
             }
         }
@@ -237,7 +216,7 @@ namespace Unicord.Universal.Pages.Settings
                 Model.SelectedThemes.Remove(item);
             }
 
-            var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList();
+            var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Reverse().ToList();
             App.LocalSettings.Save("SelectedThemeNames", names);
 
             Model.IsDirty = true;
@@ -249,24 +228,15 @@ namespace Unicord.Universal.Pages.Settings
             var dictionary = new ResourceDictionary();
             ThemeManager.Load(names, dictionary);
 
-            switch ((ElementTheme)Model.ColourScheme)
-            {
-                case ElementTheme.Light:
-                    preview.RequestedTheme = ElementTheme.Dark;
-                    break;
-                case ElementTheme.Dark:
-                    preview.RequestedTheme = ElementTheme.Light;
-                    break;
-                default:
-                    preview.RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
-                    break;
-            }
+            var requestedTheme = (ElementTheme)Model.ColourScheme;
+
+            Tools.InvertTheme(requestedTheme, preview);
 
             el.Resources = dictionary;
             el.RequestedTheme = (ElementTheme)Model.ColourScheme;
             el.InvalidateMeasure();
             el.InvalidateArrange();
-        }
+        }        
 
         private void ThemesList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {

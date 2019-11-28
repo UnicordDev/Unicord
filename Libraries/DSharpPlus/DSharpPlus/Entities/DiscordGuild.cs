@@ -340,6 +340,7 @@ namespace DSharpPlus.Entities
         [JsonConverter(typeof(SnowflakeArrayAsDictionaryJsonConverter))]
         internal ConcurrentDictionary<ulong, DiscordChannel> _channels;
         private string _bannerHash;
+        private bool _subscribed;
 
         /// <summary>
         /// Gets the guild member for current user.
@@ -406,9 +407,9 @@ namespace DSharpPlus.Entities
         {
         }
 
-        internal void RequestUserPresences(IEnumerable<DiscordUser> usersToSync)
+        public void RequestUserPresences(IEnumerable<DiscordUser> usersToSync)
         {
-           if (Discord is DiscordClient client)
+            if (Discord is DiscordClient client)
                 client.RequestUserPresences(this, usersToSync);
         }
 

@@ -1,4 +1,5 @@
-﻿using WamWooWam.Core;
+﻿using System;
+using WamWooWam.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -25,20 +26,23 @@ namespace Unicord.Universal.Controls
 
         public static readonly DependencyProperty TargetHeightProperty =
             DependencyProperty.Register("TargetHeight", typeof(int), typeof(ScaledContentControl), new PropertyMetadata(0));
-
+        private Window _window;
 
         public ScaledContentControl()
         {
+            _window = Window.Current;
             DefaultStyleKey = typeof(ScaledContentControl);
         }
 
         protected override Size MeasureOverride(Size constraint)
         {
-            var width = TargetWidth;
-            var height = TargetHeight;
+            double width = TargetWidth;
+            double height = TargetHeight;
+            var maxWidth = Math.Min(_window.Bounds.Width, 640);
+            var maxHeight = Math.Min(_window.Bounds.Height, 480);
 
-            Drawing.ScaleProportions(ref width, ref height, 640, 480);
-            Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
+            Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
+            Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? maxWidth : (int)constraint.Width, double.IsInfinity(constraint.Height) ? maxHeight : (int)constraint.Height);
 
             return new Size(width, height);
         }
