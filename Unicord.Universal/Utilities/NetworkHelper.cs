@@ -19,12 +19,19 @@ namespace Unicord.Universal.Utilities
         private static void UpdateNetworkInfo()
         {
             var profile = NetworkInformation.GetInternetConnectionProfile();
-            IsNetworkConnected = profile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess;
-
-            var cost = profile?.GetConnectionCost();
-            if (profile.IsWwanConnectionProfile || cost == null || cost.NetworkCostType != NetworkCostType.Unrestricted || cost.Roaming)
+            if (profile != null)
             {
-                IsNetworkLimited = true;
+                IsNetworkConnected = profile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess;
+
+                var cost = profile.GetConnectionCost();
+                if (profile.IsWwanConnectionProfile || cost == null || cost.NetworkCostType != NetworkCostType.Unrestricted || cost.Roaming)
+                {
+                    IsNetworkLimited = true;
+                }
+            }
+            else
+            {
+                IsNetworkConnected = false;
             }
         }
 
