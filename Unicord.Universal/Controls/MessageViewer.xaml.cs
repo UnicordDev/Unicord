@@ -12,6 +12,7 @@ using NeoSmart.Unicode;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Uwp.UI.Controls;
 using Windows.ApplicationModel.DataTransfer;
@@ -137,7 +138,7 @@ namespace Unicord.Universal.Controls
                         _author = newMessage.Author;
                         _member = _author as DiscordMember;
 
-                        if (newMessage.Channel.Guild != null)
+                        if (newMessage.Channel?.Guild != null)
                         {
                             _currentMember = newMessage.Channel.Guild.CurrentMember;
                             _permissions = newMessage.Channel.PermissionsFor(_currentMember);
@@ -214,6 +215,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            //SwipeOpenService.GetForCurrentView().AddAdditionalElement(this);
             App.Discord.MessageUpdated += Discord_MessageUpdated;
             _timestampTimer.Value.Tick += _timestampTimer_Tick;
         }

@@ -1,0 +1,10 @@
+{
+    "name": "Lavender",
+    "short_description": "Purple.",
+    "author": "WamWooWam",
+    "display_colour": "#FF8961CC",
+    "display_logo": "images/logo.png",
+    "contract_checks": {
+        "Windows.Foundation.UniversalApiContract": 7
+    }
+}

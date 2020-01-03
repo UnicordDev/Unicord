@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 
 namespace Unicord.Universal.Models
 {
-    public class ChannelEditViewModel
+    public class ChannelEditViewModel : ViewModelBase
     {
         private DiscordChannel _channel;
 

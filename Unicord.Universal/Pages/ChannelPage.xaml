@@ -412,15 +412,15 @@
                     <Grid Grid.Row="1">
                         <ListView
                             x:Name="MessageList"
+                            Background="{ThemeResource MainBackgroundBrush}"
                             IncrementalLoadingThreshold="15"
                             ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"
                             SelectionChanged="MessageList_SelectionChanged"
                             ShowsScrollingPlaceholders="False"
-                            ScrollViewer.IsVerticalRailEnabled="True"
                             ScrollViewer.HorizontalScrollMode="Disabled"
-                            ScrollViewer.IsHorizontalScrollChainingEnabled="True"
+                            ScrollViewer.IsDeferredScrollingEnabled ="False"
                             SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>

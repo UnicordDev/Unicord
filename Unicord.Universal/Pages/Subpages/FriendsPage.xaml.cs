@@ -1,5 +1,7 @@
-﻿using DSharpPlus.Entities;
-using System.Linq;
+﻿using System.Linq;
+using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.UI.Animations;
+using Unicord.Universal.Behaviours;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -11,11 +13,24 @@ namespace Unicord.Universal.Pages.Subpages
         public FriendsPage()
         {
             InitializeComponent();
+
+            //ListViewBehaviour.SetMinItemWidth(all, 300);
+            //ListViewBehaviour.SetMinItemWidth(online, 300);
+            //ListViewBehaviour.SetMinItemWidth(pending, 300);
+            //ListViewBehaviour.SetMinItemWidth(blocked, 300);
+
+            //if (ReorderGridAnimation.IsSupported)
+            //{
+            //    ReorderGridAnimation.SetDuration(all, 250);
+            //    ReorderGridAnimation.SetDuration(online, 250);
+            //    ReorderGridAnimation.SetDuration(pending, 250);
+            //    ReorderGridAnimation.SetDuration(blocked, 250);
+            //}
         }
 
         private void OnItemClick(object sender, ItemClickEventArgs e)
         {
-            if(e.ClickedItem is DiscordRelationship rel)
+            if (e.ClickedItem is DiscordRelationship rel)
             {
                 this.FindParent<MainPage>().ShowUserOverlay(rel.User, true);
             }

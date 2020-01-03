@@ -40,8 +40,8 @@ namespace Unicord.Universal.Utilities
                 using (var outputStream = await output.OpenAsync(FileAccessMode.ReadWrite))
                 {
                     var decoder = await BitmapDecoder.CreateAsync(inputStream);
-                    var width = (int)decoder.PixelWidth;
-                    var height = (int)decoder.PixelHeight;
+                    double width = (int)decoder.PixelWidth;
+                    double height = (int)decoder.PixelHeight;
 
                     Drawing.ScaleProportions(ref width, ref height, 2048, 2048);
 
@@ -82,12 +82,12 @@ namespace Unicord.Universal.Utilities
 
         public static MediaEncodingProfile CreateVideoEncodingProfileFromProps(bool hq, VideoProperties props)
         {
-            var width = (int)props.Width;
-            var height = (int)props.Height;
+            var width = (double)props.Width;
+            var height = (double)props.Height;
             var bitrate = hq ? (uint)2_000_000 : 1_115_000;
 
-            var maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
-            var maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
+            double maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
+            double maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, bitrate);

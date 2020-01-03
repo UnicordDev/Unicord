@@ -17,36 +17,27 @@ namespace DSharpPlus.Entities
     /// </summary>
     public class PropertyChangedBase : INotifyPropertyChanged
     {
-        private ConcurrentDictionary<SynchronizationContext, List<PropertyChangedEventHandler>> _handlers
-            = new ConcurrentDictionary<SynchronizationContext, List<PropertyChangedEventHandler>>();
+        private readonly struct ThreadHandlerCollection
+        {
+            public ThreadHandlerCollection(SynchronizationContext c)
+            {
+                context = c;
+                events = new List<PropertyChangedEventHandler>();
+            }
+
+            public readonly SynchronizationContext context;
+            public readonly List<PropertyChangedEventHandler> events;
+        }
+
+        private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents
+            = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true);
+
+        private List<PropertyChangedEventHandler> PropertyChangeEvents { get => _propertyChangedEvents.Value.events; }
 
         public event PropertyChangedEventHandler PropertyChanged
         {
-            add
-            {
-                var context = SynchronizationContext.Current;
-                if (_handlers.TryGetValue(context, out var list))
-                {
-                    list.Add(value);
-                }
-                else
-                {
-                    _handlers[context] = new List<PropertyChangedEventHandler>() { value };
-                }
-
-                // Debug.WriteLine($"Added event handler, {this}, {value}");
-            }
-
-            remove
-            {
-                var context = SynchronizationContext.Current;
-                if (_handlers.TryGetValue(context, out var list))
-                {
-                    list.Remove(value);
-                }
-
-                // Debug.WriteLine($"Removed event handler, {this}, {value}");
-            }
+            add => PropertyChangeEvents.Add(value);
+            remove => PropertyChangeEvents.Remove(value);
         }
 
         // Holy hell is the C# Discord great.
@@ -66,33 +57,33 @@ namespace DSharpPlus.Entities
         {
             var args = new PropertyChangedEventArgs(property);
             var context = SynchronizationContext.Current;
-            foreach (var item in _handlers)
+            foreach (var item in _propertyChangedEvents.Values)
             {
-                for (var i = 0; i < item.Value.Count; i++)
+                for (var i = 0; i < item.events.Count; i++)
                 {
-                    try
+                    var handler = item.events[i];
+                    if (item.context == context || item.context == null)
                     {
-                        var handler = item.Value[i];
-                        if (item.Key == context)
-                            handler.Invoke(this, args);
-                        else
-                            item.Key.Post(o =>
-                            {
-                                try
-                                {
-                                    handler.Invoke(this, args);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("Error in binding: {0}", ex);
-                                }
-                            }, null);
+                        InvokeHandler(args, handler);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Debug.WriteLine("Error in binding: {0}", ex);
+                        item.context.Post(o => InvokeHandler(args, handler), null);
                     }
                 }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InvokeHandler(PropertyChangedEventArgs args, PropertyChangedEventHandler handler)
+        {
+            try
+            {
+                handler.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in binding: {0}", ex);
             }
         }
 
@@ -100,11 +91,11 @@ namespace DSharpPlus.Entities
         protected void UnsafeInvokePropertyChange(string property)
         {
             var args = new PropertyChangedEventArgs(property);
-            foreach (var item in _handlers)
+            foreach (var item in _propertyChangedEvents.Values)
             {
-                for (var i = 0; i < item.Value.Count; i++)
+                for (var i = 0; i < item.events.Count; i++)
                 {
-                    var handler = item.Value[i];
+                    var handler = item.events[i];
                     handler.Invoke(this, args);
                 }
             }

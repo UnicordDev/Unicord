@@ -187,7 +187,7 @@ namespace Unicord.Universal
             else
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    rootFrame.Navigate(typeof(DiscordPage)));
+                    rootFrame.Navigate(typeof(DiscordPage), Arguments));
             }
         }
 
@@ -208,8 +208,8 @@ namespace Unicord.Universal
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     var status = StatusBar.GetForCurrentView();
-                    status.ProgressIndicator.ProgressValue = null;
-                    status.ProgressIndicator.Text = "Reconnecting...";
+                    status.ProgressIndicator.ProgressValue = NetworkHelper.IsNetworkConnected ? null : (double?)0;
+                    status.ProgressIndicator.Text = NetworkHelper.IsNetworkConnected ? "Reconnecting..." : "Offline";
                     await status.ProgressIndicator.ShowAsync();
                 }
             });
@@ -301,6 +301,11 @@ namespace Unicord.Universal
                 saveButton.Click += _saveHandler;
                 shareButton.Click += _shareHandler;
 
+                scaledControl.TargetWidth = width;
+                scaledControl.TargetHeight = height;
+                attachmentImage.MaxWidth = width;
+                attachmentImage.MaxHeight = height;
+
                 if ((attachmentImage.Source as BitmapImage)?.UriSource != url)
                 {
                     var src = new BitmapImage();
@@ -321,11 +326,6 @@ namespace Unicord.Universal
 
                     src.UriSource = url;
                 }
-
-                Drawing.ScaleProportions(ref width, ref height, (int)ActualWidth - 80, (int)ActualHeight - (int)(80 + subText.ActualHeight));
-
-                attachmentImage.Width = width;
-                attachmentImage.Height = height;
             }
             else
             {

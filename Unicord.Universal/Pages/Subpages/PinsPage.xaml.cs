@@ -62,7 +62,7 @@ namespace Unicord.Universal.Pages.Subpages
 
                 if (e.Channel.Id == _channel.Id)
                 {
-                    noMessages.Visibility = pins.Any() ? Visibility.Collapsed : Visibility.Visible;
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => noMessages.Visibility = pins.Any() ? Visibility.Collapsed : Visibility.Visible);
                 }
             }
         }

@@ -678,8 +678,7 @@ namespace DSharpPlus
                     {
                         ["guild_id"] = new JValue(guild.Id.ToString()),
                         ["typing"] = new JValue(true),
-                        ["activities"] = new JValue(true),
-                        ["lfg"] = new JValue(true),
+                        ["activities"] = new JValue(true)
                     }
                 };
 
@@ -706,7 +705,7 @@ namespace DSharpPlus
                 }
             };
 
-            Debug.WriteLine($"Requesting {usersToSync.Count()} members");
+            //Trace.WriteLine($"Requesting {usersToSync.Count()} members");
 
             var guild_syncstr = JsonConvert.SerializeObject(request);
             _webSocketClient.SendMessage(guild_syncstr);

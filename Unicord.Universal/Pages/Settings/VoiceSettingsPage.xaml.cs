@@ -61,7 +61,7 @@ namespace Unicord.Universal.Pages.Settings
                 {
                     var inputInfo = Model.InputDevice;
                     var outputInfo = Model.OutputDevice;
-                    await (model.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id) ?? Task.CompletedTask);
+                    await (model?.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id) ?? Task.CompletedTask);
                 }
             }
             catch { }

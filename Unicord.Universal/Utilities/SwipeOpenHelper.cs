@@ -63,8 +63,9 @@ namespace Unicord.Universal.Utilities
                 Cancelled = new PointerEventHandler(OnPointerCanceled)
             };
 
-            if (_attachedElements.TryAdd(element, data))
+            if (!_attachedElements.ContainsKey(element))
             {
+                _attachedElements.Add(element, data);
                 element.AddHandler(UIElement.PointerPressedEvent, data.Pressed, handled);
                 element.AddHandler(UIElement.PointerMovedEvent, data.Moved, handled);
                 element.AddHandler(UIElement.PointerReleasedEvent, data.Released, handled);

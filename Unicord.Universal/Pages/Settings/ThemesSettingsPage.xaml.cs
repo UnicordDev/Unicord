@@ -4,13 +4,16 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Unicord.Universal.Models;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -32,6 +35,9 @@ namespace Unicord.Universal.Pages.Settings
         private bool _changedTheme;
         private string _initialTheme;
         private int _initialColour;
+        private bool _loaded;
+        private bool _dragging;
+        private bool _isDirty;
 
         public ThemesSettingsModel Model { get; }
 
@@ -50,29 +56,15 @@ namespace Unicord.Universal.Pages.Settings
             _initialColour = (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
         }
 
-        private async void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is ThemesSettingsModel model)
             {
-                var theme = model.SelectedTheme as Theme;
-                if (model.ColourScheme != _initialColour || theme?.Name != _initialTheme)
+                if (model.ColourScheme != _initialColour)
                 {
-                    _changedTheme = true;
-                    relaunchRequired.Visibility = Visibility.Visible;
+                    model.IsDirty = true;
                 }
-                else
-                {
-                    _changedTheme = false;
-                    relaunchRequired.Visibility = Visibility.Collapsed;
-                }
-
-
-                var dictionary = new ResourceDictionary();
-                if (!string.IsNullOrWhiteSpace(theme?.Name) && !theme.IsDefault)
-                {
-                    try { await ThemeManager.LoadAsync(theme.Name, dictionary); } catch { model.AvailableThemes.Remove(theme); }
-                }
-
+                
                 // if we invert the theme then set it properly, the element will redraw and reload
                 // it's resources. as far as i know there's no better way to do this.
 
@@ -89,21 +81,17 @@ namespace Unicord.Universal.Pages.Settings
                         break;
                 }
 
-                preview.Resources = dictionary;
                 preview.RequestedTheme = (ElementTheme)model.ColourScheme;
             }
         }
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (Model.SelectedTheme is Theme theme)
-            {
-                App.LocalSettings.Save("SelectedThemeName", theme.IsDefault ? string.Empty : theme.Name);
-            }
+            App.LocalSettings.Save("SelectedThemeNames", Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList());
 
             var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
             var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
-            if (_changedTheme && autoRestart)
+            if (Model.IsDirty && autoRestart)
             {
                 if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeChangedTitle"), resources.GetString("ThemeChangedMessage")))
                 {
@@ -111,36 +99,14 @@ namespace Unicord.Universal.Pages.Settings
                 }
             }
         }
-
-        private async void InstallThemeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".uni-theme");
-            picker.FileTypeFilter.Add(".zip");
-
-            var file = await picker.PickSingleFileAsync();
-            if (file != null)
-            {
-                try
-                {
-                    await ThemeManager.InstallFromFileAsync(file);
-                }
-                catch (Exception ex)
-                {
-                    await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
-                }
-            }
-
-            await Model.ReloadThemes();
-        }
-
+        
         private async void RemoveThemeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Model.SelectedTheme is Theme theme)
-            {
-                await ThemeManager.RemoveThemeAsync(theme.Name);
-                await Model.ReloadThemes();
-            }
+            //if (Model.SelectedTheme is Theme theme)
+            //{
+            //    await ThemeManager.RemoveThemeAsync(theme.Name);
+            //    await Model.ReloadThemes();
+            //}
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -154,6 +120,132 @@ namespace Unicord.Universal.Pages.Settings
             }
 
             await Model.ReloadThemes();
+            FixSelectedThemes();
+        }
+
+        private void FixSelectedThemes()
+        {
+            _loaded = false;
+
+            themesList.SelectedItems.Clear();
+            foreach (var item in Model.SelectedThemes)
+            {
+                themesList.SelectedItems.Add(item);
+            }
+
+            _loaded = true;
+        }
+
+        private async void AddThemesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new FileOpenPicker();
+            picker.FileTypeFilter.Add(".uni-theme");
+            picker.FileTypeFilter.Add(".zip");
+
+            var file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                try
+                {
+                    var theme = await ThemeManager.InstallFromArchiveAsync(file);
+                }
+                catch (Exception ex)
+                {
+                    await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
+                }
+            }
+
+            await Model.ReloadThemes();
+        }
+
+        private void RemoveThemesButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void ThemesList_DragOver(object sender, DragEventArgs e)
+        {
+            var deferral = e.GetDeferral();
+
+            if (e.DataView.AvailableFormats.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                if (items.Any(i => { var ext = Path.GetExtension(i.Name); return ext == ".zip" || ext == ".uni-theme"; }))
+                {
+                    e.Handled = true;
+                    e.AcceptedOperation = DataPackageOperation.Copy;
+                }
+            }
+
+            deferral.Complete();
+        }
+
+        private async void ThemesList_Drop(object sender, DragEventArgs e)
+        {
+            var deferral = e.GetDeferral();
+
+            if (e.DataView.AvailableFormats.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                var themeItems = items.OfType<StorageFile>().Where(i => { var ext = Path.GetExtension(i.Name); return ext == ".zip" || ext == ".uni-theme"; });
+                foreach (var theme in themeItems)
+                {
+                    e.Handled = true;
+                    e.AcceptedOperation = DataPackageOperation.Copy;
+
+                    deferral?.Complete();
+                    deferral = null;
+
+                    await ThemeManager.InstallFromArchiveAsync(theme);
+                }
+            }
+        }
+
+        private void ThemesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Model.IsLoading || !_loaded || _dragging)
+                return;
+
+            foreach (var item in e.AddedItems.OfType<Theme>())
+            {
+                Model.SelectedThemes.Add(item);
+            }
+
+            foreach (var item in e.RemovedItems.OfType<Theme>())
+            {
+                Model.SelectedThemes.Remove(item);
+            }
+
+            var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Reverse().ToList();
+            App.LocalSettings.Save("SelectedThemeNames", names);
+
+            Model.IsDirty = true;
+            ReloadThemes(names, preview);
+        }
+
+        private void ReloadThemes(List<string> names, FrameworkElement el)
+        {
+            var dictionary = new ResourceDictionary();
+            ThemeManager.Load(names, dictionary);
+
+            var requestedTheme = (ElementTheme)Model.ColourScheme;
+
+            Tools.InvertTheme(requestedTheme, preview);
+
+            el.Resources = dictionary;
+            el.RequestedTheme = (ElementTheme)Model.ColourScheme;
+            el.InvalidateMeasure();
+            el.InvalidateArrange();
+        }        
+
+        private void ThemesList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            _dragging = true;
+        }
+
+        private void ThemesList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            _dragging = false;
         }
     }
 }

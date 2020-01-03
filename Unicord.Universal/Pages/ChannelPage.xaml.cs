@@ -170,9 +170,9 @@ namespace Unicord.Universal.Pages
             {
                 var scrollViewer = MessageList.FindChild<ScrollViewer>("ScrollViewer");
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
-                scrollViewer.ManipulationMode = ManipulationModes.System | ManipulationModes.TranslateX;
 
                 var swipeService = SwipeOpenService.GetForCurrentView();
+                swipeService.AddAdditionalElement(MessageList);
                 swipeService.AddAdditionalElement(scrollViewer);
 
                 ShowSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
@@ -241,7 +241,7 @@ namespace Unicord.Universal.Pages
                     NoMessages.Visibility = Visibility.Collapsed;
                 });
 
-                if (ViewModel.Channel.Guild?.IsSynced == false && ViewModel.Channel.Guild.IsLarge)
+                if (ViewModel.Channel.Guild?.IsSynced == false)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
                 }

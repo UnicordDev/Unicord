@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Web;
 using DSharpPlus.Entities;
 using Microsoft.QueryStringDotNET;
 using Unicord.Universal.Services;
@@ -83,8 +82,8 @@ namespace Unicord.Universal.Controls.Embeds
 
         protected override Size MeasureOverride(Size constraint)
         {
-            var width = Video.Width;
-            var height = Video.Height;
+            double width = Video.Width;
+            double height = Video.Height;
 
             WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 480);
             WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);

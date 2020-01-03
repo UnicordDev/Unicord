@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SidebarPrimaryAcrylicWindowBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SidebarPrimaryAcrylicElementBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SidebarSecondaryAcrylicWindowBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SidebarSecondaryAcrylicElementBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumBrush" Color="#FF080808" />
+            <SolidColorBrush x:Key="SidebarPrimaryAcrylicWindowBrush" Color="#FF080808" />
+            <SolidColorBrush x:Key="SidebarPrimaryAcrylicElementBrush" Color="#FF080808" />
+            <SolidColorBrush x:Key="SidebarSecondaryAcrylicWindowBrush" Color="#FF040404" />
+            <SolidColorBrush x:Key="SidebarSecondaryAcrylicElementBrush" Color="#FF040404" />
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF000000"/>
+            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

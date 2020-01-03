@@ -7,10 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:universal="using:Unicord.Universal"
     xmlns:models="using:Unicord.Universal.Models"
-    mc:Ignorable="d" x:DefaultBindMode="TwoWay" Loaded="Page_Loaded">
+    mc:Ignorable="d" x:DefaultBindMode="TwoWay" d:DesignWidth="450" Loaded="Page_Loaded">
 
     <Page.Resources>
         <Style x:Key="PreviewEllipse" TargetType="Ellipse">
@@ -65,6 +66,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <DataTemplate x:Key="ThemeTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
+                <TextBlock Grid.Column="1" Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid>
@@ -92,9 +105,11 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="relaunchRequired" x:Uid="/ThemesSettingsPage/RelaunchRequired" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
-                <TextBlock x:Name="themeLoadError" TextWrapping="Wrap" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
-
+                <StackPanel>
+                    <TextBlock x:Name="relaunchRequired" x:Uid="/ThemesSettingsPage/RelaunchRequired" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
+                    <TextBlock x:Name="themeLoadError" TextWrapping="Wrap" Visibility="{Binding IsDirty, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
+                </StackPanel>
+                
                 <controls:DropShadowPanel
                     Grid.Row="1"
                     HorizontalContentAlignment="Stretch"
@@ -192,34 +207,41 @@
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/ThemesSettingsPage/MainThemeHeader" Margin="0,4"/>
                     <!-- links TBD -->
                     <TextBlock x:Uid="/ThemesSettingsPage/MainThemeSubheader" TextWrapping="WrapWholeWords"/>
-                    <Grid Margin="0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <ComboBox ItemsSource="{Binding AvailableThemes}" w1809:CornerRadius="3,0,0,3" SelectedItem="{Binding SelectedTheme, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                    <Grid Margin="4,8,4,0" MinHeight="200">
+                        <ListView x:Name="themesList"
+                            SelectionMode="Multiple"
+                            ItemsSource="{Binding AvailableThemes}"
+                            ItemTemplate="{StaticResource ThemeTemplate}"
+                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                            ReorderMode="Enabled"
+                            CanReorderItems="True"
+                            CanDragItems="True"
+                            CanDrag="True"
+                            AllowDrop="True"
+                            SelectionChanged="ThemesList_SelectionChanged"
+                            DragOver="ThemesList_DragOver"
+                            DragItemsStarting="ThemesList_DragItemsStarting"
+                            DragItemsCompleted="ThemesList_DragItemsCompleted"
+                            Drop="ThemesList_Drop"
+                            VerticalAlignment="Stretch">
+                        </ListView>
 
-                                        <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Name}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Button x:Name="installThemeButton" w1809:CornerRadius="0" Grid.Column="1" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="InstallThemeButton_Click">
-                            &#xE710;
-                        </Button>
-                        <Button x:Name="removeThemeButton" w1809:CornerRadius="0,3,3,0" IsEnabled="{x:Bind Model.CanRemove, Mode=OneWay}" Grid.Column="2" FontSize="16" Padding="0" Width="32" Height="32" FontFamily="Segoe MDL2 Assets" Click="RemoveThemeButton_Click">
-                            &#xE738;
-                        </Button>
+                        <TextBlock Visibility="{Binding ShowThemesPlaceholder, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" LineHeight="16">
+                            Click <Run FontFamily="Segoe MDL2 Assets" FontSize="16" Text="&#xE710;" /> to add a theme, or drag an archive here!
+                        </TextBlock>
                     </Grid>
+                    <StackPanel w1709:Spacing="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,4">
+                        <Button x:Name="RemoveThemesButton" 
+                                Click="RemoveThemesButton_Click"
+                                Style="{ThemeResource IconButtonStyle}" 
+                                Content="&#xE738;" 
+                                IsEnabled="{Binding EnableRemoveButton}"/>
+                        <Button x:Name="AddThemesButton" 
+                                Click="AddThemesButton_Click"
+                                Style="{ThemeResource IconButtonStyle}" 
+                                Content="&#xE710;">
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </ContentControl>

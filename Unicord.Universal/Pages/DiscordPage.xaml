@@ -135,7 +135,7 @@
 
         <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
                 To="0"
@@ -144,7 +144,7 @@
        
     </Page.Resources>
     <Grid>
-        <Grid x:Name="grid">
+        <Grid x:Name="MainGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -200,7 +200,7 @@
                         <ListView.Header>
                             <StackPanel Margin="0,8,0,0">
                                 <ListViewItem
-                                    x:Name="closeItem"
+                                    x:Name="CloseItem"
                                     MinWidth="0"
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
@@ -387,7 +387,7 @@
                 </controls1:DropShadowPanel>
             </Grid>
             <Grid
-                x:Name="content"
+                x:Name="Content"
                 Grid.Column="1"
                 MinWidth="250"
                 Background="{ThemeResource MainBackgroundBrush}">
@@ -414,7 +414,7 @@
                         Padding="16"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
-                        AnimationDuration="00:00:00.10"
+                        AnimationDuration="00:00:00.15"
                         Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}"
                         BorderThickness="1"
                         FontSize="{ThemeResource ContentControlFontSize}"
@@ -458,9 +458,8 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="ContentTransform.X" Value="0" />
-                        <Setter Target="closeItem.Visibility" Value="Collapsed" />
-                        <Setter Target="content.Margin" Value="0,0,0,0" />
+                        <Setter Target="(Content.RenderTransform).(TranslateTransform.X)" Value="0" />
+                        <Setter Target="Content.Margin" Value="0,0,0,0" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -470,9 +469,7 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="closeItem.Visibility" Value="Visible" />
-                        <Setter Target="content.Margin" Value="-276,0,0,0" />
-                        <Setter Target="SettingsPaneTransform.Y" Value="1000" />
+                        <Setter Target="Content.Margin" Value="-276,0,0,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

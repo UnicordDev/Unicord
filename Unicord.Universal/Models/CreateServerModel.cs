@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Models
 {
-    public class CreateServerModel : PropertyChangedBase
+    public class CreateServerModel : ViewModelBase
     {
         private string _name;
         private DiscordVoiceRegion _region;

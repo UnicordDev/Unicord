@@ -79,14 +79,14 @@ namespace Unicord.Universal.Controls
         {
             var image = element.GetTemplateChild("image") as ImageEx;
 
-            var width = element.ImageWidth;
-            var height = element.ImageHeight;
+            double width = element.ImageWidth;
+            double height = element.ImageHeight;
             Drawing.ScaleProportions(ref width, ref height, 640, 480);
 
             element._img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={width}&height={height}"))
             {
-                DecodePixelWidth = width,
-                DecodePixelHeight = height
+                DecodePixelWidth = (int)width,
+                DecodePixelHeight = (int)height
             };
 
             if (!App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) || NetworkHelper.IsNetworkLimited)
