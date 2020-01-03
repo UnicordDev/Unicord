@@ -390,8 +390,23 @@ namespace DSharpPlus.Entities
                 if (CurrentMember == null || Muted)
                     return false;
 
-                return (IsOwner ? _channels : _channels.Where(c => c.Value.PermissionsFor(CurrentMember).HasPermission(Permissions.AccessChannels)))
-                    .Any(r => r.Value.ReadState?.Unread == true);
+                var member = CurrentMember;
+                foreach (var channel in _channels.Values)
+                {
+                    if (!IsOwner && !channel.PermissionsFor(member).HasPermission(Permissions.AccessChannels))
+                    {
+                        continue;
+                    }
+
+                    if (channel.ReadState?.Unread == true)
+                    {
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                return false;
             }
         }
 

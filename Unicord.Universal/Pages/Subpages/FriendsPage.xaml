@@ -46,7 +46,7 @@
                         <Ellipse.Fill>
                             <ImageBrush>
                                 <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding User.NonAnimatedAvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
+                                    <BitmapImage UriSource="{Binding User.AvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Ellipse.Fill>

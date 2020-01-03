@@ -689,13 +689,14 @@ namespace DSharpPlus.Entities
             var everyoneRole = Guild.EveryoneRole;
             perms = everyoneRole.Permissions;
 
+            // TODO: these allocate like a motherfucker
             // roles that member is in
-            var mbRoles = mbr.Roles.Where(xr => xr != null && xr.Id != everyoneRole.Id).ToArray();
+            var mbRoles = mbr.Roles.Where(xr => xr != null && xr.Id != everyoneRole.Id).ToArray(); // cache?
+
             // channel overrides for roles that member is in
             var mbRoleOverrides = mbRoles
                 .Select(xr => _permission_overwrites.FirstOrDefault(xo => xo != null && xo.Id == xr.Id))
-                .Where(xo => xo != null)
-                .ToList();
+                .Where(xo => xo != null);
 
             // assign permissions from member's roles (in order)
             perms |= mbRoles.Aggregate(def, (c, role) => c | role.Permissions);
