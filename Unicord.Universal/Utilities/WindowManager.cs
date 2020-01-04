@@ -142,7 +142,7 @@ namespace Unicord.Universal.Utilities
                         {
                             var visibleBounds = sender.VisibleBounds;
                             var bounds = coreApplicationView.CoreWindow.Bounds;
-                            var occludedHeight = bounds.Height - visibleBounds.Height + statusBar.OccludedRect.Height;
+                            var occludedHeight = bounds.Height - visibleBounds.Height - statusBar.OccludedRect.Height;
                             var margin = contentRoot.Margin;
 
                             contentRoot.Margin = new Thickness(margin.Left, margin.Top, margin.Right, occludedHeight);
