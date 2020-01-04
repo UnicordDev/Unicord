@@ -21,12 +21,15 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -220,35 +223,47 @@ namespace Unicord.Universal
         private void UpgradeSettings()
         {
             // migrates the old theme store 
-            var theme = LocalSettings.Read<Theme>("SelectedTheme", null);
+            var theme = LocalSettings.Read<string>("SelectedThemeName", null);
             if (theme != null)
             {
-                LocalSettings.Save("SelectedThemeName", theme.Name);
-                LocalSettings.Save("SelectedTheme", (Theme)null);
-                LocalSettings.Save("InstalledThemes", (object)null);
+                LocalSettings.Save("SelectedThemeName", (string)null);
+                LocalSettings.Save("SelectedThemeNames", new List<string>() { theme });
             }
+        }
 
-            try
+        protected override async void OnFileActivated(FileActivatedEventArgs args)
+        {
+            if (Window.Current.Content != null)
             {
-                var localFolder = ApplicationData.Current.LocalFolder.Path;
-                var themesDirectory = Path.Combine(localFolder, "Themes");
-                if (Directory.Exists(themesDirectory))
-                {
-                    foreach (var item in Directory.EnumerateDirectories(themesDirectory))
-                    {
-                        var name = Path.GetFileName(item);
-                        var normalisedName = Strings.Normalise(name);
-                        if (string.Compare(name, normalisedName, true) != 0)
-                        {
-                            Directory.Move(item, Path.Combine(themesDirectory, normalisedName));
-                        }
-                    }
-                }
+                ApplicationView view = null;
+                var coreView = CoreApplication.CreateNewView();
+                await coreView.Dispatcher.AwaitableRunAsync(() => view = SetupCurrentView());
+                await ApplicationViewSwitcher.TryShowAsStandaloneAsync(view.Id, ViewSizePreference.UseMinimum);
+                await coreView.Dispatcher.AwaitableRunAsync(() => OnFileActivatedForWindow(args));
             }
-            catch (Exception ex)
+            else
             {
-                Logger.Log("Failed to upgrade settings!!");
-                Logger.Log(ex);
+                SetupCurrentView();
+                OnFileActivatedForWindow(args);
+            }            
+        }
+
+        private static ApplicationView SetupCurrentView()
+        {
+            var view = ApplicationView.GetForCurrentView();
+            view.SetPreferredMinSize(new Size(480, 480));
+
+            var frame = new Frame();
+            Window.Current.Content = frame;
+            Window.Current.Activate();
+            return view;
+        }
+
+        private void OnFileActivatedForWindow(FileActivatedEventArgs args)
+        {
+            if (Window.Current.Content is Frame f)
+            {
+                f.Navigate(typeof(InstallThemePage), args);
             }
         }
 
@@ -256,6 +271,15 @@ namespace Unicord.Universal
         {
             if (!(Window.Current.Content is Frame rootFrame))
             {
+                UpgradeSettings();
+                Analytics.TrackEvent("Launch");
+
+                try
+                {
+                    ThemeManager.LoadCurrentTheme(Resources);
+                }
+                catch { }
+
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
 
@@ -293,7 +317,7 @@ namespace Unicord.Universal
 
         private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
         {
-            if(args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
+            if (args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
             {
                 await Discord.DisconnectAsync();
             }
@@ -304,92 +328,92 @@ namespace Unicord.Universal
             Exception taskEx = null;
 
             await _connectSemaphore.WaitAsync();
-            var loader = ResourceLoader.GetForViewIndependentUse();
-
-            if (Discord == null || Discord.IsDisposed)
+            try
             {
-                if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
+                var loader = ResourceLoader.GetForViewIndependentUse();
+
+                if (Discord == null || Discord.IsDisposed)
                 {
-                    try
+                    if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
                     {
-                        async Task ReadyHandler(ReadyEventArgs e)
+                        try
                         {
-                            e.Client.Ready -= ReadyHandler;
-                            e.Client.SocketErrored -= SocketErrored;
-                            e.Client.ClientErrored -= ClientErrored;
-                            _readySource.TrySetResult(e);
-                            if (onReady != null)
+                            async Task ReadyHandler(ReadyEventArgs e)
                             {
-                                await onReady(e);
+                                e.Client.Ready -= ReadyHandler;
+                                e.Client.SocketErrored -= SocketErrored;
+                                e.Client.ClientErrored -= ClientErrored;
+                                _readySource.TrySetResult(e);
+                                if (onReady != null)
+                                {
+                                    await onReady(e);
+                                }
                             }
+
+                            Task SocketErrored(SocketErrorEventArgs e)
+                            {
+                                e.Client.Ready -= ReadyHandler;
+                                e.Client.SocketErrored -= SocketErrored;
+                                e.Client.ClientErrored -= ClientErrored;
+                                _readySource.SetException(e.Exception);
+                                return Task.CompletedTask;
+                            }
+
+                            Task ClientErrored(ClientErrorEventArgs e)
+                            {
+                                e.Client.Ready -= ReadyHandler;
+                                e.Client.SocketErrored -= SocketErrored;
+                                e.Client.ClientErrored -= ClientErrored;
+                                _readySource.SetException(e.Exception);
+                                return Task.CompletedTask;
+                            }
+
+                            Discord = await Task.Run(() => new DiscordClient(new DiscordConfiguration()
+                            {
+                                Token = token,
+                                TokenType = TokenType.User,
+                                AutomaticGuildSync = false,
+                                LogLevel = DSharpPlus.LogLevel.Debug,
+                                MutedStore = new UnicordMutedStore(),
+                                GatewayCompressionLevel = GatewayCompressionLevel.None,
+                                ReconnectIndefinitely = true
+                            }));
+
+                            Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
+                            Discord.Ready += ReadyHandler;
+                            Discord.SocketErrored += SocketErrored;
+                            Discord.ClientErrored += ClientErrored;
+
+                            await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null : DateTimeOffset.Now);
                         }
-
-                        Task SocketErrored(SocketErrorEventArgs e)
+                        catch (Exception ex)
                         {
-                            e.Client.Ready -= ReadyHandler;
-                            e.Client.SocketErrored -= SocketErrored;
-                            e.Client.ClientErrored -= ClientErrored;
-                            _readySource.SetException(e.Exception);
-                            return Task.CompletedTask;
+                            Tools.ResetPasswordVault();
+                            _readySource.TrySetException(ex);
+                            await onError(ex);
                         }
-
-                        Task ClientErrored(ClientErrorEventArgs e)
-                        {
-                            e.Client.Ready -= ReadyHandler;
-                            e.Client.SocketErrored -= SocketErrored;
-                            e.Client.ClientErrored -= ClientErrored;
-                            _readySource.SetException(e.Exception);
-                            return Task.CompletedTask;
-                        }
-
-                        Discord = await Task.Run(() => new DiscordClient(new DiscordConfiguration()
-                        {
-                            Token = token,
-                            TokenType = TokenType.User,
-                            AutomaticGuildSync = false,
-                            LogLevel = DSharpPlus.LogLevel.Debug,
-                            MutedStore = new UnicordMutedStore(),
-                            GatewayCompressionLevel = GatewayCompressionLevel.None,
-                            ReconnectIndefinitely = true
-                        }));
-
-                        Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
-                        Discord.Ready += ReadyHandler;
-                        Discord.SocketErrored += SocketErrored;
-                        Discord.ClientErrored += ClientErrored;
-
-                        // here we go bois
-                        // Discord.UseVoiceNext(new VoiceNextConfiguration() { EnableIncoming = true });
-
-                        _connectSemaphore.Release();
-
-                        await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null: DateTimeOffset.Now);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Tools.ResetPasswordVault();
-                        _readySource.TrySetException(ex);
-                        await onError(ex);
+                        await onError(null);
                     }
                 }
                 else
                 {
-                    await onError(null);
+                    try
+                    {
+                        var res = await _readySource.Task;
+                        await onReady(res);
+                    }
+                    catch
+                    {
+                        await onError(taskEx);
+                    }
                 }
             }
-            else
+            finally
             {
                 _connectSemaphore.Release();
-
-                try
-                {
-                    var res = await _readySource.Task;
-                    await onReady(res);
-                }
-                catch
-                {
-                    await onError(taskEx);
-                }
             }
         }
 

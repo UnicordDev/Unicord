@@ -56,7 +56,7 @@ namespace Unicord.Universal.Pages
             Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
-            helper = new SwipeOpenHelper(content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
+            helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
@@ -112,7 +112,7 @@ namespace Unicord.Universal.Pages
 
                 var service = DiscordNavigationService.GetForCurrentView();
 
-                if (_args != null)
+                if (_args != null && _args.ChannelId != 0)
                 {
                     var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
                     await service.NavigateAsync(channel);
@@ -124,16 +124,19 @@ namespace Unicord.Universal.Pages
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
 
+                if (_args?.ThemeLoadException != null)
+                {
+                    var message = new MockMessage(
+                        $"We had some trouble loading your selected themes, so we disabled them for this launch. For more information, see settings.",
+                        new MockUser("Unicord", "CORD"));
+                    ShowNotification(message);
+                }
+
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
                 {
                     (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
                 }
-
-                //if (App.ThemeLoadException != null)
-                //{
-                //    await UIUtilities.ShowErrorDialogAsync("Theme failed to load!", $"Your selected theme failed to load. {App.ThemeLoadException.Message}");
-                //}
 
                 await ContactListManager.UpdateContactsListAsync();
             }

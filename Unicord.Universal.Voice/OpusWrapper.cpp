@@ -49,7 +49,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument& ex)
+        catch (winrt::hresult_invalid_argument&)
         {
             return 0;
         }
@@ -75,7 +75,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument& ex)
+        catch (winrt::hresult_invalid_argument&)
         {
             return 0;
         }

@@ -43,28 +43,4 @@
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource SystemChromeMediumLowColor}"/>
     <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="{ThemeResource SystemAccentColor}"/>
 
-    <Style TargetType="ComboBox">
-        <Setter Property="Padding" Value="12,4"/>
-    </Style>
-
-    <DataTemplate x:Key="UserListTemplate">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <Canvas Grid.RowSpan="2" Width="24" Height="24">
-                <lib:PersonPicture Width="24" Height="24" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding AvatarUrl}" />
-                <Ellipse Canvas.Left="16" Canvas.Top="16" Width="8" Height="8" Stroke="{ThemeResource SidebarSecondaryAcrylicWindowBrush}" StrokeThickness="1">
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Canvas>
-
-            <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Text="{Binding DisplayName}" />
-        </Grid>
-    </DataTemplate>
-
 </ResourceDictionary>

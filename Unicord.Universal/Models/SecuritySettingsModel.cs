@@ -3,7 +3,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    class SecuritySettingsModel
+    class SecuritySettingsModel : ViewModelBase
     {
         public bool HelloForLogin
         {

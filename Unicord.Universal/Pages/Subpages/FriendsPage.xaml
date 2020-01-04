@@ -19,13 +19,13 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <Style x:Key="itemContainerStyle" BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
+        <Style x:Key="RelationshipItemContainerStyle" BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
 
         <!-- is there a way to simplify this? -->
-        <DataTemplate x:Key="userTemplate" x:DataType="discord:DiscordRelationship">
+        <DataTemplate x:Key="FriendRelationshipTemplate" x:DataType="discord:DiscordRelationship">
             <Grid Padding="10" HorizontalAlignment="Stretch" Background="#00FFFFFF" PointerCanceled="Grid_PointerCanceled" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
                 <Grid.Resources>
                     <Storyboard x:Key="pointerEntered" Duration="00:00:00.20">
@@ -46,7 +46,7 @@
                         <Ellipse.Fill>
                             <ImageBrush>
                                 <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding User.NonAnimatedAvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
+                                    <BitmapImage UriSource="{Binding User.AvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Ellipse.Fill>
@@ -108,78 +108,71 @@
                    Grid.Row="3">
                 <Pivot.Items>
                     <PivotItem x:Uid="/FriendsPage/FriendsAllItem">
-                        <GridView x:Name="all"
+                        <GridView x:Name="AllView"
                                   ItemsSource="{Binding All}"
                                   SelectionMode="None"
-                                  ItemClick="OnItemClick"
                                   IsItemClickEnabled="True"
-                                  ItemTemplate="{StaticResource userTemplate}"
-                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                                  b:ListViewBehaviour.MinItemWidth="250"
-                                  animations:ReorderGridAnimation.Duration="300"/>
+                                  ItemClick="OnItemClick"
+                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
                     </PivotItem>
                     <PivotItem x:Uid="/FriendsPage/FriendsOnlineItem">
-                        <GridView x:Name="online"
+                        <GridView x:Name="OnlineView"
                                   ItemsSource="{Binding Online}"
                                   SelectionMode="None"
-                                  ItemClick="OnItemClick"
                                   IsItemClickEnabled="True"
-                                  ItemTemplate="{StaticResource userTemplate}"
-                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                                  b:ListViewBehaviour.MinItemWidth="250"
-                                  animations:ReorderGridAnimation.Duration="300"/>
+                                  ItemClick="OnItemClick"
+                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
                     </PivotItem>
                     <!-- 
                         these two groups should use different templates 
                         for accepting/declining requests and unblocking 
                     -->
                     <PivotItem x:Uid="/FriendsPage/FriendsPendingItem">
-                        <GridView x:Name="pending"
+                        <GridView x:Name="PendingView"
                                   ItemsSource="{Binding Pending}"
                                   SelectionMode="None"
-                                  ItemClick="OnItemClick"
                                   IsItemClickEnabled="True"
-                                  ItemTemplate="{StaticResource userTemplate}"
-                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                                  b:ListViewBehaviour.MinItemWidth="250"
-                                  animations:ReorderGridAnimation.Duration="300"/>
+                                  ItemClick="OnItemClick"
+                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
                     </PivotItem>
                     <PivotItem x:Uid="/FriendsPage/FriendsBlockedItem">
-                        <GridView x:Name="blocked"
+                        <GridView x:Name="BlockedView"
                                   ItemsSource="{Binding Blocked}"
                                   SelectionMode="None"
-                                  ItemClick="OnItemClick"
                                   IsItemClickEnabled="True"
-                                  ItemTemplate="{StaticResource userTemplate}"
-                                  ItemContainerStyle="{ThemeResource itemContainerStyle}"
-                                  b:ListViewBehaviour.MinItemWidth="250"
-                                  animations:ReorderGridAnimation.Duration="300"/>
+                                  ItemClick="OnItemClick"
+                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
                     </PivotItem>
                 </Pivot.Items>
-            </Pivot>
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup>
-                    <VisualState x:Name="WideState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="769" />
-                        </VisualState.StateTriggers>
-
-                        <VisualState.Setters>
-                            <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                        </VisualState.Setters>
-                    </VisualState>
-
-                    <VisualState x:Name="NarrowState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="0" />
-                        </VisualState.StateTriggers>
-
-                        <VisualState.Setters>
-                            <Setter Target="showSidebarButton.Visibility" Value="Visible" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
+            </Pivot>           
         </Grid>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="769" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="showSidebarButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </controls:DropShadowPanel>
 </Page>

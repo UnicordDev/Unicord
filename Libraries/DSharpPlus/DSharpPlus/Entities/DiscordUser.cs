@@ -70,7 +70,7 @@ namespace DSharpPlus.Entities
 
         [JsonIgnore]
         internal int DiscriminatorInt
-            => int.Parse(Discriminator, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            => int.TryParse(Discriminator, NumberStyles.Integer, CultureInfo.InvariantCulture, out var d) ? d : 0;
 
         /// <summary>
         /// Gets the user's avatar hash.

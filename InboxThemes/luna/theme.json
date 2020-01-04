@@ -1,10 +1,9 @@
 {
-    "name": "Luna (Compact)",
-    "short_description": "Compact and Blue.",
+    "name": "Luna",
+    "short_description": "Blue.",
     "author": "WamWooWam",
     "display_colour": "#FFCC4D11",
     "display_logo": "images/logo.png",
-    "use_compact": true,
     "contract_checks": {
         "Windows.Foundation.UniversalApiContract": 7
     }

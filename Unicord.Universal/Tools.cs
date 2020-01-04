@@ -214,6 +214,22 @@ namespace Unicord.Universal
             return (memberTopRole?.Position ?? 0) < (currentTopRole?.Position ?? 0);
         }
 
+        public static void InvertTheme(ElementTheme requestedTheme, FrameworkElement preview)
+        {
+            switch (requestedTheme)
+            {
+                case ElementTheme.Light:
+                    preview.RequestedTheme = ElementTheme.Dark;
+                    break;
+                case ElementTheme.Dark:
+                    preview.RequestedTheme = ElementTheme.Light;
+                    break;
+                default:
+                    preview.RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
+                    break;
+            }
+        }
+
         // adapted from corefx
         // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
         public static int BinarySearch<T>(this IList<T> collection, DiscordChannel channel) where T : IComparable<DiscordChannel>
@@ -262,12 +278,12 @@ namespace Unicord.Universal
             var attach = message.Attachments.FirstOrDefault(a => a.Height != 0);
             if (attach != null)
             {
-                var width = attach.Width;
-                var height = attach.Height;
+                double width = attach.Width;
+                double height = attach.Height;
 
                 WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 360);
 
-                toastBinding.HeroImage = new ToastGenericHeroImage { Source = attach.ProxyUrl + $"?format=jpeg&width={width}&height={height}" };
+                toastBinding.HeroImage = new ToastGenericHeroImage { Source = attach.ProxyUrl + $"?format=jpeg&width={(int)width}&height={(int)height}" };
             }
             else
             {

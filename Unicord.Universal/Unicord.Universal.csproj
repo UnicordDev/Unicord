@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;ARM</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -262,6 +262,9 @@
     </Compile>
     <Compile Include="Controls\ScaledContainer.cs" />
     <Compile Include="Controls\SystemMessageViewer.cs" />
+    <Compile Include="Controls\ThemePreviewControl.xaml.cs">
+      <DependentUpon>ThemePreviewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
@@ -313,6 +316,9 @@
     <Compile Include="Dialogs\KickDialog.xaml.cs">
       <DependentUpon>KickDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ManageThemeDialog.xaml.cs">
+      <DependentUpon>ManageThemeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PinMessageDialog.xaml.cs">
       <DependentUpon>PinMessageDialog.xaml</DependentUpon>
     </Compile>
@@ -344,6 +350,7 @@
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Models\ThemesSettingsModel.cs" />
+    <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Models\VoiceSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
@@ -414,6 +421,9 @@
     </Compile>
     <Compile Include="Pages\Subpages\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InstallThemePage.xaml.cs">
+      <DependentUpon>InstallThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\VideoEditor.xaml.cs">
       <DependentUpon>VideoEditor.xaml</DependentUpon>
@@ -622,6 +632,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ThemePreviewControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\UploadItemsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -663,6 +677,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\KickDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ManageThemeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -767,6 +785,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Subpages\UserListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\InstallThemePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

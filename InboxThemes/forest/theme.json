@@ -1,10 +1,9 @@
 {
-    "name": "Forest (Compact)",
-    "short_description": "Compact, Green and Brown.",
+    "name": "Forest",
+    "short_description": "Green and Brown.",
     "author": "WamWooWam",
     "display_colour": "#FF34854D",
     "display_logo": "images/logo.png",
-    "use_compact": true,
     "contract_checks": {
         "Windows.Foundation.UniversalApiContract": 7
     }

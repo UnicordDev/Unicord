@@ -90,6 +90,8 @@ namespace Unicord.Universal.Utilities
             var coreView = CoreApplication.CreateNewView();
             await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                coreView.Properties["channel_id"] = channel.Id;
+
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
                 try { ThemeManager.LoadCurrentTheme(App.Current.Resources); } catch { }
@@ -121,12 +123,12 @@ namespace Unicord.Universal.Utilities
             await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
         }
 
-        public static void HandleTitleBarForWindow(FrameworkElement titleBar)
+        public static void HandleTitleBarForWindow(FrameworkElement titleBar, FrameworkElement contentRoot)
         {
             lock (_handledElements)
             {
-                if (_handledElements.Contains(titleBar))
-                    return;
+                //if (_handledElements.Contains(titleBar))
+                //    return;
 
                 var applicationView = ApplicationView.GetForCurrentView();
                 var coreApplicationView = CoreApplication.GetCurrentView();
@@ -136,6 +138,16 @@ namespace Unicord.Universal.Utilities
                     var statusBar = StatusBar.GetForCurrentView();
                     if (statusBar != null)
                     {
+                        void OnApplicationViewBoundsChanged(ApplicationView sender, object args)
+                        {
+                            var visibleBounds = sender.VisibleBounds;
+                            var bounds = coreApplicationView.CoreWindow.Bounds;
+                            var occludedHeight = bounds.Height - visibleBounds.Height - statusBar.OccludedRect.Height;
+                            var margin = contentRoot.Margin;
+
+                            contentRoot.Margin = new Thickness(margin.Left, margin.Top, margin.Right, occludedHeight);
+                        }
+
                         statusBar.BackgroundOpacity = 0;
                         statusBar.ForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
 
@@ -144,7 +156,9 @@ namespace Unicord.Universal.Utilities
                             titleBar.Height = statusBar.OccludedRect.Height;
                         }
 
+                        applicationView.VisibleBoundsChanged += OnApplicationViewBoundsChanged;
                         applicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                        OnApplicationViewBoundsChanged(applicationView, null);
                     }
                 }
                 else
