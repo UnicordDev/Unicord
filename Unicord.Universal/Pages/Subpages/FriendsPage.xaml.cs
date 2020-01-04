@@ -14,18 +14,20 @@ namespace Unicord.Universal.Pages.Subpages
         {
             InitializeComponent();
 
-            //ListViewBehaviour.SetMinItemWidth(all, 300);
-            //ListViewBehaviour.SetMinItemWidth(online, 300);
-            //ListViewBehaviour.SetMinItemWidth(pending, 300);
-            //ListViewBehaviour.SetMinItemWidth(blocked, 300);
+#if !(ARM && DEBUG)
+            ListViewBehaviour.SetMinItemWidth(AllView, 300);
+            ListViewBehaviour.SetMinItemWidth(OnlineView, 300);
+            ListViewBehaviour.SetMinItemWidth(PendingView, 300);
+            ListViewBehaviour.SetMinItemWidth(BlockedView, 300);
 
-            //if (ReorderGridAnimation.IsSupported)
-            //{
-            //    ReorderGridAnimation.SetDuration(all, 250);
-            //    ReorderGridAnimation.SetDuration(online, 250);
-            //    ReorderGridAnimation.SetDuration(pending, 250);
-            //    ReorderGridAnimation.SetDuration(blocked, 250);
-            //}
+            if (ReorderGridAnimation.IsSupported)
+            {
+                ReorderGridAnimation.SetDuration(AllView, 250);
+                ReorderGridAnimation.SetDuration(OnlineView, 250);
+                ReorderGridAnimation.SetDuration(PendingView, 250);
+                ReorderGridAnimation.SetDuration(BlockedView, 250);
+            }
+#endif
         }
 
         private void OnItemClick(object sender, ItemClickEventArgs e)

@@ -316,6 +316,9 @@
     <Compile Include="Dialogs\KickDialog.xaml.cs">
       <DependentUpon>KickDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ManageThemeDialog.xaml.cs">
+      <DependentUpon>ManageThemeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PinMessageDialog.xaml.cs">
       <DependentUpon>PinMessageDialog.xaml</DependentUpon>
     </Compile>
@@ -674,6 +677,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\KickDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ManageThemeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

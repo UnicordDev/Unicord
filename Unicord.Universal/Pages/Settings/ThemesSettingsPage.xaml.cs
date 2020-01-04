@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Core;
@@ -15,12 +16,14 @@ using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.System.Profile;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -32,12 +35,10 @@ namespace Unicord.Universal.Pages.Settings
     /// </summary>
     public sealed partial class ThemesSettingsPage : Page
     {
-        private bool _changedTheme;
         private string _initialTheme;
         private int _initialColour;
         private bool _loaded;
         private bool _dragging;
-        private bool _isDirty;
 
         public ThemesSettingsModel Model { get; }
 
@@ -64,7 +65,7 @@ namespace Unicord.Universal.Pages.Settings
                 {
                     model.IsDirty = true;
                 }
-                
+
                 // if we invert the theme then set it properly, the element will redraw and reload
                 // it's resources. as far as i know there's no better way to do this.
 
@@ -98,15 +99,6 @@ namespace Unicord.Universal.Pages.Settings
                     await CoreApplication.RequestRestartAsync("");
                 }
             }
-        }
-        
-        private async void RemoveThemeButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (Model.SelectedTheme is Theme theme)
-            //{
-            //    await ThemeManager.RemoveThemeAsync(theme.Name);
-            //    await Model.ReloadThemes();
-            //}
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -156,11 +148,6 @@ namespace Unicord.Universal.Pages.Settings
             }
 
             await Model.ReloadThemes();
-        }
-
-        private void RemoveThemesButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private async void ThemesList_DragOver(object sender, DragEventArgs e)
@@ -225,18 +212,20 @@ namespace Unicord.Universal.Pages.Settings
 
         private void ReloadThemes(List<string> names, FrameworkElement el)
         {
-            var dictionary = new ResourceDictionary();
-            ThemeManager.Load(names, dictionary);
+            if (AnalyticsInfo.VersionInfo.DeviceFamily != "Windows.Mobile")
+            {
+                var dictionary = new ResourceDictionary();
+                ThemeManager.Load(names, dictionary);
 
-            var requestedTheme = (ElementTheme)Model.ColourScheme;
+                var requestedTheme = (ElementTheme)Model.ColourScheme;
+                Tools.InvertTheme(requestedTheme, preview);
 
-            Tools.InvertTheme(requestedTheme, preview);
-
-            el.Resources = dictionary;
-            el.RequestedTheme = (ElementTheme)Model.ColourScheme;
-            el.InvalidateMeasure();
-            el.InvalidateArrange();
-        }        
+                el.Resources = dictionary;
+                el.RequestedTheme = (ElementTheme)Model.ColourScheme;
+                el.InvalidateMeasure();
+                el.InvalidateArrange();
+            }
+        }
 
         private void ThemesList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
@@ -246,6 +235,20 @@ namespace Unicord.Universal.Pages.Settings
         private void ThemesList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
             _dragging = false;
+        }
+
+        private async void Grid_Tapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            var item = (sender as FrameworkElement).DataContext as Theme;
+            var themesDirectory = await ApplicationData.Current.LocalFolder.GetFolderAsync("Themes");
+            var themeDirectory = await themesDirectory.GetFolderAsync(item.NormalisedName);
+            item.DisplayLogoSource = new BitmapImage(new Uri(Path.Combine(themeDirectory.Path, item.DisplayLogo)));
+
+            var manageDialog = new ManageThemeDialog() { DataContext = item };
+            await manageDialog.ShowAsync();
+            await Model.ReloadThemes();
         }
     }
 }

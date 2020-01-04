@@ -31,6 +31,10 @@
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <CircleEase x:Key="EaseMove" EasingMode="EaseInOut" />
+            <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
+            <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
+            
             <SolidColorBrush x:Key="SystemControlBackgroundChromeLowBrush" Color="{ThemeResource SystemChromeLowColor}"/>
 
             <converters:PresenceColourConverter x:Key="PresenceColourConverter"/>

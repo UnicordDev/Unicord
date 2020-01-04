@@ -148,30 +148,31 @@
                                   ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
                     </PivotItem>
                 </Pivot.Items>
-            </Pivot>
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup>
-                    <VisualState x:Name="WideState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="769" />
-                        </VisualState.StateTriggers>
-
-                        <VisualState.Setters>
-                            <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                        </VisualState.Setters>
-                    </VisualState>
-
-                    <VisualState x:Name="NarrowState">
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="0" />
-                        </VisualState.StateTriggers>
-
-                        <VisualState.Setters>
-                            <Setter Target="showSidebarButton.Visibility" Value="Visible" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
+            </Pivot>           
         </Grid>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="769" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="showSidebarButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </controls:DropShadowPanel>
 </Page>

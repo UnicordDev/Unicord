@@ -9,6 +9,7 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -227,7 +228,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = false /* TODO */ });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = themes.Values.Any(t => t.UseCompact) /* TODO */ });
             }
 
             return themes;
@@ -478,11 +479,11 @@ namespace Unicord.Universal
         /// The accent colour for your theme, used behind <see cref="DisplayLogo"/>
         /// </summary>
         [JsonProperty("display_colour")]
-        public Color DisplayColour { get; set; }
+        public System.Drawing.Color DisplayColour { get; set; }
 
         /// <summary>
         /// A path to a logo for your theme, relative to the root of 
-        /// the archive. e.g. "assets/logo.png"
+        /// the archive. e.g. "/assets/logo.png"
         /// </summary>
         [JsonProperty("display_logo")]
         public string DisplayLogo { get; set; }
@@ -492,6 +493,13 @@ namespace Unicord.Universal
         /// </summary>
         [JsonProperty("use_compact")]
         public bool UseCompact { get; set; }
+
+        /// <summary>
+        /// Enforce a specific theme?
+        /// </summary>
+        [JsonProperty("enforce_theme")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ElementTheme EnforcedTheme { get; set; } = ElementTheme.Default;
 
         /// <summary>
         /// Provides a list of API Contracts to check for before loading a theme
