@@ -184,6 +184,7 @@ namespace Unicord.Universal.Pages.Settings
                     deferral = null;
 
                     await ThemeManager.InstallFromArchiveAsync(theme);
+                    await Model.ReloadThemes();
                 }
             }
         }

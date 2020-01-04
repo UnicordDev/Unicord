@@ -44,7 +44,7 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowManager.HandleTitleBarForWindow(TitleBar);
+            WindowManager.HandleTitleBarForWindow(TitleBar, this);
             WindowManager.HandleTitleBarForControl(Title);
 
             var currentView = ApplicationView.GetForCurrentView();

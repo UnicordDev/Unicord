@@ -68,7 +68,7 @@ namespace Unicord.Universal
                     break;
             }
 
-            WindowManager.HandleTitleBarForWindow(titleBar);
+            WindowManager.HandleTitleBarForWindow(titleBar, this);
 
             if (_isReady)
             {
