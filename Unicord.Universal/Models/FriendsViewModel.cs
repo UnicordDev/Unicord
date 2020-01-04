@@ -10,7 +10,7 @@ using DSharpPlus.EventArgs;
 
 namespace Unicord.Universal.Models
 {
-    public class FriendsViewModel : ViewModelBase, IDisposable
+    public class FriendsViewModel : PropertyChangedBase, IDisposable
     {
         private SynchronizationContext _syncContext;
 

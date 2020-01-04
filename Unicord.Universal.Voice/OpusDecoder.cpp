@@ -1,7 +1,9 @@
 #include "pch.h"
-#include "OpusUtil.h"
+#include "OpusUtils.h"
 #include "OpusDecoder.h"
 #include "Rtp.h"
+
+using namespace winrt::Unicord::Universal::Voice::Utilities;
 using namespace winrt::Unicord::Universal::Voice::Transport;
 
 namespace winrt::Unicord::Universal::Voice::Decode
@@ -55,9 +57,9 @@ namespace winrt::Unicord::Universal::Voice::Decode
 
     void OpusDecoder::Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t>& target, bool fec)
     {
-        auto frames = opus_packet_get_nb_frames(opus.data(), opus.size());
-        auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), decoder->format.sample_rate);
-        auto channels = opus_packet_get_nb_channels(opus.data());
+        int32_t frames = opus_packet_get_nb_frames(opus.data(), opus.size());
+        int32_t samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), decoder->format.sample_rate);
+        int32_t channels = opus_packet_get_nb_channels(opus.data());
 
         if (decoder->format.channel_count != (uint32_t)channels || !decoder->IsInitialised()) {
             decoder->format.channel_count = channels;
@@ -66,7 +68,7 @@ namespace winrt::Unicord::Universal::Voice::Decode
 
         auto sample_count = opus_decode(decoder->decoder, opus.data(), opus.size(), (int16_t*)target.data(), frames * samples_per_frame, fec);
         if (sample_count < 0) {
-            OpusUtil::CheckOpusError(sample_count, L"Could not decode opus to PCM!");
+            OpusUtils::CheckOpusError(sample_count, L"Could not decode opus to PCM!");
         }
 
         auto sample_size = decoder->format.SampleCountToSampleSize(sample_count);
@@ -79,12 +81,12 @@ namespace winrt::Unicord::Universal::Voice::Decode
             decoder->Initialise(decoder->format);
         }
 
-        auto sample_count = opus_decode(decoder->decoder, nullptr, 0, (int16_t*)target.data(), frame_size, 1);
+        int32_t sample_count = opus_decode(decoder->decoder, nullptr, 0, (int16_t*)target.data(), frame_size, 1);
         if (sample_count < 0) {
-             OpusUtil::CheckOpusError(sample_count, L"Could not decode opus to PCM!");
+             OpusUtils::CheckOpusError(sample_count, L"Could not decode opus to PCM!");
         }
 
-        auto sample_size = decoder->format.SampleCountToSampleSize(sample_count);
+        size_t sample_size = decoder->format.SampleCountToSampleSize(sample_count);
         target.resize(sample_size);
     }
 

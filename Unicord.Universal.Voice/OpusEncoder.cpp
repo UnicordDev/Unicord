@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "OpusEncoder.h"
-#include "OpusUtil.h"
+#include "OpusUtils.h"
+
+using namespace winrt::Unicord::Universal::Voice::Utilities;
 
 namespace winrt::Unicord::Universal::Voice::Encode
 {
@@ -10,7 +12,7 @@ namespace winrt::Unicord::Universal::Voice::Encode
 
         int error;
         this->encoder = opus_encoder_create(format.sample_rate, format.channel_count, (int)format.application, &error);
-        OpusUtil::CheckOpusError(error, L"Failed to instantate Opus encoder");
+        OpusUtils::CheckOpusError(error, L"Failed to instantate Opus encoder");
 
         int signal = OPUS_AUTO;
         switch (format.application)
@@ -24,10 +26,10 @@ namespace winrt::Unicord::Universal::Voice::Encode
             break;
         }
 
-        OpusUtil::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_SIGNAL_REQUEST, signal), L"Failed to set signal.");
-        OpusUtil::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_PACKET_LOSS_PERC_REQUEST, 15), L"Failed to set packet loss percent.");
-        OpusUtil::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_INBAND_FEC_REQUEST, 1), L"Failed to set fec.");
-        OpusUtil::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_BITRATE_REQUEST, 131072), L"Failed to set bitrate.");
+        OpusUtils::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_SIGNAL_REQUEST, signal), L"Failed to set signal.");
+        OpusUtils::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_PACKET_LOSS_PERC_REQUEST, 15), L"Failed to set packet loss percent.");
+        OpusUtils::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_INBAND_FEC_REQUEST, 1), L"Failed to set fec.");
+        OpusUtils::CheckOpusError(opus_encoder_ctl(this->encoder, OPUS_SET_BITRATE_REQUEST, 131072), L"Failed to set bitrate.");
     }
 
     size_t OpusEncoder::Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
@@ -45,7 +47,7 @@ namespace winrt::Unicord::Universal::Voice::Encode
 
             int length = opus_encode(encoder, (int16_t*)(pcm.data()), (int32_t)frame_size, target.data(), (int32_t)target.size());
             if (length < 0) {
-                OpusUtil::CheckOpusError(length, L"Could not encode PCM to opus!");
+                OpusUtils::CheckOpusError(length, L"Could not encode PCM to opus!");
             }
 
             return (size_t)length;
@@ -71,7 +73,7 @@ namespace winrt::Unicord::Universal::Voice::Encode
 
             int length = opus_encode_float(encoder, (float*)(pcm.data()), (int32_t)frame_size, target.data(), (int32_t)target.size());
             if (length < 0) {
-                OpusUtil::CheckOpusError(length, L"Could not encode PCM to opus!");
+                OpusUtils::CheckOpusError(length, L"Could not encode PCM to opus!");
             }
 
             return (size_t)length;

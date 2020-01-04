@@ -31,6 +31,9 @@
     <ClCompile Include="H264Decoder.cpp">
       <Filter>Decode</Filter>
     </ClCompile>
+    <ClCompile Include="H264Utils.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -62,12 +65,17 @@
     <ClInclude Include="Rtp.h">
       <Filter>Transport</Filter>
     </ClInclude>
-    <ClInclude Include="OpusUtil.h" />
     <ClInclude Include="SodiumWrapper.h">
       <Filter>Transport</Filter>
     </ClInclude>
     <ClInclude Include="H264Decoder.h">
       <Filter>Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusUtils.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="H264Utils.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +119,9 @@
     </Filter>
     <Filter Include="Transport">
       <UniqueIdentifier>{e4c7025c-a533-4adf-a899-480f2ed7d944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{bd41e477-5d0f-4880-b2d5-a53123e9f335}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;ARM</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -355,13 +355,15 @@
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\MockableEntities.cs" />
     <Compile Include="Models\ThemesSettingsModel.cs" />
-    <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Models\VoiceSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InstallThemePage.xaml.cs">
+      <DependentUpon>InstallThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -426,9 +428,6 @@
     </Compile>
     <Compile Include="Pages\Subpages\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InstallThemePage.xaml.cs">
-      <DependentUpon>InstallThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\VideoEditor.xaml.cs">
       <DependentUpon>VideoEditor.xaml</DependentUpon>
@@ -654,8 +653,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ThemePreviewControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\UploadItemsControl.xaml">
       <SubType>Designer</SubType>
@@ -724,6 +723,10 @@
     <Page Include="Pages\DiscordPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\InstallThemePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
@@ -802,10 +805,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Subpages\UserListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\InstallThemePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

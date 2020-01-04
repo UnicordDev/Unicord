@@ -3,11 +3,11 @@
 #include <winrt/base.h>
 #include <comdef.h>
 
-namespace winrt::Unicord::Universal::Voice
+namespace winrt::Unicord::Universal::Voice::Utilities
 {
-    class OpusUtil {
+    class OpusUtils {
     public:
-        static inline void OpusUtil::CheckOpusError(int32_t error, hstring message) {
+        static inline void OpusUtils::CheckOpusError(int32_t error, hstring message) {
             switch (error)
             {
             case OPUS_BAD_ARG:

@@ -5,7 +5,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    public class MediaSettingsModel : ViewModelBase
+    public class MediaSettingsModel : PropertyChangedBase
     {
         public int AutoTranscodeMedia
         {

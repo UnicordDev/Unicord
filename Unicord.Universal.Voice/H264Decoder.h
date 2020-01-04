@@ -1,22 +1,13 @@
 #pragma once
 #include "Rtp.h"
+#include "H264Utils.h"
 #include <concurrent_unordered_map.h>
 
+using namespace winrt::Unicord::Universal::Voice::Utilities;
 using namespace winrt::Unicord::Universal::Voice::Transport;
 
 namespace winrt::Unicord::Universal::Voice::Decode
 {
-    struct H264Packet {
-        RtpHeader header;
-        std::vector<uint8_t> data;
-    };
-
-    struct H264Frame {
-        std::vector<uint8_t> sps;
-        std::vector<uint8_t> pps;
-        std::vector<std::vector<uint8_t>> data;
-    };
-
     class H264Decoder
     {
     public:

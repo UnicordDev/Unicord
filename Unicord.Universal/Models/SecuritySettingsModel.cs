@@ -1,9 +1,10 @@
 ﻿using System;
+using DSharpPlus.Entities;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    class SecuritySettingsModel : ViewModelBase
+    class SecuritySettingsModel : PropertyChangedBase
     {
         public bool HelloForLogin
         {

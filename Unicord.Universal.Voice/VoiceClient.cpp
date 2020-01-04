@@ -422,15 +422,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
             if (decrypted_view[0] == 0x90) {
                 decrypted_view = array_view(decrypted_view.begin() + 2, decrypted_view.end());
             }
-
-             /*std::ostringstream str;
-             str << std::setfill('0') << std::setw(2) << std::hex;
-             for (size_t i = 0; i < decrypted_view.size(); i++)
-             {
-                 str << (uint32_t)decrypted_view[i] << " ";
-             }
-             std::cout << str.str() << std::endl;
-*/
             if (header.type == Rtp::RTP_TYPE_OPUS) { // opus data
 
                 if (is_deafened) {
@@ -441,7 +432,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 }
             }
 
-            if (header.type == Rtp::RTP_TYPE_H264) { // video data
+            if (header.type == Rtp::RTP_TYPE_H264) { // video 
+                std::ostringstream str;
+                str << std::setfill('0') << std::setw(4) << std::hex;
+                for (size_t i = 0; i < decrypted_view.size(); i++)
+                {
+                    str << (uint32_t)decrypted_view[i] << " ";
+                }
+                std::cout << str.str() << std::endl;
+
                 H264Frame frame;
                 if (h264Decoder->ProcessPacket(header, decrypted_view, frame)) {
                     std::cout << "packets:" << frame.data.size() << " pps:" << frame.pps.size() << " sps:" << frame.sps.size() << std::endl;

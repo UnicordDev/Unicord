@@ -1,7 +1,7 @@
 #pragma once
-#include <opus.h>
 #include "Rtp.h"
 #include "AudioFormat.h"
+#include <opus.h>
 
 using namespace winrt::Unicord::Universal::Voice::Interop;
 using namespace winrt::Unicord::Universal::Voice::Transport;
