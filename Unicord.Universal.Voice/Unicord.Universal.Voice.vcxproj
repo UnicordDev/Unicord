@@ -141,19 +141,19 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(SolutionDir)\Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(SolutionDir)\Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\DebugDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\DebugDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -171,19 +171,19 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Disabled</Optimization>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(SolutionDir)\Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(SolutionDir)\Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)\Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\ReleaseDLL\$(Platform)\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\ReleaseDLL\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
