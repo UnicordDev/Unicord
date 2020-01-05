@@ -512,8 +512,8 @@
     <PRIResource Include="Resources\fr\VideoEditor.resw" />
     <PRIResource Include="Resources\fr\Voice.resw" />
     <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
-    <None Include="Unicord.Univeral_StoreKey.pfx" />
-    <None Include="Unicord.Univeral_TemporaryKey.pfx" />
+    <None Include="Unicord.Universal_StoreKey.pfx" />
+    <None Include="Unicord.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\DiscordWordMark.Light.svg" />
