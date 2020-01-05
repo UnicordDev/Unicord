@@ -24,6 +24,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using static Unicord.Constants;
 
 namespace Unicord.Universal
 {
@@ -39,6 +40,7 @@ namespace Unicord.Universal
 
     internal static class ThemeManager
     {
+
         /// <summary>
         /// Event fired whenever a new theme is installed.
         /// </summary>
@@ -55,7 +57,7 @@ namespace Unicord.Universal
 
             try
             {
-                var themes = App.LocalSettings.Read("SelectedThemeNames", new List<string>());
+                var themes = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
                 Load(themes, themesDictionary);
                 Analytics.TrackEvent("ThemesLoaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
             }
@@ -85,7 +87,7 @@ namespace Unicord.Universal
             {
                 var exceptions = new List<Exception>();
                 var localFolder = ApplicationData.Current.LocalFolder;
-                var themesFolderPath = Path.Combine(localFolder.Path, "Themes");
+                var themesFolderPath = Path.Combine(localFolder.Path, THEME_FOLDER_NAME);
 
                 if (!Directory.Exists(themesFolderPath))
                     Directory.CreateDirectory(themesFolderPath);
@@ -101,12 +103,12 @@ namespace Unicord.Universal
                         if (!Directory.Exists(themePath))
                         {
                             selectedThemeNames.Remove(selectedThemeName);
-                            App.LocalSettings.Save("SelectedThemeNames", selectedThemeNames);
+                            App.LocalSettings.Save(SELECTED_THEME_NAMES, selectedThemeNames);
                             Analytics.TrackEvent("ThemeLoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
                             throw new Exception(strings.GetString("ThemeInvalidDoesNotExist"));
                         }
 
-                        selectedTheme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, "theme.json")));
+                        selectedTheme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, THEME_METADATA_NAME)));
                         compact = compact ? true : selectedTheme.UseCompact;
                         themes.Add(selectedTheme);
 
@@ -145,7 +147,7 @@ namespace Unicord.Universal
         {
             Theme selectedTheme = null;
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
-            var localFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var localFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
             var compact = false;
             var themes = new List<Theme>();
 
@@ -154,7 +156,7 @@ namespace Unicord.Universal
                 foreach (var themeName in themeNames.AsEnumerable())
                 {
                     if (!(await localFolder.TryGetItemAsync(Strings.Normalise(themeName)) is StorageFolder themeFolder) ||
-                        !(await themeFolder.TryGetItemAsync("theme.json") is StorageFile themeDefinitionFile))
+                        !(await themeFolder.TryGetItemAsync(THEME_METADATA_NAME) is StorageFile themeDefinitionFile))
                     {
                         Analytics.TrackEvent("AsyncThemeLoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
                         throw new Exception(strings.GetString("ThemeInvalidDoesNotExist"));
@@ -198,7 +200,7 @@ namespace Unicord.Universal
                 {
                     try
                     {
-                        var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+                        var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
                         var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
 
                         // open the archive
@@ -242,7 +244,7 @@ namespace Unicord.Universal
         /// <returns></returns>
         public static async Task<Theme> InstallFromArchiveAsync(StorageFile file)
         {
-            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
 
             // open the archive
@@ -295,13 +297,15 @@ namespace Unicord.Universal
             if (name == string.Empty)
                 return;
 
-            var selectedThemeName = App.LocalSettings.Read("SelectedThemeName", string.Empty);
-            if (selectedThemeName == name)
+            var selectedThemes = App.LocalSettings.Read<List<string>>(SELECTED_THEME_NAMES);
+            if (selectedThemes != null && (selectedThemes.Contains(name) || selectedThemes.Contains(Strings.Normalise(name))))
             {
-                App.LocalSettings.Save("SelectedThemeName", string.Empty);
+                selectedThemes.Remove(name);
+                selectedThemes.Remove(Strings.Normalise(name));
+                App.LocalSettings.Save(SELECTED_THEME_NAMES, selectedThemes);
             }
 
-            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
 
             if (await themesDirectory.TryGetItemAsync(Strings.Normalise(name)) is StorageFolder folder)
                 await folder.DeleteAsync();
@@ -357,7 +361,7 @@ namespace Unicord.Universal
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
 
             Theme theme = null;
-            var themeDefinitionFile = archive.GetEntry("theme.json");
+            var themeDefinitionFile = archive.GetEntry(THEME_METADATA_NAME);
             if (themeDefinitionFile == null)
             {
                 Analytics.TrackEvent("ThemeInstallFailure", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
