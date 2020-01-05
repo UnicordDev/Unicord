@@ -69,7 +69,7 @@ namespace Unicord.Universal
             catch { }
         }
 
-        public static async Task<ContactAnnotationList> GetAnnotationlistAsync(ContactAnnotationStore store)
+        public static async Task<ContactAnnotationList> GetAnnotationListAsync(ContactAnnotationStore store)
         {
             var lists = await store.FindAnnotationListsAsync();
             var list = lists.FirstOrDefault();
