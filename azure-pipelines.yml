@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/Unicord.Universal.sln'
   buildPlatform: 'x86|x64|ARM|ARM64'
   buildConfiguration: 'Store'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
