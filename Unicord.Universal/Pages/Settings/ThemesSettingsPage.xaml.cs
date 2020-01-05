@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using static Unicord.Constants;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -50,11 +51,7 @@ namespace Unicord.Universal.Pages.Settings
             InitializeComponent();
             DataContext = Model;
 
-            _initialTheme = App.LocalSettings.Read("SelectedThemeName", string.Empty);
-            if (string.IsNullOrWhiteSpace(_initialTheme))
-                _initialTheme = "Default";
-
-            _initialColour = (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            _initialColour = (int)App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
         }
 
         private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -88,7 +85,7 @@ namespace Unicord.Universal.Pages.Settings
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            App.LocalSettings.Save("SelectedThemeNames", Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList());
+            App.LocalSettings.Save(SELECTED_THEME_NAMES, Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList());
 
             var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
             var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
@@ -205,7 +202,7 @@ namespace Unicord.Universal.Pages.Settings
             }
 
             var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Reverse().ToList();
-            App.LocalSettings.Save("SelectedThemeNames", names);
+            App.LocalSettings.Save(SELECTED_THEME_NAMES, names);
 
             Model.IsDirty = true;
             ReloadThemes(names, preview);
@@ -243,7 +240,7 @@ namespace Unicord.Universal.Pages.Settings
             e.Handled = true;
 
             var item = (sender as FrameworkElement).DataContext as Theme;
-            var themesDirectory = await ApplicationData.Current.LocalFolder.GetFolderAsync("Themes");
+            var themesDirectory = await ApplicationData.Current.LocalFolder.GetFolderAsync(THEME_FOLDER_NAME);
             var themeDirectory = await themesDirectory.GetFolderAsync(item.NormalisedName);
             item.DisplayLogoSource = new BitmapImage(new Uri(Path.Combine(themeDirectory.Path, item.DisplayLogo)));
 

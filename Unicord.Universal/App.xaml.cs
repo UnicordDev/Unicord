@@ -40,6 +40,7 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
+
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
@@ -51,7 +52,7 @@ namespace Unicord.Universal
         {
             InitializeComponent();
 
-            var theme = LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
             switch (theme)
             {
                 case ElementTheme.Light:
@@ -223,12 +224,21 @@ namespace Unicord.Universal
         private void UpgradeSettings()
         {
             // migrates the old theme store 
-            var theme = LocalSettings.Read<string>("SelectedThemeName", null);
-            if (theme != null)
+#pragma warning disable CS0618 // Type or member is obsolete
+            var theme = LocalSettings.Read<string>(SELECTED_THEME_NAME, null);
+            if (!string.IsNullOrWhiteSpace(theme))
             {
-                LocalSettings.Save("SelectedThemeName", (string)null);
-                LocalSettings.Save("SelectedThemeNames", new List<string>() { theme });
+                LocalSettings.Save(SELECTED_THEME_NAME, (string)null);
+                LocalSettings.Save(SELECTED_THEME_NAMES, new List<string>() { theme });
             }
+
+            var themes = LocalSettings.Read<List<string>>(SELECTED_THEME_NAMES);
+            if (themes != null)
+            {
+                themes.RemoveAll(t => string.IsNullOrWhiteSpace(t));
+                LocalSettings.Save(SELECTED_THEME_NAMES, themes);
+            }
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         protected override async void OnFileActivated(FileActivatedEventArgs args)
@@ -245,7 +255,7 @@ namespace Unicord.Universal
             {
                 SetupCurrentView();
                 OnFileActivatedForWindow(args);
-            }            
+            }
         }
 
         private static ApplicationView SetupCurrentView()
