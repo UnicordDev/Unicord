@@ -18,6 +18,13 @@ variables:
 steps:
 - checkout: self
   submodules: true
+
+- task: DownloadSecureFile@1
+  name: signingCert
+  displayName: 'Download CA certificate'
+  inputs:
+    secureFile: 'Unicord.Universal_StoreKey.pfx'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -29,4 +36,22 @@ steps:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)"
+                  /p:AppxPackageDir="$(appxPackageDir)" 
+                  /p:AppxBundle=Always
+                  /p:UapAppxPackageBuildMode=StoreUpload
+                  /p:AppxPackageSigningEnabled=true
+                  /p:PackageCertificateThumbprint="" 
+                  /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**\bin\$(BuildConfiguration)\**'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
