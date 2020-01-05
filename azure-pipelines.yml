@@ -11,7 +11,7 @@ pool:
 
 variables:
   solution: '**/Unicord.sln'
-  buildPlatform: 'x86|x64|ARM|ARM64'
+  buildPlatform: 'x86|x64|ARM'
   buildConfiguration: 'Store'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
 
