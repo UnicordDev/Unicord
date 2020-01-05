@@ -252,14 +252,6 @@
   <ItemGroup>
     <None Include="PropertySheet.props" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
-      <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
-      <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.190605.7\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.190605.7\build\native\Microsoft.Windows.CppWinRT.targets')" />
