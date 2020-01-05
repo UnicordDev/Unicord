@@ -11,6 +11,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
@@ -68,7 +69,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
 
