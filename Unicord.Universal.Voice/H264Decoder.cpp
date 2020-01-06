@@ -12,6 +12,7 @@ namespace winrt::Unicord::Universal::Voice::Decode
     {      
         std::vector<H264NalIndex> nalIndices = H264Utils::FindNalIndices(decrypted_view);
         std::cout << nalIndices.size() << "\n";
+
         return false;
     }
 }
