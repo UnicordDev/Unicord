@@ -68,7 +68,7 @@ namespace Unicord.Universal
                     break;
             }
 
-            WindowManager.HandleTitleBarForWindow(titleBar);
+            WindowManager.HandleTitleBarForWindow(titleBar, this);
 
             if (_isReady)
             {
@@ -244,7 +244,7 @@ namespace Unicord.Universal
             try
             {
                 var dm = e.PrivateChannels.Values
-                    .FirstOrDefault(c => c.Recipient?.Id == Arguments.UserId);
+                    .FirstOrDefault(c => c.Recipient?.Id == Arguments.UserId && c.Type == ChannelType.Private);
 
                 if (dm == null && Arguments.UserId != 0)
                 {

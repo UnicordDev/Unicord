@@ -20,9 +20,6 @@
     </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
-        <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
-        <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
-
         <Storyboard x:Key="OpenSettingsDesktopStoryboard" x:Name="OpenSettingsDesktopStoryboard">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseEnter}"
@@ -458,8 +455,9 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="(Content.RenderTransform).(TranslateTransform.X)" Value="0" />
+                        <Setter Target="ContentTransform.X" Value="0" />
                         <Setter Target="Content.Margin" Value="0,0,0,0" />
+                        <Setter Target="CloseItem.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -469,7 +467,9 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
+                        <Setter Target="ContentTransform.X" Value="0" />
                         <Setter Target="Content.Margin" Value="-276,0,0,0" />
+                        <Setter Target="CloseItem.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

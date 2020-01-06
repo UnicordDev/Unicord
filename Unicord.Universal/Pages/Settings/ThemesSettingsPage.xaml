@@ -68,7 +68,7 @@
         </Style>
 
         <DataTemplate x:Key="ThemeTemplate">
-            <Grid>
+            <Grid RightTapped="Grid_Tapped">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -231,11 +231,6 @@
                         </TextBlock>
                     </Grid>
                     <StackPanel w1709:Spacing="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,4">
-                        <Button x:Name="RemoveThemesButton" 
-                                Click="RemoveThemesButton_Click"
-                                Style="{ThemeResource IconButtonStyle}" 
-                                Content="&#xE738;" 
-                                IsEnabled="{Binding EnableRemoveButton}"/>
                         <Button x:Name="AddThemesButton" 
                                 Click="AddThemesButton_Click"
                                 Style="{ThemeResource IconButtonStyle}" 

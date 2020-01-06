@@ -127,7 +127,6 @@
                                 OpenPaneLength="250"
                                 BackRequested="NavigationView_BackRequested"
                                 ItemInvoked="NavigationView_ItemInvoked"
-                                IsTitleBarAutoPaddingEnabled="False"
                                 PaneToggleButtonStyle="{StaticResource CustomPaneToggleButtonStyle}"
                                 Header="{Binding SelectedItem.Content, ElementName=navigationView}">
                 <lib:NavigationView.Resources>

@@ -1,6 +1,8 @@
 # Unicord
 A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience, while adding handy extras along the way. Built on [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus/)!
 
+[![Build Status](https://dev.azure.com/WanKerrCoLtd/Unicord/_apis/build/status/WamWooWam.Unicord?branchName=master)](https://dev.azure.com/WanKerrCoLtd/Unicord/_build/latest?definitionId=4&branchName=master)
+
 ![promo](https://i.imgur.com/ZGz3UIv.png)
 
 ## Getting Started
@@ -35,9 +37,13 @@ On one specific note, while the project technically targets a minimum of Windows
 ## Contributing
 Unicord accepts contributions! Want a feature that doesn't already exist? Feel free to dig right in and give it a shot. Do be mindful of other ongoing projects, make sure someone isn't already building the feature you want, etc. If you don't have the know how yourself, file an issue, someone might pick up on it.
 
+## Get in Touch
+We have a Discord server specifically for Unicord development and testing, join here:
+[![Unicord](https://discordapp.com/api/guilds/648519011130408980/widget.png?style=banner2)](https://discord.gg/64g7M5Y)
+
 ## License
 Unicord is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgements
  - [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) Contributors, for providing a wonderful base on which I've built much of this
- - Any member of my [Discord server](https://discord.gg/NfneAaS) who's given me any tips, feedback or guidance! <3
+ - Any member of my personal Discord server who's given me any tips, feedback or guidance! <3

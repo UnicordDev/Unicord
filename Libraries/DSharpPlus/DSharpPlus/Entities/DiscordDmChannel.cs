@@ -43,7 +43,7 @@ namespace DSharpPlus.Entities
             => !string.IsNullOrWhiteSpace(IconHash) ? $"https://cdn.discordapp.com/channel-icons/{Id.ToString(CultureInfo.InvariantCulture)}/{IconHash}.png" : Recipient?.NonAnimatedAvatarUrl;
 
         [JsonIgnore]
-        public DiscordUser Recipient => _recipients?.Count == 1 ? _recipients.Values.ElementAt(0) : null;
+        public DiscordUser Recipient => Type == ChannelType.Private ? _recipients.Values.ElementAt(0) : null;
 
         [JsonIgnore]
         public DiscordCall OngoingCall { get => _ongoingCall; internal set => OnPropertySet(ref _ongoingCall, value); }

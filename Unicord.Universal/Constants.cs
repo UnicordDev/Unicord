@@ -1,40 +1,16 @@
-﻿namespace Unicord
+﻿using System;
+
+namespace Unicord
 {
     public static partial class Constants
     {
-
-#if DEBUG
-        public const string MAIN_URL = "http://localhost:8000/";
-#else
         public const string MAIN_URL = "https://wamwoowam.co.uk/unicord/";
-#endif
+
         public const string TOKEN_IDENTIFIER = "Unicord_Token";
         public const string APP_USER_MODEL_ID = "com.wankerr.Unicord";
-        public const string PLUGIN_IPC_URI = "net.pipe://localhost/org.wamwoowam.unicord/plugins";
-
-        public const string UPDATE_BASE_URL = MAIN_URL + "update/";
-
-        public const string OS_WARNING_DISMISSED = "OSWarningDismissed";
-
-        public const string ALLOW_MULTIPLE_CHANNEL_WINDOWS = "MultipleChannelWindows";
-        public const string ALLOW_MULTIPLE_GUILD_WINDOWS = "MultipleGuildWindows";
-        public const string ALLOW_MULTIPLE_CHANNEL_PAGES = "MultipleChannelPages";
-
-        public const string USE_CUSTOM_TITLE_BAR = "UseCustomTitleBar";
-        public const string NO_CACHE_CONTEXT_MENUS = "NoCacheContextMenus";
-
-        public const string USE_LIGHT_THEME = "LightTheme";
-        public const string USE_DISCORD_ACCENT_COLOUR = "DiscordAccent";
-        public const string CUSTOM_ACCENT_COLOUR = "CustomAccent";
-
-        public const string MINI_MODE_POSITIONS = "MiniModePositions";
-        public const string MINI_MODE_SNAP_ENABLED = "MiniModeSnap";
 
         public const string ENABLE_ANALYTICS = "EnableAnalytics";
-
         public const string SYNC_CONTACTS = "SyncContacts";
-        public const string AUDIOPHILE_MODE = "AudiophileMode";
-
         public const string ENABLE_SPOILERS = "EnableSpoilers";
         public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
         public const string WARN_UNSAFE_LINKS = "WarnUnsafeLinks";
@@ -55,6 +31,13 @@
         public const string GIF_AUTOPLAY = "AutoPlayGifs";
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
         public const string TIMESTAMP_STYLE = "TimestampStyle";
+
+        [Obsolete("Use new theme system (SELECTED_THEME_NAMES) instead.")]
+        public const string SELECTED_THEME_NAME = "SelectedThemeName";
+        public const string SELECTED_THEME_NAMES = "SelectedThemeNames";
+        public const string REQUESTED_COLOUR_SCHEME = "RequestedTheme";
+        public const string THEME_FOLDER_NAME = "Themes";
+        public const string THEME_METADATA_NAME = "theme.json";
     }
 
     public enum MediaTranscodeOptions

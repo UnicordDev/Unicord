@@ -351,7 +351,7 @@ namespace Unicord.Universal.Controls
         private void CopyFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             var package = new DataPackage();
-            package.SetText(message.Text);
+            package.SetText(_message.Content);
             Clipboard.SetContent(package);
         }
 
