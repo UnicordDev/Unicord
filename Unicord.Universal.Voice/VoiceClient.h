@@ -117,6 +117,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         bool Deafened();
         void Deafened(bool value);
 
+        void SetVideoState(bool video);
+
         VoicePacket PreparePacket(array_view<uint8_t> pcm, bool silence = false, bool is_float = false);
         void EnqueuePacket(PCMPacket packet);
 
@@ -128,11 +130,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
         IAsyncAction Stage1(JsonObject obj);
         void Stage2(JsonObject obj);
         IAsyncAction Stage3(std::string& ip, const uint16_t& port);
+        IAsyncAction SendSSRCInfo();
 
         void VoiceSendLoop();
 
         void ProcessRawPacket(array_view<uint8_t> data);
-        bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>>& pcm, AudioSource** source);
+        bool ProcessIncomingPacket(array_view<uint8_t> data, std::vector<std::vector<uint8_t>>& pcm, AudioSource** source);
 
         IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
         IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
@@ -157,7 +160,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         ThreadPoolTimer keepaliveTimer{ nullptr };
 
         std::pair<hstring, EncryptionMode> mode;
-        SodiumWrapper* sodium = nullptr;
+        Transport::Rtp* rtp = nullptr;
         Encode::OpusEncoder* opusEncoder = nullptr;
         Decode::OpusDecoder* opusDecoder = nullptr;
         Decode::H264Decoder* h264Decoder = nullptr;
@@ -168,14 +171,19 @@ namespace winrt::Unicord::Universal::Voice::implementation
         bool is_speaking = false;
         bool is_muted = false;
         bool is_deafened = false;
+        bool is_video = false;
 
         bool ws_closed = true;
         bool can_resume = false;
 
-        uint16_t audioSequence = 0;
         uint32_t audioSSRC = 0;
+        uint16_t audioSequence = 0;
         uint32_t audioTimestamp = 0;
         uint32_t nonce = 0;
+
+        uint32_t videoSSRC = 0;
+
+        uint32_t rtxSSRC = 0;
 
         uint32_t heartbeatInterval = 0;
         uint32_t connectionStage = 0;

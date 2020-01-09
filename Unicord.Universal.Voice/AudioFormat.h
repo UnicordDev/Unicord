@@ -5,11 +5,11 @@
 
 namespace winrt::Unicord::Universal::Voice::Interop
 {
-    enum VoiceApplication
+    enum class VoiceApplication
     {
-        music = OPUS_APPLICATION_AUDIO,
-        voip = OPUS_APPLICATION_VOIP,
-        low_latency = OPUS_APPLICATION_RESTRICTED_LOWDELAY
+        Music = OPUS_APPLICATION_AUDIO,
+        Voip = OPUS_APPLICATION_VOIP,
+        LowLatency = OPUS_APPLICATION_RESTRICTED_LOWDELAY
     };
 
     struct VoicePacket
@@ -46,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
     struct AudioFormat
     {
     public:
-        AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = music)
+        AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = VoiceApplication::Music)
         {
             sample_rate = sampleRate;
             channel_count = channelCount;
@@ -55,7 +55,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
         uint32_t sample_rate = 0;
         uint32_t channel_count = 0;
-        VoiceApplication application = voip;
+        VoiceApplication application;
 
         inline bool operator== (AudioFormat& lhs) noexcept {
             return (lhs.sample_rate == sample_rate) && (lhs.channel_count == channel_count) && (lhs.application == application);
@@ -66,15 +66,15 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
 
         inline size_t CalculateSampleSize(uint32_t duration) noexcept {
-            return duration * channel_count * (sample_rate / 1000) * 2;
+            return (size_t)duration * channel_count * (sample_rate / 1000) * 2;
         }
 
         inline size_t CalculateSampleSizeF(uint32_t duration) noexcept {
-            return duration * channel_count * (sample_rate / 1000) * 4;
+            return (size_t)duration * (size_t)channel_count * ((size_t)sample_rate / 1000) * 4;
         }
 
         inline size_t GetMaxBufferSize() noexcept {
-            return  120 * (sample_rate / 1000);
+            return  (size_t)120 * (sample_rate / 1000);
         }
 
         inline uint32_t CalculateSampleDuration(uint32_t sampleSize) noexcept {
@@ -86,7 +86,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
 
         inline size_t CalculateFrameSize(uint32_t sampleDuration) noexcept {
-            return sampleDuration * (sample_rate / 1000);
+            return (size_t)sampleDuration * ((size_t)sample_rate / 1000);
         }
 
         inline size_t SampleCountToSampleSize(size_t count) noexcept {
@@ -126,7 +126,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
 
         ~AudioSource() {
-            std::cout << "Freeing AudioSource\n";
+            std::cout << "Freeing AudioSource" << std::endl;
             opus_decoder_destroy(decoder);
             decoder = nullptr;
         }

@@ -39,7 +39,7 @@ namespace winrt::Unicord::Universal::Voice::Utilities {
     };
 
     struct H264Packet {
-        RtpHeader header;
+        RtpPacket header;
         std::vector<uint8_t> data;
     };
 

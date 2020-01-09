@@ -192,9 +192,11 @@
     <ClInclude Include="AudioRenderer.h" />
     <ClInclude Include="ConnectionEndpoint.h" />
     <ClInclude Include="H264Decoder.h" />
+    <ClInclude Include="H264Packetiser.h" />
     <ClInclude Include="H264Utils.h" />
     <ClInclude Include="OpusDecoder.h" />
     <ClInclude Include="OpusEncoder.h" />
+    <ClInclude Include="OpusPacketiser.h" />
     <ClInclude Include="OpusUtils.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Rtp.h" />
@@ -219,9 +221,11 @@
   <ItemGroup>
     <ClCompile Include="AudioRenderer.cpp" />
     <ClCompile Include="H264Decoder.cpp" />
+    <ClCompile Include="H264Packetiser.cpp" />
     <ClCompile Include="H264Utils.cpp" />
     <ClCompile Include="OpusDecoder.cpp" />
     <ClCompile Include="OpusEncoder.cpp" />
+    <ClCompile Include="OpusPacketiser.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

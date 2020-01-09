@@ -21,5 +21,8 @@ namespace DSharpPlus.VoiceNext.Entities
 
         [JsonProperty("self_mute", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Muted { get; set; }
+
+        [JsonProperty("self_video", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Video { get; set; }
     }
 }

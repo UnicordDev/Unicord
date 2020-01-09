@@ -11,7 +11,7 @@ namespace winrt::Unicord::Universal::Voice::Decode
     class H264Decoder
     {
     public:
-        bool ProcessPacket(const RtpHeader& header, array_view<uint8_t>& decrypted_view, H264Frame& frame);
+        bool ProcessPacket(const RtpPacket& header, array_view<uint8_t>& decrypted_view, H264Frame& frame);
 
     private:
         concurrency::concurrent_unordered_map<uint32_t, std::vector<H264Packet>> packetQueue;

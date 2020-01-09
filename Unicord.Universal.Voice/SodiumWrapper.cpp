@@ -10,14 +10,11 @@ using namespace winrt::Windows::Data::Json;
 
 namespace winrt::Unicord::Universal::Voice::Transport
 {
-    SodiumWrapper::SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode selected_mode)
+    SodiumWrapper::SodiumWrapper(array_view<uint8_t> key_view, EncryptionMode selected_mode)
     {
-        key_length = crypto_secretbox_xsalsa20poly1305_keybytes();
-        nonce_length = crypto_secretbox_xsalsa20poly1305_noncebytes();
-        mac_length = crypto_secretbox_xsalsa20poly1305_macbytes();
         mode = selected_mode;
 
-        if (key_view.size() != key_length)
+        if (key_view.size() != crypto_secretbox_xsalsa20poly1305_KEYBYTES)
             throw hresult_invalid_argument();
 
         key = new uint8_t[key_view.size()]{ 0 };
@@ -85,7 +82,7 @@ namespace winrt::Unicord::Universal::Voice::Transport
         }
     }
 
-    void SodiumWrapper::Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target)
+    void SodiumWrapper::Decrypt(array_view<uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target)
     {
         if (nonce.size() != nonce_length)
             throw hresult_invalid_argument(L"Invalid nonce size");
@@ -99,38 +96,18 @@ namespace winrt::Unicord::Universal::Voice::Transport
         }
     }
 
-    void SodiumWrapper::AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode)
-    {
-        switch (mode)
-        {
-        case XSalsa20_Poly1305_Lite:
-            std::copy(nonce.begin(), nonce.begin() + 4, target.end() - 4);
-            break;
-        case XSalsa20_Poly1305_Suffix:
-            std::copy(nonce.begin(), nonce.end(), target.end() - 12);
-            break;
-        }
-    }
-
-    void SodiumWrapper::GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, const RtpHeader& header, EncryptionMode mode)
-    {
-        if (nonce.size() != nonce_length) {
-            throw hresult_invalid_argument(L"Invalid target size!");
-        }
-
-        switch (mode)
-        {
-        case XSalsa20_Poly1305:
-            std::copy(source.begin(), source.begin() + min(header.size(), crypto_secretbox_xsalsa20poly1305_NONCEBYTES), nonce.begin());
-            break;
-        case XSalsa20_Poly1305_Suffix:
-            std::copy(source.end() - 12, source.end(), nonce.begin());
-            break;
-        case XSalsa20_Poly1305_Lite:
-            std::copy(source.end() - 4, source.end(), nonce.begin());
-            break;
-        }
-    }
+    //void SodiumWrapper::AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode)
+    //{
+    //    switch (mode)
+    //    {
+    //    case EncryptionMode::XSalsa20_Poly1305_Lite:
+    //        std::copy(nonce.begin(), nonce.begin() + 4, target.end() - 4);
+    //        break;
+    //    case EncryptionMode::XSalsa20_Poly1305_Suffix:
+    //        std::copy(nonce.begin(), nonce.end(), target.end() - 12);
+    //        break;
+    //    }
+    //}
 
     SodiumWrapper::~SodiumWrapper()
     {

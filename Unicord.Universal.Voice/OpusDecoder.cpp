@@ -8,7 +8,7 @@ using namespace winrt::Unicord::Universal::Voice::Transport;
 
 namespace winrt::Unicord::Universal::Voice::Decode
 {
-    bool OpusDecoder::ProcessPacket(const RtpHeader& header, AudioSource** source, array_view<uint8_t>& decrypted_view, std::vector<std::vector<uint8_t>>& pcm)
+    bool OpusDecoder::ProcessPacket(const RtpPacket& header, AudioSource** source, array_view<uint8_t>& decrypted_view, std::vector<std::vector<uint8_t>>& pcm)
     {
         AudioSource* audio_source = this->GetOrCreateDecoder(header.ssrc);
         *source = audio_source;

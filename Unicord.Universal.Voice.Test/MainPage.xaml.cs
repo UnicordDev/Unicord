@@ -124,6 +124,11 @@ namespace Unicord.Universal.Voice.Test
                 _client.Disconnected += Client_Disconnected;
                 _client.VideoDataRecieved += Client_VideoDataRecieved;
                 await _client.ConnectAsync();
+
+                await Task.Delay(5000);
+
+                SendVoiceStateUpdate(_channel.Id, _channel.GuildId, video: true);
+                _client.SetVideoState(true);
             }
         }
 
@@ -164,7 +169,7 @@ namespace Unicord.Universal.Voice.Test
             }
         }
 
-        private void SendVoiceStateUpdate(ulong? channel_id, ulong? guild_id)
+        private void SendVoiceStateUpdate(ulong? channel_id, ulong? guild_id, bool video = false)
         {
             var vsd = new VoiceGatewayPayload
             {
@@ -174,7 +179,8 @@ namespace Unicord.Universal.Voice.Test
                     GuildId = guild_id,
                     ChannelId = channel_id,
                     Deafened = false,
-                    Muted = false
+                    Muted = false,
+                    Video = video
                 }
             };
 

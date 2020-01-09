@@ -78,7 +78,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         }
     }
 
-    void ServiceBackgroundTask::OnConnected(IInspectable sender, bool args)
+    void ServiceBackgroundTask::OnConnected(IInspectable sender, bool)
     {
         ValueSet valueSet;
         if (appServiceConnected && appServiceConnection != nullptr) {
@@ -267,6 +267,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         RaiseEvent(VoiceServiceEvent::Disconnected, event_values);
                     }
                     break;
+
+                case VoiceServiceRequest::VideoRequest:
+                {
+                    if (voiceClient != nullptr) {
+                        auto video = unbox_value<bool>(data.Lookup(L"video"));
+                        voiceClient.SetVideoState(video);
+                    }
+                }
 
                 case VoiceServiceRequest::SettingsUpdate:
                     if (voiceClient != nullptr) {

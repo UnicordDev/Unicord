@@ -88,7 +88,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         format = renderer->GetCaptureProperties();
         std::cout << "Capture: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
 
-        audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::low_latency);
+        audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::LowLatency);
         opusEncoder = new Encode::OpusEncoder(audio_format);
 
         Windows::Foundation::Uri url{ L"wss://" + wsEndpoint.hostname + L"/?encoding=json&v=4" };
@@ -141,6 +141,22 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         is_muted = value;
         is_deafened = value;
+    }
+
+    void VoiceClient::SetVideoState(bool video)
+    {
+        if (is_video) {
+            videoSSRC = 0;
+            rtxSSRC = 0;
+
+            SendSSRCInfo().get();
+        }
+        else {
+            videoSSRC = 100 + (rand() % 100);
+            rtxSSRC = videoSSRC + 1;
+
+            SendSSRCInfo().get();
+        }
     }
 
     IAsyncAction VoiceClient::SendIdentifyAsync(bool isResume)
@@ -203,7 +219,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 key[i] = (uint8_t)secret_key.GetNumberAt(i);
             }
 
-            sodium = new SodiumWrapper(array_view<const uint8_t>(key), SodiumWrapper::GetEncryptionMode(new_mode));
+            rtp = new Transport::Rtp(array_view<uint8_t>(key), SodiumWrapper::GetEncryptionMode(new_mode));
         }
 
         keepaliveTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, 5000ms);
@@ -291,31 +307,32 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     VoicePacket VoiceClient::PreparePacket(array_view<uint8_t> pcm, bool silence, bool is_float)
     {
-        if (is_disposed)
             return VoicePacket();
 
         if (pcm.size() == 0)
             return VoicePacket();
 
-        RtpHeader header{ Rtp::RTP_TYPE_OPUS,audioSequence, audioTimestamp, audioSSRC };
+        RtpPacket packet{ Rtp::RTP_TYPE_OPUS, audioSequence, audioTimestamp, audioSSRC };
         auto packet_size = audio_format.GetMaxBufferSize() * 2;
-        auto packet = std::vector<uint8_t>(packet_size);
-        auto packet_span = gsl::make_span(packet);
+        auto opus_data = std::vector<uint8_t>(packet_size);
+        auto opus_span = gsl::make_span(opus_data);
+        auto opus_length = is_float ? opusEncoder->EncodeFloat(pcm, opus_span) : opusEncoder->Encode(pcm, opus_span);
+        opus_data.resize(opus_length);
 
-        auto opus_length = is_float ? opusEncoder->EncodeFloat(pcm, packet_span) : opusEncoder->Encode(pcm, packet_span);
-        auto encrypted_size = sodium->CalculateTargetSize(opus_length);
-        auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, header, mode.second);
+
+        auto encrypted_size = SodiumWrapper::CalculateTargetSize(opus_length);
+        auto new_packet_size = rtp->CalculatePacketSize((uint32_t)encrypted_size, packet, mode.second);
         auto new_packet = std::vector<uint8_t>(new_packet_size);
         auto new_packet_span = gsl::make_span(new_packet);
 
-        Rtp::EncodeHeader(header, new_packet_span);
+        Rtp::Write(packet, new_packet_span);
 
         const size_t size = crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
         uint8_t packet_nonce[size] = { 0 };
         switch (mode.second)
         {
         case EncryptionMode::XSalsa20_Poly1305:
-            sodium->GenerateNonce(new_packet_span.subspan(0, header.size()), packet_nonce);
+            sodium->GenerateNonce(new_packet_span.subspan(0, packet.header_size()), packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Suffix:
             sodium->GenerateNonce(packet_nonce);
@@ -325,7 +342,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
             break;
         }
 
-        sodium->Encrypt(packet_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(header.size(), encrypted_size));
+        sodium->Encrypt(opus_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(packet.header_size(), encrypted_size));
         sodium->AppendNonce(packet_nonce, new_packet_span, mode.second);
 
         auto duration = is_float ? audio_format.CalculateSampleDurationF(pcm.size()) : audio_format.CalculateSampleDuration(pcm.size());
@@ -347,7 +364,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         AudioSource* source;
         std::vector<std::vector<uint8_t>> pcm_packets;
 
-        if (ProcessIncomingPacket(array_view<const uint8_t>(data.begin(), data.end()), pcm_packets, &source)) {
+        if (ProcessIncomingPacket(data, pcm_packets, &source)) {
             for each (auto raw_packet in pcm_packets)
             {
                 renderer->ProcessIncomingPacket(raw_packet, source);
@@ -357,7 +374,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         pcm_packets.clear();
     }
 
-    bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>>& pcm, AudioSource** source)
+    bool VoiceClient::ProcessIncomingPacket(array_view<uint8_t> data, std::vector<std::vector<uint8_t>>& pcm, AudioSource** source)
     {
         bool ret = false;
 
@@ -368,34 +385,20 @@ namespace winrt::Unicord::Universal::Voice::implementation
             return false;
 
         // decode RTP header
-        RtpHeader header;
-        Rtp::DecodeHeader(data, header);
+        RtpPacket packet;
+        rtp->Read(data, packet);
 
-        if (header.type == 73 || header.type == 72) {
+        if (packet.type == 73 || packet.type == 72) {
             return false;
         }
-
-        // get the nonce
-        uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
-        array_view<uint8_t> nonce_view(packet_nonce);
-        sodium->GetNonce(data, nonce_view, header, mode.second);
-
-        // get the data
-        array_view<const uint8_t> encrypted_data;
-        Rtp::GetDataFromPacket(data, encrypted_data, header, mode.second);
-
-        // calculate the size of the decrypted data
-        size_t decrypted_size = sodium->CalculateSourceSize(encrypted_data.size());
-        uint8_t* decrypted_data = new uint8_t[decrypted_size]{ 0 };
-        array_view<uint8_t> decrypted_view(decrypted_data, decrypted_data + decrypted_size);
 
         // decrypt the recieved data
         try
         {
-            sodium->Decrypt(encrypted_data, nonce_view, decrypted_view);
+            array_view<uint8_t> decrypted_view{ packet.data };
 
             // strip extensions
-            if (header.extension) {
+            if (packet.extension) {
                 // RFC 5285, 4.2 One-Byte header
                 // http://www.rfcreader.com/#rfc5285_line186
                 if (decrypted_view[0] == 0xBE && decrypted_view[1] == 0xDE) {
@@ -409,6 +412,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
                         uint8_t id = (uint8_t)(b >> 4);
                         uint8_t length = (uint8_t)(b & 0x0F) + 1;
                         i += length;
+
+                        std::cout << "extension: " << id << std::endl;
                     }
 
                     // Strip extension padding too
@@ -422,42 +427,34 @@ namespace winrt::Unicord::Universal::Voice::implementation
             if (decrypted_view[0] == 0x90) {
                 decrypted_view = array_view(decrypted_view.begin() + 2, decrypted_view.end());
             }
-            if (header.type == Rtp::RTP_TYPE_OPUS) { // opus data
+
+            if (packet.type == Rtp::RTP_TYPE_OPUS) { // opus data
 
                 if (is_deafened) {
                     ret = false;
                 }
                 else {
-                    ret = opusDecoder->ProcessPacket(header, source, decrypted_view, pcm);
+                    ret = opusDecoder->ProcessPacket(packet, source, decrypted_view, pcm);
                 }
             }
 
-            if (header.type == Rtp::RTP_TYPE_H264) { // video 
-                std::ostringstream str;
-                str << std::setfill('0') << std::setw(4) << std::hex;
-                for (size_t i = 0; i < decrypted_view.size(); i++)
-                {
-                    str << (uint32_t)decrypted_view[i] << " ";
-                }
-                std::cout << str.str() << std::endl;
+            if (packet.type == Rtp::RTP_TYPE_H264) { // video 
 
                 H264Frame frame;
-                if (h264Decoder->ProcessPacket(header, decrypted_view, frame)) {
+                if (h264Decoder->ProcessPacket(packet, decrypted_view, frame)) {
                     std::cout << "packets:" << frame.data.size() << " pps:" << frame.pps.size() << " sps:" << frame.sps.size() << std::endl;
                 }
             }
         }
-        catch (const winrt::hresult_error & ex)
+        catch (const winrt::hresult_error&)
         {
-            std::cout << (uint32_t)header.type << " " << header.ssrc << " " << data.size() << "\n";
+            std::cout << (uint32_t)packet.type << " " << packet.ssrc << " " << data.size() << "\n";
         }
-
-        delete[] decrypted_data;
 
         return ret;
     }
 
-   
+
     IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
     {
         uint32_t stamp = (uint32_t)duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
@@ -679,7 +676,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         auto itr = keepalive_timestamps.find(count);
         if (itr != keepalive_timestamps.end()) {
             uint64_t then = keepalive_timestamps.at(count);
-            udp_ping = now - then;
+            udp_ping = (uint32_t)(now - then);
 
             udpPingUpdated(*this, (const uint32_t)udp_ping);
             keepalive_timestamps.unsafe_erase(count);
@@ -766,17 +763,23 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         co_await SendJsonPayloadAsync(dispatch);
 
+        co_await SendSSRCInfo();
+
+        connectionStage = 1;
+    }
+
+    IAsyncAction VoiceClient::SendSSRCInfo()
+    {
         JsonObject ssrc_info;
         ssrc_info.SetNamedValue(L"audio_ssrc", JsonValue::CreateNumberValue(audioSSRC));
-        ssrc_info.SetNamedValue(L"video_ssrc", JsonValue::CreateNumberValue(0));
-        ssrc_info.SetNamedValue(L"rx_ssrc", JsonValue::CreateNumberValue(0));
+        ssrc_info.SetNamedValue(L"video_ssrc", JsonValue::CreateNumberValue(videoSSRC));
+        ssrc_info.SetNamedValue(L"rtx_ssrc", JsonValue::CreateNumberValue(rtxSSRC));
 
         JsonObject dispatch2;
         dispatch2.SetNamedValue(L"op", JsonValue::CreateNumberValue(12));
         dispatch2.SetNamedValue(L"d", ssrc_info);
 
         co_await SendJsonPayloadAsync(dispatch2);
-        connectionStage = 1;
     }
 
     IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject& payload)
@@ -815,11 +818,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         Reset();
 
-        if (sodium != nullptr) {
-            SecureZeroMemory(sodium, sizeof sodium);
-            delete sodium;
-            sodium = nullptr;
-        }
+        delete rtp;
     }
 
     void VoiceClient::Reset()
@@ -849,7 +848,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
             delete opusDecoder;
             opusDecoder = nullptr;
         }
-        
+
         if (opusEncoder != nullptr) {
             delete opusEncoder;
             opusEncoder = nullptr;

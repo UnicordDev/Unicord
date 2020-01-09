@@ -17,11 +17,11 @@ namespace winrt::Unicord::Universal::Voice::Encode
         int signal = OPUS_AUTO;
         switch (format.application)
         {
-        case VoiceApplication::voip:
+        case VoiceApplication::Voip:
             signal = OPUS_SIGNAL_VOICE;
             break;
 
-        case VoiceApplication::music:
+        case VoiceApplication::Music:
             signal = OPUS_SIGNAL_MUSIC;
             break;
         }
@@ -52,7 +52,7 @@ namespace winrt::Unicord::Universal::Voice::Encode
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument & ex)
+        catch (winrt::hresult_invalid_argument &)
         {
             return 0;
         }
@@ -78,7 +78,7 @@ namespace winrt::Unicord::Universal::Voice::Encode
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument & ex)
+        catch (winrt::hresult_invalid_argument &)
         {
             return 0;
         }

@@ -34,6 +34,12 @@
     <ClCompile Include="H264Utils.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="OpusPacketiser.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="H264Packetiser.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -76,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="H264Utils.h">
       <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="OpusPacketiser.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="H264Packetiser.h">
+      <Filter>Transport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
