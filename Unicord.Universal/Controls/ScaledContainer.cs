@@ -26,6 +26,7 @@ namespace Unicord.Universal.Controls
 
         public static readonly DependencyProperty TargetHeightProperty =
             DependencyProperty.Register("TargetHeight", typeof(int), typeof(ScaledContentControl), new PropertyMetadata(0));
+
         private Window _window;
 
         public ScaledContentControl()

@@ -35,8 +35,9 @@ namespace Unicord.Universal.Controls
         public DiscordMessage Message { get => (DiscordMessage)GetValue(MessageProperty); set => SetValue(MessageProperty, value); }
 
         private static ThreadLocal<DispatcherTimer> _timestampTimer;
+        private static ThreadLocal<EmotePicker> _emojiPicker
+            = new ThreadLocal<EmotePicker>(() => new EmotePicker(), true);
 
-        private ObservableCollection<DiscordReaction> _reactions = new ObservableCollection<DiscordReaction>();
         private DiscordMessage _message;
         private DiscordChannel _channel;
         private DiscordUser _author;
@@ -206,7 +207,7 @@ namespace Unicord.Universal.Controls
                         }
                     }
                 }
-                
+
                 grid.Padding = new Thickness(8, 20, 8, 0);
             }
 
@@ -358,6 +359,65 @@ namespace Unicord.Universal.Controls
         private void AuthorName_Tapped(object sender, TappedRoutedEventArgs e)
         {
             AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(_author, sender as FrameworkElement);
+        }
+
+        private async void ReactionToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton button && button.DataContext is DiscordReaction reaction)
+            {
+                if (reaction.IsMe)
+                    return;
+
+                try
+                {
+                    await _message.CreateReactionAsync(reaction.Emoji);
+                }
+                catch { }
+            }
+        }
+
+        private async void ReactionToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton button && button.DataContext is DiscordReaction reaction)
+            {
+                if (!reaction.IsMe)
+                    return;
+
+                try
+                {
+                    await _message.DeleteOwnReactionAsync(reaction.Emoji);
+                }
+                catch { }
+            }
+        }
+
+        private async void AddReactionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var maxWidth = Math.Min(Window.Current.Bounds.Width, 300);
+            var maxHeight = Math.Min(Window.Current.Bounds.Height, 300);
+            var flyout = new Flyout { Content = _emojiPicker.Value };
+
+            async void AddReaction(object s, DiscordEmoji emoji)
+            {
+                flyout.Hide();
+
+                try { await _message.CreateReactionAsync(emoji); } catch { }
+            }
+
+            flyout.Closed += (o, ev) =>
+            {
+                _emojiPicker.Value.EmojiPicked -= AddReaction;
+                FlyoutBase.SetAttachedFlyout(this, null);
+            };
+
+            _emojiPicker.Value.Width = maxWidth;
+            _emojiPicker.Value.Height = maxHeight;
+            _emojiPicker.Value.Channel = _channel;
+            _emojiPicker.Value.EmojiPicked += AddReaction;
+            await _emojiPicker.Value.Load();
+
+            FlyoutBase.SetAttachedFlyout(this, flyout);
+            FlyoutBase.ShowAttachedFlyout(this);
         }
     }
 }

@@ -2296,6 +2296,8 @@ namespace DSharpPlus
                 react.IsMe |= CurrentUser.Id == userId;
             }
 
+            msg.InvokePropertyChanged(nameof(msg.Reactions));
+
             var ea = new MessageReactionAddEventArgs(this)
             {
                 Message = msg,
@@ -2351,6 +2353,8 @@ namespace DSharpPlus
                 }
             }
 
+            msg.InvokePropertyChanged(nameof(msg.Reactions));
+
             var ea = new MessageReactionRemoveEventArgs(this)
             {
                 Message = msg,
@@ -2376,6 +2380,7 @@ namespace DSharpPlus
             }
 
             msg._reactions?.Clear();
+            msg.InvokePropertyChanged(nameof(msg.Reactions));
 
             var ea = new MessageReactionsClearEventArgs(this)
             {

@@ -101,7 +101,7 @@ namespace Unicord.Universal.Integration
                 annotationList = await Tools.GetAnnotationListAsync(annotationStore);
             }
 
-            folder ??= await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
+            folder = folder ?? await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
 
             Contact contact;
             if ((contact = await list.GetContactFromRemoteIdAsync(string.Format(REMOTE_ID_FORMAT, relationship.User.Id))) == null)
