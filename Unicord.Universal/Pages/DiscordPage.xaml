@@ -132,7 +132,7 @@
 
         <Storyboard x:Key="ClosePaneMobileStoryboard" x:Name="ClosePaneMobileStoryboard">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="ContentTransform"
                 Storyboard.TargetProperty="X"
                 To="0"

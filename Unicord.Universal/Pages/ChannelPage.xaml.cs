@@ -286,10 +286,10 @@ namespace Unicord.Universal.Pages
                 {
                     //_loading = true;
 
-                    var message = MessageList.Items.FirstOrDefault();
+                    // var message = MessageList.Items.FirstOrDefault();
                     await ViewModel.LoadMessagesBeforeAsync().ConfigureAwait(false);
-                    if (message != null)
-                        await Dispatcher.AwaitableRunAsync(() => MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading));
+                    // if (message != null)
+                    //    await Dispatcher.AwaitableRunAsync(() => MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading));
 
                     //_loading = false;
                 }

@@ -206,7 +206,7 @@
                                         WrapCodeBlock="True"/>
             </Grid>
             <StackPanel x:Name="embeds" Grid.Row="2" />
-            <ItemsControl Visibility="{Binding Reactions, Converter={ThemeResource BoolVisibilityConverter}}" Margin="8,4,0,0" ItemsSource="{Binding Reactions}" Grid.Row="3">
+            <ItemsControl x:Load="{x:Bind _message.Reactions, Mode=OneWay, Converter={StaticResource BoolConverter}}" Margin="8,4,0,0" ItemsSource="{Binding Reactions}" Grid.Row="3">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="entities:DiscordReaction">
                         <ToggleButton x:Name="ReactionToggleButton" ToolTipService.ToolTip="{Binding Emoji.Name}" IsChecked="{Binding IsMe}" Checked="ReactionToggleButton_Checked" Unchecked="ReactionToggleButton_Unchecked" Padding="0" BorderThickness="2">
