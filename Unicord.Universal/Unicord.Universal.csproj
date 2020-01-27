@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -132,8 +132,10 @@
     </Compile>
     <Compile Include="Commands\AcknowledgeCommand.cs" />
     <Compile Include="Commands\BanCommand.cs" />
+    <Compile Include="Commands\CopyMessageCommand.cs" />
     <Compile Include="Commands\CopyUrlCommand.cs" />
     <Compile Include="Commands\CopyIdCommand.cs" />
+    <Compile Include="Commands\EditModeCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
     <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />
@@ -172,6 +174,9 @@
     </Compile>
     <Compile Include="Controls\Flyouts\GuildContextFlyout.xaml.cs">
       <DependentUpon>GuildContextFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Flyouts\MessageContextFlyout.xaml.cs">
+      <DependentUpon>MessageContextFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Flyouts\UserListContextFlyout.xaml.cs">
       <DependentUpon>UserListContextFlyout.xaml</DependentUpon>
@@ -252,6 +257,9 @@
     <Compile Include="Controls\MarkdownTextBlock\Render\RenderContext.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Render\RenderContextIncorrectException.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Render\UIElementCollectionRenderContext.cs" />
+    <Compile Include="Controls\Messages\MessageControl.cs" />
+    <Compile Include="Controls\Messages\MessageEditTools.cs" />
+    <Compile Include="Controls\Messages\SystemMessageControl.cs" />
     <Compile Include="Controls\MessageViewer.xaml.cs">
       <DependentUpon>MessageViewer.xaml</DependentUpon>
     </Compile>
@@ -445,6 +453,7 @@
     <Compile Include="Integration\WindowsHelloManager.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
+    <Compile Include="Utilities\ThemePostprocessor.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
     <Compile Include="Utilities\WindowManager.cs" />
     <Compile Include="Voice\VoiceConnectionModel.cs" />
@@ -617,6 +626,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Flyouts\GuildContextFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Flyouts\MessageContextFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -800,6 +813,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Controls\Messages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\CustomStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -811,6 +828,10 @@
     <Page Include="Resources\Templates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

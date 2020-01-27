@@ -21,9 +21,6 @@
     <Grid x:Name="grid"
           Background="{Binding Background, ElementName=self}"
           IsHitTestVisible="True">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="48" />
             <ColumnDefinition Width="1*" />
@@ -201,12 +198,12 @@
                 <wam:MarkdownTextBlock x:Name="markdown"
                                        UseLayoutRounding="False"
                                        Channel="{Binding Channel}"
-                                        IsTextSelectionEnabled="False"
-                                        Text="{Binding Content}"
-                                        WrapCodeBlock="True"/>
+                                       IsTextSelectionEnabled="False"
+                                       Text="{Binding Content}"
+                                       WrapCodeBlock="True"/>
             </Grid>
             <StackPanel x:Name="embeds" Grid.Row="2" />
-            <ItemsControl x:Load="{x:Bind _message.Reactions, Mode=OneWay, Converter={StaticResource BoolConverter}}" Margin="8,4,0,0" ItemsSource="{Binding Reactions}" Grid.Row="3">
+            <ItemsControl x:Name="reactions" x:Load="{x:Bind _message.Reactions, Mode=OneWay, Converter={StaticResource BoolConverter}}" Margin="0,4,0,0" ItemsSource="{Binding Reactions}" Grid.Row="3">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="entities:DiscordReaction">
                         <ToggleButton x:Name="ReactionToggleButton" ToolTipService.ToolTip="{Binding Emoji.Name}" IsChecked="{Binding IsMe}" Checked="ReactionToggleButton_Checked" Unchecked="ReactionToggleButton_Unchecked" Padding="0" BorderThickness="2">

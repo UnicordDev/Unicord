@@ -12,6 +12,10 @@
     xmlns:controls="using:Unicord.Universal.Controls"
     x:DefaultBindMode="OneWay">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Controls/Messages.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}"/>

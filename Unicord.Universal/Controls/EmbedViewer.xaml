@@ -8,13 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     MaxWidth="640"
-    Margin="12,4,8,4"
+    Margin="0,4,8,0"
     HorizontalAlignment="Left"
     d:DesignHeight="300"
     d:DesignWidth="400"
     BorderBrush="{ThemeResource SystemControlBackgroundBaseMediumHighBrush}"
     BorderThickness="8,0,0,0"
-    DataContext="{x:Bind _embed}"
+    DataContext="{x:Bind Embed}"
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
@@ -39,8 +39,8 @@
                 <Grid
                     x:Name="author"
                     Margin="0,0,0,4"
-                    x:Load="{x:Bind _embed.Author, Converter={StaticResource BoolConverter}}"
-                    DataContext="{x:Bind _embed.Author}">
+                    x:Load="{x:Bind Embed.Author, Converter={StaticResource BoolConverter}}"
+                    DataContext="{x:Bind Embed.Author}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -70,13 +70,13 @@
                 <wam:MarkdownTextBlock
                     x:Name="title"
                     Grid.Row="1"
-                    x:Load="{x:Bind _embed.Title, Converter={StaticResource BoolConverter}}"
+                    x:Load="{x:Bind Embed.Title, Converter={StaticResource BoolConverter}}"
                     FontWeight="Bold"
                     Text="{Binding Title}" />
                 <wam:MarkdownTextBlock
                     x:Name="description"
                     Grid.Row="2"
-                    x:Load="{x:Bind _embed.Description, Converter={StaticResource BoolConverter}}"
+                    x:Load="{x:Bind Embed.Description, Converter={StaticResource BoolConverter}}"
                     Text="{Binding Description}"
                     TextWrapping="Wrap" />
 
@@ -91,8 +91,8 @@
                     x:Name="footer"
                     Grid.Row="5"
                     Margin="0,4,0,0"
-                    x:Load="{x:Bind _embed.Footer, Converter={StaticResource BoolConverter}}"
-                    DataContext="{x:Bind _embed.Footer}">
+                    x:Load="{x:Bind Embed.Footer, Converter={StaticResource BoolConverter}}"
+                    DataContext="{x:Bind Embed.Footer}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />

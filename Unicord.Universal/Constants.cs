@@ -38,6 +38,9 @@ namespace Unicord
         public const string REQUESTED_COLOUR_SCHEME = "RequestedTheme";
         public const string THEME_FOLDER_NAME = "Themes";
         public const string THEME_METADATA_NAME = "theme.json";
+
+        public const string MESSAGE_STYLE_KEY = "MessageStyleKey";
+        public const string MESSAGE_STYLE_DEFAULT = "DefaultMessageControlStyle";
     }
 
     public enum MediaTranscodeOptions

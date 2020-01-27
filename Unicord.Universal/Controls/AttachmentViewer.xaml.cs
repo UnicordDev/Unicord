@@ -28,26 +28,39 @@ namespace Unicord.Universal.Controls
 
         private bool _audioOnly;
 
-        private DiscordAttachment _attachment;
         private DispatcherTimer _timer;
         private StorageFile _shareFile;
+
+        public DiscordAttachment Attachment
+        {
+            get { return (DiscordAttachment)GetValue(AttachmentProperty); }
+            set { SetValue(AttachmentProperty, value); }
+        }
+        
+        public static readonly DependencyProperty AttachmentProperty =
+            DependencyProperty.Register("Attachment", typeof(DiscordAttachment), typeof(AttachmentViewer), new PropertyMetadata(null));
+
+        public AttachmentViewer()
+        {
+            InitializeComponent();
+        }
 
         public AttachmentViewer(DiscordAttachment attachment)
         {
             InitializeComponent();
-            _attachment = attachment;
+            Attachment = attachment;
             DataContext = attachment;
             HorizontalAlignment = HorizontalAlignment.Left;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Path.GetFileNameWithoutExtension(_attachment.Url).StartsWith("SPOILER_") && App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
+            if (Path.GetFileNameWithoutExtension(Attachment.Url).StartsWith("SPOILER_") && App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
             {
                 spoilerOverlay.Visibility = Visibility.Visible;
             }
 
-            var url = _attachment.Url;
+            var url = Attachment.Url;
             var fileExtension = Path.GetExtension(url);
 
             if (_mediaExtensions.Contains(fileExtension))
@@ -55,14 +68,14 @@ namespace Unicord.Universal.Controls
                 var mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = true,
-                    Source = MediaSource.CreateFromUri(new Uri(_attachment.ProxyUrl)),
-                    PosterSource = _attachment.Width != 0 ? new BitmapImage(new Uri(_attachment.ProxyUrl + "?format=jpeg")) : null
+                    Source = MediaSource.CreateFromUri(new Uri(Attachment.ProxyUrl)),
+                    PosterSource = Attachment.Width != 0 ? new BitmapImage(new Uri(Attachment.ProxyUrl + "?format=jpeg")) : null
                 };
 
                 mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
                 mediaPlayer.TransportControls.IsCompact = true;
 
-                if (_attachment.Width == 0)
+                if (Attachment.Width == 0)
                 {
                     if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
                     {
@@ -80,13 +93,13 @@ namespace Unicord.Universal.Controls
                 _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
                 _timer.Tick += _timer_Tick;
             }
-            else if (_attachment.Height != 0 && _attachment.Width != 0)
+            else if (Attachment.Height != 0 && Attachment.Width != 0)
             {
                 var imageElement = new ImageElement()
                 {
-                    ImageWidth = _attachment.Width,
-                    ImageHeight = _attachment.Height,
-                    ImageUri = new Uri(_attachment.ProxyUrl)
+                    ImageWidth = Attachment.Width,
+                    ImageHeight = Attachment.Height,
+                    ImageUri = new Uri(Attachment.ProxyUrl)
                 };
 
                 imageElement.Tapped += Image_Tapped;
@@ -105,10 +118,10 @@ namespace Unicord.Universal.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (_attachment.Width != 0)
+            if (Attachment.Width != 0)
             {
-                double width = _attachment.Width;
-                double height = _attachment.Height;
+                double width = Attachment.Width;
+                double height = Attachment.Height;
 
                 Drawing.ScaleProportions(ref width, ref height, 640, 480);
                 Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
@@ -154,9 +167,9 @@ namespace Unicord.Universal.Controls
         private void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.FindParent<MainPage>()?.ShowAttachmentOverlay(
-                new Uri(_attachment.ProxyUrl),
-                _attachment.Width,
-                _attachment.Height,
+                new Uri(Attachment.ProxyUrl),
+                Attachment.Width,
+                Attachment.Height,
                 openMenuItem_Click,
                 saveMenuItem_Click,
                 shareMenuItem_Click);
@@ -189,18 +202,18 @@ namespace Unicord.Universal.Controls
                 var picker = new FileSavePicker()
                 {
                     SuggestedStartLocation = PickerLocationId.Downloads,
-                    SuggestedFileName = Path.GetFileNameWithoutExtension(_attachment.Url),
-                    DefaultFileExtension = Path.GetExtension(_attachment.Url)
+                    SuggestedFileName = Path.GetFileNameWithoutExtension(Attachment.Url),
+                    DefaultFileExtension = Path.GetExtension(Attachment.Url)
                 };
 
-                picker.FileTypeChoices.Add($"Attachment Extension (*{Path.GetExtension(_attachment.Url)})", new List<string>() { Path.GetExtension(_attachment.Url) });
+                picker.FileTypeChoices.Add($"Attachment Extension (*{Path.GetExtension(Attachment.Url)})", new List<string>() { Path.GetExtension(Attachment.Url) });
 
                 var file = await picker.PickSaveFileAsync();
                 downloadProgressBar.IsIndeterminate = false;
 
                 if (file != null)
                 {
-                    await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), file, progress);
+                    await Tools.DownloadToFileWithProgressAsync(new Uri(Attachment.Url), file, progress);
                 }
             }
             catch (Exception)
@@ -222,7 +235,7 @@ namespace Unicord.Universal.Controls
             try
             {
                 var transferManager = DataTransferManager.GetForCurrentView();
-                _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(_attachment.Url)}");
+                _shareFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync($"{Guid.NewGuid()}{Path.GetExtension(Attachment.Url)}");
 
                 var progress = new Progress<HttpProgress>(p =>
                 {
@@ -238,7 +251,7 @@ namespace Unicord.Universal.Controls
                     downloadProgressBar.Value = p.BytesReceived;
                 });
 
-                await Tools.DownloadToFileWithProgressAsync(new Uri(_attachment.Url), _shareFile, progress);
+                await Tools.DownloadToFileWithProgressAsync(new Uri(Attachment.Url), _shareFile, progress);
                 transferManager.DataRequested += _dataTransferManager_DataRequested;
                 DataTransferManager.ShowShareUI();
             }
@@ -257,10 +270,10 @@ namespace Unicord.Universal.Controls
         {
             var request = args.Request;
 
-            request.Data.Properties.Title = $"Sharing {Path.GetFileName(_attachment.Url)}";
-            request.Data.Properties.Description = Path.GetFileName(_attachment.Url);
+            request.Data.Properties.Title = $"Sharing {Path.GetFileName(Attachment.Url)}";
+            request.Data.Properties.Description = Path.GetFileName(Attachment.Url);
 
-            request.Data.SetWebLink(new Uri(_attachment.Url));
+            request.Data.SetWebLink(new Uri(Attachment.Url));
             request.Data.SetStorageItems(new[] { _shareFile });
 
             sender.DataRequested -= _dataTransferManager_DataRequested;
@@ -268,7 +281,7 @@ namespace Unicord.Universal.Controls
 
         private async void openMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri(_attachment.Url));
+            await Launcher.LaunchUriAsync(new Uri(Attachment.Url));
         }
 
         private void SpoilerOverlay_Tapped(object sender, TappedRoutedEventArgs e)
@@ -279,8 +292,8 @@ namespace Unicord.Universal.Controls
         private void CopyUrlItem_Click(object sender, RoutedEventArgs e)
         {
             var package = new DataPackage();
-            package.SetText(_attachment.Url);
-            package.SetWebLink(new Uri(_attachment.Url));
+            package.SetText(Attachment.Url);
+            package.SetWebLink(new Uri(Attachment.Url));
             Clipboard.SetContent(package);
         }
 

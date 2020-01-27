@@ -1911,6 +1911,11 @@ namespace DSharpPlus
                 xr.Emoji.Discord = this;
             }
 
+            foreach (var xe in message._embeds)
+            {
+                xe.Message = message;
+            }
+
             if (Configuration.MessageCacheSize > 0 && message.Channel != null)
             {
                 MessageCache.Add(message);
@@ -1982,9 +1987,20 @@ namespace DSharpPlus
                     message._reactions = new List<DiscordReaction>();
                 }
 
+                if (message._embeds == null)
+                {
+                    message._embeds = new List<DiscordEmbed>();
+                }
+
+
                 foreach (var xr in message._reactions)
                 {
                     xr.Emoji.Discord = this;
+                }
+
+                foreach (var xr in message._embeds)
+                {
+                    xr.Message = message;
                 }
             }
             else

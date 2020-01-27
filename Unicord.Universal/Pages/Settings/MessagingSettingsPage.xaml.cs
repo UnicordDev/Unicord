@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,6 +23,7 @@ namespace Unicord.Universal.Pages.Settings
         public MessagingSettingsPage()
         {
             InitializeComponent();
+
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

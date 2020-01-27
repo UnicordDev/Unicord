@@ -8,7 +8,9 @@
     xmlns:c="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Margin="8,6"
+    mc:Ignorable="d"
+    Margin="0,4,8,0"
+    HorizontalAlignment="Left"
     d:DesignHeight="300" MaxWidth="640" MaxHeight="480"
     d:DesignWidth="400" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 

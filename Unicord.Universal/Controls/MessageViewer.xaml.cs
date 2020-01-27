@@ -27,6 +27,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Unicord.Universal.Controls
 {
+    [Obsolete]
     public sealed partial class MessageViewer : UserControl, INotifyPropertyChanged
     {
         public static readonly DependencyProperty MessageProperty =

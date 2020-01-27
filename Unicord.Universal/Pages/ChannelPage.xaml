@@ -11,6 +11,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
+    xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:converters="using:Unicord.Universal.Converters"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
@@ -169,7 +170,7 @@
         </Storyboard>
 
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
-            <controls1:MessageViewer Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
+            <messages:MessageControl Message="{x:Bind}" />
         </DataTemplate>
         
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
@@ -181,7 +182,7 @@
                                             SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
 
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
-            <controls1:MessageViewer
+            <messages:MessageControl
                 Background="Transparent"
                 IsEnabled="False"
                 Message="{x:Bind}"
@@ -404,6 +405,7 @@
                             x:Name="MessageList"
                             Background="{ThemeResource MainBackgroundBrush}"
                             IncrementalLoadingThreshold="15"
+                            IncrementalLoadingTrigger="Edge"
                             ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"

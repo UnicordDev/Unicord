@@ -9,6 +9,7 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management;
@@ -323,8 +324,8 @@ namespace Unicord.Universal.Pages
                     if (container != null)
                     {
                         MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
-                        var viewer = container.FindChild<MessageViewer>();
-                        viewer.BeginEditing();
+                        var viewer = container.FindChild<MessageControl>();
+                        viewer?.BeginEdit();
                     }
                 }
             }

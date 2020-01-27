@@ -41,6 +41,9 @@ namespace Unicord.Universal
     internal static class ThemeManager
     {
 
+        private static ThemePostProcessor _postprocessor
+            = new ThemePostProcessor();
+
         /// <summary>
         /// Event fired whenever a new theme is installed.
         /// </summary>
@@ -60,6 +63,7 @@ namespace Unicord.Universal
                 var themes = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
                 Load(themes, themesDictionary);
                 Analytics.TrackEvent("ThemesLoaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
+
             }
             finally
             {
@@ -77,8 +81,7 @@ namespace Unicord.Universal
             // this also means, however, that we cannot call this method after the app is activated, 
             // because synchronous I/O is not allowed on the UI thread, and this code must assume
             // it's running on the UI thread, because otherwise it would be asynchronous... bleh
-
-            Theme selectedTheme = null;
+            
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
             var compact = false;
             var themes = new List<Theme>();
@@ -96,6 +99,7 @@ namespace Unicord.Universal
                 {
                     try
                     {
+                        var themeDictionary = new ResourceDictionary();
                         var themePath = Path.Combine(themesFolderPath, Strings.Normalise(selectedThemeName));
 
                         Logger.Log(themePath);
@@ -108,9 +112,9 @@ namespace Unicord.Universal
                             throw new Exception(strings.GetString("ThemeInvalidDoesNotExist"));
                         }
 
-                        selectedTheme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, THEME_METADATA_NAME)));
-                        compact = compact ? true : selectedTheme.UseCompact;
-                        themes.Add(selectedTheme);
+                        var theme = JsonConvert.DeserializeObject<Theme>(File.ReadAllText(Path.Combine(themePath, THEME_METADATA_NAME)));
+                        compact = compact ? true : theme.UseCompact;
+                        themes.Add(theme);
 
                         foreach (var file in Directory.EnumerateFiles(themePath, "*.xaml"))
                         {
@@ -118,9 +122,13 @@ namespace Unicord.Universal
                             var obj = XamlReader.Load(text);
                             if (obj is ResourceDictionary dictionary)
                             {
-                                target.MergedDictionaries.Add(dictionary);
+                                themeDictionary.MergedDictionaries.Add(dictionary);
                             }
                         }
+
+                        _postprocessor.PostProcessDictionary(theme, themeDictionary);
+
+                        target.MergedDictionaries.Add(themeDictionary);
                     }
                     catch (Exception ex)
                     {
@@ -170,7 +178,7 @@ namespace Unicord.Universal
                     foreach (var file in (await themeFolder.GetFilesAsync()).Where(f => Path.GetExtension(f.Name) == ".xaml"))
                     {
                         var text = await FileIO.ReadTextAsync(file);
-                        await LoadXamlAsync(target, themeErrors, file.Name, text);
+                        await LoadXamlAsync(target, themeErrors, file.Name, text, file.Path);
                     }
 
                     if (themeErrors.Any())
@@ -401,7 +409,7 @@ namespace Unicord.Universal
             }
         }
 
-        private static async Task LoadXamlAsync(ResourceDictionary target, List<ThemeLoadError> themeErrors, string name, string text)
+        private static async Task LoadXamlAsync(ResourceDictionary target, List<ThemeLoadError> themeErrors, string name, string text, string path = null)
         {
             var error = new ThemeLoadError() { FileName = name };
             try
@@ -411,7 +419,10 @@ namespace Unicord.Universal
                 {
                     if (target != null)
                     {
-                        await target.Dispatcher.AwaitableRunAsync(() => target.MergedDictionaries.Add(dictionary));
+                        await target.Dispatcher.AwaitableRunAsync(() =>
+                        {
+                            target.MergedDictionaries.Add(dictionary);
+                        });
                     }
                 }
                 else
