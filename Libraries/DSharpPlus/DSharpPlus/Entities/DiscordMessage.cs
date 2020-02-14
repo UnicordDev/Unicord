@@ -1,12 +1,13 @@
 ﻿#pragma warning disable CS0618
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace DSharpPlus.Entities
 {
@@ -29,9 +30,7 @@ namespace DSharpPlus.Entities
 
             _attachments = other._attachments; // the attachments cannot change, thus no need to copy and reallocate.
             _embeds = new List<DiscordEmbed>(other._embeds);
-
             _mentionsInvalidated = true;
-
             _reactions = new List<DiscordReaction>(other._reactions);
 
             Author = other.Author;
@@ -220,7 +219,7 @@ namespace DSharpPlus.Entities
         /// Gets the type of the message.
         /// </summary>
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
-        public MessageType? MessageType { get; internal set; }
+        public MessageType? MessageType { get; internal set; }                
 
         /// <summary>
         /// Gets whether the message originated from a webhook.
@@ -501,6 +500,53 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Message when a guild member joins. Most frequently seen in newer, smaller guilds.
         /// </summary>
-        GuildMemberJoin = 7
+        GuildMemberJoin = 7,
+
+        /// <summary>
+        /// Message when a member nitro boosts the guild.
+        /// </summary>
+        UserPremiumGuildSubscription = 8,
+
+        /// <summary>
+        /// Message when the guild reaches tier one of nitro boosts.
+        /// </summary>
+        TierOneUserPremiumGuildSubscription = 9,
+
+        /// <summary>
+        /// Message when the guild reaches tier two of nitro boosts.
+        /// </summary>
+        TierTwoUserPremiumGuildSubscription = 10,
+
+        /// <summary>
+        /// Message when the guild reaches tier three of nitro boosts.
+        /// </summary>
+        TierThreeUserPremiumGuildSubscription = 11,
+
+        /// <summary>
+        /// Message when a user follows a news channel.
+        /// </summary>
+        ChannelFollowAdd = 12
+    }
+
+    /// <summary>
+    /// Represents additional features of a message.
+    /// </summary>
+    [Flags]
+    public enum MessageFlags
+    {
+        /// <summary>
+        /// Whether this message is the original message that was published from a news channel to subscriber channels.
+        /// </summary>
+        Crossposted = 1 << 0,
+
+        /// <summary>
+        /// Whether this message is crossposted (automatically posted in a subscriber channel).
+        /// </summary>
+        IsCrosspost = 1 << 1,
+
+        /// <summary>
+        /// Whether any embeds in the message are hidden.
+        /// </summary>
+        SuppressedEmbeds = 1 << 2
     }
 }

@@ -165,7 +165,7 @@ namespace WamWooWam.Uwp.UI.Controls
 
                     if (Debugger.IsAttached)
                     {
-                        Debugger.Break();
+                        //Debugger.Break();
                     }
 
                     markdownRenderedArgs = new MarkdownRenderedEventArgs(ex);

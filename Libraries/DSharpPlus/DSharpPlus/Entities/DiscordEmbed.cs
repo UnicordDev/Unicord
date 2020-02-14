@@ -14,6 +14,9 @@ namespace DSharpPlus.Entities
 
         }
 
+        [JsonIgnore]
+        public DiscordMessage Message { get; internal set; }
+
         /// <summary>
         /// Gets the embed's title.
         /// </summary>

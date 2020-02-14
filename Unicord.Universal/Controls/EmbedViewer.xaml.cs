@@ -24,10 +24,17 @@ namespace Unicord.Universal.Controls
 {
     public sealed partial class EmbedViewer : UserControl
     {
-        private DiscordEmbed _embed;
-        private DiscordChannel _channel;
         private bool _mediaPlayerPlaying = false;
         private MediaPlayerElement _mediaPlayer;
+
+        public DiscordEmbed Embed
+        {
+            get { return (DiscordEmbed)GetValue(EmbedProperty); }
+            set { SetValue(EmbedProperty, value); }
+        }
+
+        public static readonly DependencyProperty EmbedProperty =
+            DependencyProperty.Register("Embed", typeof(DiscordEmbed), typeof(EmbedViewer), new PropertyMetadata(null));        
 
         public EmbedViewer()
         {
@@ -36,40 +43,40 @@ namespace Unicord.Universal.Controls
 
         public EmbedViewer(DiscordMessage m, DiscordEmbed embed)
         {
-            _embed = embed;
-            _channel = m.Channel;
+            Embed = embed;
             InitializeComponent();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_embed.Type == "image" && _embed.Thumbnail != null)
+            if (Embed.Type == "image" && Embed.Thumbnail != null)
             {
-                var imageElement = new ImageElement() { ImageUri = _embed.Thumbnail.ProxyUrl, ImageWidth = _embed.Thumbnail.Width, ImageHeight = _embed.Thumbnail.Height };
+                var imageElement = new ImageElement() { ImageUri = Embed.Thumbnail.ProxyUrl, ImageWidth = Embed.Thumbnail.Width, ImageHeight = Embed.Thumbnail.Height };
                 imageElement.Tapped += ImageElement_Tapped;
 
                 Content = imageElement;
                 return;
             }
 
-            if (_embed.Type == "gifv" && _embed.Video != null)
+            if (Embed.Type == "gifv" && Embed.Video != null)
             {
-                Logger.Log($"Image: {_embed.Image ?? (object)"null"}");
+                Logger.Log($"Image: {Embed.Image ?? (object)"null"}");
                 var scaleContainer = new ScaledContentControl()
                 {
-                    TargetWidth = _embed.Video.Width,
-                    TargetHeight = _embed.Video.Height,
+                    TargetWidth = Embed.Video.Width,
+                    TargetHeight = Embed.Video.Height,
                 };
 
                 _mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = false,
-                    Source = MediaSource.CreateFromUri(_embed.Video.Url),
-                    PosterSource = _embed.Thumbnail != null ? new BitmapImage(_embed.Thumbnail.Url) : null
+                    Source = MediaSource.CreateFromUri(Embed.Video.Url),
+                    PosterSource = Embed.Thumbnail != null ? new BitmapImage(Embed.Thumbnail.Url) : null
                 };
 
                 _mediaPlayer.Loaded += MediaPlayer_Loaded;
                 scaleContainer.Content = _mediaPlayer;
+
                 Content = scaleContainer;
 
                 if (App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) && !NetworkHelper.IsNetworkLimited)
@@ -86,31 +93,31 @@ namespace Unicord.Universal.Controls
                 return;
             }
 
-            if (_embed.Color.HasValue)
+            if (Embed.Color.HasValue)
             {
-                var col = _embed.Color.Value;
+                var col = Embed.Color.Value;
                 Border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
                 Border.BorderThickness = new Thickness(4, 0, 0, 0);
             }
 
-            if (_embed.Image != null)
+            if (Embed.Image != null)
             {
-                var image = new ImageElement() { ImageUri = _embed.Image.ProxyUrl, ImageWidth = _embed.Image.Width, ImageHeight = _embed.Image.Height };
+                var image = new ImageElement() { ImageUri = Embed.Image.ProxyUrl, ImageWidth = Embed.Image.Width, ImageHeight = Embed.Image.Height };
                 AddWithRow(image);
             }
 
-            if (_embed.Video != null)
+            if (Embed.Video != null)
             {
                 thumbnail.Visibility = Visibility.Collapsed;
-                var video = new EmbedVideoControl() { Embed = _embed, Thumbnail = _embed.Thumbnail, Video = _embed.Video };
+                var video = new EmbedVideoControl() { Embed = Embed, Thumbnail = Embed.Thumbnail, Video = Embed.Video };
                 AddWithRow(video);
             }
 
-            if (_embed.Fields?.Any() == true)
+            if (Embed.Fields?.Any() == true)
             {
-                var inline = _embed.Fields.First().Inline;
+                var inline = Embed.Fields.First().Inline;
                 var p = inline ? new WrapPanel() : (Panel)new StackPanel();
-                foreach (var field in _embed.Fields)
+                foreach (var field in Embed.Fields)
                 {
                     if (field.Inline == inline)
                     {
@@ -181,9 +188,9 @@ namespace Unicord.Universal.Controls
         private void ImageElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.FindParent<MainPage>()?.ShowAttachmentOverlay(
-                _embed.Thumbnail.Url,
-                _embed.Thumbnail.Width,
-                _embed.Thumbnail.Height,
+                Embed.Thumbnail.Url,
+                Embed.Thumbnail.Width,
+                Embed.Thumbnail.Height,
                 open_Click,
                 save_Click,
                 share_Click);
@@ -191,7 +198,7 @@ namespace Unicord.Universal.Controls
 
         private async void open_Click(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(_embed.Thumbnail.Url);
+            await Launcher.LaunchUriAsync(Embed.Thumbnail.Url);
         }
 
         private async void save_Click(object sender, RoutedEventArgs e)
@@ -202,8 +209,8 @@ namespace Unicord.Universal.Controls
 
             try
             {
-                var extension = Path.GetExtension(_embed.Thumbnail.Url.AbsolutePath);
-                var fileName = Path.GetFileNameWithoutExtension(_embed.Thumbnail.Url.AbsolutePath);
+                var extension = Path.GetExtension(Embed.Thumbnail.Url.AbsolutePath);
+                var fileName = Path.GetFileNameWithoutExtension(Embed.Thumbnail.Url.AbsolutePath);
                 var picker = new FileSavePicker()
                 {
                     SuggestedStartLocation = PickerLocationId.Downloads,
@@ -217,7 +224,7 @@ namespace Unicord.Universal.Controls
 
                 if (file != null)
                 {
-                    await Tools.DownloadToFileAsync(_embed.Thumbnail.Url, file);
+                    await Tools.DownloadToFileAsync(Embed.Thumbnail.Url, file);
                 }
             }
             catch
@@ -238,7 +245,7 @@ namespace Unicord.Universal.Controls
 
             try
             {
-                var fileName = Path.GetFileName(_embed.Thumbnail.Url.AbsolutePath);
+                var fileName = Path.GetFileName(Embed.Thumbnail.Url.AbsolutePath);
                 var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
 
                 var dataTransferManager = DataTransferManager.GetForCurrentView();
@@ -248,12 +255,12 @@ namespace Unicord.Universal.Controls
                     data.Properties.Title = string.Format(resources.GetString("SharingTitleFormat"), fileName);
                     data.Properties.Description = fileName;
 
-                    data.SetWebLink(_embed.Thumbnail.Url);
+                    data.SetWebLink(Embed.Thumbnail.Url);
                     data.SetStorageItems(new[] { file });
                     dataTransferManager.DataRequested -= DataRequested;
                 }
 
-                await Tools.DownloadToFileAsync(_embed.Thumbnail.Url, file);
+                await Tools.DownloadToFileAsync(Embed.Thumbnail.Url, file);
 
                 dataTransferManager.DataRequested += DataRequested;
                 DataTransferManager.ShowShareUI();
@@ -277,7 +284,7 @@ namespace Unicord.Universal.Controls
 
         private void AddFieldToPanel(Panel p, DiscordEmbedField field)
         {
-            p.Children.Add(new EmbedFieldControl(_channel, field));
+            p.Children.Add(new EmbedFieldControl(Embed.Message?.Channel, field));
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

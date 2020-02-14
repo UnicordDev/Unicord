@@ -9,6 +9,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:messages="using:Unicord.Universal.Controls.Messages"
     NavigationCacheMode="Required"
     x:Name="self"
     Loaded="Page_Loaded"
@@ -422,7 +423,7 @@
                         VerticalOffset="-100">
                         <controls1:InAppNotification.ContentTemplate>
                             <DataTemplate>
-                                <controls:MessageViewer Message="{Binding}" Background="Transparent" IsEnabled="False"/>
+                                <messages:MessageControl Message="{Binding}" Background="Transparent" IsEnabled="False"/>
                             </DataTemplate>
                         </controls1:InAppNotification.ContentTemplate>
                     </controls1:InAppNotification>

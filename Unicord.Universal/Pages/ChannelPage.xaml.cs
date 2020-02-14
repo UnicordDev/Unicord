@@ -9,6 +9,7 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management;
@@ -138,6 +139,17 @@ namespace Unicord.Universal.Pages
                 var args = this.FindParent<MainPage>()?.Arguments;
                 WindowManager.HandleTitleBarForControl(TopGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
+
+                if(model.Messages.Count > 50)
+                {
+                    var copy = new List<DiscordMessage>(model.Messages.TakeLast(50));
+                    model.Messages.Clear();
+
+                    foreach (var msg in copy)
+                    {
+                        model.Messages.Add(msg);
+                    }
+                }
 
                 ViewModel = model;
                 DataContext = ViewModel;
@@ -323,8 +335,8 @@ namespace Unicord.Universal.Pages
                     if (container != null)
                     {
                         MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
-                        var viewer = container.FindChild<MessageViewer>();
-                        viewer.BeginEditing();
+                        var viewer = container.FindChild<MessageControl>();
+                        viewer?.BeginEdit();
                     }
                 }
             }

@@ -20,7 +20,6 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ImageWidthProperty =
             DependencyProperty.Register("ImageWidth", typeof(int), typeof(ImageElement), new PropertyMetadata(0));
 
-
         public int ImageHeight
         {
             get => (int)GetValue(ImageHeightProperty);
@@ -30,7 +29,6 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ImageHeightProperty =
             DependencyProperty.Register("ImageHeight", typeof(int), typeof(ImageElement), new PropertyMetadata(0));
 
-
         public Uri ImageUri
         {
             get => (Uri)GetValue(ImageUriProperty);
@@ -39,7 +37,6 @@ namespace Unicord.Universal.Controls
 
         public static readonly DependencyProperty ImageUriProperty =
             DependencyProperty.Register("ImageUri", typeof(Uri), typeof(ImageElement), new PropertyMetadata(null, OnImageChanged));
-
 
         public bool IsSpoiler
         {

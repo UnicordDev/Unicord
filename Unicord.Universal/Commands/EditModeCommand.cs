@@ -3,15 +3,14 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Pages;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Commands
 {
-    class DeleteMessageCommand : ICommand
+    class EditModeCommand : ICommand
     {
-        public static readonly DeleteMessageCommand Instance
-            = new DeleteMessageCommand();
-
 #pragma warning disable 67 // the event <event> is never used
         public event EventHandler CanExecuteChanged;
 #pragma warning restore 67
@@ -44,15 +43,12 @@ namespace Unicord.Universal.Commands
             return false;
         }
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
             if (parameter is DiscordMessage message)
             {
-                var dialog = new DeleteMessageDialog() { Message = message };
-                if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                {
-                    await message.DeleteAsync();
-                }
+                var channelPage = Window.Current.Content.FindChild<ChannelPage>();
+                channelPage.EnterEditMode(message);
             }
         }
     }
