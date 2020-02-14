@@ -13,12 +13,12 @@ namespace Unicord
     {
         private static IVersionProvider _versionProvider;
 
-        public static void RegisterVersionProvider<T>() where T : IVersionProvider, new()
+        public static T RegisterVersionProvider<T>() where T : IVersionProvider, new()
         {
             if (_versionProvider != null)
                 throw new Exception("Version Provider has already been registered!");
 
-            _versionProvider = new T();
+            return (T)(_versionProvider = new T());
         }
 
         public static string VersionString => _versionProvider?.GetVersionString() ?? "";

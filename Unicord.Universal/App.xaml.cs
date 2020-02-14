@@ -53,6 +53,7 @@ namespace Unicord.Universal
         {
             InitializeComponent();
 
+            var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
             var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
             switch (theme)
             {
@@ -66,6 +67,9 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
+
+            Debug.WriteLine("Welcome to Unicord!");
+            Debug.WriteLine(provider.GetVersionString());
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {

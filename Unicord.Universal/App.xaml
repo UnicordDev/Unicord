@@ -58,6 +58,7 @@
             <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
             <converters:SystemMessageSymbolConverter x:Key="SystemMessageSymbolConverter"/>
             <converters:SystemMessageTextConverter x:Key="SystemMessageTextConverter"/>
+            <converters:MemberColourConverter x:Key="MemberColourConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

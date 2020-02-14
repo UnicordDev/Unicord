@@ -49,7 +49,7 @@
                         <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
                             <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.ColorBrush}" Style="{ThemeResource SubtitleTextBlockStyle}">
+                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member, Converter={StaticResource MemberColourConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}">
                             <Run Text="{x:Bind _member.DisplayName}"/>
                         </TextBlock>
                     </StackPanel>

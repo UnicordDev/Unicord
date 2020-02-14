@@ -286,6 +286,7 @@
     <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
+    <Compile Include="Converters\MemberColourConverter.cs" />
     <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
@@ -344,6 +345,7 @@
     <Compile Include="Controls\Flyouts\UserFlyout.xaml.cs">
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Misc\UnicordVersionProvider.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageModel.cs" />
