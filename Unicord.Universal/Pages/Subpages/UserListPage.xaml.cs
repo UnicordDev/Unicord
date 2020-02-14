@@ -67,7 +67,7 @@ namespace Unicord.Universal.Pages.Subpages
                         if (channel is DiscordDmChannel dm)
                         {
                             viewSource.IsSourceGrouped = false;
-                            viewSource.Source = dm.Recipients.Values.OrderBy(r => r.Username);
+                            viewSource.Source = dm.Recipients.OrderBy(r => r.Username);
                         }
                         else
                         {

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using DSharpPlus;
-using DSharpPlus.Entities;
 using Unicord.Universal.Controls.Messages;
 using Windows.UI.Xaml;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    class MessagingSettingsModel : PropertyChangedBase
+    class MessagingSettingsModel : NotifyPropertyChangeImpl
     {
 
         public class MessageStyle
@@ -22,11 +22,16 @@ namespace Unicord.Universal.Models
 
         public MessagingSettingsModel()
         {
-            var user = new MockUser("ExampleUser", "ABCD");
-            var channel = new MockChannel("text", ChannelType.Text, "This is an example channel.");
-            ExampleMessage = new MockMessage("This is an example message!", user, channel, DateTime.Now.Subtract(TimeSpan.FromMinutes(3)));
             AvailableMessageStyles = new ObservableCollection<MessageStyle>();
             FindMessageStyles(App.Current.Resources, AvailableMessageStyles);
+            RegenerateMessage();
+        }
+
+        internal void RegenerateMessage()
+        {
+            var user = App.Discord.CreateMockUser("ExampleUser", "ABCD");
+            var channel = App.Discord.CreateMockChannel("text", ChannelType.Text, "This is an example channel.");
+            ExampleMessage = App.Discord.CreateMockMessage("This is an example message!", user, channel, DateTime.Now.Subtract(TimeSpan.FromMinutes(3)));
         }
 
         private void FindMessageStyles(ResourceDictionary baseDict, IList<MessageStyle> availableMesssageStyles)

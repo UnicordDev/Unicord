@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using DSharpPlus;
+using DSharpPlus.Entities;
 using System;
 using System.Linq;
 using System.Text;
-using DSharpPlus;
-using DSharpPlus.Entities;
 using Unicord;
 using Unicord.Universal;
 using WamWooWam.Parsers.Markdown;
@@ -579,13 +579,13 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
 
                     if (element.DiscordType == DiscordInline.MentionType.User)
                     {
-                        var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.UserCache.TryGetValue(element.Id, out var u) ? u : null;
+                        var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.TryGetCachedUser(element.Id, out var u) ? u : null;
                         if (user != null)
                         {
                             var me = user as DiscordMember;
 
-                            run.Text = IsSystemMessage ? me?.DisplayName ?? user.Username: $"@{me?.DisplayName ?? user.Username}";
-                            run.Foreground = me?.ColorBrush ?? Foreground;
+                            run.Text = IsSystemMessage ? me?.DisplayName ?? user.Username : $"@{me?.DisplayName ?? user.Username}";
+                            run.Foreground = Foreground;
                         }
                         else
                         {
@@ -610,9 +610,9 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     }
                     else if (element.DiscordType == DiscordInline.MentionType.Channel)
                     {
-                        if (client._channelCache.TryGetValue(element.Id, out var channel))
+                        if (client.TryGetCachedChannel(element.Id, out var channel))
                         {
-                            run.Text = channel is DiscordDmChannel c ? $"@{c.Recipient.Username}#{c.Recipient.Id}" : $"#{channel.Name}";
+                            run.Text = channel is DiscordDmChannel c ? $"@{c.Recipients[0].Username}#{c.Recipients[0].Id}" : $"#{channel.Name}";
                         }
                         else
                         {

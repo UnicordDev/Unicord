@@ -70,7 +70,7 @@ namespace Unicord.Universal.Services
                 return;
             }
 
-            if (_pageModel.CurrentChannel != channel && !channel.IsVoice)
+            if (_pageModel.CurrentChannel != channel && channel.Type != ChannelType.Voice)
             {
                 _pageModel.Navigating = true;
                 _page.CloseSplitPane(); // pane service?

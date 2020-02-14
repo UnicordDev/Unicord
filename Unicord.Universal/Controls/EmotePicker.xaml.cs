@@ -46,7 +46,7 @@ namespace Unicord.Universal.Controls
 
                 IEnumerable<DiscordEmoji> enumerable = null;
 
-                if (Channel.IsPrivate || Channel.PermissionsFor(Channel.Guild.CurrentMember).HasFlag(Permissions.UseExternalEmojis) && App.Discord.CurrentUser.HasNitro)
+                if (Channel.IsPrivate || Channel.PermissionsFor(Channel.Guild.CurrentMember).HasFlag(Permissions.UseExternalEmojis) && App.Discord.CurrentUser.HasNitro())
                 {
                     enumerable = App.Discord.Guilds.Values
                         .SelectMany(g => g.Emojis.Values);
@@ -72,7 +72,7 @@ namespace Unicord.Universal.Controls
                             .ToList();
 
                     var list = enumerable
-                        .Where(e => n ? cult.IndexOf(e.SearchName, text, CompareOptions.IgnoreCase) >= 0 : true)
+                        .Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
                         .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
                         .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
                         .Select(g => new EmojiGroup(g.Key, g))

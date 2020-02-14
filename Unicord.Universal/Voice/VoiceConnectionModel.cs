@@ -18,7 +18,7 @@ using Windows.Foundation.Metadata;
 
 namespace Unicord.Universal.Voice
 {
-    public class VoiceConnectionModel : PropertyChangedBase
+    public class VoiceConnectionModel : NotifyPropertyChangeImpl
     {
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
@@ -293,7 +293,7 @@ namespace Unicord.Universal.Voice
             };
 
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-            App.Discord._webSocketClient.SendMessage(vsj);
+            App.Discord.SendSocketMessage(vsj);
         }
 
         private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)

@@ -42,7 +42,7 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordUser user)
             {
-                var channel = App.Discord.PrivateChannels.Values.FirstOrDefault(c => c.Recipient?.Id == user.Id);
+                var channel = App.Discord.PrivateChannels.Values.FirstOrDefault(c => c.Recipients.FirstOrDefault()?.Id == user.Id);
                 if (channel == null)
                 {
                     if ((App.Discord.Relationships.TryGetValue(user.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend) ||

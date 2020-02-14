@@ -11,7 +11,7 @@ namespace Unicord
     /// Provides a base class to objects that can raise property change events 
     /// via <see cref="INotifyPropertyChanged"/> in a thread safe manner
     /// </summary>
-    public class PropertyChangedBase : INotifyPropertyChanged
+    public class NotifyPropertyChangeImpl : INotifyPropertyChanged
     {
         private readonly struct ThreadHandlerCollection
         {

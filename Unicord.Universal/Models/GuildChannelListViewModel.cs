@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Models
 {
-    public class GuildChannelListViewModel : PropertyChangedBase, IDisposable
+    public class GuildChannelListViewModel : NotifyPropertyChangeImpl, IDisposable
     {
         private DiscordGuild _guild;
         private SynchronizationContext _syncContext;

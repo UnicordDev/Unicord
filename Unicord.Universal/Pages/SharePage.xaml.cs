@@ -5,6 +5,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Utilities;
+using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation.Metadata;
@@ -118,11 +119,11 @@ namespace Unicord.Universal.Pages
 
                 if (_file != null)
                 {
-                    var maxSize = (ulong)(App.Discord.CurrentUser.HasNitro ? 50 * 1024 * 1024 : 8 * 1024 * 1024);
+                    var maxSize = (ulong)(App.Discord.CurrentUser.UploadLimit());
                     var props = await _file.GetBasicPropertiesAsync();
                     if (props.Size >= maxSize)
                     {
-                        await UIUtilities.ShowErrorDialogAsync("This file is too big!", $"We're gonna need something under {(App.Discord.CurrentUser.HasNitro ? "50MB" : "8MB")} please!");
+                        await UIUtilities.ShowErrorDialogAsync("This file is too big!", $"We're gonna need something under {(Files.SizeSuffix((long)maxSize, 0))} please!");
                         Window.Current.Close();
                     }
                 }
@@ -135,7 +136,7 @@ namespace Unicord.Universal.Pages
             {
                 channelsListSource.IsSourceGrouped = false;
                 channelsListSource.Source = App.Discord.PrivateChannels.Values
-                    .OrderBy(c => c.Name ?? c.Recipient?.Username)
+                    .OrderBy(c => c.Name ?? c.Recipients[0]?.Username)
                     .OrderByDescending(m => m.ReadState?.LastMessageId ?? 0);
             }
             else

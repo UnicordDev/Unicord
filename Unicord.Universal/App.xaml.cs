@@ -331,6 +331,7 @@ namespace Unicord.Universal
             if (args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
             {
                 await Discord.DisconnectAsync();
+                Discord = null;
             }
         }
 
@@ -343,7 +344,7 @@ namespace Unicord.Universal
             {
                 var loader = ResourceLoader.GetForViewIndependentUse();
 
-                if (Discord == null || Discord.IsDisposed)
+                if (Discord == null)
                 {
                     if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
                     {
