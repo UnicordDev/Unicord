@@ -383,9 +383,7 @@ namespace Unicord.Universal
                             {
                                 Token = token,
                                 TokenType = TokenType.User,
-                                AutomaticGuildSync = false,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
-                                MutedStore = new UnicordMutedStore(),
                                 GatewayCompressionLevel = GatewayCompressionLevel.None,
                                 ReconnectIndefinitely = true
                             }));

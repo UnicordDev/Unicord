@@ -868,9 +868,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.UWP\DSharpPlus.UWP.csproj">
-      <Project>{3d003fb3-ce19-43ab-a345-d35777c8dc71}</Project>
-      <Name>DSharpPlus.UWP</Name>
+    <ProjectReference Include="..\libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
+      <Project>{0a9dfe2d-7e59-4e58-a28c-e38028f2cfa0}</Project>
+      <Name>DSharpPlus</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp\MomentSharp.csproj">
       <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
@@ -883,6 +883,10 @@
     <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.vcxproj">
       <Project>{e3bc526e-debd-4f76-a669-9adade1d4fc8}</Project>
       <Name>Unicord.Universal.Voice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Unicord\Unicord.csproj">
+      <Project>{9b4bb6a4-4aa7-4b7c-ac3e-12a52832a245}</Project>
+      <Name>Unicord</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

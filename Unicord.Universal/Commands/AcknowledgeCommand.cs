@@ -19,7 +19,7 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordChannel channel && channel.ReadState?.Unread == true)
             {
-                var message = await channel.GetMessageAsync(channel.LastMessageId, true);
+                var message = await channel.GetMessageAsync(channel.LastMessageId);
                 if (message != null)
                     await message.AcknowledgeAsync();
             }
