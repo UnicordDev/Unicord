@@ -260,16 +260,12 @@
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
-    <Compile Include="Controls\MessageViewer.xaml.cs">
-      <DependentUpon>MessageViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\RangeSelector\RangeChangedEventArgs.cs" />
     <Compile Include="Controls\RangeSelector\RangeSelector.cs" />
     <Compile Include="Controls\RichPresenceControl.xaml.cs">
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScaledContainer.cs" />
-    <Compile Include="Controls\SystemMessageViewer.cs" />
     <Compile Include="Controls\ThemePreviewControl.xaml.cs">
       <DependentUpon>ThemePreviewControl.xaml</DependentUpon>
     </Compile>
@@ -634,10 +630,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MessageViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -140,6 +140,17 @@ namespace Unicord.Universal.Pages
                 WindowManager.HandleTitleBarForControl(TopGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
 
+                if(model.Messages.Count > 50)
+                {
+                    var copy = new List<DiscordMessage>(model.Messages.TakeLast(50));
+                    model.Messages.Clear();
+
+                    foreach (var msg in copy)
+                    {
+                        model.Messages.Add(msg);
+                    }
+                }
+
                 ViewModel = model;
                 DataContext = ViewModel;
 

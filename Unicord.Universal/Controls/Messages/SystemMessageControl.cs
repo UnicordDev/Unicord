@@ -20,6 +20,11 @@ namespace Unicord.Universal.Controls.Messages
             this.DefaultStyleKey = typeof(SystemMessageControl);
         }
 
+        protected override void ApplyCustomStyles()
+        {
+            // no need for this
+        }
+
         public override void BeginEdit()
         {
             // not editable

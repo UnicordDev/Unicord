@@ -176,32 +176,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style TargetType="local:SystemMessageViewer">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:SystemMessageViewer">
-
-                    <Grid Margin="8,12,8,0" DataContext="{TemplateBinding Message}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Margin="8,0,12,0"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="20"
-                            Text="{Binding Converter={StaticResource SystemMessageSymbolConverter}}"
-                            Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-
-                        <wam:MarkdownTextBlock Grid.Column="1" IsSystemMessage="True" Channel="{Binding Channel}" Text="{Binding Converter={StaticResource SystemMessageTextConverter}}"/>
-
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
+    
     <Style TargetType="local:UsernameControl">
         <Setter Property="Template">
             <Setter.Value>

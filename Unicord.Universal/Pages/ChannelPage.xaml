@@ -174,7 +174,7 @@
         </DataTemplate>
         
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
-            <controls1:SystemMessageViewer Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
+            <messages:SystemMessageControl Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
 
         <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
@@ -404,8 +404,6 @@
                         <ListView
                             x:Name="MessageList"
                             Background="{ThemeResource MainBackgroundBrush}"
-                            IncrementalLoadingThreshold="15"
-                            IncrementalLoadingTrigger="Edge"
                             ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                             ItemsSource="{Binding Messages}"
                             ReorderMode="Disabled"

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows.Input;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using System;
+using System.Windows.Input;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
 
@@ -45,7 +45,7 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMessage message)
             {
-                var dialog = new PinMessageDialog(message);
+                var dialog = new PinMessageDialog() { Message = message };
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
                     if (message.Pinned)

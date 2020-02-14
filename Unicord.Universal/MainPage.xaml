@@ -27,29 +27,29 @@
                              Storyboard.TargetName="connectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
-                             EasingFunction="{StaticResource EaseExit}"/>
+                             EasingFunction="{StaticResource CircleEase}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource EaseExit}"/>
+                             EasingFunction="{StaticResource CircleEase}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="mainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource EaseExit}"/>
+                             EasingFunction="{StaticResource CircleEase}"/>
 
             <DoubleAnimation From="1.25" To="1" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource EaseEnter}"/>
+                             EasingFunction="{StaticResource CircleEase}"/>
             <DoubleAnimation From="1.25" To="1" 
                              Storyboard.TargetName="connectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource EaseEnter}"/>
+                             EasingFunction="{StaticResource CircleEase}"/>
 
         </Storyboard>
         <Storyboard x:Name="hideConnecting" x:Key="hideConnecting"

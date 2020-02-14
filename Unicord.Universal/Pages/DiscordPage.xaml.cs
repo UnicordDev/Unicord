@@ -10,6 +10,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
@@ -238,7 +239,7 @@ namespace Unicord.Universal.Pages
 
         private async  void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var message = ((sender as InAppNotification).Content as MessageViewer)?.Message;
+            var message = ((sender as InAppNotification).Content as MessageControl)?.Message;
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();

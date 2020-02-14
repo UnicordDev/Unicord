@@ -56,15 +56,20 @@ namespace Unicord.Universal.Controls.Messages
         {
             if (this.Style == null)
             {
-                // if the style isn't explicitly set, load it
-                if(!App.Current.Resources.TryGetValue(App.LocalSettings.Read(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT), out var obj) || !(obj is Style s))
-                {
-                    s = App.Current.Resources[MESSAGE_STYLE_DEFAULT] as Style;
-                    App.LocalSettings.Save(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT);
-                }
-
-                this.Style = s;
+                ApplyCustomStyles();
             }
+        }
+
+        protected virtual void ApplyCustomStyles()
+        {
+            // if the style isn't explicitly set, load it
+            if (!App.Current.Resources.TryGetValue(App.LocalSettings.Read(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT), out var obj) || !(obj is Style s))
+            {
+                s = App.Current.Resources[MESSAGE_STYLE_DEFAULT] as Style;
+                App.LocalSettings.Save(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT);
+            }
+
+            this.Style = s;
         }
 
         protected override void OnApplyTemplate()
