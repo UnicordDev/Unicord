@@ -12,7 +12,7 @@ namespace Unicord.Universal.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             // TODO: cache?
-            return value is DiscordMember member && member.Color.Value != 0 ? new SolidColorBrush(Color.FromArgb(255, member.Color.R, member.Color.G, member.Color.B)) : null;
+            return value is DiscordColor colour && colour.Value != 0 ? new SolidColorBrush(Color.FromArgb(255, colour.R, colour.G, colour.B)) : null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();

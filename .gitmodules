@@ -10,6 +10,6 @@
 [submodule "Libraries/MomentSharp"]
 	path = Libraries/MomentSharp
 	url = https://github.com/WamWooWam/MomentSharp
-[submodule "libraries/DSharpPlus"]
-	path = libraries/DSharpPlus
+[submodule ":Libraries/DSharpPlus"]
+	path = Libraries/DSharpPlus
 	url = https://github.com/WamWooWam/DSharpPlus/

@@ -155,7 +155,7 @@ namespace Unicord.Universal.Controls.Messages
         {
             try
             {
-                var control = this.FindParent<MessageEditTools>();
+                var control = this.FindChild<MessageEditTools>();
                 var editBox = control.FindChild<TextBox>("MessageEditBox");
                 if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != Message.Content)
                 {

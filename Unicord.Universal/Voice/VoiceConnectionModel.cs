@@ -193,7 +193,7 @@ namespace Unicord.Universal.Voice
 
                 App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
                 App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
-                SendVoiceStateUpdate(_state, Channel.Id);
+                await SendVoiceStateUpdateAsync(_state, Channel.Id);
 
                 var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
                 var vsru = await _voiceServerUpdateCompletion.Task.ConfigureAwait(false);
@@ -278,25 +278,32 @@ namespace Unicord.Universal.Voice
             return null;
         }
 
-        private void SendVoiceStateUpdate(VoiceState state, ulong? channel_id)
+        private async Task SendVoiceStateUpdateAsync(VoiceState state, ulong? channel_id)
         {
-            var vsd = new VoiceDispatch
+            try
             {
-                OpCode = 4,
-                Payload = new VoiceStateUpdatePayload
+                var vsd = new VoiceDispatch
                 {
-                    GuildId = Channel.Guild.Id,
-                    ChannelId = channel_id,
-                    Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
-                    Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
-                }
-            };
+                    OpCode = 4,
+                    Payload = new VoiceStateUpdatePayload
+                    {
+                        GuildId = Channel.Guild.Id,
+                        ChannelId = channel_id,
+                        Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
+                        Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
+                    }
+                };
 
-            var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-            App.Discord.SendSocketMessage(vsj);
+                var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
+                await App.Discord.SendSocketMessageAsync(vsj);
+            }
+            catch (Exception /*ex*/)
+            {
+                // todo: handle
+            }
         }
 
-        private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        private async void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             if (args.Request.Message.TryGetValue("ev", out var ev))
             {
@@ -312,13 +319,13 @@ namespace Unicord.Universal.Voice
                     case VoiceServiceEvent.Disconnected:
                         ConnectionStatus = _strings.GetString("DisconnectedState");
                         Disconnected?.Invoke(this, null);
-                        SendVoiceStateUpdate(VoiceState.None, null);
+                        await SendVoiceStateUpdateAsync(VoiceState.None, null);
                         break;
                     case VoiceServiceEvent.Muted:
-                        SendVoiceStateUpdate(_state, Channel.Id);
+                        await SendVoiceStateUpdateAsync(_state, Channel.Id);
                         break;
                     case VoiceServiceEvent.Deafened:
-                        SendVoiceStateUpdate(_state, Channel.Id);
+                        await SendVoiceStateUpdateAsync(_state, Channel.Id);
                         break;
                     case VoiceServiceEvent.UdpPing:
                         UdpPing = (uint)args.Request.Message["ping"];

@@ -48,6 +48,21 @@ namespace Unicord
             }
         }
 
+        // overload might avoid boxing?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void OnPropertySet<T>(ref T oldValue, T newValue, params string[] additionalProperties)
+        {
+            if (oldValue == null || newValue == null || !newValue.Equals(oldValue))
+            {
+                oldValue = newValue;
+
+                foreach (var str in additionalProperties)
+                {
+                    InvokePropertyChanged(str);
+                }
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {

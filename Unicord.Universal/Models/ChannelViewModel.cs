@@ -463,7 +463,7 @@ namespace Unicord.Universal.Models
         private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
             var t = d as ChannelViewModel;
-            t.RequestMissingUsers(messages);
+            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
 
             foreach (var mess in messages)
             {
@@ -479,7 +479,7 @@ namespace Unicord.Universal.Models
             var t = d as ChannelViewModel;
             t.Messages.Clear();
 
-            t.RequestMissingUsers(messages);
+            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
             foreach (var message in messages.Reverse())
             {
                 if (!t.Messages.Any(m => m.Id == message.Id))
@@ -489,13 +489,13 @@ namespace Unicord.Universal.Models
             }
         }, this);
 
-        private void RequestMissingUsers(IEnumerable<DiscordMessage> messages)
+        private async Task RequestMissingMembersAsync(IEnumerable<DiscordMessage> messages)
         {
             if (Channel.Guild != null)
             {
-                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal);
+                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal).Distinct();
                 if (usersToSync.Any())
-                    Channel.Guild.RequestUserPresences(usersToSync);
+                    await Channel.Guild.RequestUserPresencesAsync(usersToSync);
             }
         }
 

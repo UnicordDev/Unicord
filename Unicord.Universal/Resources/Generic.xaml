@@ -191,7 +191,7 @@
                                    VerticalAlignment="Bottom"
                                    FontSize="{TemplateBinding FontSize}"
                                    FontWeight="{TemplateBinding FontWeight}"
-                                   Foreground="{Binding Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
+                                   Foreground="{Binding Color, Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
                                    Text="{Binding DisplayName}"
                                    TextWrapping="NoWrap" />
                         <TextBlock Visibility="{Binding IsBot, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" Margin="8,0,0,0" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="{TemplateBinding IconSize}" FontWeight="Normal" Text="&#xE99A;" />
