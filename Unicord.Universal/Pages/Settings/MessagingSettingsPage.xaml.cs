@@ -23,14 +23,13 @@ namespace Unicord.Universal.Pages.Settings
         public MessagingSettingsPage()
         {
             InitializeComponent();
-
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // dirty hack to work around databinding fuckery
             App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)(sender as ComboBox).SelectedIndex);
-            ((DataContext as MessagingSettingsModel).ExampleMessage as MockMessage).NotifyAllChanged();
+            (DataContext as MessagingSettingsModel).RegenerateMessage();
         }
     }
 }

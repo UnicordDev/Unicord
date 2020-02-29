@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Models
 {
-    public class ChannelViewModel : PropertyChangedBase, IDisposable
+    public class ChannelViewModel : NotifyPropertyChangeImpl, IDisposable
     {
         private const int INITIAL_LOAD_LIMIT = 50;
 
@@ -134,7 +134,7 @@ namespace Unicord.Universal.Models
 
         public Permissions Permissions { get; set; }
 
-        public DiscordUser Recipient => Channel.Type == ChannelType.Private ? (Channel as DiscordDmChannel).Recipient : null;
+        public DiscordUser Recipient => Channel.Type == ChannelType.Private ? (Channel as DiscordDmChannel).Recipients[0] : null;
 
         public ObservableCollection<DiscordUser> TypingUsers { get; set; }
 
@@ -166,11 +166,11 @@ namespace Unicord.Universal.Models
                 {
                     if (dm.Type == ChannelType.Private)
                     {
-                        return dm.Recipient.Username;
+                        return dm.Recipients[0].Username;
                     }
                     else
                     {
-                        return Strings.NaturalJoin(dm.Recipients.Values.Select(r => r.Username));
+                        return Strings.NaturalJoin(dm.Recipients.Select(r => r.Username));
                     }
                 }
 
@@ -182,7 +182,7 @@ namespace Unicord.Universal.Models
         /// The suffix of the channel's display name. (i.e. #6402)
         /// </summary>
         public string ChannelSuffix =>
-            Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipient.Discriminator}" : string.Empty;
+            Channel is DiscordDmChannel dm && dm.Type == ChannelType.Private ? $"#{dm.Recipients[0].Discriminator}" : string.Empty;
 
         /// <summary>
         /// The full channel name (i.e. @WamWooWam#6402, #general, etc.)
@@ -214,8 +214,8 @@ namespace Unicord.Universal.Models
             {
                 if (Channel is DiscordDmChannel dm)
                 {
-                    if (dm.Type == ChannelType.Private && dm.Recipient != null)
-                        return dm.Recipient.AvatarUrl;
+                    if (dm.Type == ChannelType.Private && dm.Recipients[0] != null)
+                        return dm.Recipients[0].AvatarUrl;
 
                     if (dm.Type == ChannelType.Group && dm.IconUrl != null)
                         return dm.IconUrl;
@@ -290,7 +290,7 @@ namespace Unicord.Universal.Models
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
 
         // TODO: Componentise?
-        public int UploadLimit => HasNitro ? 52_428_800 : 8_388_608;
+        public int UploadLimit => CurrentUser.UploadLimit();
 
         public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
 
@@ -306,7 +306,7 @@ namespace Unicord.Universal.Models
 
         public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
 
-        public bool HasNitro => Channel.Discord.CurrentUser.HasNitro;
+        public bool HasNitro => Channel.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
             => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
@@ -463,7 +463,7 @@ namespace Unicord.Universal.Models
         private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
             var t = d as ChannelViewModel;
-            t.RequestMissingUsers(messages);
+            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
 
             foreach (var mess in messages)
             {
@@ -479,7 +479,7 @@ namespace Unicord.Universal.Models
             var t = d as ChannelViewModel;
             t.Messages.Clear();
 
-            t.RequestMissingUsers(messages);
+            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
             foreach (var message in messages.Reverse())
             {
                 if (!t.Messages.Any(m => m.Id == message.Id))
@@ -489,13 +489,13 @@ namespace Unicord.Universal.Models
             }
         }, this);
 
-        private void RequestMissingUsers(IEnumerable<DiscordMessage> messages)
+        private async Task RequestMissingMembersAsync(IEnumerable<DiscordMessage> messages)
         {
             if (Channel.Guild != null)
             {
-                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal);
+                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal).Distinct();
                 if (usersToSync.Any())
-                    Channel.Guild.RequestUserPresences(usersToSync);
+                    await Channel.Guild.RequestUserPresencesAsync(usersToSync);
             }
         }
 

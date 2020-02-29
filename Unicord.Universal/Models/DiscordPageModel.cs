@@ -12,7 +12,7 @@ using Unicord.Universal.Voice;
 namespace Unicord.Universal.Models
 {
     // TODO: Move functionaliy from DiscordPage.xaml.cs into this class
-    class DiscordPageModel : PropertyChangedBase
+    class DiscordPageModel : NotifyPropertyChangeImpl
     {
         private readonly SynchronizationContext _synchronisation;
         private VoiceConnectionModel _voiceModel;

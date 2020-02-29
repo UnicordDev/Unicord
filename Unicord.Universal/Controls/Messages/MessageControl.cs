@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using Unicord.Universal.Pages;
 using Windows.System;
 using Windows.UI.Core;
@@ -154,7 +155,7 @@ namespace Unicord.Universal.Controls.Messages
         {
             try
             {
-                var control = this.FindParent<MessageEditTools>();
+                var control = this.FindChild<MessageEditTools>();
                 var editBox = control.FindChild<TextBox>("MessageEditBox");
                 if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != Message.Content)
                 {

@@ -31,6 +31,9 @@
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <Thickness x:Key="OverlayCornerRadius">0</Thickness>
+            <Thickness x:Key="ControlCornerRadius">0</Thickness>
+
             <CircleEase x:Key="EaseMove" EasingMode="EaseInOut" />
             <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
             <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
@@ -58,6 +61,7 @@
             <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
             <converters:SystemMessageSymbolConverter x:Key="SystemMessageSymbolConverter"/>
             <converters:SystemMessageTextConverter x:Key="SystemMessageTextConverter"/>
+            <converters:MemberColourConverter x:Key="MemberColourConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

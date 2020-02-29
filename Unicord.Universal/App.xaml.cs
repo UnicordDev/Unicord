@@ -53,6 +53,7 @@ namespace Unicord.Universal
         {
             InitializeComponent();
 
+            var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
             var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
             switch (theme)
             {
@@ -66,6 +67,9 @@ namespace Unicord.Universal
 
             Suspending += OnSuspending;
             UnhandledException += App_UnhandledException;
+
+            Debug.WriteLine("Welcome to Unicord!");
+            Debug.WriteLine(provider.GetVersionString());
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
@@ -331,6 +335,7 @@ namespace Unicord.Universal
             if (args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
             {
                 await Discord.DisconnectAsync();
+                Discord = null;
             }
         }
 
@@ -343,7 +348,7 @@ namespace Unicord.Universal
             {
                 var loader = ResourceLoader.GetForViewIndependentUse();
 
-                if (Discord == null || Discord.IsDisposed)
+                if (Discord == null)
                 {
                     if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
                     {
@@ -383,9 +388,7 @@ namespace Unicord.Universal
                             {
                                 Token = token,
                                 TokenType = TokenType.User,
-                                AutomaticGuildSync = false,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
-                                MutedStore = new UnicordMutedStore(),
                                 GatewayCompressionLevel = GatewayCompressionLevel.None,
                                 ReconnectIndefinitely = true
                             }));

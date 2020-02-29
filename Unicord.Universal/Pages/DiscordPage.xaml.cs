@@ -128,9 +128,9 @@ namespace Unicord.Universal.Pages
 
                 if (_args?.ThemeLoadException != null)
                 {
-                    var message = new MockMessage(
+                    var message = App.Discord.CreateMockMessage(
                         $"We had some trouble loading your selected themes, so we disabled them for this launch. For more information, see settings.",
-                        new MockUser("Unicord", "CORD"));
+                        App.Discord.CreateMockUser("Unicord", "CORD"));
                     ShowNotification(message);
                 }
 

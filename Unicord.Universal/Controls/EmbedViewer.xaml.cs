@@ -209,8 +209,8 @@ namespace Unicord.Universal.Controls
 
             try
             {
-                var extension = Path.GetExtension(Embed.Thumbnail.Url.AbsolutePath);
-                var fileName = Path.GetFileNameWithoutExtension(Embed.Thumbnail.Url.AbsolutePath);
+                var extension = Path.GetExtension(Embed.Thumbnail.Url.ToString());
+                var fileName = Path.GetFileNameWithoutExtension(Embed.Thumbnail.Url.ToString());
                 var picker = new FileSavePicker()
                 {
                     SuggestedStartLocation = PickerLocationId.Downloads,
@@ -245,7 +245,7 @@ namespace Unicord.Universal.Controls
 
             try
             {
-                var fileName = Path.GetFileName(Embed.Thumbnail.Url.AbsolutePath);
+                var fileName = Path.GetFileName(Embed.Thumbnail.Url.ToString());
                 var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
 
                 var dataTransferManager = DataTransferManager.GetForCurrentView();
@@ -284,7 +284,7 @@ namespace Unicord.Universal.Controls
 
         private void AddFieldToPanel(Panel p, DiscordEmbedField field)
         {
-            p.Children.Add(new EmbedFieldControl(Embed.Message?.Channel, field));
+            p.Children.Add(new EmbedFieldControl(Embed.Owner?.Channel, field));
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

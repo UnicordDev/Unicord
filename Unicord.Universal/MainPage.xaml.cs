@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Services.Store.Engagement;
 using Microsoft.Toolkit.Uwp.Helpers;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -229,7 +229,7 @@ namespace Unicord.Universal
 
         internal async Task GoToChannelAsync(DiscordClient e)
         {
-            if (Arguments.ChannelId != 0 && e._channelCache.TryGetValue(Arguments.ChannelId, out var channel))
+            if (Arguments.ChannelId != 0 && e.TryGetCachedChannel(Arguments.ChannelId, out var channel))
             {
                 if (channel.Type == ChannelType.Text && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels) || channel is DiscordDmChannel)
                 {
@@ -244,7 +244,7 @@ namespace Unicord.Universal
             try
             {
                 var dm = e.PrivateChannels.Values
-                    .FirstOrDefault(c => c.Recipient?.Id == Arguments.UserId && c.Type == ChannelType.Private);
+                    .FirstOrDefault(c => c.Type == ChannelType.Private && c.Recipients.ElementAtOrDefault(0)?.Id == Arguments.UserId);
 
                 if (dm == null && Arguments.UserId != 0)
                 {

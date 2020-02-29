@@ -244,7 +244,7 @@
                 </TextBlock>
             </Grid>
 
-            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding ConnectedUsers, Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
+            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel/>
@@ -276,7 +276,7 @@
                     </ImageBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind DisplayName}" FontSize="14" Foreground="{Binding ColorBrush, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind DisplayName}" FontSize="14" Foreground="{Binding Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
         </Grid>
     </DataTemplate>
 

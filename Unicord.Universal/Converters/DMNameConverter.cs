@@ -15,12 +15,12 @@ namespace Unicord.Universal.Converters
             {
                 if (c.Type == ChannelType.Private)
                 {
-                    return c.Recipient.DisplayName;
+                    return c.Recipients[0].DisplayName;
                 }
 
                 if (c.Type == ChannelType.Group)
                 {
-                    return c.Name ?? Strings.NaturalJoin(c.Recipients.Values.Select(r => r.DisplayName));
+                    return c.Name ?? Strings.NaturalJoin(c.Recipients.Select(r => r.DisplayName));
                 }
             }
 

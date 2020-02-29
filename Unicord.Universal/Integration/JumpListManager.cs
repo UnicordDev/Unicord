@@ -38,10 +38,10 @@ namespace Unicord.Universal.Integration
                     else if (channel is DiscordDmChannel dm && dm.Type == ChannelType.Private)
                     {
                         group = "ms-resource:RecentPeopleJumpListGroup";
-                        title = $"@{dm.Recipient.Username}";
+                        title = $"@{dm.Recipients.FirstOrDefault().Username}";
 
-                        file = await folder.CreateFileAsync($"user-{dm.Recipient.AvatarHash}.png", CreationCollisionOption.ReplaceExisting);
-                        await Tools.DownloadToFileAsync(new Uri(dm.Recipient.GetAvatarUrl(ImageFormat.Png, 64)), file);
+                        file = await folder.CreateFileAsync($"user-{dm.Recipients.FirstOrDefault().AvatarHash}.png", CreationCollisionOption.ReplaceExisting);
+                        await Tools.DownloadToFileAsync(new Uri(dm.Recipients.FirstOrDefault().GetAvatarUrl(ImageFormat.Png, 64)), file);
                     }
 
                     if (group != null && arguments != null && file != null)

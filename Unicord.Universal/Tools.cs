@@ -27,6 +27,10 @@ namespace Unicord.Universal
 {
     public static class Tools
     {
+        private const int NITRO_UPLOAD_LIMIT = 104_857_600;
+        private const int NITRO_CLASSIC_UPLOAD_LIMIT = 52_428_800;
+        private const int UPLOAD_LIMIT = 8_388_608;
+
         private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
         public static HttpClient HttpClient => _httpClient.Value;
 
@@ -335,6 +339,12 @@ namespace Unicord.Universal
         public static bool WillShowToast(DiscordMessage message) => SharedTools.WillShowToast(message);
         public static string GetMessageTitle(DiscordMessage message) => SharedTools.GetMessageTitle(message);
         public static string GetMessageContent(DiscordMessage message) => SharedTools.GetMessageContent(message);
+
+        public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
+        public static int UploadLimit(this DiscordUser user) => 
+            user.PremiumType == PremiumType.Nitro ? NITRO_UPLOAD_LIMIT :
+            user.PremiumType == PremiumType.NitroClassic ? NITRO_CLASSIC_UPLOAD_LIMIT : 
+            UPLOAD_LIMIT;
     }
 
 }

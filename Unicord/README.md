@@ -1,0 +1,2 @@
+﻿# Unicord
+This class library contains code shared between `DSharpPlus` and the main `Unicord.Universal` project, and is here for the sake of cleanliness. That said, generally speaking you don't want to add code here.

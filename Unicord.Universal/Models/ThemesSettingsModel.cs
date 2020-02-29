@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 namespace Unicord.Universal.Models
 {
     // not super useful considering most things here can't nicely be MMVMed
-    public class ThemesSettingsModel : PropertyChangedBase
+    public class ThemesSettingsModel : NotifyPropertyChangeImpl
     {
         private bool _isDirty;
 
