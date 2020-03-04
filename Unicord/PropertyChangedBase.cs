@@ -25,10 +25,10 @@ namespace Unicord
             public readonly List<PropertyChangedEventHandler> events;
         }
 
-        private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents
-            = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true);
+        private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents;
 
-        private List<PropertyChangedEventHandler> PropertyChangeEvents { get => _propertyChangedEvents.Value.events; }
+        private IList<PropertyChangedEventHandler> PropertyChangeEvents =>
+            (_propertyChangedEvents ?? (_propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true))).Value.events;
 
         public event PropertyChangedEventHandler PropertyChanged
         {
@@ -66,6 +66,9 @@ namespace Unicord
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
+            if (_propertyChangedEvents == null)
+                return;
+
             var args = new PropertyChangedEventArgs(property);
             var context = SynchronizationContext.Current;
             foreach (var item in _propertyChangedEvents.Values)
@@ -101,6 +104,9 @@ namespace Unicord
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void UnsafeInvokePropertyChange(string property)
         {
+            if (_propertyChangedEvents == null)
+                return;
+
             var args = new PropertyChangedEventArgs(property);
             foreach (var item in _propertyChangedEvents.Values)
             {

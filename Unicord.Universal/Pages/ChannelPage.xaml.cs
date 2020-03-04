@@ -58,8 +58,7 @@ namespace Unicord.Universal.Pages
         }
 
         public bool IsPaneOpen { get; private set; }
-
-        private EmotePicker _emotePicker;
+        
         private ChannelViewModel _viewModel;
         private bool _scrollHandlerAdded;
         private DispatcherTimer _titleBarTimer;
@@ -79,17 +78,12 @@ namespace Unicord.Universal.Pages
                 }
 
                 this.AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
-                EmoteButton.AddAccelerator(VirtualKey.E, VirtualKeyModifiers.Control);
-                PinsButton.AddAccelerator(VirtualKey.P, VirtualKeyModifiers.Control);
-                UserListButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control);
-                UploadButton.AddAccelerator(VirtualKey.U, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift);
-                SearchButton.AddAccelerator(VirtualKey.F, VirtualKeyModifiers.Control);
-                NewWindowButton.AddAccelerator(VirtualKey.N, VirtualKeyModifiers.Control);
             }
 
             UploadItems.IsEnabledChanged += UploadItems_IsEnabledChanged;
-            MessageTextBox.KeyDown += messageTextBox_KeyDown;
             MessageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
+
+            VisualStateManager.GoToState(this, "NormalMode", false);
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -166,6 +160,11 @@ namespace Unicord.Universal.Pages
 
                 await Load();
             }
+        }
+
+        internal void FocusTextBox()
+        {
+            MessageTextBox.Focus();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -306,48 +305,9 @@ namespace Unicord.Universal.Pages
                     //_loading = false;
                 }
             }
-        }
+        }       
 
-        private async void messageTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            var textBox = (sender as TextBox);
-            var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter)
-            {
-                e.Handled = true;
-                if (shift.HasFlag(CoreVirtualKeyStates.Down))
-                {
-                    var start = textBox.SelectionStart;
-                    textBox.Text = textBox.Text.Insert(start, "\r\n");
-                    textBox.SelectionStart = start + 1;
-                }
-                else
-                {
-                    await SendAsync();
-                }
-            }
-            else if (e.Key == VirtualKey.Up && string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
-                if (lastMessage != null)
-                {
-                    var container = MessageList.ContainerFromItem(lastMessage);
-                    if (container != null)
-                    {
-                        MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
-                        var viewer = container.FindChild<MessageControl>();
-                        viewer?.BeginEdit();
-                    }
-                }
-            }
-        }
-
-        private async void messageTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            await ViewModel.TriggerTypingAsync(MessageTextBox.Text).ConfigureAwait(false);
-        }
-
-        private async void messageTextBox_Paste(object sender, TextControlPasteEventArgs e)
+        private async void OnMessageTextBoxPaste(object sender, TextControlPasteEventArgs e)
         {
             try
             {
@@ -383,18 +343,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        internal void FocusTextBox()
-        {
-            MessageTextBox.Focus(FocusState.Keyboard);
-            MessageTextBox.SelectionStart = MessageTextBox.Text.Length;
-        }
-
-        private async void sendButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageTextBox.Focus(FocusState.Keyboard);
-            await SendAsync();
-        }
-
         private async Task SendAsync()
         {
             try
@@ -414,11 +362,11 @@ namespace Unicord.Universal.Pages
                         }
                     });
 
-                    await ViewModel.SendMessageAsync(MessageTextBox, progress).ConfigureAwait(false);
+                    await ViewModel.SendMessageAsync(progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ViewModel.SendMessageAsync(MessageTextBox).ConfigureAwait(false);
+                    await ViewModel.SendMessageAsync().ConfigureAwait(false);
                 }
 
                 await Dispatcher.AwaitableRunAsync(() => UploadProgress.Visibility = Visibility.Collapsed);
@@ -590,135 +538,6 @@ namespace Unicord.Universal.Pages
             ViewModel.FileUploads.Remove((sender as FrameworkElement).DataContext as FileUploadModel);
         }
 
-        private async void emoteButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is ToggleButton button)
-            {
-                await ShowEmojiPicker(button);
-            }
-        }
-
-        private async Task ShowEmojiPicker(ToggleButton button)
-        {
-            EnsureEmotePicker();
-
-            var pane = InputPane.GetForCurrentView();
-            var flyout = FlyoutBase.GetAttachedFlyout(EmoteButton);
-
-            if (button.IsChecked == true)
-            {
-                flyout?.ShowAt(button);
-                pane.TryHide();
-
-                _emotePicker.Visibility = Visibility.Visible;
-                await _emotePicker.Load().ConfigureAwait(false);
-            }
-            else
-            {
-                flyout?.Hide();
-                _emotePicker.Unload();
-                _emotePicker.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        // BUGBUG: this is a mess
-        /// <summary>
-        /// Lazily initializes the emote picker
-        /// </summary>
-        private void EnsureEmotePicker()
-        {
-            if (_emotePicker == null)
-            {
-                _emotePicker = new EmotePicker
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch
-                };
-
-                _emotePicker.EmojiPicked += EmotePicker_EmojiPicked;
-            }
-
-            var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(EmoteButton);
-
-            if (Window.Current.CoreWindow.Bounds.Width > 400)
-            {
-                if (FooterGrid.Children.Contains(_emotePicker))
-                {
-                    FooterGrid.Children.Remove(_emotePicker);
-                }
-
-                _emotePicker.Width = 300;
-                _emotePicker.Height = 300;
-                _emotePicker.Padding = new Thickness(0);
-                _emotePicker.Visibility = Visibility.Visible;
-
-                if (flyout == null)
-                {
-                    flyout = new Flyout { Content = _emotePicker };
-                    flyout.Closed += (o, ev) =>
-                    {
-                        EmoteButton.IsChecked = false;
-                        _emotePicker.Unload();
-                    };
-
-                    FlyoutBase.SetAttachedFlyout(EmoteButton, flyout);
-                }
-                else if (flyout.Content != _emotePicker)
-                {
-                    flyout.Content = _emotePicker;
-                }
-
-            }
-            else
-            {
-                if (flyout != null)
-                {
-                    (flyout as Flyout).Content = null;
-                }
-
-                _emotePicker.Width = double.NaN;
-                _emotePicker.Height = 275;
-                _emotePicker.Visibility = Visibility.Collapsed;
-                _emotePicker.Padding = new Thickness(10, 0, 10, 0);
-
-                if (!FooterGrid.Children.Contains(_emotePicker))
-                {
-                    Grid.SetRow(_emotePicker, 4);
-                    FooterGrid.Children.Add(_emotePicker);
-                }
-            }
-
-            _emotePicker.Channel = ViewModel.Channel;
-        }
-
-        private void EmotePicker_EmojiPicked(object sender, DiscordEmoji e)
-        {
-            if (e != null)
-            {
-                if (MessageTextBox.Text.Length > 0 && !char.IsWhiteSpace(MessageTextBox.Text[MessageTextBox.Text.Length - 1]))
-                {
-                    MessageTextBox.Text += " ";
-                }
-
-                MessageTextBox.Text += $"{e} ";
-                MessageTextBox.Select(MessageTextBox.Text.Length, 0);
-                MessageTextBox.Focus(FocusState.Programmatic);
-            }
-        }
-
-        private void messageTextBox_FocusEngaged(Control sender, FocusEngagedEventArgs args)
-        {
-            if (sender.FocusState != FocusState.Programmatic)
-            {
-                EmoteButton.IsChecked = false;
-                if (_emotePicker != null)
-                {
-                    _emotePicker.Unload();
-                    _emotePicker.Visibility = Visibility.Collapsed;
-                }
-            }
-        }
-
         private void pinsButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePane(typeof(PinsPage), ViewModel.Channel);
@@ -748,25 +567,18 @@ namespace Unicord.Universal.Pages
         public void EnterEditMode(DiscordMessage message = null)
         {
             _viewModel.IsEditMode = true;
+            VisualStateManager.GoToState(this, "EditMode", true);
 
-            MessageList.SelectionMode = ListViewSelectionMode.Multiple;
-
-            if (message != null)
-            {
-                MessageList.SelectedItems.Add(message);
-            }
-
-            MessageList.ItemTemplate = (DataTemplate)Resources["EditingMessageTemplate"];
-            ShowEditControls.Begin();
+            //if (message != null)
+            //{
+            //    MessageList.SelectedItems.Add(message);
+            //}
         }
 
         private void LeaveEditMode()
         {
             _viewModel.IsEditMode = false;
-
-            MessageList.SelectionMode = ListViewSelectionMode.None;
-            MessageList.ItemTemplate = (DataTemplate)Resources["DefaultMessageTemplate"];
-            HideEditControls.Begin();
+            VisualStateManager.GoToState(this, "NormalMode", true);
         }
 
         private void CloseEditButton_Click(object sender, RoutedEventArgs e)
@@ -923,6 +735,31 @@ namespace Unicord.Universal.Pages
         {
             TopGrid.Visibility = Visibility.Collapsed;
             FooterGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private async void MessageTextBox_ShouldSendTyping(object sender, EventArgs e)
+        {
+            await ViewModel.TriggerTypingAsync().ConfigureAwait(false);
+        }
+
+        private void MessageTextBox_EditInvoked(object sender, EventArgs e)
+        {
+            var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
+            if (lastMessage != null)
+            {
+                var container = MessageList.ContainerFromItem(lastMessage);
+                if (container != null)
+                {
+                    MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
+                    var viewer = container.FindChild<MessageControl>();
+                    viewer?.BeginEdit();
+                }
+            }
+        }
+
+        private async void MessageTextBox_SendInvoked(object sender, string e)
+        {
+            await SendAsync();
         }
     }
 }

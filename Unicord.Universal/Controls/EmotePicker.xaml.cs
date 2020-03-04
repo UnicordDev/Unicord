@@ -113,5 +113,15 @@ namespace Unicord.Universal.Controls
             InputPane.GetForCurrentView()?.TryHide();
             await Load();
         }
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            await Load();
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unload();
+        }
     }
 }
