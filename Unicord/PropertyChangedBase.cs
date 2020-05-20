@@ -33,7 +33,7 @@ namespace Unicord
         public event PropertyChangedEventHandler PropertyChanged
         {
             add => PropertyChangeEvents.Add(value);
-            remove { }
+            remove => PropertyChangeEvents.Remove(value);
         }
 
         // Holy hell is the C# Discord great.
