@@ -11,19 +11,16 @@
     <ClCompile Include="SodiumWrapper.cpp">
       <Filter>Interop</Filter>
     </ClCompile>
-    <ClCompile Include="Rtp.cpp">
-      <Filter>Interop</Filter>
-    </ClCompile>
     <ClCompile Include="OpusWrapper.cpp">
       <Filter>Interop</Filter>
-    </ClCompile>
-    <ClCompile Include="VoiceOutputStream.cpp" />
-    <ClCompile Include="AudioRenderer.cpp">
-      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="ServiceBackgroundTask.cpp">
       <Filter>Background</Filter>
     </ClCompile>
+    <ClCompile Include="external\AudioDeviceWasapi.cpp">
+      <Filter>Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceTransport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -47,13 +44,16 @@
     <ClInclude Include="OpusWrapper.h">
       <Filter>Interop</Filter>
     </ClInclude>
-    <ClInclude Include="VoiceOutputStream.h" />
-    <ClInclude Include="AudioRenderer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceBackgroundTask.h">
       <Filter>Background</Filter>
     </ClInclude>
+    <ClInclude Include="external\IAudioDeviceWasapi.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="external\AudioDeviceWasapi.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceTransport.h" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoiceClient.idl" />
@@ -61,7 +61,6 @@
       <Filter>Background</Filter>
     </Midl>
     <Midl Include="VoiceClientOptions.idl" />
-    <Midl Include="VoiceOutputStream.idl" />
     <Midl Include="ServiceBackgroundTask.idl">
       <Filter>Background</Filter>
     </Midl>
@@ -84,8 +83,8 @@
     <Filter Include="Background">
       <UniqueIdentifier>{4e0bb38b-a509-4f87-9842-71817b202c3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{b51b0a0b-5007-4025-b7bb-4cd447566a6b}</UniqueIdentifier>
+    <Filter Include="Externals">
+      <UniqueIdentifier>{fb467f89-17c7-4f0a-b9a7-70b09208ef2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

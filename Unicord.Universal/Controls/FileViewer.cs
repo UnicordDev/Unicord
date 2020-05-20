@@ -54,7 +54,7 @@ namespace Unicord.Universal.Controls
 
                 try
                 {
-                    var thumb = await f.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);
+                    var thumb = await f.GetThumbnailAsync(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale);
                     if (thumb != null)
                     {
                         await source.SetSourceAsync(thumb);

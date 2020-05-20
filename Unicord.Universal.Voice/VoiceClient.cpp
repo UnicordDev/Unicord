@@ -1,11 +1,9 @@
 ﻿#include "pch.h"
 #include "Rtp.h"
-#include "VoiceOutputStream.h"
 #include "VoiceClient.h"
 #include "VoiceClient.g.cpp"
 #include <iomanip>
 
-using namespace winrt;
 using namespace std::chrono;
 using namespace winrt::Windows::Data::Json;
 using namespace winrt::Windows::Networking;
@@ -15,6 +13,8 @@ using namespace winrt::Unicord::Universal::Voice::Interop;
 
 namespace winrt::Unicord::Universal::Voice::implementation
 {
+    static const webrtc::SdpAudioFormat kOpusFormat = { "opus", 48000, 2, { {"stereo", "1"}, {"usedtx", "1"}, {"useinbandfec", "1" } } };
+
     hstring VoiceClient::OpusVersion()
     {
         auto strptr = opus_get_version_string();
@@ -37,30 +37,30 @@ namespace winrt::Unicord::Universal::Voice::implementation
             throw hresult_invalid_argument();
         }
 
-        this->options = options;
+        this->_voiceOptions = options;
 
         std::wstring_view raw_endpoint = options.Endpoint();
         std::size_t index = raw_endpoint.find_last_of(':');
 
         if (index != std::wstring::npos) {
             std::wstring str(raw_endpoint.substr(index + 1));
-            ws_endpoint.hostname = raw_endpoint.substr(0, index);
-            ws_endpoint.port = (uint16_t)std::stoi(str);
+            _webSocketEndpoint.hostname = raw_endpoint.substr(0, index);
+            _webSocketEndpoint.port = (uint16_t)std::stoi(str);
         }
         else {
-            ws_endpoint.hostname = raw_endpoint;
-            ws_endpoint.port = 443;
+            _webSocketEndpoint.hostname = raw_endpoint;
+            _webSocketEndpoint.port = 443;
         }
 
         audio_format = AudioFormat();
-        udp_socket = DatagramSocket();
-        udp_socket.Control().QualityOfService(SocketQualityOfService::LowLatency);
-        udp_socket.MessageReceived({ this, &VoiceClient::OnUdpMessage });
+        _udpSocket = DatagramSocket();
+        _udpSocket.Control().QualityOfService(SocketQualityOfService::LowLatency);
+        _udpSocket.MessageReceived({ this, &VoiceClient::OnUdpMessage });
 
-        web_socket = MessageWebSocket();
-        web_socket.Control().MessageType(SocketMessageType::Utf8);
-        web_socket.MessageReceived({ this, &VoiceClient::OnWsMessage });
-        web_socket.Closed({ this, &VoiceClient::OnWsClosed });
+        _webSocket = MessageWebSocket();
+        _webSocket.Control().MessageType(SocketMessageType::Utf8);
+        _webSocket.MessageReceived({ this, &VoiceClient::OnWsMessage });
+        _webSocket.Closed({ this, &VoiceClient::OnWsClosed });
     }
 
     uint32_t VoiceClient::WebSocketPing()
@@ -93,21 +93,10 @@ namespace winrt::Unicord::Universal::Voice::implementation
         udpPingUpdated.remove(token);
     }
 
-    IAsyncAction VoiceClient::ConnectAsync()
+    Windows::Foundation::IAsyncAction VoiceClient::ConnectAsync()
     {
-        renderer = new AudioRenderer(this);
-        renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
-
-        auto format = renderer->GetRenderProperties();
-        std::cout << "Render: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
-        format = renderer->GetCaptureProperties();
-        std::cout << "Capture: " << format.SampleRate() << " " << format.ChannelCount() << " " << format.BitsPerSample() << "\n";
-
-        audio_format = AudioFormat(format.SampleRate(), format.ChannelCount(), VoiceApplication::low_latency);
-        opus = new OpusWrapper(audio_format);
-
-        Windows::Foundation::Uri url{ L"wss://" + ws_endpoint.hostname + L"/?encoding=json&v=4" };
-        co_await web_socket.ConnectAsync(url);
+        Windows::Foundation::Uri url{ L"wss://" + _webSocketEndpoint.hostname + L"/?encoding=json&v=5" };
+        co_await _webSocket.ConnectAsync(url);
     }
 
     bool VoiceClient::Muted()
@@ -117,14 +106,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     void VoiceClient::Muted(bool value)
     {
-        if (is_muted != value && renderer != nullptr) {
-            if (value) {
-                renderer->StopCapture();
-            }
-            else {
-                renderer->BeginCapture();
-            }
-        }
+        //if (is_muted != value && renderer != nullptr) {
+        //    if (value) {
+        //        renderer->StopCapture();
+        //    }
+        //    else {
+        //        renderer->BeginCapture();
+        //    }
+        //}
 
         is_muted = value;
     }
@@ -136,7 +125,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
     void VoiceClient::Deafened(bool value)
     {
-        if (is_muted != value && renderer != nullptr) {
+        /*if (is_muted != value && renderer != nullptr) {
             if (value) {
                 renderer->StopCapture();
             }
@@ -152,21 +141,22 @@ namespace winrt::Unicord::Universal::Voice::implementation
             else {
                 renderer->BeginRender();
             }
-        }
+        }*/
 
         is_muted = value;
         is_deafened = value;
     }
 
-    IAsyncAction VoiceClient::SendIdentifyAsync()
+    Windows::Foundation::IAsyncAction VoiceClient::SendIdentifyAsync()
     {
-        heartbeat_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnWsHeartbeat }, milliseconds(heartbeat_interval));
+        _heartbeatTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnWsHeartbeat }, milliseconds(heartbeat_interval));
 
         auto payload = JsonObject();
-        payload.SetNamedValue(L"server_id", JsonValue::CreateStringValue(to_hstring(options.GuildId())));
-        payload.SetNamedValue(L"user_id", JsonValue::CreateStringValue(to_hstring(options.CurrentUserId())));
-        payload.SetNamedValue(L"session_id", JsonValue::CreateStringValue(options.SessionId()));
-        payload.SetNamedValue(L"token", JsonValue::CreateStringValue(options.Token()));
+        payload.SetNamedValue(L"server_id", JsonValue::CreateStringValue(to_hstring(_voiceOptions.GuildId())));
+        payload.SetNamedValue(L"user_id", JsonValue::CreateStringValue(to_hstring(_voiceOptions.CurrentUserId())));
+        payload.SetNamedValue(L"session_id", JsonValue::CreateStringValue(_voiceOptions.SessionId()));
+        payload.SetNamedValue(L"token", JsonValue::CreateStringValue(_voiceOptions.Token()));
+        payload.SetNamedValue(L"video", JsonValue::CreateBooleanValue(true));
 
         auto disp = JsonObject();
         disp.SetNamedValue(L"op", JsonValue::CreateNumberValue(0));
@@ -175,24 +165,69 @@ namespace winrt::Unicord::Universal::Voice::implementation
         co_await SendJsonPayloadAsync(disp);
     }
 
-    IAsyncAction VoiceClient::Stage1(JsonObject obj)
+    Windows::Foundation::IAsyncAction VoiceClient::Stage1(JsonObject obj)
     {
-        HostName remoteHost{ udp_endpoint.hostname };
-        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(udp_endpoint.port) };
-        co_await udp_socket.ConnectAsync(pair);
+        if (obj != nullptr) {
+            _udpSocketEndpoint.hostname = obj.GetNamedString(L"ip");
+            _udpSocketEndpoint.port = (uint16_t)obj.GetNamedNumber(L"port");
+        }
+
+        HostName remoteHost{ _udpSocketEndpoint.hostname };
+        EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(_udpSocketEndpoint.port) };
+        co_await _udpSocket.ConnectAsync(pair);
 
         mode = SodiumWrapper::SelectEncryptionMode(obj.GetNamedArray(L"modes"));
 
         uint8_t buff[70]{ 0 };
-        std::copy(&ssrc, &ssrc + sizeof ssrc, buff);
+        std::copy(&_audioSSRC, &_audioSSRC + sizeof _audioSSRC, buff);
 
-        DataWriter writer{ udp_socket.OutputStream() };
-        writer.WriteBytes(buff);
-        co_await writer.StoreAsync();
-        writer.DetachStream();
+        _udpWriter = DataWriter{ _udpSocket.OutputStream() };
+        _udpWriter.WriteBytes(buff);
+        co_await _udpWriter.StoreAsync();
     }
 
-    void VoiceClient::Stage2(JsonObject data)
+    winrt::Windows::Foundation::IAsyncAction VoiceClient::Stage2(std::string & ip, const uint16_t & port)
+    {
+        JsonObject data;
+        data.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
+        data.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
+        data.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
+
+        JsonObject opus;
+        opus.SetNamedValue(L"name", JsonValue::CreateStringValue(L"opus"));
+        opus.SetNamedValue(L"type", JsonValue::CreateStringValue(L"audio"));
+        opus.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1000));
+        opus.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_OPUS));
+
+        JsonObject h264;
+        h264.SetNamedValue(L"name", JsonValue::CreateStringValue(L"H264"));
+        h264.SetNamedValue(L"type", JsonValue::CreateStringValue(L"video"));
+        h264.SetNamedValue(L"priority", JsonValue::CreateNumberValue(1001));
+        h264.SetNamedValue(L"payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_H264));
+        h264.SetNamedValue(L"rtx_payload_type", JsonValue::CreateNumberValue(Rtp::RTP_TYPE_H264_RTX));
+
+        JsonArray codecs;
+        codecs.Append(h264);
+        codecs.Append(opus);
+
+        JsonObject protocol_select;
+        protocol_select.SetNamedValue(L"protocol", JsonValue::CreateStringValue(L"udp"));
+        protocol_select.SetNamedValue(L"data", data);
+        protocol_select.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
+        protocol_select.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
+        protocol_select.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
+        protocol_select.SetNamedValue(L"codecs", codecs);
+
+        JsonObject dispatch;
+        dispatch.SetNamedValue(L"op", JsonValue::CreateNumberValue(1));
+        dispatch.SetNamedValue(L"d", protocol_select);
+
+        co_await SendJsonPayloadAsync(dispatch);
+
+        connection_stage = 1;
+    }
+
+    Windows::Foundation::IAsyncAction VoiceClient::Stage3(JsonObject data)
     {
         auto secret_key = data.GetNamedArray(L"secret_key");
         auto new_mode = data.GetNamedString(L"mode");
@@ -203,265 +238,231 @@ namespace winrt::Unicord::Universal::Voice::implementation
             key[i] = (uint8_t)secret_key.GetNumberAt(i);
         }
 
-        sodium = new SodiumWrapper(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(new_mode));
-        keepalive_timer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, milliseconds(5000));
-        voice_thread = std::thread(&VoiceClient::VoiceSendLoop, this);
+        _sodium = std::make_shared<SodiumWrapper>(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(new_mode));
+        _keepaliveTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, milliseconds(5000));
 
-        auto size = audio_format.CalculateSampleSize(20);
-        for (size_t i = 0; i < 3; i++)
+        _voiceThread = rtc::Thread::Create();
+        _voiceThread->Start();
+
+        _voiceThread->Invoke<void>(RTC_FROM_HERE, [this]() {
+            this->StartCall();
+        });
+
+        return Windows::Foundation::IAsyncAction{};
+    }
+
+    // init code taken and tweaked from webrtc itself
+
+    void VoiceClient::InitAdm(webrtc::AudioDeviceWasapi * adm)
+    {
+        static const webrtc::AudioDeviceModule::WindowsDeviceType AUDIO_DEVICE_ID = webrtc::AudioDeviceModule::WindowsDeviceType::kDefaultDevice;
+
+        RTC_CHECK_EQ(0, adm->Init()) << "Failed to initialize the ADM.";
+        adm->SetPreferredDevices(_voiceOptions.PreferredRecordingDevice(), _voiceOptions.PreferredPlaybackDevice());
+
+        // Playout device.
         {
-            auto null_pcm = new uint8_t[size]{ 0 };
-            voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
-        }
+            //int16_t deviceId = -1;
+            //for (size_t i = 0; i < adm->PlayoutDevices(); i++)
+            //{
+            //    auto device = wasapi->GetListDevice(DeviceClass::AudioRender, i);
+            //    if (device.Id() == _voiceOptions.PreferredPlaybackDevice()) {
+            //        deviceId = i;
+            //    }
+            //}
 
-        if (!is_deafened)
-            renderer->BeginRender();
+            //if ((deviceId != -1 ? adm->SetPlayoutDevice(deviceId) : adm->SetPlayoutDevice(AUDIO_DEVICE_ID)) != 0) {
+            //    RTC_LOG(LS_ERROR) << "Unable to set playout device.";
+            //        return;
+            //}
 
-        if (!is_muted && !is_deafened)
-            renderer->BeginCapture();
-    }
-
-    void VoiceClient::VoiceSendLoop()
-    {
-        PCMPacket packet;
-        DataWriter writer{ udp_socket.OutputStream() };
-
-        auto start_time = high_resolution_clock::now();
-        while (!cancel_voice_send) {
-            bool has_packet = voice_queue.try_pop(packet) && packet.duration != 0;
-
-            gsl::span<uint8_t> packet_array;
-            if (has_packet) {
-                packet_array = packet.bytes;
+            if (adm->InitSpeaker() != 0) {
+                RTC_LOG(LS_ERROR) << "Unable to access speaker.";
             }
-
-            // Provided by Laura#0090 (214796473689178133); this is Python, but adaptable:
-            // 
-            // delay = max(0, self.delay + ((start_time + self.delay * loops) + - time.time()))
-            // 
-            // self.delay
-            //   sample size
-            // start_time
-            //   time since streaming started
-            // loops
-            //   number of samples sent
-            // time.time()
-            //   DateTime.Now
-
-            duration packet_duration = has_packet ? milliseconds(packet.duration) : 20ms;
-            duration current_time_offset = high_resolution_clock::now() - start_time;
-
-            if (current_time_offset < packet_duration) {
-                std::this_thread::sleep_for(packet_duration - current_time_offset);
+            // Set number of channels
+            bool available = false;
+            if (adm->StereoPlayoutIsAvailable(&available) != 0) {
+                RTC_LOG(LS_ERROR) << "Failed to query stereo playout.";
             }
-
-            start_time += packet_duration;
-
-            if (!has_packet || is_deafened)
-            {
-                SendSpeakingAsync(false).get();
-                continue;
-            }
-
-            auto opus_packet = PreparePacket(array_view(packet_array.data(), packet_array.data() + packet_array.size()), packet.is_silence, packet.is_float);
-            SendSpeakingAsync(true).get();
-            writer.WriteBytes(array_view<const uint8_t>(opus_packet.bytes.data(), opus_packet.bytes.data() + opus_packet.bytes.size()));
-            writer.StoreAsync().get();
-
-            delete[] packet_array.data();
-
-            if (!packet.is_silence && voice_queue.unsafe_size() == 0) {
-                auto size = audio_format.CalculateSampleSize(20);
-                for (size_t i = 0; i < 3; i++)
-                {
-                    auto null_pcm = new uint8_t[size]{ 0 };
-                    voice_queue.push(PCMPacket(gsl::make_span(null_pcm, size), 20));
-                }
-            }
-            else if (voice_queue.unsafe_size() == 0) {
-                SendSpeakingAsync(false).get();
+            if (adm->SetStereoPlayout(available) != 0) {
+                RTC_LOG(LS_ERROR) << "Failed to set stereo playout mode.";
             }
         }
-    }
 
-    VoicePacket VoiceClient::PreparePacket(array_view<uint8_t> pcm, bool silence, bool is_float)
-    {
-        if (is_disposed)
-            return VoicePacket();
-
-        if (pcm.size() == 0)
-            return VoicePacket();
-
-        auto packet_size = audio_format.GetMaxBufferSize() * 2;
-        auto packet = std::vector<uint8_t>(packet_size);
-        auto packet_span = gsl::make_span(packet);
-
-        auto opus_length = is_float ? opus->EncodeFloat(pcm, packet_span) : opus->Encode(pcm, packet_span);
-        auto encrypted_size = sodium->CalculateTargetSize(opus_length);
-        auto new_packet_size = Rtp::CalculatePacketSize((uint32_t)encrypted_size, mode.second);
-        auto new_packet = std::vector<uint8_t>(new_packet_size);
-        auto new_packet_span = gsl::make_span(new_packet);
-
-        Rtp::EncodeHeader(seq, timestamp, ssrc, new_packet_span);
-
-        const size_t size = crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
-        uint8_t packet_nonce[size] = { 0 };
-        switch (mode.second)
+        // Recording device.
         {
-        case EncryptionMode::XSalsa20_Poly1305:
-            sodium->GenerateNonce(new_packet_span.subspan(0, Rtp::HEADER_SIZE), packet_nonce);
-            break;
-        case EncryptionMode::XSalsa20_Poly1305_Suffix:
-            sodium->GenerateNonce(packet_nonce);
-            break;
-        case EncryptionMode::XSalsa20_Poly1305_Lite:
-            sodium->GenerateNonce(this->nonce++, packet_nonce);
-            break;
+            /*if ((deviceId != -1 ? adm->SetRecordingDevice(deviceId) : adm->SetRecordingDevice(AUDIO_DEVICE_ID)) != 0) {
+                RTC_LOG(LS_ERROR) << "Unable to set recording device.";
+                return;
+            }*/
+
+            if (adm->InitMicrophone() != 0) {
+                RTC_LOG(LS_ERROR) << "Unable to access microphone.";
+            }
+            // Set number of channels
+            bool available = false;
+            if (adm->StereoRecordingIsAvailable(&available) != 0) {
+                RTC_LOG(LS_ERROR) << "Failed to query stereo recording.";
+            }
+            if (adm->SetStereoRecording(available) != 0) {
+                RTC_LOG(LS_ERROR) << "Failed to set stereo recording mode.";
+            }
         }
-
-        sodium->Encrypt(packet_span.subspan(0, opus_length), packet_nonce, new_packet_span.subspan(Rtp::HEADER_SIZE, encrypted_size));
-        sodium->AppendNonce(packet_nonce, new_packet_span, mode.second);
-
-        auto duration = is_float ? audio_format.CalculateSampleDurationF(pcm.size()) : audio_format.CalculateSampleDuration(pcm.size());
-        auto time = audio_format.CalculateFrameSize(duration);
-        this->seq++;
-        this->timestamp += (uint32_t)time;
-
-        VoicePacket voice_packet(new_packet, duration, silence);
-        return voice_packet;
     }
 
-    void VoiceClient::EnqueuePacket(PCMPacket packet)
+    void VoiceClient::InitApm(webrtc::AudioProcessing * apm)
     {
-        if (packet.duration != 0)
-            voice_queue.push(packet);
+        RTC_DCHECK(apm);
+
+        constexpr int kMinVolumeLevel = 0;
+        constexpr int kMaxVolumeLevel = 255;
+
+        // This is the initialization which used to happen in VoEBase::Init(), but
+        // which is not covered by the WVoE::ApplyOptions().
+        if (apm->echo_cancellation()->enable_drift_compensation(false) != 0) {
+            RTC_DLOG(LS_ERROR) << "Failed to disable drift compensation.";
+        }
+
+        webrtc::GainControl* gc = apm->gain_control();
+        if (gc->set_analog_level_limits(kMinVolumeLevel, kMaxVolumeLevel) != 0) {
+            RTC_DLOG(LS_ERROR) << "Failed to set analog level limits with minimum: "
+                << kMinVolumeLevel
+                << " and maximum: " << kMaxVolumeLevel;
+        }
+    }
+
+    void VoiceClient::StartCall() {
+        //rtc::LogMessage::LogToDebug(rtc::LS_WARNING);
+
+        this->_audioDecoderFactory = webrtc::CreateBuiltinAudioDecoderFactory();
+        this->_audioEncoderFactory = webrtc::CreateBuiltinAudioEncoderFactory();
+
+        /* this->_vidioEncoderFactory = new webrtc::WinUWPH264EncoderFactory();
+         this->_vidioDecoderFactory = new webrtc::WinUWPH264DecoderFactory();*/
+
+        webrtc::IAudioDeviceWasapi::CreationProperties props = {};
+        props.id_ = "Unicord";
+        props.playoutEnabled_ = true;
+        props.recordingEnabled_ = true;
+
+        webrtc::AudioState::Config stateConfig = {};
+        stateConfig.audio_processing = webrtc::AudioProcessingBuilder().Create();
+        stateConfig.audio_device_module = webrtc::IAudioDeviceWasapi::create(props);
+        stateConfig.audio_mixer = webrtc::AudioMixerImpl::Create();
+
+        rtc::scoped_refptr<webrtc::AudioState> audioState = webrtc::AudioState::Create(stateConfig);
+
+        InitAdm((webrtc::AudioDeviceWasapi*)stateConfig.audio_device_module.get());
+        InitApm(stateConfig.audio_processing);
+
+        stateConfig.audio_device_module->SetPlayoutDevice(webrtc::AudioDeviceModule::kDefaultDevice);
+        stateConfig.audio_device_module->SetRecordingDevice(webrtc::AudioDeviceModule::kDefaultDevice);
+        stateConfig.audio_device_module->RegisterAudioCallback(audioState->audio_transport());
+
+        /*webrtc::VideoEncoderConfig encoderConfig;
+        encoderConfig.video_stream_factory = this->_vidioEncoderFactory;*/
+
+        std::unique_ptr<webrtc::RtcEventLog> logger = webrtc::RtcEventLog::Create(webrtc::RtcEventLog::EncodingType::Legacy);
+        //std::unique_ptr<webrtc::RtcEventLogOutput> output = std::make_unique<webrtc::RtcEventLogNullImpl>();
+        //logger->StartLogging(std::move(output), 150);
+
+        webrtc::Call::Config callConfig{ logger.release() };
+        callConfig.audio_state = audioState;
+        callConfig.audio_processing = stateConfig.audio_processing;
+
+        _call = std::unique_ptr<webrtc::Call>{ webrtc::Call::Create(callConfig) };
+        _outboundTransport = std::make_unique<VoiceOutboundTransport>(_sodium, _udpWriter);
+        _outboundTransport->Start();
+        _audioSendStream = CreateAudioSendStream(_audioSSRC, Rtp::RTP_TYPE_OPUS);
+
+        _call->SignalChannelNetworkState(webrtc::MediaType::AUDIO, webrtc::NetworkState::kNetworkUp);
+
+        for each(auto stream in _audioRecieveStreams) {
+            if (stream.second == nullptr) {
+                _audioRecieveStreams[stream.first] = _voiceThread->Invoke<webrtc::AudioReceiveStream*>(RTC_FROM_HERE, [this, stream]() {
+                    return this->CreateAudioRecieveStream(stream.first, 120);
+                });
+            }
+        }
+
+        SendSpeakingAsync(true).get();
+    }
+
+    webrtc::AudioSendStream* VoiceClient::CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType)
+    {
+        webrtc::AudioSendStream::Config config{ _outboundTransport.get() };
+        config.rtp.ssrc = ssrc;
+        config.rtp.extensions = { {"urn:ietf:params:rtp-hdrext:ssrc-audio-level", 1} }; // TODO: Discord use more extensions than this.
+        config.encoder_factory = _audioEncoderFactory;
+        config.send_codec_spec = webrtc::AudioSendStream::Config::SendCodecSpec(payloadType, kOpusFormat);
+
+        webrtc::AudioSendStream* audioStream = _call->CreateAudioSendStream(config);
+        audioStream->Start();
+
+        return audioStream;
+    }
+
+    webrtc::AudioReceiveStream* VoiceClient::CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType)
+    {
+        webrtc::AudioReceiveStream::Config config;
+        config.rtp.local_ssrc = _audioSSRC;
+        config.rtp.remote_ssrc = remoteSsrc;
+        config.rtp.extensions = { {"urn:ietf:params:rtp-hdrext:ssrc-audio-level", 1} };
+        config.decoder_factory = _audioDecoderFactory;
+        config.decoder_map = { { payloadType, kOpusFormat } };
+        config.rtcp_send_transport = _outboundTransport.get();
+
+        webrtc::AudioReceiveStream* audioStream = _call->CreateAudioReceiveStream(config);
+        audioStream->Start();
+
+        return audioStream;
     }
 
     void VoiceClient::ProcessRawPacket(array_view<uint8_t> data)
     {
-        AudioSource* source;
-        std::vector<std::vector<uint8_t>> pcm_packets;
+        uint8_t nonce[24] = { 0 };
 
-        if (ProcessIncomingPacket(array_view<const uint8_t>(data.begin(), data.end()), pcm_packets, &source)) {
-            for each (auto raw_packet in pcm_packets)
-            {
-                renderer->ProcessIncomingPacket(raw_packet, source);
-            }
+        bool isRtcp = webrtc::RtpHeaderParser::IsRtcp(data.data(), data.size());
+        size_t headerSize = isRtcp ? 8 : 12;
+
+        if (isRtcp) {
+            uint8_t bits = data[0] >> 6;
+            if (bits != 2) return; // invalid RTCP
         }
 
-        pcm_packets.clear();
+        size_t decryptedSize = _sodium->CalculateTargetSize(data.size());
+        uint8_t* decrypted = new uint8_t[decryptedSize];
+
+        // copy header to the decrypted data
+        std::copy(data.begin(), data.begin() + headerSize, decrypted);
+
+        gsl::span<uint8_t> encryptedData;
+        switch (_sodium->GetCurrentEncryptionMode())
+        {
+        case XSalsa20_Poly1305:
+            encryptedData = gsl::make_span(data.begin() + headerSize, data.end());
+            break;
+        case XSalsa20_Poly1305_Suffix:
+            encryptedData = gsl::make_span(data.begin() + headerSize, data.end() - crypto_secretbox_xsalsa20poly1305_NONCEBYTES);
+            break;
+        case XSalsa20_Poly1305_Lite:
+            encryptedData = gsl::make_span(data.begin() + headerSize, data.end() - 4);
+            break;
+        default:
+            throw hresult_invalid_argument();
+        }
+
+        _sodium->GetNonce(data, nonce, isRtcp);
+        _sodium->Decrypt(encryptedData, nonce, gsl::make_span(decrypted, decryptedSize).subspan(headerSize));
+
+        _voiceThread->Invoke<void>(RTC_FROM_HERE, [this, decrypted, decryptedSize, isRtcp]() {
+            rtc::PacketTime pTime = rtc::CreatePacketTime(0);
+            webrtc::PacketReceiver::DeliveryStatus status = _call->Receiver()->DeliverPacket(isRtcp ? webrtc::MediaType::ANY : webrtc::MediaType::AUDIO, rtc::CopyOnWriteBuffer(decrypted, decryptedSize), pTime.timestamp);
+            delete decrypted;
+        });
     }
 
-    bool VoiceClient::ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source)
-    {
-        if (!Rtp::IsRtpHeader(data))
-            return false;
-
-        if (is_deafened)
-            return false;
-
-        if (is_disposed)
-            return false;
-
-        uint16_t packet_seq;
-        uint32_t packet_time;
-        uint32_t packet_ssrc;
-        bool packet_extension;
-
-        // decode header info from RTP
-        Rtp::DecodeHeader(data, packet_seq, packet_time, packet_ssrc, packet_extension);
-        AudioSource* audio_source = opus->GetOrCreateDecoder(packet_ssrc);
-        *source = audio_source;
-
-        if (!audio_source->is_speaking)
-            return false;
-
-        if (packet_seq < audio_source->seq) { // out of order
-            return false;
-        }
-
-        uint16_t gap = audio_source->seq != 0 ? packet_seq - 1 - audio_source->seq : 0;
-
-        // get the nonce
-        uint8_t packet_nonce[crypto_secretbox_xsalsa20poly1305_NONCEBYTES]{ 0 };
-        array_view<uint8_t> nonce_view(packet_nonce);
-        sodium->GetNonce(data, nonce_view, mode.second);
-
-        // get the data
-        array_view<const uint8_t> encrypted_opus;
-        Rtp::GetDataFromPacket(data, encrypted_opus, mode.second);
-
-        // calculate the size of the opus data
-        size_t opus_size = sodium->CalculateSourceSize(encrypted_opus.size());
-        uint8_t* opus_data = new uint8_t[opus_size]{ 0 };
-        array_view<uint8_t> opus_view(opus_data, opus_data + opus_size);
-
-        // decrypt the opus data
-        sodium->Decrypt(encrypted_opus, nonce_view, opus_view);
-
-        if (packet_extension) {
-            // RFC 5285, 4.2 One-Byte header
-            // http://www.rfcreader.com/#rfc5285_line186
-            if (opus_view[0] == 0xBE && opus_view[1] == 0xDE) {
-                uint16_t headerLen = opus_view[2] << 8 | opus_view[3];
-                uint8_t i = 4;
-                for (; i < headerLen + 4; i++)
-                {
-                    uint8_t b = opus_view[i];
-
-                    // ID is currently unused since we skip it anyway
-                    // var id = (byte)(@byte >> 4);
-                    uint8_t length = (uint8_t)(b & 0x0F) + 1;
-                    i += length;
-                }
-
-                // Strip extension padding too
-                while (opus_view[i] == 0)
-                    i++;
-
-                opus_view = array_view(opus_view.begin() + i, opus_view.end());
-            }
-        }
-
-        if (opus_view[0] == 0x90) {
-            opus_view = array_view(opus_view.begin() + 2, opus_view.end());
-        }
-
-        if (gap != 0) {
-            AudioFormat packet_format = audio_source->format;
-            size_t fec_pcm_length = packet_format.SampleCountToSampleSize(packet_format.GetMaxBufferSize());
-
-            if (gap == 1) {
-                std::vector<uint8_t> fec(fec_pcm_length);
-                opus->Decode(audio_source, opus_view, fec, true);
-
-                pcm.push_back(fec);
-            }
-            else if (gap > 1) {
-                for (size_t i = 0; i < gap; i++) {
-                    int32_t sample_count = opus->GetLastPacketSampleCount(audio_source->decoder);
-                    fec_pcm_length = packet_format.SampleCountToSampleSize(sample_count);
-                    std::vector<uint8_t> fec(fec_pcm_length);
-                    opus->ProcessPacketLoss(audio_source, sample_count, fec);
-                    pcm.push_back(fec);
-                }
-            }
-        }
-
-        size_t max_frame_size = audio_source->format.SampleCountToSampleSize(audio_source->format.GetMaxBufferSize());
-        std::vector<uint8_t> raw_pcm(max_frame_size);
-
-        opus->Decode(audio_source, opus_view, raw_pcm, false);
-        pcm.push_back(raw_pcm);
-
-        audio_source->seq = packet_seq;
-        audio_source->packets_lost += gap;
-
-        delete[] opus_data;
-        return true;
-    }
-
-    IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
+    Windows::Foundation::IAsyncAction VoiceClient::OnWsHeartbeat(ThreadPoolTimer timer)
     {
         try
         {
@@ -480,7 +481,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    IAsyncAction VoiceClient::OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev)
+    Windows::Foundation::IAsyncAction VoiceClient::OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev)
     {
         auto reader = ev.GetDataReader();
         reader.UnicodeEncoding(UnicodeEncoding::Utf8);
@@ -501,24 +502,37 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 co_await SendIdentifyAsync();
                 break;
             case 2: // ready
-                ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
-                udp_endpoint = ConnectionEndpoint{};
-                udp_endpoint.hostname = data.GetNamedString(L"ip");
-                udp_endpoint.port = (uint16_t)data.GetNamedNumber(L"port");
+                _audioSSRC = (uint32_t)data.GetNamedNumber(L"ssrc");
+                _udpSocketEndpoint = ConnectionEndpoint{};
+                _udpSocketEndpoint.hostname = data.GetNamedString(L"ip");
+                _udpSocketEndpoint.port = (uint16_t)data.GetNamedNumber(L"port");
                 co_await Stage1(data);
                 break;
             case 4: // session description
-                Stage2(data);
+                Stage3(data);
                 break;
             case 5: // speaking
             {
                 uint32_t speaking_ssrc = (uint32_t)data.GetNamedNumber(L"ssrc");
+                auto stream = _audioRecieveStreams.find(speaking_ssrc);
+                if (stream == _audioRecieveStreams.end()) {
+                    webrtc::AudioReceiveStream* recieveStream = nullptr;
+                    if (_call != nullptr) {
+                        recieveStream = _voiceThread->Invoke<webrtc::AudioReceiveStream*>(RTC_FROM_HERE, [this, speaking_ssrc]() {
+                            return this->CreateAudioRecieveStream(speaking_ssrc, 120);
+                        });
+                    }
 
-                AudioSource* audio_source = opus->GetOrCreateDecoder(speaking_ssrc);
-                audio_source->user_id = std::stoll(to_string(data.GetNamedString(L"user_id")));
-                audio_source->is_speaking = data.GetNamedNumber(L"speaking") != 0;
+                    this->_audioRecieveStreams[speaking_ssrc] = recieveStream;
+                }
+
+                // if not, it doesn't super matter
 
                 break;
+            }
+            case 12: // video stuff 
+            {
+
             }
             }
         }
@@ -531,6 +545,18 @@ namespace winrt::Unicord::Universal::Voice::implementation
                 ws_ping = now - last_heartbeat;
                 wsPingUpdated(*this, (const uint32_t)ws_ping);
                 std::cout << "- WS Ping " << ws_ping << "ms\n";
+                break;
+            }
+        }
+
+        if (value.ValueType() == JsonValueType::Null) {
+            switch (op) {
+            case 9:
+                HostName remoteHost{ _udpSocketEndpoint.hostname };
+                EndpointPair pair{ nullptr, L"", remoteHost, to_hstring(_udpSocketEndpoint.port) };
+                co_await _udpSocket.ConnectAsync(pair);
+
+                Stage3(nullptr);
                 break;
             }
         }
@@ -548,7 +574,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    IAsyncAction VoiceClient::SendSpeakingAsync(bool speaking)
+    Windows::Foundation::IAsyncAction VoiceClient::SendSpeakingAsync(bool speaking)
     {
         if (is_speaking == speaking)
             return;
@@ -566,24 +592,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
         co_await SendJsonPayloadAsync(disp);
     }
 
-    IOutputStream VoiceClient::GetOutputStream()
-    {
-        return make_self<VoiceOutputStream>(*this).as<IOutputStream>();
-    }
-
     void VoiceClient::UpdateAudioDevices()
     {
-        renderer->Initialise(options.PreferredPlaybackDevice(), options.PreferredRecordingDevice());
-        renderer->BeginCapture();
-        renderer->BeginRender();
+
     }
 
-    IAsyncAction VoiceClient::OnUdpHeartbeat(ThreadPoolTimer timer)
+    Windows::Foundation::IAsyncAction VoiceClient::OnUdpHeartbeat(ThreadPoolTimer timer)
     {
         try
         {
-            DataWriter writer{ udp_socket.OutputStream() };
-
             uint64_t now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
             uint64_t count = keepalive_count;
             keepalive_count = count + 1;
@@ -591,9 +608,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
             std::cout << "↑ Sending UDP Heartbeat " << count << "\n";
 
-            writer.WriteUInt64(count);
-            co_await writer.StoreAsync();
-            writer.DetachStream();
+            _udpWriter.WriteUInt64(count);
+            co_await _udpWriter.StoreAsync();
         }
         catch (const std::exception& ex)
         {
@@ -605,7 +621,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
     void VoiceClient::HandleUdpHeartbeat(uint64_t count)
     {
         uint64_t now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-        std::cout << "↓ Got UDP Heartbeat " << count << "!\n";
+        std::wcout << L"↓ Got UDP Heartbeat " << count << L"!\n";
 
         auto itr = keepalive_timestamps.find(count);
         if (itr != keepalive_timestamps.end()) {
@@ -619,7 +635,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    IAsyncAction VoiceClient::OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev)
+    Windows::Foundation::IAsyncAction VoiceClient::OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev)
     {
         auto reader = ev.GetDataReader();
 
@@ -632,29 +648,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
             uint16_t port = *(uint16_t*)&buff[68];
 
-            JsonObject data;
-            data.SetNamedValue(L"address", JsonValue::CreateStringValue(to_hstring(ip)));
-            data.SetNamedValue(L"port", JsonValue::CreateNumberValue(port));
-            data.SetNamedValue(L"mode", JsonValue::CreateStringValue(mode.first));
-
-            JsonObject protocol_select;
-            protocol_select.SetNamedValue(L"protocol", JsonValue::CreateStringValue(L"udp"));
-            protocol_select.SetNamedValue(L"data", data);
-
-            JsonObject dispatch;
-            dispatch.SetNamedValue(L"op", JsonValue::CreateNumberValue(1));
-            dispatch.SetNamedValue(L"d", protocol_select);
-
-            co_await SendJsonPayloadAsync(dispatch);
-
-            connection_stage = 1;
+            co_await Stage2(ip, port);
         }
         else {
             auto len = reader.UnconsumedBufferLength();
             if (len == 8) {
                 HandleUdpHeartbeat(reader.ReadUInt64());
             }
-            else if (len > 13) {
+            else {
                 // prolly voice data
                 auto data = new uint8_t[len];
                 auto data_view = array_view<uint8_t>(data, data + len);
@@ -666,9 +667,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
         }
     }
 
-    IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject &payload)
+    Windows::Foundation::IAsyncAction VoiceClient::SendJsonPayloadAsync(JsonObject &payload)
     {
-        DataWriter writer{ web_socket.OutputStream() };
+        DataWriter writer{ _webSocket.OutputStream() };
         auto str = payload.Stringify();
 
         std::cout << "↑ " << to_string(str) << "\n";
@@ -685,40 +686,53 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         is_disposed = true;
 
-        renderer->StopCapture();
-        renderer->StopRender();
+        if (_voiceThread != nullptr) {
+            _voiceThread->Invoke<void>(RTC_FROM_HERE, [this]() {
+                for each (auto streamKey in _audioRecieveStreams) {
+                    _call->DestroyAudioReceiveStream(streamKey.second);
+                }
 
-        cancel_voice_send = true;
+                if (_audioSendStream) {
+                    _audioSendStream->Stop();
+                    _call->DestroyAudioSendStream(_audioSendStream);
+                }
 
-        if (voice_thread.joinable())
-            voice_thread.join();
+                _audioSendStream = nullptr;
 
-        PCMPacket packet;
-        while (voice_queue.try_pop(packet))
-        {
-            delete[] packet.bytes.data();
+                if (_outboundTransport)
+                    _outboundTransport.reset();
+
+                _outboundTransport = nullptr;
+
+                if (_call)
+                    _call.reset();
+
+                _call = nullptr;
+
+                delete _audioEncoderFactory.release();
+                delete _audioDecoderFactory.release();
+            });
+
+            _voiceThread.reset();
         }
 
-        if (opus != nullptr)
-            delete opus;
+        if (_heartbeatTimer)
+            _heartbeatTimer.Cancel();
+        _heartbeatTimer = nullptr;
 
-        if (sodium != nullptr)
-            delete sodium;
-
-        if (renderer != nullptr)
-            delete renderer;
-
-        heartbeat_timer.Cancel();
-        heartbeat_timer = nullptr;
-        keepalive_timer.Cancel();
-        keepalive_timer = nullptr;
+        if (_keepaliveTimer)
+            _keepaliveTimer.Cancel();
+        _keepaliveTimer = nullptr;
 
         keepalive_timestamps.clear();
 
-        web_socket.Close();
-        web_socket = nullptr;
-        udp_socket.Close();
-        udp_socket = nullptr;
+        if (_webSocket)
+            _webSocket.Close();
+        _webSocket = nullptr;
+
+        if (_udpSocket)
+            _udpSocket.Close();
+        _udpSocket = nullptr;
     }
 
     VoiceClient::~VoiceClient()

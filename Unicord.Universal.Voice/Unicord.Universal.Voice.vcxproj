@@ -134,36 +134,68 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\DebugDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\DebugDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\DebugDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\DebugDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\DebugDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\DebugDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\DebugDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\DebugDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\libsamplerate\src;..\Libraries\Native\opus\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Libraries\Native\libsodium\src\libsodium\include;..\Libraries\Native\opus\include;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\zsLib;..\Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\third_party\abseil-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
       <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Fast</FloatingPointModel>
@@ -171,26 +203,59 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Disabled</Optimization>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\ReleaseDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\ReleaseDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\ReleaseDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\ReleaseDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\ReleaseDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\ReleaseDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\ReleaseDLL\libsodium;$(SolutionDir)Libraries\Native\opus\win32\VS2015\bin\$(Platform)\ReleaseDLL\libopus;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WindowsApp.lib;libopus.lib;libsodium.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Libraries\Native\libsodium\bin\$(Platform)\$(Configuration)DLL\libsodium;$(SolutionDir)Libraries\Native\webrtc-uwp-sdk\webrtc\xplatform\webrtc\OUTPUT\webrtc\winuwp\$(PlatformTarget)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WindowsApp.lib;libsodium.lib;webrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioFormat.h" />
-    <ClInclude Include="AudioRenderer.h" />
     <ClInclude Include="ConnectionEndpoint.h" />
+    <ClInclude Include="external\AudioDeviceWasapi.h" />
+    <ClInclude Include="external\IAudioDeviceWasapi.h" />
     <ClInclude Include="OpusWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Rtp.h" />
@@ -207,17 +272,14 @@
     <ClInclude Include="VoiceClientOptions.h">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClInclude>
-    <ClInclude Include="VoiceOutputStream.h">
-      <DependentUpon>VoiceOutputStream.idl</DependentUpon>
-    </ClInclude>
+    <ClInclude Include="VoiceTransport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AudioRenderer.cpp" />
+    <ClCompile Include="external\AudioDeviceWasapi.cpp" />
     <ClCompile Include="OpusWrapper.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Rtp.cpp" />
     <ClCompile Include="ServiceBackgroundTask.cpp">
       <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
     </ClCompile>
@@ -232,16 +294,13 @@
     <ClCompile Include="VoiceClientOptions.cpp">
       <DependentUpon>VoiceClientOptions.idl</DependentUpon>
     </ClCompile>
-    <ClCompile Include="VoiceOutputStream.cpp">
-      <DependentUpon>VoiceOutputStream.idl</DependentUpon>
-    </ClCompile>
+    <ClCompile Include="VoiceTransport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ServiceBackgroundTask.idl" />
     <Midl Include="VoiceBackgroundTask.idl" />
     <Midl Include="VoiceClient.idl" />
     <Midl Include="VoiceClientOptions.idl" />
-    <Midl Include="VoiceOutputStream.idl" />
     <Midl Include="VoiceServiceEvent.idl" />
     <Midl Include="VoiceServiceRequest.idl" />
   </ItemGroup>
@@ -256,8 +315,11 @@
     <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
       <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\opus\win32\VS2015\opus.vcxproj">
-      <Project>{219ec965-228a-1824-174d-96449d05f88a}</Project>
+    <ProjectReference Include="..\Libraries\Native\WebRTC\WebRTC.vcxproj">
+      <Project>{0cae67e6-bf85-4274-a665-12b44c4cd994}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

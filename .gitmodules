@@ -13,3 +13,6 @@
 [submodule "Libraries/DSharpPlus"]
 	path = Libraries/DSharpPlus
 	url = https://github.com/WamWooWam/DSharpPlus/
+[submodule "Libraries/Native/webrtc-uwp-sdk"]
+	path = Libraries/Native/webrtc-uwp-sdk
+	url = https://github.com/webrtc-uwp/webrtc-uwp-sdk.git

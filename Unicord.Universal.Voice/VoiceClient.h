@@ -6,38 +6,78 @@
 #include "AudioFormat.h"
 #include "AudioRenderer.h"
 #include "OpusWrapper.h"
+#include "VoiceTransport.h"
 
 #include <opus.h>
 #include <sodium.h>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <sstream>
 #include <thread>
+#include <cctype>
 #include <debugapi.h>
 #include <concurrent_unordered_map.h>
 #include <concurrent_queue.h>
 #include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Storage.Streams.h>
 
-using namespace winrt;
-using namespace winrt::Windows::Foundation;
+
+#include <call/call.h>
+#include <api/audio_codecs/builtin_audio_encoder_factory.h>
+#include <api/audio_codecs/builtin_audio_decoder_factory.h>
+#include <api/video_codecs/video_encoder_factory.h>
+#include <api/video_codecs/video_decoder_factory.h>
+
+#include <common_audio/include/audio_util.h>
+
+#include <media/engine/adm_helpers.h>
+#include <media/engine/webrtcvoiceengine.h>
+
+#include <modules/rtp_rtcp/include/rtp_header_parser.h>
+#include <modules/audio_processing/include/audio_processing.h>
+#include <modules/audio_processing/audio_buffer.h>
+#include <modules/audio_mixer/audio_mixer_impl.h>
+
+#include <third_party/winuwp_h264/winuwp_h264_factory.h>
+
+#include "external/IAudioDeviceWasapi.h"
+#include "external/AudioDeviceWasapi.h"
+
 using namespace winrt::Windows::Data::Json;
-using namespace winrt::Windows::System::Threading;
 using namespace winrt::Windows::Storage::Streams;
+using namespace winrt::Windows::System::Threading;
 using namespace winrt::Windows::Networking::Sockets;
 using namespace winrt::Unicord::Universal::Voice::Interop;
 using namespace winrt::Unicord::Universal::Voice::Render;
+using namespace winrt::Unicord::Universal::Voice::Transport;
 
 namespace winrt::Unicord::Universal::Voice::implementation
 {
     struct VoiceClient : VoiceClientT<VoiceClient>
     {
+        friend VoiceOutboundTransport;
+
     public:
         VoiceClient() = default;
         VoiceClient(VoiceClientOptions const& options);
 
         AudioFormat audio_format;
+
+        std::unique_ptr<webrtc::Call> _call = nullptr;
+
+        rtc::scoped_refptr<webrtc::AudioEncoderFactory> _audioEncoderFactory = nullptr;
+        rtc::scoped_refptr<webrtc::AudioDecoderFactory> _audioDecoderFactory = nullptr;
+
+        std::shared_ptr<webrtc::WinUWPH264EncoderFactory> _vidioEncoderFactory = nullptr;
+        std::shared_ptr<webrtc::WinUWPH264DecoderFactory> _vidioDecoderFactory = nullptr;
+
+        webrtc::AudioSendStream* _audioSendStream = nullptr; // i dont like this rawptr
+        concurrency::concurrent_unordered_map <uint32_t, webrtc::AudioReceiveStream*> _audioRecieveStreams;
+
+        webrtc::AudioSendStream* CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType);
+        webrtc::AudioReceiveStream* CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType);
 
         static hstring OpusVersion();
         static hstring SodiumVersion();
@@ -50,9 +90,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         winrt::event_token UdpSocketPingUpdated(Windows::Foundation::EventHandler<uint32_t> const& handler);
         void UdpSocketPingUpdated(winrt::event_token const& token) noexcept;
 
-        IAsyncAction ConnectAsync();
-        IAsyncAction SendSpeakingAsync(bool speaking);
-        IOutputStream GetOutputStream();
+        winrt::Windows::Foundation::IAsyncAction ConnectAsync();
+        winrt::Windows::Foundation::IAsyncAction SendSpeakingAsync(bool speaking);
         void UpdateAudioDevices();
         void Close();
 
@@ -61,33 +100,29 @@ namespace winrt::Unicord::Universal::Voice::implementation
         bool Deafened();
         void Deafened(bool value);
 
-        VoicePacket PreparePacket(array_view<uint8_t> pcm, bool silence = false, bool is_float = false);
-        void EnqueuePacket(PCMPacket packet);
-
         ~VoiceClient();
     private:
-        VoiceClientOptions options{ nullptr };
-        MessageWebSocket web_socket{ nullptr };
-        DatagramSocket udp_socket{ nullptr };
-        ThreadPoolTimer heartbeat_timer{ nullptr };
-        ThreadPoolTimer keepalive_timer{ nullptr };
-        SodiumWrapper* sodium = nullptr;
-        OpusWrapper* opus = nullptr;
-        AudioRenderer* renderer = nullptr;
+        VoiceClientOptions _voiceOptions;
+        MessageWebSocket _webSocket{ nullptr };
+        DatagramSocket _udpSocket{ nullptr };
+        ThreadPoolTimer _heartbeatTimer{ nullptr };
+        ThreadPoolTimer _keepaliveTimer{ nullptr };
+        DataWriter _udpWriter{ nullptr };
+
+        std::mutex startMutex;
+        std::shared_ptr<SodiumWrapper> _sodium = nullptr;
+        std::unique_ptr<VoiceOutboundTransport> _outboundTransport = nullptr;
+        std::unique_ptr<rtc::Thread> _voiceThread = nullptr;
 
         std::pair<hstring, EncryptionMode> mode;
-        ConnectionEndpoint ws_endpoint;
-        ConnectionEndpoint udp_endpoint;
+        ConnectionEndpoint _webSocketEndpoint;
+        ConnectionEndpoint _udpSocketEndpoint;
 
         bool is_speaking = false;
         bool is_muted = false;
         bool is_deafened = false;
 
-        uint16_t seq = 0;
-        uint32_t ssrc = 0;
-        uint32_t timestamp = 0;
-        uint32_t nonce = 0;
-
+        uint32_t _audioSSRC = 0;
         uint32_t heartbeat_interval = 0;
         uint32_t connection_stage = 0;
 
@@ -98,30 +133,27 @@ namespace winrt::Unicord::Universal::Voice::implementation
         volatile uint32_t udp_ping = 0;
         volatile uint64_t keepalive_count = 0;
         winrt::event<Windows::Foundation::EventHandler<uint32_t>> udpPingUpdated;
-
         concurrency::concurrent_unordered_map<uint64_t, uint64_t> keepalive_timestamps;
-        concurrency::concurrent_queue<PCMPacket> voice_queue;
-        volatile bool cancel_voice_send = false;
-        std::thread voice_thread;
 
         bool is_disposed = false;
 
-        IAsyncAction SendIdentifyAsync();
-        IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
-        IAsyncAction Stage1(JsonObject obj);
-        void Stage2(JsonObject obj);
+        winrt::Windows::Foundation::IAsyncAction SendIdentifyAsync();
+        winrt::Windows::Foundation::IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
+        winrt::Windows::Foundation::IAsyncAction Stage1(JsonObject obj);
+        winrt::Windows::Foundation::IAsyncAction Stage3(JsonObject obj);
+        winrt::Windows::Foundation::IAsyncAction Stage2(std::string& ip, const uint16_t& port);
 
-        void VoiceSendLoop();
+        void InitAdm(webrtc::AudioDeviceWasapi* adm);
+        void InitApm(webrtc::AudioProcessing* adm);
+        void StartCall();
 
         void ProcessRawPacket(array_view<uint8_t> data);
-        bool ProcessIncomingPacket(array_view<const uint8_t> data, std::vector<std::vector<uint8_t>> &pcm, AudioSource** source);
-
-        IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
-        IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
+        winrt::Windows::Foundation::IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
+        winrt::Windows::Foundation::IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
         void OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
 
-        IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
-        IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
+        winrt::Windows::Foundation::IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
+        winrt::Windows::Foundation::IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);
         void HandleUdpHeartbeat(uint64_t reader);
     };
 }

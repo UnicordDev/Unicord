@@ -4,7 +4,6 @@
 #include "VoiceClient.h"
 #include "VoiceClientOptions.h"
 
-using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::AppService;
@@ -34,14 +33,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
     }
 
-    void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
+    void ServiceBackgroundTask::OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping)
     {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));
         RaiseEvent(VoiceServiceEvent::UdpPing, values);
     }
 
-    void ServiceBackgroundTask::OnWsPing(IInspectable sender, uint32_t ping)
+    void ServiceBackgroundTask::OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping)
     {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));

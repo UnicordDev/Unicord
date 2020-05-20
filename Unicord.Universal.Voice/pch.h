@@ -8,3 +8,7 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Networking.Sockets.h>
 #include <winrt/Windows.System.Threading.h>
+
+#define WEBRTC_WIN
+#undef min
+#undef max

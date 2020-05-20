@@ -140,7 +140,7 @@ namespace Unicord.Universal.Pages
                 WindowManager.HandleTitleBarForControl(TopGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
 
-                if(model.Messages.Count > 50)
+                if (model.Messages.Count > 50)
                 {
                     var copy = new List<DiscordMessage>(model.Messages.TakeLast(50));
                     model.Messages.Clear();
@@ -493,6 +493,7 @@ namespace Unicord.Universal.Pages
                 try
                 {
                     var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif" }) { FolderDepth = FolderDepth.Deep };
+                    queryOption.SetThumbnailPrefetch(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale);
                     var photosQuery = KnownFolders.PicturesLibrary.CreateFileQueryWithOptions(queryOption);
                     var factory = new FileInformationFactory(photosQuery, ThumbnailMode.SingleItem, 256);
                     PhotosList.ItemsSource = factory.GetVirtualizedFilesVector();
