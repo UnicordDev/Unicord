@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
@@ -320,20 +320,20 @@
                                     Visibility="{Binding ShowEditButton}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
-                                <ui:DropDownButton
+                                <lib:DropDownButton
                                     x:Name="NewWindowButton"
                                     x:Uid="/ChannelPage/NewWindowButton"
                                     Content="&#xE78B;"
                                     Style="{ThemeResource IconButtonStyle}"
                                     IsEnabled="{Binding ShowPopoutButton}"
                                     Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}">
-                                    <ui:DropDownButton.Flyout>
-                                        <ui:MenuBarItemFlyout>
+                                    <lib:DropDownButton.Flyout>
+                                        <lib:MenuBarItemFlyout>
                                             <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal" Icon="Add" Click="NewWindowButton_Click" />
                                             <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" Icon="BackToWindow" Click="NewCompactWindowButton_Click" />
-                                        </ui:MenuBarItemFlyout>
-                                    </ui:DropDownButton.Flyout>
-                                </ui:DropDownButton>
+                                        </lib:MenuBarItemFlyout>
+                                    </lib:DropDownButton.Flyout>
+                                </lib:DropDownButton>
 
                                 <ToggleButton
                                     x:Name="MuteButton"
@@ -478,7 +478,7 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     Click="OpenPopoutButton_Click"
-                                    Content="&#xE8A7;"
+                                    Content="&#xE722;"
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                                 <Button
                                     x:Name="OpenLocalButton"
@@ -521,7 +521,7 @@
                                 </ListView.ItemTemplate>
                             </ListView>
 
-                            <ProgressRing
+                            <lib:ProgressRing
                                 x:Name="LoadingImagesRing"
                                 Grid.Column="1"
                                 Width="42"

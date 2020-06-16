@@ -25,7 +25,7 @@ namespace Unicord.Universal.Models
         public DiscordPageModel()
         {
             _synchronisation = SynchronizationContext.Current;
-
+            
             Guilds = new ObservableCollection<DiscordGuild>();
             UnreadDMs = new ObservableCollection<DiscordDmChannel>();
             CurrentUser = App.Discord.CurrentUser;

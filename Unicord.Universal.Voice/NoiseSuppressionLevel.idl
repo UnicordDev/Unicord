@@ -1,0 +1,10 @@
+namespace Unicord.Universal.Voice
+{
+    enum NoiseSuppressionLevel
+    {
+        Disabled,
+        Low,
+        Medium,
+        High
+    };
+}

@@ -57,7 +57,7 @@
                                     <BitmapImage
                                     DecodePixelHeight="20"
                                     DecodePixelWidth="20"
-                                    UriSource="{Binding ProxyIconUrl}" />
+                                    UriSource="{Binding ProxyIconUrl, Converter={StaticResource DiscordUriConverter}}" />
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Ellipse.Fill>
@@ -111,12 +111,12 @@
                                     <BitmapImage
                                     DecodePixelHeight="20"
                                     DecodePixelWidth="20"
-                                    UriSource="{Binding ProxyIconUrl}" />
+                                    UriSource="{Binding ProxyIconUrl, Converter={StaticResource DiscordUriConverter}}" />
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Grid.Column="1" FontSize="12pt" VerticalAlignment="Center">
+                    <TextBlock Grid.Column="1" FontSize="12pt" TextWrapping="Wrap" VerticalAlignment="Center">
                         <Run Text="{Binding Text, Mode=OneWay}" />
                     </TextBlock>
                 </Grid>

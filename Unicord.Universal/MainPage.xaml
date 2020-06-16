@@ -236,7 +236,7 @@
                                       VerticalContentAlignment="Stretch"
                                       ZoomMode="Enabled"
                                       Tapped="contentOverlay_Tapped">
-                            <controls1:ScaledContentControl x:Name="scaledControl">
+                            <controls1:ScaledContentControl x:Name="scaledControl" MaxWidth="Infinity" MaxHeight="Infinity">
                                 <Image x:Name="attachmentImage"/>
                             </controls1:ScaledContentControl>
                         </ScrollViewer>

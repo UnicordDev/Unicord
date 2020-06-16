@@ -44,7 +44,7 @@ namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
-        private List<ChannelViewModel> _channelHistory
+        private readonly List<ChannelViewModel> _channelHistory
             = new List<ChannelViewModel>();
 
         public ChannelViewModel ViewModel
@@ -310,34 +310,41 @@ namespace Unicord.Universal.Pages
 
         private async void messageTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            var textBox = (sender as TextBox);
+            var textBox = (TextBox)sender;
             var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter)
+            switch (e.Key)
             {
-                e.Handled = true;
-                if (shift.HasFlag(CoreVirtualKeyStates.Down))
+                case VirtualKey.Enter:
                 {
-                    var start = textBox.SelectionStart;
-                    textBox.Text = textBox.Text.Insert(start, "\r\n");
-                    textBox.SelectionStart = start + 1;
-                }
-                else
-                {
-                    await SendAsync();
-                }
-            }
-            else if (e.Key == VirtualKey.Up && string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
-                if (lastMessage != null)
-                {
-                    var container = MessageList.ContainerFromItem(lastMessage);
-                    if (container != null)
+                    e.Handled = true;
+                    if (shift.HasFlag(CoreVirtualKeyStates.Down))
                     {
-                        MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
-                        var viewer = container.FindChild<MessageControl>();
-                        viewer?.BeginEdit();
+                        var start = textBox.SelectionStart;
+                        textBox.Text = textBox.Text.Insert(start, "\r\n");
+                        textBox.SelectionStart = start + 1;
                     }
+                    else
+                    {
+                        await SendAsync();
+                    }
+
+                    break;
+                }
+                case VirtualKey.Up when string.IsNullOrWhiteSpace(textBox.Text):
+                {
+                    var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
+                    if (lastMessage != null)
+                    {
+                        var container = MessageList.ContainerFromItem(lastMessage);
+                        if (container != null)
+                        {
+                            MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
+                            var viewer = container.FindChild<MessageControl>();
+                            viewer?.BeginEdit();
+                        }
+                    }
+
+                    break;
                 }
             }
         }
@@ -464,7 +471,7 @@ namespace Unicord.Universal.Pages
 
         private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue == true)
+            if ((bool)e.NewValue)
             {
                 UploadItems.Visibility = Visibility.Visible;
                 HideUploadPanel.Stop();
@@ -514,7 +521,7 @@ namespace Unicord.Universal.Pages
             var file = await capture.CaptureFileAsync(CameraCaptureUIMode.PhotoOrVideo);
             if (file != null)
             {
-                var fileName = $"Unicord_{DateTimeOffset.Now.ToString("yyyy-MM-dd_HH-mm-ss")}{Path.GetExtension(file.Path)}";
+                var fileName = $"Unicord_{DateTimeOffset.Now:yyyy-MM-dd_HH-mm-ss}{Path.GetExtension(file.Path)}";
                 var folder = App.RoamingSettings.Read("SavePhotos", true) ? KnownFolders.CameraRoll : ApplicationData.Current.TemporaryFolder;
                 await file.MoveAsync(folder, fileName, NameCollisionOption.GenerateUniqueName);
 

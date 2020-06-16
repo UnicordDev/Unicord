@@ -385,7 +385,7 @@ namespace webrtc {
         void UpmixAndConvert(int16_t* inSamples, uint32_t numberOfFrames,
             float* outSamples, uint32_t inChannels, uint32_t outChannels);
 
-    private:
+    public:
         void DefaultAudioCaptureDeviceChanged(
             DefaultAudioCaptureDeviceChangedEventArgs const& args);
         void DefaultAudioRenderDeviceChanged(

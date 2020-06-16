@@ -11,9 +11,11 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
 
     bool VoiceOutboundTransport::SendRtp(const uint8_t * packet, size_t length, const webrtc::PacketOptions & options)
     {
+        static const size_t RtpHeaderSize = 12;
+
         if (!_isActive) {
             return true;
-        }
+        }        
 
         size_t encrypted_size = _sodium->CalculateTargetSize(length);
         gsl::span<const uint8_t> packet_span(packet, length);
@@ -23,7 +25,7 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
         switch (_sodium->GetCurrentEncryptionMode())
         {
         case EncryptionMode::XSalsa20_Poly1305:
-            _sodium->GenerateNonce(packet_span.subspan(0, Rtp::HEADER_SIZE), packet_nonce);
+            _sodium->GenerateNonce(packet_span.subspan(0, RtpHeaderSize), packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Suffix:
             _sodium->GenerateNonce(packet_nonce);
@@ -33,8 +35,8 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
             break;
         }
 
-        std::copy(packet, packet + 12, new_packet.data());
-        _sodium->Encrypt(packet_span.subspan(12), packet_nonce, gsl::make_span(new_packet).subspan(12));
+        std::copy(packet, packet + RtpHeaderSize, new_packet.data());
+        _sodium->Encrypt(packet_span.subspan(RtpHeaderSize), packet_nonce, gsl::make_span(new_packet).subspan(RtpHeaderSize));
         _sodium->AppendNonce(packet_nonce, new_packet);
 
         _writer.WriteBytes(new_packet);
@@ -45,11 +47,13 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
 
     bool VoiceOutboundTransport::SendRtcp(const uint8_t * packet, size_t length)
     {
+        static const size_t RtcpHeaderSize = 8;
+
         if (!_isActive) {
             return true;
         }
 
-        uint8_t packet_nonce[NonceBytes] = { 0 };        
+        uint8_t packet_nonce[NonceBytes]{ 0 };
 
         size_t encrypted_size = _sodium->CalculateTargetSize(length);
         gsl::span<const uint8_t> packet_span(packet, length);
@@ -58,7 +62,7 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
         switch (_sodium->GetCurrentEncryptionMode())
         {
         case EncryptionMode::XSalsa20_Poly1305:
-            _sodium->GenerateNonce(packet_span.subspan(0, Rtp::HEADER_SIZE), packet_nonce);
+            _sodium->GenerateNonce(packet_span.subspan(0, RtcpHeaderSize), packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Suffix:
             _sodium->GenerateNonce(packet_nonce);
@@ -68,8 +72,8 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
             break;
         }
 
-        std::copy(packet, packet + 8, new_packet.data());
-        _sodium->Encrypt(packet_span.subspan(8), packet_nonce, gsl::make_span(new_packet).subspan(8));
+        std::copy(packet, packet + RtcpHeaderSize, new_packet.data());
+        _sodium->Encrypt(packet_span.subspan(RtcpHeaderSize), packet_nonce, gsl::make_span(new_packet).subspan(RtcpHeaderSize));
         _sodium->AppendNonce(packet_nonce, new_packet);
 
         _writer.WriteBytes(new_packet);

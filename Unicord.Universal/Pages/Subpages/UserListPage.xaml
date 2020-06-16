@@ -75,7 +75,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
 
-        <ProgressRing
+        <lib:ProgressRing
             x:Name="progress"
             Grid.Row="2"
             Width="48"

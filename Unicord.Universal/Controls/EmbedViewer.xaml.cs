@@ -64,7 +64,7 @@ namespace Unicord.Universal.Controls
                 var scaleContainer = new ScaledContentControl()
                 {
                     TargetWidth = Embed.Video.Width,
-                    TargetHeight = Embed.Video.Height,
+                    TargetHeight = Embed.Video.Height
                 };
 
                 _mediaPlayer = new MediaPlayerElement()

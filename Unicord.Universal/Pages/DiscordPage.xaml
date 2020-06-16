@@ -139,6 +139,14 @@
                 To="0"
                 Duration="00:00:00.33" />
         </Storyboard>
+
+        <MenuFlyout x:Key="PowerUsersMenu">
+            <MenuFlyoutItem IsEnabled="False" Text="Power Users Menu">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon HorizontalAlignment="Stretch" Data="M114.65,47.25c-12.94-9.72-25.26-9.45-25.26-9.45l-1.25,1.44c15.28,4.68,22.38,11.43,22.38,11.43A73.23,73.23,0,0,0,83.46,42a76,76,0,0,0-18.16.18,8.87,8.87,0,0,0-1.53.18,67.48,67.48,0,0,0-20.4,5.67c-3.33,1.53-5.31,2.61-5.31,2.61s7.46-7.11,23.65-11.79l-.9-1.08s-12.32-.27-25.26,9.45c0,0-12.95,23.49-12.95,52.47,0,0,7.55,13,27.42,13.68,0,0,3.32-4.05,6-7.47-11.42-3.42-15.73-10.62-15.73-10.62s.9.63,2.52,1.53a1.24,1.24,0,0,0,.36.27c.27.18.54.27.81.45a52,52,0,0,0,6.56,3.06,75.29,75.29,0,0,0,13.21,3.87,62.94,62.94,0,0,0,23.29.09,59.08,59.08,0,0,0,13-3.87,51.45,51.45,0,0,0,10.34-5.31s-4.5,7.38-16.27,10.71c2.7,3.42,5.93,7.29,5.93,7.29,19.87-.63,27.51-13.68,27.51-13.68C127.6,70.74,114.65,47.25,114.65,47.25ZM58.29,91.35c-5,0-9.17-4.5-9.17-10s4.05-10,9.17-10,9.26,4.5,9.17,10S63.41,91.35,58.29,91.35Zm32.81,0c-5,0-9.17-4.5-9.17-10s4-10,9.17-10,9.17,4.5,9.17,10S96.23,91.35,91.1,91.35Z"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
        
     </Page.Resources>
     <Grid>
@@ -174,11 +182,15 @@
                         Height="42"
                         Visibility="Collapsed">
                         <Image
+                            x:Name="ClydeLogo"
                             Width="22"
                             Height="22"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Source="{StaticResource DiscordClyde}" />
+                            Source="{StaticResource DiscordClyde}"
+                            Tapped="ClydeLogo_Tapped"
+                            FlyoutBase.AttachedFlyout="{StaticResource PowerUsersMenu}">
+                        </Image>
                     </Grid>
 
                     <ListView
@@ -209,7 +221,7 @@
                                         Glyph="&#xE700;" />
                                 </ListViewItem>
                                 <ListViewItem
-                                    x:Name="friendsItem"
+                                    x:Name="FriendsItem"
                                     MinWidth="0"
                                     Padding="0"
                                     IsSelected="{Binding IsFriendsSelected}"
@@ -328,7 +340,6 @@
                     Color="{ThemeResource SystemChromeBlackMediumLowColor}">
                     <Grid
                         x:Name="sidebarSecondaryGrid"
-                        Grid.Column="1"
                         Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
@@ -339,7 +350,6 @@
                         </Grid.RowDefinitions>
                         <Grid Height="42">
                             <TextBlock
-                                Grid.Column="1"
                                 Margin="16,0"
                                 VerticalAlignment="Center"
                                 FontSize="18"

@@ -7,6 +7,7 @@
 #include "AudioRenderer.h"
 #include "OpusWrapper.h"
 #include "VoiceTransport.h"
+#include "VideoFrameSink.h"
 
 #include <opus.h>
 #include <sodium.h>
@@ -70,11 +71,15 @@ namespace winrt::Unicord::Universal::Voice::implementation
         rtc::scoped_refptr<webrtc::AudioEncoderFactory> _audioEncoderFactory = nullptr;
         rtc::scoped_refptr<webrtc::AudioDecoderFactory> _audioDecoderFactory = nullptr;
 
-        std::shared_ptr<webrtc::WinUWPH264EncoderFactory> _vidioEncoderFactory = nullptr;
-        std::shared_ptr<webrtc::WinUWPH264DecoderFactory> _vidioDecoderFactory = nullptr;
+        std::shared_ptr<webrtc::WinUWPH264EncoderFactory> _videoEncoderFactory = nullptr;
+        std::shared_ptr<webrtc::WinUWPH264DecoderFactory> _videoDecoderFactory = nullptr;
 
         webrtc::AudioSendStream* _audioSendStream = nullptr; // i dont like this rawptr
+        webrtc::AudioDeviceWasapi* _audioDeviceManager = nullptr; // nor this one
+
         concurrency::concurrent_unordered_map <uint32_t, webrtc::AudioReceiveStream*> _audioRecieveStreams;
+        concurrency::concurrent_unordered_map <uint32_t, webrtc::VideoReceiveStream*> _videoRecieveStreams;
+        concurrency::concurrent_unordered_map <uint64_t, uint32_t> _ssrcUserMap;
 
         webrtc::AudioSendStream* CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType);
         webrtc::AudioReceiveStream* CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType);
@@ -112,7 +117,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         std::mutex startMutex;
         std::shared_ptr<SodiumWrapper> _sodium = nullptr;
         std::unique_ptr<VoiceOutboundTransport> _outboundTransport = nullptr;
-        std::unique_ptr<rtc::Thread> _voiceThread = nullptr;
+        std::unique_ptr<rtc::Thread> _webrtcThread = nullptr;
 
         std::pair<hstring, EncryptionMode> mode;
         ConnectionEndpoint _webSocketEndpoint;
@@ -121,6 +126,8 @@ namespace winrt::Unicord::Universal::Voice::implementation
         bool is_speaking = false;
         bool is_muted = false;
         bool is_deafened = false;
+        bool _webSocketOpen = false;
+        bool _canResume = true;
 
         uint32_t _audioSSRC = 0;
         uint32_t heartbeat_interval = 0;
@@ -137,6 +144,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         bool is_disposed = false;
 
+        void InitialiseSockets();
         winrt::Windows::Foundation::IAsyncAction SendIdentifyAsync();
         winrt::Windows::Foundation::IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
         winrt::Windows::Foundation::IAsyncAction Stage1(JsonObject obj);
@@ -150,7 +158,9 @@ namespace winrt::Unicord::Universal::Voice::implementation
         void ProcessRawPacket(array_view<uint8_t> data);
         winrt::Windows::Foundation::IAsyncAction OnWsHeartbeat(ThreadPoolTimer sender);
         winrt::Windows::Foundation::IAsyncAction OnWsMessage(IWebSocket socket, MessageWebSocketMessageReceivedEventArgs ev);
-        void OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
+        winrt::Windows::Foundation::IAsyncAction OnWsClosed(IWebSocket socket, WebSocketClosedEventArgs ev);
+
+        winrt::Windows::Foundation::IAsyncAction ReconnectLoop();
 
         winrt::Windows::Foundation::IAsyncAction OnUdpHeartbeat(ThreadPoolTimer sender);
         winrt::Windows::Foundation::IAsyncAction OnUdpMessage(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs ev);

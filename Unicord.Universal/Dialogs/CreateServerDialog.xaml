@@ -32,7 +32,7 @@
             <StackPanel x:Name="ChooseIcon" Tapped="ChooseIcon_Tapped" VerticalAlignment="Center" Margin="8,0,24,0">
                 <Grid>
                     <lib:PersonPicture DisplayName="{Binding Name, Mode=TwoWay}" ProfilePicture="{Binding Icon}" Width="128" Height="128"/>
-                    <ProgressRing x:Name="IconProgressRing" Width="32" Height="32" />
+                    <lib:ProgressRing x:Name="IconProgressRing" Width="32" Height="32" />
                 </Grid>
                 <TextBlock FontSize="11" TextWrapping="Wrap" Margin="4" HorizontalAlignment="Center" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
                 Tap to add an Icon!

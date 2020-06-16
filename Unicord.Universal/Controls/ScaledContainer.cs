@@ -39,8 +39,8 @@ namespace Unicord.Universal.Controls
         {
             double width = TargetWidth;
             double height = TargetHeight;
-            var maxWidth = Math.Min(_window.Bounds.Width, 640);
-            var maxHeight = Math.Min(_window.Bounds.Height, 480);
+            var maxWidth = Math.Min(_window.Bounds.Width, MaxWidth);
+            var maxHeight = Math.Min(_window.Bounds.Height, MaxHeight);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? maxWidth : (int)constraint.Width, double.IsInfinity(constraint.Height) ? maxHeight : (int)constraint.Height);

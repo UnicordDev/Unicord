@@ -214,6 +214,8 @@
     </Style>
 
     <Style TargetType="local:ScaledContentControl">
+        <Setter Property="MaxWidth" Value="640"/>
+        <Setter Property="MaxHeight" Value="480"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ScaledContentControl">

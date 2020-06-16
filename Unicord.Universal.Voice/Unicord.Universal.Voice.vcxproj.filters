@@ -21,6 +21,8 @@
       <Filter>Externals</Filter>
     </ClCompile>
     <ClCompile Include="VoiceTransport.cpp" />
+    <ClCompile Include="VoiceClientStats.cpp" />
+    <ClCompile Include="VideoFrameSink.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -54,6 +56,8 @@
       <Filter>Externals</Filter>
     </ClInclude>
     <ClInclude Include="VoiceTransport.h" />
+    <ClInclude Include="VoiceClientStats.h" />
+    <ClInclude Include="VideoFrameSink.h" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoiceClient.idl" />
@@ -70,6 +74,8 @@
     <Midl Include="VoiceServiceEvent.idl">
       <Filter>Background</Filter>
     </Midl>
+    <Midl Include="VoiceClientStats.idl" />
+    <Midl Include="NoiseSuppressionLevel.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Unicord.Universal.Voice.def" />

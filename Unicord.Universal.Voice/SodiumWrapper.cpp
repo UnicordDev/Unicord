@@ -142,8 +142,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
     {
         std::map<hstring, EncryptionMode> mode_map;
         mode_map[L"xsalsa20_poly1305"] = EncryptionMode::XSalsa20_Poly1305;
-        mode_map[L"xsalsa20_poly1305_suffix"] = EncryptionMode::XSalsa20_Poly1305_Suffix;
-        mode_map[L"xsalsa20_poly1305_lite"] = EncryptionMode::XSalsa20_Poly1305_Lite;
+        /* 
+            mode_map[L"xsalsa20_poly1305_suffix"] = EncryptionMode::XSalsa20_Poly1305_Suffix;
+            mode_map[L"xsalsa20_poly1305_lite"] = EncryptionMode::XSalsa20_Poly1305_Lite;
+        */
 
         return mode_map;
     }

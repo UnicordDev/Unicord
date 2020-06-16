@@ -78,8 +78,8 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var engagementManager = StoreServicesEngagementManager.GetDefault();
-            await engagementManager.RegisterNotificationChannelAsync();
+            //var engagementManager = StoreServicesEngagementManager.GetDefault();
+            //await engagementManager.RegisterNotificationChannelAsync();
 
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;

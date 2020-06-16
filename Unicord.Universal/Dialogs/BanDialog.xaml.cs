@@ -30,6 +30,7 @@ namespace Unicord.Universal.Dialogs
             InitializeComponent();
             var resources = ResourceLoader.GetForCurrentView("Dialogs");
             headerTextBlock.Text = string.Format(resources.GetString("BanDialogHeaderFormat"), member.Username, member.Discriminator);
+            
         }
     }
 }

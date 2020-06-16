@@ -84,9 +84,10 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                             voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
                             voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
                             voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
-                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
+                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id"))); 
                             voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
                             voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
+                            voiceClientOptions.SuppressionLevel((NoiseSuppressionLevel)unbox_value<uint32_t>(data.TryLookup(L"noise_suppression")));
 
                             if (data.HasKey(L"input_device")) {
                                 voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));

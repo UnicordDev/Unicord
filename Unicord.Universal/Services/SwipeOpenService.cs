@@ -16,7 +16,7 @@ namespace Unicord.Universal.Services
 
         protected override void Initialise()
         {
-            Helper = Window.Current.Content.FindChild<DiscordPage>()?.helper;
+            Helper = Window.Current.Content.FindChild<DiscordPage>()?._helper;
         }
 
         public void AddAdditionalElement(UIElement element) => Helper?.AddAdditionalElement(element);

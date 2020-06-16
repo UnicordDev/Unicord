@@ -5,7 +5,8 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    mc:Ignorable="d" Loaded="Page_Loaded"
+    d:DesignWidth="450">
     <Page.Resources>
         <DataTemplate x:Key="DeviceTemplate">
             <TextBlock Text="{Binding Name, FallbackValue=Default, TargetNullValue=Default}"/>
@@ -19,5 +20,16 @@
 
         <ComboBox x:Name="inputDevices" x:Uid="/VoiceSettingsPage/InputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableInputDevices}" SelectedItem="{Binding InputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
         <ComboBox x:Name="outputDevices" x:Uid="/VoiceSettingsPage/OutputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableOutputDevices}" SelectedItem="{Binding OutputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+
+        <TextBlock x:Uid="/VoiceSettingsPage/NoiseSuppressionHeader" Style="{ThemeResource SubtitleTextBlockStyle}" Text="Noise Suppression"/>
+        <TextBlock x:Uid="/VoiceSettingsPage/NoiseSuppressionSubheader" TextWrapping="Wrap" Text="Unicord can dynamically reduce the amount of noise or hiss on your microphone if needed." Margin="0,0,0,12"/>
+
+        <ComboBox x:Name="NoiseSuppression" Margin="0,0,0,8" SelectedIndex="{Binding SuppressionLevel, Mode=TwoWay}" HorizontalAlignment="Stretch">
+            <ComboBoxItem Content="Disabled"/>
+            <ComboBoxItem Content="Low"/>
+            <ComboBoxItem Content="Medium"/>
+            <ComboBoxItem Content="High"/>
+        </ComboBox>
+
     </StackPanel>
 </Page>

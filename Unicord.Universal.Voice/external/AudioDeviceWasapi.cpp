@@ -4951,14 +4951,14 @@ namespace webrtc
     //-----------------------------------------------------------------------------
     void AudioDeviceWasapi::DefaultAudioCaptureDeviceChanged(
         DefaultAudioCaptureDeviceChangedEventArgs const& args) {
-        if (usingInputDeviceIndex_) {
-            // Not using default audio input device
-            return;
-        }
+        //if (usingInputDeviceIndex_) {
+        //    // Not using default audio input device
+        //    return;
+        //}
         if (!Recording()) {
             return;
         }
-        if (inputDeviceRole_ != args.Role()) {
+        if (args && inputDeviceRole_ != args.Role()) {
             return;
         }
         RTC_LOG(LS_INFO) << "Default audio capture device changed, restarting capturer!";
@@ -4968,14 +4968,14 @@ namespace webrtc
     //-----------------------------------------------------------------------------
     void AudioDeviceWasapi::DefaultAudioRenderDeviceChanged(
         DefaultAudioRenderDeviceChangedEventArgs const& args) {
-        if (usingOutputDeviceIndex_) {
-            // Not using default audio output device
-            return;
-        }
+        //if (usingOutputDeviceIndex_) {
+        //    // Not using default audio output device
+        //    return;
+        //}
         if (!Playing()) {
             return;
         }
-        if (outputDeviceRole_ != args.Role()) {
+        if (args && outputDeviceRole_ != args.Role()) {
             return;
         }
         RTC_LOG(LS_INFO) << "Default audio render device changed, restarting renderer!";

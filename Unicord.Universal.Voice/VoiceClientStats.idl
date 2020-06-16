@@ -1,0 +1,10 @@
+namespace Unicord.Universal.Voice
+{
+    [bindable]
+    [default_interface]
+    runtimeclass VoiceClientStats 
+    {
+        VoiceClientStats();
+        Int32 MyProperty;
+    }
+}
