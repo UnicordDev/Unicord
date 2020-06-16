@@ -260,6 +260,7 @@
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
+    <Compile Include="Controls\MessageTextBox.cs" />
     <Compile Include="Controls\RangeSelector\RangeChangedEventArgs.cs" />
     <Compile Include="Controls\RangeSelector\RangeSelector.cs" />
     <Compile Include="Controls\RichPresenceControl.xaml.cs">

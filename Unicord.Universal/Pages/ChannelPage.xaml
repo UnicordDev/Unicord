@@ -15,7 +15,7 @@
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:converters="using:Unicord.Universal.Converters"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
-    mc:Ignorable="d">
+    mc:Ignorable="d" x:DefaultBindMode="OneWay">
 
     <Page.Resources>
         <ExponentialEase
@@ -26,7 +26,7 @@
             x:Key="EaseOut"
             EasingMode="EaseIn"
             Exponent="4.5" />
-        
+
         <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
 
         <Storyboard x:Name="ShowPhotoPicker" Completed="ShowPhotoPicker_Completed">
@@ -114,65 +114,11 @@
                 To="50"
                 Duration="00:00:00.33" />
         </Storyboard>
-        
-        <Storyboard x:Key="ShowEditControls" x:Name="ShowEditControls">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="DefaultTranslate"
-                Storyboard.TargetProperty="X"
-                To="168"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="EditingTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="DefaultControls"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.33" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="EditingControls"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.33" />
-        </Storyboard>
-
-        <Storyboard x:Key="HideEditControls" x:Name="HideEditControls">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="DefaultTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="EditingTranslate"
-                Storyboard.TargetProperty="X"
-                To="168"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="DefaultControls"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.33" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="EditingControls"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.33" />
-        </Storyboard>
 
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:MessageControl Message="{x:Bind}" />
         </DataTemplate>
-        
+
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:SystemMessageControl Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
@@ -190,7 +136,7 @@
         </DataTemplate>
 
     </Page.Resources>
-    <Grid>
+    <Grid x:Name="RootGrid">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -245,69 +191,65 @@
 
                                 <!--  because VisualStateManager is wank  -->
                                 <Grid x:Name="ShowSidebarButtonContainer" Margin="0,0,-4,0">
-                                    <Button
-                                        x:Name="ShowSidebarButton"
-                                        Click="ShowSidebarButton_Click"
-                                        Content="&#xE700;"
-                                        Style="{ThemeResource IconButtonStyle}" />
+                                    <Button x:Name="ShowSidebarButton"
+                                            Click="ShowSidebarButton_Click"
+                                            Content="&#xE700;"
+                                            Style="{ThemeResource IconButtonStyle}" />
                                 </Grid>
 
-                                <Ellipse
-                                    x:Name="UserImage"
-                                    Grid.Column="1"
-                                    Width="24"
-                                    Height="24"
-                                    Margin="12,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Visibility="{Binding UserImageUrl, Converter={StaticResource HideOnNullConverter}}">
+                                <Ellipse x:Name="UserImage"
+                                         x:Load="{x:Bind ViewModel.UserImageUrl, Converter={StaticResource BoolConverter}}"
+                                         Grid.Column="1"
+                                         Width="24"
+                                         Height="24"
+                                         Margin="12,0,0,0"
+                                         VerticalAlignment="Center">
                                     <Ellipse.Fill>
                                         <ImageBrush ImageSource="{Binding UserImageUrl}" />
                                     </Ellipse.Fill>
                                 </Ellipse>
 
-                                <TextBlock
-                                    x:Name="Header"
-                                    Grid.Column="2"
-                                    Margin="8,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="15"
-                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                    TextTrimming="Clip"
-                                    TextWrapping="NoWrap">
-                                    <Run Text="{Binding ChannelPrefix, Mode=OneWay, FallbackValue=@}" /><Run
+                                <TextBlock x:Name="Header"
+                                           Grid.Column="2"
+                                           Margin="8,0,8,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                           TextTrimming="Clip"
+                                           TextWrapping="NoWrap">
+                                    <Run Text="{Binding ChannelPrefix, FallbackValue=@}" /><Run
                                         FontWeight="Bold"
                                         Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                                         Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}" /><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}" />
                                 </TextBlock>
 
-                                <Ellipse
-                                    Grid.Column="3"
-                                    Width="10"
-                                    Height="10"
-                                    Margin="-4,0,8,0"
-                                    Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                                <Ellipse x:Name="RecipientStatus"
+                                         x:Load="{x:Bind ViewModel.Recipient, Converter={StaticResource BoolConverter}}"
+                                         Grid.Column="3"
+                                         Width="10"
+                                         Height="10"
+                                         Margin="-4,0,8,0">
                                     <Ellipse.Fill>
-                                        <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}, FallbackValue=Gray}" />
+                                        <SolidColorBrush Color="{x:Bind ViewModel.Recipient.Presence, Converter={StaticResource PresenceColourConverter}, FallbackValue=Gray}" />
                                     </Ellipse.Fill>
                                 </Ellipse>
 
-                                <wam:MarkdownTextBlock
-                                    Grid.Column="4"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Channel="{Binding Channel}"
-                                    Text="{Binding Topic}"
-                                    TextWrapping="NoWrap" />
+                                <wam:MarkdownTextBlock x:Name="TopicText"
+                                                       Grid.Column="4"
+                                                       HorizontalAlignment="Stretch"
+                                                       VerticalAlignment="Center"
+                                                       Channel="{x:Bind ViewModel.Channel}"
+                                                       Text="{x:Bind ViewModel.Topic}"
+                                                       TextWrapping="NoWrap" />
                             </Grid>
 
 
-                            <StackPanel
-                                x:Name="DefaultControls"
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                w1709:Spacing="2"
-                                Opacity="1"
-                                Orientation="Horizontal">
+                            <StackPanel x:Name="DefaultControls"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        w1709:Spacing="2"
+                                        Opacity="1"
+                                        Orientation="Horizontal">
 
                                 <StackPanel.RenderTransform>
                                     <TranslateTransform x:Name="DefaultTranslate" X="0" />
@@ -335,58 +277,66 @@
                                     </lib:DropDownButton.Flyout>
                                 </lib:DropDownButton>
 
-                                <ToggleButton
-                                    x:Name="MuteButton"
-                                    x:Uid="/ChannelPage/MuteButton"
-                                    Content="&#xE74F;"
-                                    IsChecked="{Binding Channel.Muted, Mode=TwoWay}"
-                                    Style="{ThemeResource IconToggleButtonStyle}"/>
-                                <Button
-                                    x:Name="SearchButton"
-                                    x:Uid="/ChannelPage/SearchButton"
-                                    Content="&#xE721;"
-                                    Style="{ThemeResource IconButtonStyle}"/>
-                                <Button
-                                    x:Name="PinsButton"
-                                    x:Uid="/ChannelPage/PinsButton"
-                                    Click="pinsButton_Click"
-                                    Content="&#xE718;"
-                                    Style="{ThemeResource IconButtonStyle}"/>
-                                <Button
-                                    x:Name="UserListButton"
-                                    x:Uid="/ChannelPage/UserListButton"
-                                    Click="UserListButton_Click"
-                                    Content="&#xE716;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    Visibility="{Binding ShowUserlistButton, Converter={StaticResource BoolVisibilityConverter}}" />
+                                <ToggleButton x:Name="MuteButton"
+                                              x:Uid="/ChannelPage/MuteButton"
+                                              Content="&#xE74F;"
+                                              IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=TwoWay}"
+                                              Style="{ThemeResource IconToggleButtonStyle}">
+                                    <w1709:ToggleButton.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
+                                    </w1709:ToggleButton.KeyboardAccelerators>
+                                </ToggleButton>
+                                <Button x:Name="SearchButton"
+                                        x:Uid="/ChannelPage/SearchButton"
+                                        Content="&#xE721;"
+                                        Style="{ThemeResource IconButtonStyle}">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                </Button>
+                                <Button x:Name="PinsButton"
+                                        x:Uid="/ChannelPage/PinsButton"
+                                        Click="pinsButton_Click"
+                                        Content="&#xE718;"
+                                        Style="{ThemeResource IconButtonStyle}">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                </Button>
+                                <Button x:Name="UserListButton"
+                                        x:Uid="/ChannelPage/UserListButton"
+                                        x:Load="{x:Bind ViewModel.ShowUserlistButton}"
+                                        Click="UserListButton_Click"
+                                        Content="&#xE716;"
+                                        Style="{ThemeResource IconButtonStyle}">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                </Button>
 
                             </StackPanel>
 
-                            <StackPanel
-                                x:Name="EditingControls"
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                w1709:Spacing="2"
-                                Opacity="0"
-                                Orientation="Horizontal">
+                            <StackPanel x:Name="EditingControls"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        w1709:Spacing="2"
+                                        Opacity="0"
+                                        Orientation="Horizontal">
 
                                 <StackPanel.RenderTransform>
                                     <TranslateTransform x:Name="EditingTranslate" X="168" />
                                 </StackPanel.RenderTransform>
 
-                                <Button
-                                    x:Name="DeleteAllButton"
-                                    x:Uid="/ChannelPage/DeleteAllButton"
-                                    Click="DeleteAllButton_Click"
-                                    Content="&#xE74D;"
-                                    Style="{ThemeResource IconButtonStyle}"/>
-                                <Button
-                                    x:Name="CloseEditButton"
-                                    x:Uid="/ChannelPage/CloseEditButton"
-                                    Click="CloseEditButton_Click"
-                                    Content="&#xE711;"
-                                    Style="{ThemeResource IconButtonStyle}"/>
-
+                                <Button x:Name="DeleteAllButton"
+                                        x:Uid="/ChannelPage/DeleteAllButton"
+                                        Click="DeleteAllButton_Click"
+                                        Content="&#xE74D;"
+                                        Style="{ThemeResource IconButtonStyle}"/>
+                                <Button x:Name="CloseEditButton"
+                                        x:Uid="/ChannelPage/CloseEditButton"
+                                        Click="CloseEditButton_Click"
+                                        Content="&#xE711;"
+                                        Style="{ThemeResource IconButtonStyle}"/>
                             </StackPanel>
 
                         </Grid>
@@ -401,17 +351,16 @@
                     </Grid>
 
                     <Grid Grid.Row="1">
-                        <ListView
-                            x:Name="MessageList"
-                            Background="{ThemeResource MainBackgroundBrush}"
-                            ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
-                            ItemsSource="{Binding Messages}"
-                            ReorderMode="Disabled"
-                            SelectionChanged="MessageList_SelectionChanged"
-                            ShowsScrollingPlaceholders="False"
-                            ScrollViewer.HorizontalScrollMode="Disabled"
-                            ScrollViewer.IsDeferredScrollingEnabled ="False"
-                            SelectionMode="None">
+                        <ListView x:Name="MessageList"
+                                  Background="{ThemeResource MainBackgroundBrush}"
+                                  ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
+                                  ItemsSource="{x:Bind ViewModel.Messages}"
+                                  ReorderMode="Disabled"
+                                  SelectionChanged="MessageList_SelectionChanged"
+                                  ShowsScrollingPlaceholders="False"
+                                  ScrollViewer.HorizontalScrollMode="Disabled"
+                                  ScrollViewer.IsDeferredScrollingEnabled ="False"
+                                  SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel
@@ -442,23 +391,21 @@
                             <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
-                    
+
                     <Grid Grid.Row="2">
-                        <controls1:UploadItemsControl
-                            x:Name="UploadItems"
-                            Height="150"
-                            Visibility="Collapsed"
-                            IsEnabled="{Binding ShowUploads, UpdateSourceTrigger=PropertyChanged}">
+                        <controls1:UploadItemsControl x:Name="UploadItems"
+                                                      Height="150"
+                                                      Visibility="Collapsed"
+                                                      IsEnabled="{x:Bind ViewModel.ShowUploads}">
                             <controls1:UploadItemsControl.RenderTransform>
                                 <TranslateTransform x:Name="UploadsTransform" Y="250" />
                             </controls1:UploadItemsControl.RenderTransform>
                         </controls1:UploadItemsControl>
 
-                        <Grid
-                            x:Name="PhotoPicker"
-                            Height="150"
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                            Visibility="Collapsed">
+                        <Grid x:Name="PhotoPicker"
+                              Height="150"
+                              Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                              Visibility="Collapsed">
                             <Grid.RenderTransform>
                                 <TranslateTransform x:Name="PhotoTransform" Y="200" />
                             </Grid.RenderTransform>
@@ -491,20 +438,19 @@
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                             </Grid>
 
-                            <ListView
-                                x:Name="PhotosList"
-                                Grid.Column="1"
-                                ShowsScrollingPlaceholders="False"
-                                SingleSelectionFollowsFocus="False"
-                                SelectionMode="None"
-                                IsItemClickEnabled="True"
-                                ItemClick="PhotosList_ItemClick"
-                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                ScrollViewer.HorizontalScrollMode="Enabled"
-                                ScrollViewer.IsHorizontalRailEnabled="True"
-                                ScrollViewer.IsVerticalRailEnabled="False"
-                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.VerticalScrollMode="Disabled">
+                            <ListView x:Name="PhotosList"
+                                    Grid.Column="1"
+                                    ShowsScrollingPlaceholders="False"
+                                    SingleSelectionFollowsFocus="False"
+                                    SelectionMode="None"
+                                    IsItemClickEnabled="True"
+                                    ItemClick="PhotosList_ItemClick"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                    ScrollViewer.HorizontalScrollMode="Enabled"
+                                    ScrollViewer.IsHorizontalRailEnabled="True"
+                                    ScrollViewer.IsVerticalRailEnabled="False"
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollMode="Disabled">
                                 <ListView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ItemsStackPanel Orientation="Horizontal" CacheLength="4" />
@@ -512,11 +458,10 @@
                                 </ListView.ItemsPanel>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <controls:ImageEx
-                                            Height="150"
-                                            MaxWidth="300"
-                                            IsCacheEnabled="True"
-                                            Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
+                                        <controls:ImageEx Height="150"
+                                                          MaxWidth="300"
+                                                          IsCacheEnabled="True"
+                                                          Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -531,10 +476,9 @@
                         </Grid>
                     </Grid>
 
-                    <Grid
-                        x:Name="FooterGrid"
-                        Grid.Row="3"
-                        Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid x:Name="FooterGrid"
+                          Grid.Row="3"
+                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -546,12 +490,11 @@
                             <TranslateTransform x:Name="BottomGridTransform"/>
                         </Grid.RenderTransform>
 
-                        <ItemsControl
-                            Grid.Row="1"
-                            Margin="8,4,8,0"
-                            ItemTemplate="{StaticResource TypingUserTemplate}"
-                            ItemsSource="{Binding TypingUsers}"
-                            Visibility="{Binding ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}">
+                        <ItemsControl Grid.Row="1"
+                                      Margin="8,4,8,0"
+                                      ItemTemplate="{StaticResource TypingUserTemplate}"
+                                      ItemsSource="{x:Bind ViewModel.TypingUsers}"
+                                      Visibility="{x:Bind ViewModel.ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel Orientation="Horizontal" />
@@ -559,12 +502,11 @@
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
 
-                        <ProgressBar
-                            x:Name="SlowModeTimeout"
-                            Grid.Row="2"
-                            Maximum="{Binding PerUserRateLimit}"
-                            Visibility="{Binding ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
-                            Value="{Binding SlowModeTimeout}" />
+                        <ProgressBar x:Name="SlowModeTimeout"
+                                     Grid.Row="2"
+                                     Maximum="{x:Bind ViewModel.PerUserRateLimit}"
+                                     Visibility="{x:Bind ViewModel.ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
+                                     Value="{x:Bind ViewModel.SlowModeTimeout}" />
 
                         <Grid
                             Grid.Row="3"
@@ -577,59 +519,108 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Button
-                                x:Name="UploadButton"
-                                Click="uploadButton_Click"
-                                Content="&#xE898;"
-                                Visibility="{Binding CanUpload}"
-                                Style="{ThemeResource IconButtonStyle}" />
+                            <Button x:Name="UploadButton"
+                                    x:Load="{x:Bind ViewModel.CanUpload}"
+                                    Click="uploadButton_Click"
+                                    Content="&#xE898;"
+                                    Style="{ThemeResource IconButtonStyle}">
+                                <w1709:Button.KeyboardAccelerators>
+                                    <w1709:KeyboardAccelerator Modifiers="Control,Shift" Key="U"/>
+                                </w1709:Button.KeyboardAccelerators>
+                            </Button>
 
-                            <TextBox
-                                x:Name="MessageTextBox"
-                                Grid.Column="1"
-                                MaxHeight="90"
-                                Padding="10"
-                                VerticalAlignment="Stretch"
-                                FocusEngaged="messageTextBox_FocusEngaged"
-                                InputScope="Chat"
-                                IsEnabled="{Binding CanType}"
-                                MaxLength="2000"
-                                Paste="messageTextBox_Paste"
-                                PlaceholderText="{Binding ChannelPlaceholder}"
-                                Style="{ThemeResource MessageTextBoxStyle}"
-                                TextChanged="messageTextBox_TextChanged"
-                                TextWrapping="Wrap" />
-
-                            <TextBlock
-                                Grid.Column="1"
-                                Margin="8"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE916;"
-                                ToolTipService.ToolTip="{Binding SlowModeText}"
-                                Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
-
-                            <ToggleButton
-                                x:Name="EmoteButton"
-                                Grid.Column="2"
-                                Click="emoteButton_Click"
-                                Content="&#xED54;"
-                                Style="{ThemeResource IconToggleButtonStyle}"
-                                Visibility="{Binding CanSend, Converter={StaticResource BoolVisibilityConverter}}">
-                            </ToggleButton>
-                            <Button
-                                x:Name="SendButton"
-                                Grid.Column="3"
-                                Click="sendButton_Click"
-                                Content="&#xE724;"
-                                IsEnabled="{Binding CanSend}"
-                                Style="{ThemeResource IconButtonStyle}" />
+                            <controls1:MessageTextBox x:Name="MessageTextBox" 
+                                                      Grid.Column="1"
+                                                      VerticalAlignment="Center"
+                                                      Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
+                                                      PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder}" 
+                                                      Channel="{x:Bind ViewModel.Channel}"
+                                                      CurrentUser="{x:Bind ViewModel.CurrentUser}"
+                                                      SendButtonEnabled="{x:Bind ViewModel.CanSend}"
+                                                      Paste="OnMessageTextBoxPaste"
+                                                      SendButtonVisibility="Visible"
+                                                      SubmitButtonVisibility="Collapsed"
+                                                      CancelButtonVisibility="Collapsed"
+                                                      SendInvoked="MessageTextBox_SendInvoked"
+                                                      EditInvoked="MessageTextBox_EditInvoked"
+                                                      ShouldSendTyping="MessageTextBox_ShouldSendTyping" />
                         </Grid>
                     </Grid>
 
-                   
+
                 </Grid>
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="EditModeGroup">
+                        <VisualState x:Name="EditMode">
+                            <VisualState.Storyboard>
+                                <Storyboard x:Name="ShowEditControls" >
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="168"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseOut}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseIn}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                                </Storyboard>
+                            </VisualState.Storyboard>
+                            <VisualState.Setters>
+                                <Setter Target="MessageList.SelectionMode" Value="Multiple"/>
+                                <Setter Target="MessageList.ItemTemplate" Value="{StaticResource EditingMessageTemplate}"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="NormalMode">
+                            <VisualState.Storyboard>
+                                <Storyboard x:Name="HideEditControls">
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="168"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseIn}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseOut}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                                </Storyboard>
+                            </VisualState.Storyboard>
+                            <VisualState.Setters>
+                                <Setter Target="MessageList.SelectionMode" Value="None"/>
+                                <Setter Target="MessageList.ItemTemplate" Value="{StaticResource DefaultMessageTemplate}"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
             </controls:DropShadowPanel>
         </Grid>
         <VisualStateManager.VisualStateGroups>

@@ -11,7 +11,9 @@
     xmlns:misc="using:Unicord.Universal.Misc"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    Loaded="UserControl_Loaded"
+    Unloaded="UserControl_Unloaded">
     <UserControl.Resources>
 
         <CollectionViewSource x:Name="source" x:Key="source"/>

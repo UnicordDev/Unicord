@@ -1,13 +1,13 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Resources;
@@ -32,6 +32,7 @@ namespace Unicord.Universal.Models
         private ResourceLoader _strings;
         private SemaphoreSlim _loadSemaphore;
         private DispatcherTimer _slowModeTimer;
+        private string _messageText;
         private bool _isTranscoding;
 
         public ChannelViewModel(DiscordChannel channel)
@@ -91,6 +92,12 @@ namespace Unicord.Universal.Models
         }
 
         public ObservableCollection<DiscordMessage> Messages { get; set; }
+
+        public string MessageText
+        {
+            get => _messageText;
+            set => OnPropertySet(ref _messageText, value);
+        }
 
         public DiscordChannel Channel
         {
@@ -194,8 +201,8 @@ namespace Unicord.Universal.Models
         /// The current placeholder to display in the message text box
         /// </summary>
         public string ChannelPlaceholder =>
-           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ? 
-            string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, ChannelName) : 
+           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ?
+            string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, ChannelName) :
             _strings.GetString("ChannelReadonlyText");
 
         public bool CanType => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
@@ -532,78 +539,65 @@ namespace Unicord.Universal.Models
         /// Abstracts sending a message.
         /// </summary>
         /// <returns></returns>
-        public async Task SendMessageAsync(TextBox textBox, IProgress<double?> progress = null)
+        public async Task SendMessageAsync(IProgress<double?> progress = null)
         {
             if (Channel.Type == ChannelType.Voice)
             {
                 return;
             }
 
-            if ((!string.IsNullOrWhiteSpace(textBox.Text) || FileUploads.Any()) && CanSend)
+            if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
             {
-                var str = textBox.Text;
-                if (str.Length < 2000)
+                var txt = MessageText;
+                MessageText = "";
+
+                if (FileUploads.Any())
                 {
-                    textBox.Text = "";
-
-                    try
+                    var models = FileUploads.ToArray();
+                    FileUploads.Clear();
+                    var files = new Dictionary<string, IInputStream>();
+                    foreach (var item in models)
                     {
-                        if (FileUploads.Any())
-                        {
-                            var models = FileUploads.ToArray();
-                            FileUploads.Clear();
-                            var files = new Dictionary<string, IInputStream>();
-                            foreach (var item in models)
-                            {
-                                files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
-                            }
-
-                            await Tools.SendFilesWithProgressAsync(Channel, str, files, progress).ConfigureAwait(false);
-
-                            foreach (var item in files)
-                            {
-                                item.Value.Dispose();
-                            }
-
-                            foreach (var item in models)
-                            {
-                                if (item.IsTemporary && item.StorageFile != null)
-                                {
-                                    await item.StorageFile.DeleteAsync();
-                                }
-
-                                item.Dispose();
-                            }
-                        }
-                        else
-                        {
-                            await Channel.SendMessageAsync(str).ConfigureAwait(false);
-                        }
-
-                        if (!ImmuneToSlowMode)
-                        {
-                            _messageLastSent = DateTimeOffset.Now;
-                            SlowModeTimeout = PerUserRateLimit;
-                            InvokePropertyChanged(nameof(CanSend));
-                            _context.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
-                        }
+                        files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
-                    catch
+
+                    await Tools.SendFilesWithProgressAsync(Channel, txt, files, progress).ConfigureAwait(false);
+
+                    foreach (var item in files)
                     {
-                        // TODO: this is shite
-                        await UIUtilities.ShowErrorDialogAsync(
-                            "Failed to send message!",
-                            "Oops, sending that didn't go so well, which probably means Discord is having a stroke. Again. Please try again later.");
+                        item.Value.Dispose();
                     }
+
+                    foreach (var item in models)
+                    {
+                        if (item.IsTemporary && item.StorageFile != null)
+                        {
+                            await item.StorageFile.DeleteAsync();
+                        }
+
+                        item.Dispose();
+                    }
+                }
+                else
+                {
+                    await Channel.SendMessageAsync(txt).ConfigureAwait(false);
+                }
+
+                if (!ImmuneToSlowMode)
+                {
+                    _messageLastSent = DateTimeOffset.Now;
+                    SlowModeTimeout = PerUserRateLimit;
+                    InvokePropertyChanged(nameof(CanSend));
+                    _context.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
                 }
             }
         }
 
         #region Typing
 
-        public async Task TriggerTypingAsync(string text)
+        public async Task TriggerTypingAsync()
         {
-            if (!string.IsNullOrEmpty(text) && (DateTimeOffset.Now - _typingLastSent).Seconds > 10)
+            if ((DateTimeOffset.Now - _typingLastSent).Seconds > 10)
             {
                 _typingLastSent = DateTimeOffset.Now;
 
