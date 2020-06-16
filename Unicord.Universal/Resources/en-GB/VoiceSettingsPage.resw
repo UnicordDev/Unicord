@@ -126,6 +126,24 @@
   <data name="InputDevices.Header" xml:space="preserve">
     <value>Input Device</value>
   </data>
+  <data name="NoiseSuppressionDisabled.Content" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="NoiseSuppressionHeader.Text" xml:space="preserve">
+    <value>Noise Suppression</value>
+  </data>
+  <data name="NoiseSuppressionHigh.Content" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="NoiseSuppressionLow.Content" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="NoiseSuppressionMedium.Content" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="NoiseSuppressionSubheader.Text" xml:space="preserve">
+    <value>Unicord can dynamically reduce the amount of noise or hiss on your microphone if needed.</value>
+  </data>
   <data name="OutputDevices.Header" xml:space="preserve">
     <value>Output Device</value>
   </data>
