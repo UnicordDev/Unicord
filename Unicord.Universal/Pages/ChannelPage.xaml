@@ -115,60 +115,6 @@
                 Duration="00:00:00.33" />
         </Storyboard>
 
-        <Storyboard x:Key="ShowEditControls" x:Name="ShowEditControls" >
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="DefaultTranslate"
-                Storyboard.TargetProperty="X"
-                To="168"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="EditingTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="DefaultControls"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.33" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="EditingControls"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.33" />
-        </Storyboard>
-
-        <Storyboard x:Key="HideEditControls" x:Name="HideEditControls">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="DefaultTranslate"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseMovement}"
-                Storyboard.TargetName="EditingTranslate"
-                Storyboard.TargetProperty="X"
-                To="168"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
-                Storyboard.TargetName="DefaultControls"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.33" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
-                Storyboard.TargetName="EditingControls"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.33" />
-        </Storyboard>
-
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:MessageControl Message="{x:Bind}" />
         </DataTemplate>
@@ -580,11 +526,13 @@
 
                             <controls1:MessageTextBox x:Name="MessageTextBox" 
                                                       Grid.Column="1"
+                                                      VerticalAlignment="Center"
                                                       Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
                                                       PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder}" 
                                                       Channel="{x:Bind ViewModel.Channel}"
                                                       CurrentUser="{x:Bind ViewModel.CurrentUser}"
                                                       SendButtonEnabled="{x:Bind ViewModel.CanSend}"
+                                                      Paste="OnMessageTextBoxPaste"
                                                       SendButtonVisibility="Visible"
                                                       SubmitButtonVisibility="Collapsed"
                                                       CancelButtonVisibility="Collapsed"
@@ -598,13 +546,69 @@
                 </Grid>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="EditModeGroup">
-                        <VisualState x:Name="EditMode" Storyboard="{StaticResource ShowEditControls}">
+                        <VisualState x:Name="EditMode">
+                            <VisualState.Storyboard>
+                                <Storyboard x:Name="ShowEditControls" >
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="168"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseOut}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseIn}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                                </Storyboard>
+                            </VisualState.Storyboard>
                             <VisualState.Setters>
                                 <Setter Target="MessageList.SelectionMode" Value="Multiple"/>
                                 <Setter Target="MessageList.ItemTemplate" Value="{StaticResource EditingMessageTemplate}"/>
                             </VisualState.Setters>
                         </VisualState>
-                        <VisualState x:Name="NormalMode" Storyboard="{StaticResource HideEditControls}">
+                        <VisualState x:Name="NormalMode">
+                            <VisualState.Storyboard>
+                                <Storyboard x:Name="HideEditControls">
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="168"
+                                        Duration="00:00:00.50" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseIn}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                                    <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseOut}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                                </Storyboard>
+                            </VisualState.Storyboard>
                             <VisualState.Setters>
                                 <Setter Target="MessageList.SelectionMode" Value="None"/>
                                 <Setter Target="MessageList.ItemTemplate" Value="{StaticResource DefaultMessageTemplate}"/>

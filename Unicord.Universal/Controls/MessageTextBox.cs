@@ -1,8 +1,13 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using WamWooWam.Core;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -17,9 +22,39 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Controls
 {
+    public class DiscordEntityTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate UserTemplate { get; set; }
+        public DataTemplate RoleTemplate { get; set; }
+        public DataTemplate ChannelTemplate { get; set; }
+        public DataTemplate EmojiTemplate { get; set; }
+        public DataTemplate EmoteTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            switch (item)
+            {
+                case DiscordUser user:
+                    return UserTemplate;
+                case DiscordRole role:
+                    return RoleTemplate;
+                case DiscordChannel channel:
+                    return ChannelTemplate;
+                case DiscordEmoji emoji:
+                    if (emoji.Id != 0)
+                        return EmoteTemplate;
+                    else
+                        return EmojiTemplate;
+                default:
+                    return null;
+            }
+        }
+    }
+
     public sealed class MessageTextBox : Control
     {
         private CoreWindow _coreWindow;
+        private AutoSuggestBox _suggestBox;
         private TextBox _textBox;
         private ToggleButton _emoteButton;
         private Button _sendButton;
@@ -27,8 +62,10 @@ namespace Unicord.Universal.Controls
         private Button _cancelButton;
         private Flyout _emoteFlyout;
         private EmotePicker _emotePicker;
-        private Popup _suggestionPopup;
-        private Grid _suggestionChild;
+        private List<DiscordEmoji> _emoji;
+        private bool _shouldFixSelection;
+        private int _index = -1;
+        private int _length = -1;
 
         #region Depdendency Properties
 
@@ -39,7 +76,7 @@ namespace Unicord.Universal.Controls
         }
 
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(MessageTextBox), new PropertyMetadata(null));
+            DependencyProperty.Register("Text", typeof(string), typeof(MessageTextBox), new PropertyMetadata(null, OnTextChanged));
 
         public string PlaceholderText
         {
@@ -135,16 +172,71 @@ namespace Unicord.Universal.Controls
             this.Loaded += OnLoaded;
         }
 
+        public void AppendText(string text, bool focus = true)
+        {
+            _shouldFixSelection = true;
+            Text = AppendText(Text, text);
+
+            if (focus)
+            {
+                Focus(FocusState.Programmatic);
+            }
+        }
+
+        public void AppendObject(object item, bool focus = true)
+        {
+            _shouldFixSelection = true;
+            Text = AppendObject(Text, item);
+
+            if (focus)
+            {
+                Focus(FocusState.Programmatic);
+            }
+        }
+
+        public new void Focus(FocusState state = FocusState.Keyboard)
+        {
+            if (_suggestBox != null)
+            {
+                _suggestBox.Focus(state);
+                _textBox.SelectionStart = Text.Length;
+            }
+        }
+
+        public void Clear()
+        {
+            if (_suggestBox != null)
+            {
+                _suggestBox.Text = "";
+                _suggestBox.ItemsSource = null;
+            }
+
+            Text = "";
+        }
+
+        protected override void OnApplyTemplate()
+        {
+            _coreWindow = Window.Current.CoreWindow;
+        }
+
         //
         // the fact i have to do this is fucking sickening microsoft
         //
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _textBox = this.FindChild<TextBox>("PART_TextBox");
-            _textBox.SizeChanged += OnTextBoxSizeChanged;
-            _textBox.TextChanged += OnTextBoxTextChanged;
-            _textBox.KeyDown += OnTextBoxKeyDown;
+            _emoji = null;
+
+            _suggestBox = this.FindChild<AutoSuggestBox>("PART_TextBox");
+            _suggestBox.TextChanged += OnSuggestionBoxTextChanged;
+            _suggestBox.SuggestionChosen += OnSuggestBoxSuggestionChosen;
+            _suggestBox.QuerySubmitted += OnSuggestBoxQuerySubmitted;
+            _suggestBox.ItemsSource = null;
+            _suggestBox.Text = Text; // ffs
+
+            _textBox = _suggestBox.FindChild<TextBox>();
             _textBox.Paste += OnTextBoxPaste;
+            _textBox.KeyDown += OnTextBoxKeyDown;
+            _textBox.TextChanged += OnTextChanged;
 
             _sendButton = this.FindChild<Button>("PART_SendButton");
             _sendButton.Click += OnSendButtonClick;
@@ -157,23 +249,42 @@ namespace Unicord.Universal.Controls
 
             _emoteButton = this.FindChild<ToggleButton>("PART_EmoteButton");
             _emoteButton.Checked += OnShowEmotePicker;
-            // _emoteButton.Unchecked += OnHideEmotePicker;
-
-            _suggestionPopup = this.FindChild<Popup>("PART_SuggestionPopup");
-
-            _suggestionChild = _suggestionPopup.Child as Grid;
-            _suggestionChild.Width = _textBox.ActualWidth;
-            _suggestionChild.SizeChanged += OnPopupSizeChanged;
         }
 
-        private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            _suggestionChild.Width = e.NewSize.Width;
+            if (_shouldFixSelection)
+            {
+                _textBox.SelectionStart = _textBox.Text.Length;
+                _shouldFixSelection = false;
+            }
         }
 
-        private void OnPopupSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnSendButtonClick(object sender, RoutedEventArgs e)
         {
-            _suggestionPopup.VerticalOffset = -_suggestionChild.ActualHeight;
+            SendInvoked?.Invoke(this, _suggestBox.Text);
+            Focus();
+        }
+
+        private void OnSubmitButtonClick(object sender, RoutedEventArgs e)
+        {
+            SubmitInvoked?.Invoke(this, _suggestBox.Text);
+        }
+
+        private void OnCancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            CancelInvoked?.Invoke(this, null);
+        }
+
+        private void OnTextBoxPaste(object sender, TextControlPasteEventArgs e)
+        {
+            Paste?.Invoke(sender, e);
+        }
+
+        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if ((d as MessageTextBox)._suggestBox is AutoSuggestBox box)
+                box.Text = e.NewValue as string;
         }
 
         private void OnShowEmotePicker(object sender, RoutedEventArgs e)
@@ -196,96 +307,192 @@ namespace Unicord.Universal.Controls
             Focus();
         }
 
-        private void OnEmotePicked(object sender, DSharpPlus.Entities.DiscordEmoji e)
+        private void OnEmotePicked(object sender, DiscordEmoji e)
         {
             if (e != null)
             {
-                if (Text.Length > 0 && !char.IsWhiteSpace(Text[Text.Length - 1]))
-                {
-                    Text += " ";
-                }
-
-                Text += $"{e} ";
-                Focus(FocusState.Programmatic);
+                AppendText(e.ToString());
             }
-        }
-
-        public new void Focus(FocusState state = FocusState.Keyboard)
-        {
-            if (_textBox != null)
-            {
-                _textBox.Focus(state);
-                _textBox.SelectionStart = _textBox.Text.Length;
-            }
-        }
-
-        public void Clear()
-        {
-            if (_textBox != null)
-                _textBox.Text = "";
-        }
-
-        protected override void OnApplyTemplate()
-        {
-            _coreWindow = Window.Current.CoreWindow;
-        }
-
-        private void OnSendButtonClick(object sender, RoutedEventArgs e)
-        {
-            SendInvoked?.Invoke(this, _textBox.Text);
-            Focus();
-        }
-
-        private void OnSubmitButtonClick(object sender, RoutedEventArgs e)
-        {
-            SubmitInvoked?.Invoke(this, _textBox.Text);
-        }
-
-        private void OnCancelButtonClick(object sender, RoutedEventArgs e)
-        {
-            CancelInvoked?.Invoke(this, null);
-        }
-
-        private void OnTextBoxPaste(object sender, TextControlPasteEventArgs e)
-        {
-            Paste?.Invoke(sender, e);
         }
 
         private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
         {
-            var shift = _coreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter)
-            {
-                e.Handled = true;
-                if (shift.HasFlag(CoreVirtualKeyStates.Down))
-                {
-                    var start = _textBox.SelectionStart;
-                    _textBox.Text = _textBox.Text.Insert(start, "\r\n");
-                    _textBox.SelectionStart = start + 1;
-                }
-                else
-                {
-                    SendInvoked?.Invoke(this, _textBox.Text);
-                }
-            }
-            else if (e.Key == VirtualKey.Up && string.IsNullOrWhiteSpace(_textBox.Text))
+            if (e.Key == VirtualKey.Up && string.IsNullOrWhiteSpace(_suggestBox.Text))
             {
                 EditInvoked?.Invoke(this, null);
             }
         }
 
-        private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        private async void OnSuggestionBoxTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(_textBox.Text))
+            if (e.Reason != AutoSuggestionBoxTextChangeReason.UserInput)
+                return;
+
+            Text = _suggestBox.Text; // fuck you
+
+            if (!string.IsNullOrWhiteSpace(_suggestBox.Text))
             {
                 ShouldSendTyping?.Invoke(this, null);
             }
 
-            Text = _textBox.Text; // fuck you
+            await UpdateAutoSuggestBoxSource(sender);
+        }
 
-            if (Text.EndsWith(':'))
+        public void OnSuggestBoxSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            sender.Text = Text;
+        }
+
+        private void OnSuggestBoxQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if (args.ChosenSuggestion != null)
             {
-                this.FindChild<Popup>("PART_SuggestionPopup").IsOpen = true;
+                if (_index != -1 && _length != -1)
+                {
+                    Text = Text.Remove(_index, _length);
+
+                    _index = -1;
+                    _length = -1;
+                }
+
+                AppendObject(args.ChosenSuggestion);
+                return;
+            }
+
+            var shift = _coreWindow.GetKeyState(VirtualKey.Shift);
+            if (shift.HasFlag(CoreVirtualKeyStates.Down))
+            {
+                var start = _textBox.SelectionStart.Clamp(0, Text.Length);
+                _shouldFixSelection = true;
+                Text = Text.Insert(start, "\r\n");
+            }
+            else
+            {
+                Text = args.QueryText;
+                SendInvoked?.Invoke(this, args.QueryText);
+            }
+        }
+
+        private async Task UpdateAutoSuggestBoxSource(AutoSuggestBox sender)
+        {
+            // don't ya just love off by one?
+            var position = (_textBox.SelectionStart).Clamp(0, Text.Length - 1);
+            var i = position;
+            for (; i >= 0; i--)
+            {
+                var c = Text[i];
+                if (char.IsWhiteSpace(c))
+                {
+                    break; // return the last "word"
+                }
+            }
+
+            // i understand this code is probably overly verbose but i want it to like, actualy work
+            // and be somewhat understandable if it ever turns out to not work
+
+            _index = i + 1;
+            _length = position - i;
+            if (_length == 0)
+            {
+                sender.ItemsSource = null;
+                return;
+            }
+
+            var text = Text.Substring(_index, _length)
+                           .Trim(':', '@', '#')
+                           .ToLowerInvariant();
+
+            var cult = CultureInfo.InvariantCulture.CompareInfo;
+
+            // LINQ Fuckery: The Movie: The Video Game: The Novelisation
+            // TODO: Commands?
+
+            if (Text[_index] == '@')
+            {
+                UpdateSourceForUserRoleMentions(sender, text, cult);
+                return;
+            }
+
+            if (Text[_index] == '#' && Channel.Guild != null)
+            {
+                UpdateSourceForChannelMentions(sender, text, cult);
+                return;
+            }
+
+            if (Text[_index] == ':' && _length > 2)
+            {
+                await UpdateSourceForEmojiMentionsAsync(sender, text, cult);
+                return;
+            }
+
+            sender.ItemsSource = null;
+            _index = -1;
+            _length = -1;
+        }
+
+        private void UpdateSourceForUserRoleMentions(AutoSuggestBox sender, string text, CompareInfo cult)
+        {
+            var users = (Channel is DiscordDmChannel dm) ? dm.Recipients : Channel.Users.Cast<DiscordUser>();
+            var roles = Channel.Guild?.Roles.Values.Where(r => r.IsMentionable) ?? Enumerable.Empty<DiscordRole>();
+            var username = text.Contains('#') ? text.Substring(0, text.IndexOf('#')) : text;
+
+            var filteredUsers = users.Where(u =>
+                cult.IndexOf(u.Username, text, CompareOptions.IgnoreCase) == 0 ||
+                cult.IndexOf(u.DisplayName, text, CompareOptions.IgnoreCase) == 0);
+            var filteredRoles = roles.Where(r => cult.IndexOf(r.Name, text, CompareOptions.IgnoreCase) == 0);
+
+            var list = new List<object>();
+            list.AddRange(filteredRoles);
+            list.AddRange(filteredUsers);
+
+            sender.ItemsSource = list;
+        }
+
+        private void UpdateSourceForChannelMentions(AutoSuggestBox sender, string text, CompareInfo cult)
+        {
+            var channels = Channel.Guild.Channels.Values;
+            sender.ItemsSource = channels.Where(c => c.Type == ChannelType.Text)
+                                         .Where(c => c.CurrentPermissions.HasPermission(Permissions.AccessChannels))
+                                         .Where(c => cult.IndexOf(c.Name, text, CompareOptions.IgnoreCase) == 0);
+        }
+
+        private async Task UpdateSourceForEmojiMentionsAsync(AutoSuggestBox sender, string text, CompareInfo cult)
+        {
+            if (_emoji == null)
+            {
+                _emoji = await Tools.GetEmojiAsync(Channel);
+            }
+
+            sender.ItemsSource = _emoji.Where(x => cult.IndexOf(x.GetSearchName(), text, CompareOptions.IgnoreCase) == 0)
+                                       .OrderBy(x => cult.IndexOf(x.GetSearchName(), text, CompareOptions.IgnoreCase));
+        }
+
+        private string AppendText(string target, string text)
+        {
+            if (target.Length > 0 && !char.IsWhiteSpace(target[target.Length - 1]))
+            {
+                target += " ";
+            }
+
+            target += $"{text} ";
+
+            return target;
+        }
+
+        private string AppendObject(string target, object item)
+        {
+            switch (item)
+            {
+                case DiscordUser user:
+                    return AppendText(target, user.Mention);
+                case DiscordChannel channel:
+                    return AppendText(target, channel.Mention);
+                case DiscordRole role:
+                    return AppendText(target, role.Mention);
+                case DiscordEmoji emoji:
+                    return AppendText(target, emoji);
+                default:
+                    return AppendText(target, item.ToString());
             }
         }
     }

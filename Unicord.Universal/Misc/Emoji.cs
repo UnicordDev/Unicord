@@ -27,19 +27,19 @@ namespace Unicord.Universal.Misc
 
     public class EmojiGroup : IGrouping<EmojiHeader, DiscordEmoji>
     {
-        private IEnumerable<DiscordEmoji> _emojis;
+        private List<DiscordEmoji> _emojis;
 
         public EmojiGroup(DiscordGuild guild, IEnumerable<DiscordEmoji> emojis)
         {
             Key = new EmojiHeader() { Name = guild.Name, IconUrl = guild.IconUrl };
-            _emojis = emojis;
+            _emojis = emojis.ToList();
         }
 
         public EmojiGroup(string category, IEnumerable<Emoji> emojis)
         {
             var first = emojis.First();
             Key = new EmojiHeader() { Name = category, IconCharacter = first.Char };
-            _emojis = emojis.Select(e => DiscordEmoji.FromUnicode(e.Char));
+            _emojis = emojis.Select(e => DiscordEmoji.FromUnicode(e.Char)).ToList();
         }
 
         public EmojiHeader Key { get; }

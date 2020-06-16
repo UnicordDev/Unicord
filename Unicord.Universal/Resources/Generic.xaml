@@ -303,6 +303,9 @@
         <Setter Property="MaxLength" Value="2000"/>
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <!--<Setter Property="AcceptsReturn" Value="True"/>-->
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -375,6 +378,136 @@
         </Setter>
     </Style>
 
+    <!-- These names are way too fucking long -->
+
+    <DataTemplate x:Key="MessageTextBoxUserSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <lib:PersonPicture Width="24" Height="24" DisplayName="{Binding DisplayName}">
+                <lib:PersonPicture.ProfilePicture>
+                    <BitmapImage UriSource="{Binding NonAnimatedAvatarUrl}" DecodePixelWidth="24" DecodePixelHeight="24" DecodePixelType="Logical" />
+                </lib:PersonPicture.ProfilePicture>
+            </lib:PersonPicture>
+
+            <local:UsernameControl Grid.Column="1"
+                                   Margin="8,0"
+                                   VerticalAlignment="Center"
+                                   User="{Binding}" />
+
+            <Ellipse Width="8"
+                     Height="8"
+                     Margin="0"
+                     Grid.Column="2"
+                     VerticalAlignment="Center">
+                <Ellipse.Fill>
+                    <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxRoleSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="Segoe MDL2 Assets" 
+                           FontSize="16" 
+                           Text="&#xE910;" />
+            </Grid>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxChannelSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="Segoe MDL2 Assets" 
+                           FontSize="16" 
+                           Text="{Binding Converter={StaticResource ChannelSymbolConverter}}" />
+            </Grid>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxEmojiSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontSize="18" 
+                           Text="{Binding Name}" />
+            </Grid>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding NameWithColons}" VerticalAlignment="Center"/>
+
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxEmoteSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+                <Image Width="24" Height="24">
+                    <Image.Source>
+                        <BitmapImage DecodePixelWidth="24"  DecodePixelType="Logical" UriSource="{Binding Url}"/>
+                    </Image.Source>
+                </Image>
+
+                <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+
+            <Ellipse Grid.Column="2" 
+                     VerticalAlignment="Center" 
+                     Width="16" 
+                     Height="16" 
+                     ToolTipService.ToolTip="{Binding Guild.Name}"
+                     Visibility="{Binding Guild, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                <Ellipse.Fill>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage DecodePixelWidth="16" DecodePixelHeight="16" DecodePixelType="Logical" UriSource="{Binding Guild.IconUrl}"/>
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </DataTemplate>
+
+    <local:DiscordEntityTemplateSelector x:Key="MessageTextBoxSuggestionTemplateSelector"
+                                         UserTemplate="{StaticResource MessageTextBoxUserSuggestionTemplate}"
+                                         RoleTemplate="{StaticResource MessageTextBoxRoleSuggestionTemplate}"
+                                         ChannelTemplate="{StaticResource MessageTextBoxChannelSuggestionTemplate}"
+                                         EmojiTemplate="{StaticResource MessageTextBoxEmojiSuggestionTemplate}"
+                                         EmoteTemplate="{StaticResource MessageTextBoxEmoteSuggestionTemplate}" />
+
     <Style TargetType="local:MessageTextBox">
         <Setter Property="Template">
             <Setter.Value>
@@ -394,40 +527,38 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
-                                <Popup x:Name="PART_SuggestionPopup"
-                                       Width="{Binding ActualWidth, ElementName=PART_TextBox}">
-                                    <Grid HorizontalAlignment="Stretch">
-                                        <ListView Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
-                                            <ListViewItem>Fuck</ListViewItem>
-                                            <ListViewItem>Fuck</ListViewItem>
-                                            <ListViewItem>Fuck</ListViewItem>
-                                            <ListViewItem>Fuck</ListViewItem>
-                                            <ListViewItem>Fuck</ListViewItem>
-                                        </ListView>
-                                    </Grid>
-                                </Popup>
                                 
-                                <TextBox x:Name="PART_TextBox"
-                                     Text="{Binding Text, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=TwoWay}"
-                                     IsEnabled="{TemplateBinding IsEnabled}"
-                                     PlaceholderText="{TemplateBinding PlaceholderText}"
-                                     Style="{ThemeResource MessageTextBoxStyle}"
-                                     TextWrapping="Wrap" />
+                                <!-- TextWrapping Wrap -->
+                                <AutoSuggestBox x:Name="PART_TextBox"
+                                                VerticalAlignment="Center"
+                                                IsEnabled="{TemplateBinding IsEnabled}"
+                                                PlaceholderText="{TemplateBinding PlaceholderText}"
+                                                TextBoxStyle="{StaticResource MessageTextBoxStyle}"
+                                                ItemTemplateSelector="{StaticResource MessageTextBoxSuggestionTemplateSelector}">
+                                    <AutoSuggestBox.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Style.Setters>
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                                <Setter Property="Padding" Value="0,0" />
+                                            </Style.Setters>
+                                        </Style>
+                                    </AutoSuggestBox.ItemContainerStyle>
+                                </AutoSuggestBox>
 
                                 <TextBlock x:Name="PART_SlowModeIcon"
-                                       Margin="8"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Center"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       Text="&#xE916;"
-                                       ToolTipService.ToolTip="{Binding SlowModeText}"
-                                       Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
+                                           Margin="8"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Text="&#xE916;"
+                                           ToolTipService.ToolTip="{Binding SlowModeText}"
+                                           Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
 
                                 <ToggleButton x:Name="PART_EmoteButton"
-                                          Grid.Column="1"
-                                          Content="&#xED54;"
-                                          Style="{ThemeResource IconToggleButtonStyle}">
+                                              Grid.Column="1"
+                                              Content="&#xED54;"
+                                              Style="{ThemeResource IconToggleButtonStyle}">
                                     <FlyoutBase.AttachedFlyout>
                                         <Flyout>
                                             <local:EmotePicker x:Name="PART_EmotePicker" 
