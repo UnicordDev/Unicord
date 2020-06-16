@@ -11,7 +11,7 @@ using Unicord.Universal.Voice;
 
 namespace Unicord.Universal.Models
 {
-    // TODO: Move functionaliy from DiscordPage.xaml.cs into this class
+    // TODO: Move functionality from DiscordPage.xaml.cs into this class
     class DiscordPageModel : NotifyPropertyChangeImpl
     {
         private readonly SynchronizationContext _synchronisation;
@@ -25,7 +25,7 @@ namespace Unicord.Universal.Models
         public DiscordPageModel()
         {
             _synchronisation = SynchronizationContext.Current;
-            
+
             Guilds = new ObservableCollection<DiscordGuild>();
             UnreadDMs = new ObservableCollection<DiscordDmChannel>();
             CurrentUser = App.Discord.CurrentUser;
@@ -115,16 +115,16 @@ namespace Unicord.Universal.Models
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
             var guildPositions = App.Discord.UserSettings?.GuildPositions;
-            if (!Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
+            if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
+                return Task.CompletedTask;
+
+            for (var i = 0; i < guildPositions.Count; i++)
             {
-                for (var i = 0; i < guildPositions.Count; i++)
+                var id = guildPositions[i];
+                var guild = Guilds[i];
+                if (id != guild.Id)
                 {
-                    var id = guildPositions[i];
-                    var guild = Guilds[i];
-                    if (id != guild.Id)
-                    {
-                        _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
-                    }
+                    _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
                 }
             }
 

@@ -58,7 +58,7 @@ namespace Unicord.Universal.Pages
         }
 
         public bool IsPaneOpen { get; private set; }
-        
+
         private ChannelViewModel _viewModel;
         private bool _scrollHandlerAdded;
         private DispatcherTimer _titleBarTimer;
@@ -305,7 +305,7 @@ namespace Unicord.Universal.Pages
                     //_loading = false;
                 }
             }
-        }       
+        }
 
         private async void OnMessageTextBoxPaste(object sender, TextControlPasteEventArgs e)
         {
@@ -478,6 +478,69 @@ namespace Unicord.Universal.Pages
             if (e.ClickedItem is IStorageFile item)
             {
                 await UploadItems.AddStorageFileAsync(item);
+            }
+        }
+
+        private void ChannelPage_OnDragEnter(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private void ChannelPage_OnDragOver(object sender, DragEventArgs e)
+        {
+            if (ViewModel.CanUpload)
+            {
+                e.AcceptedOperation = DataPackageOperation.Copy;
+                e.DragUIOverride.Caption = $"Send to {ViewModel.FullChannelName}";
+                e.DragUIOverride.IsCaptionVisible = true;
+            }
+            else
+            {
+                e.AcceptedOperation = DataPackageOperation.None;
+            }
+        }
+
+        private void ChannelPage_OnDragLeave(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private async void ChannelPage_OnDrop(object sender, DragEventArgs e)
+        {
+            if (!ViewModel.CanUpload)
+                return;
+
+            if (e.DataView.Contains(StandardDataFormats.Bitmap))
+            {
+                var file = await Tools.GetImageFileFromDataPackage(e.DataView);
+                await UploadItems.AddStorageFileAsync(file, true);
+
+                return;
+            }
+
+            if (e.DataView.Contains(StandardDataFormats.WebLink))
+            {
+                var link = await e.DataView.GetWebLinkAsync();
+                MessageTextBox.AppendText(link.ToString());
+
+                return;
+            }
+
+            if (e.DataView.Contains(StandardDataFormats.Text))
+            {
+                var text = await e.DataView.GetTextAsync();
+                MessageTextBox.AppendText(text);
+
+                return;
+            }
+
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                foreach (var item in items.OfType<IStorageFile>())
+                {
+                    await UploadItems.AddStorageFileAsync(item, false);
+                }
             }
         }
 

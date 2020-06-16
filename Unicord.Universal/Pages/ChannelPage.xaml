@@ -15,6 +15,11 @@
     xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
     xmlns:converters="using:Unicord.Universal.Converters"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
+    AllowDrop="True"
+    DragEnter="ChannelPage_OnDragEnter"  
+    DragOver="ChannelPage_OnDragOver" 
+    DragLeave="ChannelPage_OnDragLeave"
+    Drop="ChannelPage_OnDrop"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
 
     <Page.Resources>
