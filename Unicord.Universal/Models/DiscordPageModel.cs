@@ -58,11 +58,11 @@ namespace Unicord.Universal.Models
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
         public bool Navigating { get; internal set; }
 
-        public DiscordChannel CurrentChannel { get => _currentChannel; internal set => OnPropertySet(ref _currentChannel, value); }
-        public DiscordDmChannel SelectedDM { get => _selectedDM; internal set => OnPropertySet(ref _selectedDM, value); }
-        public DiscordGuild SelectedGuild { get => _selectedGuild; internal set => OnPropertySet(ref _selectedGuild, value); }
-        public bool IsFriendsSelected { get => _isFriendsSelected; internal set => OnPropertySet(ref _isFriendsSelected, value); }
-        public DiscordDmChannel PreviousDM { get; internal set; }
+        public DiscordChannel CurrentChannel { get => _currentChannel; set => OnPropertySet(ref _currentChannel, value); }
+        public DiscordDmChannel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
+        public DiscordGuild SelectedGuild { get => _selectedGuild; set => OnPropertySet(ref _selectedGuild, value); }
+        public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
+        public DiscordDmChannel PreviousDM { get; set; }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
         {

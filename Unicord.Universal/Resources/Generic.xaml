@@ -511,16 +511,12 @@
                                          EmoteTemplate="{StaticResource MessageTextBoxEmoteSuggestionTemplate}" />
 
     <Style TargetType="local:MessageTextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MessageTextBox">
-                    <Border
-                        Name="Border"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-
-                        <Grid>
+                    <Grid>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -529,10 +525,13 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <!-- TextWrapping Wrap -->
                                 <AutoSuggestBox x:Name="PART_TextBox"
-                                                VerticalAlignment="Center"
+                                                VerticalAlignment="Stretch"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                Background="{TemplateBinding Background}"
                                                 IsEnabled="{TemplateBinding IsEnabled}"
                                                 PlaceholderText="{TemplateBinding PlaceholderText}"
                                                 TextBoxStyle="{StaticResource MessageTextBoxStyle}"
@@ -595,7 +594,6 @@
                                     Style="{ThemeResource IconButtonStyle}" />
                             </Grid>
                         </Grid>
-                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
