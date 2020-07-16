@@ -102,7 +102,7 @@ namespace Unicord
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void UnsafeInvokePropertyChange(string property)
+        protected void UnsafeInvokePropertyChanged(string property)
         {
             if (_propertyChangedEvents == null)
                 return;

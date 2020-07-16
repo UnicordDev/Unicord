@@ -441,6 +441,7 @@
     <Compile Include="Services\DiscordNavigationService.cs" />
     <Compile Include="Services\FullscreenService.cs" />
     <Compile Include="Services\OverlayService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="SharedTools.cs" />
     <Compile Include="Resources\Templates.xaml.cs">

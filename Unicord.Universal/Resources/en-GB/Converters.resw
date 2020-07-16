@@ -143,6 +143,19 @@
   <data name="UserMessagePinFormat" xml:space="preserve">
     <value>{0} pinned a message to this channel.</value>
   </data>
+  <data name="UserPremiumGuildSubscriptionFormat" xml:space="preserve">
+    <value>{0} boosted the server!</value>
+  </data>
+  <data name="UserPremiumGuildSubscriptionTierFormat" xml:space="preserve">
+    <value>{0} boosted the server to level {2}!</value>
+    <comment>user, boost level (number)</comment>
+  </data>
+  <data name="UserPremiumMultiGuildSubscriptionFormat" xml:space="preserve">
+    <value>{0} boosted the server **{1}** times!</value>
+  </data>
+  <data name="UserPremiumMultiGuildSubscriptionTierFormat" xml:space="preserve">
+    <value>{0} boosted the server **{1}** times to level {2}!</value>
+  </data>
   <data name="UserStartedCallFormat" xml:space="preserve">
     <value>{0} started a call.</value>
   </data>

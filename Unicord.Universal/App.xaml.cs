@@ -41,7 +41,6 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
-
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 

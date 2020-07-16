@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,7 +23,8 @@ namespace Unicord.Universal.Pages.Settings
 {
     public sealed partial class SettingsPage : Page
     {
-        // these should be kept in order as they appear in the UI
+        // these should be kept in order as they appear in the UI,
+        // and in sync with Unicord.Universal.Services.SettingsPage
         private static Dictionary<string, Type> _pages = new Dictionary<string, Type>()
         {
             ["Home"] = typeof(AccountsSettingsPage),
@@ -39,6 +41,20 @@ namespace Unicord.Universal.Pages.Settings
             InitializeComponent();
             nav.SelectedItem = nav.MenuItems.First();
             frame.Navigate(typeof(AccountsSettingsPage));
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is SettingsPageType t)
+            {
+                var str = t.ToString();
+                if(_pages.TryGetValue(str, out var type))
+                {
+                    var newIndex = _pages.Keys.ToList().IndexOf(str);
+                    nav.SelectedItem = nav.MenuItems.ElementAt(newIndex);
+                    frame.Navigate(type, null, new SuppressNavigationTransitionInfo());
+                }
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

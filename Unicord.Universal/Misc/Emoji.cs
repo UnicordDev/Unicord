@@ -14,7 +14,7 @@ namespace Unicord.Universal.Misc
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("category")]
+        [JsonProperty("group")]
         public string Category { get; set; }
     }
 

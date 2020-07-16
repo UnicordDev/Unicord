@@ -62,7 +62,7 @@
                 </lib:DropDownButton.Flyout>
             </lib:DropDownButton>
             <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="3" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
-            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
+            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Click="VoiceSettingsButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
     </Grid>
 </UserControl>

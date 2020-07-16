@@ -370,7 +370,7 @@ namespace Unicord.Universal.Models
                         _context.Post(a =>
                         {
                             TypingUsers.Remove(usr);
-                            UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
+                            UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
                         }, null);
                     }
 
@@ -621,7 +621,7 @@ namespace Unicord.Universal.Models
                 _context.Post(o =>
                 {
                     TypingUsers.Add(Channel.Guild != null && Channel.Guild.Members.TryGetValue(e.User.Id, out var member) ? member : e.User);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
+                    UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
                 }, null);
 
                 new Task(async () => await HandleTypingStartAsync(e)).Start();
@@ -640,7 +640,7 @@ namespace Unicord.Universal.Models
                 _context.Post(o =>
                 {
                     TypingUsers.Remove(e.User);
-                    UnsafeInvokePropertyChange(nameof(ShowTypingUsers));
+                    UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
                 }, null);
             });
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Services;
 using Unicord.Universal.Voice;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -64,6 +65,12 @@ namespace Unicord.Universal.Controls
         private async void DisconnectButton_Click(object sender, RoutedEventArgs e)
         {
             await ConnectionModel?.DisconnectAsync();
+        }
+
+        private async void VoiceSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var service = SettingsService.GetForCurrentView();
+            await service.OpenAsync(SettingsPageType.Voice);
         }
     }
 }

@@ -156,6 +156,8 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty CancelButtonVisibilityProperty =
             DependencyProperty.Register("CancelButtonVisibility", typeof(Visibility), typeof(MessageTextBox), new PropertyMetadata(Visibility.Collapsed));
 
+        private bool _hasLoaded = false;
+
         #endregion
 
         public event EventHandler<string> SendInvoked;
@@ -224,6 +226,11 @@ namespace Unicord.Universal.Controls
         //
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (_hasLoaded)
+                return;
+
+            _hasLoaded = true;
+
             _emoji = null;
 
             _suggestBox = this.FindChild<AutoSuggestBox>("PART_TextBox");

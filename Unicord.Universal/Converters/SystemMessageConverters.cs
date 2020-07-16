@@ -34,6 +34,13 @@ namespace Unicord.Universal.Converters
                         return "\xE840";
                     case MessageType.GuildMemberJoin:
                         return "\xE72A";
+                    case MessageType.UserPremiumGuildSubscription:
+                    case MessageType.TierOneUserPremiumGuildSubscription:
+                    case MessageType.TierTwoUserPremiumGuildSubscription:
+                    case MessageType.TierThreeUserPremiumGuildSubscription:
+                        return "\xECAD";
+                    default:
+                        return "\xE783";
                 }
             }
 
@@ -118,6 +125,26 @@ namespace Unicord.Universal.Converters
                         return string.Format(_strings.GetString("UserMessagePinFormat"), message.Author.Mention);
                     case MessageType.GuildMemberJoin:
                         return string.Format(WelcomeStrings[(int)(message.CreationTimestamp.ToUnixTimeMilliseconds() % WelcomeStrings.Count())], message.Author.Mention);
+                    case MessageType.UserPremiumGuildSubscription:
+                        return string.Format(_strings.GetString(
+                            string.IsNullOrWhiteSpace(message.Content) ?
+                            "UserPremiumGuildSubscriptionFormat" :
+                            "UserPremiumMultiGuildSubscriptionFormat"), message.Author.Mention, message.Content);
+                    case MessageType.TierOneUserPremiumGuildSubscription:
+                        return string.Format(_strings.GetString(
+                            string.IsNullOrWhiteSpace(message.Content) ?
+                            "UserPremiumGuildSubscriptionTierFormat" :
+                            "UserPremiumMultiGuildSubscriptionTierFormat"), message.Author.Mention, message.Content, 1);
+                    case MessageType.TierTwoUserPremiumGuildSubscription:
+                        return string.Format(_strings.GetString(
+                            string.IsNullOrWhiteSpace(message.Content) ?
+                            "UserPremiumGuildSubscriptionTierFormat" :
+                            "UserPremiumMultiGuildSubscriptionTierFormat"), message.Author.Mention, message.Content, 2);
+                    case MessageType.TierThreeUserPremiumGuildSubscription:
+                        return string.Format(_strings.GetString(
+                            string.IsNullOrWhiteSpace(message.Content) ?
+                            "UserPremiumGuildSubscriptionTierFormat" :
+                            "UserPremiumMultiGuildSubscriptionTierFormat"), message.Author.Mention, message.Content, 3);
                 }
             }
 
@@ -134,7 +161,7 @@ namespace Unicord.Universal.Converters
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if(item is DiscordMessage message)
+            if (item is DiscordMessage message)
             {
                 if (message.MessageType != MessageType.Default)
                     return SystemMessageTemplate;

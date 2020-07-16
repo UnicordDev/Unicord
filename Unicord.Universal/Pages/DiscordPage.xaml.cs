@@ -104,7 +104,7 @@ namespace Unicord.Universal.Pages
             try
             {
                 App.Discord.MessageCreated += Notification_MessageCreated;
-                
+
                 UpdateTitleBar();
                 CheckSettingsPane();
 
@@ -167,7 +167,7 @@ namespace Unicord.Universal.Pages
                 e.Handled = true;
             }
         }
-        
+
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
@@ -237,9 +237,9 @@ namespace Unicord.Universal.Pages
             notification.Show(7_000);
         }
 
-        private async  void Notification_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var message = (((InAppNotification) sender).Content as MessageControl)?.Message;
+            var message = (((InAppNotification)sender).Content as MessageControl)?.Message;
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();
@@ -296,7 +296,7 @@ namespace Unicord.Universal.Pages
 
         private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            var enumerable = ((DiscordPageModel) DataContext).Guilds.Select(g => g.Id).ToArray();
+            var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
             if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
             {
                 await App.Discord.UpdateUserSettingsAsync(enumerable);
@@ -323,29 +323,31 @@ namespace Unicord.Universal.Pages
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var loader = ResourceLoader.GetForViewIndependentUse();
-            if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, loader.GetString("VerifySettingsDisplayReason")))
-            {
-                SettingsOverlayGrid.Visibility = Visibility.Visible;
-
-                CheckSettingsPane();
-
-                if (ActualWidth > 768)
-                {
-                    OpenSettingsDesktopStoryboard.Begin();
-                }
-                else
-                {
-                    OpenSettingsMobileStoryboard.Begin();
-                }
-            }
-
-            SettingsGrid.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());
+            var service = SettingsService.GetForCurrentView();
+            await service.OpenAsync();
         }
 
         private void SettingsOverlayBackground_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseSettings();
+        }
+
+        internal void OpenSettings(SettingsPageType page)
+        {
+            SettingsOverlayGrid.Visibility = Visibility.Visible;
+
+            CheckSettingsPane();
+
+            if (ActualWidth > 768)
+            {
+                OpenSettingsDesktopStoryboard.Begin();
+            }
+            else
+            {
+                OpenSettingsMobileStoryboard.Begin();
+            }
+
+            SettingsGrid.Navigate(typeof(SettingsPage), page, new SuppressNavigationTransitionInfo());
         }
 
         internal void CloseSettings()
