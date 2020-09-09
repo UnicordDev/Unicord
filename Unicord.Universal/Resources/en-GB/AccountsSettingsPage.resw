@@ -132,6 +132,9 @@
   <data name="LogoutPromptTitle" xml:space="preserve">
     <value>Are you sure?</value>
   </data>
+  <data name="StatisticsText.Text" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
   <data name="SyncPeopleText.Text" xml:space="preserve">
     <value>Sync my friends with [Windows People](ms-people:)</value>
     <comment>Markdown capable</comment>

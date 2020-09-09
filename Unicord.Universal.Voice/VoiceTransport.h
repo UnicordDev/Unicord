@@ -25,6 +25,7 @@ namespace winrt::Unicord::Universal::Voice::Transport {
         std::shared_ptr<SodiumWrapper> _sodium = nullptr;
         DataWriter _writer{ nullptr };
         bool _isActive = false;
-        uint32_t _nonce = 0;
+        uint32_t _rtpNonce = 0;
+        uint32_t _rtcpNonce = 0;
     };
 }

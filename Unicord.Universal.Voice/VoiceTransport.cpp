@@ -31,7 +31,7 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
             _sodium->GenerateNonce(packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Lite:
-            _sodium->GenerateNonce(this->_nonce++, packet_nonce);
+            _sodium->GenerateNonce(this->_rtpNonce++, packet_nonce);
             break;
         }
 
@@ -49,10 +49,6 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
     {
         static const size_t RtcpHeaderSize = 8;
 
-        if (!_isActive) {
-            return true;
-        }
-
         uint8_t packet_nonce[NonceBytes]{ 0 };
 
         size_t encrypted_size = _sodium->CalculateTargetSize(length);
@@ -68,7 +64,7 @@ namespace  winrt::Unicord::Universal::Voice::Transport {
             _sodium->GenerateNonce(packet_nonce);
             break;
         case EncryptionMode::XSalsa20_Poly1305_Lite:
-            _sodium->GenerateNonce(this->_nonce++, packet_nonce);
+            _sodium->GenerateNonce(this->_rtcpNonce++, packet_nonce);
             break;
         }
 

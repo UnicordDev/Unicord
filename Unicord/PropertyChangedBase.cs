@@ -13,22 +13,31 @@ namespace Unicord
     /// </summary>
     public class NotifyPropertyChangeImpl : INotifyPropertyChanged
     {
-        private readonly struct ThreadHandlerCollection
+        private class ThreadHandlerCollection
         {
             public ThreadHandlerCollection(SynchronizationContext c)
             {
                 context = c;
-                events = new List<PropertyChangedEventHandler>();
             }
 
             public readonly SynchronizationContext context;
-            public readonly List<PropertyChangedEventHandler> events;
+            public PropertyChangedEventHandler events;
+
+            public void Add(PropertyChangedEventHandler handler)
+            {
+                events = (PropertyChangedEventHandler)Delegate.Combine(events, handler);
+            }
+
+            public void Remove(PropertyChangedEventHandler handler)
+            {
+                events = (PropertyChangedEventHandler)Delegate.Remove(events, handler);
+            }
         }
 
         private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents;
 
-        private IList<PropertyChangedEventHandler> PropertyChangeEvents =>
-            (_propertyChangedEvents ?? (_propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true))).Value.events;
+        private ThreadHandlerCollection PropertyChangeEvents =>
+            (_propertyChangedEvents ?? (_propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true))).Value;
 
         public event PropertyChangedEventHandler PropertyChanged
         {
@@ -73,17 +82,13 @@ namespace Unicord
             var context = SynchronizationContext.Current;
             foreach (var item in _propertyChangedEvents.Values)
             {
-                for (var i = 0; i < item.events.Count; i++)
+                if (item.context == context || item.context == null)
                 {
-                    var handler = item.events[i];
-                    if (item.context == context || item.context == null)
-                    {
-                        InvokeHandler(args, handler);
-                    }
-                    else
-                    {
-                        item.context.Post(o => InvokeHandler(args, handler), null);
-                    }
+                    InvokeHandler(args, item.events);
+                }
+                else
+                {
+                    item.context.Post(o => InvokeHandler(args, item.events), null);
                 }
             }
         }
@@ -93,7 +98,7 @@ namespace Unicord
         {
             try
             {
-                handler.Invoke(this, args);
+                handler?.Invoke(this, args);
             }
             catch (Exception ex)
             {
@@ -110,11 +115,7 @@ namespace Unicord
             var args = new PropertyChangedEventArgs(property);
             foreach (var item in _propertyChangedEvents.Values)
             {
-                for (var i = 0; i < item.events.Count; i++)
-                {
-                    var handler = item.events[i];
-                    handler.Invoke(this, args);
-                }
+                item.events?.Invoke(this, args);
             }
         }
     }

@@ -7,10 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:models="using:Unicord.Universal.Models"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <models:AccountsSettingsModel />
+    </Page.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -28,17 +34,19 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <lib:PersonPicture ProfilePicture="{Binding AvatarUrl}" Width="96" Height="96" Margin="0,0,16,0"/>
+                <lib:PersonPicture ProfilePicture="{Binding User.AvatarUrl}" Width="96" Height="96" Margin="0,0,16,0"/>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
-                        <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username, Mode=OneWay}"/>#<Run Text="{Binding Discriminator, Mode=OneWay}"/>
+                        <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding User.Username, Mode=OneWay}"/>#<Run Text="{Binding User.Discriminator, Mode=OneWay}"/>
                     </TextBlock>
-                    <TextBlock Text="{Binding Email}"/>
+                    <TextBlock Text="{Binding User.Email}"/>
                 </StackPanel>
             </Grid>
             <Button Grid.Column="1" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
         </Grid>
+        
         <TextBlock x:Uid="/AccountsSettingsPage/FriendsText"  Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+        
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -58,6 +66,19 @@
             <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
         </Grid>
 
-        <Button x:Name="logoutButton" x:Uid="/AccountsSettingsPage/LogoutButton" Grid.Row="4" HorizontalAlignment="Stretch" Click="LogoutButton_Click"/>
+        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
+        <StackPanel Grid.Row="4">
+            <TextBlock IsTextSelectionEnabled="True" TextWrapping="Wrap">
+                You are in <Run FontWeight="Bold" Text="{Binding ServerCountString, Mode=OneWay}"/> servers,
+                with <Run FontWeight="Bold" Text="{Binding ChannelsCountString, Mode=OneWay}"/> channels and
+                <Run FontWeight="Bold" Text="{Binding MemberCountString, Mode=OneWay}"/> members, and have
+                <Run FontWeight="Bold" Text="{Binding FriendCountString, Mode=OneWay}"/> friends alongside
+                <Run FontWeight="Bold" Text="{Binding OpenDMCountString, Mode=OneWay}"/> open direct messages.
+                <LineBreak/>
+                Currently synched: <Run FontWeight="Bold" Text="{Binding SynchedUserCountString, Mode=OneWay}"/> users, <Run FontWeight="Bold" Text="{Binding SynchedPresenceCountString, Mode=OneWay}"/> presences.
+            </TextBlock>
+        </StackPanel>
+
+        <Button x:Name="logoutButton" x:Uid="/AccountsSettingsPage/LogoutButton" Grid.Row="6" HorizontalAlignment="Stretch" Click="LogoutButton_Click"/>
     </Grid>
 </Page>

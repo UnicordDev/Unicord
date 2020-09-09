@@ -88,18 +88,18 @@
             <DoubleAnimation From="0" To="1"
                              Storyboard.TargetName="contentOverlay"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="contentScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
@@ -108,7 +108,7 @@
             <DoubleAnimation From="1" To="0"
                              Storyboard.TargetName="contentOverlay"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
@@ -128,18 +128,18 @@
             <DoubleAnimation From="0" To="1"
                              Storyboard.TargetName="userInfoPopup"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
@@ -148,18 +148,18 @@
             <DoubleAnimation From="1" To="0"
                              Storyboard.TargetName="userInfoPopup"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="userInfoScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
 

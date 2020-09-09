@@ -1,17 +1,26 @@
 ﻿#include "pch.h"
 #include "VoiceClientStats.h"
-#if __has_include("VoiceClientStats.g.cpp")
 #include "VoiceClientStats.g.cpp"
-#endif
 
 namespace winrt::Unicord::Universal::Voice::implementation
 {
-    int32_t VoiceClientStats::MyProperty()
+    uint32_t VoiceClientStats::LocalSSRC()
     {
         throw hresult_not_implemented();
     }
-
-    void VoiceClientStats::MyProperty(int32_t /*value*/)
+    int64_t VoiceClientStats::BytesSent()
+    {
+        throw hresult_not_implemented();
+    }
+    int32_t VoiceClientStats::PacketsSent()
+    {
+        throw hresult_not_implemented();
+    }
+    int32_t VoiceClientStats::PacketsLost()
+    {
+        throw hresult_not_implemented();
+    }
+    hstring VoiceClientStats::CodecName()
     {
         throw hresult_not_implemented();
     }

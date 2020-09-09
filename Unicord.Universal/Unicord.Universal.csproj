@@ -349,6 +349,7 @@
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Misc\UnicordVersionProvider.cs" />
+    <Compile Include="Models\AccountsSettingsModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageModel.cs" />
@@ -365,6 +366,12 @@
     </Compile>
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameBar\GameBarMainPage.xaml.cs">
+      <DependentUpon>GameBarMainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameBar\NotLoggedInPage.xaml.cs">
+      <DependentUpon>NotLoggedInPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -718,6 +725,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\GameBar\GameBarMainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\GameBar\NotLoggedInPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -849,6 +864,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Push">
       <Version>3.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Gaming.XboxGameBar">
+      <Version>5.3.200605002</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>

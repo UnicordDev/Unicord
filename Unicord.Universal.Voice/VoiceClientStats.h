@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "VoiceClientStats.g.h"
 
 namespace winrt::Unicord::Universal::Voice::implementation
@@ -8,11 +7,13 @@ namespace winrt::Unicord::Universal::Voice::implementation
     {
         VoiceClientStats() = default;
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+        uint32_t LocalSSRC();
+        int64_t BytesSent();
+        int32_t PacketsSent();
+        int32_t PacketsLost();
+        hstring CodecName();
     };
 }
-
 namespace winrt::Unicord::Universal::Voice::factory_implementation
 {
     struct VoiceClientStats : VoiceClientStatsT<VoiceClientStats, implementation::VoiceClientStats>

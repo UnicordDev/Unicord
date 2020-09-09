@@ -260,9 +260,9 @@ namespace Unicord.Universal.Models
             var permissions = currentMember.PermissionsIn(_guild.Channels.Values.FirstOrDefault());
             CanEdit = permissions.HasPermission(Permissions.ManageChannels);
 
-            var channels = _guild.IsOwner ?
-                _guild.Channels.Values :
-                _guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels));
+            var channels =
+               (_guild.IsOwner ? _guild.Channels.Values :
+                _guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
 
             if (channels.Any(c => c.IsCategory))
             {

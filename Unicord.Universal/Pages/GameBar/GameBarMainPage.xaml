@@ -1,0 +1,53 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.GameBar.GameBarMainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.GameBar"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:discord="using:DSharpPlus.Entities"
+    mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
+    Background="{ThemeResource MainBackgroundBrush}"
+    Loaded="Page_Loaded">
+
+    <Grid>
+        <ListView SelectionMode="None" IsItemClickEnabled="True" ItemsSource="{Binding All}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0,2" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="MinHeight" Value="0" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Header>
+                <Grid x:Name="Header">
+                    
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="discord:DiscordRelationship">
+                    <Grid Margin="8,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <lib:PersonPicture Width="28" Height="28" Margin="8,6" ProfilePicture="{Binding User.AvatarUrl}" DisplayName="{Binding User.DisplayName}"/>
+                        <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Grid.Column="1" Margin="4,0" VerticalAlignment="Center">
+                            <Run Text="{Binding User.Username, Mode=OneWay}" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>#<Run Text="{Binding User.Discriminator, Mode=OneWay}"/>
+                        </TextBlock>
+
+                        <Button Grid.Column="2" Style="{ThemeResource IconButtonStyle}">&#xE8BD;</Button>
+                        <Button Grid.Column="3" Style="{ThemeResource IconButtonStyle}">&#xE717;</Button>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <lib:ProgressBar x:Name="ConnectingProgress" Background="Transparent" VerticalAlignment="Top"  />
+    </Grid>
+</Page>
