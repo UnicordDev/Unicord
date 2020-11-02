@@ -81,6 +81,7 @@ namespace Unicord.Universal.Integration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 Logger.Log("Failed to sync contacts!");
                 Logger.Log(ex.ToString());
             }

@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.AppCenter.Analytics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace Unicord.Universal.Models
         private DispatcherTimer _slowModeTimer;
         private string _messageText;
         private bool _isTranscoding;
+        private ObservableCollection<DiscordMessage> _messages;
 
         public ChannelViewModel(DiscordChannel channel)
         {
@@ -46,8 +48,9 @@ namespace Unicord.Universal.Models
             _typingCancellation = new ConcurrentDictionary<ulong, CancellationTokenSource>();
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
 
-            Channel = channel;
-            CurrentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
+            _channel = channel;
+            _currentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
+            _messages = new ObservableCollection<DiscordMessage>();
 
             App.Discord.TypingStarted += OnTypingStarted;
             App.Discord.MessageCreated += OnMessageCreated;
@@ -56,9 +59,7 @@ namespace Unicord.Universal.Models
             App.Discord.Resumed += OnResumed;
 
             TypingUsers = new ObservableCollection<DiscordUser>();
-            Messages = new ObservableCollection<DiscordMessage>();
             FileUploads = new ObservableCollection<FileUploadModel>();
-
             FileUploads.CollectionChanged += (o, e) =>
             {
                 InvokePropertyChanged(nameof(DisplayUploadSize));
@@ -91,7 +92,11 @@ namespace Unicord.Universal.Models
             };
         }
 
-        public ObservableCollection<DiscordMessage> Messages { get; set; }
+        public ObservableCollection<DiscordMessage> Messages
+        {
+            get => _messages;
+            set => OnPropertySet(ref _messages, value);
+        }
 
         public string MessageText
         {
@@ -398,8 +403,7 @@ namespace Unicord.Universal.Models
         {
             if (e.ChannelAfter.Id == _channel.Id)
             {
-                Channel = e.ChannelAfter;
-                InvokePropertyChanged(string.Empty);
+                // Channel = e.ChannelAfter;
             }
 
             return Task.CompletedTask;
@@ -439,6 +443,7 @@ namespace Unicord.Universal.Models
         internal async Task LoadMessagesAsync()
         {
             await _loadSemaphore.WaitAsync().ConfigureAwait(false);
+            Analytics.TrackEvent("ChannelViewModel_LoadMessages");
 
             try
             {
@@ -470,14 +475,14 @@ namespace Unicord.Universal.Models
         private void InsertMessages(int index, IEnumerable<DiscordMessage> messages) => _context.Post(d =>
         {
             var t = d as ChannelViewModel;
-            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
+            _ = t.RequestMissingMembersAsync(messages);
 
             foreach (var mess in messages)
             {
-                if (!t.Messages.Any(m => m.Id == mess.Id))
-                {
+                //if (!t.Messages.Any(m => m.Id == mess.Id))
+                //{
                     t.Messages.Insert(index + 1, mess);
-                }
+                //}
             }
         }, this);
 
@@ -485,15 +490,10 @@ namespace Unicord.Universal.Models
         {
             var t = d as ChannelViewModel;
             t.Messages.Clear();
+            _ = t.RequestMissingMembersAsync(messages);
 
-            t.RequestMissingMembersAsync(messages).GetAwaiter().GetResult();
-            foreach (var message in messages.Reverse())
-            {
-                if (!t.Messages.Any(m => m.Id == message.Id))
-                {
-                    t.Messages.Add(message);
-                }
-            }
+            Messages.Clear();
+            Messages = new ObservableCollection<DiscordMessage>(messages.Reverse());
         }, this);
 
         private async Task RequestMissingMembersAsync(IEnumerable<DiscordMessage> messages)
@@ -501,6 +501,8 @@ namespace Unicord.Universal.Models
             if (Channel.Guild != null)
             {
                 var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal).Distinct();
+                Analytics.TrackEvent("ChannelViewModel_RequestMembers", new Dictionary<string, string> { ["Count"] = $"{usersToSync.Count()}" });
+
                 if (usersToSync.Any())
                     await Channel.Guild.RequestUserPresencesAsync(usersToSync);
             }
@@ -545,6 +547,8 @@ namespace Unicord.Universal.Models
             {
                 return;
             }
+
+            Analytics.TrackEvent("ChannelViewModel_SendMessage");
 
             if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
             {
@@ -593,10 +597,20 @@ namespace Unicord.Universal.Models
             }
         }
 
+        public void TruncateMessages(int max = 50)
+        {
+            if (Messages.Count > max)
+            {
+                Messages = new ObservableCollection<DiscordMessage>(Messages.TakeLast(max));
+            }
+        }
+
         #region Typing
 
         public async Task TriggerTypingAsync()
         {
+            Analytics.TrackEvent("ChannelViewModel_TriggerTyping");
+
             if ((DateTimeOffset.Now - _typingLastSent).Seconds > 10)
             {
                 _typingLastSent = DateTimeOffset.Now;

@@ -10,16 +10,15 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
+    public class MessageStyle
+    {
+        public string Key { get; set; }
+        public Style Value { get; set; }
+        public DiscordMessage ExampleMessage { get; set; }
+    }
+
     class MessagingSettingsModel : NotifyPropertyChangeImpl
     {
-
-        public class MessageStyle
-        {
-            public string Key { get; set; }
-            public Style Value { get; set; }
-            public DiscordMessage ExampleMessage { get; set; }
-        }
-
         public MessagingSettingsModel()
         {
             AvailableMessageStyles = new ObservableCollection<MessageStyle>();

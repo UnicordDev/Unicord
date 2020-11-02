@@ -165,7 +165,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -189,7 +190,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -213,7 +215,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -237,7 +240,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -261,7 +265,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -285,7 +290,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -309,7 +315,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>
@@ -333,7 +340,8 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <PreBuildEvent>
-      <Command>call python "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
+      <Command>set PATH=C:\Python27;%PATH%
+call C:\Python27\python.exe "$(ProjectDir)..\webrtc-uwp-sdk\scripts\run.py" -a prepare build -t webrtc -p winuwp --cpus $(PlatformTarget) -c $(Configuration) --noColor --noWrapper</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Building WebRTC Native Lib</Message>

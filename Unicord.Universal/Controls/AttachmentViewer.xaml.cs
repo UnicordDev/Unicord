@@ -170,12 +170,12 @@ namespace Unicord.Universal.Controls
                 new Uri(Attachment.ProxyUrl),
                 Attachment.Width,
                 Attachment.Height,
-                openMenuItem_Click,
-                saveMenuItem_Click,
-                shareMenuItem_Click);
+                OnOpenMenuClick,
+                OnSaveMenuClick,
+                OnShareMenuClick);
         }
 
-        private async void saveMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void OnSaveMenuClick(object sender, RoutedEventArgs e)
         {
             var control = sender as Control;
             control.IsEnabled = false;
@@ -216,8 +216,9 @@ namespace Unicord.Universal.Controls
                     await Tools.DownloadToFileWithProgressAsync(new Uri(Attachment.Url), file, progress);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     "Failed to download attachment",
                     "Something went wrong downloading that attachment, maybe try again later?");
@@ -227,7 +228,7 @@ namespace Unicord.Universal.Controls
             downloadProgressBar.Visibility = Visibility.Collapsed;
         }
 
-        private async void shareMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void OnShareMenuClick(object sender, RoutedEventArgs e)
         {
             downloadProgressBar.Visibility = Visibility.Visible;
             downloadProgressBar.IsIndeterminate = true;
@@ -255,8 +256,9 @@ namespace Unicord.Universal.Controls
                 transferManager.DataRequested += _dataTransferManager_DataRequested;
                 DataTransferManager.ShowShareUI();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     "Failed to download attachment",
                     "Something went wrong downloading that attachment, maybe try again later?");
@@ -279,7 +281,7 @@ namespace Unicord.Universal.Controls
             sender.DataRequested -= _dataTransferManager_DataRequested;
         }
 
-        private async void openMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void OnOpenMenuClick(object sender, RoutedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri(Attachment.Url));
         }

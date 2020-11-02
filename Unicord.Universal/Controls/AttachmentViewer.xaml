@@ -49,10 +49,10 @@
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>
-                    <MenuFlyoutItem x:Name="saveMenuItem" Text="Save" Icon="Save" Click="saveMenuItem_Click"/>
-                    <MenuFlyoutItem x:Name="shareMenuItem" Text="Share" Click="shareMenuItem_Click" fc:Icon="Share" c:Icon="Send" />
+                    <MenuFlyoutItem x:Name="saveMenuItem" Text="Save" Icon="Save" Click="OnSaveMenuClick"/>
+                    <MenuFlyoutItem x:Name="shareMenuItem" Text="Share" Click="OnShareMenuClick" fc:Icon="Share" c:Icon="Send" />
                     <MenuFlyoutItem x:Name="copyUrlItem" Text="Copy Link" Click="CopyUrlItem_Click" Icon="Copy" />
-                    <MenuFlyoutItem x:Name="openMenuItem" Text="Open Link" Click="openMenuItem_Click" Icon="Link"/>
+                    <MenuFlyoutItem x:Name="openMenuItem" Text="Open Link" Click="OnOpenMenuClick" Icon="Link"/>
                 </MenuFlyout.Items>
             </MenuFlyout>
         </Grid.ContextFlyout>
@@ -72,9 +72,9 @@
             </Grid.RenderTransform>
             <TextBlock Padding="12,0" Text="{Binding FileName}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontWeight="Bold"/>
             <!--<Button Grid.Column="1" Content="&#xE8C8;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="c"/>-->
-            <Button x:Uid="/Controls/AttachmentShareButton" Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="shareMenuItem_Click"/>
+            <Button x:Uid="/Controls/AttachmentShareButton" Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="OnShareMenuClick"/>
             <Button x:Uid="/Controls/AttachmentCopyUrlButton" Grid.Column="3" Content="&#xE71B;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="CopyUrlItem_Click"/>
-            <Button x:Uid="/Controls/AttachmentSaveButton" Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="saveMenuItem_Click"/>
+            <Button x:Uid="/Controls/AttachmentSaveButton" Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="OnSaveMenuClick"/>
         </Grid>
 
         <ProgressBar x:Name="downloadProgressBar" Background="Transparent" VerticalAlignment="Top"></ProgressBar>

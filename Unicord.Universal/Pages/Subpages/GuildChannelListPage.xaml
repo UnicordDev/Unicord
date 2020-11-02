@@ -4,9 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:Unicord.Universal.Controls" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
+    xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d">
     <Grid>
+        <!--<controls:SidebarSearchBox Grid.Row="1" />-->
+
         <ListView
             x:Name="channelsList"
             IsSynchronizedWithCurrentItem="False"
@@ -18,6 +25,45 @@
             CanReorderItems="{Binding CanEdit}"
             AllowDrop="{Binding CanEdit}"
             SelectionChanged="channelsList_SelectionChanged">
+            <ListView.Header>
+                <Grid x:Name="Header">
+                    <Grid Visibility="{Binding HeaderImage, Converter={StaticResource HideOnNullConverter}}">
+                        <controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill"/>
+                        <Rectangle VerticalAlignment="Bottom" Height="42" Fill="{ThemeResource SystemControlAltMediumLowAcrylicElementMediumBrush}"/>
+                    </Grid>
+
+                    <Grid Height="42" VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Margin="16,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding Name}"
+                                   TextTrimming="CharacterEllipsis" />
+
+                        <Button Content="&#xE70D;" 
+                                Grid.Column="1"
+                                DataContext="{Binding Guild}"
+                                Style="{StaticResource IconButtonStyle}"
+                                Click="OnButtonClicked">
+                            <FlyoutBase.AttachedFlyout>
+                                <flyouts:GuildContextFlyout>
+                                    <flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
+                                        <Style TargetType="MenuFlyoutPresenter">
+                                            <Setter Property="MinWidth" Value="220" />
+                                            <Setter Property="MaxWidth" Value="220" />
+                                        </Style>
+                                    </flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
+                                </flyouts:GuildContextFlyout>
+                            </FlyoutBase.AttachedFlyout>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </ListView.Header>
             <ListView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>
@@ -26,6 +72,7 @@
                                 FontSize="14"
                                 FontWeight="Bold"
                                 Text="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource TitleCaseConverter}}"
+                                Visibility="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource HideOnNullConverter}}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap" />
                         </DataTemplate>

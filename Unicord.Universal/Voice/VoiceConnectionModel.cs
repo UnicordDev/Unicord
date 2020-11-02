@@ -298,9 +298,9 @@ namespace Unicord.Universal.Voice
                 var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
                 await App.Discord.SendSocketMessageAsync(vsj);
             }
-            catch (Exception /*ex*/)
+            catch (Exception ex)
             {
-                // todo: handle
+                Logger.LogError(ex);
             }
         }
 

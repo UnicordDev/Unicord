@@ -5,24 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
-using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Imaging;
-using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
@@ -35,9 +31,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
@@ -133,17 +127,7 @@ namespace Unicord.Universal.Pages
                 var args = this.FindParent<MainPage>()?.Arguments;
                 WindowManager.HandleTitleBarForControl(TopGrid);
                 WindowManager.SetChannelForCurrentWindow(chan.Id);
-
-                if (model.Messages.Count > 50)
-                {
-                    var copy = new List<DiscordMessage>(model.Messages.TakeLast(50));
-                    model.Messages.Clear();
-
-                    foreach (var msg in copy)
-                    {
-                        model.Messages.Add(msg);
-                    }
-                }
+                model.TruncateMessages();
 
                 ViewModel = model;
                 DataContext = ViewModel;
@@ -262,7 +246,7 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 // TODO: port
-                // HockeyClient.Current.TrackException(ex);
+                Logger.LogError(ex);
             }
 
             await Dispatcher.AwaitableRunAsync(() =>
@@ -270,6 +254,17 @@ namespace Unicord.Universal.Pages
                 LoadingProgress.Visibility = Visibility.Collapsed;
                 LoadingProgress.IsIndeterminate = false;
             }).ConfigureAwait(false);
+
+            if (ViewModel.Channel.ReadState?.Unread == true)
+            {
+                var id = ViewModel.Channel.ReadState.LastMessageId;
+                var message = ViewModel.Messages.FirstOrDefault(m => m.Id == id) ?? ViewModel.Messages.FirstOrDefault();
+                if (message != null)
+                {
+                    await Dispatcher.AwaitableRunAsync(() =>
+                        MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading)).ConfigureAwait(false);
+                }
+            }
 
             if (IsPaneOpen)
             {
@@ -295,14 +290,7 @@ namespace Unicord.Universal.Pages
                 }
                 else if (scroll.VerticalOffset <= 150)
                 {
-                    //_loading = true;
-
-                    // var message = MessageList.Items.FirstOrDefault();
                     await ViewModel.LoadMessagesBeforeAsync().ConfigureAwait(false);
-                    // if (message != null)
-                    //    await Dispatcher.AwaitableRunAsync(() => MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading));
-
-                    //_loading = false;
                 }
             }
         }
@@ -314,6 +302,8 @@ namespace Unicord.Universal.Pages
                 var dataPackageView = Clipboard.GetContent();
                 if (dataPackageView.Contains(StandardDataFormats.StorageItems))
                 {
+                    Analytics.TrackEvent("ChannelPage_StorageItemsFromPaste");
+
                     e.Handled = true;
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
@@ -326,6 +316,8 @@ namespace Unicord.Universal.Pages
 
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
                 {
+                    Analytics.TrackEvent("ChannelPage_ImageFromPaste");
+
                     e.Handled = true;
                     var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
                     await UploadItems.AddStorageFileAsync(file, true);
@@ -337,6 +329,7 @@ namespace Unicord.Universal.Pages
             {
                 // TODO: Port
                 // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "PasteFailure" });
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     "Failed to upload.",
                     "Whoops, something went wrong while uploading that file, sorry!");
@@ -374,7 +367,7 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 // just in case, should realistically never happen
-                Logger.Log(ex);
+                Logger.LogError(ex);
             }
         }
 
@@ -440,16 +433,19 @@ namespace Unicord.Universal.Pages
 
                 try
                 {
-                    var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif" }) { FolderDepth = FolderDepth.Deep };
+                    var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif" });
                     queryOption.SetThumbnailPrefetch(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale);
+                    queryOption.FolderDepth = FolderDepth.Deep;
+                    queryOption.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
+
                     var photosQuery = KnownFolders.PicturesLibrary.CreateFileQueryWithOptions(queryOption);
-                    var factory = new FileInformationFactory(photosQuery, ThumbnailMode.SingleItem, 256);
+                    var factory = new FileInformationFactory(photosQuery, ThumbnailMode.PicturesView, 256);
                     PhotosList.ItemsSource = factory.GetVirtualizedFilesVector();
                 }
                 catch (Exception ex)
                 {
                     // TODO: Port
-                    // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "FileQueryFailure" });
+                    Logger.LogError(ex);
                 }
 
                 LoadingImagesRing.IsActive = false;
@@ -477,6 +473,7 @@ namespace Unicord.Universal.Pages
 
             if (e.ClickedItem is IStorageFile item)
             {
+                Analytics.TrackEvent("ChannelPage_ImageFromPhotosList");
                 await UploadItems.AddStorageFileAsync(item);
             }
         }
@@ -512,6 +509,8 @@ namespace Unicord.Universal.Pages
 
             if (e.DataView.Contains(StandardDataFormats.Bitmap))
             {
+                Analytics.TrackEvent("ChannelPage_ImageFromDrop");
+
                 var file = await Tools.GetImageFileFromDataPackage(e.DataView);
                 await UploadItems.AddStorageFileAsync(file, true);
 
@@ -520,6 +519,8 @@ namespace Unicord.Universal.Pages
 
             if (e.DataView.Contains(StandardDataFormats.WebLink))
             {
+                Analytics.TrackEvent("ChannelPage_LinkFromDrop");
+
                 var link = await e.DataView.GetWebLinkAsync();
                 MessageTextBox.AppendText(link.ToString());
 
@@ -528,6 +529,8 @@ namespace Unicord.Universal.Pages
 
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
+                Analytics.TrackEvent("ChannelPage_TextFromDrop");
+
                 var text = await e.DataView.GetTextAsync();
                 MessageTextBox.AppendText(text);
 
@@ -536,6 +539,8 @@ namespace Unicord.Universal.Pages
 
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
             {
+                Analytics.TrackEvent("ChannelPage_FilesFromDrop");
+
                 var items = await e.DataView.GetStorageItemsAsync();
                 foreach (var item in items.OfType<IStorageFile>())
                 {
@@ -544,14 +549,14 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private async void openLocalButton_Click(object sender, RoutedEventArgs e)
+        private async void OnOpenLocalButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {
                 var picker = new FileOpenPicker
                 {
                     SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
-                    CommitButtonText = $"Upload",
+                    CommitButtonText = $"Upload to {_viewModel.FullChannelName}",
                     ViewMode = PickerViewMode.Thumbnail
                 };
 
@@ -562,6 +567,7 @@ namespace Unicord.Universal.Pages
                 HidePhotoPicker.Begin();
                 foreach (var file in files)
                 {
+                    Analytics.TrackEvent("ChannelPage_FilesFromPicker");
                     await UploadItems.AddStorageFileAsync(file);
                 }
             }
@@ -630,6 +636,8 @@ namespace Unicord.Universal.Pages
 
         public void EnterEditMode(DiscordMessage message = null)
         {
+            Analytics.TrackEvent("ChannelPage_EnterEditMode");
+
             _viewModel.IsEditMode = true;
             VisualStateManager.GoToState(this, "EditMode", true);
 
@@ -641,6 +649,8 @@ namespace Unicord.Universal.Pages
 
         private void LeaveEditMode()
         {
+            Analytics.TrackEvent("ChannelPage_LeaveEditMode");
+
             _viewModel.IsEditMode = false;
             VisualStateManager.GoToState(this, "NormalMode", true);
         }
@@ -655,6 +665,7 @@ namespace Unicord.Universal.Pages
             var loader = ResourceLoader.GetForCurrentView("ChannelPage");
             if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("MassDeleteTitle"), loader.GetString("MassDeleteMessage"), "\xE74D"))
             {
+                Analytics.TrackEvent("ChannelPage_MassDeleteMessage");
                 var items = MessageList.SelectedItems.OfType<DiscordMessage>().ToArray();
 
                 LeaveEditMode();
@@ -682,6 +693,8 @@ namespace Unicord.Universal.Pages
 
         private void OpenPane(Type t = null, object parameter = null)
         {
+            Analytics.TrackEvent("ChannelPage_OpenPane" + t.Name);
+
             var helper = SwipeOpenService.GetForCurrentView().Helper;
             if (helper != null)
                 helper.IsEnabled = false;
@@ -701,6 +714,8 @@ namespace Unicord.Universal.Pages
 
         private void ClosePane()
         {
+            Analytics.TrackEvent("ChannelPage_ClosePane");
+
             var helper = SwipeOpenService.GetForCurrentView().Helper;
             if (helper != null)
                 helper.IsEnabled = true;

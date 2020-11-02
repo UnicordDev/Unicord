@@ -211,14 +211,11 @@
                 </lib:SwipeItems>
             </lib:SwipeControl.RightItems>-->
 
-        <Grid VerticalAlignment="Stretch" Margin="0,4">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Margin="0,4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid.ContextFlyout>
-                <flyouts:ChannelContextFlyout />
-            </Grid.ContextFlyout>
             <Grid Name="grid" 
                   Margin="0,0,16,0"
                   IsHitTestVisible="True"
@@ -282,10 +279,7 @@
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="entities:DiscordGuild">
-        <Grid ToolTipService.ToolTip="{x:Bind Name}">
-            <Grid.ContextFlyout>
-                <flyouts:GuildContextFlyout/>
-            </Grid.ContextFlyout>
+        <Grid ContextFlyout="{StaticResource GuildContextFlyout}" ToolTipService.ToolTip="{x:Bind Name}">
             <lib:PersonPicture Margin="10,4" Width="36" Height="36" DisplayName="{x:Bind Name}">
                 <lib:PersonPicture.ProfilePicture>
                     <BitmapImage UriSource="{Binding IconUrl, FallbackValue={x:Null}}" DecodePixelWidth="36" DecodePixelHeight="36" DecodePixelType="Logical" />
@@ -298,7 +292,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <Grid Padding="0,4" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+        <Grid Padding="0,4" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -326,14 +320,11 @@
     </DataTemplate>
 
     <DataTemplate x:Key="UserListTemplate">
-        <Grid>
+        <Grid ContextFlyout="{StaticResource UserListContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid.ContextFlyout>
-                <flyouts:UserListContextFlyout/>
-            </Grid.ContextFlyout>
 
             <Canvas
                 Grid.RowSpan="2"

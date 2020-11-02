@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AppCenter.Analytics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,6 +56,8 @@ namespace Unicord.Universal.Services
 
         public void EnterFullscreen(FrameworkElement element, Panel parent)
         {
+            Analytics.TrackEvent("FullscreenService_EnterFullscreen");
+
             _view.TryEnterFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
 
@@ -73,6 +76,8 @@ namespace Unicord.Universal.Services
 
         public void LeaveFullscreen()
         {
+            Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
+
             _view.ExitFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
@@ -87,6 +92,8 @@ namespace Unicord.Universal.Services
 
         public void LeaveFullscreen(FrameworkElement element, Panel parent)
         {
+            Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
+
             _view.ExitFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 

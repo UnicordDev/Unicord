@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Controls;
@@ -34,6 +35,8 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
+                Analytics.TrackEvent("BanCommand_BanMember");
+
                 var banDialog = new BanDialog(member);
                 var result = await banDialog.ShowAsync();
 

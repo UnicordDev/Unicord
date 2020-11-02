@@ -34,7 +34,7 @@ namespace Unicord.Universal.Controls
         }
 
         public static readonly DependencyProperty EmbedProperty =
-            DependencyProperty.Register("Embed", typeof(DiscordEmbed), typeof(EmbedViewer), new PropertyMetadata(null));        
+            DependencyProperty.Register("Embed", typeof(DiscordEmbed), typeof(EmbedViewer), new PropertyMetadata(null));
 
         public EmbedViewer()
         {
@@ -108,6 +108,8 @@ namespace Unicord.Universal.Controls
 
             if (Embed.Video != null)
             {
+                if (description != null)
+                    description.Visibility = Visibility.Collapsed;
                 thumbnail.Visibility = Visibility.Collapsed;
                 var video = new EmbedVideoControl() { Embed = Embed, Thumbnail = Embed.Thumbnail, Video = Embed.Video };
                 AddWithRow(video);
@@ -227,8 +229,9 @@ namespace Unicord.Universal.Controls
                     await Tools.DownloadToFileAsync(Embed.Thumbnail.Url, file);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     resources.GetString("AttachmentDownloadFailedTitle"),
                     resources.GetString("AttachmentDownloadFailedText"));
@@ -265,8 +268,9 @@ namespace Unicord.Universal.Controls
                 dataTransferManager.DataRequested += DataRequested;
                 DataTransferManager.ShowShareUI();
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     resources.GetString("AttachmentDownloadFailedTitle"),
                     resources.GetString("AttachmentDownloadFailedText"));

@@ -104,9 +104,9 @@ namespace Unicord.Universal.Pages.Subpages
                 {
                     ratelimited.Visibility = Visibility.Visible;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Logger.LogError(ex);
                 }
             }
 

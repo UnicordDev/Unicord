@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
@@ -52,7 +53,7 @@ namespace Unicord.Universal.Pages.Settings
                 {
                     var newIndex = _pages.Keys.ToList().IndexOf(str);
                     nav.SelectedItem = nav.MenuItems.ElementAt(newIndex);
-                    frame.Navigate(type, null, new SuppressNavigationTransitionInfo());
+                    Navigate(type, new SuppressNavigationTransitionInfo());
                 }
             }
         }
@@ -90,11 +91,17 @@ namespace Unicord.Universal.Pages.Settings
                         }
                     }
 
-                    frame.Navigate(type, null, transitionInfo);
+                    Navigate(type, transitionInfo);
                 }
             }
         }
 
+        private void Navigate(Type type, NavigationTransitionInfo transitionInfo)
+        {
+            Analytics.TrackEvent($"{type.Name}_NavigateTo");
+
+            frame.Navigate(type, null, transitionInfo);
+        }
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")

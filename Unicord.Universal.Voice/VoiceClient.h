@@ -24,7 +24,6 @@
 #include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Storage.Streams.h>
 
-
 #include <call/call.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
@@ -64,8 +63,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         VoiceClient() = default;
         VoiceClient(VoiceClientOptions const& options);
 
-        AudioFormat audio_format;
-
         std::unique_ptr<webrtc::Call> _call = nullptr;
 
         rtc::scoped_refptr<webrtc::AudioEncoderFactory> _audioEncoderFactory = nullptr;
@@ -86,6 +83,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         static hstring OpusVersion();
         static hstring SodiumVersion();
+        static hstring WebRTCVersion();
 
         uint32_t WebSocketPing();
         uint32_t UdpSocketPing();

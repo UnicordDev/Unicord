@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Subpages;
@@ -48,9 +49,10 @@ namespace Unicord.Universal.Services
         internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
             var page = _page.MainFrame.Content as ChannelPage;
-
             if (channel == null)
             {
+                Analytics.TrackEvent("DiscordNavigationService_NavigateToFriendsPage");
+
                 _pageModel.SelectedGuild = null;
                 _pageModel.IsFriendsSelected = true;
 
@@ -72,6 +74,8 @@ namespace Unicord.Universal.Services
 
             if (_pageModel.CurrentChannel != channel && channel.Type != ChannelType.Voice)
             {
+                Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
+
                 _pageModel.Navigating = true;
                 _page.CloseSplitPane(); // pane service?
 
@@ -121,6 +125,8 @@ namespace Unicord.Universal.Services
             }
             else if (channel?.Type == ChannelType.Voice)
             {
+                Analytics.TrackEvent("DiscordNavigationService_NavigateToVoiceChannel");
+
                 try
                 {
                     var voice = new VoiceConnectionModel(channel);
@@ -129,6 +135,7 @@ namespace Unicord.Universal.Services
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
                     await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
                 }
             }

@@ -36,8 +36,24 @@ namespace Unicord
 
         private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents;
 
-        private ThreadHandlerCollection PropertyChangeEvents =>
-            (_propertyChangedEvents ?? (_propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true))).Value;
+        private ThreadHandlerCollection PropertyChangeEvents
+        {
+            get
+            {
+                if (_propertyChangedEvents == null)
+                    _propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true);
+
+                try
+                {
+                    return _propertyChangedEvents.Value;
+                }
+                catch (ObjectDisposedException ex) // why the fuck
+                {
+                    _propertyChangedEvents = null;
+                    return PropertyChangeEvents; // we go againe
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged
         {

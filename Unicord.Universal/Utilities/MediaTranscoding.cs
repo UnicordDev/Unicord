@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AppCenter.Analytics;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Unicord.Universal;
@@ -18,44 +19,71 @@ namespace Unicord.Universal.Utilities
     {
         public static async Task<bool> TryTranscodeVideoAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
-            var props = await (input as IStorageItemProperties).Properties.GetVideoPropertiesAsync();
-            var profile = CreateVideoEncodingProfileFromProps(hq, props);
+            try
+            {
+                Analytics.TrackEvent("MediaTranscoding_VideoTranscodeRequested");
 
-            return await TryTranscodeMediaAsync(input, output, profile, progress, token);
+                var props = await (input as IStorageItemProperties).Properties.GetVideoPropertiesAsync();
+                var profile = CreateVideoEncodingProfileFromProps(hq, props);
+
+                return await TryTranscodeMediaAsync(input, output, profile, progress, token);
+            }
+            finally
+            {
+                Analytics.TrackEvent("MediaTranscoding_VideoTranscodeComplete");
+            }
         }
 
         public static Task<bool> TryTranscodeAudioAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
         {
-            var profile = MediaEncodingProfile.CreateMp3(hq ? AudioEncodingQuality.High : AudioEncodingQuality.Medium);
-            return TryTranscodeMediaAsync(input, output, profile, progress, token);
+            try
+            {
+                Analytics.TrackEvent("MediaTranscoding_AudioTranscodeRequested");
+
+                var profile = MediaEncodingProfile.CreateMp3(hq ? AudioEncodingQuality.High : AudioEncodingQuality.Medium);
+                return TryTranscodeMediaAsync(input, output, profile, progress, token);
+            }
+            finally
+            {
+                Analytics.TrackEvent("MediaTranscoding_AudioTranscodeComplete");
+            }
         }
 
         public static async Task<bool> TryTranscodePhotoAsync(IStorageFile input, IStorageFile output, IProgress<double?> progress, CancellationToken token = default)
         {
-            progress.Report(null);
-
             try
             {
-                using (var inputStream = await input.OpenAsync(FileAccessMode.Read))
-                using (var outputStream = await output.OpenAsync(FileAccessMode.ReadWrite))
+                Analytics.TrackEvent("MediaTranscoding_PhotoTranscodeRequested");
+
+                progress.Report(null);
+
+                try
                 {
-                    var decoder = await BitmapDecoder.CreateAsync(inputStream);
-                    double width = (int)decoder.PixelWidth;
-                    double height = (int)decoder.PixelHeight;
+                    using (var inputStream = await input.OpenAsync(FileAccessMode.Read))
+                    using (var outputStream = await output.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        var decoder = await BitmapDecoder.CreateAsync(inputStream);
+                        double width = (int)decoder.PixelWidth;
+                        double height = (int)decoder.PixelHeight;
 
-                    Drawing.ScaleProportions(ref width, ref height, 2048, 2048);
+                        Drawing.ScaleProportions(ref width, ref height, 4096, 4096);
 
-                    var encoder = await BitmapEncoder.CreateForTranscodingAsync(outputStream, decoder);
-                    encoder.BitmapTransform.ScaledWidth = (uint)width;
-                    encoder.BitmapTransform.ScaledHeight = (uint)height;
-                    await encoder.FlushAsync();
+                        var encoder = await BitmapEncoder.CreateForTranscodingAsync(outputStream, decoder);
+                        encoder.BitmapTransform.ScaledWidth = (uint)width;
+                        encoder.BitmapTransform.ScaledHeight = (uint)height;
+                        await encoder.FlushAsync();
 
-                    return true;
+                        return true;
+                    }
+                }
+                catch
+                {
+                    return false;
                 }
             }
-            catch
+            finally
             {
-                return false;
+                Analytics.TrackEvent("MediaTranscoding_PhotoTranscodeComplete");
             }
         }
 

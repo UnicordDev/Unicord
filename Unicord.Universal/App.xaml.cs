@@ -13,7 +13,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
-using Microsoft.Gaming.XboxGameBar;
+//using Microsoft.Gaming.XboxGameBar;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
@@ -44,8 +44,8 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
-        private static XboxGameBarWidget _chatListWidget;
-        private static XboxGameBarWidget _friendsListWidget;
+        //private static XboxGameBarWidget _chatListWidget;
+        //private static XboxGameBarWidget _friendsListWidget;
 
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
@@ -71,26 +71,34 @@ namespace Unicord.Universal
             }
 
             Suspending += OnSuspending;
-            UnhandledException += App_UnhandledException;
+            UnhandledException += OnUnhandledException;
 
             Debug.WriteLine("Welcome to Unicord!");
             Debug.WriteLine(provider.GetVersionString());
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-               AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
 
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Logger.LogError(e.Exception);
             Logger.Log(e.Message);
             e.Handled = true;
         }
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            try { ThemeManager.LoadCurrentTheme(Resources); } catch { }
+            try
+            {
+                ThemeManager.LoadCurrentTheme(Resources);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
 
             switch (e)
             {
@@ -103,42 +111,44 @@ namespace Unicord.Universal
                 case ProtocolActivatedEventArgs protocol:
                     await OnProtocolActivatedAsync(protocol);
                     return;
-                case XboxGameBarWidgetActivatedEventArgs xbox:
-                    OnXboxGameBarActivated(xbox);
-                    return;
+                //case XboxGameBarWidgetActivatedEventArgs xbox:
+                //    OnXboxGameBarActivated(xbox);
+                //    return;
                 default:
                     Debug.WriteLine(e.Kind);
                     break;
             }
         }
 
-        private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
-        {
-            if (xbox.IsLaunchActivation)
-            {
-                var name = xbox.Uri.LocalPath;
-                var frame = new Frame();
-                frame.NavigationFailed += OnNavigationFailed;
-                Window.Current.Content = frame;
+        //private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
+        //{
+        //    if (xbox.IsLaunchActivation)
+        //    {
+        //        var name = xbox.Uri.LocalPath;
+        //        var frame = new Frame();
+        //        frame.NavigationFailed += OnNavigationFailed;
+        //        Window.Current.Content = frame;
 
-                if (name == "unicord-friendslist")
-                {
-                    _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
-                    Window.Current.Closed += OnFrendsListWidgetClosed;
+        //        if (name == "unicord-friendslist")
+        //        {
+        //            _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
+        //            Window.Current.Closed += OnFrendsListWidgetClosed;
 
-                    frame.Navigate(typeof(GameBarMainPage));
-                }
-            }
-        }
+        //            frame.Navigate(typeof(GameBarMainPage));
+        //        }
+        //    }
+        //}
 
-        private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
-        {
-            Window.Current.Closed -= OnFrendsListWidgetClosed;
-            _friendsListWidget = null;
-        }
+        //private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
+        //{
+        //    Window.Current.Closed -= OnFrendsListWidgetClosed;
+        //    _friendsListWidget = null;
+        //}
 
         private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
         {
+            Analytics.TrackEvent("Unicord_LaunchForProtocol");
+
             if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
             {
                 var path = protocol.Uri.AbsolutePath.Split('/').Skip(1).ToArray();
@@ -161,6 +171,8 @@ namespace Unicord.Universal
 
         private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
         {
+            Analytics.TrackEvent("Unicord_LaunchForMyPeople");
+
             if (!(Window.Current.Content is Frame rootFrame))
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
@@ -219,7 +231,7 @@ namespace Unicord.Universal
             {
                 UpgradeSettings();
 
-                Analytics.TrackEvent("Launch");
+                Analytics.TrackEvent("Unicord_Launch");
                 WindowManager.SetMainWindow();
 
                 try
@@ -228,6 +240,7 @@ namespace Unicord.Universal
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
                     themeLoadException = ex;
                 }
 
@@ -320,13 +333,16 @@ namespace Unicord.Universal
             if (!(Window.Current.Content is Frame rootFrame))
             {
                 UpgradeSettings();
-                Analytics.TrackEvent("Launch");
+                Analytics.TrackEvent("Unicord_LaunchForShare");
 
                 try
                 {
                     ThemeManager.LoadCurrentTheme(Resources);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
 
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
@@ -435,6 +451,7 @@ namespace Unicord.Universal
                         }
                         catch (Exception ex)
                         {
+                            Logger.LogError(ex);
                             Tools.ResetPasswordVault();
                             _readySource.TrySetException(ex);
                             await onError(ex);

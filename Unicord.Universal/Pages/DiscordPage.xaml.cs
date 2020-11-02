@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.UI.Controls;
-using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
@@ -20,18 +16,13 @@ using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Notifications;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
@@ -73,6 +64,8 @@ namespace Unicord.Universal.Pages
         {
             UpdateTitleBar();
 
+            Analytics.TrackEvent("DiscordPage_NavigatedTo");
+
             if (e.Parameter is MainPageArgs args)
             {
                 _args = args;
@@ -101,6 +94,8 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            Analytics.TrackEvent("DiscordPage_Loaded");
+
             try
             {
                 App.Discord.MessageCreated += Notification_MessageCreated;
@@ -116,11 +111,13 @@ namespace Unicord.Universal.Pages
 
                 if (_args != null && _args.ChannelId != 0)
                 {
+                    Analytics.TrackEvent("DiscordPage_NavigateToSpecifiedChannel");
                     var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
                     await service.NavigateAsync(channel);
                 }
                 else
                 {
+                    Analytics.TrackEvent("DiscordPage_NavigateToFriendsPage");
                     Model.IsFriendsSelected = true;
                     SidebarFrame.Navigate(typeof(DMChannelsPage));
                     MainFrame.Navigate(typeof(FriendsPage));
@@ -128,6 +125,8 @@ namespace Unicord.Universal.Pages
 
                 if (_args?.ThemeLoadException != null)
                 {
+                    Analytics.TrackEvent("DiscordPage_ThemeErrorMessageShown");
+
                     var message = App.Discord.CreateMockMessage(
                         $"We had some trouble loading your selected themes, so we disabled them for this launch. For more information, see settings.",
                         App.Discord.CreateMockUser("Unicord", "CORD"));
@@ -144,12 +143,15 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
             }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            Analytics.TrackEvent("DiscordPage_Unloaded");
+
             if (App.Discord != null)
             {
                 App.Discord.MessageCreated -= Notification_MessageCreated;
@@ -334,6 +336,8 @@ namespace Unicord.Universal.Pages
 
         internal void OpenSettings(SettingsPageType page)
         {
+            Analytics.TrackEvent("DiscordPage_OpenSettings");
+
             SettingsOverlayGrid.Visibility = Visibility.Visible;
 
             CheckSettingsPane();
