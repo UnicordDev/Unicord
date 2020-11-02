@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Pages;
 using Windows.System;
 using Windows.UI.Core;
@@ -50,42 +51,50 @@ namespace Unicord.Universal.Controls.Messages
 
         public MessageControl()
         {
+            this.DefaultStyleKey = typeof(MessageControl);
             this.Loaded += OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (this.Style == null)
-            {
-                ApplyCustomStyles();
-            }
+            //if (this.Style == null)
+            //{
+            //    ApplyCustomStyles();
+            //}
         }
 
-        protected virtual void ApplyCustomStyles()
-        {
-            // if the style isn't explicitly set, load it
-            if (!App.Current.Resources.TryGetValue(App.LocalSettings.Read(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT), out var obj) || !(obj is Style s))
-            {
-                s = App.Current.Resources[MESSAGE_STYLE_DEFAULT] as Style;
-                App.LocalSettings.Save(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT);
-            }
+        //protected virtual void ApplyCustomStyles()
+        //{
+        //    // if the style isn't explicitly set, load it
+        //    if (!App.Current.Resources.TryGetValue(App.LocalSettings.Read(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT), out var obj) || !(obj is Style s))
+        //    {
+        //        s = App.Current.Resources[MESSAGE_STYLE_DEFAULT] as Style;
+        //        App.LocalSettings.Save(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT);
+        //    }
 
-            this.Style = s;
-        }
+        //    this.Style = s;
+        //}
 
         protected override void OnApplyTemplate()
         {
             this.UpdateCollapsedState();
         }
 
+        protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+        {
+            base.OnRightTapped(e);
+        }
+
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is DiscordMessage message)
             {
+                this.DataContext = message;
                 this.UpdateCollapsedState();
             }
             else
             {
+                this.DataContext = null;
                 // reset
             }
         }
@@ -93,10 +102,8 @@ namespace Unicord.Universal.Controls.Messages
         // TODO: Could prolly move this somewhere better
         private void UpdateCollapsedState()
         {
-            if (Message == null)
+            if (Message == null || !IsEnabled)
                 return;
-
-            VisualStateManager.GoToState(this, "NotEditing", false);
 
             var list = this.FindParent<ListView>();
             if (list != null)
@@ -105,6 +112,10 @@ namespace Unicord.Universal.Controls.Messages
                 {
                     VisualStateManager.GoToState(this, "EditMode", false);
                     return;
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "NotEditing", false);
                 }
 
                 var index = list.Items.IndexOf(Message);
@@ -162,7 +173,10 @@ namespace Unicord.Universal.Controls.Messages
                     await Message.ModifyAsync(editBox.Text);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         public virtual void EndEdit()

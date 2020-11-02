@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
@@ -86,6 +87,8 @@ namespace Unicord.Universal.Utilities
             if (await ActivateOtherWindow(channel))
                 return;
 
+            Analytics.TrackEvent("WindowManager_OpenChannelWindow");
+
             var viewId = 0;
             var coreView = CoreApplication.CreateNewView();
             await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -107,6 +110,8 @@ namespace Unicord.Universal.Utilities
 
                 void OnConsolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
                 {
+                    Analytics.TrackEvent("WindowManager_WindowConsolidated");
+
                     if (sender.Id == viewId && sender.Id != _mainWindowId)
                     {
                         if (args.IsAppInitiated)
@@ -200,11 +205,6 @@ namespace Unicord.Universal.Utilities
                     }
                 }
             }
-        }
-
-        private static void _notifier_ThemeChanged(ThemeListener sender)
-        {
-
         }
 
         // for some reason Grid doesn't inherit from Control???

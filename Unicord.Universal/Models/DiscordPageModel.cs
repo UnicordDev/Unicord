@@ -30,10 +30,23 @@ namespace Unicord.Universal.Models
             UnreadDMs = new ObservableCollection<DiscordDmChannel>();
             CurrentUser = App.Discord.CurrentUser;
 
-            var guildPositions = App.Discord.UserSettings?.GuildPositions;
-            foreach (var guild in App.Discord.Guilds.Values.OrderBy(g => guildPositions?.IndexOf(g.Id) ?? 0))
+            var folders = App.Discord.UserSettings?.GuildFolders;
+            if (folders != null)
             {
-                Guilds.Add(guild);
+                foreach (var folder in folders)
+                {
+                    foreach (var guildId in folder.GuildIds)
+                    {
+                        Guilds.Add(App.Discord.Guilds[guildId]);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var guild in App.Discord.Guilds.Values)
+                {
+                    Guilds.Add(guild);
+                }
             }
 
             foreach (var dm in App.Discord.PrivateChannels.Values)
@@ -114,19 +127,19 @@ namespace Unicord.Universal.Models
 
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
-            var guildPositions = App.Discord.UserSettings?.GuildPositions;
-            if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
-                return Task.CompletedTask;
+            //var guildPositions = App.Discord.UserSettings?.GuildPositions;
+            //if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
+            //    return Task.CompletedTask;
 
-            for (var i = 0; i < guildPositions.Count; i++)
-            {
-                var id = guildPositions[i];
-                var guild = Guilds[i];
-                if (id != guild.Id)
-                {
-                    _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
-                }
-            }
+            //for (var i = 0; i < guildPositions.Count; i++)
+            //{
+            //    var id = guildPositions[i];
+            //    var guild = Guilds[i];
+            //    if (id != guild.Id)
+            //    {
+            //        _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
+            //    }
+            //}
 
             return Task.CompletedTask;
         }

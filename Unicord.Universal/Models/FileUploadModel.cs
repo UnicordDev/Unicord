@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Controls;
 using WamWooWam.Core;
 using Windows.Media.Editing;
@@ -27,6 +28,8 @@ namespace Unicord.Universal.Models
 
         public static async Task<FileUploadModel> FromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
+            Analytics.TrackEvent("FileUploadModel_CreateFromStorageFile");
+
             var model = new FileUploadModel();
             await model.UpdateFromStorageFileAsync(file, prop, isTemporary, transcodeFailed);
             return model;

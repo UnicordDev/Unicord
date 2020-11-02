@@ -16,10 +16,8 @@ namespace Unicord.Universal.Converters
             {
                 return 0.5;
             }
-            else
-            {
-                return 1.0; // must return double
-            }
+
+            return 1.0; // must return double
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

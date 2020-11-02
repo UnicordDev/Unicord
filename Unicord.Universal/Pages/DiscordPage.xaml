@@ -342,41 +342,20 @@
                         x:Name="sidebarSecondaryGrid"
                         Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <Grid Height="42">
-                            <TextBlock
-                                Margin="16,0"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                FontWeight="SemiBold"
-                                Text="{Binding Content.Tag, ElementName=sidebarFrame, FallbackValue=Unicord}"
-                                TextTrimming="CharacterEllipsis" />
-                        </Grid>
-
-                        <AutoSuggestBox
-                            x:Name="searchBox"
-                            Grid.Row="1"
-                            Margin="8,4,8,4"
-                            BorderThickness="1"
-                            PlaceholderText="Find some people!"
-                            QueryIcon="Find"
-                            Style="{StaticResource CleanAutoSuggestBox}" />
 
                         <Frame
                             x:Name="sidebarFrame"
-                            Grid.Row="2"
                             Width="220" />
 
-                        <Grid Grid.Row="3">
+                        <Grid Grid.Row="1">
                             <controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
                         </Grid>
 
-                        <Grid Grid.Row="4">
+                        <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>

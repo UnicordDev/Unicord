@@ -17,15 +17,20 @@
     <StackPanel>
         <TextBlock x:Uid="/MessagingSettingsPage/MessagingSettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,8"/>        
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Message Style"/>
-        <TextBlock TextWrapping="Wrap" Text="How would you like your messages to look?"/>
-        <ListBox ItemsSource="{Binding AvailableMessageStyles}" SelectedItem="{Binding SelectedMessageStyle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Margin="0,4,0,8">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <messages:MessageControl BorderBrush="Transparent" Message="{Binding ExampleMessage,Mode=OneWay}" Style="{Binding Value}" IsEnabled="False" Padding="0" Margin="0"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        
+        <!-- 
+            Temporarily disabled for performance reasons
+        
+            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Message Style"/>
+            <TextBlock TextWrapping="Wrap" Text="How would you like your messages to look?"/>
+            <ListBox ItemsSource="{Binding AvailableMessageStyles}" SelectedItem="{Binding SelectedMessageStyle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Margin="0,4,0,8">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:MessageStyle">
+                        <messages:MessageControl x:Name="ExampleMessageControl" BorderBrush="Transparent" Style="{x:Bind Value}" Message="{x:Bind ExampleMessage}" IsEnabled="False" Padding="0" Margin="0"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        -->
 
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/TimestampsHeader" Text="Timestamps"/>
         <TextBlock TextWrapping="Wrap" x:Uid="/MessagingSettingsPage/TimestampsSubheader"/>

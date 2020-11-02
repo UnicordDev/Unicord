@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 
 namespace Unicord.Universal.Commands
 {
@@ -19,6 +20,8 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordChannel channel && channel.ReadState?.Unread == true)
             {
+                Analytics.TrackEvent("AcknowledgeCommand_AckChannel");
+
                 var message = await channel.GetMessageAsync(channel.LastMessageId);
                 if (message != null)
                     await message.AcknowledgeAsync();
@@ -26,6 +29,7 @@ namespace Unicord.Universal.Commands
 
             if (parameter is DiscordGuild guild && guild.Unread)
             {
+                Analytics.TrackEvent("AcknowledgeCommand_AckGuild");
                 await guild.AcknowledgeAsync();
             }
         }

@@ -218,8 +218,8 @@ namespace Unicord.Universal
             }
 
             // i love discord
-            var memberTopRole = member.Roles.OrderByDescending(r => r.Position).FirstOrDefault();
-            var currentTopRole = current.Roles.OrderByDescending(r => r.Position).FirstOrDefault();
+            var memberTopRole = member.Roles.OrderByDescending(r => r?.Position).FirstOrDefault();
+            var currentTopRole = current.Roles.OrderByDescending(r => r?.Position).FirstOrDefault();
 
             return (memberTopRole?.Position ?? 0) < (currentTopRole?.Position ?? 0);
         }

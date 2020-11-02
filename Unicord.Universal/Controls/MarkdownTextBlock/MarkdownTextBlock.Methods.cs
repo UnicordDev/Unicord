@@ -160,6 +160,7 @@ namespace WamWooWam.Uwp.UI.Controls
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
                     Debug.WriteLine("Error while parsing and rendering: " + ex.Message);
                     Debug.WriteLine(Text);
 

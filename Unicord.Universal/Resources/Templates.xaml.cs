@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Unicord.Universal.Resources
 {
@@ -22,6 +25,12 @@ namespace Unicord.Universal.Resources
             {
                 channel.Muted = !channel.Muted;
             }
+        }
+
+        private void OnDeferredContextFlyoutRightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var element = sender as FrameworkElement;
+            (element.FindName("ContextFlyout") as FlyoutBase)?.ShowAt(element);
         }
     }
 }

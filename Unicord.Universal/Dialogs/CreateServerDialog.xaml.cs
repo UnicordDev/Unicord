@@ -68,6 +68,8 @@ namespace Unicord.Universal.Dialogs
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            return;
+
             if (DataContext is CreateServerModel model)
             {
                 if (string.IsNullOrEmpty(model.Name))
@@ -98,7 +100,7 @@ namespace Unicord.Universal.Dialogs
                 }
                 catch (Exception ex)
                 {
-
+                    Logger.LogError(ex);
                 }
             }
         }

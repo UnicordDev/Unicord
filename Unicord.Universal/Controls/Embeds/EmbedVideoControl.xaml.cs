@@ -110,7 +110,14 @@ namespace Unicord.Universal.Controls.Embeds
 
                 firstChild.Navigate(new Uri("about:blank"));
 
-                try { UnloadObject(firstChild); } catch { }
+                try
+                {
+                    UnloadObject(firstChild);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
             }
         }
     }

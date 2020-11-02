@@ -1,4 +1,5 @@
 ﻿<Page
+    x:Name="Self"
     x:Uid="/DMChannelsPage/DirectMessageChannels"
     x:Class="Unicord.Universal.Pages.Subpages.DMChannelsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,7 +9,7 @@
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Controls"
-    xmlns:models="using:Unicord.Universal.Models"
+    xmlns:models="using:Unicord.Universal.Models" xmlns:controls="using:Unicord.Universal.Controls"
     NavigationCacheMode="Required"
     mc:Ignorable="d">
 
@@ -17,9 +18,27 @@
     </Page.DataContext>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Height="42">
+            <TextBlock
+                Margin="16,0"
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="{Binding Tag, ElementName=Self}"
+                TextTrimming="CharacterEllipsis" />
+        </Grid>
+
+        <controls:SidebarSearchBox Grid.Row="1" />
+
         <ListView
             x:Name="dmsList"
-            Grid.Row="1"
+            Grid.Row="2"
             ItemTemplate="{StaticResource DMChannelTemplate}"
             ItemsSource="{Binding DMChannels}"
             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"

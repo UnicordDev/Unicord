@@ -174,6 +174,7 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync("Sending failed!", ex.Message);
                 _shareOperation.ReportError(ex.Message);
                 return;

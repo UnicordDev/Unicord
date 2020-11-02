@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AppCenter.Crashes;
+using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.UI.Xaml;
@@ -40,32 +42,43 @@ namespace Unicord.Universal.Controls
                 v._appliedTemplate = v.ApplyTemplate();
             }
 
-            await v._semaphore.WaitAsync();
+            await v.OnFilePropertyChanged(e);
+        }
 
-            if (e.NewValue is StorageFile f && v.GetTemplateChild("image") is Image image)
+        public async Task OnFilePropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            await _semaphore.WaitAsync();
+
+            try
             {
-                if (!(image.Source is BitmapImage source))
+                if (e.NewValue is StorageFile f && GetTemplateChild("image") is Image image)
                 {
-                    source = new BitmapImage();
-                    image.Source = source;
-                }
-
-                ToolTipService.SetToolTip(v, f.Name);
-
-                try
-                {
-                    var thumb = await f.GetThumbnailAsync(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale);
-                    if (thumb != null)
+                    if (!(image.Source is BitmapImage source))
                     {
-                        await source.SetSourceAsync(thumb);
+                        source = new BitmapImage();
+                        image.Source = source;
                     }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
 
-                v._semaphore.Release();
+                    ToolTipService.SetToolTip(this, f.Name);
+
+                    using (var thumb = await f.GetThumbnailAsync(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale))
+                    {
+                        if (thumb != null)
+                        {
+                            await source.SetSourceAsync(thumb);
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
     }

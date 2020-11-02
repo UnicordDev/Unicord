@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Services.Store.Engagement;
 using Microsoft.Toolkit.Uwp.Helpers;
 using System;
@@ -115,8 +116,9 @@ namespace Unicord.Universal
                     await ClearJumpListAsync();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 rootFrame.Navigate(typeof(LoginPage));
                 await ClearJumpListAsync();
             }
@@ -162,6 +164,8 @@ namespace Unicord.Universal
                 App.Discord.SocketClosed += OnDiscordDisconnected;
             }
 
+            Analytics.TrackEvent("Discord_OnFirstReady");
+
             _isReady = true;
 
             // TODO: This doesn't work?
@@ -203,6 +207,7 @@ namespace Unicord.Universal
 
         private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
         {
+            Analytics.TrackEvent("Discord_Disconnected");
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -217,6 +222,7 @@ namespace Unicord.Universal
 
         private async Task HideDisconnectingMessage()
         {
+            Analytics.TrackEvent("Discord_Reconnected");
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Services;
@@ -86,6 +87,8 @@ namespace Unicord.Universal.Pages
                 Close();
                 return;
             }
+
+            Analytics.TrackEvent("VideoEditor_Loaded");
 
             if (_model.Composition == null)
             {
@@ -260,6 +263,8 @@ namespace Unicord.Universal.Pages
             overlayGrid.Visibility = Visibility.Visible;
             OpenProcessingOverlay.Begin();
 
+            Analytics.TrackEvent("VideoEditor_ExportStarted");
+
             var props = await (_model.StorageFile as StorageFile).Properties.GetVideoPropertiesAsync();
             var profile = MediaTranscoding.CreateVideoEncodingProfileFromProps(true, props);
 
@@ -277,6 +282,8 @@ namespace Unicord.Universal.Pages
 
         private async Task SaveComposition()
         {
+            Analytics.TrackEvent("VideoEditor_CompositionSaved");
+
             if (_model.CompositionFile == null)
             {
                 _model.CompositionFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(Path.ChangeExtension(_model.StorageFile.Name, "uni-cmp"));
@@ -296,6 +303,7 @@ namespace Unicord.Universal.Pages
 
         private async void OnCompleted(IAsyncOperationWithProgress<TranscodeFailureReason, double> info, AsyncStatus status)
         {
+            Analytics.TrackEvent("VideoEditor_ExportFinished");
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 try

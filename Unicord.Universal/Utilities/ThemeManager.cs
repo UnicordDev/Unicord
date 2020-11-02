@@ -62,7 +62,7 @@ namespace Unicord.Universal
             {
                 var themes = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
                 Load(themes, themesDictionary);
-                Analytics.TrackEvent("ThemesLoaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
+                Analytics.TrackEvent("Themes_Loaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
 
             }
             finally
@@ -108,7 +108,7 @@ namespace Unicord.Universal
                         {
                             selectedThemeNames.Remove(selectedThemeName);
                             App.LocalSettings.Save(SELECTED_THEME_NAMES, selectedThemeNames);
-                            Analytics.TrackEvent("ThemeLoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
+                            Analytics.TrackEvent("Themes_LoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
                             throw new Exception(strings.GetString("ThemeInvalidDoesNotExist"));
                         }
 
@@ -132,7 +132,7 @@ namespace Unicord.Universal
                     }
                     catch (Exception ex)
                     {
-                        Analytics.TrackEvent("ThemeLoadError", new Dictionary<string, string>() { ["LoadException"] = ex.Message, ["Theme"] = selectedThemeName });
+                        Analytics.TrackEvent("Themes_LoadError", new Dictionary<string, string>() { ["LoadException"] = ex.Message, ["Theme"] = selectedThemeName });
                         exceptions.Add(ex);
                     }
                 }
@@ -166,7 +166,7 @@ namespace Unicord.Universal
                     if (!(await localFolder.TryGetItemAsync(Strings.Normalise(themeName)) is StorageFolder themeFolder) ||
                         !(await themeFolder.TryGetItemAsync(THEME_METADATA_NAME) is StorageFile themeDefinitionFile))
                     {
-                        Analytics.TrackEvent("AsyncThemeLoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
+                        Analytics.TrackEvent("Themes_LoadError", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
                         throw new Exception(strings.GetString("ThemeInvalidDoesNotExist"));
                     }
 
@@ -183,7 +183,7 @@ namespace Unicord.Universal
 
                     if (themeErrors.Any())
                     {
-                        Analytics.TrackEvent("AsyncThemeLoadError", new Dictionary<string, string>() { ["Info"] = "XamlParseError", });
+                        Analytics.TrackEvent("Themes_LoadError", new Dictionary<string, string>() { ["Info"] = "XamlParseError", });
                         throw new InvalidOperationException(StringFromThemeErrors(themeErrors));
                     }
                 }
@@ -194,7 +194,7 @@ namespace Unicord.Universal
                 target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = compact });
             }
 
-            Analytics.TrackEvent("ThemesLoadedAsync", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themeNames) });
+            Analytics.TrackEvent("Themes_LoadedAsync", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themeNames) });
         }
 
         public static async Task<Dictionary<StorageFile, Theme>> LoadFromArchivesAsync(List<StorageFile> files, ResourceDictionary target)
@@ -287,7 +287,7 @@ namespace Unicord.Universal
 
                     var themeRoot = await themesDirectory.CreateFolderAsync(theme.NormalisedName);
                     await Task.Run(() => archive.ExtractToDirectory(themeRoot.Path));
-                    Analytics.TrackEvent("ThemeInstalled", new Dictionary<string, string>() { ["Theme"] = JsonConvert.SerializeObject(theme.Name) });
+                    Analytics.TrackEvent("Themes_Installed", new Dictionary<string, string>() { ["Theme"] = JsonConvert.SerializeObject(theme.Name) });
                     return theme;
                 }
             }
@@ -318,7 +318,7 @@ namespace Unicord.Universal
             if (await themesDirectory.TryGetItemAsync(Strings.Normalise(name)) is StorageFolder folder)
                 await folder.DeleteAsync();
 
-            Analytics.TrackEvent("ThemeRemoved", new Dictionary<string, string>() { ["Theme"] = JsonConvert.SerializeObject(name) });
+            Analytics.TrackEvent("Themes_Removed", new Dictionary<string, string>() { ["Theme"] = JsonConvert.SerializeObject(name) });
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace Unicord.Universal
             {
                 if (!ApiInformation.IsApiContractPresent(check.Key, check.Value))
                 {
-                    Analytics.TrackEvent("ThemeInstallFailure", new Dictionary<string, string>() { ["Info"] = "ThemeCheckFailed" });
+                    Analytics.TrackEvent("Themes_InstallFailure", new Dictionary<string, string>() { ["Info"] = "ThemeCheckFailed" });
 
                     throw new InvalidOperationException(
                         check.Key == "Windows.Foundation.UniversalApiContract" ?
@@ -358,7 +358,7 @@ namespace Unicord.Universal
 
             if (themeErrors.Any())
             {
-                Analytics.TrackEvent("ThemeInstallFailure", new Dictionary<string, string>() { ["Info"] = "XamlParseError" });
+                Analytics.TrackEvent("Themes_InstallFailure", new Dictionary<string, string>() { ["Info"] = "XamlParseError" });
                 throw new InvalidOperationException(StringFromThemeErrors(themeErrors));
             }
         }
@@ -372,7 +372,7 @@ namespace Unicord.Universal
             var themeDefinitionFile = archive.GetEntry(THEME_METADATA_NAME);
             if (themeDefinitionFile == null)
             {
-                Analytics.TrackEvent("ThemeInstallFailure", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
+                Analytics.TrackEvent("Themes_InstallFailure", new Dictionary<string, string>() { ["Info"] = "ThemeInvalid" });
                 throw new InvalidOperationException(strings.GetString("ThemeInvalidNoJson"));
             }
 
@@ -388,7 +388,7 @@ namespace Unicord.Universal
             var entry = archive.GetEntry(theme.DisplayLogo);
             if (entry == null)
             {
-                Analytics.TrackEvent("ThemeInstallFailure", new Dictionary<string, string>() { ["Info"] = "InvalidLogo" });
+                Analytics.TrackEvent("Themes_InstallFailure", new Dictionary<string, string>() { ["Info"] = "InvalidLogo" });
                 throw new InvalidOperationException(strings.GetString("ThemeInvalidNoLogo"));
             }
 

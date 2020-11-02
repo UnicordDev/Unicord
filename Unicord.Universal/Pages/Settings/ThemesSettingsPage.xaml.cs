@@ -135,6 +135,7 @@ namespace Unicord.Universal.Pages.Settings
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
                     await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
                 }
             }

@@ -35,7 +35,7 @@
     <MenuFlyoutSeparator />
 
     <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyURL" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
     <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
 
 </MenuFlyout>

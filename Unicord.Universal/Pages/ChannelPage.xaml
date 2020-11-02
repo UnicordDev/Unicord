@@ -127,11 +127,7 @@
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:SystemMessageControl Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
-
-        <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
-                                            MessageTemplate="{StaticResource DefaultMessageTemplate}" 
-                                            SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
-
+        
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:MessageControl
                 Background="Transparent"
@@ -140,6 +136,13 @@
                 Opacity="0.5" />
         </DataTemplate>
 
+        <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
+                                            MessageTemplate="{StaticResource DefaultMessageTemplate}" 
+                                            SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
+        
+        <converters:MessageTemplateSelector x:Key="EditingMessageTemplateSelector" 
+                                            MessageTemplate="{StaticResource EditingMessageTemplate}" 
+                                            SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
     </Page.Resources>
     <Grid x:Name="RootGrid">
         <Grid>
@@ -385,6 +388,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
+                        
                         <StackPanel
                             x:Name="NoMessages"
                             Margin="16"
@@ -438,14 +442,14 @@
                                     Grid.Row="2"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
-                                    Click="openLocalButton_Click"
+                                    Click="OnOpenLocalButtonClick"
                                     Content="&#xE8DA;"
                                     Style="{ThemeResource StretchyIconButtonStyle}" />
                             </Grid>
 
                             <ListView x:Name="PhotosList"
                                     Grid.Column="1"
-                                    ShowsScrollingPlaceholders="False"
+                                    ShowsScrollingPlaceholders="True"
                                     SingleSelectionFollowsFocus="False"
                                     SelectionMode="None"
                                     IsItemClickEnabled="True"
@@ -464,8 +468,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <controls:ImageEx Height="150"
-                                                          MaxWidth="300"
-                                                          IsCacheEnabled="True"
+                                                          Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
                                                           Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -625,7 +628,7 @@
                     </VisualState.Storyboard>
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="Multiple"/>
-                        <Setter Target="MessageList.ItemTemplate" Value="{StaticResource EditingMessageTemplate}"/>
+                        <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource EditingMessageTemplateSelector}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NormalMode">
@@ -659,7 +662,7 @@
                     </VisualState.Storyboard>
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="None"/>
-                        <Setter Target="MessageList.ItemTemplate" Value="{StaticResource DefaultMessageTemplate}"/>
+                        <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource MessageTemplateSelector}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

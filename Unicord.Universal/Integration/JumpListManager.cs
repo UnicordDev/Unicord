@@ -71,7 +71,7 @@ namespace Unicord.Universal.Integration
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogError(ex);
             }
         }
     }

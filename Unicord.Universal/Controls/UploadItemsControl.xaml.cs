@@ -96,7 +96,10 @@ namespace Unicord.Universal.Controls
 
                 _transcodeWait.Release();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         private void UpdateProgressBar(double? obj)
@@ -193,7 +196,6 @@ namespace Unicord.Universal.Controls
 
             if (tempFile != null)
                 await tempFile.DeleteAsync();
-            
             return null;
         }
 

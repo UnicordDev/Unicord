@@ -27,6 +27,11 @@ namespace winrt::Unicord::Universal::Voice::implementation
 		return to_hstring(sodium_version_string());
 	}
 
+	hstring VoiceClient::WebRTCVersion() 
+	{
+		return L"Unavailable??";
+	}
+
 	VoiceClient::VoiceClient(VoiceClientOptions const& options)
 	{
 		if (sodium_init() == -1) {
@@ -51,8 +56,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
 			_webSocketEndpoint.hostname = raw_endpoint;
 			_webSocketEndpoint.port = 443;
 		}
-
-		audio_format = AudioFormat();
 
 		InitialiseSockets();
 	}

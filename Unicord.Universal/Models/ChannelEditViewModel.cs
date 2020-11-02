@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 
 namespace Unicord.Universal.Models
 {
@@ -31,6 +32,8 @@ namespace Unicord.Universal.Models
 
         public Task SaveChangesAsync()
         {
+            Analytics.TrackEvent("ChannelEditViewModel_SaveChanges");
+
             if (IsText)
             {
                 return _channel.ModifyAsync(m =>

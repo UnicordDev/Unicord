@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using DSharpPlus.Entities;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using Unicord.Universal.Models;
 using Unicord.Universal.Services;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages.Subpages
@@ -34,8 +22,6 @@ namespace Unicord.Universal.Pages.Subpages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Guild = e.Parameter as DiscordGuild;
-            Tag = Guild.Name;
-
             if (DataContext is GuildChannelListViewModel model)
             {
                 model.Dispose();
@@ -51,6 +37,22 @@ namespace Unicord.Universal.Pages.Subpages
             {
                 var service = DiscordNavigationService.GetForCurrentView();
                 await service.NavigateAsync(channel);
+            }
+        }
+
+        private void OnButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            var flyout = Flyout.GetAttachedFlyout(btn);
+            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
+            {
+                var options = new FlyoutShowOptions();
+                options.Placement = FlyoutPlacementMode.BottomEdgeAlignedRight;
+                flyout.ShowAt(btn, options);
+            }
+            else
+            {
+                flyout.ShowAt(Header);
             }
         }
     }

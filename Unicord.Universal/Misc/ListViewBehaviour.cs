@@ -92,9 +92,9 @@ namespace Unicord.Universal.Behaviours
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Logger.LogError(ex);
             }
         }
 

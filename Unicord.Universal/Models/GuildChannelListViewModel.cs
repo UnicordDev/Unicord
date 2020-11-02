@@ -17,13 +17,12 @@ namespace Unicord.Universal.Models
 {
     public class GuildChannelListViewModel : NotifyPropertyChangeImpl, IDisposable
     {
-        private DiscordGuild _guild;
         private SynchronizationContext _syncContext;
         private bool _canEdit;
 
         public GuildChannelListViewModel(DiscordGuild guild)
         {
-            _guild = guild;
+            Guild = guild;
             _syncContext = SynchronizationContext.Current;
             ViewSource = new CollectionViewSource();
 
@@ -34,6 +33,9 @@ namespace Unicord.Universal.Models
             App.Discord.ChannelDeleted += Discord_ChannelDeleted;
         }
 
+        public DiscordGuild Guild { get; }
+        public string Name => Guild.Name;
+        public string HeaderImage => Guild.BannerUrl;
         public CollectionViewSource ViewSource { get; set; }
         public ObservableCollection<GuildChannelGroup> ChannelGroups { get; set; }
         public ObservableCollection<DiscordChannel> Channels { get; set; }
@@ -51,7 +53,7 @@ namespace Unicord.Universal.Models
 
         private Task Discord_ChannelCreated(ChannelCreateEventArgs e)
         {
-            if (e.Guild.Id == _guild.Id)
+            if (e.Guild.Id == Guild.Id)
             {
                 var group = GetOrCreateGroup(e.Channel);
                 if (e.Channel.Type != ChannelType.Category)
@@ -75,9 +77,9 @@ namespace Unicord.Universal.Models
 
         private Task Discord_ChannelUpdated(ChannelUpdateEventArgs e)
         {
-            if (e.Guild.Id == _guild.Id && e.ChannelAfter.Type != ChannelType.Group)
+            if (e.Guild.Id == Guild.Id && e.ChannelAfter.Type != ChannelType.Group)
             {
-                var canAccess = e.ChannelAfter.PermissionsFor(_guild.CurrentMember).HasPermission(Permissions.AccessChannels);
+                var canAccess = e.ChannelAfter.PermissionsFor(Guild.CurrentMember).HasPermission(Permissions.AccessChannels);
                 if (!canAccess)
                 {
                     // if the channel is inaccessable, remove it and return
@@ -156,7 +158,7 @@ namespace Unicord.Universal.Models
 
         private Task Discord_ChannelDeleted(ChannelDeleteEventArgs e)
         {
-            if (e.Guild.Id == _guild.Id)
+            if (e.Guild.Id == Guild.Id)
             {
                 RemoveFromAll(e.Channel);
             }
@@ -256,13 +258,14 @@ namespace Unicord.Universal.Models
             ChannelGroups = null;
             Channels = null;
 
-            var currentMember = _guild.CurrentMember;
-            var permissions = currentMember.PermissionsIn(_guild.Channels.Values.FirstOrDefault());
+            var currentMember = Guild.CurrentMember;
+            var permissions = currentMember.PermissionsIn(Guild.Channels.Values.FirstOrDefault());
             CanEdit = permissions.HasPermission(Permissions.ManageChannels);
 
+            // var channels = Guild.Channels.Values;
             var channels =
-               (_guild.IsOwner ? _guild.Channels.Values :
-                _guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
+               (Guild.IsOwner ? Guild.Channels.Values :
+                Guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
 
             if (channels.Any(c => c.IsCategory))
             {
