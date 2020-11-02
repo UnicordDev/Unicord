@@ -35,13 +35,16 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
-                Analytics.TrackEvent("BanCommand_BanMember");
+                Analytics.TrackEvent("BanCommand_Invoked");
 
                 var banDialog = new BanDialog(member);
                 var result = await banDialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
+                {
+                    Analytics.TrackEvent("BanCommand_BanMember");
                     await member.BanAsync(banDialog.DeleteMessageDays, banDialog.BanReason);
+                }
             }
         }
     }

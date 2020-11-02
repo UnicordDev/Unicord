@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Controls;
@@ -32,13 +33,18 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
+            Analytics.TrackEvent("KickCommand_Invoked");
+
             if (parameter is DiscordMember member)
             {
                 var kickDialog = new KickDialog(member);
                 var result = await kickDialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
+                {
+                    Analytics.TrackEvent("KickCommand_KickMember");
                     await member.RemoveAsync(kickDialog.KickReason);
+                }
             }
         }
     }

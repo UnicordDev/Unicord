@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
 
@@ -37,9 +38,12 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
+                Analytics.TrackEvent("ChangeNicknameCommand_Invoked");
+
                 var dialog = new ChangeNicknameDialog(member);
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
+                    Analytics.TrackEvent("ChangeNicknameCommand_ChangeNickname");
                     await member.ModifyAsync(m => m.Nickname = dialog.Text);
                 }
             }

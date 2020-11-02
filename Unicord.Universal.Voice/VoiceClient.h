@@ -81,24 +81,6 @@ namespace winrt::Unicord::Universal::Voice::implementation
         webrtc::AudioSendStream* CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType);
         webrtc::AudioReceiveStream* CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType);
 
-        std::unique_ptr<webrtc::Call> _call = nullptr;
-
-        rtc::scoped_refptr<webrtc::AudioEncoderFactory> _audioEncoderFactory = nullptr;
-        rtc::scoped_refptr<webrtc::AudioDecoderFactory> _audioDecoderFactory = nullptr;
-
-        std::shared_ptr<webrtc::WinUWPH264EncoderFactory> _videoEncoderFactory = nullptr;
-        std::shared_ptr<webrtc::WinUWPH264DecoderFactory> _videoDecoderFactory = nullptr;
-
-        webrtc::AudioSendStream* _audioSendStream = nullptr; // i dont like this rawptr
-        webrtc::AudioDeviceWasapi* _audioDeviceManager = nullptr; // nor this one
-
-        concurrency::concurrent_unordered_map <uint32_t, webrtc::AudioReceiveStream*> _audioRecieveStreams;
-        concurrency::concurrent_unordered_map <uint32_t, webrtc::VideoReceiveStream*> _videoRecieveStreams;
-        concurrency::concurrent_unordered_map <uint64_t, uint32_t> _ssrcUserMap;
-
-        webrtc::AudioSendStream* CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType);
-        webrtc::AudioReceiveStream* CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType);
-
         static hstring OpusVersion();
         static hstring SodiumVersion();
         static hstring WebRTCVersion();

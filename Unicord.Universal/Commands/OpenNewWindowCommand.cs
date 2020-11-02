@@ -1,15 +1,9 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Input;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Utilities;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.System.Profile;
 
 namespace Unicord.Universal.Commands
 {
@@ -26,6 +20,8 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
+            Analytics.TrackEvent("OpenNewWindowCommand_Invoked");
+
             if (parameter is DiscordChannel channel && channel.Type != ChannelType.Voice)
             {
                 await WindowManager.OpenChannelWindowAsync(channel);

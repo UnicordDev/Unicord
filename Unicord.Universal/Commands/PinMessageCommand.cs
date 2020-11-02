@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using System;
 using System.Windows.Input;
 using Unicord.Universal.Dialogs;
@@ -43,11 +44,15 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
+            Analytics.TrackEvent("PinMessageCommand_Invoked");
+
             if (parameter is DiscordMessage message)
             {
                 var dialog = new PinMessageDialog() { Message = message };
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
+                    Analytics.TrackEvent("PinMessageCommand_PinMessage");
+
                     if (message.Pinned)
                     {
                         await message.UnpinAsync();

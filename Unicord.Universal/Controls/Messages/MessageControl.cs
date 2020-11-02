@@ -105,6 +105,8 @@ namespace Unicord.Universal.Controls.Messages
             if (Message == null || !IsEnabled)
                 return;
 
+            VisualStateManager.GoToState(this, "NotEditing", false);
+
             var list = this.FindParent<ListView>();
             if (list != null)
             {
@@ -112,10 +114,6 @@ namespace Unicord.Universal.Controls.Messages
                 {
                     VisualStateManager.GoToState(this, "EditMode", false);
                     return;
-                }
-                else
-                {
-                    VisualStateManager.GoToState(this, "NotEditing", false);
                 }
 
                 var index = list.Items.IndexOf(Message);
@@ -132,9 +130,9 @@ namespace Unicord.Universal.Controls.Messages
                         }
                     }
                 }
-
-                VisualStateManager.GoToState(this, "Normal", false);
             }
+
+            VisualStateManager.GoToState(this, "Normal", false);
         }
 
         public virtual void BeginEdit()

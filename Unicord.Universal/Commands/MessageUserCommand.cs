@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Windows.UI.Xaml;
@@ -40,6 +41,8 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
+            Analytics.TrackEvent("MessageUserCommand_Invoked");
+
             if (parameter is DiscordUser user)
             {
                 var channel = App.Discord.PrivateChannels.Values.FirstOrDefault(c => c.Recipients.FirstOrDefault()?.Id == user.Id);

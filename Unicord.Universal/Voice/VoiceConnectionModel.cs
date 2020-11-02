@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.VoiceNext.Entities;
+using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json;
 using Unicord.Universal.Voice.Background;
 using Windows.ApplicationModel;
@@ -160,6 +161,8 @@ namespace Unicord.Universal.Voice
         {
             if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus"))
             {
+                Analytics.TrackEvent("VoiceConnection_Connect");
+
                 ConnectionStatus = _strings.GetString("ConnectionState1");
 
                 var appServiceStatus = await _appServiceConnection.OpenAsync();

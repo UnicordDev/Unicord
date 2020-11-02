@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Commands
@@ -24,6 +25,7 @@ namespace Unicord.Universal.Commands
                 var page = Window.Current.Content.FindChild<MainPage>();
                 if (page != null)
                 {
+                    Analytics.TrackEvent("ShowUserOverlayCommand_Invoked");
                     page.ShowUserOverlay(member, true);
                 }
             }

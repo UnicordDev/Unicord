@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Services;
@@ -43,6 +44,7 @@ namespace Unicord.Universal.Commands
                 var page = Window.Current.Content.FindChild<DiscordPage>();
                 if (page != null)
                 {
+                    Analytics.TrackEvent("EditChannelCommand_Invoked");
                     OverlayService.GetForCurrentView().ShowOverlay<ChannelEditPage>(channel);
                 }
             }

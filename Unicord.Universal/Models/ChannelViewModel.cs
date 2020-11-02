@@ -104,12 +104,6 @@ namespace Unicord.Universal.Models
             set => OnPropertySet(ref _messageText, value);
         }
 
-        public string MessageText
-        {
-            get => _messageText;
-            set => OnPropertySet(ref _messageText, value);
-        }
-
         public DiscordChannel Channel
         {
             get => _channel;
@@ -158,7 +152,7 @@ namespace Unicord.Universal.Models
 
         public ObservableCollection<FileUploadModel> FileUploads { get; set; }
 
-        public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
+        public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r\n", "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
 
         /// <summary>
         /// The channel's symbol. (i.e. #, @ etc.)

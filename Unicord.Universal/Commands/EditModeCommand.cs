@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Pages;
 using Windows.UI.Xaml;
@@ -45,6 +46,8 @@ namespace Unicord.Universal.Commands
 
         public void Execute(object parameter)
         {
+            Analytics.TrackEvent("EditModeCommand_Invoked");
+
             if (parameter is DiscordMessage message)
             {
                 var channelPage = Window.Current.Content.FindChild<ChannelPage>();

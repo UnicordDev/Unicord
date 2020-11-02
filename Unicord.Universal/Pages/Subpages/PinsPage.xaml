@@ -72,6 +72,7 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         IsEnabled="False"
+                        Margin="4,8"
                         Message="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -84,7 +85,5 @@
             Height="48"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
-
-
     </Grid>
 </Page>

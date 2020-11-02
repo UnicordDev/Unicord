@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Unicord.Universal.Commands
@@ -20,6 +21,8 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is SnowflakeObject snowflake)
             {
+                Analytics.TrackEvent("CopyIdCommand_Invoked");
+
                 var package = new DataPackage();
                 package.SetText(snowflake.Id.ToString());
                 Clipboard.SetContent(package);

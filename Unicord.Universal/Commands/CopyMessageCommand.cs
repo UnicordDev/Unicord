@@ -4,6 +4,7 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Markdig;
+using Microsoft.AppCenter.Analytics;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Unicord.Universal.Commands
@@ -33,9 +34,10 @@ namespace Unicord.Universal.Commands
 
         public void Execute(object parameter)
         {
-
             if (parameter is DiscordMessage message)
             {
+                Analytics.TrackEvent("CopyMessageCommand_Invoked");
+
                 var package = new DataPackage();
                 package.RequestedOperation = DataPackageOperation.Copy | DataPackageOperation.Link;
 
@@ -43,6 +45,7 @@ namespace Unicord.Universal.Commands
                 var uri = "https://" + $"discordapp.com/channels/{serverText}/{message.ChannelId}/{message.Id}/";
                 var markdown = Formatter.MaskedUrl(message.Content, new Uri(uri));
                 var html = Markdown.ToHtml(markdown, _pipeline);
+
                 package.SetText(message.Content);
                 package.SetWebLink(new Uri(uri));
                 package.SetHtmlFormat(html);

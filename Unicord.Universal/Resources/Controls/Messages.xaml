@@ -133,17 +133,14 @@
                                 <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
 
                                 <ItemsControl x:Name="Embeds"
-                                              x:DeferLoadStrategy="Lazy" 
                                               ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
-                                              x:DeferLoadStrategy="Lazy" 
                                               ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
                                               ItemsSource="{Binding Attachments}"/>
 
                                 <ItemsControl x:Name="Reactions"
-                                              x:DeferLoadStrategy="Lazy" 
                                               Margin="0,4,0,0"
                                               ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
                                               ItemsSource="{Binding Reactions}">

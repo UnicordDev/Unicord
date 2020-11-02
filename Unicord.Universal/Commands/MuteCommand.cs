@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 
 namespace Unicord.Universal.Commands
 {
@@ -22,6 +23,8 @@ namespace Unicord.Universal.Commands
 
         public void Execute(object parameter)
         {
+            Analytics.TrackEvent("MuteCommand_Invoked");
+
             if (parameter is DiscordChannel channel)
             {
                 channel.Muted = !channel.Muted;

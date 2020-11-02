@@ -188,6 +188,7 @@ namespace Unicord.Universal
                 }
                 catch
                 {
+                    Analytics.TrackEvent("Unicord_MyPeopleFailedToFindPerson");
                     var dialog = new MessageDialog("Something went wrong trying to find this person, sorry!", "Whoops!");
                     await dialog.ShowAsync();
                 }

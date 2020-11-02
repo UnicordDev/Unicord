@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Windows.UI.Xaml.Controls;
 
@@ -46,11 +47,14 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
+            Analytics.TrackEvent("DeleteMessageCommand_Invoked");
+
             if (parameter is DiscordMessage message)
             {
                 var dialog = new DeleteMessageDialog() { Message = message };
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
+                    Analytics.TrackEvent("DeleteMessageCommand_DeleteMessage");
                     await message.DeleteAsync();
                 }
             }
