@@ -1,0 +1,14 @@
+namespace Unicord.Universal.Voice
+{
+    [bindable]
+    [default_interface]
+    runtimeclass VoiceClientStats 
+    {
+        VoiceClientStats();
+        UInt32 LocalSSRC{ get; };
+        Int64 BytesSent{ get; };
+        Int32 PacketsSent{ get; };
+        Int32 PacketsLost{ get; };
+        String CodecName { get; };
+    }
+}

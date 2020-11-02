@@ -48,7 +48,7 @@ namespace Unicord.Universal.Pages
         internal DiscordPageModel Model { get; }
 
         private bool _visibility;
-        internal SwipeOpenHelper helper;
+        internal SwipeOpenHelper _helper;
 
         private bool _isPaneOpen => ContentTransform.X != 0;
 
@@ -58,7 +58,7 @@ namespace Unicord.Universal.Pages
             Model = DataContext as DiscordPageModel;
 
             _visibility = Window.Current.Visible;
-            helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
+            _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
@@ -104,7 +104,7 @@ namespace Unicord.Universal.Pages
             try
             {
                 App.Discord.MessageCreated += Notification_MessageCreated;
-                
+
                 UpdateTitleBar();
                 CheckSettingsPane();
 
@@ -167,7 +167,7 @@ namespace Unicord.Universal.Pages
                 e.Handled = true;
             }
         }
-        
+
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
@@ -208,7 +208,7 @@ namespace Unicord.Universal.Pages
         {
             if (ActualWidth <= 768)
             {
-                helper.Cancel();
+                _helper.Cancel();
                 OpenPaneMobileStoryboard.Begin();
             }
         }
@@ -217,7 +217,7 @@ namespace Unicord.Universal.Pages
         {
             if (ActualWidth <= 768 || ContentTransform.X < 0)
             {
-                helper.Cancel();
+                _helper.Cancel();
                 ClosePaneMobileStoryboard.Begin();
             }
         }
@@ -237,9 +237,9 @@ namespace Unicord.Universal.Pages
             notification.Show(7_000);
         }
 
-        private async  void Notification_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var message = ((sender as InAppNotification).Content as MessageControl)?.Message;
+            var message = (((InAppNotification)sender).Content as MessageControl)?.Message;
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();
@@ -296,10 +296,10 @@ namespace Unicord.Universal.Pages
 
         private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            var enumerable = (DataContext as DiscordPageModel).Guilds.Select(g => g.Id);
+            var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
             if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
             {
-                await App.Discord.UpdateUserSettingsAsync(enumerable.ToArray());
+                await App.Discord.UpdateUserSettingsAsync(enumerable);
             }
         }
 
@@ -323,29 +323,31 @@ namespace Unicord.Universal.Pages
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var loader = ResourceLoader.GetForViewIndependentUse();
-            if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, loader.GetString("VerifySettingsDisplayReason")))
-            {
-                SettingsOverlayGrid.Visibility = Visibility.Visible;
-
-                CheckSettingsPane();
-
-                if (ActualWidth > 768)
-                {
-                    OpenSettingsDesktopStoryboard.Begin();
-                }
-                else
-                {
-                    OpenSettingsMobileStoryboard.Begin();
-                }
-            }
-
-            SettingsGrid.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());
+            var service = SettingsService.GetForCurrentView();
+            await service.OpenAsync();
         }
 
         private void SettingsOverlayBackground_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseSettings();
+        }
+
+        internal void OpenSettings(SettingsPageType page)
+        {
+            SettingsOverlayGrid.Visibility = Visibility.Visible;
+
+            CheckSettingsPane();
+
+            if (ActualWidth > 768)
+            {
+                OpenSettingsDesktopStoryboard.Begin();
+            }
+            else
+            {
+                OpenSettingsMobileStoryboard.Begin();
+            }
+
+            SettingsGrid.Navigate(typeof(SettingsPage), page, new SuppressNavigationTransitionInfo());
         }
 
         internal void CloseSettings()
@@ -391,7 +393,12 @@ namespace Unicord.Universal.Pages
 
         private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            helper.IsEnabled = e.NewSize.Width <= 768;
+            _helper.IsEnabled = e.NewSize.Width <= 768;
+        }
+
+        private void ClydeLogo_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
     }
 }

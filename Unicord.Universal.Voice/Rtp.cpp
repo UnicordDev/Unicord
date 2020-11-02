@@ -63,16 +63,5 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     int Rtp::CalculatePacketSize(uint32_t encrypted_length, EncryptionMode encryption_mode)
     {
-        switch (encryption_mode)
-        {
-        case XSalsa20_Poly1305_Lite:
-            return HEADER_SIZE + encrypted_length + 4;
-        case XSalsa20_Poly1305_Suffix:
-            return HEADER_SIZE + encrypted_length + crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
-        case XSalsa20_Poly1305:
-            return HEADER_SIZE + encrypted_length;
-        default:
-            throw hresult_invalid_argument();
-        }
     }
 }

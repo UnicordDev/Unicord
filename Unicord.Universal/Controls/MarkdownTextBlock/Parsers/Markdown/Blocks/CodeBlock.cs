@@ -96,45 +96,45 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                     }
                 }
 
-                if (!insideCodeBlock)
-                {
-                    // Add every line that starts with a tab character or at least 4 spaces.
-                    if (pos < maxEnd && markdown[pos] == '\t')
-                    {
-                        pos++;
-                    }
-                    else
-                    {
-                        int spaceCount = 0;
-                        while (pos < maxEnd && spaceCount < 4)
-                        {
-                            if (markdown[pos] == ' ')
-                            {
-                                spaceCount++;
-                            }
-                            else if (markdown[pos] == '\t')
-                            {
-                                spaceCount += 4;
-                            }
-                            else
-                            {
-                                break;
-                            }
+                //if (!insideCodeBlock)
+                //{
+                //    // Add every line that starts with a tab character or at least 4 spaces.
+                //    if (pos < maxEnd && markdown[pos] == '\t')
+                //    {
+                //        pos++;
+                //    }
+                //    else
+                //    {
+                //        int spaceCount = 0;
+                //        while (pos < maxEnd && spaceCount < 4)
+                //        {
+                //            if (markdown[pos] == ' ')
+                //            {
+                //                spaceCount++;
+                //            }
+                //            else if (markdown[pos] == '\t')
+                //            {
+                //                spaceCount += 4;
+                //            }
+                //            else
+                //            {
+                //                break;
+                //            }
 
-                            pos++;
-                        }
+                //            pos++;
+                //        }
 
-                        if (spaceCount < 4)
-                        {
-                            // We found a line that doesn't start with a tab or 4 spaces.
-                            // But don't end the code block until we find a non-blank line.
-                            if (lineInfo.IsLineBlank == false)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
+                //        if (spaceCount < 4)
+                //        {
+                //            // We found a line that doesn't start with a tab or 4 spaces.
+                //            // But don't end the code block until we find a non-blank line.
+                //            if (lineInfo.IsLineBlank == false)
+                //            {
+                //                break;
+                //            }
+                //        }
+                //    }
+                //}
 
                 // Separate each line of the code text.
                 if (code == null)

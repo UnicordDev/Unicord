@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Newtonsoft.Json;
+using Unicord.Universal.Misc;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
@@ -31,8 +35,10 @@ namespace Unicord.Universal
         private const int NITRO_CLASSIC_UPLOAD_LIMIT = 52_428_800;
         private const int UPLOAD_LIMIT = 8_388_608;
 
-        private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
+        public static Emoji[] Emoji { get; internal set; }
         public static HttpClient HttpClient => _httpClient.Value;
+
+        private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
 
         public static async Task DownloadToFileAsync(Uri url, StorageFile file)
         {
@@ -236,7 +242,8 @@ namespace Unicord.Universal
 
         // adapted from corefx
         // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
-        public static int BinarySearch<T>(this IList<T> collection, DiscordChannel channel) where T : IComparable<DiscordChannel>
+        public static int BinarySearch<TCollection, TOther>(this IList<TCollection> collection, TOther item) 
+            where TOther : IComparable<TOther> where TCollection : IComparable<TOther>
         {
             var lo = 0;
             var hi = collection.Count - 1;
@@ -244,7 +251,7 @@ namespace Unicord.Universal
             while (lo <= hi)
             {
                 var i = lo + ((hi - lo) >> 1);
-                var c = collection[i].CompareTo(channel);
+                var c = collection[i].CompareTo(item);
 
                 if (c == 0)
                 {
@@ -262,6 +269,68 @@ namespace Unicord.Universal
             }
 
             return ~lo < 0 ? lo : ~lo;
+        }
+
+        public static async Task<List<DiscordEmoji>> GetEmojiAsync(DiscordChannel channel)
+        {
+            await EnsureEmojiListAsync();
+
+            var guildEmoji = GetAllowedGuildEmoji(channel).ToList();
+            guildEmoji.AddRange(DiscordEmoji.UnicodeEmojis.Select(e => DiscordEmoji.FromName(App.Discord, e.Key)));
+
+            return guildEmoji;
+        }
+
+        public static async Task<List<EmojiGroup>> GetGroupedEmojiAsync(string text, DiscordChannel channel)
+        {
+            await EnsureEmojiListAsync();
+
+            var guildEmoji = GetAllowedGuildEmoji(channel);
+            var cult = CultureInfo.InvariantCulture.CompareInfo;
+            var n = !string.IsNullOrWhiteSpace(text);
+
+            var emojiEnum = Emoji
+                    .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
+                    .GroupBy(e => e.Category)
+                    .Select(g => new EmojiGroup(g.Key, g))
+                    .ToList();
+
+            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
+                .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
+                .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
+                .Select(g => new EmojiGroup(g.Key, g))
+                .ToList() : new List<EmojiGroup>();
+
+            list.AddRange(emojiEnum);
+
+            return list;
+        }
+
+        private static IEnumerable<DiscordEmoji> GetAllowedGuildEmoji(DiscordChannel channel)
+        {
+            IEnumerable<DiscordEmoji> enumerable = null;
+            if ((channel.IsPrivate || channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)) && App.Discord.CurrentUser.HasNitro())
+            {
+                enumerable = App.Discord.Guilds.Values
+                    .SelectMany(g => g.Emojis.Values)
+                    .OrderBy(g => g.Name);
+            }
+            else
+            {
+                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name);
+            }
+
+            return enumerable ?? Enumerable.Empty<DiscordEmoji>();
+        }
+
+        private static async Task EnsureEmojiListAsync()
+        {
+            if (Emoji == null)
+            {
+                var emojiFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/emoji.json"));
+                var emojiList = await FileIO.ReadTextAsync(emojiFile);
+                Emoji = await Task.Run(() => JsonConvert.DeserializeObject<Emoji[]>(emojiList));
+            }
         }
 
         internal static ToastNotification GetWindows10Toast(DiscordMessage message, string title, string messageText)

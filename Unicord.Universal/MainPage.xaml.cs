@@ -78,8 +78,8 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var engagementManager = StoreServicesEngagementManager.GetDefault();
-            await engagementManager.RegisterNotificationChannelAsync();
+            //var engagementManager = StoreServicesEngagementManager.GetDefault();
+            //await engagementManager.RegisterNotificationChannelAsync();
 
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;
@@ -171,7 +171,7 @@ namespace Unicord.Universal
             {
                 if (Arguments.FullFrame)
                 {
-                    await GoToChannelAsync(App.Discord);
+                    await GoToChannelAsync(Arguments);
                 }
                 else
                 {
@@ -227,9 +227,9 @@ namespace Unicord.Universal
             });
         }
 
-        internal async Task GoToChannelAsync(DiscordClient e)
+        internal async Task GoToChannelAsync(MainPageArgs args)
         {
-            if (Arguments.ChannelId != 0 && e.TryGetCachedChannel(Arguments.ChannelId, out var channel))
+            if (args.ChannelId != 0 && App.Discord.TryGetCachedChannel(args.ChannelId, out var channel))
             {
                 if (channel.Type == ChannelType.Text && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels) || channel is DiscordDmChannel)
                 {
@@ -243,12 +243,12 @@ namespace Unicord.Universal
 
             try
             {
-                var dm = e.PrivateChannels.Values
-                    .FirstOrDefault(c => c.Type == ChannelType.Private && c.Recipients.ElementAtOrDefault(0)?.Id == Arguments.UserId);
+                var dm = App.Discord.PrivateChannels.Values
+                    .FirstOrDefault(c => c.Type == ChannelType.Private && c.Type != ChannelType.Group && c.Recipients.Count == 1 && c.Recipients[0].Id == args.UserId);
 
-                if (dm == null && Arguments.UserId != 0)
+                if (dm == null && args.UserId != 0)
                 {
-                    dm = await App.Discord.CreateDmChannelAsync(Arguments.UserId);
+                    dm = await App.Discord.CreateDmChannelAsync(args.UserId);
                 }
 
                 await Dispatcher.AwaitableRunAsync(() =>

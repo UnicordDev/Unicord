@@ -13,11 +13,13 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
+using Microsoft.Gaming.XboxGameBar;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Pages.GameBar;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
@@ -29,6 +31,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -41,6 +44,8 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
+        private static XboxGameBarWidget _chatListWidget;
+        private static XboxGameBarWidget _friendsListWidget;
 
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
@@ -73,7 +78,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+               AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
 
@@ -98,10 +103,38 @@ namespace Unicord.Universal
                 case ProtocolActivatedEventArgs protocol:
                     await OnProtocolActivatedAsync(protocol);
                     return;
+                case XboxGameBarWidgetActivatedEventArgs xbox:
+                    OnXboxGameBarActivated(xbox);
+                    return;
                 default:
                     Debug.WriteLine(e.Kind);
                     break;
             }
+        }
+
+        private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
+        {
+            if (xbox.IsLaunchActivation)
+            {
+                var name = xbox.Uri.LocalPath;
+                var frame = new Frame();
+                frame.NavigationFailed += OnNavigationFailed;
+                Window.Current.Content = frame;
+
+                if (name == "unicord-friendslist")
+                {
+                    _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
+                    Window.Current.Closed += OnFrendsListWidgetClosed;
+
+                    frame.Navigate(typeof(GameBarMainPage));
+                }
+            }
+        }
+
+        private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
+        {
+            Window.Current.Closed -= OnFrendsListWidgetClosed;
+            _friendsListWidget = null;
         }
 
         private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)

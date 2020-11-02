@@ -34,22 +34,52 @@ namespace winrt::Unicord::Universal::Voice::Interop
         void GenerateNonce(uint32_t nonce, gsl::span<uint8_t> target);
 
         void Encrypt(gsl::span<const uint8_t> source, gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target);
-        void Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target);
+        void Decrypt(gsl::span<const uint8_t> source, gsl::span<uint8_t> nonce, gsl::span<uint8_t> target);
 
-        void GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode);
-        void AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode);
+        uint8_t* Key() {
+            return this->key;
+        }
+
+        void GetNonce(gsl::span<const uint8_t> source, gsl::span<uint8_t> nonce, bool isRtcp);
+        void AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target);
 
         ~SodiumWrapper();
 
         static EncryptionMode GetEncryptionMode(hstring name);
         static std::pair<hstring, EncryptionMode> SelectEncryptionMode(JsonArray available_modes);
 
-        static const inline size_t CalculateTargetSize(size_t source_length) {
-            return source_length + crypto_secretbox_xsalsa20poly1305_MACBYTES;
+        inline EncryptionMode GetCurrentEncryptionMode() {
+            return mode;
         }
 
-        static const inline size_t CalculateSourceSize(size_t source_length) {
-            return source_length - crypto_secretbox_xsalsa20poly1305_MACBYTES;
+        const inline size_t CalculateTargetSize(size_t source_length) {
+            size_t encrypted_length = source_length + crypto_secretbox_xsalsa20poly1305_MACBYTES;
+
+            switch (mode)
+            {
+            case XSalsa20_Poly1305_Lite:
+                return encrypted_length + 4;
+            case XSalsa20_Poly1305_Suffix:
+                return encrypted_length + crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
+            case XSalsa20_Poly1305:
+            default:
+                return encrypted_length;
+            }
+        }
+
+        const inline size_t CalculateSourceSize(size_t source_length) {
+            size_t encrypted_length = source_length - crypto_secretbox_xsalsa20poly1305_MACBYTES;
+
+            switch (mode)
+            {
+            case XSalsa20_Poly1305_Lite:
+                return encrypted_length - 4;
+            case XSalsa20_Poly1305_Suffix:
+                return encrypted_length - crypto_secretbox_xsalsa20poly1305_NONCEBYTES;
+            case XSalsa20_Poly1305:
+            default:
+                return encrypted_length;
+            }
         }
 
     private:

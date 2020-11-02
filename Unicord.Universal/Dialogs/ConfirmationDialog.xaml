@@ -23,7 +23,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="questionTitle" FontSize="16" FontWeight="Bold" Text="Remove this item?" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1"></TextBlock>
+            <TextBlock x:Name="questionTitle" FontSize="16" FontWeight="Bold" Text="Remove this item?" TextWrapping="Wrap" VerticalAlignment="Center" />
             <TextBlock x:Name="questionContent" Grid.Row="1" Text="Are you sure you want to remove this item?" TextWrapping="Wrap" />
         </Grid>
     </Grid>

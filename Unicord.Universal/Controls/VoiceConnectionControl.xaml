@@ -7,6 +7,7 @@
     xmlns:converters="using:Unicord.Universal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" x:DefaultBindMode="TwoWay"
     d:DesignHeight="300"
     d:DesignWidth="220">
@@ -33,13 +34,35 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition x:Name="RoutingColumn" Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <ToggleButton x:Name="muteToggleButton" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
             <ToggleButton x:Name="deafenToggleButton" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
-            <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="2" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
-            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="3" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
+            <lib:DropDownButton x:Name="RoutingButton" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{ThemeResource StretchyIconButtonStyle}"  Content="&#xE8EA;">
+                <lib:DropDownButton.Flyout>
+                    <MenuFlyout>
+                        <lib:RadioMenuFlyoutItem Text="Earpiece">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8EA;"/>
+                            </MenuFlyoutItem.Icon>
+                        </lib:RadioMenuFlyoutItem>
+                        <lib:RadioMenuFlyoutItem Text="Speakerphone">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7F5;"/>
+                            </MenuFlyoutItem.Icon>
+                        </lib:RadioMenuFlyoutItem>
+                        <lib:RadioMenuFlyoutItem Text="Bluetooth">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE702;"/>
+                            </MenuFlyoutItem.Icon>
+                        </lib:RadioMenuFlyoutItem>
+                    </MenuFlyout>
+                </lib:DropDownButton.Flyout>
+            </lib:DropDownButton>
+            <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="3" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
+            <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Click="VoiceSettingsButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
     </Grid>
 </UserControl>

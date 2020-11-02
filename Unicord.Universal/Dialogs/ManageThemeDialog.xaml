@@ -5,7 +5,7 @@
     xmlns:local="using:Unicord.Universal.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:controls="using:Unicord.Universal.Controls" xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <ContentDialog.Resources>
@@ -102,7 +102,7 @@
         </Grid>
 
         <Grid Grid.Row="2" Margin="0,45,0,0">
-            <ProgressRing x:Name="ProgressRing" Width="42" Height="42" />
+            <lib:ProgressRing x:Name="ProgressRing" Width="42" Height="42" />
         </Grid>
 
         <Grid Grid.Row="2">

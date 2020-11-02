@@ -215,7 +215,8 @@ namespace Unicord.Universal.Voice
                     ["input_device"] = inputDeviceId,
                     ["output_device"] = outputDeviceId,
                     ["muted"] = Muted,
-                    ["deafened"] = Deafened
+                    ["deafened"] = Deafened,
+                    ["noise_suppression"] = App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium)
                 };
 
                 await SendRequestAsync(connectionRequest);

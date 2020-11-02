@@ -4,7 +4,6 @@
 #include "VoiceClient.h"
 #include "VoiceClientOptions.h"
 
-using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::AppService;
@@ -34,14 +33,14 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
     }
 
-    void ServiceBackgroundTask::OnUdpPing(IInspectable sender, uint32_t ping)
+    void ServiceBackgroundTask::OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping)
     {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));
         RaiseEvent(VoiceServiceEvent::UdpPing, values);
     }
 
-    void ServiceBackgroundTask::OnWsPing(IInspectable sender, uint32_t ping)
+    void ServiceBackgroundTask::OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping)
     {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));
@@ -85,9 +84,10 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                             voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
                             voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
                             voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
-                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
+                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id"))); 
                             voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
                             voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
+                            voiceClientOptions.SuppressionLevel((NoiseSuppressionLevel)unbox_value<uint32_t>(data.TryLookup(L"noise_suppression")));
 
                             if (data.HasKey(L"input_device")) {
                                 voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));

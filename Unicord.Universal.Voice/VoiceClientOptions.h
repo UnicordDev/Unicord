@@ -24,6 +24,14 @@ namespace winrt::Unicord::Universal::Voice::implementation
         hstring PreferredRecordingDevice();
         void PreferredRecordingDevice(hstring value);
 
+        NoiseSuppressionLevel SuppressionLevel() {
+            return noise_suppression_level;
+        }
+
+        void SuppressionLevel(NoiseSuppressionLevel value) {
+            noise_suppression_level = value;
+        }
+
     private:
         hstring token = L"";
         hstring session_id = L"";
@@ -33,6 +41,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         uint64_t current_user_id = 0;
         hstring preferred_playback_device = L"";
         hstring preferred_recording_device = L"";
+        NoiseSuppressionLevel noise_suppression_level = NoiseSuppressionLevel::Medium;
     };
 }
 namespace winrt::Unicord::Universal::Voice::factory_implementation

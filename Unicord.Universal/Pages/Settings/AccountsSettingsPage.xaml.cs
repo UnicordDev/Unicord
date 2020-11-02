@@ -29,7 +29,6 @@ namespace Unicord.Universal.Pages.Settings
         public AccountsSettingsPage()
         {
             InitializeComponent();
-            DataContext = App.Discord.CurrentUser;
 
             MarkdownDocument.KnownSchemes.Add("ms-people");
 

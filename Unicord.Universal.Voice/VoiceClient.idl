@@ -1,5 +1,4 @@
 import "VoiceClientOptions.idl";
-import "VoiceOutputStream.idl";
 
 namespace Unicord.Universal.Voice
 {
@@ -17,7 +16,6 @@ namespace Unicord.Universal.Voice
         event Windows.Foundation.EventHandler<UInt32> UdpSocketPingUpdated;
 
         Windows.Foundation.IAsyncAction ConnectAsync();
-        Windows.Storage.Streams.IOutputStream GetOutputStream();
         void UpdateAudioDevices();
 
         Boolean Muted{ get; set; };

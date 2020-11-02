@@ -107,7 +107,7 @@
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}" Color="{ThemeResource SystemChromeBlackMediumColor}">
         <Grid x:Name="MainGrid" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
 
-            <Grid x:Name="topGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid x:Name="TopGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>
@@ -115,20 +115,19 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource StretchyIconButtonStyle}" Width="40" Height="40" Click="AcceptButton_Click">&#xE8FB;</Button>
-                <ProgressRing x:Name="progressRing" Grid.Column="2" Margin="2"/>
+                <Button x:Name="AcceptButton" Grid.Column="1" Style="{ThemeResource StretchyIconButtonStyle}" Width="40" Height="40" Click="AcceptButton_Click">&#xE8FB;</Button>
+                <lib:ProgressRing x:Name="ProgressRing" Grid.Column="1" IsActive="False" Margin="2" Width="28" Height="28"/>
             </Grid>
 
-            <lib:NavigationView x:Name="navigationView"
+            <lib:NavigationView x:Name="NavigationView"
                                 IsBackEnabled="True"
                                 IsBackButtonVisible="Visible"
                                 IsSettingsVisible="False"
-                                PaneDisplayMode="Auto"
-                                OpenPaneLength="250"
+                                PaneDisplayMode="LeftCompact"
                                 BackRequested="NavigationView_BackRequested"
                                 ItemInvoked="NavigationView_ItemInvoked"
                                 PaneToggleButtonStyle="{StaticResource CustomPaneToggleButtonStyle}"
-                                Header="{Binding SelectedItem.Content, ElementName=navigationView}">
+                                Header="{Binding SelectedItem.Content, ElementName=NavigationView}">
                 <lib:NavigationView.Resources>
                     <Style x:Key="NavigationBackButtonNormalStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
                         <Setter Property="Content" Value="&#xE72B;"/>
@@ -160,7 +159,7 @@
                     </lib:NavigationViewItem>
                 </lib:NavigationView.MenuItems>
 
-                <ContentControl x:Name="mainContent" IsEnabled="True" Margin="0,8,0,12" HorizontalContentAlignment="Stretch" Grid.Row="1">
+                <ContentControl x:Name="MainContent" IsEnabled="True" Margin="0,8,0,12" HorizontalContentAlignment="Stretch" Grid.Row="1">
                     <Frame x:Name="MainFrame" SourcePageType="pages:ChannelEditOverviewPage"/>
                 </ContentControl>
             </lib:NavigationView>

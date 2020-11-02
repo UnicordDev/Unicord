@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
@@ -154,31 +155,32 @@ namespace Unicord.Universal.Controls
         {
             var success = false;
             StorageFile tempFile = null;
+            var channelViewModel = (ChannelViewModel)DataContext;
 
             try
             {
-                var channelViewModel = (DataContext as ChannelViewModel);
-                tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
-
                 switch (type)
                 {
                     case MediaType.Audio:
+                        tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(Path.ChangeExtension(file.Name, ".mp3"), CreationCollisionOption.GenerateUniqueName);
                         success = await MediaTranscoding.TryTranscodeAudioAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
                         break;
                     case MediaType.Video:
+                        tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(Path.ChangeExtension(file.Name, ".mp4"), CreationCollisionOption.GenerateUniqueName);
                         success = await MediaTranscoding.TryTranscodeVideoAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
                         break;
                     case MediaType.Photo:
+                        tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
                         success = await MediaTranscoding.TryTranscodePhotoAsync(file, tempFile, progress, token);
                         break;
                     default:
-                        break;
+                        return file;
                 }
             }
             catch (Exception ex)
             {
                 if (!(ex is TaskCanceledException))
-                {   
+                {
                     // TODO: port
                     // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
                 }
@@ -188,10 +190,11 @@ namespace Unicord.Universal.Controls
             {
                 return tempFile;
             }
-            else
-            {
-                return null;
-            }
+
+            if (tempFile != null)
+                await tempFile.DeleteAsync();
+            
+            return null;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

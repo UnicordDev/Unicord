@@ -12,7 +12,7 @@
     <DefaultLanguage>en-GB</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
@@ -21,10 +21,11 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>Unicord.Univeral_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>97080CF5D53F829FCBD95E3776AB7222AC0E1156</PackageCertificateThumbprint>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>
+    </PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -99,7 +100,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -260,6 +261,7 @@
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
+    <Compile Include="Controls\MessageTextBox.cs" />
     <Compile Include="Controls\RangeSelector\RangeChangedEventArgs.cs" />
     <Compile Include="Controls\RangeSelector\RangeSelector.cs" />
     <Compile Include="Controls\RichPresenceControl.xaml.cs">
@@ -287,6 +289,7 @@
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
     <Compile Include="Converters\MemberColourConverter.cs" />
+    <Compile Include="Converters\DiscordUriConverter.cs" />
     <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceColorConverter.cs" />
@@ -346,6 +349,7 @@
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Misc\UnicordVersionProvider.cs" />
+    <Compile Include="Models\AccountsSettingsModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageModel.cs" />
@@ -362,6 +366,12 @@
     </Compile>
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameBar\GameBarMainPage.xaml.cs">
+      <DependentUpon>GameBarMainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GameBar\NotLoggedInPage.xaml.cs">
+      <DependentUpon>NotLoggedInPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -438,6 +448,7 @@
     <Compile Include="Services\DiscordNavigationService.cs" />
     <Compile Include="Services\FullscreenService.cs" />
     <Compile Include="Services\OverlayService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="SharedTools.cs" />
     <Compile Include="Resources\Templates.xaml.cs">
@@ -714,6 +725,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\GameBar\GameBarMainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\GameBar\NotLoggedInPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -829,25 +848,28 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer">
-      <Version>2.7.9</Version>
+      <Version>2.8.25</Version>
     </PackageReference>
     <PackageReference Include="Markdig">
-      <Version>0.18.1</Version>
+      <Version>0.20.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>3.0.0</Version>
+      <Version>3.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>3.0.0</Version>
+      <Version>3.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>3.0.0</Version>
+      <Version>3.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Push">
-      <Version>3.0.0</Version>
+      <Version>3.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Gaming.XboxGameBar">
+      <Version>5.3.200605002</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.9</Version>
+      <Version>6.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Services.Store.Engagement">
       <Version>10.1901.28001</Version>
@@ -862,7 +884,7 @@
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.2.190416008-prerelease</Version>
+      <Version>2.5.0-prerelease.200609001</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
@@ -900,10 +922,10 @@
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="WindowsDesktop, Version=10.0.17763.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.18362.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.17763.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.18362.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>

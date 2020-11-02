@@ -76,21 +76,21 @@ namespace winrt::Unicord::Universal::Voice::Interop
         if (nonce.size() != nonce_length)
             throw hresult_invalid_argument(L"Invalid nonce size");
 
-        if (target.size() != mac_length + source.size())
+        if (target.size() < mac_length + source.size())
             throw hresult_invalid_argument(L"Invalid target size");
 
-        int result = crypto_secretbox_easy(target.data(), source.data(), source.size(), nonce.data(), key);
+         int result = crypto_secretbox_easy(target.data(), source.data(), source.size(), nonce.data(), key);
         if (result != 0) {
             throw hresult_error(E_FAIL, L"Encryption failed!");
         }
     }
 
-    void SodiumWrapper::Decrypt(array_view<const uint8_t> source, array_view<uint8_t> nonce, array_view<uint8_t> target)
+    void SodiumWrapper::Decrypt(gsl::span<const uint8_t> source, gsl::span<uint8_t> nonce, gsl::span<uint8_t> target)
     {
         if (nonce.size() != nonce_length)
             throw hresult_invalid_argument(L"Invalid nonce size");
 
-        if (target.size() != (source.size() - mac_length))
+        if (target.size() < (source.size() - mac_length))
             throw hresult_invalid_argument(L"Invalid target size");
 
         int result = crypto_secretbox_open_easy(target.data(), source.data(), source.size(), nonce.data(), key);
@@ -99,7 +99,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
-    void SodiumWrapper::AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target, EncryptionMode mode)
+    void SodiumWrapper::AppendNonce(gsl::span<const uint8_t> nonce, gsl::span<uint8_t> target)
     {
         switch (mode)
         {
@@ -112,7 +112,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
-    void SodiumWrapper::GetNonce(array_view<const uint8_t> source, array_view<uint8_t> nonce, EncryptionMode mode)
+    void SodiumWrapper::GetNonce(gsl::span<const uint8_t> source, gsl::span<uint8_t> nonce, bool isRtcp)
     {
         if (nonce.size() != nonce_length) {
             throw hresult_invalid_argument(L"Invalid target size!");
@@ -121,7 +121,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         switch (mode)
         {
         case XSalsa20_Poly1305:
-            std::copy(source.begin(), source.begin() + 12, nonce.begin());
+            std::copy(source.begin(), source.begin() + (isRtcp ? 8 : 12), nonce.begin());
             break;
         case XSalsa20_Poly1305_Suffix:
             std::copy(source.end() - 12, source.end(), nonce.begin());
@@ -142,8 +142,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
     {
         std::map<hstring, EncryptionMode> mode_map;
         mode_map[L"xsalsa20_poly1305"] = EncryptionMode::XSalsa20_Poly1305;
-        mode_map[L"xsalsa20_poly1305_suffix"] = EncryptionMode::XSalsa20_Poly1305_Suffix;
-        mode_map[L"xsalsa20_poly1305_lite"] = EncryptionMode::XSalsa20_Poly1305_Lite;
+        /* 
+            mode_map[L"xsalsa20_poly1305_suffix"] = EncryptionMode::XSalsa20_Poly1305_Suffix;
+            mode_map[L"xsalsa20_poly1305_lite"] = EncryptionMode::XSalsa20_Poly1305_Lite;
+        */
 
         return mode_map;
     }

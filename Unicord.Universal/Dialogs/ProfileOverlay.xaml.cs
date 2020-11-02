@@ -28,29 +28,20 @@ namespace Unicord.Universal.Dialogs
         public Ellipse AnimatedEllipse => ellipse;
 
         public static readonly DependencyProperty UserProperty =
-            DependencyProperty.Register("User", typeof(DiscordUser), typeof(ProfileOverlay), new PropertyMetadata(null, User_Changed));
+            DependencyProperty.Register("User", typeof(DiscordUser), typeof(ProfileOverlay), new PropertyMetadata(null, OnUserChanged));
 
-        private static async void User_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnUserChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var overlay = (ProfileOverlay)d;
             overlay._user = e.NewValue as DiscordUser;
             overlay._member = e.NewValue as DiscordMember;
+            overlay.mutualServers.ItemsSource = App.Discord.Guilds.Values.Where(g => g.Members.ContainsKey(overlay._user.Id));
             overlay.Bindings.Update();
-
-            await overlay.LoadedAsync();
         }
 
         public ProfileOverlay()
         {
             InitializeComponent();
-        }
-
-        private async Task LoadedAsync()
-        {
-            var mutualGuilds =
-                await Task.Run(() => App.Discord.Guilds.Values.Where(g => g.Members.ContainsKey(_user.Id)).OrderBy(g => g.Name));
-
-            mutualServers.ItemsSource = mutualGuilds;
         }
 
         private void DropShadowPanel_PreviewKeyUp(object sender, KeyRoutedEventArgs e)

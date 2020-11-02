@@ -5,7 +5,8 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    mc:Ignorable="d" Loaded="Page_Loaded"
+    d:DesignWidth="450">
     <Page.Resources>
         <DataTemplate x:Key="DeviceTemplate">
             <TextBlock Text="{Binding Name, FallbackValue=Default, TargetNullValue=Default}"/>
@@ -17,7 +18,18 @@
         <TextBlock x:Uid="/VoiceSettingsPage/AudioDevicesHeader" Style="{ThemeResource SubtitleTextBlockStyle}" Text="Audio Devices"/>
         <TextBlock x:Uid="/VoiceSettingsPage/AudioDevicesSubheader" TextWrapping="Wrap" Text="Here you can choose the audio devices you want to use for voice calls." Margin="0,0,0,12"/>
 
-        <ComboBox x:Name="inputDevices" x:Uid="/VoiceSettingsPage/InputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableInputDevices}" SelectedItem="{Binding InputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
-        <ComboBox x:Name="outputDevices" x:Uid="/VoiceSettingsPage/OutputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableOutputDevices}" SelectedItem="{Binding OutputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+        <ComboBox x:Uid="/VoiceSettingsPage/InputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableInputDevices}" SelectedItem="{Binding InputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+        <ComboBox x:Uid="/VoiceSettingsPage/OutputDevices" Margin="0,0,0,8" ItemTemplate="{StaticResource DeviceTemplate}" ItemsSource="{Binding AvailableOutputDevices}" SelectedItem="{Binding OutputDevice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+
+        <TextBlock x:Uid="/VoiceSettingsPage/NoiseSuppressionHeader" Style="{ThemeResource SubtitleTextBlockStyle}" />
+        <TextBlock x:Uid="/VoiceSettingsPage/NoiseSuppressionSubheader" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+        <ComboBox x:Name="NoiseSuppression" Margin="0,0,0,8" SelectedIndex="{Binding SuppressionLevel, Mode=TwoWay}" HorizontalAlignment="Stretch">
+            <ComboBoxItem x:Uid="/VoiceSettingsPage/NoiseSuppressionDisabled" Content="Disabled"/>
+            <ComboBoxItem x:Uid="/VoiceSettingsPage/NoiseSuppressionLow" Content="Low"/>
+            <ComboBoxItem x:Uid="/VoiceSettingsPage/NoiseSuppressionMedium" Content="Medium"/>
+            <ComboBoxItem x:Uid="/VoiceSettingsPage/NoiseSuppressionHigh" Content="High"/>
+        </ComboBox>
+
     </StackPanel>
 </Page>

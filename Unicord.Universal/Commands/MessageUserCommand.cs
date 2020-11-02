@@ -22,7 +22,7 @@ namespace Unicord.Universal.Commands
             {
                 return true;
             }
-            else if (parameter is DiscordUser u && u.Id != App.Discord.CurrentUser.Id)
+            else if (parameter is DiscordUser u && u.Id != App.Discord?.CurrentUser.Id)
             {
                 if (App.Discord.Relationships.TryGetValue(u.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend)
                 {

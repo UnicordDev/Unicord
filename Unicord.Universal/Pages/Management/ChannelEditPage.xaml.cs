@@ -42,24 +42,19 @@ namespace Unicord.Universal.Pages.Management
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {            
-            WindowManager.HandleTitleBarForControl(topGrid);
-            WindowManager.HandleTitleBarForControl(navigationView, true);
+            WindowManager.HandleTitleBarForControl(TopGrid);
+            WindowManager.HandleTitleBarForControl(NavigationView, true);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            acceptButton.Visibility = Visibility.Collapsed;
-            mainContent.IsEnabled = false;
-            progressRing.IsActive = true;
+            AcceptButton.Visibility = Visibility.Collapsed;
+            MainContent.IsEnabled = false;
+            ProgressRing.IsActive = true;
 
             await _viewModel.SaveChangesAsync();
 
-            progressRing.IsActive = false;
-            OverlayService.GetForCurrentView().CloseOverlay();
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
+            ProgressRing.IsActive = false;
             OverlayService.GetForCurrentView().CloseOverlay();
         }
 

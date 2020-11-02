@@ -11,7 +11,7 @@ using Unicord.Universal.Voice;
 
 namespace Unicord.Universal.Models
 {
-    // TODO: Move functionaliy from DiscordPage.xaml.cs into this class
+    // TODO: Move functionality from DiscordPage.xaml.cs into this class
     class DiscordPageModel : NotifyPropertyChangeImpl
     {
         private readonly SynchronizationContext _synchronisation;
@@ -58,11 +58,11 @@ namespace Unicord.Universal.Models
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
         public bool Navigating { get; internal set; }
 
-        public DiscordChannel CurrentChannel { get => _currentChannel; internal set => OnPropertySet(ref _currentChannel, value); }
-        public DiscordDmChannel SelectedDM { get => _selectedDM; internal set => OnPropertySet(ref _selectedDM, value); }
-        public DiscordGuild SelectedGuild { get => _selectedGuild; internal set => OnPropertySet(ref _selectedGuild, value); }
-        public bool IsFriendsSelected { get => _isFriendsSelected; internal set => OnPropertySet(ref _isFriendsSelected, value); }
-        public DiscordDmChannel PreviousDM { get; internal set; }
+        public DiscordChannel CurrentChannel { get => _currentChannel; set => OnPropertySet(ref _currentChannel, value); }
+        public DiscordDmChannel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
+        public DiscordGuild SelectedGuild { get => _selectedGuild; set => OnPropertySet(ref _selectedGuild, value); }
+        public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
+        public DiscordDmChannel PreviousDM { get; set; }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
         {
@@ -115,16 +115,16 @@ namespace Unicord.Universal.Models
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
             var guildPositions = App.Discord.UserSettings?.GuildPositions;
-            if (!Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
+            if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
+                return Task.CompletedTask;
+
+            for (var i = 0; i < guildPositions.Count; i++)
             {
-                for (var i = 0; i < guildPositions.Count; i++)
+                var id = guildPositions[i];
+                var guild = Guilds[i];
+                if (id != guild.Id)
                 {
-                    var id = guildPositions[i];
-                    var guild = Guilds[i];
-                    if (id != guild.Id)
-                    {
-                        _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
-                    }
+                    _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
                 }
             }
 
