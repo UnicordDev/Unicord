@@ -410,11 +410,6 @@
                         StackMode="StackInFront"
                         Tapped="Notification_Tapped"
                         VerticalOffset="-100">
-                        <controls1:InAppNotification.ContentTemplate>
-                            <DataTemplate>
-                                <messages:MessageControl Message="{Binding}" Background="Transparent" IsEnabled="False"/>
-                            </DataTemplate>
-                        </controls1:InAppNotification.ContentTemplate>
                     </controls1:InAppNotification>
                 </Grid>
             </Grid>

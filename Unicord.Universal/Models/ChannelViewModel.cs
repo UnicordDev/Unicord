@@ -176,14 +176,7 @@ namespace Unicord.Universal.Models
 
                 if (Channel is DiscordDmChannel dm)
                 {
-                    if (dm.Type == ChannelType.Private)
-                    {
-                        return dm.Recipients[0].Username;
-                    }
-                    else
-                    {
-                        return Strings.NaturalJoin(dm.Recipients.Select(r => r.Username));
-                    }
+                    return Strings.NaturalJoin(dm.Recipients.Select(r => r.Username));
                 }
 
                 return string.Empty;

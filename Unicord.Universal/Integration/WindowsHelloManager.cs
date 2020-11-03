@@ -10,8 +10,6 @@ namespace Unicord.Universal
     {
         public static async Task<bool> VerifyAsync(string setting, string displayReason)
         {
-            Analytics.TrackEvent("WindowsHelloManager_Verify");
-
             if ((DateTimeOffset.Now - App.RoamingSettings.Read("LastVerified", DateTimeOffset.MinValue)) <= App.RoamingSettings.Read(AUTHENTICATION_TIME, TimeSpan.FromMinutes(5)))
             {
                 return true;
@@ -21,6 +19,8 @@ namespace Unicord.Universal
             {
                 return true;
             }
+
+            Analytics.TrackEvent("WindowsHelloManager_Verify");
 
             var available = await UserConsentVerifier.CheckAvailabilityAsync();
             if (available == UserConsentVerifierAvailability.Available)

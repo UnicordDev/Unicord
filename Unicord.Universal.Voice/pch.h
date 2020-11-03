@@ -10,5 +10,6 @@
 #include <winrt/Windows.System.Threading.h>
 
 #define WEBRTC_WIN
+#define ABSL_USES_STD_STRING_VIEW
 #undef min
 #undef max

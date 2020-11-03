@@ -194,6 +194,20 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        private void ShowNotification(DiscordMessage message)
+        {
+            if (MainFrame.CurrentSourcePageType == typeof(ChannelPage))
+            {
+                notification.Margin = new Thickness(0, 42, 4, 0);
+            }
+            else
+            {
+                notification.Margin = new Thickness(0, 20, 4, 0);
+            }
+
+            notification.Show(new MessageControl() { Message = message, Margin = new Thickness(-6, -10, -8, 0) }, 7_000);
+        }
+
         public void ToggleSplitPane()
         {
             if (_isPaneOpen)
@@ -222,21 +236,6 @@ namespace Unicord.Universal.Pages
                 _helper.Cancel();
                 ClosePaneMobileStoryboard.Begin();
             }
-        }
-
-        private void ShowNotification(DiscordMessage message)
-        {
-            if (MainFrame.CurrentSourcePageType == typeof(ChannelPage))
-            {
-                notification.Margin = new Thickness(0, 42, 4, 0);
-            }
-            else
-            {
-                notification.Margin = new Thickness(0, 20, 4, 0);
-            }
-
-            notification.Content = message;
-            notification.Show(7_000);
         }
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
