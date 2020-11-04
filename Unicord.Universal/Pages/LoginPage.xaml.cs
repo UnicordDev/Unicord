@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DSharpPlus.EventArgs;
+using Unicord.Universal.Dialogs;
+using Unicord.Universal.Utilities;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -32,15 +35,65 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private string ValidateToken(string token)
         {
-            this.FindParent<MainPage>().ShowConnectingOverlay();
+            token = token.Trim().Trim('"');
+            if (string.IsNullOrWhiteSpace(token))
+                throw new ArgumentException("Your token can't be empty!");
 
-            _token = tokenTextBox.Password.Trim('"');
-            await App.LoginAsync(_token, Discord_Ready, App.LoginError, false);
+            return token;
         }
 
-        private async Task Discord_Ready(DSharpPlus.EventArgs.ReadyEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var mainPage = this.FindParent<MainPage>();
+
+            try
+            {
+                mainPage.ShowConnectingOverlay();
+                _token = ValidateToken(tokenTextBox.Password);
+                await App.LoginAsync(_token, OnReady, App.LoginError, false);
+            }
+            catch (Exception ex)
+            {
+                await UIUtilities.ShowErrorDialogAsync("Failed to login!", ex.Message);
+            }
+            finally
+            {
+                mainPage.HideConnectingOverlay();
+            }
+        }
+
+        private async void loadFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainPage = this.FindParent<MainPage>();
+
+            try
+            {
+                mainPage.ShowConnectingOverlay();
+
+                var picker = new FileOpenPicker();
+                picker.FileTypeFilter.Add(".txt");
+                var file = await picker.PickSingleFileAsync();
+
+                if (file != null)
+                {
+                    var text = await FileIO.ReadTextAsync(file);
+                    _token = ValidateToken(text);
+                    await App.LoginAsync(_token, OnReady, App.LoginError, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                await UIUtilities.ShowErrorDialogAsync("Failed to login!", ex.Message);
+            }
+            finally
+            {
+                mainPage.HideConnectingOverlay();
+            }
+        }
+
+        private async Task OnReady(ReadyEventArgs e)
         {
             var vault = new PasswordVault();
             vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, _tokenId, _token));
@@ -61,26 +114,6 @@ namespace Unicord.Universal.Pages
             if (mainPage.IsOverlayShown)
             {
                 mainPage.HideConnectingOverlay();
-            }
-        }
-
-        private async void loadFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.FindParent<MainPage>().ShowConnectingOverlay();
-
-            var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".txt");
-            var file = await picker.PickSingleFileAsync();
-
-            if (file != null)
-            {
-                var text = await FileIO.ReadTextAsync(file);
-                _token = text.Trim('"');
-                await App.LoginAsync(_token, Discord_Ready, App.LoginError, false);
-            }
-            else
-            {
-                this.FindParent<MainPage>().HideConnectingOverlay();
             }
         }
     }

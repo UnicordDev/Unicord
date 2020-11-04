@@ -18,13 +18,10 @@ namespace Unicord.Universal.Commands
 
         public async void Execute(object parameter)
         {
-            if (parameter is DiscordChannel channel && channel.ReadState?.Unread == true)
+            if (parameter is DiscordChannel channel && channel.ReadState?.Unread == true && channel.LastMessageId != 0)
             {
                 Analytics.TrackEvent("AcknowledgeCommand_AckChannel");
-
-                var message = await channel.GetMessageAsync(channel.LastMessageId);
-                if (message != null)
-                    await message.AcknowledgeAsync();
+                await channel.AcknowledgeAsync(channel.LastMessageId);
             }
 
             if (parameter is DiscordGuild guild && guild.Unread)

@@ -17,6 +17,7 @@ using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
+using Windows.System.RemoteSystems;
 using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
@@ -72,9 +73,11 @@ namespace Unicord.Universal.Pages
 
                 if (_loaded)
                 {
-                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
-                    var service = DiscordNavigationService.GetForCurrentView();
-                    await service.NavigateAsync(channel);
+                    if (App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
+                    {
+                        var service = DiscordNavigationService.GetForCurrentView();
+                        await service.NavigateAsync(channel);
+                    }
                 }
             }
         }
@@ -109,10 +112,9 @@ namespace Unicord.Universal.Pages
 
                 var service = DiscordNavigationService.GetForCurrentView();
 
-                if (_args != null && _args.ChannelId != 0)
+                if (_args != null && _args.ChannelId != 0 && App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToSpecifiedChannel");
-                    var channel = await App.Discord.GetChannelAsync(_args.ChannelId);
                     await service.NavigateAsync(channel);
                 }
                 else
