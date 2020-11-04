@@ -439,8 +439,7 @@ namespace Unicord.Universal
                                 Token = token,
                                 TokenType = TokenType.User,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
-                                GatewayCompressionLevel = GatewayCompressionLevel.None,
-                                ReconnectIndefinitely = true
+                                GatewayCompressionLevel = GatewayCompressionLevel.None
                             }));
 
                             Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);

@@ -329,12 +329,6 @@
     <ProjectReference Include="..\Libraries\Native\libsodium\libsodium.vcxproj">
       <Project>{a185b162-6cb6-4502-b03f-b56f7699a8d9}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Native\WebRTC\WebRTC.vcxproj">
-      <Project>{0cae67e6-bf85-4274-a665-12b44c4cd994}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-      <Private>false</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

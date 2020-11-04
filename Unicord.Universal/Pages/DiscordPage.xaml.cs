@@ -380,6 +380,8 @@ namespace Unicord.Universal.Pages
 
         private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            return;
+
             var element = sender as FrameworkElement;
             if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
             {
