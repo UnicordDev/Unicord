@@ -57,9 +57,6 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 await UIUtilities.ShowErrorDialogAsync("Failed to login!", ex.Message);
-            }
-            finally
-            {
                 mainPage.HideConnectingOverlay();
             }
         }
@@ -86,9 +83,6 @@ namespace Unicord.Universal.Pages
             catch (Exception ex)
             {
                 await UIUtilities.ShowErrorDialogAsync("Failed to login!", ex.Message);
-            }
-            finally
-            {
                 mainPage.HideConnectingOverlay();
             }
         }

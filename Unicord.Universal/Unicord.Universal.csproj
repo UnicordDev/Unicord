@@ -486,6 +486,7 @@
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\emoji.json" />
+    <Content Include="rd.xml" />
     <PRIResource Include="Resources\en-GB\Resources.resw" />
     <PRIResource Include="Resources\en-GB\LoginPage.resw" />
     <PRIResource Include="Resources\en-GB\Dialogs.resw" />

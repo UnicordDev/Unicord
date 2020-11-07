@@ -118,17 +118,32 @@ namespace Unicord.Universal
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
                 rootFrame.Navigate(typeof(LoginPage));
                 await ClearJumpListAsync();
             }
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        private void RemoveEventHandlers()
         {
             var pane = InputPane.GetForCurrentView();
             pane.Showing -= Pane_Showing;
             pane.Hiding -= Pane_Hiding;
+
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested -= Navigation_BackRequested;
+
+            if (App.Discord != null)
+            {
+                App.Discord.Ready -= OnDiscordReady;
+                App.Discord.Resumed -= OnDiscordResumed;
+                App.Discord.SocketClosed -= OnDiscordDisconnected;
+                App.Discord.LoggedOut -= OnLoggedOut;
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RemoveEventHandlers();
         }
 
         private static async Task ClearJumpListAsync()
@@ -162,8 +177,10 @@ namespace Unicord.Universal
                 App.Discord.Ready += OnDiscordReady;
                 App.Discord.Resumed += OnDiscordResumed;
                 App.Discord.SocketClosed += OnDiscordDisconnected;
+                App.Discord.LoggedOut += OnLoggedOut;
             }
 
+            App.Discord.Ready -= OnFirstDiscordReady;
             Analytics.TrackEvent("Discord_OnFirstReady");
 
             _isReady = true;
@@ -193,6 +210,13 @@ namespace Unicord.Universal
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     rootFrame.Navigate(typeof(DiscordPage), Arguments));
             }
+        }
+
+        private Task OnLoggedOut()
+        {
+            _isReady = false;
+            RemoveEventHandlers();
+            return Task.CompletedTask;
         }
 
         private async Task OnDiscordReady(ReadyEventArgs e)

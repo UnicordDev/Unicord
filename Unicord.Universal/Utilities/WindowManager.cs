@@ -2,10 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
@@ -14,6 +16,8 @@ using Windows.Foundation.Metadata;
 using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Core.Preview;
+using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -55,6 +59,20 @@ namespace Unicord.Universal.Utilities
             if (IsMainWindow)
                 App.LocalSettings.Save("LastViewedChannel", id);
             _windowChannelDictionary[ApplicationView.GetForCurrentView().Id] = id;
+        }
+
+        public static async Task CloseAllWindows()
+        {
+            _windowChannelDictionary.Clear();
+            var views = CoreApplication.Views.ToList();
+            foreach (var view in views)
+            {
+                await view.ExecuteOnUIThreadAsync(async () =>
+                {
+                    if (view.IsMain) return;
+                    await ApplicationView.GetForCurrentView().TryConsolidateAsync();
+                });
+            }
         }
 
         public static async Task<bool> ActivateOtherWindow(DiscordChannel channel)

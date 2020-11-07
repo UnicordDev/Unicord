@@ -64,14 +64,13 @@ namespace Unicord.Universal.Pages
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             UpdateTitleBar();
-
             Analytics.TrackEvent("DiscordPage_NavigatedTo");
 
             if (e.Parameter is MainPageArgs args)
             {
                 _args = args;
 
-                if (_loaded)
+                if (_loaded && _args.ChannelId != 0)
                 {
                     if (App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                     {
@@ -97,6 +96,9 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            if (App.Discord == null)
+                return; // im not 100% sure why this gets called on logout but it does so
+
             Analytics.TrackEvent("DiscordPage_Loaded");
 
             try

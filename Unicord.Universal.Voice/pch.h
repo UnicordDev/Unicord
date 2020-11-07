@@ -9,6 +9,8 @@
 #include <winrt/Windows.Networking.Sockets.h>
 #include <winrt/Windows.System.Threading.h>
 
+#include <wrl/client.h>
+
 #define WEBRTC_WIN
 #define ABSL_USES_STD_STRING_VIEW
 #undef min

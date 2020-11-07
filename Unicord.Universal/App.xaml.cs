@@ -15,11 +15,13 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 //using Microsoft.Gaming.XboxGameBar;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.GameBar;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
@@ -28,6 +30,7 @@ using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
+using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
@@ -50,7 +53,7 @@ namespace Unicord.Universal
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
-        internal static DiscordClient Discord { get; private set; }
+        internal static DiscordClient Discord { get; set; }
         internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
         internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
 
@@ -212,6 +215,8 @@ namespace Unicord.Universal
 
         private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
+            Process.Start("cmd.exe");
+
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
             foreach (var str in rawArgs)
@@ -434,13 +439,13 @@ namespace Unicord.Universal
                                 return Task.CompletedTask;
                             }
 
-                            Discord = await Task.Run(() => new DiscordClient(new DiscordConfiguration()
+                            Discord = new DiscordClient(new DiscordConfiguration()
                             {
                                 Token = token,
                                 TokenType = TokenType.User,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
                                 GatewayCompressionLevel = GatewayCompressionLevel.None
-                            }));
+                            });
 
                             Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
                             Discord.Ready += ReadyHandler;
@@ -479,6 +484,37 @@ namespace Unicord.Universal
             {
                 _connectSemaphore.Release();
             }
+        }
+
+        internal static async Task LogoutAsync()
+        {
+            await WindowManager.CloseAllWindows();
+            await ImageCache.Instance.ClearAsync();
+            await Discord.DisconnectAsync();
+            Discord.Dispose();
+            Discord = null;
+
+            try
+            {
+                var passwordVault = new PasswordVault();
+                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER))
+                {
+                    passwordVault.Remove(c);
+                }
+            }
+            catch { }
+
+            DiscordNavigationService.Reset();
+            FullscreenService.Reset();
+            OverlayService.Reset();
+            SettingsService.Reset();
+            SwipeOpenService.Reset();
+
+            var frame = (Window.Current.Content as Frame);
+            frame.Navigate(typeof(Page));
+            frame.BackStack.Clear();
+            frame.ForwardStack.Clear();
+            frame.Navigate(typeof(MainPage));
         }
 
         internal static async Task LoginError(Exception ex)

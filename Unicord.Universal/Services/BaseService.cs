@@ -23,6 +23,12 @@ namespace Unicord.Universal.Services
             return val;
         }
 
+        public static void Reset()
+        {
+            _serviceStore.Dispose();
+            _serviceStore = new ThreadLocal<T>(() => new T(), true);
+        }
+
         protected bool _isInitialised;
         protected virtual void Initialise()
         {

@@ -19,11 +19,14 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
+            if (App.Discord?.CurrentUser == null)
+                return false;
+
             if (parameter is DiscordMember m && m.Id != App.Discord.CurrentUser.Id)
             {
                 return true;
             }
-            else if (parameter is DiscordUser u && u.Id != App.Discord?.CurrentUser.Id)
+            else if (parameter is DiscordUser u && u.Id != App.Discord?.CurrentUser?.Id)
             {
                 if (App.Discord.Relationships.TryGetValue(u.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
