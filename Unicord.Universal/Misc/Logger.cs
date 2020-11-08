@@ -3,8 +3,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Unicord.Universal
 {
@@ -13,9 +15,7 @@ namespace Unicord.Universal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General")
         {
-#if !STORE
             Debug.WriteLine(message, source);
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

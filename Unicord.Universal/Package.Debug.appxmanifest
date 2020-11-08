@@ -3,7 +3,7 @@
 	<Identity Name="24101WamWooWamRD.Unicord.Canary" Publisher="CN=WamWooWam" Version="1.2.7.0" />
 	<mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 	<Properties>
-		<DisplayName>Unicord Canary</DisplayName>
+		<DisplayName>ms-resource:AppDisplayName</DisplayName>
 		<PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
 		<Logo>Assets\Store\StoreLogo.png</Logo>
 	</Properties>
@@ -11,7 +11,8 @@
 		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.17763.0" />
 	</Dependencies>
 	<Resources>
-		<Resource Language="x-generate" />
+    <Resource Language="EN-GB" />
+    <Resource Language="FR" />
 	</Resources>
 	<Applications>
 		<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">

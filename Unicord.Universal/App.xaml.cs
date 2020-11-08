@@ -59,7 +59,8 @@ namespace Unicord.Universal
 
         public App()
         {
-            InitializeComponent();
+            InitializeComponent();            
+            AppDomain.CurrentDomain.FirstChanceException += (o, e) => Logger.LogError(e.Exception);
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
             var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
@@ -81,7 +82,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-               AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
             }
         }
 
@@ -215,8 +216,6 @@ namespace Unicord.Universal
 
         private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
-            Process.Start("cmd.exe");
-
             var rawArgs = Strings.SplitCommandLine(arguments);
             var args = new Dictionary<string, string>();
             foreach (var str in rawArgs)
@@ -426,6 +425,9 @@ namespace Unicord.Universal
                                 e.Client.Ready -= ReadyHandler;
                                 e.Client.SocketErrored -= SocketErrored;
                                 e.Client.ClientErrored -= ClientErrored;
+
+                                Logger.LogError(e.Exception);
+
                                 _readySource.SetException(e.Exception);
                                 return Task.CompletedTask;
                             }
@@ -435,6 +437,9 @@ namespace Unicord.Universal
                                 e.Client.Ready -= ReadyHandler;
                                 e.Client.SocketErrored -= SocketErrored;
                                 e.Client.ClientErrored -= ClientErrored;
+
+                                Logger.LogError(e.Exception);
+
                                 _readySource.SetException(e.Exception);
                                 return Task.CompletedTask;
                             }
@@ -444,7 +449,9 @@ namespace Unicord.Universal
                                 Token = token,
                                 TokenType = TokenType.User,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
-                                GatewayCompressionLevel = GatewayCompressionLevel.None
+//#if DEBUG
+//                                GatewayCompressionLevel = GatewayCompressionLevel.None
+//#endif
                             });
 
                             Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);

@@ -17,7 +17,6 @@ using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
-using Windows.System.RemoteSystems;
 using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;

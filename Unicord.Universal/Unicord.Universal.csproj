@@ -87,7 +87,7 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>none</ErrorReport>
