@@ -1,6 +1,6 @@
 #pragma once
-#include <api/call/transport.h>
 #include "SodiumWrapper.h"
+#include <api/call/transport.h>
 
 using namespace winrt::Windows::Storage::Streams;
 using namespace winrt::Unicord::Universal::Voice::Interop;
@@ -8,9 +8,7 @@ using namespace winrt::Unicord::Universal::Voice::Interop;
 namespace winrt::Unicord::Universal::Voice::Transport {
     class VoiceOutboundTransport : public webrtc::Transport {
     public:
-        VoiceOutboundTransport(std::shared_ptr<SodiumWrapper> wrapper, DataWriter writer) :
-            _isActive(false), _sodium(wrapper), _writer(writer) {
-
+        VoiceOutboundTransport(std::shared_ptr<SodiumWrapper> wrapper, DataWriter writer) : _isActive(false), _sodium(wrapper), _writer(writer) {
         }
 
         static const size_t NonceBytes = crypto_box_NONCEBYTES;

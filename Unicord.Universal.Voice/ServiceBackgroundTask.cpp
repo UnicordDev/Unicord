@@ -10,15 +10,13 @@ using namespace winrt::Windows::ApplicationModel::AppService;
 using namespace winrt::Windows::ApplicationModel::Background;
 using namespace winrt::Windows::ApplicationModel::Calls;
 
-namespace winrt::Unicord::Universal::Voice::Background::implementation
-{
+namespace winrt::Unicord::Universal::Voice::Background::implementation {
     VoipCallCoordinator ServiceBackgroundTask::voipCoordinator = VoipCallCoordinator{ nullptr };
     VoipPhoneCall ServiceBackgroundTask::activeCall = VoipPhoneCall{ nullptr };
     VoiceClient ServiceBackgroundTask::voiceClient = VoiceClient{ nullptr };
     VoiceClientOptions ServiceBackgroundTask::voiceClientOptions = VoiceClientOptions{ nullptr };
 
-    void ServiceBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance)
-    {
+    void ServiceBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance) {
         auto stream = new dbg_stream_for_cout();
         std::cout.rdbuf(stream);
         std::cout << std::unitbuf;
@@ -33,48 +31,40 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         this->appServiceConnection.RequestReceived({ this, &ServiceBackgroundTask::OnServiceMessage });
     }
 
-    void ServiceBackgroundTask::OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping)
-    {
+    void ServiceBackgroundTask::OnUdpPing(Windows::Foundation::IInspectable sender, uint32_t ping) {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));
         RaiseEvent(VoiceServiceEvent::UdpPing, values);
     }
 
-    void ServiceBackgroundTask::OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping)
-    {
+    void ServiceBackgroundTask::OnWsPing(Windows::Foundation::IInspectable sender, uint32_t ping) {
         ValueSet values;
         values.Insert(L"ping", box_value(ping));
         RaiseEvent(VoiceServiceEvent::WebSocketPing, values);
     }
 
-    void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data)
-    {
+    void ServiceBackgroundTask::RaiseEvent(VoiceServiceEvent ev, ValueSet data) {
         if (appServiceConnected) {
             data.Insert(L"ev", box_value((uint32_t)ev));
             this->appServiceConnection.SendMessageAsync(data);
         }
     }
 
-    void ServiceBackgroundTask::OnServiceMessage(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-    {
+    void ServiceBackgroundTask::OnServiceMessage(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args) {
         auto def = args.GetDeferral();
         auto request = args.Request();
         auto data = request.Message();
 
         // req signifies a request
-        if (data.HasKey(L"req"))
-        {
+        if (data.HasKey(L"req")) {
             VoiceServiceRequest ev = VoiceServiceRequest::RequestSucceeded;
             ValueSet values;
             ValueSet event_values;
 
-            try
-            {
+            try {
                 auto request_op = (VoiceServiceRequest)unbox_value<uint32_t>(data.Lookup(L"req"));
-                switch (request_op)
-                {
-                case VoiceServiceRequest::GuildConnectRequest:
-                {
+                switch (request_op) {
+                case VoiceServiceRequest::GuildConnectRequest: {
                     if (voiceClient == nullptr && activeCall == nullptr) {
                         voipCoordinator = VoipCallCoordinator::GetDefault();
                         activeCall = voipCoordinator.RequestNewOutgoingCall(
@@ -84,7 +74,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                             voiceClientOptions.Token(unbox_value<hstring>(data.Lookup(L"token")));
                             voiceClientOptions.SessionId(unbox_value<hstring>(data.Lookup(L"session_id")));
                             voiceClientOptions.Endpoint(unbox_value<hstring>(data.Lookup(L"endpoint")));
-                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id"))); 
+                            voiceClientOptions.GuildId(unbox_value<uint64_t>(data.Lookup(L"guild_id")));
                             voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
                             voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
                             voiceClientOptions.SuppressionLevel((NoiseSuppressionLevel)unbox_value<uint32_t>(data.TryLookup(L"noise_suppression")));
@@ -122,8 +112,7 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                         // already connected, so raise the event again
                         RaiseEvent(VoiceServiceEvent::Connected, event_values);
                     }
-                }
-                break;
+                } break;
                 case VoiceServiceRequest::StateRequest:
                     if (voiceClient != nullptr) {
                         values.Insert(L"state", box_value((uint32_t)VoiceServiceState::Connected));
@@ -195,10 +184,13 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
                     break;
                 }
             }
-            catch (const std::exception& ex)
-            {
+            catch (const std::exception& ex) {
                 ev = VoiceServiceRequest::RequestFailed;
                 values.Insert(L"msg", box_value(to_hstring(ex.what())));
+            }
+            catch (const winrt::hresult_error& ex) {
+                ev = VoiceServiceRequest::RequestFailed;
+                values.Insert(L"msg", box_value(to_hstring(ex.message())));
             }
 
             values.Insert(L"req", box_value((uint32_t)ev));
@@ -206,21 +198,18 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation
         }
 
         // ev signifies an event
-        if (data.HasKey(L"ev"))
-        {
+        if (data.HasKey(L"ev")) {
             auto event = unbox_value<VoiceServiceEvent>(data.Lookup(L"ev"));
         }
 
         def.Complete();
     }
 
-    void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
-    {
+    void ServiceBackgroundTask::OnServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args) {
         this->appServiceConnected = false;
     }
 
-    void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
-    {
+    void ServiceBackgroundTask::OnCancelled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason) {
         if (this->taskDeferral != nullptr) {
             this->taskDeferral.Complete();
         }

@@ -1,19 +1,16 @@
 #include "pch.h"
-#include <iostream>
 #include "OpusWrapper.h"
+#include <iostream>
 
-namespace winrt::Unicord::Universal::Voice::Interop
-{
-    OpusWrapper::OpusWrapper(AudioFormat format)
-    {
+namespace winrt::Unicord::Universal::Voice::Interop {
+    OpusWrapper::OpusWrapper(AudioFormat format) {
         int error;
         this->audio_format = format;
         this->opus_encoder = opus_encoder_create(format.sample_rate, format.channel_count, (int)format.application, &error);
         check_opus_error(error, L"Failed to instantate Opus encoder");
 
         int signal = OPUS_AUTO;
-        switch (format.application)
-        {
+        switch (format.application) {
         case VoiceApplication::voip:
             signal = OPUS_SIGNAL_VOICE;
             break;
@@ -29,12 +26,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
         check_opus_error(opus_encoder_ctl(this->opus_encoder, OPUS_SET_BITRATE_REQUEST, 131072), L"Failed to set bitrate.");
     }
 
-    size_t OpusWrapper::Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
-    {
+    size_t OpusWrapper::Encode(array_view<uint8_t> pcm, gsl::span<uint8_t> target) {
         std::unique_lock lock(encode_mutex);
 
-        try
-        {
+        try {
             auto duration = audio_format.CalculateSampleDuration(pcm.size());
             auto frame_size = audio_format.CalculateFrameSize(duration);
             auto sample_size = audio_format.CalculateSampleSize(duration);
@@ -49,18 +44,15 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument&)
-        {
+        catch (winrt::hresult_invalid_argument&) {
             return 0;
         }
     }
 
-    size_t OpusWrapper::EncodeFloat(array_view<uint8_t> pcm, gsl::span<uint8_t> target)
-    {
+    size_t OpusWrapper::EncodeFloat(array_view<uint8_t> pcm, gsl::span<uint8_t> target) {
         std::unique_lock lock(encode_mutex);
 
-        try
-        {
+        try {
             auto duration = audio_format.CalculateSampleDurationF(pcm.size());
             auto frame_size = audio_format.CalculateFrameSize(duration);
             auto sample_size = audio_format.CalculateSampleSizeF(duration);
@@ -75,14 +67,12 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
             return (size_t)length;
         }
-        catch (winrt::hresult_invalid_argument&)
-        {
+        catch (winrt::hresult_invalid_argument&) {
             return 0;
         }
     }
 
-    void OpusWrapper::Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t> &target, bool fec)
-    {
+    void OpusWrapper::Decode(AudioSource* decoder, array_view<uint8_t> opus, std::vector<uint8_t>& target, bool fec) {
         auto frames = opus_packet_get_nb_frames(opus.data(), opus.size());
         auto samples_per_frame = opus_packet_get_samples_per_frame(opus.data(), decoder->format.sample_rate);
         auto channels = opus_packet_get_nb_channels(opus.data());
@@ -101,8 +91,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         target.resize(sample_size);
     }
 
-    void OpusWrapper::ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t> &target)
-    {
+    void OpusWrapper::ProcessPacketLoss(AudioSource* decoder, int32_t frame_size, std::vector<uint8_t>& target) {
         if (!decoder->IsInitialised()) {
             decoder->Initialise(decoder->format);
         }
@@ -116,8 +105,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         target.resize(sample_size);
     }
 
-    AudioSource* OpusWrapper::GetOrCreateDecoder(uint32_t ssrc)
-    {
+    AudioSource* OpusWrapper::GetOrCreateDecoder(uint32_t ssrc) {
         auto itr = opus_decoders.find(ssrc);
         if (itr == opus_decoders.end()) {
             auto source = new AudioSource(ssrc);
@@ -129,35 +117,29 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     }
 
-    int32_t OpusWrapper::GetLastPacketSampleCount(OpusDecoder* decoder)
-    {
+    int32_t OpusWrapper::GetLastPacketSampleCount(OpusDecoder* decoder) {
         int32_t count;
         opus_decoder_ctl(decoder, OPUS_GET_LAST_PACKET_DURATION_REQUEST, &count);
 
         return count;
     }
 
-    OpusWrapper::~OpusWrapper()
-    {
+    OpusWrapper::~OpusWrapper() {
         std::cout << "Freeing OpusWrapper\n";
 
-        if (this->opus_encoder != nullptr)
-        {
+        if (this->opus_encoder != nullptr) {
             opus_encoder_destroy(this->opus_encoder);
         }
 
-        for each (auto decoder in this->opus_decoders)
-        {
+        for (auto decoder : this->opus_decoders) {
             delete decoder.second;
         }
 
         this->opus_decoders.clear();
     }
 
-    void OpusWrapper::check_opus_error(int error, winrt::hstring message)
-    {
-        switch (error)
-        {
+    void OpusWrapper::check_opus_error(int error, winrt::hstring message) {
+        switch (error) {
         case OPUS_BAD_ARG:
         case OPUS_BUFFER_TOO_SMALL:
         case OPUS_INVALID_PACKET:

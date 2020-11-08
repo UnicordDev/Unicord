@@ -1,49 +1,49 @@
 ﻿#pragma once
 
-#include "VoiceClient.g.h"
-#include "SodiumWrapper.h"
-#include "ConnectionEndpoint.h"
 #include "AudioFormat.h"
 #include "AudioRenderer.h"
+#include "ConnectionEndpoint.h"
 #include "OpusWrapper.h"
-#include "VoiceTransport.h"
+#include "SodiumWrapper.h"
 #include "VideoFrameSink.h"
+#include "VoiceClient.g.h"
+#include "VoiceTransport.h"
 
+#include <cctype>
+#include <chrono>
+#include <concurrent_queue.h>
+#include <concurrent_unordered_map.h>
+#include <debugapi.h>
+#include <iomanip>
+#include <iostream>
 #include <opus.h>
 #include <sodium.h>
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include <chrono>
 #include <sstream>
+#include <string>
 #include <thread>
-#include <cctype>
-#include <debugapi.h>
-#include <concurrent_unordered_map.h>
-#include <concurrent_queue.h>
 #include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Storage.Streams.h>
 
-#include <call/call.h>
-#include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
-#include <api/video_codecs/video_encoder_factory.h>
+#include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/video_codecs/video_decoder_factory.h>
+#include <api/video_codecs/video_encoder_factory.h>
+#include <call/call.h>
 
 #include <common_audio/include/audio_util.h>
 
 #include <media/engine/adm_helpers.h>
 #include <media/engine/webrtcvoiceengine.h>
 
-#include <modules/rtp_rtcp/include/rtp_header_parser.h>
-#include <modules/audio_processing/include/audio_processing.h>
-#include <modules/audio_processing/audio_buffer.h>
 #include <modules/audio_mixer/audio_mixer_impl.h>
+#include <modules/audio_processing/audio_buffer.h>
+#include <modules/audio_processing/include/audio_processing.h>
+#include <modules/rtp_rtcp/include/rtp_header_parser.h>
 
 #include <third_party/winuwp_h264/winuwp_h264_factory.h>
 
-#include "external/IAudioDeviceWasapi.h"
 #include "external/AudioDeviceWasapi.h"
+#include "external/IAudioDeviceWasapi.h"
 
 using namespace winrt::Windows::Data::Json;
 using namespace winrt::Windows::Storage::Streams;
@@ -53,10 +53,8 @@ using namespace winrt::Unicord::Universal::Voice::Interop;
 using namespace winrt::Unicord::Universal::Voice::Render;
 using namespace winrt::Unicord::Universal::Voice::Transport;
 
-namespace winrt::Unicord::Universal::Voice::implementation
-{
-    struct VoiceClient : VoiceClientT<VoiceClient>
-    {
+namespace winrt::Unicord::Universal::Voice::implementation {
+    struct VoiceClient : VoiceClientT<VoiceClient> {
         friend VoiceOutboundTransport;
 
     public:
@@ -71,12 +69,12 @@ namespace winrt::Unicord::Universal::Voice::implementation
         std::shared_ptr<webrtc::WinUWPH264EncoderFactory> _videoEncoderFactory = nullptr;
         std::shared_ptr<webrtc::WinUWPH264DecoderFactory> _videoDecoderFactory = nullptr;
 
-        webrtc::AudioSendStream* _audioSendStream = nullptr; // i dont like this rawptr
+        webrtc::AudioSendStream* _audioSendStream = nullptr;      // i dont like this rawptr
         webrtc::AudioDeviceWasapi* _audioDeviceManager = nullptr; // nor this one
 
-        concurrency::concurrent_unordered_map <uint32_t, webrtc::AudioReceiveStream*> _audioRecieveStreams;
-        concurrency::concurrent_unordered_map <uint32_t, webrtc::VideoReceiveStream*> _videoRecieveStreams;
-        concurrency::concurrent_unordered_map <uint64_t, uint32_t> _ssrcUserMap;
+        concurrency::concurrent_unordered_map<uint32_t, webrtc::AudioReceiveStream*> _audioRecieveStreams;
+        concurrency::concurrent_unordered_map<uint32_t, webrtc::VideoReceiveStream*> _videoRecieveStreams;
+        concurrency::concurrent_unordered_map<uint64_t, uint32_t> _ssrcUserMap;
 
         webrtc::AudioSendStream* CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType);
         webrtc::AudioReceiveStream* CreateAudioRecieveStream(uint32_t remoteSsrc, uint8_t payloadType);
@@ -96,6 +94,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         winrt::Windows::Foundation::IAsyncAction ConnectAsync();
         winrt::Windows::Foundation::IAsyncAction SendSpeakingAsync(bool speaking);
         void UpdateAudioDevices();
+        void UpdateMutedDeafened();
         void Close();
 
         bool Muted();
@@ -104,6 +103,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         void Deafened(bool value);
 
         ~VoiceClient();
+
     private:
         VoiceClientOptions _voiceOptions;
         MessageWebSocket _webSocket{ nullptr };
@@ -144,7 +144,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
 
         void InitialiseSockets();
         winrt::Windows::Foundation::IAsyncAction SendIdentifyAsync();
-        winrt::Windows::Foundation::IAsyncAction SendJsonPayloadAsync(JsonObject &payload);
+        winrt::Windows::Foundation::IAsyncAction SendJsonPayloadAsync(JsonObject& payload);
         winrt::Windows::Foundation::IAsyncAction Stage1(JsonObject obj);
         winrt::Windows::Foundation::IAsyncAction Stage3(JsonObject obj);
         winrt::Windows::Foundation::IAsyncAction Stage2(std::string& ip, const uint16_t& port);
@@ -166,8 +166,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
     };
 }
 
-class dbg_stream_for_cout : public std::stringbuf
-{
+class dbg_stream_for_cout : public std::stringbuf {
 public:
     virtual int_type overflow(int_type c = EOF) {
         if (c != EOF) {
@@ -178,9 +177,7 @@ public:
     }
 };
 
-namespace winrt::Unicord::Universal::Voice::factory_implementation
-{
-    struct VoiceClient : VoiceClientT<VoiceClient, implementation::VoiceClient>
-    {
+namespace winrt::Unicord::Universal::Voice::factory_implementation {
+    struct VoiceClient : VoiceClientT<VoiceClient, implementation::VoiceClient> {
     };
 }

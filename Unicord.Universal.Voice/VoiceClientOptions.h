@@ -1,10 +1,8 @@
 #pragma once
 #include "VoiceClientOptions.g.h"
 
-namespace winrt::Unicord::Universal::Voice::implementation
-{
-    struct VoiceClientOptions : VoiceClientOptionsT<VoiceClientOptions>
-    {
+namespace winrt::Unicord::Universal::Voice::implementation {
+    struct VoiceClientOptions : VoiceClientOptionsT<VoiceClientOptions> {
         VoiceClientOptions() = default;
 
         hstring Token();
@@ -44,9 +42,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         NoiseSuppressionLevel noise_suppression_level = NoiseSuppressionLevel::Medium;
     };
 }
-namespace winrt::Unicord::Universal::Voice::factory_implementation
-{
-    struct VoiceClientOptions : VoiceClientOptionsT<VoiceClientOptions, implementation::VoiceClientOptions>
-    {
+namespace winrt::Unicord::Universal::Voice::factory_implementation {
+    struct VoiceClientOptions : VoiceClientOptionsT<VoiceClientOptions, implementation::VoiceClientOptions> {
     };
 }

@@ -1,23 +1,19 @@
 #pragma once
-#include <stdint.h>
 #include <iostream>
 #include <opus.h>
+#include <stdint.h>
 
-namespace winrt::Unicord::Universal::Voice::Interop
-{
-    enum VoiceApplication
-    {
+namespace winrt::Unicord::Universal::Voice::Interop {
+    enum VoiceApplication {
         music = OPUS_APPLICATION_AUDIO,
         voip = OPUS_APPLICATION_VOIP,
         low_latency = OPUS_APPLICATION_RESTRICTED_LOWDELAY
     };
 
-    struct VoicePacket
-    {
+    struct VoicePacket {
     public:
-        VoicePacket() { }
-        VoicePacket(std::vector<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
-        {
+        VoicePacket() {}
+        VoicePacket(std::vector<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false) {
             bytes = packet_bytes;
             duration = packet_duration;
             is_silence = isSilence;
@@ -29,9 +25,8 @@ namespace winrt::Unicord::Universal::Voice::Interop
     };
 
     struct PCMPacket {
-        PCMPacket() { }
-        PCMPacket(gsl::span<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false)
-        {
+        PCMPacket() {}
+        PCMPacket(gsl::span<uint8_t> packet_bytes, uint32_t packet_duration, bool isSilence = false) {
             bytes = packet_bytes;
             duration = packet_duration;
             is_silence = isSilence;
@@ -43,11 +38,9 @@ namespace winrt::Unicord::Universal::Voice::Interop
         bool is_silence = false;
     };
 
-    struct AudioFormat
-    {
+    struct AudioFormat {
     public:
-        AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = music)
-        {
+        AudioFormat(uint32_t sampleRate = 48000, uint32_t channelCount = 2, VoiceApplication app = music) {
             sample_rate = sampleRate;
             channel_count = channelCount;
             application = app;
@@ -57,11 +50,11 @@ namespace winrt::Unicord::Universal::Voice::Interop
         uint32_t channel_count = 0;
         VoiceApplication application = voip;
 
-        inline bool operator== (AudioFormat& lhs) noexcept {
+        inline bool operator==(AudioFormat& lhs) noexcept {
             return (lhs.sample_rate == sample_rate) && (lhs.channel_count == channel_count) && (lhs.application == application);
         }
 
-        inline bool operator!= (AudioFormat& lhs) noexcept {
+        inline bool operator!=(AudioFormat& lhs) noexcept {
             return !(lhs == *this);
         }
 
@@ -74,7 +67,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
 
         inline size_t GetMaxBufferSize() noexcept {
-            return  120 * (sample_rate / 1000);
+            return 120 * (sample_rate / 1000);
         }
 
         inline uint32_t CalculateSampleDuration(uint32_t sampleSize) noexcept {
@@ -98,12 +91,10 @@ namespace winrt::Unicord::Universal::Voice::Interop
         }
     };
 
-    struct AudioSource
-    {
+    struct AudioSource {
     public:
-        AudioSource() { }
-        AudioSource(uint32_t ssrc)
-        {
+        AudioSource() {}
+        AudioSource(uint32_t ssrc) {
             this->ssrc = ssrc;
         }
 
@@ -139,5 +130,4 @@ namespace winrt::Unicord::Universal::Voice::Interop
         AudioFormat format;
         OpusDecoder* decoder = nullptr;
     };
-
 }

@@ -81,6 +81,7 @@
     <None Include="Unicord.Universal.Voice.def" />
     <None Include="PropertySheet.props" />
     <None Include="packages.config" />
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Interop">

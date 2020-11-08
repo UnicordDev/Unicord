@@ -1,11 +1,10 @@
 #pragma once
-#include <winrt/Windows.Data.Json.h>
 #include <sodium.h>
+#include <winrt/Windows.Data.Json.h>
 
 using namespace winrt::Windows::Data::Json;
 
-namespace winrt::Unicord::Universal::Voice::Interop
-{
+namespace winrt::Unicord::Universal::Voice::Interop {
     enum EncryptionMode {
         /// <summary>
         /// The nonce is an incrementing uint32 value. It is encoded as big endian value at the beginning of the nonce buffer. The 4 bytes are also appended at the end of the packet.
@@ -24,8 +23,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
 
     };
 
-    struct SodiumWrapper
-    {
+    struct SodiumWrapper {
         SodiumWrapper() = default;
         SodiumWrapper(array_view<const uint8_t> key_view, EncryptionMode mode);
 
@@ -55,8 +53,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         const inline size_t CalculateTargetSize(size_t source_length) {
             size_t encrypted_length = source_length + crypto_secretbox_xsalsa20poly1305_MACBYTES;
 
-            switch (mode)
-            {
+            switch (mode) {
             case XSalsa20_Poly1305_Lite:
                 return encrypted_length + 4;
             case XSalsa20_Poly1305_Suffix:
@@ -70,8 +67,7 @@ namespace winrt::Unicord::Universal::Voice::Interop
         const inline size_t CalculateSourceSize(size_t source_length) {
             size_t encrypted_length = source_length - crypto_secretbox_xsalsa20poly1305_MACBYTES;
 
-            switch (mode)
-            {
+            switch (mode) {
             case XSalsa20_Poly1305_Lite:
                 return encrypted_length - 4;
             case XSalsa20_Poly1305_Suffix:

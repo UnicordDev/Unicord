@@ -319,6 +319,7 @@
     <Midl Include="VoiceServiceRequest.idl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".clang-format" />
     <None Include="packages.config" />
     <None Include="Unicord.Universal.Voice.def" />
   </ItemGroup>

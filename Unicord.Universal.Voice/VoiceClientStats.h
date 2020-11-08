@@ -1,10 +1,8 @@
 ﻿#pragma once
 #include "VoiceClientStats.g.h"
 
-namespace winrt::Unicord::Universal::Voice::implementation
-{
-    struct VoiceClientStats : VoiceClientStatsT<VoiceClientStats>
-    {
+namespace winrt::Unicord::Universal::Voice::implementation {
+    struct VoiceClientStats : VoiceClientStatsT<VoiceClientStats> {
         VoiceClientStats() = default;
 
         uint32_t LocalSSRC();
@@ -14,9 +12,7 @@ namespace winrt::Unicord::Universal::Voice::implementation
         hstring CodecName();
     };
 }
-namespace winrt::Unicord::Universal::Voice::factory_implementation
-{
-    struct VoiceClientStats : VoiceClientStatsT<VoiceClientStats, implementation::VoiceClientStats>
-    {
+namespace winrt::Unicord::Universal::Voice::factory_implementation {
+    struct VoiceClientStats : VoiceClientStatsT<VoiceClientStats, implementation::VoiceClientStats> {
     };
 }
