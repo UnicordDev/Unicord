@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.28.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.30.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -87,6 +87,20 @@
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
         </uap:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe">
+          <desktop:FullTrustProcess/>
+        </desktop:Extension>
+        <uap:Extension Category="windows.appService">
+          <uap:AppService Name="com.wankerr.Unicord.Notifications" />
+        </uap:Extension>
+        <uap5:Extension Category="windows.startupTask"
+												Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe"
+												EntryPoint="Windows.FullTrustApplication">
+          <uap5:StartupTask
+            TaskId="UnicordBackgroundTask"
+            Enabled="false"
+            DisplayName="Unicord Background Task" />
+        </uap5:Extension>
       </Extensions>
     </Application>
   </Applications>
@@ -97,6 +111,7 @@
     <uap:Capability Name="contacts" />
     <uap:Capability Name="voipCall" />
     <uap:Capability Name="phoneCall" />
+    <rescap:Capability Name="runFullTrust"/>
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
   </Capabilities>

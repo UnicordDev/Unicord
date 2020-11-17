@@ -37,7 +37,8 @@ namespace Unicord.Universal.Models
                 {
                     foreach (var guildId in folder.GuildIds)
                     {
-                        Guilds.Add(App.Discord.Guilds[guildId]);
+                        if (App.Discord.Guilds.TryGetValue(guildId, out var server))
+                            Guilds.Add(server);
                     }
                 }
             }
@@ -49,27 +50,25 @@ namespace Unicord.Universal.Models
                 }
             }
 
-            foreach (var dm in App.Discord.PrivateChannels.Values)
+            var dms = App.Discord.PrivateChannels.Values;
+            foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0).OrderBy(d => d.ReadState?.LastMessageId))
             {
-                if (dm.ReadState.MentionCount > 0)
-                {
-                    UnreadDMs.Add(dm);
-                }
+                UnreadDMs.Add(dm);
             }
 
-            App.Discord.MessageCreated += OnMessageCreated;
-            App.Discord.MessageAcknowledged += OnMessageAcknowledged;
             App.Discord.GuildCreated += OnGuildCreated;
             App.Discord.GuildDeleted += OnGuildDeleted;
+            App.Discord.MessageCreated += OnMessageCreated;
+            App.Discord.MessageAcknowledged += OnMessageAcknowledged;
             App.Discord.UserSettingsUpdated -= OnUserSettingsUpdated;
         }
 
+        public bool Navigating { get; internal set; }
         public ObservableCollection<DiscordGuild> Guilds { get; }
         public ObservableCollection<DiscordDmChannel> UnreadDMs { get; }
 
         public DiscordUser CurrentUser { get => _currentUser; set => OnPropertySet(ref _currentUser, value); }
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
-        public bool Navigating { get; internal set; }
 
         public DiscordChannel CurrentChannel { get => _currentChannel; set => OnPropertySet(ref _currentChannel, value); }
         public DiscordDmChannel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }

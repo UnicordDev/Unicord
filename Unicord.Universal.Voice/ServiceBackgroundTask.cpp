@@ -78,6 +78,9 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation {
                             voiceClientOptions.ChannelId(unbox_value<uint64_t>(data.Lookup(L"channel_id")));
                             voiceClientOptions.CurrentUserId(unbox_value<uint64_t>(data.Lookup(L"user_id")));
                             voiceClientOptions.SuppressionLevel((NoiseSuppressionLevel)unbox_value<uint32_t>(data.TryLookup(L"noise_suppression")));
+                            voiceClientOptions.EchoCancellation(unbox_value_or(data.TryLookup(L"echo_cancellation"), true));
+                            voiceClientOptions.VoiceActivity(unbox_value_or(data.TryLookup(L"voice_activity"), true));
+                            voiceClientOptions.AutomaticGainControl(unbox_value_or(data.TryLookup(L"auto_gain_control"), true));
 
                             if (data.HasKey(L"input_device")) {
                                 voiceClientOptions.PreferredRecordingDevice(unbox_value_or<hstring>(data.Lookup(L"input_device"), L""));
@@ -130,12 +133,16 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation {
                         auto muted = unbox_value<bool>(data.Lookup(L"muted"));
                         voiceClient.Muted(muted);
 
-                        if (muted || voiceClient.Deafened()) {
-                            activeCall.NotifyCallHeld();
-                        }
-                        else {
-                            activeCall.NotifyCallActive();
-                        }
+                        try {
+                            if (muted || voiceClient.Deafened()) {
+                                activeCall.NotifyCallHeld();
+                            }
+                            else {
+                                activeCall.NotifyCallActive();
+                            }	
+						}
+                        catch (const winrt::hresult_error&) {
+						}
 
                         event_values.Insert(L"muted", box_value(muted));
                         RaiseEvent(VoiceServiceEvent::Muted, event_values);
@@ -146,11 +153,15 @@ namespace winrt::Unicord::Universal::Voice::Background::implementation {
                         auto deafened = unbox_value<bool>(data.Lookup(L"deafened"));
                         voiceClient.Deafened(deafened);
 
-                        if (deafened || voiceClient.Muted()) {
-                            activeCall.NotifyCallHeld();
+                        try {
+                            if (deafened || voiceClient.Muted()) {
+                                activeCall.NotifyCallHeld();
+                            }
+                            else {
+                                activeCall.NotifyCallActive();
+                            }
                         }
-                        else {
-                            activeCall.NotifyCallActive();
+                        catch (const winrt::hresult_error&) {
                         }
 
                         event_values.Insert(L"deafened", box_value(deafened));

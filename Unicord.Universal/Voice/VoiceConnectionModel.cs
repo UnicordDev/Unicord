@@ -219,7 +219,10 @@ namespace Unicord.Universal.Voice
                     ["output_device"] = outputDeviceId,
                     ["muted"] = Muted,
                     ["deafened"] = Deafened,
-                    ["noise_suppression"] = App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium)
+                    ["noise_suppression"] = App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium),
+                    ["echo_cancellation"] = App.LocalSettings.Read("EchoCancellation", true),
+                    ["voice_activity"] = App.LocalSettings.Read("VoiceActivity", true),
+                    ["auto_gain_control"] = App.LocalSettings.Read("AutomaticGainControl", true),
                 };
 
                 await SendRequestAsync(connectionRequest);

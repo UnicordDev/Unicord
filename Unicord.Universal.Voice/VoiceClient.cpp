@@ -46,7 +46,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         if (index != std::wstring::npos) {
             std::wstring str(raw_endpoint.substr(index + 1));
             _webSocketEndpoint.hostname = raw_endpoint.substr(0, index);
-            _webSocketEndpoint.port = (uint16_t)std::stoi(str);
+            _webSocketEndpoint.port = (uint16_t)std::stoul(str);
         }
         else {
             _webSocketEndpoint.hostname = raw_endpoint;
@@ -207,7 +207,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         }
 
         _sodium = std::make_shared<SodiumWrapper>(array_view<const uint8_t>(&key[0], &key[secret_key.Size()]), SodiumWrapper::GetEncryptionMode(new_mode));
-        _keepaliveTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, milliseconds(5000));
+        _keepaliveTimer = ThreadPoolTimer::CreatePeriodicTimer({ this, &VoiceClient::OnUdpHeartbeat }, 5000ms);
 
         _webrtcThread = rtc::Thread::Create();
         _webrtcThread->Start();
@@ -284,8 +284,8 @@ namespace winrt::Unicord::Universal::Voice::implementation {
     void VoiceClient::InitApm(webrtc::AudioProcessing* apm) {
         RTC_DCHECK(apm);
 
-        constexpr int kMinVolumeLevel = 0;
-        constexpr int kMaxVolumeLevel = 255;
+        constexpr int kMinVolumeLevel = 64;
+        constexpr int kMaxVolumeLevel = 224;
 
         auto level = _voiceOptions.SuppressionLevel();
         if (level > NoiseSuppressionLevel::Disabled) {
@@ -302,17 +302,21 @@ namespace winrt::Unicord::Universal::Voice::implementation {
             RTC_DLOG(LS_ERROR) << "Failed to disable drift compensation.";
         }
 
-        webrtc::EchoCancellation* echo_cancellation = apm->echo_cancellation();
-        echo_cancellation->Enable(true);
+        auto echo_cancellation = apm->echo_cancellation();
+        echo_cancellation->Enable(_voiceOptions.EchoCancellation());
 
-        webrtc::GainControl* gc = apm->gain_control();
+        auto gc = apm->gain_control();
         if (gc->set_analog_level_limits(kMinVolumeLevel, kMaxVolumeLevel) != 0) {
             RTC_DLOG(LS_ERROR) << "Failed to set analog level limits with minimum: "
                                << kMinVolumeLevel
                                << " and maximum: " << kMaxVolumeLevel;
         }
 
-        gc->Enable(true); // TODO: Configurable
+        gc->set_mode(webrtc::GainControl::Mode::kAdaptiveAnalog);
+        gc->Enable(_voiceOptions.AutomaticGainControl()); // TODO: Configurable
+
+        auto voice_detection = apm->voice_detection();
+        voice_detection->Enable(true);
     }
 
     void VoiceClient::StartCall() {
@@ -320,42 +324,43 @@ namespace winrt::Unicord::Universal::Voice::implementation {
 
         this->_audioDecoderFactory = webrtc::CreateBuiltinAudioDecoderFactory();
         this->_audioEncoderFactory = webrtc::CreateBuiltinAudioEncoderFactory();
-
-        this->_videoEncoderFactory = std::make_shared<webrtc::WinUWPH264EncoderFactory>();
-        this->_videoDecoderFactory = std::make_shared<webrtc::WinUWPH264DecoderFactory>();
+        //this->_videoEncoderFactory = std::make_shared<webrtc::WinUWPH264EncoderFactory>();
+        //this->_videoDecoderFactory = std::make_shared<webrtc::WinUWPH264DecoderFactory>();
 
         webrtc::IAudioDeviceWasapi::CreationProperties props = {};
         props.id_ = "Unicord";
         props.playoutEnabled_ = true;
         props.recordingEnabled_ = true;
 
+        auto audioDeviceModule = webrtc::IAudioDeviceWasapi::create(props);
+
         webrtc::AudioState::Config stateConfig = {};
-        stateConfig.audio_processing = webrtc::AudioProcessingBuilder().Create();
-        stateConfig.audio_device_module = webrtc::IAudioDeviceWasapi::create(props);
+        stateConfig.audio_processing = webrtc::AudioProcessingBuilder()
+                                           .SetCaptureAnalyzer(std::make_unique<SpeakingAudioAnalyzer>(this))
+                                           .Create();
+
+        stateConfig.audio_device_module = audioDeviceModule;
         stateConfig.audio_mixer = webrtc::AudioMixerImpl::Create();
 
-        rtc::scoped_refptr<webrtc::AudioState> audioState = webrtc::AudioState::Create(stateConfig);
-
-        InitAdm((webrtc::AudioDeviceWasapi*)stateConfig.audio_device_module.get());
+        InitAdm((webrtc::AudioDeviceWasapi*)audioDeviceModule.get());
         InitApm(stateConfig.audio_processing);
 
-        stateConfig.audio_device_module->SetPlayoutDevice(webrtc::AudioDeviceModule::kDefaultDevice);
-        stateConfig.audio_device_module->SetRecordingDevice(webrtc::AudioDeviceModule::kDefaultDevice);
-        stateConfig.audio_device_module->RegisterAudioCallback(audioState->audio_transport());
+        _audioState = webrtc::AudioState::Create(stateConfig);
 
-        /*webrtc::VideoEncoderConfig encoderConfig;
-		encoderConfig.video_stream_factory = this->_vidioEncoderFactory;*/
+        audioDeviceModule->SetPlayoutDevice(webrtc::AudioDeviceModule::kDefaultDevice);
+        audioDeviceModule->SetRecordingDevice(webrtc::AudioDeviceModule::kDefaultDevice);
+        audioDeviceModule->RegisterAudioCallback(_audioState->audio_transport());
 
-        std::unique_ptr<webrtc::RtcEventLog> logger = webrtc::RtcEventLog::Create(webrtc::RtcEventLog::EncodingType::Legacy);
+        auto logger = webrtc::RtcEventLog::Create(webrtc::RtcEventLog::EncodingType::Legacy);
         webrtc::Call::Config callConfig{ logger.release() };
-        callConfig.audio_state = audioState;
-        callConfig.audio_processing = stateConfig.audio_processing;
+        callConfig.audio_state = _audioState;
+        callConfig.audio_processing = _audioState->audio_processing();
 
         _call = std::unique_ptr<webrtc::Call>{ webrtc::Call::Create(callConfig) };
         _outboundTransport = std::make_unique<VoiceOutboundTransport>(_sodium, _udpWriter);
         _outboundTransport->Start();
-        _audioSendStream = CreateAudioSendStream(_audioSSRC, Rtp::RTP_TYPE_OPUS);
 
+        _audioSendStream = CreateAudioSendStream(_audioSSRC, Rtp::RTP_TYPE_OPUS);
         _call->SignalChannelNetworkState(webrtc::MediaType::AUDIO, webrtc::NetworkState::kNetworkUp);
 
         for (auto stream : _audioRecieveStreams) {
@@ -406,8 +411,9 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         size_t headerSize = isRtcp ? 8 : 12;
 
         if (!isRtcp) { // this probably isn't the most efficient but hey
+            std::unique_ptr<webrtc::RtpHeaderParser> parser{ webrtc::RtpHeaderParser::Create() };
+
             webrtc::RTPHeader header = {};
-            webrtc::RtpHeaderParser* parser = webrtc::RtpHeaderParser::Create();
             parser->Parse(data.data(), data.size(), &header);
 
             if (header.payloadType == Rtp::RTP_TYPE_OPUS) {
@@ -446,8 +452,8 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         _webrtcThread->Invoke<void>(RTC_FROM_HERE, [this, decrypted, decryptedSize, type]() {
             rtc::PacketTime pTime = rtc::CreatePacketTime(0);
 
-            // webrtc::PacketReceiver::DeliveryStatus status = << do something with this
-            _call->Receiver()->DeliverPacket(type, rtc::CopyOnWriteBuffer(decrypted, decryptedSize), pTime.timestamp);
+            if (_call)
+                _call->Receiver()->DeliverPacket(type, rtc::CopyOnWriteBuffer(decrypted, decryptedSize), pTime.timestamp);
 
             delete decrypted;
         });
@@ -464,8 +470,8 @@ namespace winrt::Unicord::Universal::Voice::implementation {
 
             co_await SendJsonPayloadAsync(disp);
         }
-        catch (const std::exception& ex) {
-            std::cout << "ERROR: " << ex.what() << "\n";
+        catch (const winrt::hresult_error& ex) {
+            std::cout << "ERROR: " << to_string(ex.message()) << "\n";
         }
     }
 
@@ -702,8 +708,8 @@ namespace winrt::Unicord::Universal::Voice::implementation {
     void VoiceClient::UpdateMutedDeafened() {
         if (_audioDeviceManager != nullptr) {
             _webrtcThread->Invoke<void>(RTC_FROM_HERE, [this] {
-                _audioDeviceManager->SetMicrophoneMute(is_muted);
-                _audioDeviceManager->SetSpeakerMute(is_deafened);
+                // this->_audioState->SetRecording(!is_muted);
+                this->_audioState->SetPlayout(!is_deafened);
             });
         }
     }
@@ -819,14 +825,13 @@ namespace winrt::Unicord::Universal::Voice::implementation {
                 }
 
                 _audioSendStream = nullptr;
-
                 _audioDeviceManager->StopPlayout();
                 _audioDeviceManager->StopRecording();
 
-                if (_call)
-                    _call.reset();
+                _audioState.release();
 
-                _call = nullptr;
+                if (_call)
+                    delete _call.release();
 
                 delete _audioEncoderFactory.release();
                 delete _audioDecoderFactory.release();

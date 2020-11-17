@@ -8,6 +8,7 @@
 #include "VideoFrameSink.h"
 #include "VoiceClient.g.h"
 #include "VoiceTransport.h"
+#include "SpeakingAudioAnalyzer.h"
 
 #include <cctype>
 #include <chrono>
@@ -56,6 +57,7 @@ using namespace winrt::Unicord::Universal::Voice::Transport;
 namespace winrt::Unicord::Universal::Voice::implementation {
     struct VoiceClient : VoiceClientT<VoiceClient> {
         friend VoiceOutboundTransport;
+        friend SpeakingAudioAnalyzer;
 
     public:
         VoiceClient() = default;
@@ -63,6 +65,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
 
         std::unique_ptr<webrtc::Call> _call = nullptr;
 
+        rtc::scoped_refptr<webrtc::AudioState> _audioState;
         rtc::scoped_refptr<webrtc::AudioEncoderFactory> _audioEncoderFactory = nullptr;
         rtc::scoped_refptr<webrtc::AudioDecoderFactory> _audioDecoderFactory = nullptr;
 

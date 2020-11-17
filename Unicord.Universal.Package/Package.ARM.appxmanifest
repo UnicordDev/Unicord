@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.28.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.31.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -40,9 +40,6 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <!--<uap5:Extension Category="windows.startupTask" StartPage="EntryPage">
-          <uap5:StartupTask TaskId="UnicordStartup" DisplayName="Unicord" />
-        </uap5:Extension>-->
         <uap:Extension Category="windows.voipCall">
         </uap:Extension>
         <uap4:Extension Category="windows.contactPanel">
@@ -86,7 +83,7 @@
               <uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
-        </uap:Extension>
+        </uap:Extension>       
       </Extensions>
     </Application>
   </Applications>
@@ -97,6 +94,7 @@
     <uap:Capability Name="contacts" />
     <uap:Capability Name="voipCall" />
     <uap:Capability Name="phoneCall" />
+    <rescap:Capability Name="runFullTrust"/>
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
   </Capabilities>

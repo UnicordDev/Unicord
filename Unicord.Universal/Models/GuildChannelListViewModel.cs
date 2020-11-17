@@ -356,6 +356,6 @@ namespace Unicord.Universal.Models
 
         void ICollection.CopyTo(Array array, int index) => ((IList)_channels).CopyTo(array, index);
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_channels).GetEnumerator();
-        public int CompareTo(DiscordChannel other) => ((IComparable<DiscordChannel>)Key).CompareTo(other);
+        public int CompareTo(DiscordChannel other) => Key == null ? -1 : ((IComparable<DiscordChannel>)Key).CompareTo(other);
     }
 }

@@ -41,6 +41,8 @@ namespace Unicord
 
         public const string MESSAGE_STYLE_KEY = "MessageStyleKey";
         public const string MESSAGE_STYLE_DEFAULT = "DefaultMessageControlStyle";
+
+        public const string TOAST_BACKGROUND_TASK_NAME = "ToastBackgroundTask";
     }
 
     public enum MediaTranscodeOptions

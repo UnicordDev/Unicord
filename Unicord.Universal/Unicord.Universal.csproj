@@ -23,7 +23,7 @@
     <PackageCertificateKeyFile>Unicord.Univeral_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>
     </PackageCertificateThumbprint>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -146,8 +146,6 @@
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Constants.pub.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>
     </Compile>
@@ -445,13 +443,13 @@
       <DependentUpon>VideoEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BackgroundNotificationService.cs" />
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\DiscordNavigationService.cs" />
     <Compile Include="Services\FullscreenService.cs" />
     <Compile Include="Services\OverlayService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SwipeOpenService.cs" />
-    <Compile Include="SharedTools.cs" />
     <Compile Include="Resources\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
@@ -486,7 +484,6 @@
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\emoji.json" />
-    <Content Include="rd.xml" />
     <PRIResource Include="Resources\en-GB\Resources.resw" />
     <PRIResource Include="Resources\en-GB\LoginPage.resw" />
     <PRIResource Include="Resources\en-GB\Dialogs.resw" />
@@ -870,7 +867,7 @@
       <Version>10.1901.28001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>6.0.0</Version>
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer">
       <Version>5.1.1</Version>
@@ -889,6 +886,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj">
+      <Project>{95b0d2a9-7675-46ae-91d9-ed57dfdf47c4}</Project>
+      <Name>DSharpPlus.Rest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
       <Project>{0a9dfe2d-7e59-4e58-a28c-e38028f2cfa0}</Project>
       <Name>DSharpPlus</Name>
@@ -924,10 +925,6 @@
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup />
-  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
-    <VisualStudioVersion>14.0</VisualStudioVersion>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM64\Debug\</OutputPath>
@@ -1046,6 +1043,14 @@
     <ErrorReport>none</ErrorReport>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

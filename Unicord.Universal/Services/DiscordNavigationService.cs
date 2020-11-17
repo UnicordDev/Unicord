@@ -29,8 +29,9 @@ namespace Unicord.Universal.Services
     /// </summary>
     internal class DiscordNavigationService : BaseService<DiscordNavigationService>
     {
-        private DiscordPage _page;
-        private DiscordPageModel _pageModel;
+        private MainPage _mainPage;
+        private DiscordPage _discordPage;
+        private DiscordPageModel _discordPageModel;
         private SystemNavigationManager _navigation;
         private Stack<NavigationEvent> _navigationStack;
 
@@ -38,8 +39,9 @@ namespace Unicord.Universal.Services
         {
             base.Initialise();
 
-            _page = Window.Current.Content.FindChild<DiscordPage>();
-            _pageModel = _page.DataContext as DiscordPageModel;
+            _mainPage = Window.Current.Content.FindChild<MainPage>();
+            _discordPage = Window.Current.Content.FindChild<DiscordPage>();
+            _discordPageModel = _discordPage.DataContext as DiscordPageModel;
 
             _navigationStack = new Stack<NavigationEvent>();
             _navigation = SystemNavigationManager.GetForCurrentView();
@@ -48,57 +50,57 @@ namespace Unicord.Universal.Services
 
         internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
-            var page = _page.MainFrame.Content as ChannelPage;
+            var page = _discordPage.MainFrame.Content as ChannelPage;
             if (channel == null)
             {
                 Analytics.TrackEvent("DiscordNavigationService_NavigateToFriendsPage");
 
-                _pageModel.SelectedGuild = null;
-                _pageModel.IsFriendsSelected = true;
+                _discordPageModel.SelectedGuild = null;
+                _discordPageModel.IsFriendsSelected = true;
 
-                if (_pageModel.PreviousDM != null && (page?.ViewModel.Channel != _pageModel.PreviousDM) && !skipPreviousDm)
+                if (_discordPageModel.PreviousDM != null && (page?.ViewModel.Channel != _discordPageModel.PreviousDM) && !skipPreviousDm)
                 {
-                    _pageModel.SelectedDM = _pageModel.PreviousDM;
-                    _page.MainFrame.Navigate(typeof(ChannelPage), _pageModel.PreviousDM);
-                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), _pageModel.PreviousDM, new DrillInNavigationTransitionInfo());
+                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM;
+                    _discordPage.MainFrame.Navigate(typeof(ChannelPage), _discordPageModel.PreviousDM);
+                    _discordPage.SidebarFrame.Navigate(typeof(DMChannelsPage), _discordPageModel.PreviousDM, new DrillInNavigationTransitionInfo());
                 }
-                else if (page != null || !(_page.SidebarFrame.Content is DMChannelsPage))
+                else if (page != null || !(_discordPage.SidebarFrame.Content is DMChannelsPage))
                 {
-                    _pageModel.PreviousDM = null;
-                    _page.MainFrame.Navigate(typeof(FriendsPage));
-                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
+                    _discordPageModel.PreviousDM = null;
+                    _discordPage.MainFrame.Navigate(typeof(FriendsPage));
+                    _discordPage.SidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
                 }
 
                 return;
             }
 
-            if (_pageModel.CurrentChannel != channel && channel.Type != ChannelType.Voice)
+            if (_discordPageModel.CurrentChannel != channel && channel.Type != ChannelType.Voice)
             {
                 Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
 
-                _pageModel.Navigating = true;
-                _page.CloseSplitPane(); // pane service?
+                _discordPageModel.Navigating = true;
+                _discordPage.CloseSplitPane(); // pane service?
 
-                _pageModel.SelectedGuild = null;
-                _pageModel.SelectedDM = null;
-                _pageModel.IsFriendsSelected = false;
+                _discordPageModel.SelectedGuild = null;
+                _discordPageModel.SelectedDM = null;
+                _discordPageModel.IsFriendsSelected = false;
 
                 if (await WindowManager.ActivateOtherWindow(channel))
                     return;
 
                 if (channel is DiscordDmChannel dm)
                 {
-                    _pageModel.SelectedDM = dm;
-                    _pageModel.PreviousDM = dm;
-                    _pageModel.IsFriendsSelected = true;
-                    _page.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
+                    _discordPageModel.SelectedDM = dm;
+                    _discordPageModel.PreviousDM = dm;
+                    _discordPageModel.IsFriendsSelected = true;
+                    _discordPage.SidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
                 else if (channel.Guild != null)
                 {
-                    _pageModel.SelectedGuild = channel.Guild;
+                    _discordPageModel.SelectedGuild = channel.Guild;
 
-                    if (!(_page.SidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
-                        _page.SidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
+                    if (!(_discordPage.SidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
+                        _discordPage.SidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
                 }
 
                 if (channel.IsNSFW)
@@ -108,20 +110,20 @@ namespace Unicord.Universal.Services
                     {
                         if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
                         {
-                            _page.MainFrame.Navigate(typeof(ChannelWarningPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                            _discordPage.MainFrame.Navigate(typeof(ChannelWarningPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
                         }
                         else
                         {
-                            _page.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                            _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
                         }
                     }
                 }
                 else
                 {
-                    _page.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                    _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
                 }
 
-                _pageModel.Navigating = false;
+                _discordPageModel.Navigating = false;
             }
             else if (channel?.Type == ChannelType.Voice)
             {
@@ -130,7 +132,7 @@ namespace Unicord.Universal.Services
                 try
                 {
                     var voice = new VoiceConnectionModel(channel);
-                    _pageModel.VoiceModel = voice;
+                    _discordPageModel.VoiceModel = voice;
                     await voice.ConnectAsync();
                 }
                 catch (Exception ex)
@@ -139,6 +141,9 @@ namespace Unicord.Universal.Services
                     await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
                 }
             }
+
+            if (_mainPage.IsOverlayShown)
+                _mainPage.HideConnectingOverlay();
         }
 
         private void OnBackRequested(object sender, BackRequestedEventArgs e)

@@ -12,7 +12,8 @@
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded"
+    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" 
+    NavigationCacheMode="Required"
     Background="{ThemeResource MainBackgroundBrush}">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>

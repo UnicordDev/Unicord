@@ -13,8 +13,8 @@ namespace winrt::Unicord::Universal::Voice::Transport {
 
         static const size_t NonceBytes = crypto_box_NONCEBYTES;
 
-        virtual bool SendRtp(const uint8_t* packet, size_t length, const webrtc::PacketOptions& options);
-        virtual bool SendRtcp(const uint8_t* packet, size_t length);
+        bool SendRtp(const uint8_t* packet, size_t length, const webrtc::PacketOptions& options) override;
+        bool SendRtcp(const uint8_t* packet, size_t length) override;
 
         void Start();
         void Stop();
@@ -23,6 +23,7 @@ namespace winrt::Unicord::Universal::Voice::Transport {
         std::shared_ptr<SodiumWrapper> _sodium = nullptr;
         DataWriter _writer{ nullptr };
         bool _isActive = false;
+        bool _stopping = false;
         uint32_t _rtpNonce = 0;
         uint32_t _rtcpNonce = 0;
     };

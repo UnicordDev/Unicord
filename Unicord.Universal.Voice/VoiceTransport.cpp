@@ -1,4 +1,4 @@
-#include "pch.h" 
+#include "pch.h"
 #include "VoiceTransport.h"
 #include "Rtp.h"
 
@@ -39,6 +39,11 @@ namespace winrt::Unicord::Universal::Voice::Transport {
         _writer.WriteBytes(new_packet);
         _writer.StoreAsync().get();
 
+        if (_stopping) {
+            _stopping = false;
+            _isActive = false;
+        }
+
         return true;
     }
 
@@ -74,6 +79,6 @@ namespace winrt::Unicord::Universal::Voice::Transport {
     }
 
     void VoiceOutboundTransport::Stop() {
-        _isActive = false;
+        _stopping = true;
     }
 }
