@@ -42,12 +42,11 @@ namespace Unicord.Universal.Models
                     }
                 }
             }
-            else
+
+            foreach (var guild in App.Discord.Guilds.Values)
             {
-                foreach (var guild in App.Discord.Guilds.Values)
-                {
-                    Guilds.Add(guild);
-                }
+                if (!Guilds.Contains(guild))
+                    Guilds.Insert(0, guild);
             }
 
             var dms = App.Discord.PrivateChannels.Values;

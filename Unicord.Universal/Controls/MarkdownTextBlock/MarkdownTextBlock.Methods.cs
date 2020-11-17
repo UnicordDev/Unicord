@@ -64,6 +64,7 @@ namespace WamWooWam.Uwp.UI.Controls
                 {
                     // Try to parse the markdown.
                     var markdown = new MarkdownDocument();
+                    markdown.InlineOnly = InlineOnly;
                     foreach (var str in SchemeList.Split(',').ToList())
                     {
                         if (!string.IsNullOrEmpty(str))

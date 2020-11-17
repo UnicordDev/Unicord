@@ -331,6 +331,24 @@ namespace WamWooWam.Uwp.UI.Controls
             new PropertyMetadata(string.Empty, OnPropertyChangedStatic));
 
         /// <summary>
+        /// Gets the dependency property for <see cref="UriPrefix"/>.
+        /// </summary>
+        public static readonly DependencyProperty InlineOnlyProperty = DependencyProperty.Register(
+            nameof(InlineOnly),
+            typeof(bool),
+            typeof(MarkdownTextBlock),
+            new PropertyMetadata(false, OnPropertyChangedStatic));
+
+        /// <summary>
+        /// Gets or sets the markdown text to display.
+        /// </summary>
+        public bool InlineOnly
+        {
+            get => (bool)GetValue(InlineOnlyProperty);
+            set => SetValue(InlineOnlyProperty, value);
+        }
+
+        /// <summary>
         /// Gets or sets the markdown text to display.
         /// </summary>
         public string Text

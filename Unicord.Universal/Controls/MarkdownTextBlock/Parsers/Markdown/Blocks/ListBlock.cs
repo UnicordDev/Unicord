@@ -341,7 +341,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         {
                             // Parse the list item as a series of blocks.
                             int actualEnd;
-                            newBlockList.AddRange(MarkdownDocument.Parse(blockText, 0, blockText.Length, quoteDepth: 0, actualEnd: out actualEnd));
+                            newBlockList.AddRange(MarkdownDocument.Parse(blockText, false, 0, blockText.Length, quoteDepth: 0, actualEnd: out actualEnd));
                             usedBlockParser = true;
                         }
                         else

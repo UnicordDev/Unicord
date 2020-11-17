@@ -40,7 +40,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
             {
 
                 // Recursively call into the markdown block parser.
-                Blocks = MarkdownDocument.Parse(markdown, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd)
+                Blocks = MarkdownDocument.Parse(markdown, false, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd)
             };
 
             return result;
