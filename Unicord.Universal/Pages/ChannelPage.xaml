@@ -532,7 +532,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -540,8 +540,7 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-
-                                <TextBlock Margin="4,0" Grid.Column="1">Replying to</TextBlock>
+                                <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
                                 <wam:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
                                 
                                 <wam:MarkdownTextBlock x:Name="ReplyMarkdown"

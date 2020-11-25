@@ -73,21 +73,23 @@
                         <!-- event handlers and such. -->
 
                         <TextBox x:Name="MessageEditBox"
-                                             MaxHeight="100"
-                                             AcceptsReturn="False"
-                                             Style="{ThemeResource MessageTextBoxStyle}"
-                                             Text="{Binding Content, Mode=OneWay}"
-                                             TextWrapping="Wrap" />
+                                 MaxHeight="100"
+                                 AcceptsReturn="False"
+                                 Style="{ThemeResource MessageTextBoxStyle}"
+                                 Text="{Binding Content, Mode=OneWay}"
+                                 TextWrapping="Wrap" />
 
                         <Button x:Name="MessageEditFinishButton"
-                                            Grid.Column="1"
-                                            Content="&#xE73E;"
-                                            Style="{ThemeResource IconButtonStyle}"/>
+                                Grid.Column="1"
+                                Content="&#xE73E;"
+                                Margin="2,0,0,0"
+                                Style="{ThemeResource IconButtonStyle}"/>
 
                         <Button x:Name="MessageEditCancelButton"
-                                            Grid.Column="2"
-                                            Content="&#xE711;"
-                                            Style="{ThemeResource IconButtonStyle}"/>
+                                Grid.Column="2"
+                                Content="&#xE711;"
+                                Margin="2,0,0,0"
+                                Style="{ThemeResource IconButtonStyle}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -123,7 +125,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="&#xE97A;" Margin="0,0,4,0" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
 
                                 <Ellipse x:Name="ReplyAvatarContainer"
                                          Width="16"
@@ -182,7 +184,7 @@
                                         <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
 
                                         <StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
-                                            <TextBlock Margin="4,0">replying to</TextBlock>
+                                            <TextBlock x:Uid="/Controls/ReplyingTo" Margin="4,0"/>
                                             <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14"/>
                                         </StackPanel>
 

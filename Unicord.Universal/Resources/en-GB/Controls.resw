@@ -144,6 +144,9 @@
   <data name="RemoveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="ReplyingTo.Text" xml:space="preserve">
+    <value>replying to</value>
+  </data>
   <data name="SharingTitleFormat" xml:space="preserve">
     <value>Sharing {0}</value>
   </data>

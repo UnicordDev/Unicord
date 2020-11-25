@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
@@ -21,6 +22,12 @@ namespace Unicord.Universal.Models
         {
             get => _user;
             set => OnPropertySet(ref _user, value);
+        }
+
+        public bool BackgroundNotifications
+        {
+            get => App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true);
+            set => App.LocalSettings.Save(BACKGROUND_NOTIFICATIONS, value);
         }
 
         public string ServerCountString => App.Discord?.Guilds.Count.ToString("N0") ?? "0";

@@ -177,6 +177,9 @@ namespace Unicord.Universal.Pages
 
         private async Task StartBackgroundTaskAsync()
         {
+            if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
+                return;
+
             await RegisterBackgroundTaskAsync();
          
             try

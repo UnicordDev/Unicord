@@ -32,6 +32,8 @@ namespace Unicord
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
         public const string TIMESTAMP_STYLE = "TimestampStyle";
 
+        public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
+
         [Obsolete("Use new theme system (SELECTED_THEME_NAMES) instead.")]
         public const string SELECTED_THEME_NAME = "SelectedThemeName";
         public const string SELECTED_THEME_NAMES = "SelectedThemeNames";
