@@ -26,6 +26,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using static Unicord.Constants;
 
+#pragma warning disable CS8305 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
 namespace Unicord.Universal
 {
     public class ThemeInstalledEventArgs : EventArgs
@@ -525,3 +527,5 @@ namespace Unicord.Universal
 
     }
 }
+
+#pragma warning restore CS8305 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     public class DiscordInline : MarkdownInline
     {

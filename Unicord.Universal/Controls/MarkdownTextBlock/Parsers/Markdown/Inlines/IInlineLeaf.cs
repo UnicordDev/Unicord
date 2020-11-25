@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IInlineLeaf"/> class.

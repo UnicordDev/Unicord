@@ -120,7 +120,7 @@ namespace Unicord.Universal.Controls.Messages
 
                 if (index > 0)
                 {
-                    if (list.Items[index - 1] is DiscordMessage other && (other.MessageType == MessageType.Default || other.MessageType == MessageType.Reply) && Message.MessageType == MessageType.Default)
+                    if (list.Items[index - 1] is DiscordMessage other && other.MessageType == MessageType.Default && Message.MessageType == MessageType.Default)
                     {
                         var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
                         if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))

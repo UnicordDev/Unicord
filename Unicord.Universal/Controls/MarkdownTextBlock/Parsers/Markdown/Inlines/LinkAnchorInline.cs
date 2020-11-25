@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 using System.Xml.Linq;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
     /// Represents a span that contains a reference for links to point to.

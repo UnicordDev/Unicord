@@ -47,7 +47,7 @@ namespace Unicord
                 {
                     return _propertyChangedEvents.Value;
                 }
-                catch (ObjectDisposedException ex) // why the fuck
+                catch (ObjectDisposedException) // why the fuck
                 {
                     _propertyChangedEvents = null;
                     return PropertyChangeEvents; // we go againe

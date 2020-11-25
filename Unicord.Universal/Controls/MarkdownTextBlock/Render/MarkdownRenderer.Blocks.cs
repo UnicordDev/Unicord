@@ -4,16 +4,16 @@
 
 using System;
 using System.Collections.Generic;
-using WamWooWam.Parsers.Markdown;
-using WamWooWam.Parsers.Markdown.Blocks;
-using WamWooWam.Parsers.Markdown.Render;
+using Unicord.Universal.Parsers.Markdown;
+using Unicord.Universal.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Render;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Shapes;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// Block UI Methods for UWP UI Creation.

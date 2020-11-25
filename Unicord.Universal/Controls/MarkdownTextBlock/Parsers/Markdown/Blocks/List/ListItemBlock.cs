@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// This specifies the Content of the List element.

@@ -12,7 +12,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
-    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:wam="using:Unicord.Universal.Controls"
     xmlns:converters="using:Unicord.Universal.Converters"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     AllowDrop="True"
@@ -516,11 +516,70 @@
                                      Visibility="{x:Bind ViewModel.ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
                                      Value="{x:Bind ViewModel.SlowModeTimeout}" />
 
+                        <Grid x:Name="ReplyingToGrid"
+                              Grid.Row="3"
+                              Visibility="{x:Bind ViewModel.ReplyTo, Converter={StaticResource HideOnNullConverter}, Mode=OneWay}">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid VerticalAlignment="Center" 
+                                  Padding="4,0" 
+                                  DataContext="{x:Bind ViewModel.ReplyTo, Mode=OneWay}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+
+                                <TextBlock Margin="4,0" Grid.Column="1">Replying to</TextBlock>
+                                <wam:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
+                                
+                                <wam:MarkdownTextBlock x:Name="ReplyMarkdown"
+                                                   Grid.Column="1"
+                                                   Grid.ColumnSpan="3"
+                                                   Grid.Row="1"
+                                                   FontSize="12"
+                                                   InlineOnly="True"
+                                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                                   Channel="{Binding Channel}"
+                                                   Text="{Binding Content}" 
+                                                   IsTextSelectionEnabled="False"
+                                                   VerticalAlignment="Center"
+                                                   Margin="4,2,0,0" />
+                            </Grid>
+
+                            <ToggleButton x:Name="ReplyPingToggle"
+                                          x:Uid="/ChannelPage/ReplyPingToggle"
+                                          Grid.Column="1"
+                                          Content="&#xE910;"
+                                          Margin="2,0,0,0"
+                                          IsChecked="{x:Bind ViewModel.ReplyPing, Mode=TwoWay}"
+                                          Style="{ThemeResource IconToggleButtonStyle}"/>
+                            
+                            <Button x:Name="ReplyCancel"
+                                    x:Uid="/ChannelPage/ReplyCancel"
+                                    Grid.Column="2"
+                                    Content="&#xE711;"
+                                    Margin="2,0,0,0"
+                                    Command="{StaticResource ReplyCommand}"
+                                    CommandParameter="{x:Null}"
+                                    Style="{ThemeResource IconButtonStyle}"/>
+                        </Grid>
+
                         <Grid
-                            Grid.Row="3"
+                            Grid.Row="4"
                             MinHeight="42"
-                            MaxHeight="100"
-                            w1709:ColumnSpacing="2">
+                            MaxHeight="100">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -541,10 +600,10 @@
                                                       Grid.Column="1"
                                                       VerticalAlignment="Center"
                                                       Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
-                                                      PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder}" 
-                                                      Channel="{x:Bind ViewModel.Channel}"
-                                                      CurrentUser="{x:Bind ViewModel.CurrentUser}"
-                                                      SendButtonEnabled="{x:Bind ViewModel.CanSend}"
+                                                      PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder, Mode=OneWay}" 
+                                                      Channel="{x:Bind ViewModel.Channel, Mode=OneWay}"
+                                                      CurrentUser="{x:Bind ViewModel.CurrentUser, Mode=OneWay}"
+                                                      SendButtonEnabled="{x:Bind ViewModel.CanSend, Mode=OneWay}"
                                                       BorderBrush="Transparent"
                                                       BorderThickness="0"
                                                       Background="Transparent"

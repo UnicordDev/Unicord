@@ -32,7 +32,6 @@ namespace Unicord.Universal.Utilities
         private static List<FrameworkElement> _handledElements
              = new List<FrameworkElement>();
 
-        private static ThemeListener _notifier;
         private static int _mainWindowId;
         private static bool _mainWindowSet;
 

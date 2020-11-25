@@ -407,7 +407,7 @@
                         BorderThickness="1"
                         FontSize="{ThemeResource ContentControlFontSize}"
                         ShowDismissButton="True"
-                        StackMode="StackInFront"
+                        StackMode="Replace"
                         Tapped="Notification_Tapped"
                         VerticalOffset="-100">
                     </controls1:InAppNotification>

@@ -4,10 +4,10 @@
 
 using System.Collections.Generic;
 using System.Text;
-using WamWooWam.Parsers.Markdown.Blocks;
-using WamWooWam.Parsers.Markdown.Inlines;
+using Unicord.Universal.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Inlines;
 
-namespace WamWooWam.Parsers.Markdown.Render
+namespace Unicord.Universal.Parsers.Markdown.Render
 {
     /// <summary>
     /// A base renderer for Rendering Markdown into Controls.

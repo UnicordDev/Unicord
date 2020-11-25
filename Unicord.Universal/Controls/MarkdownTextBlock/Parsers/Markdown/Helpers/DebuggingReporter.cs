@@ -4,7 +4,7 @@
 
 using System.Diagnostics;
 
-namespace WamWooWam.Parsers.Markdown.Helpers
+namespace Unicord.Universal.Parsers.Markdown.Helpers
 {
     /// <summary>
     /// Reports an error during debugging.

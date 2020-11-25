@@ -1,51 +1,38 @@
-﻿using DSharpPlus;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Services.Store.Engagement;
 using Microsoft.Toolkit.Uwp.Helpers;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using WamWooWam.Core;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Display;
 using Windows.Security.Credentials;
-using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Unicord.Universal
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
+        internal MainPageArgs Arguments { get; private set; }
         public bool IsOverlayShown { get; internal set; }
         public Frame RootFrame => rootFrame;
         public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
-        internal MainPageArgs Arguments { get; private set; }
-
         private RoutedEventHandler _openHandler;
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;

@@ -6,8 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Serialization;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Unicord.Universal.Misc;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
@@ -152,17 +155,28 @@ namespace Unicord.Universal
             return file;
         }
 
-        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
+        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, IEnumerable<IMention> mentions, DiscordMessage replyTo, Dictionary<string, IInputStream> files, IProgress<double?> progress)
         {
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v7/channels/{channel.Id}/messages"));
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v8/channels/{channel.Id}/messages"));
             httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
 
             var cont = new HttpMultipartFormDataContent();
-
-            if (!string.IsNullOrWhiteSpace(message))
+            var pld = new RestChannelMessageCreatePayload
             {
-                cont.Add(new HttpStringContent(message), "content");
-            }
+                HasContent = !string.IsNullOrWhiteSpace(message),
+                Content = message,
+                //IsTTS = tts,
+                //HasEmbed = embed != null,
+                //Embed = embed
+            };
+
+            if (mentions != null)
+                pld.Mentions = new DiscordMentions(mentions);
+
+            if (replyTo != null)
+                pld.MessageReference = new InternalDiscordMessageReference() { messageId = replyTo.Id };
+
+            cont.Add(new HttpStringContent(DiscordJson.SerializeObject(pld)), "payload_json");
 
             for (var i = 0; i < files.Count; i++)
             {

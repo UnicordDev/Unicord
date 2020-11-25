@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using WamWooWam.Parsers.Markdown.Render;
+using Unicord.Universal.Parsers.Markdown.Render;
 using Windows.UI.Xaml.Documents;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// The Context of the Current Document Rendering.

@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WamWooWam.Parsers.Markdown.Blocks;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown
+namespace Unicord.Universal.Parsers.Markdown
 {
     /// <summary>
     /// Represents a Markdown Document. <para/>

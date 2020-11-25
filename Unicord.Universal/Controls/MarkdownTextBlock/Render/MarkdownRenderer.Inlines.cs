@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using Unicord;
 using Unicord.Universal;
-using WamWooWam.Parsers.Markdown;
-using WamWooWam.Parsers.Markdown.Inlines;
-using WamWooWam.Parsers.Markdown.Render;
+using Unicord.Universal.Parsers.Markdown;
+using Unicord.Universal.Parsers.Markdown.Inlines;
+using Unicord.Universal.Parsers.Markdown.Render;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// Inline UI Methods for UWP UI Creation.
@@ -561,6 +561,11 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
             }
         }
 
+        private Brush GetDiscordBrush(DiscordColor color)
+        {
+            return color.Value == 0 ? Foreground : new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+        }
+
         protected override void RenderDiscord(DiscordInline element, IRenderContext context)
         {
             if (!(context is InlineRenderContext localContext))
@@ -582,10 +587,12 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                         var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.TryGetCachedUser(element.Id, out var u) ? u : null;
                         if (user != null)
                         {
-                            var me = user as DiscordMember;
+                            if (user is DiscordMember me)
+                            {
+                                run.Foreground = GetDiscordBrush(me.Color);
+                            }
 
-                            run.Text = IsSystemMessage ? me?.DisplayName ?? user.Username : $"@{me?.DisplayName ?? user.Username}";
-                            run.Foreground = Foreground;
+                            run.Text = IsSystemMessage ? user.DisplayName : $"@{user.DisplayName}";
                         }
                         else
                         {
@@ -598,10 +605,7 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                         if (role != null)
                         {
                             run.Text = $"@{role.Name}";
-                            if (role.Color.Value != 0)
-                            {
-                                run.Foreground = new SolidColorBrush(Color.FromArgb(255, role.Color.R, role.Color.G, role.Color.B));
-                            }
+                            run.Foreground = GetDiscordBrush(role.Color);
                         }
                         else
                         {
@@ -610,9 +614,9 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                     }
                     else if (element.DiscordType == DiscordInline.MentionType.Channel)
                     {
-                        if (client.TryGetCachedChannel(element.Id, out var channel))
+                        if (client.TryGetCachedChannel(element.Id, out var channel) && !(channel is DiscordDmChannel))
                         {
-                            run.Text = channel is DiscordDmChannel c ? $"@{c.Recipients[0].Username}#{c.Recipients[0].Id}" : $"#{channel.Name}";
+                            run.Text = $"#{channel.Name}";
                         }
                         else
                         {
@@ -626,13 +630,13 @@ namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
                 else
                 {
                     var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=32";
-                    var ui = new InlineUIContainer() { FontSize = 24 };
+                    var ui = new InlineUIContainer() { FontSize = FontSize + 10 };
 
                     var image = new Image()
                     {
                         Source = new BitmapImage(new Uri(uri)),
-                        Width = 24,
-                        Height = 24,
+                        Width = FontSize + 10,
+                        Height = FontSize + 10,
                         Stretch = Stretch.Uniform,
                         RenderTransform = new TranslateTransform() { Y = 4 }
                     };

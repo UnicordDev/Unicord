@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Resources"
-    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:wam="using:Unicord.Universal.Controls"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"

@@ -141,7 +141,7 @@ namespace Unicord.Universal
                             if (userInput.TryGetValue("tbReply", out var t) && t is string text)
                             {
                                 var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
-                                await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>());
+                                await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>(), null);
                             }
                         }
                     }

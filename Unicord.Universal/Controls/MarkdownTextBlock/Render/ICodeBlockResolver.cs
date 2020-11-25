@@ -4,7 +4,7 @@
 
 using Windows.UI.Xaml.Documents;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// A Parser to parse code strings into Syntax Highlighted text.

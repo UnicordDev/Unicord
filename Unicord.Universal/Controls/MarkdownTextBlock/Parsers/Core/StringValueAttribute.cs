@@ -4,7 +4,7 @@
 
 using System;
 
-namespace WamWooWam.Parsers.Core
+namespace Unicord.Universal.Parsers.Core
 {
     /// <summary>
     /// The StringValue attribute is used as a helper to decorate enum values with string representations.

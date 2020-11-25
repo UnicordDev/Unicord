@@ -4,7 +4,7 @@
 
 using System;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// An Exception that occurs when the Render Context is Incorrect.

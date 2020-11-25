@@ -17,6 +17,8 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 
+#pragma warning disable UWP001 // Platform-specific
+
 namespace Unicord.Universal.Voice
 {
     public class VoiceConnectionModel : NotifyPropertyChangeImpl
@@ -24,7 +26,6 @@ namespace Unicord.Universal.Voice
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
         private ResourceLoader _strings;
-        private VoipPhoneCall _voipPhoneCall;
         private VoiceState _state = VoiceState.None;
         private TaskCompletionSource<VoiceStateUpdateEventArgs> _voiceStateUpdateCompletion;
         private TaskCompletionSource<VoiceServerUpdateEventArgs> _voiceServerUpdateCompletion;
@@ -220,9 +221,9 @@ namespace Unicord.Universal.Voice
                     ["muted"] = Muted,
                     ["deafened"] = Deafened,
                     ["noise_suppression"] = App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium),
+                    ["auto_gain_control"] = App.LocalSettings.Read("AutomaticGainControl", true),
                     ["echo_cancellation"] = App.LocalSettings.Read("EchoCancellation", true),
                     ["voice_activity"] = App.LocalSettings.Read("VoiceActivity", true),
-                    ["auto_gain_control"] = App.LocalSettings.Read("AutomaticGainControl", true),
                 };
 
                 await SendRequestAsync(connectionRequest);
@@ -382,3 +383,5 @@ namespace Unicord.Universal.Voice
         Muted = 2
     }
 }
+
+#pragma warning restore UWP001 // Platform-specific

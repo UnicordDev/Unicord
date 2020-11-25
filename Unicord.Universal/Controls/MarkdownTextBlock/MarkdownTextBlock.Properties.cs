@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using ColorCode.Styling;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
-using WamWooWam.Uwp.UI.Controls.Markdown.Render;
+using Unicord.Universal.Controls.Markdown.Render;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// An efficient and extensible control that can parse and render markdown.

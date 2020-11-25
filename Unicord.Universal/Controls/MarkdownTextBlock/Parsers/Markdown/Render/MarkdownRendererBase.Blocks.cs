@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using WamWooWam.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Blocks;
 
-namespace WamWooWam.Parsers.Markdown.Render
+namespace Unicord.Universal.Parsers.Markdown.Render
 {
     /// <summary>
     /// Block Rendering Methods.

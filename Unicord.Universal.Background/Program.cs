@@ -15,7 +15,8 @@ namespace Unicord.Universal.Background
     {
         private static Mutex _mutex;
 
-        static async Task Main(string[] args)
+        [STAThread]
+        static void Main(string[] args)
         {
             _mutex = new Mutex(true, "{88FE061B-B4D8-41F4-99FE-15870E0F535B}", out var createdNew);
             if (!createdNew) return;

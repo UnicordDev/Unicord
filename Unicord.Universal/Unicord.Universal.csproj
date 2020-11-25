@@ -145,6 +145,7 @@
     <Compile Include="Commands\OpenNewWindowCommand.cs" />
     <Compile Include="Commands\PinMessageCommand.cs" />
     <Compile Include="Commands\MessageUserCommand.cs" />
+    <Compile Include="Commands\ReplyCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>

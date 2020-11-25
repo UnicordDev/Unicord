@@ -13,7 +13,6 @@ namespace Unicord.Universal.Background
     {
         private BadgeUpdater _badgeUpdateManager;
         private DiscordClient _discord;
-        private int? _currentBadge = null;
 
         public BadgeManager(DiscordClient client)
         {
@@ -37,7 +36,6 @@ namespace Unicord.Universal.Background
 
                     badgeElement.SetAttribute("value", badgeNumber.ToString());
                     _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                    _currentBadge = badgeNumber;
                 }
                 else if (unread)
                 {
@@ -46,11 +44,9 @@ namespace Unicord.Universal.Background
 
                     badgeElement.SetAttribute("value", "available");
                     _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                    _currentBadge = 0;
                 }
                 else
                 {
-                    _currentBadge = null;
                     _badgeUpdateManager.Clear();
                 }
             }

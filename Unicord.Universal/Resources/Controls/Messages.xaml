@@ -4,7 +4,7 @@
     xmlns:fcu="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:local="using:Unicord.Universal.Controls.Messages"
     xmlns:controls="using:Unicord.Universal.Controls"
-    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:wam="using:Unicord.Universal.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts">
@@ -137,7 +137,7 @@
                                                          DecodePixelType="Logical" 
                                                          UriSource="{Binding Author.NonAnimatedAvatarUrl}" />
                                             </ImageBrush.ImageSource>
-                                        </ImageBrush>                                        
+                                        </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
 
@@ -154,7 +154,7 @@
                                                        Margin="6,0" />
 
                             </Grid>
-                            
+
                             <Grid Grid.Row="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="48"/>
@@ -185,7 +185,7 @@
                                             <TextBlock Margin="4,0">replying to</TextBlock>
                                             <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14"/>
                                         </StackPanel>
-                                        
+
                                         <TextBlock Margin="8,1" 
                                                FontSize="11"
                                                VerticalAlignment="Bottom" 
@@ -211,7 +211,7 @@
                                               ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
                                               ItemsSource="{Binding Attachments}"
                                                 HorizontalAlignment="Left"/>
-                                    
+
                                     <ItemsControl x:Name="Stickers"
                                               ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
                                               ItemsSource="{Binding Stickers}"
@@ -286,8 +286,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    
+
+
     <Style x:Key="CompactWithAvatarsMessageControl" TargetType="local:MessageControl">
         <Setter Property="Template">
             <Setter.Value>
