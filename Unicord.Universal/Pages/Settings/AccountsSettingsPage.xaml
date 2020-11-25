@@ -67,7 +67,7 @@
             <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
 
             <TextBlock x:Uid="/AccountsSettingsPage/BackgroundNotifications" Grid.Row="2" VerticalAlignment="Center" TextWrapping="WrapWholeWords"/>
-            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications}" Grid.Row="2" Grid.Column="1" />
+            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
         </Grid>
 
         <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
