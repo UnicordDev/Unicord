@@ -1,50 +1,38 @@
-﻿using DSharpPlus;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Services.Store.Engagement;
 using Microsoft.Toolkit.Uwp.Helpers;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using WamWooWam.Core;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Display;
 using Windows.Security.Credentials;
-using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Unicord.Universal
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
+        internal MainPageArgs Arguments { get; private set; }
         public bool IsOverlayShown { get; internal set; }
         public Frame RootFrame => rootFrame;
         public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
-        internal MainPageArgs Arguments { get; private set; }
-
         private RoutedEventHandler _openHandler;
         private RoutedEventHandler _saveHandler;
         private RoutedEventHandler _shareHandler;
@@ -138,6 +126,7 @@ namespace Unicord.Universal
                 App.Discord.Resumed -= OnDiscordResumed;
                 App.Discord.SocketClosed -= OnDiscordDisconnected;
                 App.Discord.LoggedOut -= OnLoggedOut;
+                App.Current.Resuming -= OnResuming;
             }
         }
 
@@ -178,6 +167,7 @@ namespace Unicord.Universal
                 App.Discord.Resumed += OnDiscordResumed;
                 App.Discord.SocketClosed += OnDiscordDisconnected;
                 App.Discord.LoggedOut += OnLoggedOut;
+                App.Current.Resuming += OnResuming;
             }
 
             App.Discord.Ready -= OnFirstDiscordReady;
@@ -210,6 +200,15 @@ namespace Unicord.Universal
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     rootFrame.Navigate(typeof(DiscordPage), Arguments));
             }
+
+            var notificationService = BackgroundNotificationService.GetForCurrentView();
+            _ = Task.Run(async () => await notificationService.ConnectAsync());
+        }
+
+        private void OnResuming(object sender, object e)
+        {
+            var notificationService = BackgroundNotificationService.GetForCurrentView();
+            _ = Task.Run(async () => await notificationService.ConnectAsync());
         }
 
         private Task OnLoggedOut()
@@ -232,62 +231,79 @@ namespace Unicord.Universal
         private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
         {
             Analytics.TrackEvent("Discord_Disconnected");
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                 {
                     var status = StatusBar.GetForCurrentView();
                     status.ProgressIndicator.ProgressValue = NetworkHelper.IsNetworkConnected ? null : (double?)0;
                     status.ProgressIndicator.Text = NetworkHelper.IsNetworkConnected ? "Reconnecting..." : "Offline";
                     await status.ProgressIndicator.ShowAsync();
-                }
-            });
+                });
+            }
         }
 
         private async Task HideDisconnectingMessage()
         {
             Analytics.TrackEvent("Discord_Reconnected");
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                 {
                     var status = StatusBar.GetForCurrentView();
                     await status.ProgressIndicator.HideAsync();
-                }
-            });
+                });
+            }
+        }
+
+        internal bool CanAccessChannel(DiscordChannel channel)
+        {
+            if (channel.Type == ChannelType.Category)
+                return false;
+
+            if (channel is DiscordDmChannel || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
+                return true;
+
+            if (channel.Guild == null && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels))
+                return true;
+
+            return false;
         }
 
         internal async Task GoToChannelAsync(MainPageArgs args)
         {
-            if (args.ChannelId != 0 && App.Discord.TryGetCachedChannel(args.ChannelId, out var channel))
-            {
-                if (channel.Type == ChannelType.Text && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels) || channel is DiscordDmChannel)
-                {
-                    await Dispatcher.AwaitableRunAsync(() =>
-                    {
-                        rootFrame.Navigate(typeof(ChannelPage), channel);
-                        HideConnectingOverlay();
-                    });
-                }
-            }
-
             try
             {
-                var dm = App.Discord.PrivateChannels.Values
-                    .FirstOrDefault(c => c.Type == ChannelType.Private && c.Type != ChannelType.Group && c.Recipients.Count == 1 && c.Recipients[0].Id == args.UserId);
-
-                if (dm == null && args.UserId != 0)
+                if (args.ChannelId != 0)
                 {
-                    dm = await App.Discord.CreateDmChannelAsync(args.UserId);
+                    if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && CanAccessChannel(channel))
+                    {
+                        await Dispatcher.AwaitableRunAsync(async () =>
+                            await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel));
+                    }
                 }
-
-                await Dispatcher.AwaitableRunAsync(() =>
+                else if (args.UserId != 0)
                 {
-                    rootFrame.Navigate(typeof(ChannelPage), dm);
-                    HideConnectingOverlay();
-                });
+                    var dm = App.Discord.PrivateChannels.Values
+                        .FirstOrDefault(c => c.Type == ChannelType.Private && c.Recipients.Count == 1 && c.Recipients[0].Id == args.UserId);
+
+                    if (dm == null && args.UserId != 0)
+                    {
+                        dm = await App.Discord.CreateDmChannelAsync(args.UserId);
+                    }
+
+                    await Dispatcher.AwaitableRunAsync(async () =>
+                        await DiscordNavigationService.GetForCurrentView().NavigateAsync(dm));
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+            finally
+            {
+                HideConnectingOverlay();
+            }
         }
 
         internal void ShowConnectingOverlay()

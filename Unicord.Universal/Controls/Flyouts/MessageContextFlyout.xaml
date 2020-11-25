@@ -39,6 +39,15 @@
                     CommandParameter="{Binding}"
                     Icon="Pin"/>
 
+    <MenuFlyoutItem x:Name="ReplyFlyoutItem"
+                    x:Uid="/Flyouts/Reply"
+                    Command="{StaticResource ReplyCommand}"
+                    CommandParameter="{Binding}">
+        <MenuFlyoutItem.Icon>
+            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE97A;" />
+        </MenuFlyoutItem.Icon>
+    </MenuFlyoutItem>
+
     <MenuFlyoutItem x:Name="KickFlyoutItem"
                     x:Uid="/Flyouts/Kick"
                     Foreground="{ThemeResource ErrorTextForegroundBrush}"

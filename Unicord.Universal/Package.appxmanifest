@@ -1,6 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.24.0" />
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+				 xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+         xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.6.28.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -81,28 +90,6 @@
       </Extensions>
     </Application>
   </Applications>
-  <!--<Extensions>
-		-->
-  <!-- Enlighten COM on where to find Metadata Based Marshaling (MBM) data for the Game Bar private types 
-       <Path> is a required element (by VS) and has to point to a binary in the package, but it's not used when the class id is
-       00000355-0000-0000-C000-000000000046 (MBM). Due to that we just put the Microsoft.Gaming.XboxGameBar.winmd here. -->
-  <!--
-		<Extension Category="windows.activatableClass.proxyStub">
-			<ProxyStub ClassId="00000355-0000-0000-C000-000000000046">
-				<Path>Microsoft.Gaming.XboxGameBar.winmd</Path>
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetAuthHost" InterfaceId="DC263529-B12F-469E-BB35-B94069F5B15A" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetControlHost" InterfaceId="C309CAC7-8435-4082-8F37-784523747047" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetForegroundWorkerHost" InterfaceId="DDB52B57-FA83-420C-AFDE-6FA556E18B83" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetForegroundWorkerPrivate" InterfaceId="42BACDFC-BB28-4E71-99B4-24C034C7B7E0" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarNavigationKeyCombo" InterfaceId="5EEA3DBF-09BB-42A5-B491-CF561E33C172" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetActivatedEventArgsPrivate" InterfaceId="782535A7-9407-4572-BFCB-316B4086F102" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetHost" InterfaceId="5D12BC93-212B-4B9F-9091-76B73BF56525" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetHost2" InterfaceId="28717C8B-D8E8-47A8-AF47-A1D5263BAE9B" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate" InterfaceId="22ABA97F-FB0F-4439-9BDD-2C67B2D5AA8F" />
-				<Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate2" InterfaceId="B2F7DB8C-7540-48DA-9B46-4E60CE0D9DEB" />
-			</ProxyStub>
-		</Extension>
-	</Extensions>-->
   <Capabilities>
     <Capability Name="internetClient" />
     <uap:Capability Name="videosLibrary" />

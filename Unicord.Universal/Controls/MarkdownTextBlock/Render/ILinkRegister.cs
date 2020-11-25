@@ -5,7 +5,7 @@
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// An interface used to handle links in the markdown.

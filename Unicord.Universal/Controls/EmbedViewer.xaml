@@ -6,7 +6,7 @@
     xmlns:embed="using:Unicord.Universal.Controls.Embeds"
     xmlns:local="using:Unicord.Universal.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wam="using:WamWooWam.Uwp.UI.Controls"
+    xmlns:wam="using:Unicord.Universal.Controls"
     MaxWidth="640"
     Margin="0,4,8,0"
     HorizontalAlignment="Left"

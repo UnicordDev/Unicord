@@ -6,8 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Net.Abstractions;
+using DSharpPlus.Net.Serialization;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Unicord.Universal.Misc;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
@@ -40,16 +43,9 @@ namespace Unicord.Universal
 
         private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
 
-        public static async Task DownloadToFileAsync(Uri url, StorageFile file)
+        public static Task DownloadToFileAsync(Uri url, StorageFile file)
         {
-            CachedFileManager.DeferUpdates(file);
-
-            var resp = await HttpClient.GetAsync(url);
-            var source = await resp.Content.ReadAsInputStreamAsync();
-            var destination = await file.OpenAsync(FileAccessMode.ReadWrite);
-            await RandomAccessStream.CopyAndCloseAsync(source, destination);
-
-            await CachedFileManager.CompleteUpdatesAsync(file);
+            return DownloadToFileWithProgressAsync(url, file, new Progress<HttpProgress>());
         }
 
         public static async Task DownloadToFileWithProgressAsync(Uri url, StorageFile file, IProgress<HttpProgress> progress)
@@ -100,22 +96,6 @@ namespace Unicord.Universal
             }
 
             return parent is T obj1 ? obj1 : parent.FindParent<T>();
-        }
-
-        public static List<T> AllChildren<T>(this DependencyObject parent)
-        {
-            var controlList = new List<T>();
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); ++i)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T c)
-                {
-                    controlList.Add(c);
-                }
-
-                controlList.AddRange(child.AllChildren<T>());
-            }
-            return controlList;
         }
 
         public static T FindChild<T>(this DependencyObject parent, string controlName = null) where T : FrameworkElement
@@ -175,17 +155,28 @@ namespace Unicord.Universal
             return file;
         }
 
-        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, Dictionary<string, IInputStream> files, IProgress<double?> progress)
+        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, IEnumerable<IMention> mentions, DiscordMessage replyTo, Dictionary<string, IInputStream> files, IProgress<double?> progress)
         {
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v7/channels/{channel.Id}/messages"));
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v8/channels/{channel.Id}/messages"));
             httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
 
             var cont = new HttpMultipartFormDataContent();
-
-            if (!string.IsNullOrWhiteSpace(message))
+            var pld = new RestChannelMessageCreatePayload
             {
-                cont.Add(new HttpStringContent(message), "content");
-            }
+                HasContent = !string.IsNullOrWhiteSpace(message),
+                Content = message,
+                //IsTTS = tts,
+                //HasEmbed = embed != null,
+                //Embed = embed
+            };
+
+            if (mentions != null)
+                pld.Mentions = new DiscordMentions(mentions);
+
+            if (replyTo != null)
+                pld.MessageReference = new InternalDiscordMessageReference() { messageId = replyTo.Id };
+
+            cont.Add(new HttpStringContent(DiscordJson.SerializeObject(pld)), "payload_json");
 
             for (var i = 0; i < files.Count; i++)
             {
@@ -242,7 +233,7 @@ namespace Unicord.Universal
 
         // adapted from corefx
         // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
-        public static int BinarySearch<TCollection, TOther>(this IList<TCollection> collection, TOther item) 
+        public static int BinarySearch<TCollection, TOther>(this IList<TCollection> collection, TOther item)
             where TOther : IComparable<TOther> where TCollection : IComparable<TOther>
         {
             var lo = 0;
@@ -333,86 +324,46 @@ namespace Unicord.Universal
             }
         }
 
-        internal static ToastNotification GetWindows10Toast(DiscordMessage message, string title, string messageText)
+        internal static bool WillShowToast(DiscordMessage message)
         {
-            ToastActionsCustom actions = null;
-            var toastBinding = new ToastBindingGeneric()
-            {
-                Children = { new AdaptiveText() { Text = title, HintStyle = AdaptiveTextStyle.Title }, new AdaptiveText() { Text = messageText } }
-            };
+            bool willNotify = false;
 
-            var animated = message.Author.AvatarHash?.StartsWith("a_") ?? false;
-            var url = animated ? message.Author.GetAvatarUrl(ImageFormat.Gif, 128) : message.Author.GetAvatarUrl(ImageFormat.Png, 128);
-            if (url != null)
+            if (message.MentionedUsers.Any(m => m?.Id == message.Discord.CurrentUser.Id))
             {
-                toastBinding.AppLogoOverride = new ToastGenericAppLogo() { Source = url, HintCrop = ToastGenericAppLogoCrop.Circle };
+                willNotify = true;
             }
 
-            var attach = message.Attachments.FirstOrDefault(a => a.Height != 0);
-            if (attach != null)
+            if (message.Channel is DiscordDmChannel)
             {
-                double width = attach.Width;
-                double height = attach.Height;
-
-                WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 360);
-
-                toastBinding.HeroImage = new ToastGenericHeroImage { Source = attach.ProxyUrl + $"?format=jpeg&width={(int)width}&height={(int)height}" };
+                willNotify = true;
             }
-            else
+
+            if (message.Channel.Guild != null)
             {
-                var embed = message.Embeds.FirstOrDefault(em => em.Thumbnail.ProxyUrl != null || em.Image.ProxyUrl != null);
-                if (embed != null)
+                var usr = message.Channel.Guild.CurrentMember;
+                if (message.MentionedRoles?.Any(r => (usr.Roles.Contains(r))) == true)
                 {
-                    toastBinding.HeroImage = new ToastGenericHeroImage { Source = (embed.Thumbnail?.ProxyUrl ?? embed.Image?.ProxyUrl).ToString() };
+                    willNotify = true;
                 }
             }
 
-#if DEBUG
-            var replyString = message.Channel is DiscordDmChannel ? $"Reply to @{message.Author.Username}..." : $"Message #{message.Channel.Name}...";
-            actions = new ToastActionsCustom()
+            if (message.Author.Id == message.Discord.CurrentUser.Id)
             {
-                Inputs = { new ToastTextBox("tbReply") { PlaceholderContent = replyString } },
-                Buttons = { new ToastButton("Reply", "") { ActivationType = ToastActivationType.Background, TextBoxId = "tbReply" } }
-            };
-#endif
+                willNotify = false;
+            }
 
-
-            var toastContent = new ToastContent()
+            if ((message.Discord as DiscordClient)?.UserSettings.Status == "dnd")
             {
-                DisplayTimestamp = message.Timestamp.DateTime,
-                Visual = new ToastVisual() { BindingGeneric = toastBinding },
-                //HintPeople = new ToastPeople() { RemoteId = "Unicord_" + message.Author.Id.ToString() },
-                Launch = $"-channelId={message.ChannelId}",
+                willNotify = false;
+            }
 
-#if DEBUG
-                Actions = actions
-#endif
-
-            };
-
-            var str = toastContent.GetContent();
-
-            var doc = new XmlDocument();
-            doc.LoadXml(str);
-
-            var notif = new ToastNotification(doc)
-            {
-                NotificationMirroring = NotificationMirroring.Allowed,
-                Group = message.Channel is DiscordDmChannel ? "Direct Messages" : message.Channel.Name,
-                RemoteId = message.Id.ToString()
-            };
-
-            return notif;
+            return willNotify;
         }
 
-        public static bool WillShowToast(DiscordMessage message) => SharedTools.WillShowToast(message);
-        public static string GetMessageTitle(DiscordMessage message) => SharedTools.GetMessageTitle(message);
-        public static string GetMessageContent(DiscordMessage message) => SharedTools.GetMessageContent(message);
-
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
-        public static int UploadLimit(this DiscordUser user) => 
+        public static int UploadLimit(this DiscordUser user) =>
             user.PremiumType == PremiumType.Nitro ? NITRO_UPLOAD_LIMIT :
-            user.PremiumType == PremiumType.NitroClassic ? NITRO_CLASSIC_UPLOAD_LIMIT : 
+            user.PremiumType == PremiumType.NitroClassic ? NITRO_CLASSIC_UPLOAD_LIMIT :
             UPLOAD_LIMIT;
     }
 

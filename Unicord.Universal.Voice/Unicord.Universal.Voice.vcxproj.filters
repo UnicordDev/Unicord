@@ -23,6 +23,7 @@
     <ClCompile Include="VoiceTransport.cpp" />
     <ClCompile Include="VoiceClientStats.cpp" />
     <ClCompile Include="VideoFrameSink.cpp" />
+    <ClCompile Include="SpeakingAudioAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -58,6 +59,7 @@
     <ClInclude Include="VoiceTransport.h" />
     <ClInclude Include="VoiceClientStats.h" />
     <ClInclude Include="VideoFrameSink.h" />
+    <ClInclude Include="SpeakingAudioAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="VoiceClient.idl" />

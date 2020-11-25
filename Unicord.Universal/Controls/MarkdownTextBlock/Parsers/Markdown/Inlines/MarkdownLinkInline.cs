@@ -5,10 +5,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Toolkit.Extensions;
-using WamWooWam.Parsers.Core;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Core;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
     /// Represents a type of hyperlink where the text can be different from the target URL.

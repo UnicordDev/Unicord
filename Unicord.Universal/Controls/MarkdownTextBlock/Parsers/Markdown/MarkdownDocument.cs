@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WamWooWam.Parsers.Markdown.Blocks;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown
+namespace Unicord.Universal.Parsers.Markdown
 {
     /// <summary>
     /// Represents a Markdown Document. <para/>
@@ -48,6 +48,7 @@ namespace WamWooWam.Parsers.Markdown
         /// Gets or sets the list of block elements.
         /// </summary>
         public IList<MarkdownBlock> Blocks { get; set; }
+        public bool InlineOnly { get; internal set; }
 
         /// <summary>
         /// Parses markdown document text.
@@ -55,7 +56,10 @@ namespace WamWooWam.Parsers.Markdown
         /// <param name="markdownText"> The markdown text. </param>
         public void Parse(string markdownText)
         {
-            Blocks = Parse(markdownText, 0, markdownText.Length, quoteDepth: 0, actualEnd: out var actualEnd);
+            if (InlineOnly)
+                markdownText = markdownText.Replace("\n", " ").Replace("\r", "").Replace("\t", "");
+
+            Blocks = Parse(markdownText, InlineOnly, 0, markdownText.Length, quoteDepth: 0, actualEnd: out var actualEnd);
 
             // Remove any references from the list of blocks, and add them to a dictionary.
             for (var i = Blocks.Count - 1; i >= 0; i--)
@@ -89,8 +93,8 @@ namespace WamWooWam.Parsers.Markdown
         /// different from <paramref name="end"/> when the parser is being called recursively.
         /// </param>
         /// <returns> A list of parsed blocks. </returns>
-        internal static List<MarkdownBlock> Parse(string markdown, int start, int end, int quoteDepth, out int actualEnd)
-        {
+        internal static List<MarkdownBlock> Parse(string markdown, bool inlineOnly, int start, int end, int quoteDepth, out int actualEnd)
+        {           
             // We need to parse out the list of blocks.
             // Some blocks need to start on a new paragraph (code, lists and tables) while other
             // blocks can start on any line (headers, horizontal rules and quotes).
@@ -228,7 +232,7 @@ namespace WamWooWam.Parsers.Markdown
                         // Some block elements must start on a new paragraph (tables, lists and code).
                         var endOfBlock = startOfNextLine;
 
-                        if (newBlockElement == null && (nonSpacePos > startOfLine || nonSpaceChar == '`'))
+                        if (newBlockElement == null && (nonSpacePos > startOfLine || nonSpaceChar == '`') && !inlineOnly)
                         {
                             newBlockElement = CodeBlock.Parse(markdown, realStartOfLine, end, quoteDepth, out endOfBlock);
                         }

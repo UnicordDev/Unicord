@@ -36,6 +36,8 @@ namespace Unicord.Universal.Models
         private string _messageText;
         private bool _isTranscoding;
         private ObservableCollection<DiscordMessage> _messages;
+        private DiscordMessage _replyTo;
+        private bool _replyPing = true;
 
         public ChannelViewModel(DiscordChannel channel)
         {
@@ -151,6 +153,10 @@ namespace Unicord.Universal.Models
         public ObservableCollection<DiscordUser> TypingUsers { get; set; }
 
         public ObservableCollection<FileUploadModel> FileUploads { get; set; }
+
+        public DiscordMessage ReplyTo { get => _replyTo; set => OnPropertySet(ref _replyTo, value); }
+
+        public bool ReplyPing { get => _replyPing; set => OnPropertySet(ref _replyPing, value); }
 
         public string Topic => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r\n", "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
 
@@ -474,7 +480,7 @@ namespace Unicord.Universal.Models
             {
                 //if (!t.Messages.Any(m => m.Id == mess.Id))
                 //{
-                    t.Messages.Insert(index + 1, mess);
+                t.Messages.Insert(index + 1, mess);
                 //}
             }
         }, this);
@@ -546,7 +552,15 @@ namespace Unicord.Universal.Models
             if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
             {
                 var txt = MessageText;
+                var replyTo = ReplyTo;
+                var replyPing = ReplyPing;
+                ReplyTo = null;
+                ReplyPing = true;
                 MessageText = "";
+
+                var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
+                if (replyPing && replyTo != null)
+                    mentions.Add(RepliedUserMention.All);
 
                 if (FileUploads.Any())
                 {
@@ -558,7 +572,7 @@ namespace Unicord.Universal.Models
                         files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-                    await Tools.SendFilesWithProgressAsync(Channel, txt, files, progress).ConfigureAwait(false);
+                    await Tools.SendFilesWithProgressAsync(Channel, txt, mentions, replyTo, files, progress).ConfigureAwait(false);
 
                     foreach (var item in files)
                     {
@@ -577,8 +591,9 @@ namespace Unicord.Universal.Models
                 }
                 else
                 {
-                    await Channel.SendMessageAsync(txt).ConfigureAwait(false);
+                    await Channel.SendMessageAsync(txt, mentions: mentions, replyTo: replyTo).ConfigureAwait(false);
                 }
+
 
                 if (!ImmuneToSlowMode)
                 {

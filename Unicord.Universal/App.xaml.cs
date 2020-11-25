@@ -27,7 +27,7 @@ using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.ExtendedExecution;
+using Windows.ApplicationModel.ExtendedExecution.Foreground;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Security.Credentials;
@@ -35,6 +35,7 @@ using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -59,8 +60,7 @@ namespace Unicord.Universal
 
         public App()
         {
-            InitializeComponent();            
-            AppDomain.CurrentDomain.FirstChanceException += (o, e) => Logger.LogError(e.Exception);
+            InitializeComponent();
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
             var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
@@ -122,6 +122,33 @@ namespace Unicord.Universal
                     Debug.WriteLine(e.Kind);
                     break;
             }
+        }
+
+        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            var deferral = args.TaskInstance.GetDeferral();
+
+            switch (args.TaskInstance.Task.Name)
+            {
+                case TOAST_BACKGROUND_TASK_NAME:
+                    if (args.TaskInstance.TriggerDetails is ToastNotificationActionTriggerDetail details && TryGetToken(out var token))
+                    {
+                        var arguments = ParseArgs(details.Argument);
+                        var userInput = details.UserInput;
+
+                        if (arguments.TryGetValue("channelId", out var cId) && ulong.TryParse(cId, out var channelId))
+                        {
+                            if (userInput.TryGetValue("tbReply", out var t) && t is string text)
+                            {
+                                var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
+                                await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>(), null);
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            deferral.Complete();
         }
 
         //private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
@@ -216,19 +243,9 @@ namespace Unicord.Universal
 
         private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
-            var rawArgs = Strings.SplitCommandLine(arguments);
-            var args = new Dictionary<string, string>();
-            foreach (var str in rawArgs)
-            {
-                if (!string.IsNullOrWhiteSpace(str) && str.Contains('-', '='))
-                {
-                    var arg = str.TrimStart('-');
-                    args.Add(arg.Substring(0, arg.IndexOf('=')), arg.Substring(arg.IndexOf('=') + 1));
-                }
-            }
-
             var channelId = 0ul;
             Exception themeLoadException = null;
+            var args = ParseArgs(arguments);
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -272,6 +289,34 @@ namespace Unicord.Universal
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private static Dictionary<string, string> ParseArgs(string arguments)
+        {
+            var rawArgs = Strings.SplitCommandLine(arguments);
+            var args = new Dictionary<string, string>();
+            foreach (var str in rawArgs)
+            {
+                if (!string.IsNullOrWhiteSpace(str) && str.Contains('-', '='))
+                {
+                    var arg = str.TrimStart('-');
+                    args.Add(arg.Substring(0, arg.IndexOf('=')), arg.Substring(arg.IndexOf('=') + 1));
+                }
+            }
+
+            return args;
+        }
+
+        private bool TryGetToken(out string token)
+        {
+            if (ApplicationData.Current.LocalSettings.Values.TryGetValue("Token", out var s))
+            {
+                token = (string)s;
+                return true;
+            }
+
+            token = null;
+            return false;
         }
 
         /// <summary>
@@ -378,19 +423,15 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            deferral.Complete();
-        }
 
-        private async void OnExtendedSessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
-        {
-            if (args.Reason == ExtendedExecutionRevokedReason.SystemPolicy)
-            {
-                await Discord.DisconnectAsync();
-                Discord = null;
-            }
+            var notificationService = BackgroundNotificationService.GetForCurrentView();
+            await notificationService.SetSuspendedAsync(true);
+            notificationService.Disconnect();
+
+            deferral.Complete();
         }
 
         internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
@@ -410,6 +451,8 @@ namespace Unicord.Universal
                         {
                             async Task ReadyHandler(ReadyEventArgs e)
                             {
+                                LocalSettings.Save("Token", token);
+
                                 e.Client.Ready -= ReadyHandler;
                                 e.Client.SocketErrored -= SocketErrored;
                                 e.Client.ClientErrored -= ClientErrored;
@@ -449,9 +492,6 @@ namespace Unicord.Universal
                                 Token = token,
                                 TokenType = TokenType.User,
                                 LogLevel = DSharpPlus.LogLevel.Debug,
-//#if DEBUG
-//                                GatewayCompressionLevel = GatewayCompressionLevel.None
-//#endif
                             });
 
                             Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
@@ -521,7 +561,10 @@ namespace Unicord.Universal
             frame.Navigate(typeof(Page));
             frame.BackStack.Clear();
             frame.ForwardStack.Clear();
+
+            frame = new Frame();
             frame.Navigate(typeof(MainPage));
+            Window.Current.Content = frame;
         }
 
         internal static async Task LoginError(Exception ex)

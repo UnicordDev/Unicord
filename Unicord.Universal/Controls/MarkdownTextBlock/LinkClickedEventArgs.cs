@@ -4,7 +4,7 @@
 
 using System;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// Arguments for the OnLinkClicked event which is fired then the user presses a link.

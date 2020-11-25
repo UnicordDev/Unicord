@@ -226,6 +226,8 @@ namespace Unicord.Universal.Pages
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
 
+            //  await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
+
             try
             {
                 await Dispatcher.AwaitableRunAsync(() =>
@@ -278,6 +280,9 @@ namespace Unicord.Universal.Pages
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var scroll = sender as ScrollViewer;
+            if (!(this.FindParent<DiscordPage>()?.IsWindowVisible ?? false))
+                return;
+
             if (!e.IsIntermediate)
             {
                 if (scroll.VerticalOffset >= (scroll.ScrollableHeight - scroll.ViewportHeight) && ViewModel.Channel.ReadState?.Unread != false)

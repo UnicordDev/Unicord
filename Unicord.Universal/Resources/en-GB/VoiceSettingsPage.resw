@@ -123,6 +123,12 @@
   <data name="AudioDevicesSubheader.Text" xml:space="preserve">
     <value>Here you can choose the audio devices you want to use for voice calls.</value>
   </data>
+  <data name="AutomaticGainControl.Text" xml:space="preserve">
+    <value>Automatic Gain Control</value>
+  </data>
+  <data name="EchoCancellation.Text" xml:space="preserve">
+    <value>Echo Cancellation</value>
+  </data>
   <data name="InputDevices.Header" xml:space="preserve">
     <value>Input Device</value>
   </data>
@@ -146,6 +152,9 @@
   </data>
   <data name="OutputDevices.Header" xml:space="preserve">
     <value>Output Device</value>
+  </data>
+  <data name="VoiceActivity.Text" xml:space="preserve">
+    <value>Voice Activity</value>
   </data>
   <data name="VoiceSettingsHeader.Text" xml:space="preserve">
     <value>Voice</value>

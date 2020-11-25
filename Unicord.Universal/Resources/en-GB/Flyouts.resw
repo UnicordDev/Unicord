@@ -180,6 +180,9 @@
   <data name="Profile.Text" xml:space="preserve">
     <value>Profile</value>
   </data>
+  <data name="Reply.Text" xml:space="preserve">
+    <value>Reply</value>
+  </data>
   <data name="SendMessage.Text" xml:space="preserve">
     <value>Send Message</value>
   </data>

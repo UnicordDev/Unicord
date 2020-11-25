@@ -49,6 +49,8 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            Logger.Log(Embed.Type);
+
             if (Embed.Type == "image" && Embed.Thumbnail != null)
             {
                 var imageElement = new ImageElement() { ImageUri = Embed.Thumbnail.ProxyUrl, ImageWidth = Embed.Thumbnail.Width, ImageHeight = Embed.Thumbnail.Height };
@@ -108,7 +110,7 @@ namespace Unicord.Universal.Controls
 
             if (Embed.Video != null)
             {
-                if (description != null)
+                if (description != null && Embed.Type != "rich")
                     description.Visibility = Visibility.Collapsed;
                 thumbnail.Visibility = Visibility.Collapsed;
                 var video = new EmbedVideoControl() { Embed = Embed, Thumbnail = Embed.Thumbnail, Video = Embed.Video };

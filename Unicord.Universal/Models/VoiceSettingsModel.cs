@@ -84,5 +84,23 @@ namespace Unicord.Universal.Models
             get => App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium);
             set => App.LocalSettings.Save("NoiseSuppression", value);
         }
+
+        public bool VoiceActivity
+        {
+            get => App.LocalSettings.Read("VoiceActivity", true);
+            set => App.LocalSettings.Save("VoiceActivity", value);
+        }
+
+        public bool EchoCancellation
+        {
+            get => App.LocalSettings.Read("EchoCancellation", true);
+            set => App.LocalSettings.Save("EchoCancellation", value);
+        }
+
+        public bool AutomaticGainControl
+        {
+            get => App.LocalSettings.Read("AutomaticGainControl", true);
+            set => App.LocalSettings.Save("AutomaticGainControl", value);
+        }
     }
 }

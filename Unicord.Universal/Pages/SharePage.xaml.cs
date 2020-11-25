@@ -164,7 +164,7 @@ namespace Unicord.Universal.Pages
                         var progress = new Progress<double?>(p => ring.Value = p ?? 0d);
                         var stream = await _file.OpenReadAsync();
                         var dictionary = new Dictionary<string, IInputStream>() { [_file.Name] = stream };
-                        await Tools.SendFilesWithProgressAsync(channel, captionText.Text, dictionary, progress);
+                        await Tools.SendFilesWithProgressAsync(channel, captionText.Text, null, null, dictionary, progress);
                     }
                     else if (!string.IsNullOrWhiteSpace(captionText.Text))
                     {

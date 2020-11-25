@@ -3,11 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Toolkit.Uwp.UI.Helpers;
-using WamWooWam.Uwp.UI.Controls.Markdown.Render;
+using Unicord.Universal.Controls.Markdown.Render;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// An efficient and extensible control that can parse and render markdown.

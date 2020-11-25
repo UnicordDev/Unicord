@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace WamWooWam.Parsers
+namespace Unicord.Universal.Parsers
 {
     /// <summary>
     /// Parser interface.

@@ -263,6 +263,7 @@
       <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
     </ClInclude>
     <ClInclude Include="SodiumWrapper.h" />
+    <ClInclude Include="SpeakingAudioAnalyzer.h" />
     <ClInclude Include="VideoFrameSink.h" />
     <ClInclude Include="VoiceBackgroundTask.h">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>
@@ -289,6 +290,7 @@
       <DependentUpon>ServiceBackgroundTask.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="SodiumWrapper.cpp" />
+    <ClCompile Include="SpeakingAudioAnalyzer.cpp" />
     <ClCompile Include="VideoFrameSink.cpp" />
     <ClCompile Include="VoiceBackgroundTask.cpp">
       <DependentUpon>VoiceBackgroundTask.idl</DependentUpon>

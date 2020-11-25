@@ -31,5 +31,26 @@
             <ComboBoxItem x:Uid="/VoiceSettingsPage/NoiseSuppressionHigh" Content="High"/>
         </ComboBox>
 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/VoiceSettingsPage/VoiceActivity" />
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding VoiceActivity, Mode=TwoWay}" />
+
+            <TextBlock Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/VoiceSettingsPage/EchoCancellation" />
+            <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EchoCancellation, Mode=TwoWay}" />
+
+            <TextBlock Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/VoiceSettingsPage/AutomaticGainControl" />
+            <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AutomaticGainControl, Mode=TwoWay}" />
+        </Grid>
+        
     </StackPanel>
 </Page>

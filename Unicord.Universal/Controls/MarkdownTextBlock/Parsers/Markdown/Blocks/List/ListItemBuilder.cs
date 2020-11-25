@@ -4,7 +4,7 @@
 
 using System.Text;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     internal class ListItemBuilder : MarkdownBlock
     {

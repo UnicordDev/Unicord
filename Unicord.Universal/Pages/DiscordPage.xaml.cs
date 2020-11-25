@@ -15,6 +15,8 @@ using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
@@ -25,6 +27,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using static Unicord.Constants;
 
 namespace Unicord.Universal.Pages
 {
@@ -37,8 +40,8 @@ namespace Unicord.Universal.Pages
         private bool _loaded;
 
         internal DiscordPageModel Model { get; }
+        internal bool IsWindowVisible { get; private set; }
 
-        private bool _visibility;
         internal SwipeOpenHelper _helper;
 
         private bool _isPaneOpen => ContentTransform.X != 0;
@@ -48,15 +51,15 @@ namespace Unicord.Universal.Pages
             InitializeComponent();
             Model = DataContext as DiscordPageModel;
 
-            _visibility = Window.Current.Visible;
             _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
 
+            IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
         {
-            _visibility = e.Visible;
+            IsWindowVisible = e.Visible;
             UpdateTitleBar();
         }
 
@@ -136,6 +139,8 @@ namespace Unicord.Universal.Pages
                     ShowNotification(message);
                 }
 
+                await StartBackgroundTaskAsync();
+
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
                 {
@@ -148,6 +153,51 @@ namespace Unicord.Universal.Pages
             {
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
+            }
+        }
+
+        private async Task RegisterBackgroundTaskAsync()
+        {
+            try
+            {
+                if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(TOAST_BACKGROUND_TASK_NAME)))
+                    return;
+
+                var status = await BackgroundExecutionManager.RequestAccessAsync();
+                var builder = new BackgroundTaskBuilder() { Name = TOAST_BACKGROUND_TASK_NAME };
+                builder.SetTrigger(new ToastNotificationActionTrigger());
+
+                var registration = builder.Register();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private async Task StartBackgroundTaskAsync()
+        {
+            if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
+                return;
+
+            await RegisterBackgroundTaskAsync();
+         
+            try
+            {
+                if (ApiInformation.IsApiContractPresent(typeof(StartupTaskContract).FullName, 1))
+                {
+                    var notifyTask = await StartupTask.GetAsync("UnicordBackgroundTask");
+                    await notifyTask.RequestEnableAsync();
+                }
+
+                if (ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1))
+                {
+                    await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
 
@@ -173,25 +223,15 @@ namespace Unicord.Universal.Pages
             }
         }
 
-
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
             if (!WindowManager.VisibleChannels.Contains(e.Channel.Id))
             {
-                if (SharedTools.WillShowToast(e.Message))
+                if (Tools.WillShowToast(e.Message))
                 {
-                    if (_visibility)
+                    if (IsWindowVisible)
                     {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
-                    }
-                    else
-                    {
-                        var notification = Tools.GetWindows10Toast(e.Message,
-                            Tools.GetMessageTitle(e.Message),
-                            Tools.GetMessageContent(e.Message));
-
-                        var toastNotifier = ToastNotificationManager.CreateToastNotifier();
-                        toastNotifier.Show(notification);
                     }
                 }
             }

@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using WamWooWam.Parsers.Core;
+using Unicord.Universal.Parsers.Core;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents a horizontal line.

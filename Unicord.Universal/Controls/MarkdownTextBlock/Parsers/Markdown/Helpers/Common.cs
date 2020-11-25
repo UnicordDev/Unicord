@@ -5,9 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WamWooWam.Parsers.Markdown.Inlines;
+using Unicord.Universal.Parsers.Markdown.Inlines;
 
-namespace WamWooWam.Parsers.Markdown.Helpers
+namespace Unicord.Universal.Parsers.Markdown.Helpers
 {
     /// <summary>
     /// Helpers for Markdown.

@@ -3,15 +3,15 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using WamWooWam.Parsers.Markdown;
-using WamWooWam.Parsers.Markdown.Render;
+using Unicord.Universal.Parsers.Markdown;
+using Unicord.Universal.Parsers.Markdown.Render;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 
-namespace WamWooWam.Uwp.UI.Controls.Markdown.Render
+namespace Unicord.Universal.Controls.Markdown.Render
 {
     /// <summary>
     /// Generates Framework Elements for the UWP Markdown Textblock.

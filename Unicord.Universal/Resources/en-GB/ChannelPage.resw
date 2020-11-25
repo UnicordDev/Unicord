@@ -166,6 +166,15 @@
   <data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Pinned Messages</value>
   </data>
+  <data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ReplyingTo.Text" xml:space="preserve">
+    <value>Replying to</value>
+  </data>
+  <data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Toggle pinging the original author.</value>
+  </data>
   <data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Search</value>
   </data>

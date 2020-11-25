@@ -27,9 +27,6 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class UserListPage : Page
     {
-        private DiscordChannel _channel;
-        private CancellationTokenSource _tokenSource;
-
         public UserListPage()
         {
             InitializeComponent();
@@ -39,29 +36,11 @@ namespace Unicord.Universal.Pages.Subpages
         {
             try
             {
-                _tokenSource?.Cancel();
-
                 progress.IsActive = true;
                 viewSource.Source = null;
 
                 if (e.Parameter is DiscordChannel channel)
                 {
-                    _channel = channel;
-
-                    //if (channel.Guild?.Members.Count != channel.Guild?.MemberCount)
-                    //{
-                    //    try
-                    //    {
-                    //        _tokenSource = new CancellationTokenSource();
-                    //        var task = channel.Guild.GetAllMembersAsync(_tokenSource.Token);
-                    //        await task.ConfigureAwait(false);
-                    //    }
-                    //    catch
-                    //    {
-                    //        return;
-                    //    }
-                    //}
-
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         if (channel is DiscordDmChannel dm)

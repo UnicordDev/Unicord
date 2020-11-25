@@ -4,7 +4,7 @@
 
 using System;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// Arguments for the OnMarkdownRendered event which indicates when the markdown has been

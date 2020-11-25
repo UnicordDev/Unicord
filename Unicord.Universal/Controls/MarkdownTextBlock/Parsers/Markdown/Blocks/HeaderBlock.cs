@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using WamWooWam.Parsers.Markdown.Helpers;
-using WamWooWam.Parsers.Markdown.Inlines;
+using Unicord.Universal.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Inlines;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents a heading.

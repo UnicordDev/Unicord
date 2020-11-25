@@ -443,16 +443,14 @@ namespace Unicord.Universal.Controls
             var roles = Channel.Guild?.Roles.Values.Where(r => r.IsMentionable) ?? Enumerable.Empty<DiscordRole>();
             var username = text.Contains('#') ? text.Substring(0, text.IndexOf('#')) : text;
 
-            var filteredUsers = users.Where(u =>
-                cult.IndexOf(u.Username, text, CompareOptions.IgnoreCase) == 0 ||
-                cult.IndexOf(u.DisplayName, text, CompareOptions.IgnoreCase) == 0);
-            var filteredRoles = roles.Where(r => cult.IndexOf(r.Name, text, CompareOptions.IgnoreCase) == 0);
+            var filteredUsers = users.Where(u => cult.IndexOf(u.DisplayName, text, CompareOptions.IgnoreCase) == 0)
+                .OrderBy(u => u.DisplayName.Length)
+                .Cast<object>();
+            var filteredRoles = roles.Where(r => cult.IndexOf(r.Name, text, CompareOptions.IgnoreCase) == 0)
+                .Cast<object>();
 
-            var list = new List<object>();
-            list.AddRange(filteredRoles);
-            list.AddRange(filteredUsers);
 
-            sender.ItemsSource = list;
+            sender.ItemsSource = filteredUsers.Concat(filteredRoles);
         }
 
         private void UpdateSourceForChannelMentions(AutoSuggestBox sender, string text, CompareInfo cult)

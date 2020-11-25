@@ -14,5 +14,8 @@ namespace Unicord.Universal.Voice
         String PreferredPlaybackDevice;
         String PreferredRecordingDevice;
         Unicord.Universal.Voice.NoiseSuppressionLevel SuppressionLevel;
+        Boolean EchoCancellation;
+        Boolean VoiceActivity;
+        Boolean AutomaticGainControl;
     };
 }

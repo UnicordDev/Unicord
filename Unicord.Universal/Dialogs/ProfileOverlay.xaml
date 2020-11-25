@@ -58,7 +58,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand}" CommandParameter="{x:Bind _user}" />
+                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand, Mode=OneTime}" CommandParameter="{x:Bind _user}" />
                         <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
                     </Grid>
                 </Grid>
@@ -76,7 +76,7 @@
                             <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                         </DataTemplate>
                     </Pivot.HeaderTemplate>
-                    <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember}" >
+                    <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember, Mode=OneTime}" >
                         <StackPanel>
                             <StackPanel x:Name="rolesList" Visibility="{x:Bind _member.Roles, Converter={StaticResource BoolVisibilityConverter}}">
                                 <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>

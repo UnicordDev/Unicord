@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using ColorCode;
 using Unicord;
 using Unicord.Universal;
-using WamWooWam.Parsers.Markdown;
-using WamWooWam.Uwp.UI.Controls.Markdown.Render;
+using Unicord.Universal.Parsers.Markdown;
+using Unicord.Universal.Controls.Markdown.Render;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// An efficient and extensible control that can parse and render markdown.
@@ -64,6 +64,7 @@ namespace WamWooWam.Uwp.UI.Controls
                 {
                     // Try to parse the markdown.
                     var markdown = new MarkdownDocument();
+                    markdown.InlineOnly = InlineOnly;
                     foreach (var str in SchemeList.Split(',').ToList())
                     {
                         if (!string.IsNullOrEmpty(str))

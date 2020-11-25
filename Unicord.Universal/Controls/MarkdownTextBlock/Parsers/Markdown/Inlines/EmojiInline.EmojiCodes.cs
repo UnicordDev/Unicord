@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
     /// Represents a span containing emoji symbol.

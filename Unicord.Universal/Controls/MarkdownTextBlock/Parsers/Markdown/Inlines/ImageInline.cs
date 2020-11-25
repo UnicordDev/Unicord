@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using WamWooWam.Parsers.Core;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Core;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown.Inlines
+namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
     /// Represents an embedded image.

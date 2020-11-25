@@ -3,9 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Text;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents a block of text that is displayed in a fixed-width font.  Inline elements and

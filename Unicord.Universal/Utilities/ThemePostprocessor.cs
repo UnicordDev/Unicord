@@ -18,20 +18,20 @@ namespace Unicord.Universal.Utilities
 
         public void PostProcessDictionary(Theme theme, ResourceDictionary resourceDictionary)
         {
-            foreach (var dict in resourceDictionary.MergedDictionaries)
-            {
-                PostProcessDictionary(theme, dict);
-            }
+            //foreach (var dict in resourceDictionary.MergedDictionaries)
+            //{
+            //    PostProcessDictionary(theme, dict);
+            //}
 
-            foreach (var resource in resourceDictionary)
-            {
-                if (resource.Value is Style style && _processedTargetTypes.Any(t => t.IsAssignableFrom(style.TargetType)))
-                {
-                    var newKey = Strings.Normalise($"{theme.Name} {style.TargetType.FullName.Replace('.', ' ')} {resource.Key}", '_' , false);
-                    resourceDictionary.Remove(resource.Key);
-                    resourceDictionary.Add(newKey, resource.Value);
-                }
-            }
+            //foreach (var resource in resourceDictionary)
+            //{
+            //    if (resource.Value is Style style && _processedTargetTypes.Any(t => t.IsAssignableFrom(style.TargetType)))
+            //    {
+            //        var newKey = Strings.Normalise($"{theme.Name} {style.TargetType.FullName.Replace('.', ' ')} {resource.Key}", '_' , false);
+            //        resourceDictionary.Remove(resource.Key);
+            //        resourceDictionary.Add(newKey, resource.Value);
+            //    }
+            //}
         }
     }
 }

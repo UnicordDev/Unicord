@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using WamWooWam.Parsers.Core;
-using WamWooWam.Parsers.Markdown.Inlines;
+using Unicord.Universal.Parsers.Core;
+using Unicord.Universal.Parsers.Markdown.Inlines;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents the target of a reference ([ref][]).

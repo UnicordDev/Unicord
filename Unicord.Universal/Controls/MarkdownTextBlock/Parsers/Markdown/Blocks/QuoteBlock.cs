@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents a block that is displayed using a quote style.  Quotes are used to indicate
@@ -40,7 +40,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
             {
 
                 // Recursively call into the markdown block parser.
-                Blocks = MarkdownDocument.Parse(markdown, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd)
+                Blocks = MarkdownDocument.Parse(markdown, false, startOfLine, maxEnd, quoteDepth: quoteDepth + 1, actualEnd: out actualEnd)
             };
 
             return result;

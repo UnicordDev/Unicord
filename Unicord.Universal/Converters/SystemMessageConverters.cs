@@ -163,7 +163,7 @@ namespace Unicord.Universal.Converters
         {
             if (item is DiscordMessage message)
             {
-                if (message.MessageType != MessageType.Default)
+                if (message.MessageType != MessageType.Default && message.MessageType != MessageType.Reply)
                     return SystemMessageTemplate;
             }
 

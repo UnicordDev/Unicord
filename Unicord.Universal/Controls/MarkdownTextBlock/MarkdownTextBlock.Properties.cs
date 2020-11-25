@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using ColorCode.Styling;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
-using WamWooWam.Uwp.UI.Controls.Markdown.Render;
+using Unicord.Universal.Controls.Markdown.Render;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace WamWooWam.Uwp.UI.Controls
+namespace Unicord.Universal.Controls
 {
     /// <summary>
     /// An efficient and extensible control that can parse and render markdown.
@@ -329,6 +329,24 @@ namespace WamWooWam.Uwp.UI.Controls
             typeof(string),
             typeof(MarkdownTextBlock),
             new PropertyMetadata(string.Empty, OnPropertyChangedStatic));
+
+        /// <summary>
+        /// Gets the dependency property for <see cref="UriPrefix"/>.
+        /// </summary>
+        public static readonly DependencyProperty InlineOnlyProperty = DependencyProperty.Register(
+            nameof(InlineOnly),
+            typeof(bool),
+            typeof(MarkdownTextBlock),
+            new PropertyMetadata(false, OnPropertyChangedStatic));
+
+        /// <summary>
+        /// Gets or sets the markdown text to display.
+        /// </summary>
+        public bool InlineOnly
+        {
+            get => (bool)GetValue(InlineOnlyProperty);
+            set => SetValue(InlineOnlyProperty, value);
+        }
 
         /// <summary>
         /// Gets or sets the markdown text to display.

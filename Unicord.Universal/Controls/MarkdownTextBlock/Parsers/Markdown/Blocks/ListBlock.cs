@@ -8,12 +8,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using WamWooWam.Parsers.Core;
-using WamWooWam.Parsers.Markdown.Helpers;
+using Unicord.Universal.Parsers.Core;
+using Unicord.Universal.Parsers.Markdown.Helpers;
 
 [assembly: InternalsVisibleTo("UnitTests, PublicKey=002400000480000094000000060200000024000052534131000400000100010041753af735ae6140c9508567666c51c6ab929806adb0d210694b30ab142a060237bc741f9682e7d8d4310364b4bba4ee89cc9d3d5ce7e5583587e8ea44dca09977996582875e71fb54fa7b170798d853d5d8010b07219633bdb761d01ac924da44576d6180cdceae537973982bb461c541541d58417a3794e34f45e6f2d129e2")]
 
-namespace WamWooWam.Parsers.Markdown.Blocks
+namespace Unicord.Universal.Parsers.Markdown.Blocks
 {
     /// <summary>
     /// Represents a list, with each list item proceeded by either a number or a bullet.
@@ -341,7 +341,7 @@ namespace WamWooWam.Parsers.Markdown.Blocks
                         {
                             // Parse the list item as a series of blocks.
                             int actualEnd;
-                            newBlockList.AddRange(MarkdownDocument.Parse(blockText, 0, blockText.Length, quoteDepth: 0, actualEnd: out actualEnd));
+                            newBlockList.AddRange(MarkdownDocument.Parse(blockText, false, 0, blockText.Length, quoteDepth: 0, actualEnd: out actualEnd));
                             usedBlockParser = true;
                         }
                         else

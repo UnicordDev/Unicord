@@ -30,7 +30,31 @@ namespace winrt::Unicord::Universal::Voice::implementation {
             noise_suppression_level = value;
         }
 
-    private:
+        bool EchoCancellation() {
+            return echo_cancellation;
+        }
+
+        void EchoCancellation(bool value) {
+            echo_cancellation = value;
+        }
+
+        bool VoiceActivity() {
+            return voice_activity;
+        }
+
+        void VoiceActivity(bool value) {
+            voice_activity = value;
+        }
+
+        bool AutomaticGainControl() {
+            return auto_gain_control;
+        }
+
+        void AutomaticGainControl(bool value) {
+            auto_gain_control = value;
+        }
+
+    private:        
         hstring token = L"";
         hstring session_id = L"";
         hstring endpoint = L"";
@@ -40,6 +64,9 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         hstring preferred_playback_device = L"";
         hstring preferred_recording_device = L"";
         NoiseSuppressionLevel noise_suppression_level = NoiseSuppressionLevel::Medium;
+        bool echo_cancellation = true;
+        bool voice_activity = true;
+        bool auto_gain_control = true;
     };
 }
 namespace winrt::Unicord::Universal::Voice::factory_implementation {
