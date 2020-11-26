@@ -278,8 +278,7 @@ namespace Unicord.Universal
                 {
                     if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && CanAccessChannel(channel))
                     {
-                        await Dispatcher.AwaitableRunAsync(async () =>
-                            await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel));
+                        await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
                     }
                 }
                 else if (args.UserId != 0)
@@ -292,8 +291,7 @@ namespace Unicord.Universal
                         dm = await App.Discord.CreateDmChannelAsync(args.UserId);
                     }
 
-                    await Dispatcher.AwaitableRunAsync(async () =>
-                        await DiscordNavigationService.GetForCurrentView().NavigateAsync(dm));
+                    await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), dm));
                 }
             }
             catch (Exception ex)
@@ -302,7 +300,7 @@ namespace Unicord.Universal
             }
             finally
             {
-                HideConnectingOverlay();
+                await Dispatcher.AwaitableRunAsync(() => HideConnectingOverlay());
             }
         }
 
@@ -360,8 +358,8 @@ namespace Unicord.Universal
                     overlayProgressRing.Value = 0;
                     contentContainerOverlay.Visibility = Visibility.Visible;
 
-                    IProgress<DownloadProgressEventArgs> p = new Progress<DownloadProgressEventArgs>(e => overlayProgressRing.Value = e.Progress);
-                    var handler = new DownloadProgressEventHandler((o, e) => p.Report(e));
+                    var p = new Progress<int>(e => overlayProgressRing.Value = e);
+                    var handler = new DownloadProgressEventHandler((o, e) => ((IProgress<int>)p).Report(e.Progress));
 
                     src.DownloadProgress += handler;
                     src.ImageOpened += (o, e) =>
