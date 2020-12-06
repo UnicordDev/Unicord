@@ -360,6 +360,27 @@ namespace Unicord.Universal
             return willNotify;
         }
 
+        internal static string GetChannelHeaderName(DiscordChannel channel)
+        {
+            if (channel is DiscordDmChannel dmChannel)
+            {
+                if (dmChannel.Type == ChannelType.Private)
+                {
+                    return $"@{dmChannel.Recipients[0].DisplayName}";
+                }
+
+                if (dmChannel.Type == ChannelType.Group)
+                {
+                    return dmChannel.Name ?? Strings.NaturalJoin(dmChannel.Recipients.Select(r => r.DisplayName));
+                }
+            }
+
+            if (channel.Guild != null)
+                return $"#{channel.Name} - {channel.Guild.Name}";
+
+            return $"#{channel.Name}";
+        }
+
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
         public static int UploadLimit(this DiscordUser user) =>
             user.PremiumType == PremiumType.Nitro ? NITRO_UPLOAD_LIMIT :

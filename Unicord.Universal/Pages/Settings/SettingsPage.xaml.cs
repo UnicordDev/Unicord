@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.System.Profile;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,88 +27,69 @@ namespace Unicord.Universal.Pages.Settings
     {
         // these should be kept in order as they appear in the UI,
         // and in sync with Unicord.Universal.Services.SettingsPage
-        private static Dictionary<string, Type> _pages = new Dictionary<string, Type>()
+        private static Dictionary<SettingsPageType, Type> _pages = new Dictionary<SettingsPageType, Type>()
         {
-            ["Home"] = typeof(AccountsSettingsPage),
-            ["Messaging"] = typeof(MessagingSettingsPage),
-            ["Themes"] = typeof(ThemesSettingsPage),
-            ["Media"] = typeof(MediaSettingsPage),
-            ["Voice"] = typeof(VoiceSettingsPage),
-            ["Security"] = typeof(SecuritySettingsPage),
-            ["About"] = typeof(AboutSettingsPage),
+            [SettingsPageType.Acccounts] = typeof(AccountsSettingsPage),
+            [SettingsPageType.Messaging] = typeof(MessagingSettingsPage),
+            [SettingsPageType.Themes] = typeof(ThemesSettingsPage),
+            [SettingsPageType.Media] = typeof(MediaSettingsPage),
+            [SettingsPageType.Voice] = typeof(VoiceSettingsPage),
+            [SettingsPageType.Security] = typeof(SecuritySettingsPage),
+#if !STORE
+            [SettingsPageType.Debug] = typeof(AboutSettingsPage),
+#endif
+            [SettingsPageType.About] = typeof(AboutSettingsPage),
         };
+
+#if STORE
+        public bool IsDebug => false;
+#else
+        public bool IsDebug => true;
+#endif
 
         public SettingsPage()
         {
             InitializeComponent();
-            nav.SelectedItem = nav.MenuItems.First();
-            frame.Navigate(typeof(AccountsSettingsPage));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is SettingsPageType t)
             {
-                var str = t.ToString();
-                if(_pages.TryGetValue(str, out var type))
+                if (_pages.TryGetValue(t, out var type))
                 {
-                    var newIndex = _pages.Keys.ToList().IndexOf(str);
-                    nav.SelectedItem = nav.MenuItems.ElementAt(newIndex);
-                    Navigate(type, new SuppressNavigationTransitionInfo());
+                    var newIndex = _pages.Keys.ToList().IndexOf(t);
+                    SettingsTabView.SelectedIndex = newIndex;
                 }
             }
+
+            var manager = SystemNavigationManager.GetForCurrentView();
+            manager.BackRequested += OnBackRequested;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            frame.Navigate(typeof(Page));
+            var manager = SystemNavigationManager.GetForCurrentView();
+            manager.BackRequested -= OnBackRequested;
         }
 
-        private void NavigationView_BackRequested(Lib.NavigationView sender, Lib.NavigationViewBackRequestedEventArgs args)
+        private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
             var page = this.FindParent<DiscordPage>();
             page.CloseSettings();
-        }
 
-        private void NavigationView_ItemInvoked(Lib.NavigationView sender, Lib.NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.InvokedItemContainer.Tag is string str)
-            {
-                if (_pages.TryGetValue(str, out var type))
-                {
-                    var transitionInfo = args.RecommendedNavigationTransitionInfo;
-                    var currentIndex = _pages.Values.ToList().IndexOf(frame.CurrentSourcePageType);
-                    var newIndex = _pages.Keys.ToList().IndexOf(str);
-
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        if (newIndex > currentIndex)
-                        {
-                            transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight };
-                        }
-                        else if (newIndex < currentIndex)
-                        {
-                            transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft };
-                        }
-                    }
-
-                    Navigate(type, transitionInfo);
-                }
-            }
-        }
-
-        private void Navigate(Type type, NavigationTransitionInfo transitionInfo)
-        {
-            Analytics.TrackEvent($"{type.Name}_NavigateTo");
-            frame.Navigate(type, null, transitionInfo);
+            e.Handled = true;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
-            {
-                WindowManager.HandleTitleBarForControl(nav, true);
-            }
+            WindowManager.HandleTitleBarForControl(SettingsTabView, true);
+        }
+
+        private void SettingsCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var page = this.FindParent<DiscordPage>();
+            page.CloseSettings();
         }
     }
 }

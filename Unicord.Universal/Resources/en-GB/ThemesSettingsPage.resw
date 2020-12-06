@@ -170,7 +170,7 @@
     <value>A pre-install check failed! This probably means your device or the version of Windows you're running is not supported by this theme. Sorry!</value>
   </data>
   <data name="ThemesSettingsHeader.Text" xml:space="preserve">
-    <value>Appearence</value>
+    <value>Appearance</value>
   </data>
   <data name="ThemeUnsupportedWindowsVersion" xml:space="preserve">
     <value>The version of Windows you're running is not supported by this theme. Sorry!</value>

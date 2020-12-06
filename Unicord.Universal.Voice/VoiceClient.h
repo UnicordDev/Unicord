@@ -1,15 +1,5 @@
 ﻿#pragma once
 
-#include "AudioFormat.h"
-#include "AudioRenderer.h"
-#include "ConnectionEndpoint.h"
-#include "OpusWrapper.h"
-#include "SodiumWrapper.h"
-#include "VideoFrameSink.h"
-#include "VoiceClient.g.h"
-#include "VoiceTransport.h"
-#include "SpeakingAudioAnalyzer.h"
-
 #include <cctype>
 #include <chrono>
 #include <concurrent_queue.h>
@@ -22,8 +12,18 @@
 #include <sstream>
 #include <string>
 #include <thread>
-#include <winrt/Windows.Data.Json.h>
-#include <winrt/Windows.Storage.Streams.h>
+
+#include "VoiceClient.g.h"
+
+#include "AudioFormat.h"
+#include "AudioRenderer.h"
+#include "ConnectionEndpoint.h"
+#include "OpusWrapper.h"
+#include "SodiumWrapper.h"
+#include "VideoFrameSink.h"
+#include "VoiceTransport.h"
+#include "SpeakingAudioAnalyzer.h"
+#include "Rtp.h"
 
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
@@ -95,7 +95,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         void UdpSocketPingUpdated(winrt::event_token const& token) noexcept;
 
         winrt::Windows::Foundation::IAsyncAction ConnectAsync();
-        winrt::Windows::Foundation::IAsyncAction SendSpeakingAsync(bool speaking);
+        winrt::fire_and_forget SendSpeakingAsync(bool speaking);
         void UpdateAudioDevices();
         void UpdateMutedDeafened();
         void Close();

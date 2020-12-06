@@ -30,13 +30,6 @@
                 To="0"
                 Duration="00:00:00.50" />
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="SettingsGridTransform"
-                Storyboard.TargetProperty="X"
-                From="600"
-                To="0"
-                Duration="00:00:00.60" />
-            <DoubleAnimation
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
                 To="0"
@@ -83,13 +76,6 @@
                 Storyboard.TargetProperty="Y"
                 To="0"
                 Duration="00:00:00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="SettingsGridTransform"
-                Storyboard.TargetProperty="X"
-                From="0"
-                To="600"
-                Duration="00:00:00.23" />
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="SettingsOverlayBackground"
@@ -359,9 +345,10 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <lib:PersonPicture Margin="12,8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
+                            <lib:PersonPicture Margin="8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
                             
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding CurrentUser.Username}"/>
@@ -369,6 +356,13 @@
                                     #<Run Text="{Binding CurrentUser.Discriminator}"/>
                                 </TextBlock>
                             </StackPanel>
+
+                            <Button x:Name="SettingsButton"
+                                    Grid.Column="2"
+                                    Style="{StaticResource IconButtonStyle}"
+                                    Margin="4"
+                                    Content="&#xE713;"
+                                    Command="{StaticResource SettingsCommand}"/>
                         </Grid>
                     </Grid>
                 </controls1:DropShadowPanel>
@@ -425,11 +419,7 @@
                 <Grid.RenderTransform>
                     <TranslateTransform x:Name="SettingsPaneTransform" />
                 </Grid.RenderTransform>
-                <Frame x:Name="SettingsGrid">
-                    <Frame.RenderTransform>
-                        <TranslateTransform x:Name="SettingsGridTransform" />
-                    </Frame.RenderTransform>
-                </Frame>
+                <Frame x:Name="SettingsGrid"/> 
             </Grid>
         </Grid>
         <VisualStateManager.VisualStateGroups>

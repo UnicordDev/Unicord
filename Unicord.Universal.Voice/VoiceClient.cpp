@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "VoiceClient.h"
-#include "Rtp.h"
 #include "VoiceClient.g.cpp"
-#include <iomanip>
 
 using namespace std::chrono;
 using namespace winrt;
@@ -371,7 +369,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
             }
         }
 
-        SendSpeakingAsync(true).get();
+        SendSpeakingAsync(true);
     }
 
     webrtc::AudioSendStream* VoiceClient::CreateAudioSendStream(uint32_t ssrc, uint8_t payloadType) {
@@ -659,7 +657,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
 
                 std::chrono::seconds timeout = std::min<std::chrono::seconds>(5s * reconnection_count, 30s);
                 std::cout << "- Reconnecting in " << timeout.count() << "s!" << std::endl;
-                co_await timeout;
+                co_await winrt::resume_after(timeout);
 
                 InitialiseSockets();
 
@@ -678,7 +676,7 @@ namespace winrt::Unicord::Universal::Voice::implementation {
         }
     }
 
-    Windows::Foundation::IAsyncAction VoiceClient::SendSpeakingAsync(bool speaking) {
+    winrt::fire_and_forget VoiceClient::SendSpeakingAsync(bool speaking) {
         if (is_speaking == speaking)
             return;
 

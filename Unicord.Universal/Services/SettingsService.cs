@@ -12,13 +12,14 @@ namespace Unicord.Universal.Services
 {
     internal enum SettingsPageType
     {
-        Home,
+        Acccounts,
         Messaging,
         Themes,
         Media,
         Voice,
         Security,
-        About
+        About,
+        Debug
     }
 
     internal class SettingsService : BaseService<SettingsService>
@@ -29,7 +30,7 @@ namespace Unicord.Universal.Services
             _discordPage = Window.Current.Content.FindChild<DiscordPage>();
         }
 
-        public async Task OpenAsync(SettingsPageType page = SettingsPageType.Home)
+        public async Task OpenAsync(SettingsPageType page = SettingsPageType.Acccounts)
         {
             var loader = ResourceLoader.GetForViewIndependentUse();
             if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_SETTINGS, loader.GetString("VerifySettingsDisplayReason")))

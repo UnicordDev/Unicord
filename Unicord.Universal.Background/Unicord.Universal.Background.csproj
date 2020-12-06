@@ -2,11 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RuntimeIdentifiers>win10-x64;win10-x86</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win7-x64;win7-x86</RuntimeIdentifiers>
+    <PublishTrimmed>true</PublishTrimmed>
     <Platforms>AnyCPU;x64;x86;arm;arm64</Platforms>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>  
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="6.1.1" />
@@ -15,8 +20,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj" />
+    <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp\MomentSharp.csproj" />
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj" />
     <ProjectReference Include="..\Unicord\Unicord.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TrayIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +45,4 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>

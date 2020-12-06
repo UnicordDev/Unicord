@@ -9,53 +9,109 @@
     Loaded="Page_Loaded"
     mc:Ignorable="d" Background="{ThemeResource NavigationViewTopPaneBackground}">
 
-    <lib:NavigationView
-        x:Name="nav"
-        BackRequested="NavigationView_BackRequested"
-        IsBackEnabled="True"
-        IsSettingsVisible="False"
-        ItemInvoked="NavigationView_ItemInvoked"
-        PaneDisplayMode="Top">
-        <lib:NavigationView.MenuItems>
-            <lib:NavigationViewItem Tag="Home" x:Uid="/SettingsPage/HomeItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE80F;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Messaging" x:Uid="/SettingsPage/MessagingItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE70F;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Themes" x:Uid="/SettingsPage/ThemesItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE771;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Media" x:Uid="/SettingsPage/MediaItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xEA69;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Voice" x:Uid="/SettingsPage/VoiceItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE720;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="Security" x:Uid="/SettingsPage/SecurityItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE72E;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-            <lib:NavigationViewItem Tag="About" x:Uid="/SettingsPage/AboutItem">
-                <lib:NavigationViewItem.Icon>
-                    <FontIcon Glyph="&#xE946;" />
-                </lib:NavigationViewItem.Icon>
-            </lib:NavigationViewItem>
-        </lib:NavigationView.MenuItems>
-        <ScrollViewer Background="{ThemeResource MainBackgroundBrush}" HorizontalScrollMode="Disabled" IsVerticalRailEnabled="True" VerticalScrollBarVisibility="Auto">
-            <Frame x:Name="frame" Margin="12" />
-        </ScrollViewer>
-    </lib:NavigationView>
+    <Page.Resources>
+        <Style x:Key="SettingsFrameStyle" TargetType="Frame">
+            <Setter Property="Background" Value="{ThemeResource MainBackgroundBrush}"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
+        <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{StaticResource MainBackgroundColor}"/>
+    </Page.Resources>
+
+    <lib:TabView x:Name="SettingsTabView"
+                 IsAddTabButtonVisible="False"
+                 TabWidthMode="Compact"
+                 VerticalAlignment="Stretch"
+                 VerticalContentAlignment="Stretch"
+                 CanDragTabs="False"
+                 CanReorderTabs="False"
+                 Background="Transparent">
+
+        <lib:TabView.TabStripHeader>
+            <Button x:Name="SettingsCloseButton" 
+                    VerticalAlignment="Bottom" 
+                    HorizontalAlignment="Right"
+                    Margin="8,4"
+                    Padding="4"
+                    FontSize="16"
+                    FontFamily="Segoe MDL2 Assets"
+                    Background="Transparent"
+                    Click="SettingsCloseButton_Click">
+                &#xE72B;
+            </Button>
+        </lib:TabView.TabStripHeader>
+
+        <lib:TabViewItem Header="Accounts" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE77B;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AccountsSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="Text &amp; Images" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE70F;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MessagingSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="Appearance" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE771;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:ThemesSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="Audio &amp; Video" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xEA69;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MediaSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="Microphone &amp; Camera" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE720;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:VoiceSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="Security &amp; Privacy" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE72E;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+        
+        <lib:TabViewItem x:Name="DebugItem" Visibility="{x:Bind IsDebug, Converter={StaticResource BoolVisibilityConverter}}" Header="Debug" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE90F;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+
+        <lib:TabViewItem Header="About" IsClosable="False">
+            <lib:TabViewItem.IconSource>
+                <lib:FontIconSource Glyph="&#xE946;" />
+            </lib:TabViewItem.IconSource>
+            <ScrollViewer>
+                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AboutSettingsPage"/>
+            </ScrollViewer>
+        </lib:TabViewItem>
+    </lib:TabView>
 
 </Page>

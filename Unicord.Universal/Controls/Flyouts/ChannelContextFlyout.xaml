@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <MenuFlyoutItem IsEnabled="False" Text="{Binding DisplayName}">
+    <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
         <MenuFlyoutItem.Icon>
             <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="Segoe MDL2 Assets"/>
         </MenuFlyoutItem.Icon>

@@ -9,18 +9,20 @@
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFF0F0F0" TintColor="#FFF0F0F0" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
-            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFEEEEEE"/>
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
+            <Color x:Key="MainBackgroundColor">#FFEEEEEE</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
             <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FF0F0F0F" TintColor="#FF0F0F0F" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
-            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF1C1C1C"/>
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
+            <Color x:Key="MainBackgroundColor">#FF1C1C1C</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+    
+    <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource MainBackgroundColor}"/>
 
     <media:AcrylicBrush x:Key="SpoilerAcrylicBrush"
                         BackgroundSource="Backdrop"

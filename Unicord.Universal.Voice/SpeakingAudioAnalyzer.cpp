@@ -16,11 +16,11 @@ namespace winrt::Unicord::Universal::Voice::implementation {
 
         if (_apm->voice_detection()->stream_has_voice() && !_client->is_muted) {
             _client->_outboundTransport->Start();
-            _client->SendSpeakingAsync(true).get();
+            _client->SendSpeakingAsync(true);
         }
         else {
             _client->_outboundTransport->Stop();
-            _client->SendSpeakingAsync(false).get();
+            _client->SendSpeakingAsync(false);
 		}
     }
 }

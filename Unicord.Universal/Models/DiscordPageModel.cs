@@ -50,7 +50,7 @@ namespace Unicord.Universal.Models
             }
 
             var dms = App.Discord.PrivateChannels.Values;
-            foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0).OrderBy(d => d.ReadState?.LastMessageId))
+            foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0).OrderByDescending(d => d.ReadState?.LastMessageId))
             {
                 UnreadDMs.Add(dm);
             }

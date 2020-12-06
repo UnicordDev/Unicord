@@ -69,6 +69,12 @@
             <uap:DisplayName>Unicord</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="unicord-debug">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
         <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
           <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
         </uap:Extension>
@@ -106,6 +112,12 @@
             Enabled="false"
             DisplayName="Unicord Background Task" />
         </uap5:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="unicord">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

@@ -1,7 +1,10 @@
-﻿using Microsoft.Toolkit.Parsers.Markdown;
+﻿using System;
+using Microsoft.Toolkit.Parsers.Markdown;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Resources;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Unicord.Constants;
@@ -52,9 +55,9 @@ namespace Unicord.Universal.Pages.Settings
             }
         }
 
-        private void Md_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        private async void OnMarkdownLinkClicked(object sender, LinkClickedEventArgs e)
         {
-
+            await Launcher.LaunchUriAsync(new Uri(e.Link));
         }
     }
 }
