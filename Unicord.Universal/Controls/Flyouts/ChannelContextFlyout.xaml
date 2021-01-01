@@ -29,6 +29,7 @@
 
     <MenuFlyoutSeparator />
 
+    <MenuFlyoutItem x:Uid="/Flyouts/PinToStart" Icon="Pin" Command="{StaticResource PinChannelCommand}" CommandParameter="{Binding}"/>
     <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
     <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
     <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />

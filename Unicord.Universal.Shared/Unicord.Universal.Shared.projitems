@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>118f9d67-9235-4fc6-bf23-9abe0cd693da</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Unicord.Universal.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BadgeManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.pub.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondaryTileManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TileManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ToastManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NotificationUtils.cs" />
+  </ItemGroup>
+</Project>

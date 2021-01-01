@@ -10,7 +10,7 @@ namespace Unicord.Universal.Converters
         {
             if (value is int i)
             {
-                return Files.SizeSuffix(i);
+                return Tools.ToFileSizeString(i);
             }
 
             return null;

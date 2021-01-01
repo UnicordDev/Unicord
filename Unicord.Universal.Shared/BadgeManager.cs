@@ -7,7 +7,7 @@ using DSharpPlus;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace Unicord.Universal.Background
+namespace Unicord.Universal.Shared
 {
     public class BadgeManager
     {
@@ -37,14 +37,14 @@ namespace Unicord.Universal.Background
                     badgeElement.SetAttribute("value", badgeNumber.ToString());
                     _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
                 }
-                else if (unread)
-                {
-                    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
-                    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
+                //else if (unread)
+                //{
+                //    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
+                //    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
 
-                    badgeElement.SetAttribute("value", "available");
-                    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                }
+                //    badgeElement.SetAttribute("value", "available");
+                //    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
+                //}
                 else
                 {
                     _badgeUpdateManager.Clear();

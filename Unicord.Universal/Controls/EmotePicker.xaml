@@ -39,6 +39,7 @@
               b:ListViewBehaviour.FillBeforeWrap="True"
               b:ListViewBehaviour.MinItemWidth="42"
               SelectionMode="Single"
+              SingleSelectionFollowsFocus="False"
               IsSynchronizedWithCurrentItem="False"
               SelectionChanged="GridView_SelectionChanged" 
               ItemsSource="{Binding Source={StaticResource source}}">

@@ -8,6 +8,7 @@ using Unicord.Universal.Controls.Embeds;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation.Metadata;
 using Windows.Media.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -49,7 +50,8 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Logger.Log(Embed.Type);
+            if (Embed.Type == "video")
+                Logger.Log(Embed.Video.Url);
 
             if (Embed.Type == "image" && Embed.Thumbnail != null)
             {
@@ -60,7 +62,7 @@ namespace Unicord.Universal.Controls
                 return;
             }
 
-            if (Embed.Type == "gifv" && Embed.Video != null)
+            if (Embed.Video != null && (Embed.Type == "gifv" || (Embed.Type == "video" && Embed.Video.Url.Host == "cdn.discordapp.com")))
             {
                 Logger.Log($"Image: {Embed.Image ?? (object)"null"}");
                 var scaleContainer = new ScaledContentControl()
@@ -71,35 +73,74 @@ namespace Unicord.Universal.Controls
 
                 _mediaPlayer = new MediaPlayerElement()
                 {
-                    AreTransportControlsEnabled = false,
+                    AreTransportControlsEnabled = Embed.Type != "gifv",
                     Source = MediaSource.CreateFromUri(Embed.Video.Url),
                     PosterSource = Embed.Thumbnail != null ? new BitmapImage(Embed.Thumbnail.Url) : null
                 };
 
-                _mediaPlayer.Loaded += MediaPlayer_Loaded;
+                _mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
+                _mediaPlayer.TransportControls.IsCompact = true;
+
+                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+                {
+                    _mediaPlayer.TransportControls.ShowAndHideAutomatically = true;
+                }
+
+                if (Embed.Type == "gifv")
+                {
+                    _mediaPlayer.Loaded += MediaPlayer_Loaded;
+
+                    if (App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) && !NetworkHelper.IsNetworkLimited)
+                    {
+                        Window.Current.VisibilityChanged += OnWindowVisibilityChanged;
+                        _mediaPlayer.AutoPlay = true;
+                    }
+                    else
+                    {
+                        _mediaPlayer.Tapped += OnMediaPlayerTapped;
+                        _mediaPlayer.AutoPlay = false;
+                    }
+                }
+
+
                 scaleContainer.Content = _mediaPlayer;
-
                 Content = scaleContainer;
-
-                if (App.RoamingSettings.Read(Constants.GIF_AUTOPLAY, true) && !NetworkHelper.IsNetworkLimited)
-                {
-                    Window.Current.VisibilityChanged += OnWindowVisibilityChanged;
-                    _mediaPlayer.AutoPlay = true;
-                }
-                else
-                {
-                    _mediaPlayer.Tapped += OnMediaPlayerTapped;
-                    _mediaPlayer.AutoPlay = false;
-                }
 
                 return;
             }
 
-            if (Embed.Color.HasValue)
+            bool inline = false;
+            Panel p = null;
+            for (var i = 0; i < Embed.Fields.Count; i++)
             {
-                var col = Embed.Color.Value;
-                Border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, col.R, col.G, col.B));
-                Border.BorderThickness = new Thickness(4, 0, 0, 0);
+                var field = Embed.Fields[i];
+                if (i == 0)
+                {
+                    inline = field.Inline;
+                    p = inline ? new WrapPanel() { StretchChild = StretchChild.Last } : (Panel)new StackPanel();
+                }
+
+                if (field.Inline == inline)
+                {
+                    AddFieldToPanel(p, field);
+                }
+                else
+                {
+                    if (p.Children.Count != 0)
+                    {
+                        AddWithRow(p);
+                    }
+
+                    inline = field.Inline;
+                    p = inline ? new WrapPanel() { StretchChild = StretchChild.Last } : (Panel)new StackPanel();
+
+                    AddFieldToPanel(p, field);
+                }
+            }
+
+            if (p != null && p.Children.Count != 0 && !FieldsGrid.Children.Contains(p))
+            {
+                AddWithRow(p);
             }
 
             if (Embed.Image != null)
@@ -110,43 +151,14 @@ namespace Unicord.Universal.Controls
 
             if (Embed.Video != null)
             {
-                if (description != null && Embed.Type != "rich")
-                    description.Visibility = Visibility.Collapsed;
-                thumbnail.Visibility = Visibility.Collapsed;
+                if (DescriptionText != null && Embed.Type != "rich")
+                    DescriptionText.Visibility = Visibility.Collapsed;
+                ThumbnailImage.Visibility = Visibility.Collapsed;
                 var video = new EmbedVideoControl() { Embed = Embed, Thumbnail = Embed.Thumbnail, Video = Embed.Video };
                 AddWithRow(video);
             }
 
-            if (Embed.Fields?.Any() == true)
-            {
-                var inline = Embed.Fields.First().Inline;
-                var p = inline ? new WrapPanel() : (Panel)new StackPanel();
-                foreach (var field in Embed.Fields)
-                {
-                    if (field.Inline == inline)
-                    {
-                        AddFieldToPanel(p, field);
-                    }
-                    else
-                    {
-                        if (p.Children.Count != 0)
-                        {
-                            AddWithRow(p);
-                        }
 
-                        inline = field.Inline;
-
-                        p = inline ? new WrapPanel() : (Panel)new StackPanel();
-
-                        AddFieldToPanel(p, field);
-                    }
-                }
-
-                if (p.Children.Count != 0 && !fieldsGrid.Children.Contains(p))
-                {
-                    AddWithRow(p);
-                }
-            }
 
             Bindings.Update();
         }
@@ -283,9 +295,10 @@ namespace Unicord.Universal.Controls
 
         private void AddWithRow(FrameworkElement p)
         {
-            fieldsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            Grid.SetRow(p, fieldsGrid.RowDefinitions.Count - 1);
-            fieldsGrid.Children.Add(p);
+            FieldsGrid.Visibility = Visibility.Visible;
+            FieldsGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(p, FieldsGrid.RowDefinitions.Count - 1);
+            FieldsGrid.Children.Add(p);
         }
 
         private void AddFieldToPanel(Panel p, DiscordEmbedField field)

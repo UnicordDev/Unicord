@@ -80,6 +80,7 @@
             <commands:EditModeCommand x:Key="EditModeCommand" />
             <commands:ReplyCommand x:Key="ReplyCommand" />
             <commands:SettingsCommand x:Key="SettingsCommand" />
+            <commands:PinChannelCommand x:Key="PinChannelCommand" />
 
             <flyouts:ChannelContextFlyout x:Key="ChannelContextFlyout"/>
             <flyouts:DirectMessageContextFlyout x:Key="DirectMessageContextFlyout"/>

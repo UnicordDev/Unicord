@@ -101,14 +101,10 @@ namespace winrt::Unicord::Universal::Voice::Interop {
         void Initialise(AudioFormat new_format) {
             int error = 0;
 
-            if (decoder == nullptr) {
-                decoder = opus_decoder_create(new_format.sample_rate, new_format.channel_count, &error);
-            }
-            else {
+            if (decoder != nullptr) {
                 opus_decoder_destroy(decoder);
-                decoder = opus_decoder_create(new_format.sample_rate, new_format.channel_count, &error);
             }
-
+            this->decoder = opus_decoder_create(new_format.sample_rate, new_format.channel_count, &error);
             this->format = new_format;
         }
 

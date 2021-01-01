@@ -21,7 +21,7 @@ namespace Unicord.Universal.Controls
             get { return (string)GetValue(IconProperty); }
             set { SetValue(IconProperty, value); }
         }
-        
+
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(nameof(Icon), typeof(string), typeof(IconLabelButton), new PropertyMetadata(null));
 

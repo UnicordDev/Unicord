@@ -4,9 +4,9 @@ using System.Text;
 using DSharpPlus.Entities;
 using Windows.UI.Notifications;
 
-namespace Unicord.Universal.Background
+namespace Unicord.Universal.Shared
 {
-    internal class ToastManager
+    public class ToastManager
     {
         private ToastNotifier _toastNotifier = null;
         private ToastNotificationHistory _toastHistory;
@@ -19,7 +19,7 @@ namespace Unicord.Universal.Background
 
         public void HandleMessage(DiscordMessage message)
         {
-            var notification = Tools.GetWindows10Toast(message);
+            var notification = NotificationUtils.CreateToastNotificationForMessage(message);
             _toastNotifier.Show(notification);
         }
 

@@ -18,8 +18,6 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
-// The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
-
 namespace Unicord.Universal.Controls
 {
     public class DiscordEntityTemplateSelector : DataTemplateSelector
@@ -383,12 +381,11 @@ namespace Unicord.Universal.Controls
         private async Task UpdateAutoSuggestBoxSource(AutoSuggestBox sender)
         {
             // don't ya just love off by one?
-            var position = (_textBox.SelectionStart).Clamp(0, Text.Length - 1);
+            var position = _textBox.SelectionStart.Clamp(0, Text.Length - 1);
             var i = position;
             for (; i >= 0; i--)
             {
-                var c = Text[i];
-                if (char.IsWhiteSpace(c))
+                if (char.IsWhiteSpace(Text[i]))
                 {
                     break; // return the last "word"
                 }
@@ -441,14 +438,18 @@ namespace Unicord.Universal.Controls
         {
             var users = (Channel is DiscordDmChannel dm) ? dm.Recipients : Channel.Users.Cast<DiscordUser>();
             var roles = Channel.Guild?.Roles.Values.Where(r => r.IsMentionable) ?? Enumerable.Empty<DiscordRole>();
-            var username = text.Contains('#') ? text.Substring(0, text.IndexOf('#')) : text;
 
-            var filteredUsers = users.Where(u => cult.IndexOf(u.DisplayName, text, CompareOptions.IgnoreCase) == 0)
-                .OrderBy(u => u.DisplayName.Length)
-                .Cast<object>();
-            var filteredRoles = roles.Where(r => cult.IndexOf(r.Name, text, CompareOptions.IgnoreCase) == 0)
-                .Cast<object>();
+            var filteredUsers = users.Where(u => u != null && !string.IsNullOrWhiteSpace(u.Username) && !string.IsNullOrWhiteSpace(u.Discriminator))
+                                     .Select(u => (user: u, index: cult.IndexOf($"{u.Username}#{u.Discriminator}", text, CompareOptions.IgnoreCase)))
+                                     .Where(x => x.index != -1)
+                                     .OrderBy(x => x.user.Username)
+                                     .ThenByDescending(x => x.index)
+                                     .Select(x => x.user)
+                                     .Cast<object>();
 
+            var filteredRoles = roles.Where(r => r != null && !string.IsNullOrWhiteSpace(r.Name))
+                                     .Where(r => cult.IndexOf(r.Name, text, CompareOptions.IgnoreCase) != -1)
+                                     .Cast<object>();
 
             sender.ItemsSource = filteredUsers.Concat(filteredRoles);
         }
@@ -456,9 +457,12 @@ namespace Unicord.Universal.Controls
         private void UpdateSourceForChannelMentions(AutoSuggestBox sender, string text, CompareInfo cult)
         {
             var channels = Channel.Guild.Channels.Values;
-            sender.ItemsSource = channels.Where(c => c.Type == ChannelType.Text)
+            sender.ItemsSource = channels.Where(c => c != null && c.Type != ChannelType.Voice && c.Type != ChannelType.Category && !string.IsNullOrWhiteSpace(c.Name))
                                          .Where(c => c.CurrentPermissions.HasPermission(Permissions.AccessChannels))
-                                         .Where(c => cult.IndexOf(c.Name, text, CompareOptions.IgnoreCase) == 0);
+                                         .Select(c => (channel: c, index: cult.IndexOf(c.Name, text, CompareOptions.IgnoreCase)))
+                                         .Where(x => x.index != -1)
+                                         .OrderByDescending(x => x.index)
+                                         .Select(x => x.channel);
         }
 
         private async Task UpdateSourceForEmojiMentionsAsync(AutoSuggestBox sender, string text, CompareInfo cult)
@@ -468,8 +472,10 @@ namespace Unicord.Universal.Controls
                 _emoji = await Tools.GetEmojiAsync(Channel);
             }
 
-            sender.ItemsSource = _emoji.Where(x => cult.IndexOf(x.GetSearchName(), text, CompareOptions.IgnoreCase) == 0)
-                                       .OrderBy(x => cult.IndexOf(x.GetSearchName(), text, CompareOptions.IgnoreCase));
+            sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.GetSearchName(), text, CompareOptions.IgnoreCase)))
+                                       .Where(x => x.index != -1)
+                                       .OrderBy(x => x.index)
+                                       .Select(x => x.emoji);
         }
 
         private string AppendText(string target, string text)
@@ -489,13 +495,17 @@ namespace Unicord.Universal.Controls
             switch (item)
             {
                 case DiscordUser user:
+                    //return AppendText(target, $"@{user.Username}#{user.Discriminator}");
                     return AppendText(target, user.Mention);
                 case DiscordChannel channel:
+                    //return AppendText(target, $"#{channel.Name}");
                     return AppendText(target, channel.Mention);
                 case DiscordRole role:
+                    //return AppendText(target, $"@{role.Name}");
                     return AppendText(target, role.Mention);
                 case DiscordEmoji emoji:
-                    return AppendText(target, emoji);
+                    //return AppendText(target, emoji.RequiresColons ? emoji.Name : $":{emoji.Name}:");
+                    return AppendText(target, emoji.ToString());
                 default:
                     return AppendText(target, item.ToString());
             }

@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.Notifications;
-using WamWooWam.Core;
-using Windows.Data.Xml.Dom;
+using Unicord.Universal.Shared;
 using Windows.Storage;
-using Windows.UI.Notifications;
+using NotificationUtils = Unicord.Universal.Shared.NotificationUtils;
 
 namespace Unicord.Universal.Background
 {
@@ -23,6 +16,7 @@ namespace Unicord.Universal.Background
         private DiscordClient _discord = null;
         private BadgeManager _badgeManager = null;
         private TileManager _tileManager;
+        private SecondaryTileManager _secondaryTileManager;
         private ToastManager _toastManager = null;
 
         private NotifyIcon _notifyIcon;
@@ -85,12 +79,13 @@ namespace Unicord.Universal.Background
                     LogLevel = LogLevel.Debug,
                     TokenType = TokenType.User,
                     Token = _token,
-                    MessageCacheSize = 1024,
+                    MessageCacheSize = 0,
                     UseInternalLogHandler = true
                 });
 
                 _badgeManager = new BadgeManager(_discord);
                 _tileManager = new TileManager(_discord);
+                _secondaryTileManager = new SecondaryTileManager(_discord);
                 _toastManager = new ToastManager();
 
                 _discord.Ready += OnReady;
@@ -124,13 +119,23 @@ namespace Unicord.Universal.Background
 
         private async Task OnDiscordMessage(MessageCreateEventArgs e)
         {
-            if (Tools.WillShowToast(e.Message))
+            try
             {
-                _toastManager?.HandleMessage(e.Message);
-                _badgeManager?.Update();
+                if (NotificationUtils.WillShowToast(e.Message))
+                {
+                    _toastManager?.HandleMessage(e.Message);
+                    _badgeManager?.Update();
 
-                if (_tileManager != null)
-                    await _tileManager.HandleMessageAsync(e.Message);
+                    if (_tileManager != null)
+                        await _tileManager.HandleMessageAsync(e.Message);
+                }
+
+                if (_secondaryTileManager != null)
+                    await _secondaryTileManager.HandleMessageAsync(e.Message);
+            }
+            catch (Exception)
+            {
+                // TODO: log
             }
         }
 
@@ -142,7 +147,10 @@ namespace Unicord.Universal.Background
                 _toastManager?.HandleAcknowledge(e.Channel);
 
                 if (_tileManager != null)
-                    await _tileManager.HandleAcknowledge(e.Channel);
+                    await _tileManager.HandleAcknowledgeAsync(e.Channel);
+
+                if (_secondaryTileManager != null)
+                    await _secondaryTileManager.HandleAcknowledgeAsync(e.Channel);
             }
             catch (Exception)
             {

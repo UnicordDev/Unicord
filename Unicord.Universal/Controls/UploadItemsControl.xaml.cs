@@ -131,21 +131,6 @@ namespace Unicord.Universal.Controls
             item.Dispose();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            DoSize(ActualWidth);
-        }
-
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            DoSize(e.NewSize.Width);
-        }
-
-        private void DoSize(double width)
-        {
-
-        }
-
         private async void UploadList_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is FileUploadModel m && m.StorageFile != null)

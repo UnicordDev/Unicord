@@ -396,10 +396,9 @@
                 </lib:PersonPicture.ProfilePicture>
             </lib:PersonPicture>
 
-            <local:UsernameControl Grid.Column="1"
-                                   Margin="8,0"
-                                   VerticalAlignment="Center"
-                                   User="{Binding}" />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                <Run>@</Run><Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username, Mode=OneWay}"/>#<Run Text="{Binding Discriminator, Mode=OneWay}"/>
+            </TextBlock>
 
             <Ellipse Width="8"
                      Height="8"
@@ -478,13 +477,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-                <Image Width="24" Height="24">
-                    <Image.Source>
-                        <BitmapImage DecodePixelWidth="24"  DecodePixelType="Logical" UriSource="{Binding Url}"/>
-                    </Image.Source>
-                </Image>
+            <Image Width="24" Height="24">
+                <Image.Source>
+                    <BitmapImage DecodePixelWidth="24"  DecodePixelType="Logical" UriSource="{Binding Url}"/>
+                </Image.Source>
+            </Image>
 
-                <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
 
             <Ellipse Grid.Column="2" 
                      VerticalAlignment="Center" 

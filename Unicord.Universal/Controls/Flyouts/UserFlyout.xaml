@@ -56,7 +56,7 @@
                 <ItemsControl ItemTemplate="{ThemeResource RoleTemplate}" ItemsSource="{Binding Roles}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <controls1:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
+                            <controls1:WrapPanel StretchChild="Last" VerticalSpacing="4" HorizontalSpacing="4"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>

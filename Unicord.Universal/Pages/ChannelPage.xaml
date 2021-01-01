@@ -127,7 +127,7 @@
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:SystemMessageControl Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
         </DataTemplate>
-        
+
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
             <messages:MessageControl
                 Background="Transparent"
@@ -139,7 +139,7 @@
         <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
                                             MessageTemplate="{StaticResource DefaultMessageTemplate}" 
                                             SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
-        
+
         <converters:MessageTemplateSelector x:Key="EditingMessageTemplateSelector" 
                                             MessageTemplate="{StaticResource EditingMessageTemplate}" 
                                             SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
@@ -255,7 +255,6 @@
                             <StackPanel x:Name="DefaultControls"
                                         Grid.Column="1"
                                         HorizontalAlignment="Right"
-                                        w1709:Spacing="2"
                                         Opacity="1"
                                         Orientation="Horizontal">
 
@@ -270,24 +269,11 @@
                                     Visibility="{Binding ShowEditButton}"
                                     Style="{ThemeResource IconButtonStyle}"
                                     ToolTipService.ToolTip="Edit Channel" />-->
-                                <lib:DropDownButton
-                                    x:Name="NewWindowButton"
-                                    x:Uid="/ChannelPage/NewWindowButton"
-                                    Content="&#xE78B;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    IsEnabled="{Binding ShowPopoutButton}"
-                                    Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}">
-                                    <lib:DropDownButton.Flyout>
-                                        <lib:MenuBarItemFlyout>
-                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal" Icon="Add" Click="NewWindowButton_Click" />
-                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" Icon="BackToWindow" Click="NewCompactWindowButton_Click" />
-                                        </lib:MenuBarItemFlyout>
-                                    </lib:DropDownButton.Flyout>
-                                </lib:DropDownButton>
 
                                 <ToggleButton x:Name="MuteButton"
                                               x:Uid="/ChannelPage/MuteButton"
                                               Content="&#xE74F;"
+                                              Margin="2,0,0,0"
                                               IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=TwoWay}"
                                               Style="{ThemeResource IconToggleButtonStyle}">
                                     <w1709:ToggleButton.KeyboardAccelerators>
@@ -297,6 +283,7 @@
                                 <Button x:Name="SearchButton"
                                         x:Uid="/ChannelPage/SearchButton"
                                         Content="&#xE721;"
+                                        Margin="2,0,0,0"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
@@ -306,6 +293,7 @@
                                         x:Uid="/ChannelPage/PinsButton"
                                         Click="pinsButton_Click"
                                         Content="&#xE718;"
+                                        Margin="2,0,0,0"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
@@ -316,11 +304,53 @@
                                         x:Load="{x:Bind ViewModel.ShowUserlistButton}"
                                         Click="UserListButton_Click"
                                         Content="&#xE716;"
+                                        Margin="2,0,0,0"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
                                     </w1709:Button.KeyboardAccelerators>
                                 </Button>
+
+                                <lib:DropDownButton
+                                    x:Name="MoreOptionsButton"
+                                    x:Uid="/ChannelPage/MoreOptionsButton"
+                                    Content="&#xE712;"
+                                    Margin="2,0,0,0"
+                                    Style="{ThemeResource IconButtonStyle}">
+                                    <lib:DropDownButton.Flyout>
+                                        <lib:MenuBarItemFlyout>
+                                            <MenuFlyoutItem x:Name="PinToStartItem"
+                                                            x:Uid="/ChannelPage/PinToStart"
+                                                            Icon="Pin"
+                                                            Visibility="{Binding IsPinned, Converter={StaticResource InverseBoolVisibilityConverter}}"
+                                                            Command="{StaticResource PinChannelCommand}"
+                                                            CommandParameter="{x:Bind ViewModel.Channel}"/>
+                                            
+                                            <MenuFlyoutItem x:Uid="/ChannelPage/UnpinFromStart"
+                                                            Icon="Unpin"
+                                                            Visibility="{Binding IsPinned, Converter={StaticResource BoolVisibilityConverter}}"/>
+
+                                            <MenuFlyoutSeparator />
+
+                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal" 
+                                                            Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
+                                                            Click="NewWindowButton_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE8A7;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+
+                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" 
+                                                            Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
+                                                            Click="NewCompactWindowButton_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE78B;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                        </lib:MenuBarItemFlyout>
+                                    </lib:DropDownButton.Flyout>
+                                </lib:DropDownButton>
+
 
                             </StackPanel>
 
@@ -366,6 +396,7 @@
                                   ReorderMode="Disabled"
                                   SelectionChanged="MessageList_SelectionChanged"
                                   ShowsScrollingPlaceholders="False"
+                                  SingleSelectionFollowsFocus="False"
                                   ScrollViewer.HorizontalScrollMode="Disabled"
                                   ScrollViewer.IsDeferredScrollingEnabled ="False"
                                   SelectionMode="None">
@@ -388,7 +419,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
-                        
+
                         <StackPanel
                             x:Name="NoMessages"
                             Margin="16"
@@ -465,6 +496,11 @@
                                         <ItemsStackPanel Orientation="Horizontal" CacheLength="4" />
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Padding" Value="4,0"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <controls:ImageEx Height="150"
@@ -542,7 +578,7 @@
                                 <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                 <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
                                 <wam:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
-                                
+
                                 <wam:MarkdownTextBlock x:Name="ReplyMarkdown"
                                                    Grid.Column="1"
                                                    Grid.ColumnSpan="3"
@@ -564,7 +600,7 @@
                                           Margin="2,0,0,0"
                                           IsChecked="{x:Bind ViewModel.ReplyPing, Mode=TwoWay}"
                                           Style="{ThemeResource IconToggleButtonStyle}"/>
-                            
+
                             <Button x:Name="ReplyCancel"
                                     x:Uid="/ChannelPage/ReplyCancel"
                                     Grid.Column="2"
@@ -662,7 +698,7 @@
                                         EasingFunction="{StaticResource EaseMovement}"
                                         Storyboard.TargetName="DefaultTranslate"
                                         Storyboard.TargetProperty="X"
-                                        To="168"
+                                        To="220"
                                         Duration="00:00:00.50" />
                             <DoubleAnimation
                                         EasingFunction="{StaticResource EaseMovement}"
@@ -702,7 +738,7 @@
                                         EasingFunction="{StaticResource EaseMovement}"
                                         Storyboard.TargetName="EditingTranslate"
                                         Storyboard.TargetProperty="X"
-                                        To="168"
+                                        To="220"
                                         Duration="00:00:00.50" />
                             <DoubleAnimation
                                         EasingFunction="{StaticResource EaseIn}"

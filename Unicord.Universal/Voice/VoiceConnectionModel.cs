@@ -78,6 +78,9 @@ namespace Unicord.Universal.Voice
             var strings = ResourceLoader.GetForViewIndependentUse("Voice");
             var stateRequest = new ValueSet() { ["req"] = (uint)VoiceServiceRequest.StateRequest };
             var info = await connection.SendMessageAsync(stateRequest);
+            if (info == null || info.Message == null)
+                return null;
+
             var state = (VoiceServiceState)(uint)info.Message["state"];
             if (state == VoiceServiceState.ReadyToConnect)
             {
@@ -96,7 +99,7 @@ namespace Unicord.Universal.Voice
                 vstate = vstate & VoiceState.Muted;
             if (deafened)
                 vstate = VoiceState.Muted | VoiceState.Deafened;
-            
+
             return new VoiceConnectionModel(channel, vstate, connection) { ConnectionStatus = string.Format(strings.GetString("ConnectedStateFormat"), channel.Name), _strings = strings };
         }
 

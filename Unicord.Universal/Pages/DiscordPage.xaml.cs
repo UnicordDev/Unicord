@@ -13,6 +13,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
+using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
 using Unicord.Universal.Voice;
 using Windows.ApplicationModel;
@@ -20,14 +21,12 @@ using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using static Unicord.Constants;
 
 namespace Unicord.Universal.Pages
 {
@@ -139,7 +138,8 @@ namespace Unicord.Universal.Pages
                     ShowNotification(message);
                 }
 
-                await StartBackgroundTaskAsync();
+                var notificationService = BackgroundNotificationService.GetForCurrentView();
+                await notificationService.StartupAsync();
 
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
@@ -154,52 +154,7 @@ namespace Unicord.Universal.Pages
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
             }
-        }
-
-        private async Task RegisterBackgroundTaskAsync()
-        {
-            try
-            {
-                if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(TOAST_BACKGROUND_TASK_NAME)))
-                    return;
-
-                var status = await BackgroundExecutionManager.RequestAccessAsync();
-                var builder = new BackgroundTaskBuilder() { Name = TOAST_BACKGROUND_TASK_NAME };
-                builder.SetTrigger(new ToastNotificationActionTrigger());
-
-                var registration = builder.Register();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        private async Task StartBackgroundTaskAsync()
-        {
-            if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
-                return;
-
-            await RegisterBackgroundTaskAsync();
-         
-            try
-            {
-                if (ApiInformation.IsApiContractPresent(typeof(StartupTaskContract).FullName, 1))
-                {
-                    var notifyTask = await StartupTask.GetAsync("UnicordBackgroundTask");
-                    await notifyTask.RequestEnableAsync();
-                }
-
-                if (ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1))
-                {
-                    await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+        }       
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -225,15 +180,9 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowManager.VisibleChannels.Contains(e.Channel.Id))
+            if (!WindowManager.VisibleChannels.Contains(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
             {
-                if (Tools.WillShowToast(e.Message))
-                {
-                    if (IsWindowVisible)
-                    {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
-                    }
-                }
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }
         }
 

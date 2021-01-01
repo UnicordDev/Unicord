@@ -24,7 +24,7 @@ namespace Unicord.Universal.Models
         public bool TranscodeFailed { get; set; }
 
         public bool Spoiler { get; set; } = false;
-        public string DisplayLength => Files.SizeSuffix((long)Length);
+        public string DisplayLength => Tools.ToFileSizeString(Length);
 
         public static async Task<FileUploadModel> FromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
@@ -59,8 +59,7 @@ namespace Unicord.Universal.Models
                 using (var thumbStream = await props.GetThumbnailAsync(ThumbnailMode.SingleItem, 256))
                 {
                     var image = new BitmapImage();
-                    await image.SetSourceAsync(thumbStream);
-
+                    await image.SetSourceAsync(thumbStream);    
                     Thumbnail = image;
                 }
             }

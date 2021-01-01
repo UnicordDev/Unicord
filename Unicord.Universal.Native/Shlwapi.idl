@@ -1,0 +1,23 @@
+namespace Unicord.Universal.Native
+{
+    /// <summary>
+    /// Specifies how the StrFormatByteSizeEx function should handle rounding of undisplayed digits.
+    /// </summary>
+    enum SFBSFlags 
+    {
+        /// <summary>Round to the nearest displayed digit.</summary>
+        RoundToNearestDisplayedDigit = 0x0001,
+
+        /// <summary>Discard undisplayed digits.</summary>
+        TruncateUndisplayedDecimalDigits = 0x0002
+    };
+
+    [default_interface]
+    runtimeclass Shlwapi
+    {
+        /// <summary>
+        /// Converts a numeric value into a string that represents the number in bytes, kilobytes, megabytes, or gigabytes, depending on the size. 
+        /// </summary>
+        static String StrFormatByteSizeEx(UInt64 size, SFBSFlags flags);
+    }
+}

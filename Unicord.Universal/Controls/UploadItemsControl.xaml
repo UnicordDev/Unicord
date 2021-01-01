@@ -13,8 +13,6 @@
     MaxHeight="200"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    Loaded="UserControl_Loaded"
-    SizeChanged="UserControl_SizeChanged"
     mc:Ignorable="d">
 
     <Grid>
@@ -59,8 +57,7 @@
                         x:Name="sizeRun"
                         FontSize="20"
                         Text="{Binding DisplayUploadSize, FallbackValue=0.00}" />
-                    /<Run Text="{Binding DisplayUploadLimit, FallbackValue=8.00}" />
-                    MB</TextBlock>
+                    /<Run Text="{Binding DisplayUploadLimit, FallbackValue=8.00 MB}" /></TextBlock>
             </Grid>
 
             <ListView
@@ -79,69 +76,82 @@
                 SelectionMode="None">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal" />
+                        <ItemsStackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="VerticalAlignment" Value="Stretch" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="4,0"/>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
-                            <controls:ImageEx IsCacheEnabled="True" VerticalAlignment="Stretch" Source="{Binding Thumbnail}" />
+                            <Image VerticalAlignment="Center" HorizontalAlignment="Stretch" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
 
-                            <Grid
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Bottom"
-                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                            <Grid HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch">
+                                
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                            <GradientStop Color="#00000000" Offset="0.0" />
+                                            <GradientStop Color="#00000000" Offset="0.65" />
+                                            <GradientStop Color="#C0000000" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
 
-                                <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis"/>
+                                <Grid
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                <Button
-                                    x:Name="transcodeFailedButton"
-                                    x:Uid="/Controls/TranscodeFailedButton"
-                                    Grid.Column="1"
-                                    Click="TranscodeFailedButton_Click"
-                                    Content="&#xE783;"
-                                    Foreground="{ThemeResource ErrorTextForegroundBrush}"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Transcode failed!"
-                                    Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" />
-                                <Button
-                                    x:Name="editButton"
-                                    x:Uid="/Controls/EditButton"
-                                    Grid.Column="2"
-                                    Click="EditButton_Click"
-                                    Content="&#xE8B2;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Edit this clip"
-                                    Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}">
-                                </Button>
-                                <ToggleButton
-                                    x:Name="spoilerButton"
-                                    x:Uid="/Controls/SpoilerButton"
-                                    Grid.Column="3"
-                                    Content="&#xE890;"
-                                    IsChecked="{Binding Spoiler, Mode=TwoWay}"
-                                    Style="{ThemeResource IconToggleButtonStyle}"
-                                    ToolTipService.ToolTip="Mark as Spoiler" />
-                                <Button
-                                    x:Name="removeItemButton"
-                                    Grid.Column="4"
-                                    Click="RemoveItemButton_Click"
-                                    Content="&#xE74D;"
-                                    Style="{ThemeResource IconButtonStyle}"
-                                    ToolTipService.ToolTip="Remove" />
+                                    <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis"/>
+
+                                    <Button x:Name="transcodeFailedButton"
+                                            x:Uid="/Controls/TranscodeFailedButton"
+                                            Grid.Column="1"
+                                            Click="TranscodeFailedButton_Click"
+                                            Content="&#xE783;"
+                                            Foreground="{ThemeResource ErrorTextForegroundBrush}"
+                                            Style="{ThemeResource IconButtonStyle}"
+                                            ToolTipService.ToolTip="Transcode failed!"
+                                            Visibility="{Binding TranscodeFailed, Converter={StaticResource BoolVisibilityConverter}}" />
+
+                                    <Button x:Name="editButton"
+                                            x:Uid="/Controls/EditButton"
+                                            Grid.Column="2"
+                                            Click="EditButton_Click"
+                                            Content="&#xE8B2;"
+                                            Style="{ThemeResource IconButtonStyle}"
+                                            ToolTipService.ToolTip="Edit this clip"
+                                            Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}">
+                                    </Button>
+
+                                    <ToggleButton x:Name="spoilerButton"
+                                                  x:Uid="/Controls/SpoilerButton"
+                                                  Grid.Column="3"
+                                                  Content="&#xE890;"
+                                                  IsChecked="{Binding Spoiler, Mode=TwoWay}"
+                                                  Style="{ThemeResource IconToggleButtonStyle}"
+                                                  ToolTipService.ToolTip="Mark as Spoiler" />
+
+                                    <Button x:Name="removeItemButton"
+                                            Grid.Column="4"
+                                            Click="RemoveItemButton_Click"
+                                            Content="&#xE74D;"
+                                            Style="{ThemeResource IconButtonStyle}"
+                                            ToolTipService.ToolTip="Remove" />
+                                </Grid>
                             </Grid>
                         </Grid>
                     </DataTemplate>

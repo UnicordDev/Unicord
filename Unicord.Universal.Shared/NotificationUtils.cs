@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
+using MomentSharp;
 using WamWooWam.Core;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace Unicord.Universal.Background
+namespace Unicord.Universal.Shared
 {
-    internal static class Tools
+    public class NotificationUtils
     {
-        // keep in sync with Tools.cs
-        internal static bool WillShowToast(DiscordMessage message)
+        public static bool WillShowToast(DiscordMessage message)
         {
             bool willNotify = false;
 
@@ -49,11 +52,11 @@ namespace Unicord.Universal.Background
         }
 
 
-        internal static string GetMessageTitle(DiscordMessage message) => message.Channel.Guild != null ?
-                               $"{(message.Author as DiscordMember)?.DisplayName ?? message.Author.Username} in {message.Channel.Guild.Name}" :
-                               $"{message.Author.Username}";
+        public static string GetMessageTitle(DiscordMessage message) => message.Channel.Guild != null ?
+                             $"{(message.Author as DiscordMember)?.DisplayName ?? message.Author.Username} in {message.Channel.Guild.Name}" :
+                             $"{message.Author.Username}";
 
-        internal static string GetMessageContent(DiscordMessage message)
+        public static string GetMessageContent(DiscordMessage message)
         {
             string messageText = message.Content;
 
@@ -83,7 +86,7 @@ namespace Unicord.Universal.Background
             return messageText;
         }
 
-        internal static string GetChannelHeaderName(DiscordChannel channel)
+        public static string GetChannelHeaderName(DiscordChannel channel)
         {
             if (channel is DiscordDmChannel dmChannel)
             {
@@ -104,7 +107,79 @@ namespace Unicord.Universal.Background
             return $"#{channel.Name}";
         }
 
-        internal static ToastNotification GetWindows10Toast(DiscordMessage message)
+        public static TileNotification CreateTileNotificationForMessage(DiscordMessage message)
+        {
+            var tileContentBuilder = new TileContentBuilder()
+                .SetBranding(TileBranding.NameAndLogo)
+                .AddTile(TileSize.Large)
+                .AddTile(TileSize.Medium)
+                .AddTile(TileSize.Wide);
+
+            if (message.Channel is DiscordDmChannel dm)
+            {
+                if (!string.IsNullOrEmpty(dm.IconHash))
+                    tileContentBuilder.SetPeekImage(new Uri(dm.IconUrl));
+
+                if (!string.IsNullOrEmpty(dm.Recipient?.AvatarHash))
+                    tileContentBuilder.SetPeekImage(new Uri(dm.Recipient.GetAvatarUrl(ImageFormat.Png)));
+
+                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetChannelHeaderName(message.Channel), HintStyle = AdaptiveTextStyle.Base })
+                    .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetMessageContent(message), HintStyle = AdaptiveTextStyle.Caption, HintWrap = true })
+                    .SetDisplayName(new Moment(message.Timestamp.UtcDateTime).Calendar());
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(message.Channel.Guild.IconUrl))
+                    tileContentBuilder.SetPeekImage(new Uri(message.Channel.Guild.IconUrl + "?size=1024"));
+
+                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = $"#{message.Channel.Name}", HintStyle = AdaptiveTextStyle.Base })
+                    .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = message.Channel.Guild.Name, HintStyle = AdaptiveTextStyle.Body })
+                    .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetMessageContent(message), HintStyle = AdaptiveTextStyle.Caption, HintWrap = true })
+                    .SetDisplayName(new Moment(message.Timestamp.UtcDateTime).Calendar());
+            }
+
+            var tileContent = tileContentBuilder.GetTileContent();
+            var doc = new XmlDocument();
+            doc.LoadXml(tileContent.GetContent());
+
+            return new TileNotification(doc);
+        }
+
+        public static TileNotification CreateTileNotificationForChannel(DiscordChannel channel)
+        {
+            var tileContentBuilder = new TileContentBuilder()
+                .SetBranding(TileBranding.NameAndLogo)
+                .AddTile(TileSize.Large)
+                .AddTile(TileSize.Medium)
+                .AddTile(TileSize.Wide);
+
+            if (channel is DiscordDmChannel dm)
+            {
+                if (!string.IsNullOrEmpty(dm.IconHash))
+                    tileContentBuilder.SetPeekImage(new Uri(dm.IconUrl));
+
+                if (!string.IsNullOrEmpty(dm.Recipient?.AvatarHash))
+                    tileContentBuilder.SetPeekImage(new Uri(dm.Recipient.AvatarUrl));
+
+                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetChannelHeaderName(channel), HintStyle = AdaptiveTextStyle.Base });
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(channel.Guild.IconUrl))
+                    tileContentBuilder.SetPeekImage(new Uri(channel.Guild.IconUrl + "?size=1024"));
+
+                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = $"#{channel.Name}", HintStyle = AdaptiveTextStyle.Base })
+                    .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = channel.Guild.Name, HintStyle = AdaptiveTextStyle.Body });
+            }
+
+            var tileContent = tileContentBuilder.GetTileContent();
+            var doc = new XmlDocument();
+            doc.LoadXml(tileContent.GetContent());
+
+            return new TileNotification(doc);
+        }
+
+        public static ToastNotification CreateToastNotificationForMessage(DiscordMessage message)
         {
             var title = GetMessageTitle(message);
             var text = GetMessageContent(message);
@@ -131,7 +206,9 @@ namespace Unicord.Universal.Background
             }
 
             var toastContent = builder.GetToastContent();
-            return new ToastNotification(toastContent.GetXml())
+            var doc = new XmlDocument();
+            doc.LoadXml(toastContent.GetContent());
+            return new ToastNotification(doc)
             {
                 NotificationMirroring = NotificationMirroring.Allowed,
                 Group = message.Channel.Id.ToString(),

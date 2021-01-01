@@ -13,6 +13,7 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage.Streams;
+using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -301,17 +302,17 @@ namespace Unicord.Universal.Models
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
 
         // TODO: Componentise?
-        public int UploadLimit => CurrentUser.UploadLimit();
+        public int UploadLimit => App.Discord.CurrentUser.UploadLimit();
 
         public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
 
-        public string DisplayUploadSize => (UploadSize / 1_048_576d).ToString("F2");
+        public string DisplayUploadSize => Tools.ToFileSizeString(UploadSize);
+
+        public string DisplayUploadLimit => Tools.ToFileSizeString(UploadLimit);
 
         public double UploadProgressBarValue => Math.Min(UploadSize, (ulong)UploadLimit);
 
         public Brush UploadInfoForeground => !CanSend ? (Brush)Application.Current.Resources["ErrorTextForegroundBrush"] : null;
-
-        public string DisplayUploadLimit => (UploadLimit / 1_048_576d).ToString("F2");
 
         public bool ShowUploads => FileUploads.Any() || IsTranscoding;
 
@@ -352,6 +353,9 @@ namespace Unicord.Universal.Models
 
         public bool ShowPopoutButton
             => WindowManager.IsMainWindow && WindowManager.MultipleWindowsSupported;
+
+        public bool IsPinned =>
+            SecondaryTile.Exists($"Channel_{Channel.Id}");
 
         public bool IsDisposed { get; internal set; }
 
@@ -536,6 +540,33 @@ namespace Unicord.Universal.Models
             }
         }
 
+        public string ProcessMessageText(string input)
+        {
+            // step 1: normalise whitespace
+            var output = input.Replace('\r', '\n');
+            var index = 0;
+
+            while ((index = output.IndexOf('@', index)) != -1)
+            {
+                var index2 = -1;
+                if ((index2 = output.IndexOf('#', index)) != -1)
+                {
+                    // process a user (definitely)
+
+                    var username = output.Substring(index, index2 - index);
+                    var discriminator = output.Substring(index2, 4);
+
+                    
+                }
+
+                // process a user *or* role
+            }
+
+            // TODO: emoji, channels
+
+            return output;
+        }
+
         /// <summary>
         /// Abstracts sending a message.
         /// </summary>
@@ -554,18 +585,21 @@ namespace Unicord.Universal.Models
                 var txt = MessageText;
                 var replyTo = ReplyTo;
                 var replyPing = ReplyPing;
+                var models = FileUploads.ToArray();
+
                 ReplyTo = null;
                 ReplyPing = true;
                 MessageText = "";
+                FileUploads.Clear();
+
+                txt = txt.Replace('\r', '\n'); // this is incredibly stupid
 
                 var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
                 if (replyPing && replyTo != null)
                     mentions.Add(RepliedUserMention.All);
 
-                if (FileUploads.Any())
+                if (models.Any())
                 {
-                    var models = FileUploads.ToArray();
-                    FileUploads.Clear();
                     var files = new Dictionary<string, IInputStream>();
                     foreach (var item in models)
                     {

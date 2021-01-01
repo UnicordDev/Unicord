@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Net.Abstractions;
 using DSharpPlus.Net.Serialization;
-using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Unicord.Universal.Misc;
+using Unicord.Universal.Native;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Data.Xml.Dom;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
@@ -23,7 +21,6 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
-using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -32,6 +29,7 @@ using Windows.Web.Http;
 
 namespace Unicord.Universal
 {
+
     public static class Tools
     {
         private const int NITRO_UPLOAD_LIMIT = 104_857_600;
@@ -42,6 +40,27 @@ namespace Unicord.Universal
         public static HttpClient HttpClient => _httpClient.Value;
 
         private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
+
+        public static string ToFileSizeString(long size)
+        {
+            if (size < 0)
+                return "-" + ToFileSizeString((ulong)-size);
+            else
+                return ToFileSizeString((ulong)size);
+        }
+
+        public static string ToFileSizeString(ulong size)
+        {
+            try
+            {
+                return Shlwapi.StrFormatByteSizeEx(size, SFBSFlags.TruncateUndisplayedDecimalDigits);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return Files.SizeSuffix((long)size);
+            }
+        }
 
         public static Task DownloadToFileAsync(Uri url, StorageFile file)
         {
@@ -324,62 +343,6 @@ namespace Unicord.Universal
             }
         }
 
-        internal static bool WillShowToast(DiscordMessage message)
-        {
-            bool willNotify = false;
-
-            if (message.MentionedUsers.Any(m => m?.Id == message.Discord.CurrentUser.Id))
-            {
-                willNotify = true;
-            }
-
-            if (message.Channel is DiscordDmChannel)
-            {
-                willNotify = true;
-            }
-
-            if (message.Channel.Guild != null)
-            {
-                var usr = message.Channel.Guild.CurrentMember;
-                if (message.MentionedRoles?.Any(r => (usr.Roles.Contains(r))) == true)
-                {
-                    willNotify = true;
-                }
-            }
-
-            if (message.Author.Id == message.Discord.CurrentUser.Id)
-            {
-                willNotify = false;
-            }
-
-            if ((message.Discord as DiscordClient)?.UserSettings.Status == "dnd")
-            {
-                willNotify = false;
-            }
-
-            return willNotify;
-        }
-
-        internal static string GetChannelHeaderName(DiscordChannel channel)
-        {
-            if (channel is DiscordDmChannel dmChannel)
-            {
-                if (dmChannel.Type == ChannelType.Private)
-                {
-                    return $"@{dmChannel.Recipients[0].DisplayName}";
-                }
-
-                if (dmChannel.Type == ChannelType.Group)
-                {
-                    return dmChannel.Name ?? Strings.NaturalJoin(dmChannel.Recipients.Select(r => r.DisplayName));
-                }
-            }
-
-            if (channel.Guild != null)
-                return $"#{channel.Name} - {channel.Guild.Name}";
-
-            return $"#{channel.Name}";
-        }
 
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
         public static int UploadLimit(this DiscordUser user) =>

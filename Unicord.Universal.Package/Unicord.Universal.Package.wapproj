@@ -83,7 +83,7 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
@@ -92,8 +92,13 @@
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-  <ItemGroup Condition="'$(Platform)' == 'ARM'">
+  <ItemGroup Condition="'$(Configuration)' == 'Store' And '$(Platform)' == 'ARM' ">
     <AppxManifest Include="Package.ARM.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Store' And '$(Platform)' == 'ARM' ">
+    <AppxManifest Include="Package.ARM.Debug.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>

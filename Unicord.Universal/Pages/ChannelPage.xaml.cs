@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
@@ -14,10 +15,12 @@ using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
+using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Media.Capture;
 using Windows.Storage;
@@ -28,6 +31,7 @@ using Windows.Storage.Search;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -844,6 +848,11 @@ namespace Unicord.Universal.Pages
         private async void MessageTextBox_SendInvoked(object sender, string e)
         {
             await SendAsync();
+        }
+
+        private async void PinToStartItem_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
     }
 }

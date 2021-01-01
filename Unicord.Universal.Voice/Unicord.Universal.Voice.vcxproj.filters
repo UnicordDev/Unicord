@@ -83,6 +83,15 @@
     <None Include="Unicord.Universal.Voice.def" />
     <None Include="PropertySheet.props" />
     <None Include=".clang-format" />
+    <None Include="gsl\gsl" />
+    <None Include="gsl\gsl_algorithm" />
+    <None Include="gsl\gsl_assert" />
+    <None Include="gsl\gsl_byte" />
+    <None Include="gsl\gsl_util" />
+    <None Include="gsl\multi_span" />
+    <None Include="gsl\pointers" />
+    <None Include="gsl\span" />
+    <None Include="gsl\string_span" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -95,5 +104,8 @@
     <Filter Include="Externals">
       <UniqueIdentifier>{fb467f89-17c7-4f0a-b9a7-70b09208ef2b}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="README.md" />
   </ItemGroup>
 </Project>

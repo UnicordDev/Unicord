@@ -126,7 +126,6 @@ namespace Unicord.Universal
                 App.Discord.Resumed -= OnDiscordResumed;
                 App.Discord.SocketClosed -= OnDiscordDisconnected;
                 App.Discord.LoggedOut -= OnLoggedOut;
-                App.Current.Resuming -= OnResuming;
             }
         }
 
@@ -167,7 +166,6 @@ namespace Unicord.Universal
                 App.Discord.Resumed += OnDiscordResumed;
                 App.Discord.SocketClosed += OnDiscordDisconnected;
                 App.Discord.LoggedOut += OnLoggedOut;
-                App.Current.Resuming += OnResuming;
             }
 
             App.Discord.Ready -= OnFirstDiscordReady;
@@ -200,15 +198,6 @@ namespace Unicord.Universal
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     rootFrame.Navigate(typeof(DiscordPage), Arguments));
             }
-
-            var notificationService = BackgroundNotificationService.GetForCurrentView();
-            _ = Task.Run(async () => await notificationService.ConnectAsync());
-        }
-
-        private void OnResuming(object sender, object e)
-        {
-            var notificationService = BackgroundNotificationService.GetForCurrentView();
-            _ = Task.Run(async () => await notificationService.ConnectAsync());
         }
 
         private Task OnLoggedOut()

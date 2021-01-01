@@ -123,7 +123,7 @@ namespace Unicord.Universal.Pages
                     var props = await _file.GetBasicPropertiesAsync();
                     if (props.Size >= maxSize)
                     {
-                        await UIUtilities.ShowErrorDialogAsync("This file is too big!", $"We're gonna need something under {(Files.SizeSuffix((long)maxSize, 0))} please!");
+                        await UIUtilities.ShowErrorDialogAsync("This file is too big!", $"We're gonna need something under {Tools.ToFileSizeString(maxSize)} please!");
                         Window.Current.Close();
                     }
                 }

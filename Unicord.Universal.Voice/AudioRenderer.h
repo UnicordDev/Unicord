@@ -10,33 +10,33 @@
 #include <winrt/Windows.Devices.Enumeration.h>
 #include "AudioFormat.h"
 
-#define SAFE_CLOSE(x) if (x != nullptr) { x.Close(); x = nullptr; }
+#define SAFE_CLOSE(x)   \
+    if (x != nullptr) { \
+        x.Close();      \
+        x = nullptr;    \
+    }
 
-namespace winrt::Unicord::Universal::Voice::implementation
-{
-    struct VoiceClient;
-}
-
-struct __declspec(uuid("5b0d3235-4dba-4d44-865e-8f1d0e4fd04d")) __declspec(novtable) IMemoryBufferByteAccess : ::IUnknown
-{
+struct __declspec(uuid("5b0d3235-4dba-4d44-865e-8f1d0e4fd04d")) __declspec(novtable) IMemoryBufferByteAccess : ::IUnknown {
     virtual HRESULT __stdcall GetBuffer(uint8_t** value, uint32_t* capacity) = 0;
 };
 
+
+namespace winrt::Unicord::Universal::Voice::implementation {
+    struct VoiceClient;
+}
 using namespace winrt::Unicord::Universal::Voice::Interop;
 using namespace winrt::Unicord::Universal::Voice::implementation;
 
 
-namespace winrt::Unicord::Universal::Voice::Render
-{
-    class AudioRenderer
-    {
+namespace winrt::Unicord::Universal::Voice::Render {
+    class AudioRenderer {
     public:
         AudioRenderer(implementation::VoiceClient* client);
 
         void Initialise(hstring preferred_render_device_id, hstring preferred_capture_device_id);
         void ProcessIncomingPacket(std::vector<uint8_t> packet, AudioSource* sender);
 
-        void CreateAudioInputNode(winrt::Windows::Media::MediaProperties::AudioEncodingProperties &properties, winrt::Unicord::Universal::Voice::Interop::AudioSource * sender, winrt::Windows::Media::Audio::AudioFrameInputNode &input_node);
+        void CreateAudioInputNode(winrt::Windows::Media::MediaProperties::AudioEncodingProperties& properties, winrt::Unicord::Universal::Voice::Interop::AudioSource* sender, winrt::Windows::Media::Audio::AudioFrameInputNode& input_node);
 
         void BeginCapture();
         void BeginRender();
@@ -48,6 +48,7 @@ namespace winrt::Unicord::Universal::Voice::Render
         Windows::Media::MediaProperties::AudioEncodingProperties GetRenderProperties();
 
         ~AudioRenderer();
+
     private:
         implementation::VoiceClient* voice_client;
         std::mutex output_mutex;
@@ -65,6 +66,6 @@ namespace winrt::Unicord::Universal::Voice::Render
         size_t buffer_length = 0;
         size_t consumed_buffer_length = 0;
 
-        void OnQuantumStarted(Windows::Media::Audio::AudioGraph graph, Windows::Foundation::IInspectable const &);
+        void OnQuantumStarted(Windows::Media::Audio::AudioGraph graph, Windows::Foundation::IInspectable const&);
     };
 }

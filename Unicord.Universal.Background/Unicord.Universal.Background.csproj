@@ -8,10 +8,6 @@
     <PublishTrimmed>true</PublishTrimmed>
     <Platforms>AnyCPU;x64;x86;arm;arm64</Platforms>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>  
   
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="6.1.1" />
@@ -45,4 +41,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Import Project="..\Unicord.Universal.Shared\Unicord.Universal.Shared.projitems" Label="Shared" />
 </Project>

@@ -177,6 +177,9 @@
   <data name="Pin.Text" xml:space="preserve">
     <value>Pin Message</value>
   </data>
+  <data name="PinToStart.Text" xml:space="preserve">
+    <value>Pin to Start</value>
+  </data>
   <data name="Profile.Text" xml:space="preserve">
     <value>Profile</value>
   </data>

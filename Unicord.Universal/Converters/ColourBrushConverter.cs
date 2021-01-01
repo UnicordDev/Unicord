@@ -10,20 +10,23 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is DiscordColor colour && colour.Value != default(DiscordColor).Value)
+            switch (value)
             {
-                return new SolidColorBrush(Color.FromArgb(255, colour.R, colour.G, colour.B));
-            }
-            else if (value is Brush)
-            {
-                return value;
-            }
-            else if (parameter is Brush)
-            {
-                return parameter as Brush;
+                case DiscordColor colour:
+                    if (colour.Value != 0)
+                        return new SolidColorBrush(Color.FromArgb(255, colour.R, colour.G, colour.B));
+                    break;
+                case Optional<DiscordColor> optionalColor:
+                    if (optionalColor.HasValue)
+                        return new SolidColorBrush(Color.FromArgb(255, optionalColor.Value.R, optionalColor.Value.G, optionalColor.Value.B));
+                    break;
+                case Brush brush:
+                    return brush;
+                default:
+                    break;
             }
 
-            return null;
+            return parameter as Brush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

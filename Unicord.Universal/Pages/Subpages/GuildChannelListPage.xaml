@@ -24,7 +24,8 @@
             CanDragItems="{Binding CanEdit}"
             CanReorderItems="{Binding CanEdit}"
             AllowDrop="{Binding CanEdit}"
-            SelectionChanged="channelsList_SelectionChanged">
+            SelectionChanged="channelsList_SelectionChanged"
+            SingleSelectionFollowsFocus="False">
             <ListView.Header>
                 <Grid x:Name="Header">
                     <Grid Visibility="{Binding HeaderImage, Converter={StaticResource HideOnNullConverter}}">

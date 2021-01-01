@@ -192,6 +192,7 @@
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         SelectionChanged="GuildsList_SelectionChanged"
                         ShowsScrollingPlaceholders="False"
+                        SingleSelectionFollowsFocus="False"
                         Width="56">
                         <ListView.Header>
                             <StackPanel Margin="0,8,0,0">
@@ -224,6 +225,7 @@
                                     SelectedItem="{Binding SelectedDM}"
                                     Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"
                                     ScrollViewer.VerticalScrollMode="Disabled"
+                                    SingleSelectionFollowsFocus="False"
                                     SelectionChanged="UnreadDms_SelectionChanged">
                                     <ListView.HeaderTemplate>
                                         <DataTemplate>

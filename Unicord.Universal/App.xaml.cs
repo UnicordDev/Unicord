@@ -426,11 +426,6 @@ namespace Unicord.Universal
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-
-            var notificationService = BackgroundNotificationService.GetForCurrentView();
-            await notificationService.SetSuspendedAsync(true);
-            notificationService.Disconnect();
-
             deferral.Complete();
         }
 

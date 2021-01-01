@@ -139,17 +139,20 @@
     <value>Message {0}{1}</value>
     <comment>Message {ChannelPrefix}{ChannelName}</comment>
   </data>
+  <data name="MoreOptionsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>More</value>
+  </data>
   <data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Mute</value>
   </data>
-  <data name="NewWindowButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="NewWindowItem.Text" xml:space="preserve">
     <value>Open in a New Window</value>
   </data>
   <data name="NewWindowNormal.Text" xml:space="preserve">
-    <value>Normal Window</value>
+    <value>Open in Normal Window</value>
   </data>
   <data name="NewWindowOverlay.Text" xml:space="preserve">
-    <value>Overlay Window</value>
+    <value>Open in Overlay Window</value>
   </data>
   <data name="NoMessagesHeader.Text" xml:space="preserve">
     <value>Nothing to see here!</value>
@@ -166,6 +169,9 @@
   <data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Pinned Messages</value>
   </data>
+  <data name="PinToStart.Text" xml:space="preserve">
+    <value>Pin to Start</value>
+  </data>
   <data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -180,6 +186,9 @@
   </data>
   <data name="SlowModeFormat" xml:space="preserve">
     <value>Messages can be sent every {0}!</value>
+  </data>
+  <data name="UnpinFromStart.Text" xml:space="preserve">
+    <value>Unpin from Start</value>
   </data>
   <data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>User List</value>
