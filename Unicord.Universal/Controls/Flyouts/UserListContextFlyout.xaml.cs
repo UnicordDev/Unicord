@@ -37,7 +37,7 @@ namespace Unicord.Universal.Controls.Flyouts
                 if (Target.DataContext is DiscordMember member)
                 {
                     var perms = member.PermissionsIn(null);
-                    if (member.IsCurrent)
+                    if (member.Id == App.Discord.CurrentUser.Id)
                     {
                         return perms.HasPermission(Permissions.ChangeNickname);
                     }

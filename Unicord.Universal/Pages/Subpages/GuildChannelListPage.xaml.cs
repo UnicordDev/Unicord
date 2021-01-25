@@ -43,7 +43,7 @@ namespace Unicord.Universal.Pages.Subpages
         private void OnButtonClicked(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            var flyout = Flyout.GetAttachedFlyout(btn);
+            var flyout = Flyout.GetAttachedFlyout(Header);
             if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
             {
                 var options = new FlyoutShowOptions();

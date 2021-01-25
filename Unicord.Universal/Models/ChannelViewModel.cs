@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Resources;
@@ -31,6 +32,7 @@ namespace Unicord.Universal.Models
         private DateTimeOffset _typingLastSent;
         private DateTimeOffset _messageLastSent;
         private SynchronizationContext _context;
+        private WindowHandle _windowHandle;
         private ResourceLoader _strings;
         private SemaphoreSlim _loadSemaphore;
         private DispatcherTimer _slowModeTimer;
@@ -40,11 +42,12 @@ namespace Unicord.Universal.Models
         private DiscordMessage _replyTo;
         private bool _replyPing = true;
 
-        public ChannelViewModel(DiscordChannel channel)
+        public ChannelViewModel(DiscordChannel channel, WindowHandle window)
         {
             if (channel.Type == ChannelType.Voice)
                 throw new InvalidOperationException("Unable to create a view model for a voice chanel"); // no op this
 
+            _windowHandle = window;
             _strings = ResourceLoader.GetForCurrentView("ChannelPage");
             _loadSemaphore = new SemaphoreSlim(1, 1);
             _context = SynchronizationContext.Current;
@@ -352,7 +355,7 @@ namespace Unicord.Universal.Models
         }
 
         public bool ShowPopoutButton
-            => WindowManager.IsMainWindow && WindowManager.MultipleWindowsSupported;
+            => WindowingService.Current.Supported && WindowingService.Current.IsMainWindow(_windowHandle);
 
         public bool IsPinned =>
             SecondaryTile.Exists($"Channel_{Channel.Id}");
@@ -582,7 +585,9 @@ namespace Unicord.Universal.Models
 
             if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
             {
-                var txt = MessageText;
+                var txt = MessageText ?? "";
+                txt = txt.Replace('\r', '\n'); // this is incredibly stupid
+
                 var replyTo = ReplyTo;
                 var replyPing = ReplyPing;
                 var models = FileUploads.ToArray();
@@ -591,8 +596,6 @@ namespace Unicord.Universal.Models
                 ReplyPing = true;
                 MessageText = "";
                 FileUploads.Clear();
-
-                txt = txt.Replace('\r', '\n'); // this is incredibly stupid
 
                 var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
                 if (replyPing && replyTo != null)

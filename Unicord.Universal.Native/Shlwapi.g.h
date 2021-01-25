@@ -29,7 +29,11 @@ namespace winrt::Unicord::Universal::Native::factory_implementation
         {
             return L"Unicord.Universal.Native.Shlwapi";
         }
-        auto StrFormatByteSizeEx(uint64_t size, SFBSFlags const& flags)
+        auto AssocQueryString(Unicord::Universal::Native::ASSOCF const& flags, Unicord::Universal::Native::ASSOCSTR const& str, hstring const& pszAssoc, hstring const& pszExtra)
+        {
+            return T::AssocQueryString(flags, str, pszAssoc, pszExtra);
+        }
+        auto StrFormatByteSizeEx(uint64_t size, Unicord::Universal::Native::SFBSFlags const& flags)
         {
             return T::StrFormatByteSizeEx(size, flags);
         }

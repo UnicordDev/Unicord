@@ -13,8 +13,8 @@ namespace Unicord.Universal.Dialogs
     {
         public DiscordMessage Message
         {
-            get { return (DiscordMessage)GetValue(MessageProperty); }
-            set { SetValue(MessageProperty, value); }
+            get => (DiscordMessage)GetValue(MessageProperty);
+            set => SetValue(MessageProperty, value);
         }
 
         public static readonly DependencyProperty MessageProperty =

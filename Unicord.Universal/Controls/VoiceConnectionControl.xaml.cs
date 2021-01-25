@@ -24,8 +24,8 @@ namespace Unicord.Universal.Controls
     {
         public VoiceConnectionModel ConnectionModel
         {
-            get { return (VoiceConnectionModel)GetValue(ConnectionModelProperty); }
-            set { SetValue(ConnectionModelProperty, value); }
+            get => (VoiceConnectionModel)GetValue(ConnectionModelProperty);
+            set => SetValue(ConnectionModelProperty, value);
         }
 
         public static readonly DependencyProperty ConnectionModelProperty =

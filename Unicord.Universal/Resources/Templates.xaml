@@ -10,12 +10,14 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:presence="using:Unicord.Universal.Controls.Presence"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Controls/Messages.xaml"/>
+        <ResourceDictionary Source="Controls/Emoji.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
+
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}"/>
@@ -76,7 +78,7 @@
                                                         </VisualState>
                                                     </VisualStateGroup>
                                                 </VisualStateManager.VisualStateGroups>
-                                                <TextBlock x:Name="GlyphElement" AutomationProperties.AccessibilityView="Raw" FontStyle="Normal" FontFamily="{ThemeResource SymbolThemeFontFamily}" Foreground="{ThemeResource TextControlButtonForeground}" FontSize="12" HorizontalAlignment="Center" Text="&#xE10A;" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="GlyphElement" AutomationProperties.AccessibilityView="Raw" FontStyle="Normal" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource TextControlButtonForeground}" FontSize="12" HorizontalAlignment="Center" Text="&#xE10A;" VerticalAlignment="Center"/>
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -229,10 +231,10 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
+                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
-                <Grid x:Name="unreadIndicator" x:Load="{x:Bind ReadState.Unread}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                <Grid x:Name="unreadIndicator" x:Load="{x:Bind Unread}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
                     <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
                 </Grid>
 
@@ -292,31 +294,34 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
-        <Grid Padding="0,4" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <Grid Padding="0,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <Canvas Margin="0,0,0,0" Width="28" Height="28">
-                    <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
-                        <lib:PersonPicture.ProfilePicture>
-                            <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="28" DecodePixelHeight="28" DecodePixelType="Logical" />
-                        </lib:PersonPicture.ProfilePicture>
-                    </lib:PersonPicture>
-                    <Ellipse Canvas.Left="16" Canvas.Top="16" Width="12" Height="12" StrokeThickness="1" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
-                        <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Canvas>
+            <Canvas Margin="0,0,0,0" Width="28" Height="28">
+                <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
+                    <lib:PersonPicture.ProfilePicture>
+                        <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="28" DecodePixelHeight="28" DecodePixelType="Logical" />
+                    </lib:PersonPicture.ProfilePicture>
+                </lib:PersonPicture>
+                <Ellipse Canvas.Left="16" Canvas.Top="16" Width="14" Height="14" StrokeThickness="2" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
+                    <Ellipse.Fill>
+                        <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Canvas>
 
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+                <presence:InlinePresenceControl Presence="{Binding Recipient.Presence, Mode=OneWay}" />
+            </StackPanel>
 
-                <Grid x:Name="unreadIndicator" Visibility="{Binding ReadState.Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
-                    <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
-                </Grid>
+            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
             </Grid>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="UserListTemplate">
@@ -357,12 +362,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <controls:UsernameControl User="{Binding}" />
-                <TextBlock
-                    Grid.Row="1"
-                    FontSize="11"
-                    Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                    <Run Text="{Binding Presence, Converter={StaticResource PresenceTextConverter}}" />
-                </TextBlock>
+                <presence:InlinePresenceControl Grid.Row="1" Presence="{Binding Presence}"/>
             </Grid>
         </Grid>
     </DataTemplate>

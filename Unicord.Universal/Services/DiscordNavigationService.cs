@@ -85,7 +85,7 @@ namespace Unicord.Universal.Services
                 _discordPageModel.SelectedDM = null;
                 _discordPageModel.IsFriendsSelected = false;
 
-                if (await WindowManager.ActivateOtherWindow(channel))
+                if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
                     return;
 
                 if (channel is DiscordDmChannel dm)

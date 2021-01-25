@@ -274,7 +274,7 @@
                                               x:Uid="/ChannelPage/MuteButton"
                                               Content="&#xE74F;"
                                               Margin="2,0,0,0"
-                                              IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=TwoWay}"
+                                              IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=OneWay}"
                                               Style="{ThemeResource IconToggleButtonStyle}">
                                     <w1709:ToggleButton.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
@@ -284,6 +284,7 @@
                                         x:Uid="/ChannelPage/SearchButton"
                                         Content="&#xE721;"
                                         Margin="2,0,0,0"
+                                        Click="SearchButton_Click"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
@@ -336,7 +337,7 @@
                                                             Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
                                                             Click="NewWindowButton_Click">
                                                 <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xE8A7;" />
+                                                    <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                                                 </MenuFlyoutItem.Icon>
                                             </MenuFlyoutItem>
 
@@ -344,7 +345,7 @@
                                                             Visibility="{Binding ShowPopoutButton, Converter={StaticResource BoolVisibilityConverter}}"
                                                             Click="NewCompactWindowButton_Click">
                                                 <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xE78B;" />
+                                                    <FontIcon Glyph="&#xE78B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                                                 </MenuFlyoutItem.Icon>
                                             </MenuFlyoutItem>
                                         </lib:MenuBarItemFlyout>
@@ -416,6 +417,7 @@
                                     <Setter Property="MinHeight" Value="0" />
                                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Background" Value="Transparent" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
@@ -575,7 +577,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                 <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
                                 <wam:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
 
@@ -723,6 +725,8 @@
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="Multiple"/>
                         <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource EditingMessageTemplateSelector}"/>
+                        <Setter Target="EditingControls.Visibility" Value="Visible"/>
+                        <Setter Target="DefaultControls.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NormalMode">
@@ -757,6 +761,8 @@
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="None"/>
                         <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource MessageTemplateSelector}"/>
+                        <Setter Target="DefaultControls.Visibility" Value="Visible"/>
+                        <Setter Target="EditingControls.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

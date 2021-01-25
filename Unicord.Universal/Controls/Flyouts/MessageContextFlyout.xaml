@@ -44,7 +44,7 @@
                     Command="{StaticResource ReplyCommand}"
                     CommandParameter="{Binding}">
         <MenuFlyoutItem.Icon>
-            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE97A;" />
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 
@@ -84,7 +84,7 @@
                     Command="{StaticResource EditModeCommand}"
                     CommandParameter="{Binding}">
         <MenuFlyoutItem.Icon>
-            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE762;" />
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE762;" />
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 

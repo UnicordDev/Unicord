@@ -1,0 +1,25 @@
+﻿<UserControl
+    x:Name="Self"
+    x:Class="Unicord.Universal.Controls.Presence.InlinePresenceControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls.Presence"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:emoji="using:Unicord.Universal.Controls.Emoji"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid x:Name="Root" DataContext="{Binding ElementName=Self}" Visibility="{Binding CondencedPresence.Empty, Converter={StaticResource InverseBoolVisibilityConverter}, FallbackValue=Collapsed}">        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <emoji:EmojiControl Emoji="{Binding CondencedPresence.Emoji}" Size="14" VerticalAlignment="Top" Margin="0,2,4,0" Visibility="{Binding CondencedPresence.Emoji, Converter={StaticResource HideOnNullConverter}}" />
+        <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{Binding TextWrapping}">
+            <Run Text="{Binding CondencedPresence.StatusText, Mode=OneWay}" /> <Run Text="{Binding CondencedPresence.StatusName, Mode=OneWay}" FontWeight="SemiBold" />
+        </TextBlock>
+    </Grid>
+</UserControl>

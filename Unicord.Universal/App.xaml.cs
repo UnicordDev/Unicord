@@ -16,6 +16,7 @@ using Microsoft.AppCenter.Push;
 //using Microsoft.Gaming.XboxGameBar;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
+using Microsoft.UI.Xaml.Media;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -34,6 +35,7 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
+using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
@@ -254,7 +256,6 @@ namespace Unicord.Universal
                 UpgradeSettings();
 
                 Analytics.TrackEvent("Unicord_Launch");
-                WindowManager.SetMainWindow();
 
                 try
                 {
@@ -275,6 +276,7 @@ namespace Unicord.Universal
                     channelId = LocalSettings.Read("LastViewedChannel", 0ul);
                 }
 
+                WindowingService.Current.SetMainWindow(rootFrame);
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
@@ -423,7 +425,7 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
@@ -530,7 +532,7 @@ namespace Unicord.Universal
 
         internal static async Task LogoutAsync()
         {
-            await WindowManager.CloseAllWindows();
+            await WindowingService.Current.CloseAllWindowsAsync();
             await ImageCache.Instance.ClearAsync();
             await Discord.DisconnectAsync();
             Discord.Dispose();

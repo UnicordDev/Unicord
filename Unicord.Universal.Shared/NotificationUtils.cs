@@ -32,7 +32,7 @@ namespace Unicord.Universal.Shared
             if (message.Channel.Guild != null)
             {
                 var usr = message.Channel.Guild.CurrentMember;
-                if (message.MentionedRoles?.Any(r => (usr.Roles.Contains(r))) == true)
+                if (message.MentionedRoleIds.Any(r => (usr.RoleIds.Contains(r))) == true)
                 {
                     willNotify = true;
                 }
@@ -48,6 +48,9 @@ namespace Unicord.Universal.Shared
                 willNotify = false;
             }
 
+            if (message.Channel.NotificationMuted)
+                willNotify = false;
+
             return willNotify;
         }
 
@@ -60,7 +63,7 @@ namespace Unicord.Universal.Shared
         {
             string messageText = message.Content;
 
-            foreach (DiscordUser user in message.MentionedUsers)
+            foreach (var user in message.MentionedUsers)
             {
                 if (user != null)
                 {
@@ -72,14 +75,16 @@ namespace Unicord.Universal.Shared
 
             if (message.Channel.Guild != null)
             {
-                foreach (DiscordChannel channel in message.MentionedChannels)
+                foreach (var channel in message.MentionedChannels)
                 {
                     messageText = messageText.Replace(channel.Mention, $"#{channel.Name}");
                 }
 
-                foreach (DiscordRole role in message.MentionedRoles)
+                foreach (var roleId in message.MentionedRoleIds)
                 {
-                    messageText = messageText.Replace(role.Mention, $"@{role.Name}");
+                    var role = message.Channel.Guild.GetRole(roleId);
+                    if (role != null)
+                        messageText = messageText.Replace(role.Mention, $"@{role.Name}");
                 }
             }
 

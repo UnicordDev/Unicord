@@ -24,7 +24,7 @@
         <Grid x:Name="topGrid" Height="42">
             <TextBlock
                 x:Uid="/UserListPage/UserListHeader"
-                Margin="10,0"
+                Margin="12,0"
                 VerticalAlignment="Center"
                 FontSize="16"
                 FontWeight="Bold"/>

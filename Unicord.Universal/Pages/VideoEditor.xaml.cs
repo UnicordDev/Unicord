@@ -78,7 +78,7 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                WindowManager.HandleTitleBarForControl(topGrid);
+                WindowingService.Current.HandleTitleBarForControl(topGrid);
             }
 
             if (_model.StorageFile == null)

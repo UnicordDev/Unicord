@@ -22,10 +22,10 @@ namespace Unicord.Universal.Controls.Flyouts
     {
         public MessageControl Parent
         {
-            get { return (MessageControl)GetValue(ParentProperty); }
-            set { SetValue(ParentProperty, value); }
+            get => (MessageControl)GetValue(ParentProperty);
+            set => SetValue(ParentProperty, value);
         }
-        
+
         public static readonly DependencyProperty ParentProperty =
             DependencyProperty.Register("Parent", typeof(MessageControl), typeof(MessageContextFlyout), new PropertyMetadata(null));
 

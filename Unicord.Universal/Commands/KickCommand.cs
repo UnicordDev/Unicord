@@ -19,7 +19,7 @@ namespace Unicord.Universal.Commands
         {
             if (parameter is DiscordMember member)
             {
-                if (member.IsCurrent)
+                if (member.Id == App.Discord.CurrentUser.Id)
                     return false;
 
                 if (!Tools.CheckRoleHierarchy(member.Guild.CurrentMember, member))

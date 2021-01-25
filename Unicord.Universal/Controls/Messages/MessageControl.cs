@@ -26,8 +26,8 @@ namespace Unicord.Universal.Controls.Messages
         #region Dependency Properties
         public DiscordMessage Message
         {
-            get { return (DiscordMessage)GetValue(MessageProperty); }
-            set { SetValue(MessageProperty, value); }
+            get => (DiscordMessage)GetValue(MessageProperty);
+            set => SetValue(MessageProperty, value);
         }
 
         public static readonly DependencyProperty MessageProperty =
@@ -106,6 +106,7 @@ namespace Unicord.Universal.Controls.Messages
                 return;
 
             VisualStateManager.GoToState(this, "NotEditing", false);
+            VisualStateManager.GoToState(this, "NoMention", false);
 
             var list = this.FindParent<ListView>();
             if (list != null)
@@ -114,6 +115,15 @@ namespace Unicord.Universal.Controls.Messages
                 {
                     VisualStateManager.GoToState(this, "EditMode", false);
                     return;
+                }
+
+                var currentMember = Message.Channel.Guild?.CurrentMember;
+
+                if (Message.MentionEveryone ||
+                    Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) || 
+                    (currentMember != null && Message.MentionedRoleIds.Any(r => currentMember.RoleIds.Contains(r))))
+                {
+                    VisualStateManager.GoToState(this, "Mention", false);
                 }
 
                 var index = list.Items.IndexOf(Message);
@@ -130,9 +140,12 @@ namespace Unicord.Universal.Controls.Messages
                         }
                     }
                 }
+                VisualStateManager.GoToState(this, "Normal", false);
             }
-
-            VisualStateManager.GoToState(this, "Normal", false);
+            else
+            {
+                VisualStateManager.GoToState(this, "None", false);
+            }
         }
 
         public virtual void BeginEdit()

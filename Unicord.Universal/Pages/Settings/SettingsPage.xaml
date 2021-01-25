@@ -34,7 +34,7 @@
                     Margin="8,4"
                     Padding="4"
                     FontSize="16"
-                    FontFamily="Segoe MDL2 Assets"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Background="Transparent"
                     Click="SettingsCloseButton_Click">
                 &#xE72B;
@@ -43,7 +43,7 @@
 
         <lib:TabViewItem Header="Accounts" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE77B;" />
+                <lib:FontIconSource Glyph="&#xE77B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AccountsSettingsPage"/>
@@ -52,7 +52,7 @@
 
         <lib:TabViewItem Header="Text &amp; Images" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE70F;" />
+                <lib:FontIconSource Glyph="&#xE70F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MessagingSettingsPage"/>
@@ -61,7 +61,7 @@
 
         <lib:TabViewItem Header="Appearance" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE771;" />
+                <lib:FontIconSource Glyph="&#xE771;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:ThemesSettingsPage"/>
@@ -70,7 +70,7 @@
 
         <lib:TabViewItem Header="Audio &amp; Video" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xEA69;" />
+                <lib:FontIconSource Glyph="&#xEA69;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MediaSettingsPage"/>
@@ -79,7 +79,7 @@
 
         <lib:TabViewItem Header="Microphone &amp; Camera" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE720;" />
+                <lib:FontIconSource Glyph="&#xE720;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:VoiceSettingsPage"/>
@@ -88,7 +88,7 @@
 
         <lib:TabViewItem Header="Security &amp; Privacy" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE72E;" />
+                <lib:FontIconSource Glyph="&#xE72E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
@@ -97,7 +97,7 @@
         
         <lib:TabViewItem x:Name="DebugItem" Visibility="{x:Bind IsDebug, Converter={StaticResource BoolVisibilityConverter}}" Header="Debug" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE90F;" />
+                <lib:FontIconSource Glyph="&#xE90F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
@@ -106,7 +106,7 @@
 
         <lib:TabViewItem Header="About" IsClosable="False">
             <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE946;" />
+                <lib:FontIconSource Glyph="&#xE946;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
             </lib:TabViewItem.IconSource>
             <ScrollViewer>
                 <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AboutSettingsPage"/>

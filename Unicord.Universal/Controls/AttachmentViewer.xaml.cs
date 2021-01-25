@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DSharpPlus.Entities;
+using Unicord.Universal.Native;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -33,10 +34,10 @@ namespace Unicord.Universal.Controls
 
         public DiscordAttachment Attachment
         {
-            get { return (DiscordAttachment)GetValue(AttachmentProperty); }
-            set { SetValue(AttachmentProperty, value); }
+            get => (DiscordAttachment)GetValue(AttachmentProperty);
+            set => SetValue(AttachmentProperty, value);
         }
-        
+
         public static readonly DependencyProperty AttachmentProperty =
             DependencyProperty.Register("Attachment", typeof(DiscordAttachment), typeof(AttachmentViewer), new PropertyMetadata(null));
 
@@ -199,14 +200,17 @@ namespace Unicord.Universal.Controls
                     downloadProgressBar.Value = p.BytesReceived;
                 });
 
+                var extension = Path.GetExtension(Attachment.Url);
+                var extensionString = Tools.GetItemTypeeFromExtension(extension, "Attachment File Extension");
+
                 var picker = new FileSavePicker()
                 {
                     SuggestedStartLocation = PickerLocationId.Downloads,
                     SuggestedFileName = Path.GetFileNameWithoutExtension(Attachment.Url),
-                    DefaultFileExtension = Path.GetExtension(Attachment.Url)
+                    DefaultFileExtension = extension
                 };
 
-                picker.FileTypeChoices.Add($"Attachment Extension (*{Path.GetExtension(Attachment.Url)})", new List<string>() { Path.GetExtension(Attachment.Url) });
+                picker.FileTypeChoices.Add($"{extensionString} (*{extension})", new List<string>() { extension });
 
                 var file = await picker.PickSaveFileAsync();
                 downloadProgressBar.IsIndeterminate = false;

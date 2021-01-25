@@ -7,7 +7,7 @@
     xmlns:wam="using:Unicord.Universal.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts">
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts" xmlns:emoji="using:Unicord.Universal.Controls.Emoji">
 
     <DataTemplate x:Key="DefaultReactionTemplate">
         <ToggleButton x:Name="ReactionToggleButton" 
@@ -21,9 +21,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Width="18" Height="18" Source="{Binding Emoji.Url}" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Emoji.Unicode}" />
-
+                <emoji:EmojiControl Emoji="{Binding Emoji}" Size="18"/>
                 <TextBlock Grid.Column="1" Margin="8,0,0,0" Text="{Binding Count}" FontSize="12" VerticalAlignment="Center"/>
             </Grid>
         </ToggleButton>
@@ -95,18 +93,20 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <SolidColorBrush x:Key="MentionedMessageBackgroundBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.16666"/>
 
     <Style TargetType="local:MessageControl">
-        <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>
+        <!--<Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MessageControl">
                     <Border x:Name="MainBorder"
                             ContextFlyout="{StaticResource MessageContextFlyout}"
                             Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
+                            Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0,0,0,0">
+                            BorderThickness="4,0,0,0">
 
                         <!--<Border.ContextFlyout>
                             <flyouts:MessageContextFlyout />
@@ -118,14 +118,14 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Grid Margin="56,-8,0,4" DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                            <Grid Margin="56,-8,0,4" Visibility="{Binding ReferencedMessage, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
 
                                 <Ellipse x:Name="ReplyAvatarContainer"
                                          Width="16"
@@ -137,7 +137,7 @@
                                                 <BitmapImage DecodePixelWidth="16"
                                                          DecodePixelHeight="16"
                                                          DecodePixelType="Logical" 
-                                                         UriSource="{Binding Author.NonAnimatedAvatarUrl}" />
+                                                         UriSource="{Binding ReferencedMessage.Author.NonAnimatedAvatarUrl}" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>
@@ -150,7 +150,7 @@
                                                        InlineOnly="True"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                                        Channel="{Binding Channel}"
-                                                       Text="{Binding Content}" 
+                                                       Text="{Binding ReferencedMessage.Content}" 
                                                        IsTextSelectionEnabled="False"
                                                        VerticalAlignment="Center"
                                                        Margin="6,0" />
@@ -235,6 +235,20 @@
                         </Grid>
 
                         <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="Mentions">
+                                <VisualState x:Name="NoMention">
+                                    <VisualState.Setters>
+                                        <Setter Target="MainBorder.Background" Value="Transparent"/>
+                                        <Setter Target="MainBorder.BorderBrush" Value="Transparent"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Mention">
+                                    <VisualState.Setters>
+                                        <Setter Target="MainBorder.BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                                        <Setter Target="MainBorder.Background" Value="{ThemeResource MentionedMessageBackgroundBrush}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                             <VisualStateGroup x:Name="Edit">
                                 <VisualState x:Name="NotEditing">
                                     <VisualState.Setters>
@@ -256,8 +270,8 @@
                                         <Setter Target="Attachments.Visibility" Value="Visible"/>
                                         <Setter Target="ImageContainer.Visibility" Value="Visible"/>
                                         <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,10,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="6,10,8,0"/>
+                                        <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
+                                        <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Collapsed">
@@ -266,9 +280,8 @@
                                         <Setter Target="Attachments.Visibility" Value="Visible"/>
                                         <Setter Target="ImageContainer.Visibility" Value="Collapsed"/>
                                         <Setter Target="AuthorContainer.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="6,2,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="4,0,8,0"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
+                                        <Setter Target="MainBorder.Padding" Value="8,2,16,0"/>
+                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="EditMode">
@@ -277,8 +290,18 @@
                                         <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
                                         <Setter Target="Embeds.Visibility" Value="Collapsed"/>
                                         <Setter Target="Attachments.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="8"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
+                                        <Setter Target="MainBorder.Padding" Value="4,8,8,8"/>
+                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="None">
+                                    <VisualState.Setters>
+                                        <Setter Target="ImageContainer.Visibility" Value="Visible"/>
+                                        <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
+                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
+                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
+                                        <Setter Target="MainBorder.Padding" Value="0,0,0,0"/>
+                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -547,7 +570,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Margin="24,0,22,0"
-                            FontFamily="Segoe MDL2 Assets"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
                             FontSize="20"
                             Text="{Binding Converter={StaticResource SystemMessageSymbolConverter}}"
                             Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>

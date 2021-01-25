@@ -18,11 +18,10 @@ namespace Unicord.Universal.Dialogs
 {
     public sealed partial class ProfileOverlay : UserControl
     {
-        DiscordUser _user;
-        DiscordMember _member;
-        MessageUserCommand _messageUserCommand = new MessageUserCommand();
+        private DiscordUser _user;
+        private DiscordMember _member;
 
-        bool _isMember => _member != null;
+        private bool _isMember => _member != null;
 
         public DiscordUser User { get => GetValue(UserProperty) as DiscordUser; set => SetValue(UserProperty, value); }
         public Ellipse AnimatedEllipse => ellipse;

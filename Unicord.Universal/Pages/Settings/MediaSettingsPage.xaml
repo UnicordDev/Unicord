@@ -17,13 +17,48 @@
 
         <TextBlock x:Uid="/MediaSettingsPage/MediaCompressionHeader" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,8"/>
         <TextBlock x:Uid="/MediaSettingsPage/MediaCompressionSubheader" TextWrapping="Wrap"/>
+
         <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AutoTranscodeMedia, Mode=TwoWay}" Margin="0,12">
-            <ComboBox.Items>
-                <ComboBoxItem x:Uid="/MediaSettingsPage/AlwaysCompress"/>
-                <ComboBoxItem x:Uid="/MediaSettingsPage/CompressIfNeeded"/>
-                <ComboBoxItem x:Uid="/MediaSettingsPage/NeverCompress"/>
-            </ComboBox.Items>
+            <ComboBoxItem x:Uid="/MediaSettingsPage/AlwaysCompress"/>
+            <ComboBoxItem x:Uid="/MediaSettingsPage/CompressIfNeeded"/>
+            <ComboBoxItem x:Uid="/MediaSettingsPage/NeverCompress"/>
         </ComboBox>
+
+        <!--        
+            <ComboBox x:Name="PresetComboBox"
+                      HorizontalAlignment="Stretch"
+                      Margin="0,0,0,12">
+                <ComboBoxItem>
+                    <TextBlock>
+                        <Run x:Uid="/MediaSettingsPage/TinyPresetItem"/>
+                        <LineBreak/><Run x:Uid="/MediaSettingsPage/TinyPresetSubheader" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <TextBlock>
+                        <Run x:Uid="/MediaSettingsPage/SmallPresetItem"/>
+                        <LineBreak/><Run x:Uid="/MediaSettingsPage/SmallPresetSubheader" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <TextBlock>
+                        <Run x:Uid="/MediaSettingsPage/MediumPresetItem"/>
+                        <LineBreak/><Run x:Uid="/MediaSettingsPage/MediumPresetSubheader" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    <TextBlock>
+                        <Run x:Uid="/MediaSettingsPage/LargePresetItem" />
+                        <LineBreak/><Run x:Uid="/MediaSettingsPage/LargePresetSubheader" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                    </TextBlock>
+                </ComboBoxItem>
+                <ComboBoxItem >
+                    <TextBlock>
+                        <Run x:Uid="/MediaSettingsPage/CustomPresetRun" Text="Custom"/>
+                    </TextBlock>
+                </ComboBoxItem>
+            </ComboBox>
+        -->
 
         <controls:Expander x:Uid="/MediaSettingsPage/AdvancedHeader" Margin="-12,0" Style="{ThemeResource TransparentExpanderStyle}" Background="Transparent">
             <Grid Padding="4,0">
@@ -42,10 +77,8 @@
                         </TextBlock>
                     </Grid>
                     <ComboBox HorizontalAlignment="Stretch" x:Uid="/MediaSettingsPage/EncoderPriorityBox" SelectedIndex="{Binding ProcessingAlgorithm, Mode=TwoWay}" Margin="0,12">
-                        <ComboBox.Items>
-                            <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPrioritySpeed" />
-                            <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPriorityQuality" />
-                        </ComboBox.Items>
+                        <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPrioritySpeed" />
+                        <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPriorityQuality" />
                     </ComboBox>
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MediaSettingsPage/AudioOptionsHeader" Margin="0,0,0,4"/>
                     <Grid>

@@ -89,20 +89,12 @@
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:FileUploadModel">
                         <Grid MaxWidth="250" VerticalAlignment="Stretch">
-                            <Image VerticalAlignment="Center" HorizontalAlignment="Stretch" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
+                            <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
 
                             <Grid HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch">
-                                
-                                <Rectangle>
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                                            <GradientStop Color="#00000000" Offset="0.0" />
-                                            <GradientStop Color="#00000000" Offset="0.65" />
-                                            <GradientStop Color="#C0000000" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
+
+                                <Rectangle Fill="{ThemeResource BackgroundGradientBrush}"/>
 
                                 <Grid
                                     HorizontalAlignment="Stretch"
@@ -120,6 +112,7 @@
                                     <Button x:Name="transcodeFailedButton"
                                             x:Uid="/Controls/TranscodeFailedButton"
                                             Grid.Column="1"
+                                            Margin="2,0,0,0"
                                             Click="TranscodeFailedButton_Click"
                                             Content="&#xE783;"
                                             Foreground="{ThemeResource ErrorTextForegroundBrush}"
@@ -130,6 +123,7 @@
                                     <Button x:Name="editButton"
                                             x:Uid="/Controls/EditButton"
                                             Grid.Column="2"
+                                            Margin="2,0,0,0"
                                             Click="EditButton_Click"
                                             Content="&#xE8B2;"
                                             Style="{ThemeResource IconButtonStyle}"
@@ -140,6 +134,7 @@
                                     <ToggleButton x:Name="spoilerButton"
                                                   x:Uid="/Controls/SpoilerButton"
                                                   Grid.Column="3"
+                                            Margin="2,0,0,0"
                                                   Content="&#xE890;"
                                                   IsChecked="{Binding Spoiler, Mode=TwoWay}"
                                                   Style="{ThemeResource IconToggleButtonStyle}"
@@ -147,6 +142,7 @@
 
                                     <Button x:Name="removeItemButton"
                                             Grid.Column="4"
+                                            Margin="2,0,0,0"
                                             Click="RemoveItemButton_Click"
                                             Content="&#xE74D;"
                                             Style="{ThemeResource IconButtonStyle}"

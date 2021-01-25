@@ -22,8 +22,8 @@ namespace Unicord.Universal.Controls.Messages
 
         public DiscordSticker Sticker
         {
-            get { return (DiscordSticker)GetValue(StickerProperty); }
-            set { SetValue(StickerProperty, value); }
+            get => (DiscordSticker)GetValue(StickerProperty);
+            set => SetValue(StickerProperty, value);
         }
 
         public static readonly DependencyProperty StickerProperty =
@@ -58,14 +58,14 @@ namespace Unicord.Universal.Controls.Messages
             {
                 case DiscordStickerType.PNG:
                 case DiscordStickerType.APNG:
-                    root.Child = new ImageElement() { ImageUri = new Uri(s.GetAssetUrl()), ImageWidth = 250, ImageHeight = 250, IsSpoiler = false };
+                    root.Child = new ImageElement() { ImageUri = new Uri(s.GetAssetUrl()), ImageWidth = 150, ImageHeight = 150, IsSpoiler = false };
                     break;
                 case DiscordStickerType.Lottie:
                     {
                         var player = new AnimatedVisualPlayer();
                         player.AutoPlay = true;
-                        player.Width = 250;
-                        player.Height = 250;
+                        player.Width = 150;
+                        player.Height = 150;
 
                         var source = new LottieVisualSource();
                         source.UriSource = new Uri(s.GetAssetUrl());

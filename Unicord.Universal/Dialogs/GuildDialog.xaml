@@ -177,13 +177,13 @@
             <lib:NavigationView.MenuItems>
                 <lib:NavigationViewItem Content="Details">
                     <lib:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE946;"/>
+                        <FontIcon Glyph="&#xE946;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </lib:NavigationViewItem.Icon>
                 </lib:NavigationViewItem>
                 <lib:NavigationViewItemSeparator/>
                 <lib:NavigationViewItem Content="Moderation">
                     <lib:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xEC7A;"/>
+                        <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </lib:NavigationViewItem.Icon>
                 </lib:NavigationViewItem>
                 <lib:NavigationViewItemSeparator/>
@@ -205,13 +205,13 @@
                 <lib:NavigationViewItemSeparator/>
                 <lib:NavigationViewItem Content="Audit Log">
                     <lib:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE7BC;"/>
+                        <FontIcon Glyph="&#xE7BC;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </lib:NavigationViewItem.Icon>
                 </lib:NavigationViewItem>
                 <lib:NavigationViewItemSeparator/>
                 <lib:NavigationViewItem Foreground="Red" SelectsOnInvoked="False" Content="Delete Server">
                     <lib:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE74D;"/>
+                        <FontIcon Glyph="&#xE74D;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </lib:NavigationViewItem.Icon>
                 </lib:NavigationViewItem>
             </lib:NavigationView.MenuItems>

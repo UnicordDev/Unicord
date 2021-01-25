@@ -18,7 +18,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
                 <TextBlock
-                    FontFamily="Segoe MDL2 Assets"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="120"
                     Text="&#xE7BA;" />
                 <TextBlock x:Uid="/ChannelWarningPage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>

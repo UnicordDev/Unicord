@@ -15,7 +15,7 @@
             <controls:ImageEx x:Name="posterImage" IsCacheEnabled="True" Source="{Binding Thumbnail.ProxyUrl}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
             <Grid x:Name="posterOverlay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                 <controls:DropShadowPanel HorizontalAlignment="Center" VerticalAlignment="Center" BlurRadius="16" ShadowOpacity="1" Color="Black">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="64">
+                    <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="White" FontSize="64">
                         &#xE768;
                     </TextBlock>
                 </controls:DropShadowPanel>

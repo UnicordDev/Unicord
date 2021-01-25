@@ -9,7 +9,7 @@
 
     <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
         <MenuFlyoutItem.Icon>
-            <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="Segoe MDL2 Assets"/>
+            <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 
@@ -17,7 +17,7 @@
 
     <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
         <MenuFlyoutItem.Icon>
-            <FontIcon Glyph="&#xE930;" FontFamily="Segoe MDL2 Assets"/>
+            <FontIcon Glyph="&#xE930;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
     <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Text="Mute" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>

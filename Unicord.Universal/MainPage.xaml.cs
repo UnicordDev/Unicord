@@ -57,7 +57,7 @@ namespace Unicord.Universal
                     break;
             }
 
-            WindowManager.HandleTitleBarForWindow(titleBar, this);
+            WindowingService.Current.HandleTitleBarForWindow(titleBar, this);
 
             if (_isReady)
             {
@@ -245,27 +245,13 @@ namespace Unicord.Universal
             }
         }
 
-        internal bool CanAccessChannel(DiscordChannel channel)
-        {
-            if (channel.Type == ChannelType.Category)
-                return false;
-
-            if (channel is DiscordDmChannel || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
-                return true;
-
-            if (channel.Guild == null && channel.PermissionsFor(channel.Guild.CurrentMember).HasPermission(Permissions.AccessChannels))
-                return true;
-
-            return false;
-        }
-
         internal async Task GoToChannelAsync(MainPageArgs args)
         {
             try
             {
                 if (args.ChannelId != 0)
                 {
-                    if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && CanAccessChannel(channel))
+                    if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
                     {
                         await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
                     }

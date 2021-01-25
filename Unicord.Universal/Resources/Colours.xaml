@@ -10,6 +10,12 @@
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFEEEEEE" TintColor="#FFEEEEEE" />
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
+            <LinearGradientBrush x:Key="BackgroundGradientBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#00FFFFFF" Offset="0.0" />
+                <GradientStop Color="#00FFFFFF" Offset="0.50" />
+                <GradientStop Color="#40FFFFFF" Offset="0.70" />
+                <GradientStop Color="#C0FFFFFF" Offset="1" />
+            </LinearGradientBrush>
             <Color x:Key="MainBackgroundColor">#FFEEEEEE</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
@@ -18,9 +24,26 @@
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
             <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FF181818" TintColor="#FF181818" />
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
+            <LinearGradientBrush x:Key="BackgroundGradientBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#00000000" Offset="0.0" />
+                <GradientStop Color="#00000000" Offset="0.65" />
+                <GradientStop Color="#C0000000" Offset="1" />
+            </LinearGradientBrush>
             <Color x:Key="MainBackgroundColor">#FF1C1C1C</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+
+    <Color x:Key="OfflinePresenceColour">#FF808080</Color>
+    <Color x:Key="OnlinePresenceColour">#FF43B581</Color>
+    <Color x:Key="IdlePresenceColour">#FFFFA500</Color>
+    <Color x:Key="DoNotDisturbPresenceColour">#FFF04747</Color>
+    <Color x:Key="FallbackPresenceColour">#FF000000</Color>
+
+    <!-- src: https://www.youtube.com/about/brand-resources/ -->
+    <Color x:Key="StreamingYouTubePresenceColour">#FFFF0000</Color>
+
+    <!-- src: https://brand.twitch.tv/ -->
+    <Color x:Key="StreamingTwitchPresenceColour">#FF9146FF</Color>
     
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource MainBackgroundColor}"/>
 

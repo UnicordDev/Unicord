@@ -21,18 +21,26 @@ namespace Unicord.Universal.Commands
             return true;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
             Analytics.TrackEvent("MuteCommand_Invoked");
 
-            if (parameter is DiscordChannel channel)
+            try
             {
-                channel.Muted = !channel.Muted;
-            }
+                if (parameter is DiscordChannel channel)
+                {
+                    // if (!channel.Muted)
+                    //    await channel.MuteAsync();
+                }
 
-            if (parameter is DiscordGuild guild)
+                if (parameter is DiscordGuild guild)
+                {
+                    // guild.Muted = !guild.Muted;
+                }
+            }
+            catch (Exception ex)
             {
-                guild.Muted = !guild.Muted;
+                Logger.LogError(ex);
             }
         }
     }

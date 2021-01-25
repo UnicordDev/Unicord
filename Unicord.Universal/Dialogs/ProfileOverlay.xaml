@@ -58,7 +58,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{x:Bind _messageUserCommand, Mode=OneTime}" CommandParameter="{x:Bind _user}" />
+                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind _user}" />
                         <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
                     </Grid>
                 </Grid>
@@ -95,7 +95,7 @@
                     </PivotItem>
                     <PivotItem x:Uid="/Dialogs/ProfileMutualServers">
                         <PivotItem.Content>
-                            <ListView x:Name="mutualServers" SelectionMode="None">
+                            <ListView x:Name="mutualServers" MaxHeight="180" SelectionMode="None">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>

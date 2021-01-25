@@ -1,4 +1,5 @@
 ﻿using System;
+using DSharpPlus.Entities;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters
@@ -11,6 +12,12 @@ namespace Unicord.Universal.Converters
             {
                 return 0.5;
             }
+
+            if (value is Optional<bool> op)
+                if (op.HasValue && op.Value)
+                    return 1.0;
+                else
+                    return 0.5;
 
             if (value is bool b && b)
             {

@@ -18,10 +18,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="topGrid" Height="42">
+        <Grid x:Name="TopGrid" Height="42">
             <TextBlock
                 x:Uid="/PinsPage/PinsHeader"
-                Margin="10,0"
+                Margin="12,0"
                 VerticalAlignment="Center"
                 FontSize="16"
                 FontWeight="Bold"/>

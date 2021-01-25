@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DSharpPlus.Entities;
 using Windows.ApplicationModel.Resources;
 using Windows.UI;
@@ -8,30 +9,48 @@ namespace Unicord.Universal.Converters
 {
     class PresenceColourConverter : IValueConverter
     {
-        static readonly Color online = Color.FromArgb(255, 0x43, 0xb5, 0x81);
+        public Color Offline { get; set; }
+        public Color Online { get; set; }
+        public Color Idle { get; set; }
+        public Color DoNotDisturb { get; set; }
+        public Color Fallback { get; set; }
+
+        public Color StreamingYouTube { get; set; }
+        public Color StreamingTwitch { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var v = (DiscordPresence)value;
-            if (v?.Activity?.ActivityType == ActivityType.Streaming)
+            var presence = (DiscordPresence)value;
+            if (presence == null)
+                return Offline;
+
+            var streamActivity = presence.Activities?.FirstOrDefault(a => a?.ActivityType == ActivityType.Streaming) ?? presence.Activity;
+            if (streamActivity != null && streamActivity.ActivityType == ActivityType.Streaming)
             {
-                return Colors.Purple;
+                if (streamActivity.StreamUrl != null && Uri.TryCreate(streamActivity.StreamUrl, UriKind.Absolute, out var uri))
+                {
+                    if (uri.Host.ToLowerInvariant().Contains("youtu")) // should catch youtube and youtu.be
+                        return StreamingYouTube;
+
+                    return StreamingTwitch;
+                }
+
+                return StreamingTwitch;
             }
 
-            switch (v?.Status ?? UserStatus.Offline)
+            switch (presence.Status)
             {
-                case UserStatus.Offline:
-                    return Colors.Gray;
-                case UserStatus.Online:
-                    return online;
-                case UserStatus.Idle:
-                    return Colors.Orange;
-                case UserStatus.DoNotDisturb:
-                    return Colors.Red;
                 case UserStatus.Invisible:
-                    return Colors.Gray;
+                case UserStatus.Offline:
+                    return Offline;
+                case UserStatus.Online:
+                    return Online;
+                case UserStatus.Idle:
+                    return Idle;
+                case UserStatus.DoNotDisturb:
+                    return DoNotDisturb;
                 default:
-                    return Colors.Black;
+                    return Fallback;
             }
         }
 
@@ -68,6 +87,8 @@ namespace Unicord.Universal.Converters
                     return string.Format(_strings.GetString("ListeningStatusFormat"), activity.Name);
                 case ActivityType.Watching:
                     return string.Format(_strings.GetString("WatchingStatusFormat"), activity.Name);
+                case ActivityType.Custom:
+                    return activity.CustomStatus.Name;
                 default:
                     break;
             }

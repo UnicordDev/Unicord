@@ -119,18 +119,19 @@ namespace Unicord.Universal.Pages
                     _channelHistory.Add(ViewModel);
                 }
 
+                var windowHandle = WindowingService.Current.GetHandle(this);
                 if (model != null)
                 {
                     _channelHistory.Remove(model);
                 }
                 else
                 {
-                    model = new ChannelViewModel(chan);
+                    model = new ChannelViewModel(chan, windowHandle);
                 }
 
                 var args = this.FindParent<MainPage>()?.Arguments;
-                WindowManager.HandleTitleBarForControl(TopGrid);
-                WindowManager.SetChannelForCurrentWindow(chan.Id);
+                WindowingService.Current.HandleTitleBarForControl(TopGrid);
+                WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
                 model.TruncateMessages();
 
                 ViewModel = model;
@@ -624,14 +625,7 @@ namespace Unicord.Universal.Pages
 
         private void UserListButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsPaneOpen)
-            {
-                OpenPane(typeof(UserListPage), ViewModel.Channel);
-            }
-            else
-            {
-                ClosePane();
-            }
+            TogglePane(typeof(UserListPage), ViewModel.Channel);
         }
 
         private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
@@ -710,7 +704,7 @@ namespace Unicord.Universal.Pages
 
             IsPaneOpen = true;
             SidebarGrid.Visibility = Visibility.Visible;
-            if (Window.Current.Bounds.Width <= 1024)
+            if (ActualWidth <= (1024 - 276))
             {
                 OpenPaneStoryboard.Begin();
             }
@@ -730,7 +724,7 @@ namespace Unicord.Universal.Pages
                 helper.IsEnabled = true;
 
             IsPaneOpen = false;
-            if (Window.Current.Bounds.Width > 1024)
+            if (ActualWidth > (1024 - 276))
             {
                 SidebarGrid.Visibility = Visibility.Collapsed;
             }
@@ -757,9 +751,14 @@ namespace Unicord.Universal.Pages
             SidebarGrid.Visibility = Visibility.Collapsed;
         }
 
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePane(typeof(SearchPage), ViewModel.Channel);
+        }
+
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (IsPaneOpen && Window.Current.Bounds.Width <= 1024)
+            if (IsPaneOpen && ActualWidth <= (1024 - 276))
             {
                 ClosePane();
             }
@@ -791,32 +790,36 @@ namespace Unicord.Universal.Pages
 
         private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowManager.MultipleWindowsSupported)
+            if (WindowingService.Current.Supported)
             {
-                WindowManager.SetChannelForCurrentWindow(0);
-                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel);
+                var handle = WindowingService.Current.GetHandle(this);
+                var newHandle = await WindowingService.Current.OpenChannelWindowAsync(_viewModel.Channel, handle);
+                if (newHandle != null)
+                {
+                    WindowingService.Current.SetWindowChannel(handle, 0);
 
-                var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(null, true);
+                    var service = DiscordNavigationService.GetForCurrentView();
+                    await service.NavigateAsync(null, true);
 
-                _viewModel.Dispose();
-                _channelHistory.Remove(_viewModel);
+                    _viewModel.Dispose();
+                    _channelHistory.Remove(_viewModel);
+                }
             }
         }
 
         private async void NewCompactWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowManager.MultipleWindowsSupported)
-            {
-                WindowManager.SetChannelForCurrentWindow(0);
-                await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
+            //if (WindowManager.MultipleWindowsSupported)
+            //{
+            //    WindowManager.SetChannelForCurrentWindow(0);
+            //    await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
 
-                var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(null, true);
+            //    var service = DiscordNavigationService.GetForCurrentView();
+            //    await service.NavigateAsync(null, true);
 
-                _viewModel.Dispose();
-                _channelHistory.Remove(_viewModel);
-            }
+            //    _viewModel.Dispose();
+            //    _channelHistory.Remove(_viewModel);
+            //}
         }
 
         private void HideTitleBar_Completed(object sender, object e)
@@ -852,7 +855,7 @@ namespace Unicord.Universal.Pages
 
         private async void PinToStartItem_Click(object sender, RoutedEventArgs e)
         {
-           
+
         }
     }
 }

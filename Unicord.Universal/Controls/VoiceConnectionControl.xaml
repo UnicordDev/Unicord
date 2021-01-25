@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingConverter}, Mode=OneWay}" FontFamily="Segoe MDL2 Assets" Margin="16,8,8,8" VerticalAlignment="Center" FontSize="16" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}, Mode=OneWay}"/>
+            <TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingConverter}, Mode=OneWay}" FontFamily="{StaticResource SymbolThemeFontFamily}" Margin="16,8,8,8" VerticalAlignment="Center" FontSize="16" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}, Mode=OneWay}"/>
             <TextBlock Margin="0,8,8,8" Grid.Column="1" Text="{x:Bind ConnectionModel.ConnectionStatus, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -45,17 +45,17 @@
                     <MenuFlyout>
                         <lib:RadioMenuFlyoutItem Text="Earpiece">
                             <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8EA;"/>
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8EA;"/>
                             </MenuFlyoutItem.Icon>
                         </lib:RadioMenuFlyoutItem>
                         <lib:RadioMenuFlyoutItem Text="Speakerphone">
                             <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7F5;"/>
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F5;"/>
                             </MenuFlyoutItem.Icon>
                         </lib:RadioMenuFlyoutItem>
                         <lib:RadioMenuFlyoutItem Text="Bluetooth">
                             <MenuFlyoutItem.Icon>
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE702;"/>
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE702;"/>
                             </MenuFlyoutItem.Icon>
                         </lib:RadioMenuFlyoutItem>
                     </MenuFlyout>

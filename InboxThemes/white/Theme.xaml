@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:media="using:Microsoft.UI.Xaml.Media">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.60" FallbackColor="#FFe3e5e8" TintColor="#FFe3e5e8" />
+            <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.60" FallbackColor="#FFe3e5e8" TintColor="#FFe3e5e8" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintOpacity="0.80" FallbackColor="#FFf2f3f5" TintColor="#FFf2f3f5" />
+            <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" BackgroundSource="Backdrop" TintOpacity="0.80" FallbackColor="#FFf2f3f5" TintColor="#FFf2f3f5" />
+            <Color x:Key="MainBackgroundColor">#FFFFFFFF</Color>
+            <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumBrush" Color="#FFf2f3f5" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

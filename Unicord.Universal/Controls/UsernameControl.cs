@@ -16,8 +16,8 @@ namespace Unicord.Universal.Controls
     {
         public DiscordUser User
         {
-            get { return (DiscordUser)GetValue(UserProperty); }
-            set { SetValue(UserProperty, value); }
+            get => (DiscordUser)GetValue(UserProperty);
+            set => SetValue(UserProperty, value);
         }
 
         public static readonly DependencyProperty UserProperty =
@@ -25,10 +25,10 @@ namespace Unicord.Universal.Controls
 
         public double IconSize
         {
-            get { return (double)GetValue(IconSizeProperty); }
-            set { SetValue(IconSizeProperty, value); }
+            get => (double)GetValue(IconSizeProperty);
+            set => SetValue(IconSizeProperty, value);
         }
-        
+
         public static readonly DependencyProperty IconSizeProperty =
             DependencyProperty.Register("IconSize", typeof(double), typeof(UsernameControl), new PropertyMetadata(16));
 

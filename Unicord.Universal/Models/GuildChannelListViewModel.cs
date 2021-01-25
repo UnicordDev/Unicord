@@ -79,7 +79,7 @@ namespace Unicord.Universal.Models
         {
             if (e.Guild.Id == Guild.Id && e.ChannelAfter.Type != ChannelType.Group)
             {
-                var canAccess = e.ChannelAfter.PermissionsFor(Guild.CurrentMember).HasPermission(Permissions.AccessChannels);
+                var canAccess = e.ChannelAfter.IsAccessible();
                 if (!canAccess)
                 {
                     // if the channel is inaccessable, remove it and return

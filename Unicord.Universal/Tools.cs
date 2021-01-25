@@ -21,15 +21,16 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
+using GuidAttribute = System.Runtime.InteropServices.GuidAttribute;
 
 namespace Unicord.Universal
 {
-
     public static class Tools
     {
         private const int NITRO_UPLOAD_LIMIT = 104_857_600;
@@ -215,6 +216,20 @@ namespace Unicord.Universal
             await send;
         }
 
+        internal static string GetItemTypeeFromExtension(string extension, string fallback = null)
+        {
+            try
+            {
+                return Shlwapi.AssocQueryString(ASSOCF.NONE, ASSOCSTR.FRIENDLYAPPNAME, extension, "");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+            return fallback;
+        }
+
         /// <summary>
         /// Returns true if <paramref name="current"/> is higher in the role hierarchy than <paramref name="member"/>.
         /// </summary>
@@ -232,6 +247,26 @@ namespace Unicord.Universal
             var currentTopRole = current.Roles.OrderByDescending(r => r?.Position).FirstOrDefault();
 
             return (memberTopRole?.Position ?? 0) < (currentTopRole?.Position ?? 0);
+        }
+
+        public static bool IsAccessible(this DiscordChannel channel)
+        {
+            if (channel.Type == ChannelType.Category)
+                return false;
+
+            if (channel is DiscordDmChannel || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
+                return true;
+
+            if (channel.Guild != null)
+            {
+                if (channel.Guild.IsOwner)
+                    return true;
+
+                var perms = channel.PermissionsFor(channel.Guild.CurrentMember);
+                return perms.HasPermission(Permissions.AccessChannels) || perms.HasPermission(Permissions.Administrator);
+            }
+
+            return false;
         }
 
         public static void InvertTheme(ElementTheme requestedTheme, FrameworkElement preview)
@@ -342,7 +377,6 @@ namespace Unicord.Universal
                 Emoji = await Task.Run(() => JsonConvert.DeserializeObject<Emoji[]>(emojiList));
             }
         }
-
 
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
         public static int UploadLimit(this DiscordUser user) =>

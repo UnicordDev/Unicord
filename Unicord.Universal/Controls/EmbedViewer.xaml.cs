@@ -30,8 +30,8 @@ namespace Unicord.Universal.Controls
 
         public DiscordEmbed Embed
         {
-            get { return (DiscordEmbed)GetValue(EmbedProperty); }
-            set { SetValue(EmbedProperty, value); }
+            get => (DiscordEmbed)GetValue(EmbedProperty);
+            set => SetValue(EmbedProperty, value);
         }
 
         public static readonly DependencyProperty EmbedProperty =

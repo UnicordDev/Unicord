@@ -82,15 +82,10 @@ namespace Unicord.Universal.Pages.Settings
         {
             App.LocalSettings.Save(SELECTED_THEME_NAMES, Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList());
 
-            var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
-            var autoRestart = ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync");
-            if (Model.IsDirty && autoRestart)
-            {
-                if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeChangedTitle"), resources.GetString("ThemeChangedMessage")))
-                {
-                    await CoreApplication.RequestRestartAsync("");
-                }
-            }
+            if (!Model.IsDirty)
+                return;
+
+            await ThemeHelpers.RequestRestartAsync();
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -129,15 +124,7 @@ namespace Unicord.Universal.Pages.Settings
             var file = await picker.PickSingleFileAsync();
             if (file != null)
             {
-                try
-                {
-                    var theme = await ThemeManager.InstallFromArchiveAsync(file);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                    await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
-                }
+                await ThemeHelpers.SafeInstallFromArchiveAsync(file);
             }
 
             await Model.ReloadThemes();
@@ -176,9 +163,10 @@ namespace Unicord.Universal.Pages.Settings
                     deferral?.Complete();
                     deferral = null;
 
-                    await ThemeManager.InstallFromArchiveAsync(theme);
-                    await Model.ReloadThemes();
+                    await ThemeHelpers.SafeInstallFromArchiveAsync(theme);
                 }
+
+                await Model.ReloadThemes();
             }
         }
 

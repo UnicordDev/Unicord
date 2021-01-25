@@ -14,7 +14,7 @@
     <Page.Resources>
         <Style x:Key="CustomPaneToggleButtonStyle" BasedOn="{StaticResource IconButtonStyle}" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="UseLayoutRounding" Value="True"/>
@@ -139,22 +139,22 @@
                 <lib:NavigationView.MenuItems>
                     <lib:NavigationViewItem Content="Overview" Tag="Overview" IsSelected="True">
                         <lib:NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE179;" />
+                            <FontIcon Glyph="&#xE179;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
                     <lib:NavigationViewItem Content="Permissions" Tag="Permissions">
                         <lib:NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE192;" />
+                            <FontIcon Glyph="&#xE192;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
                     <lib:NavigationViewItem Content="Invites" Tag="Invites">
                         <lib:NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE71B;" />
+                            <FontIcon Glyph="&#xE71B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
                     <lib:NavigationViewItem Content="Webhooks" Tag="Webhooks">
                         <lib:NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE12B;" />
+                            <FontIcon Glyph="&#xE12B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
                 </lib:NavigationView.MenuItems>

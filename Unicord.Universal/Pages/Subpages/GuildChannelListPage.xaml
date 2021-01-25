@@ -28,9 +28,20 @@
             SingleSelectionFollowsFocus="False">
             <ListView.Header>
                 <Grid x:Name="Header">
+                    <FlyoutBase.AttachedFlyout>
+                        <flyouts:GuildContextFlyout>
+                            <flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
+                                <Style TargetType="MenuFlyoutPresenter">
+                                    <Setter Property="MinWidth" Value="220" />
+                                    <Setter Property="MaxWidth" Value="220" />
+                                </Style>
+                            </flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
+                        </flyouts:GuildContextFlyout>
+                    </FlyoutBase.AttachedFlyout>
+
                     <Grid Visibility="{Binding HeaderImage, Converter={StaticResource HideOnNullConverter}}">
                         <controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill"/>
-                        <Rectangle VerticalAlignment="Bottom" Height="42" Fill="{ThemeResource SystemControlAltMediumLowAcrylicElementMediumBrush}"/>
+                        <Rectangle Fill="{ThemeResource BackgroundGradientBrush}" />
                     </Grid>
 
                     <Grid Height="42" VerticalAlignment="Bottom">
@@ -51,16 +62,6 @@
                                 DataContext="{Binding Guild}"
                                 Style="{StaticResource IconButtonStyle}"
                                 Click="OnButtonClicked">
-                            <FlyoutBase.AttachedFlyout>
-                                <flyouts:GuildContextFlyout>
-                                    <flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
-                                        <Style TargetType="MenuFlyoutPresenter">
-                                            <Setter Property="MinWidth" Value="220" />
-                                            <Setter Property="MaxWidth" Value="220" />
-                                        </Style>
-                                    </flyouts:GuildContextFlyout.MenuFlyoutPresenterStyle>
-                                </flyouts:GuildContextFlyout>
-                            </FlyoutBase.AttachedFlyout>
                         </Button>
                     </Grid>
                 </Grid>

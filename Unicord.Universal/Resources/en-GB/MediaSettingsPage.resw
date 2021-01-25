@@ -141,17 +141,41 @@
   <data name="EncoderPrioritySpeed.Content" xml:space="preserve">
     <value>Prioritise speed, larger file sizes</value>
   </data>
+  <data name="LargePresetItem.Text" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="LargePresetSubheader.Text" xml:space="preserve">
+    <value>720p, ~1536kbps</value>
+  </data>
   <data name="MediaCompressionHeader.Text" xml:space="preserve">
     <value>Media Compression</value>
   </data>
   <data name="MediaCompressionSubheader.Text" xml:space="preserve">
-    <value>This feature automatically shrinks down audio and video files to fit within your upload limit!</value>
+    <value>Unicord can automatically compress video to fit within your upload limit!</value>
+  </data>
+  <data name="MediumPresetItem.Text" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="MediumPresetSubheader.Text" xml:space="preserve">
+    <value>480p, ~768kbps</value>
   </data>
   <data name="NeverCompress.Content" xml:space="preserve">
     <value>Never compress media</value>
   </data>
   <data name="ResolutionBox.Header" xml:space="preserve">
     <value>Resolution</value>
+  </data>
+  <data name="SmallPresetItem.Text" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="SmallPresetSubheader.Text" xml:space="preserve">
+    <value>360p, ~512kbps</value>
+  </data>
+  <data name="TinyPresetItem.Text" xml:space="preserve">
+    <value>Tiny</value>
+  </data>
+  <data name="TinyPresetSubheader.Text" xml:space="preserve">
+    <value>144p, ~256kbps</value>
   </data>
   <data name="Title.Text" xml:space="preserve">
     <value>Audio and Video</value>

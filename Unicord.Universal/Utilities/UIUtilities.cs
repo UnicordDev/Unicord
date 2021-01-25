@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unicord.Universal.Dialogs;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -12,11 +13,24 @@ namespace Unicord.Universal.Utilities
 {
     internal static class UIUtilities
     {
-        public static async Task ShowErrorDialogAsync(string title, string content, string icon = null)
+        private static Lazy<ResourceLoader> _resources
+            = new Lazy<ResourceLoader>(() => ResourceLoader.GetForViewIndependentUse("Dialogs"));
+
+        public static async Task ShowErrorDialogAsync(string title, string content, string icon = null, string resourceMap = null)
         {
             try
             {
-                var dialog = new ErrorDialog() { Title = title, Content = content };
+                var resources = resourceMap != null ? ResourceLoader.GetForViewIndependentUse(resourceMap) : _resources.Value;   
+                
+                var actualTitle = resources.GetString(title);
+                var actualContent = resources.GetString(content);
+
+                var dialog = new ErrorDialog()
+                {
+                    Title = string.IsNullOrWhiteSpace(actualTitle) ? title : actualTitle,
+                    Content = string.IsNullOrWhiteSpace(actualContent) ? content : actualContent
+                };
+
                 if (icon != null)
                 {
                     dialog.Icon = icon;

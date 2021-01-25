@@ -180,6 +180,15 @@
   <data name="InstallThemeDialog.SecondaryButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="InvalidThemeFileNotFound" xml:space="preserve">
+    <value>The supplied theme file couldn't be found!</value>
+  </data>
+  <data name="InvalidThemeFileNoThemesFound" xml:space="preserve">
+    <value>The supplied theme file doesn't appear to actually contain any themes!</value>
+  </data>
+  <data name="InvalidThemeFileTitle" xml:space="preserve">
+    <value>Invalid theme file!</value>
+  </data>
   <data name="KickDialog.PrimaryButtonText" xml:space="preserve">
     <value>Yeah!</value>
   </data>
@@ -212,5 +221,8 @@
   </data>
   <data name="ProfileRoles.Text" xml:space="preserve">
     <value>Roles</value>
+  </data>
+  <data name="ThemeInstallFailure" xml:space="preserve">
+    <value>Failed to install theme!</value>
   </data>
 </root>

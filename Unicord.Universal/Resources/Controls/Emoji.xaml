@@ -1,0 +1,41 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls.Emoji">
+
+
+    <Style TargetType="local:EmojiControl">
+        <Setter Property="Size" Value="32"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:EmojiControl">
+                    <Border>
+                        <Grid Width="{TemplateBinding Size}" Height="{TemplateBinding Size}" DataContext="{TemplateBinding Emoji}">
+                            <Image x:Name="EmoteImage" 
+                                   Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}" 
+                                   MaxWidth="{TemplateBinding Size}" 
+                                   MaxHeight="{TemplateBinding Size}"
+                                   ToolTipService.ToolTip="{Binding Name}">
+                                <Image.Source>
+                                    <BitmapImage UriSource="{Binding Url}" 
+                                                 DecodePixelType="Logical"
+                                                 DecodePixelWidth="{TemplateBinding Size}"
+                                                 DecodePixelHeight="{TemplateBinding Size}" />
+                                </Image.Source>
+                            </Image>
+
+                            <Viewbox MaxWidth="{TemplateBinding Size}" 
+                                     MaxHeight="{TemplateBinding Size}"
+                                     Visibility="{Binding Unicode, Converter={StaticResource BoolVisibilityConverter}}"
+                                     Stretch="Uniform">
+                                <TextBlock x:Name="EmojiText" 
+                                           Text="{Binding Unicode}" />
+                            </Viewbox>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -36,7 +36,9 @@ namespace Unicord
 
         [Obsolete("Use new theme system (SELECTED_THEME_NAMES) instead.")]
         public const string SELECTED_THEME_NAME = "SelectedThemeName";
+
         public const string SELECTED_THEME_NAMES = "SelectedThemeNames";
+        public const string AVAILABLE_THEME_NAMES = "AvailableThemeNames";
         public const string REQUESTED_COLOUR_SCHEME = "RequestedTheme";
         public const string THEME_FOLDER_NAME = "Themes";
         public const string THEME_METADATA_NAME = "theme.json";

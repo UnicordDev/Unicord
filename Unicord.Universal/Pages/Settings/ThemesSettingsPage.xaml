@@ -227,7 +227,7 @@
                         </ListView>
 
                         <TextBlock Visibility="{Binding ShowThemesPlaceholder, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" LineHeight="16">
-                            Click <Run FontFamily="Segoe MDL2 Assets" FontSize="16" Text="&#xE710;" /> to add a theme, or drag an archive here!
+                            Click <Run FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Text="&#xE710;" /> to add a theme, or drag an archive here!
                         </TextBlock>
                     </Grid>
                     <StackPanel w1709:Spacing="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,4">

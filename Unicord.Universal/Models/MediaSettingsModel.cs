@@ -7,6 +7,9 @@ namespace Unicord.Universal.Models
 {
     public class MediaSettingsModel : ViewModelBase
     {
+        private int[] _availableWidths = new[] { 256, 426, 640, 854, 1280, 1920 };
+        private int[] _availableHeights = new[] { 144, 240, 360, 480, 720, 1080 };
+
         public int AutoTranscodeMedia
         {
             get => (int)App.RoamingSettings.Read(AUTO_TRANSCODE_MEDIA, MediaTranscodeOptions.WhenNeeded);
@@ -31,7 +34,6 @@ namespace Unicord.Universal.Models
             set => App.RoamingSettings.Save(AUDIO_BITRATE, value);
         }
 
-        public List<string> AvailableResolutions => new List<string> { "256x144", "426x240", "640x360", "854x480", "1280x720", "1920x1080" };
 
         public int VideoWidth
         {
@@ -51,14 +53,21 @@ namespace Unicord.Universal.Models
             set => App.RoamingSettings.Save("SavePhotos", value);
         }
 
+        public bool PreserveFrameRate
+        {
+            get => App.RoamingSettings.Read("PreserveFrameRate", true);
+            set => App.RoamingSettings.Save("PreserveFrameRate", value);
+        }
+
+        public List<string> AvailableResolutions => new List<string> { "144p", "240p", "360p", "480p", "720p", "1080p" };
         public string Resolution
         {
-            get => $"{VideoWidth}x{VideoHeight}";
+            get => $"{VideoHeight}p";
             set
             {
-                var split = value.Split('x');
-                VideoWidth = int.Parse(split[0]);
-                VideoHeight = int.Parse(split[1]);
+                var index = AvailableResolutions.IndexOf(value);
+                VideoWidth = _availableWidths[index];
+                VideoHeight = _availableHeights[index];
             }
         }
     }

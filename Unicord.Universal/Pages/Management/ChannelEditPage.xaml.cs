@@ -41,9 +41,9 @@ namespace Unicord.Universal.Pages.Management
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
-        {            
-            WindowManager.HandleTitleBarForControl(TopGrid);
-            WindowManager.HandleTitleBarForControl(NavigationView, true);
+        {
+            WindowingService.Current.HandleTitleBarForControl(TopGrid);
+            WindowingService.Current.HandleTitleBarForControl(NavigationView, true);
         }
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)

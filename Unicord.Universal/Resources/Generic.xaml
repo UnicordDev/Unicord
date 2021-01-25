@@ -194,7 +194,7 @@
                                    Foreground="{Binding Color, Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
                                    Text="{Binding DisplayName}"
                                    TextWrapping="NoWrap" />
-                        <TextBlock Visibility="{Binding IsBot, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" Margin="8,0,0,0" Grid.Column="1" FontFamily="Segoe MDL2 Assets" FontSize="{TemplateBinding IconSize}" FontWeight="Normal" Text="&#xE99A;" />
+                        <TextBlock Visibility="{Binding IsBot, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" Margin="8,0,0,0" Grid.Column="1" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="{TemplateBinding IconSize}" FontWeight="Normal" Text="&#xE99A;" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -283,7 +283,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="IconBlock" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="IconBlock" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Icon}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Margin="0,0,12,0" VerticalAlignment="Center"/>
                                 <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}"/>
                             </Grid>
                         </Border>
@@ -422,7 +422,7 @@
             <Grid Width="24" Height="24">
                 <TextBlock VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
-                           FontFamily="Segoe MDL2 Assets" 
+                           FontFamily="{StaticResource SymbolThemeFontFamily}" 
                            FontSize="16" 
                            Text="&#xE910;" />
             </Grid>
@@ -441,7 +441,7 @@
             <Grid Width="24" Height="24">
                 <TextBlock VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
-                           FontFamily="Segoe MDL2 Assets" 
+                           FontFamily="{StaticResource SymbolThemeFontFamily}" 
                            FontSize="16" 
                            Text="{Binding Converter={StaticResource ChannelSymbolConverter}}" />
             </Grid>
@@ -550,7 +550,7 @@
                                         Margin="8"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
-                                        FontFamily="Segoe MDL2 Assets"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         Text="&#xE916;"
                                         ToolTipService.ToolTip="{Binding SlowModeText}"
                                         Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
@@ -625,7 +625,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe MDL2 Assets" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
             <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
         </Grid>

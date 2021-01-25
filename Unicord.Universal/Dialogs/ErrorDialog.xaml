@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock x:Name="iconText" Text="&#xE783;" FontSize="48" FontFamily="Assets/segmdl2.ttf#Segoe MDL2 Assets"/>
+        <TextBlock x:Name="iconText" Text="&#xE783;" FontSize="48" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
 
         <Grid Grid.Column="1" Margin="12,0,0,0">
             <Grid.RowDefinitions>

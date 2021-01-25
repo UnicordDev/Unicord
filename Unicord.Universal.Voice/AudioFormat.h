@@ -2,6 +2,7 @@
 #include <iostream>
 #include <opus.h>
 #include <stdint.h>
+#include <bitset>
 
 namespace winrt::Unicord::Universal::Voice::Interop {
     enum VoiceApplication {
@@ -17,6 +18,8 @@ namespace winrt::Unicord::Universal::Voice::Interop {
             bytes = packet_bytes;
             duration = packet_duration;
             is_silence = isSilence;
+
+            std::bitset<12> set;
         }
 
         std::vector<uint8_t> bytes;

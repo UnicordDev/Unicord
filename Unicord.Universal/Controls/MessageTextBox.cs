@@ -69,8 +69,8 @@ namespace Unicord.Universal.Controls
 
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
 
         public static readonly DependencyProperty TextProperty =
@@ -78,8 +78,8 @@ namespace Unicord.Universal.Controls
 
         public string PlaceholderText
         {
-            get { return (string)GetValue(PlaceholderTextProperty); }
-            set { SetValue(PlaceholderTextProperty, value); }
+            get => (string)GetValue(PlaceholderTextProperty);
+            set => SetValue(PlaceholderTextProperty, value);
         }
 
         public static readonly DependencyProperty PlaceholderTextProperty =
@@ -87,8 +87,8 @@ namespace Unicord.Universal.Controls
 
         public DiscordChannel Channel
         {
-            get { return (DiscordChannel)GetValue(ChannelProperty); }
-            set { SetValue(ChannelProperty, value); }
+            get => (DiscordChannel)GetValue(ChannelProperty);
+            set => SetValue(ChannelProperty, value);
         }
 
         public static readonly DependencyProperty ChannelProperty =
@@ -96,8 +96,8 @@ namespace Unicord.Universal.Controls
 
         public DiscordUser CurrentUser
         {
-            get { return (DiscordUser)GetValue(CurrentUserProperty); }
-            set { SetValue(CurrentUserProperty, value); }
+            get => (DiscordUser)GetValue(CurrentUserProperty);
+            set => SetValue(CurrentUserProperty, value);
         }
 
         public static readonly DependencyProperty CurrentUserProperty =
@@ -105,8 +105,8 @@ namespace Unicord.Universal.Controls
 
         public bool SendButtonEnabled
         {
-            get { return (bool)GetValue(SendButtonEnabledProperty); }
-            set { SetValue(SendButtonEnabledProperty, value); }
+            get => (bool)GetValue(SendButtonEnabledProperty);
+            set => SetValue(SendButtonEnabledProperty, value);
         }
 
         public static readonly DependencyProperty SendButtonEnabledProperty =
@@ -114,16 +114,16 @@ namespace Unicord.Universal.Controls
 
         public Visibility SendButtonVisibility
         {
-            get { return (Visibility)GetValue(SendButtonVisibilityProperty); }
-            set { SetValue(SendButtonVisibilityProperty, value); }
+            get => (Visibility)GetValue(SendButtonVisibilityProperty);
+            set => SetValue(SendButtonVisibilityProperty, value);
         }
         public static readonly DependencyProperty SendButtonVisibilityProperty =
             DependencyProperty.Register("SendButtonVisibility", typeof(Visibility), typeof(MessageTextBox), new PropertyMetadata(Visibility.Visible));
 
         public bool SubmitButtonEnabled
         {
-            get { return (bool)GetValue(SubmitButtonEnabledProperty); }
-            set { SetValue(SubmitButtonEnabledProperty, value); }
+            get => (bool)GetValue(SubmitButtonEnabledProperty);
+            set => SetValue(SubmitButtonEnabledProperty, value);
         }
 
         public static readonly DependencyProperty SubmitButtonEnabledProperty =
@@ -131,16 +131,16 @@ namespace Unicord.Universal.Controls
 
         public Visibility SubmitButtonVisibility
         {
-            get { return (Visibility)GetValue(SubmitButtonVisibilityProperty); }
-            set { SetValue(SubmitButtonVisibilityProperty, value); }
+            get => (Visibility)GetValue(SubmitButtonVisibilityProperty);
+            set => SetValue(SubmitButtonVisibilityProperty, value);
         }
         public static readonly DependencyProperty SubmitButtonVisibilityProperty =
             DependencyProperty.Register("SubmitButtonVisibility", typeof(Visibility), typeof(MessageTextBox), new PropertyMetadata(Visibility.Collapsed));
 
         public bool CancelButtonEnabled
         {
-            get { return (bool)GetValue(CancelButtonEnabledProperty); }
-            set { SetValue(CancelButtonEnabledProperty, value); }
+            get => (bool)GetValue(CancelButtonEnabledProperty);
+            set => SetValue(CancelButtonEnabledProperty, value);
         }
 
         public static readonly DependencyProperty CancelButtonEnabledProperty =
@@ -148,8 +148,8 @@ namespace Unicord.Universal.Controls
 
         public Visibility CancelButtonVisibility
         {
-            get { return (Visibility)GetValue(CancelButtonVisibilityProperty); }
-            set { SetValue(CancelButtonVisibilityProperty, value); }
+            get => (Visibility)GetValue(CancelButtonVisibilityProperty);
+            set => SetValue(CancelButtonVisibilityProperty, value);
         }
         public static readonly DependencyProperty CancelButtonVisibilityProperty =
             DependencyProperty.Register("CancelButtonVisibility", typeof(Visibility), typeof(MessageTextBox), new PropertyMetadata(Visibility.Collapsed));
@@ -236,7 +236,7 @@ namespace Unicord.Universal.Controls
             _suggestBox.SuggestionChosen += OnSuggestBoxSuggestionChosen;
             _suggestBox.QuerySubmitted += OnSuggestBoxQuerySubmitted;
             _suggestBox.ItemsSource = null;
-            _suggestBox.Text = Text; // ffs
+            _suggestBox.Text = Text ?? ""; // ffs
 
             _textBox = _suggestBox.FindChild<TextBox>();
             _textBox.Paste += OnTextBoxPaste;

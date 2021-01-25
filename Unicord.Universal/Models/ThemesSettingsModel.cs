@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Windows.Storage;
 using Windows.UI.Xaml;
+using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
@@ -29,13 +30,13 @@ namespace Unicord.Universal.Models
             IsLoading = true;
 
             var availableThemes = new List<Theme>();
-            var selectedThemeNames = App.LocalSettings.Read("SelectedThemeNames", new List<string>());
-            var availableThemeNames = App.LocalSettings.Read("AvailableThemeNames", new List<string>());
-            var themeDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Themes", CreationCollisionOption.OpenIfExists);
+            var selectedThemeNames = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
+            var availableThemeNames = App.LocalSettings.Read(AVAILABLE_THEME_NAMES, new List<string>());
+            var themeDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
             var directories = await themeDirectory.GetFoldersAsync();
             foreach (var directory in directories)
             {
-                if (await directory.TryGetItemAsync("theme.json") is StorageFile themeJson)
+                if (await directory.TryGetItemAsync(THEME_METADATA_NAME) is StorageFile themeJson)
                 {
                     try
                     {
@@ -65,12 +66,12 @@ namespace Unicord.Universal.Models
 
             IsLoading = false;
             InvokePropertyChanged(nameof(ShowThemesPlaceholder));
-            App.LocalSettings.Save("AvailableThemeNames", availableThemeNames);
+            App.LocalSettings.Save(AVAILABLE_THEME_NAMES, availableThemeNames);
         }
 
         private void OnAvailableThemesUpdated(object sender, NotifyCollectionChangedEventArgs e)
         {
-            App.LocalSettings.Save("AvailableThemeNames", AvailableThemes.ToList().Select(t => t.NormalisedName));
+            App.LocalSettings.Save(AVAILABLE_THEME_NAMES, AvailableThemes.ToList().Select(t => t.NormalisedName));
         }
 
         public bool IsLoading { get; internal set; }
@@ -81,10 +82,11 @@ namespace Unicord.Universal.Models
 
         public int ColourScheme
         {
-            get => (int)App.LocalSettings.Read("RequestedTheme", ElementTheme.Default);
+            get => (int)App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
             set
             {
-                App.LocalSettings.Save("RequestedTheme", (ElementTheme)value);
+                IsDirty = true;
+                App.LocalSettings.Save(REQUESTED_COLOUR_SCHEME, (ElementTheme)value);
                 InvokePropertyChanged(nameof(ColourScheme));
             }
         }

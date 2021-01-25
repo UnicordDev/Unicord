@@ -543,10 +543,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 if (App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
                 {
                     text.Opacity = 0;
-                    border.Tapped += (o, e) =>
-                    {
-                        text.Opacity = 1;
-                    };
+                    border.Tapped += (o, e) => { text.Opacity = 1; };
                 }
 
                 var inlineUIContainer = new InlineUIContainer
@@ -629,13 +626,12 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 }
                 else
                 {
-                    var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=32";
+                    var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=128";
                     var ui = new InlineUIContainer() { FontSize = FontSize + 10 };
 
                     var image = new Image()
                     {
                         Source = new BitmapImage(new Uri(uri)),
-                        Width = FontSize + 10,
                         Height = FontSize + 10,
                         Stretch = Stretch.Uniform,
                         RenderTransform = new TranslateTransform() { Y = 4 }

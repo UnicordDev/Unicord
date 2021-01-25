@@ -125,7 +125,7 @@
                     <Grid HorizontalAlignment="Center" Width="128" Height="128" Margin="12">
                         <controls1:RadialProgressBar x:Name="progressRing" Width="128" Height="128" Value="0" Maximum="100"/>
                         <TextBlock x:Name="progressText" Style="{ThemeResource HeaderTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Text="0"/>
-                        <TextBlock x:Name="completedText" Visibility="Collapsed" Width="64" Height="64" FontSize="64" LineHeight="64" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets">
+                        <TextBlock x:Name="completedText" Visibility="Collapsed" Width="64" Height="64" FontSize="64" LineHeight="64" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}">
                         &#xE8FB;
                         </TextBlock>
                     </Grid>

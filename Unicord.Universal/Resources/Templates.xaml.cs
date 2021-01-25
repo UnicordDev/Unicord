@@ -18,19 +18,5 @@ namespace Unicord.Universal.Resources
         {
             InitializeComponent();
         }
-
-        private void SwipeItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
-        {
-            if (args.SwipeControl.DataContext is DiscordChannel channel)
-            {
-                channel.Muted = !channel.Muted;
-            }
-        }
-
-        private void OnDeferredContextFlyoutRightTapped(object sender, RightTappedRoutedEventArgs e)
-        {
-            var element = sender as FrameworkElement;
-            (element.FindName("ContextFlyout") as FlyoutBase)?.ShowAt(element);
-        }
     }
 }

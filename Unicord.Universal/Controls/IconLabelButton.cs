@@ -18,8 +18,8 @@ namespace Unicord.Universal.Controls
     {
         public string Icon
         {
-            get { return (string)GetValue(IconProperty); }
-            set { SetValue(IconProperty, value); }
+            get => (string)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         public static readonly DependencyProperty IconProperty =

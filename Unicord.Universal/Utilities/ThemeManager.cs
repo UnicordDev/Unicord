@@ -83,7 +83,7 @@ namespace Unicord.Universal
             // this also means, however, that we cannot call this method after the app is activated, 
             // because synchronous I/O is not allowed on the UI thread, and this code must assume
             // it's running on the UI thread, because otherwise it would be asynchronous... bleh
-            
+
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
             var compact = false;
             var themes = new List<Theme>();
@@ -199,39 +199,36 @@ namespace Unicord.Universal
             Analytics.TrackEvent("Themes_LoadedAsync", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themeNames) });
         }
 
-        public static async Task<Dictionary<StorageFile, Theme>> LoadFromArchivesAsync(List<StorageFile> files, ResourceDictionary target)
+        public static async Task<Dictionary<StorageFile, Theme>> LoadFromArchiveAsync(StorageFile file, ResourceDictionary target)
         {
             var themes = new Dictionary<StorageFile, Theme>();
             var exceptions = new List<Exception>();
 
             try
             {
-                foreach (var file in files)
+                try
                 {
-                    try
-                    {
-                        var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
-                        var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
+                    var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
+                    var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
 
-                        // open the archive
-                        using (var fileStream = await file.OpenReadAsync())
-                        using (var archive = await Task.Run(() => new ZipArchive(fileStream.AsStreamForRead(), ZipArchiveMode.Read, true)))
+                    // open the archive
+                    using (var fileStream = await file.OpenReadAsync())
+                    using (var archive = await Task.Run(() => new ZipArchive(fileStream.AsStreamForRead(), ZipArchiveMode.Read, true)))
+                    {
+                        // ensure it has a theme definition and load it
+                        var theme = await LoadArchiveThemeDefinitionAsync(archive);
+                        if (theme.DisplayLogo != null)
                         {
-                            // ensure it has a theme definition and load it
-                            var theme = await LoadArchiveThemeDefinitionAsync(archive);
-                            if (theme.DisplayLogo != null)
-                            {
-                                await LoadDisplayLogoAsync(archive, theme);
-                            }
-
-                            await ValidateAndLoadArchiveAsync(archive, theme, target);
-                            themes.Add(file, theme);
+                            await LoadDisplayLogoAsync(archive, theme);
                         }
+
+                        await ValidateAndLoadArchiveAsync(archive, theme, target);
+                        themes.Add(file, theme);
                     }
-                    catch (Exception ex)
-                    {
-                        exceptions.Add(ex);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
                 }
 
                 if (exceptions.Any())
@@ -252,7 +249,7 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static async Task<Theme> InstallFromArchiveAsync(StorageFile file)
+        public static async Task<Theme> InstallFromArchiveAsync(StorageFile file, bool noPrompt = false)
         {
             var themesDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
             var strings = ResourceLoader.GetForViewIndependentUse("ThemesSettingsPage");
@@ -283,7 +280,7 @@ namespace Unicord.Universal
                 }
 
                 var dialog = new InstallThemeDialog(theme);
-                if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                if (noPrompt || await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
                     await ValidateAndLoadArchiveAsync(archive, theme, null);
 

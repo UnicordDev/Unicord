@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -16,8 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using static Unicord.Constants;
 
 namespace Unicord.Universal.Pages
 {
@@ -26,7 +26,7 @@ namespace Unicord.Universal.Pages
     /// </summary>
     public sealed partial class InstallThemePage : Page
     {
-        private List<StorageFile> _files;
+        private StorageFile _file;
 
         public InstallThemePage()
         {
@@ -38,32 +38,86 @@ namespace Unicord.Universal.Pages
         {
             if (e.Parameter is FileActivatedEventArgs args)
             {
-                _files = args.Files.OfType<StorageFile>().ToList();
+                _file = args.Files.OfType<StorageFile>().ToList().FirstOrDefault();
             }
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowManager.HandleTitleBarForWindow(TitleBar, this);
-            WindowManager.HandleTitleBarForControl(Title);
+            WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
+            WindowingService.Current.HandleTitleBarForControl(Title);
 
             var currentView = ApplicationView.GetForCurrentView();
             currentView.TryResizeView(new Size(480, 640));
 
-            var resources = new ResourceDictionary();
-            var themes = await ThemeManager.LoadFromArchivesAsync(_files, resources);
-
-            if (!themes.Any())
+            if (_file == null)
             {
-                // no valid theme files found
+                await UIUtilities.ShowErrorDialogAsync("InvalidThemeFileTitle", "InvalidThemeFileNotFound");
+                Window.Current.Close();
+
                 return;
             }
 
-            Tools.InvertTheme(ActualTheme, this);
-            App.Current.Resources.MergedDictionaries.Add(resources);
-            Tools.InvertTheme(ActualTheme, this);
+            try
+            {
+                var resources = new ResourceDictionary();
+                var themes = await ThemeManager.LoadFromArchiveAsync(_file, resources);
 
-            DataContext = themes.First().Value;
+                if (!themes.Any())
+                {
+                    await UIUtilities.ShowErrorDialogAsync("InvalidThemeFileTitle", "InvalidThemeFileNoThemesFound");
+                    Window.Current.Close();
+
+                    return;
+                }
+
+                Tools.InvertTheme(ActualTheme, this);
+                this.Resources.MergedDictionaries.Add(resources);
+                Tools.InvertTheme(ActualTheme, this);
+
+                DataContext = themes.First().Value;
+            }
+            catch (Exception ex)
+            {
+                await UIUtilities.ShowErrorDialogAsync("InvalidThemeFileTitle", ex.Message);
+                Window.Current.Close();
+            }
+        }
+
+        private async void InstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            InstallButton.IsEnabled = false;
+
+            try
+            {
+                var theme = await ThemeManager.InstallFromArchiveAsync(_file, true);
+                if (EnableAfterInstallationCheckBox.IsChecked == true)
+                {
+                    var selectedThemeNames = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
+                    selectedThemeNames.Add(theme.NormalisedName);
+
+                    App.LocalSettings.Save(SELECTED_THEME_NAMES, selectedThemeNames);
+
+                    await ThemeHelpers.RequestRestartAsync();
+                }
+
+                InstallButton.Visibility = Visibility.Collapsed;
+                CloseButton.Visibility = Visibility.Visible;
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                await UIUtilities.ShowErrorDialogAsync("Failed to install theme!", ex.Message);
+            }
+
+            InstallButton.IsEnabled = true;
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Window.Current.Close();
         }
     }
 }

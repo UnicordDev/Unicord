@@ -24,6 +24,11 @@ namespace Unicord.Universal.Converters
                 }
             }
 
+            if (value is DiscordChannel ch)
+            {
+                return ch.Name; // shh
+            }
+
             return "I'm sorry what the fuck.";
         }
 

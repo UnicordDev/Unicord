@@ -20,7 +20,7 @@ namespace Unicord.Universal.Commands
             if (parameter is DiscordMember member)
             {
                 var permissions = member.Guild.CurrentMember.PermissionsIn(null);
-                if (member.IsCurrent && (permissions.HasFlag(Permissions.ChangeNickname) || permissions.HasFlag(Permissions.ManageNicknames)))
+                if (member.Id == App.Discord.CurrentUser.Id && (permissions.HasFlag(Permissions.ChangeNickname) || permissions.HasFlag(Permissions.ManageNicknames)))
                 {
                     return true;
                 }

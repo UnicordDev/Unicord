@@ -98,6 +98,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="Title">
@@ -108,7 +109,34 @@
             </Grid>
 
             <Grid Grid.Row="2">
-                <Button HorizontalAlignment="Stretch" Margin="12" Content="Install" Background="{Binding DisplayColourBrush}" BorderBrush="{Binding DisplayColourBrush}" Style="{ThemeResource ThemeAccentButtonStyle}"/>
+                <CheckBox x:Name="EnableAfterInstallationCheckBox"
+                          x:Uid="/ThemeSettingsPage/EnableAfterInstallationCheckBox"
+                          IsChecked="True"
+                          Content="Enable theme after installation"
+                          Margin="12,12,12,0"/>
+            </Grid>
+            
+            <Grid Grid.Row="3">                
+                <Button x:Name="InstallButton"
+                        x:Uid="/ThemesSettingsPage/InstallButton"
+                        HorizontalAlignment="Stretch" 
+                        Margin="12" 
+                        Content="Install" 
+                        Background="{Binding DisplayColourBrush}" 
+                        BorderBrush="{Binding DisplayColourBrush}" 
+                        Style="{ThemeResource ThemeAccentButtonStyle}"
+                        Click="InstallButton_Click"/>
+
+                <Button x:Name="CloseButton"
+                        x:Uid="/ThemesSettingsPage/CloseButton"
+                        HorizontalAlignment="Stretch" 
+                        Margin="12" 
+                        Visibility="Collapsed"
+                        Content="Close" 
+                        Background="{Binding DisplayColourBrush}" 
+                        BorderBrush="{Binding DisplayColourBrush}" 
+                        Style="{ThemeResource ThemeAccentButtonStyle}"
+                        Click="CloseButton_Click"/>
             </Grid>
         </Grid>
 

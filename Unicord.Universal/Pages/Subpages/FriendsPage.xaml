@@ -11,7 +11,7 @@
     xmlns:commands="using:Unicord.Universal.Commands"
     xmlns:discord="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:models="using:Unicord.Universal.Models"
+    xmlns:models="using:Unicord.Universal.Models" xmlns:presence="using:Unicord.Universal.Controls.Presence"
     NavigationCacheMode="Required"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
@@ -64,9 +64,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Name="text" Text="{Binding User.Username}" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="1" FontSize="12" x:Name="presenceActivity" Visibility="{Binding User.Presence.Activity.Name, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
-                            <Run Text="{Binding User.Presence, Converter={StaticResource PresenceTextConverter}}"/>
-                        </TextBlock>
+                        <presence:InlinePresenceControl Presence="{Binding User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
                     </Grid>
                     <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">

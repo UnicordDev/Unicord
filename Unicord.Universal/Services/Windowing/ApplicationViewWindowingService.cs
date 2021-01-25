@@ -2,116 +2,85 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI.Helpers;
-using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
-using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Core.Preview;
-using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Unicord.Universal.Utilities
+namespace Unicord.Universal.Services.Windowing
 {
-    internal static class WindowManager
+    class ApplicationViewWindowingService : WindowingService
     {
-        private static ConcurrentDictionary<int, ulong> _windowChannelDictionary
+        class ApplicationViewWindowHandle : WindowHandle
+        {
+            public int Id { get; set; }
+        }
+
+        private int _mainWindowId;
+        private ConcurrentDictionary<int, ApplicationViewWindowHandle> _windowHandles
+             = new ConcurrentDictionary<int, ApplicationViewWindowHandle>();
+        private ConcurrentDictionary<int, ulong> _windowChannelDictionary
              = new ConcurrentDictionary<int, ulong>();
 
-        private static List<FrameworkElement> _handledElements
-             = new List<FrameworkElement>();
+        public override bool Supported => true; // todo: work this out
 
-        private static int _mainWindowId;
-        private static bool _mainWindowSet;
-
-        public static IEnumerable<ulong> VisibleChannels
-            => _windowChannelDictionary.Values;
-
-        public static bool MultipleWindowsSupported =>
-            AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
-
-        public static bool IsMainWindow =>
-             _mainWindowSet && ApplicationView.GetForCurrentView().Id == _mainWindowId;
-
-        public static void SetMainWindow()
+        public override void SetMainWindow(UIElement reference)
         {
-            if (!_mainWindowSet)
-            {
-                _mainWindowSet = true;
-                _mainWindowId = ApplicationView.GetForCurrentView().Id;
-            }
+            _mainWindowId = ApplicationView.GetForCurrentView().Id;
         }
 
-        internal static void SetChannelForCurrentWindow(ulong id)
+        public override WindowHandle GetHandle(UIElement reference)
         {
-            if (IsMainWindow)
-                App.LocalSettings.Save("LastViewedChannel", id);
-            _windowChannelDictionary[ApplicationView.GetForCurrentView().Id] = id;
+            if (!reference.Dispatcher.HasThreadAccess)
+                throw new InvalidOperationException("Can't get handle for another thread!");
+
+            return GetOrCreateHandleForId(ApplicationView.GetForCurrentView().Id);
         }
 
-        public static async Task CloseAllWindows()
+        public override bool IsMainWindow(WindowHandle handle)
         {
-            _windowChannelDictionary.Clear();
-            var views = CoreApplication.Views.ToList();
-            foreach (var view in views)
-            {
-                await view.ExecuteOnUIThreadAsync(async () =>
-                {
-                    if (view.IsMain) return;
-                    await ApplicationView.GetForCurrentView().TryConsolidateAsync();
-                });
-            }
+            if (handle is ApplicationViewWindowHandle h)
+                return h.Id == _mainWindowId;
+
+            throw new InvalidOperationException("Invalid WindowHandle!");
         }
 
-        public static async Task<bool> ActivateOtherWindow(DiscordChannel channel)
+        public override void SetWindowChannel(WindowHandle handle, ulong id)
         {
-            if (!MultipleWindowsSupported)
-                return false;
-
-            try
-            {
-                var window = _windowChannelDictionary.FirstOrDefault(w => w.Value == channel.Id).Key;
-                if (window != 0 && window != ApplicationView.GetForCurrentView().Id)
-                {
-                    await ApplicationViewSwitcher.SwitchAsync(window);
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return false;
+            if (handle is ApplicationViewWindowHandle h)
+                _windowChannelDictionary[h.Id] = id;
+            else
+                throw new InvalidOperationException("Invalid WindowHandle!");
         }
 
-        public static async Task OpenChannelWindowAsync(DiscordChannel channel, ApplicationViewMode mode = ApplicationViewMode.Default)
+        public override bool IsChannelVisible(ulong id)
         {
-            if (!MultipleWindowsSupported)
-                return;
+            return _windowChannelDictionary.Any(c => c.Value == id);
+        }
 
-            if (await ActivateOtherWindow(channel))
-                return;
+        public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
+        {
+            if (!Supported)
+                return null;
 
-            Analytics.TrackEvent("WindowManager_OpenChannelWindow");
+            if (await ActivateOtherWindowAsync(channel, currentWindow))
+                return null;
+
+            Analytics.TrackEvent("ApplicationViewWindowingService_OpenChannelWindowAsync");
 
             var viewId = 0;
             var coreView = CoreApplication.CreateNewView();
             await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                coreView.Properties["channel_id"] = channel.Id;
-
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
                 try { ThemeManager.LoadCurrentTheme(App.Current.Resources); } catch { }
@@ -120,7 +89,7 @@ namespace Unicord.Universal.Utilities
                 window.Content = frame;
                 window.Activate();
 
-                frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true, ViewMode = mode });
+                frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true });
 
                 var applicationView = ApplicationView.GetForCurrentView();
                 viewId = applicationView.Id;
@@ -142,10 +111,58 @@ namespace Unicord.Universal.Utilities
                 applicationView.Consolidated += OnConsolidated;
             });
 
-            await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
+            if (await ApplicationViewSwitcher.TryShowAsStandaloneAsync(viewId))
+                return GetOrCreateHandleForId(viewId);
+
+            return null;
+            //await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
         }
 
-        public static void HandleTitleBarForWindow(FrameworkElement titleBar, FrameworkElement contentRoot)
+        public override async Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
+        {
+            if (!Supported)
+                return false;
+
+            var handle = currentWindow as ApplicationViewWindowHandle;
+            try
+            {
+                var window = _windowChannelDictionary.FirstOrDefault(w => w.Value == channel.Id).Key;
+                if (window != 0 && window != ApplicationView.GetForCurrentView().Id && window != handle?.Id)
+                {
+                    await ApplicationViewSwitcher.SwitchAsync(window);
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        public override async Task CloseAllWindowsAsync()
+        {
+            _windowChannelDictionary.Clear();
+            _windowHandles.Clear();
+            _windowHandles[_mainWindowId] = new ApplicationViewWindowHandle() { Id = _mainWindowId };
+
+            var views = CoreApplication.Views.ToList();
+            foreach (var view in views)
+            {
+                await view.ExecuteOnUIThreadAsync(async () =>
+                {
+                    if (view.IsMain) return;
+                    await ApplicationView.GetForCurrentView().TryConsolidateAsync();
+                });
+            }
+
+        }
+
+        private List<FrameworkElement> _handledElements
+            = new List<FrameworkElement>();
+
+        public override void HandleTitleBarForWindow(FrameworkElement titleBar, FrameworkElement contentRoot)
         {
             lock (_handledElements)
             {
@@ -224,8 +241,7 @@ namespace Unicord.Universal.Utilities
             }
         }
 
-        // for some reason Grid doesn't inherit from Control???
-        public static void HandleTitleBarForControl(FrameworkElement element, bool margin = false)
+        public override void HandleTitleBarForControl(FrameworkElement element, bool margin = false)
         {
             lock (_handledElements)
             {
@@ -278,7 +294,7 @@ namespace Unicord.Universal.Utilities
             }
         }
 
-        private static void ApplyPadding(FrameworkElement element, bool margin, Thickness padding)
+        private void ApplyPadding(FrameworkElement element, bool margin, Thickness padding)
         {
             if (margin)
             {
@@ -292,5 +308,8 @@ namespace Unicord.Universal.Utilities
                     control.Padding = padding;
             }
         }
+
+        private WindowHandle GetOrCreateHandleForId(int id)
+            => _windowHandles.TryGetValue(id, out var handle) ? handle : _windowHandles[id] = new ApplicationViewWindowHandle() { Id = id };
     }
 }

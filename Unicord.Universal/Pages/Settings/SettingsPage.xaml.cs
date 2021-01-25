@@ -83,7 +83,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowManager.HandleTitleBarForControl(SettingsTabView, true);
+            WindowingService.Current.HandleTitleBarForControl(SettingsTabView, true);
         }
 
         private void SettingsCloseButton_Click(object sender, RoutedEventArgs e)

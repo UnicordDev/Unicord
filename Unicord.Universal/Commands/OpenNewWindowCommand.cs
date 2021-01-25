@@ -3,6 +3,7 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 
 namespace Unicord.Universal.Commands
@@ -15,7 +16,7 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return (parameter is DiscordChannel channel) && channel.Type != ChannelType.Voice && WindowManager.MultipleWindowsSupported;
+            return (parameter is DiscordChannel channel) && channel.Type != ChannelType.Voice && WindowingService.Current.Supported;
         }
 
         public async void Execute(object parameter)
@@ -24,7 +25,7 @@ namespace Unicord.Universal.Commands
 
             if (parameter is DiscordChannel channel && channel.Type != ChannelType.Voice)
             {
-                await WindowManager.OpenChannelWindowAsync(channel);
+                await WindowingService.Current.OpenChannelWindowAsync(channel);
             }
         }
     }

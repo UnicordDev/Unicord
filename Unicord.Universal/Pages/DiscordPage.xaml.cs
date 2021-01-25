@@ -20,6 +20,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -86,8 +87,8 @@ namespace Unicord.Universal.Pages
         {
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                WindowManager.HandleTitleBarForControl(sidebarMainGrid);
-                WindowManager.HandleTitleBarForControl(sidebarSecondaryGrid);
+                WindowingService.Current.HandleTitleBarForControl(sidebarMainGrid);
+                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid);
             }
             else
             {
@@ -154,7 +155,7 @@ namespace Unicord.Universal.Pages
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
             }
-        }       
+        }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -180,7 +181,7 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowManager.VisibleChannels.Contains(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }
@@ -197,7 +198,7 @@ namespace Unicord.Universal.Pages
                 notification.Margin = new Thickness(0, 20, 4, 0);
             }
 
-            notification.Show(new MessageControl() { Message = message, Margin = new Thickness(-6, -10, -8, 0) }, 7_000);
+            notification.Show(new MessageControl() { Message = message }, 7_000);
         }
 
         public void ToggleSplitPane()
