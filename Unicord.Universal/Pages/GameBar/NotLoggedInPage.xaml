@@ -6,9 +6,27 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource BackgroundSecondaryBrush}">
 
-    <Grid>
-        <TextBlock>Placeholder not logged in page thing</TextBlock>
+    <Grid VerticalAlignment="Center" MaxWidth="300">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Image Source="{ThemeResource DiscordWordMark}"/>
+        
+        <TextBlock Grid.Row="1" TextAlignment="Center">
+            To use Unicord in Game Bar you need to log in!
+        </TextBlock>
+        
+        <Button x:Name="OpenAppButton"
+                Click="OpenAppButton_Click"
+                Grid.Row="2" 
+                HorizontalAlignment="Center"
+                Style="{ThemeResource TextBlockButtonStyle}"
+                Content="Open the App!"/>
+
     </Grid>
 </Page>

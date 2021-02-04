@@ -331,10 +331,6 @@
     <None Include="gsl\pointers" />
     <None Include="gsl\span" />
     <None Include="gsl\string_span" />
-    <CopyFileToFolders Include="README.md">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
     <None Include="packages.config" />
     <None Include="Unicord.Universal.Voice.def" />
   </ItemGroup>

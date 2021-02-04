@@ -4,6 +4,7 @@
 
 using System.Reflection;
 using DSharpPlus.Entities;
+using Unicord.Universal.Converters;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -227,6 +228,9 @@ namespace Unicord.Universal.Controls.Markdown.Render
         public Brush LinkForeground { get; set; }
 
         public DiscordChannel Channel { get; set; }
+
         public bool IsSystemMessage { get; set; }
+
+        public ColourBrushConverter ColourBrushConverter { get; set; }
     }
 }

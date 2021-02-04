@@ -27,6 +27,15 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+
+    <Style x:Key="CleanListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="Padding" Value="0,2" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
     <Style TargetType="wam:MarkdownTextBlock">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="IsTabStop" Value="False" />
@@ -85,6 +94,7 @@
         <Setter Property="TableCellPadding" Value="9, 4, 9, 4" />
         <Setter Property="TableMargin" Value="0, 5, 0, 5" />
         <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="ColourBrushConverter" Value="{StaticResource ColourBrushConverter}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="wam:MarkdownTextBlock">
@@ -191,7 +201,7 @@
                                    VerticalAlignment="Bottom"
                                    FontSize="{TemplateBinding FontSize}"
                                    FontWeight="{TemplateBinding FontWeight}"
-                                   Foreground="{Binding Color, Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
+                                   Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
                                    Text="{Binding DisplayName}"
                                    TextWrapping="NoWrap" />
                         <TextBlock Visibility="{Binding IsBot, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" Margin="8,0,0,0" Grid.Column="1" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="{TemplateBinding IconSize}" FontWeight="Normal" Text="&#xE99A;" />

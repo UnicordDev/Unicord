@@ -95,5 +95,17 @@ namespace Unicord.Universal.Models
             get => App.RoamingSettings.Read(WARN_UNSAFE_LINKS, true);
             set => App.RoamingSettings.Save(WARN_UNSAFE_LINKS, value);
         }
+
+        public bool AdjustRoleColours
+        {
+            get => App.RoamingSettings.Read(ADJUST_ROLE_COLOURS, true);
+            set => App.RoamingSettings.Save(ADJUST_ROLE_COLOURS, value);
+        }
+
+        public double MinimumContrast
+        {
+            get => App.RoamingSettings.Read(MINIMUM_CONTRAST, MINIMUM_CONTRAST_DEFAULT);
+            set => App.RoamingSettings.Save(MINIMUM_CONTRAST, value);
+        }
     }
 }

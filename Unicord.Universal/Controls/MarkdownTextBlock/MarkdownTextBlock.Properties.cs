@@ -8,6 +8,7 @@ using ColorCode.Styling;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Unicord.Universal.Controls.Markdown.Render;
+using Unicord.Universal.Converters;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -671,6 +672,16 @@ namespace Unicord.Universal.Controls
 
         public static readonly DependencyProperty IsSystemMessageProperty =
             DependencyProperty.Register("IsSystemMessage", typeof(bool), typeof(MarkdownTextBlock), new PropertyMetadata(null));
+
+
+        public ColourBrushConverter ColourBrushConverter
+        {
+            get { return (ColourBrushConverter)GetValue(ColourBrushConverterProperty); }
+            set { SetValue(ColourBrushConverterProperty, value); }
+        }
+
+        public static readonly DependencyProperty ColourBrushConverterProperty =
+            DependencyProperty.Register("ColourBrushConverter", typeof(ColourBrushConverter), typeof(MarkdownTextBlock), new PropertyMetadata(null));
 
         /// <summary>
         /// Holds a list of hyperlinks we are listening to.

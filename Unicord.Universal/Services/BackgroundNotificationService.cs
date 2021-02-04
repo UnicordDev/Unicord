@@ -63,13 +63,19 @@ namespace Unicord.Universal.Services
                     var notifyTask = await StartupTask.GetAsync("UnicordBackgroundTask");
                     await notifyTask.RequestEnableAsync();
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
 
+            try
+            {
                 if (ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1))
                 {
                     await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
                     return true;
                 }
-
             }
             catch (Exception ex)
             {

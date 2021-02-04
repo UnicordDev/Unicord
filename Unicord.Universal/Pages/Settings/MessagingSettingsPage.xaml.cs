@@ -8,6 +8,7 @@ using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,6 +31,11 @@ namespace Unicord.Universal.Pages.Settings
             // dirty hack to work around databinding fuckery
             App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)(sender as ComboBox).SelectedIndex);
             (DataContext as MessagingSettingsModel).RegenerateMessage();
+        }
+
+        private async void ContrastLearnMoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("https://www.w3.org/TR/WCAG/#contrast-minimum"));
         }
     }
 }

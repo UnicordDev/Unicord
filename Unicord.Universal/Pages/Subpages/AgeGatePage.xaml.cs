@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages.Subpages
 {
-    public sealed partial class ChannelWarningPage : Page
+    public sealed partial class AgeGatePage : Page
     {
         private DiscordChannel _channel;
 
-        public ChannelWarningPage()
+        public AgeGatePage()
         {
             InitializeComponent();
         }

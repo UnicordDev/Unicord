@@ -62,6 +62,7 @@ namespace Unicord.Universal.Models
             App.Discord.PresenceUpdated += Discord_PresenceUpdated;
         }
 
+        public DiscordUser CurrentUser => App.Discord.CurrentUser;
         public ObservableCollection<DiscordRelationship> All { get; set; }
         public ObservableCollection<DiscordRelationship> Online { get; set; }
         public ObservableCollection<DiscordRelationship> Blocked { get; set; }

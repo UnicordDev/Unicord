@@ -275,7 +275,7 @@
                     </ImageBrush>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind DisplayName}" FontSize="14" Foreground="{Binding Converter={StaticResource MemberColourConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind DisplayName}" FontSize="14" Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}" Margin="0,0,4,0"/>
         </Grid>
     </DataTemplate>
 

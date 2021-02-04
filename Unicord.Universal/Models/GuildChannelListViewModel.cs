@@ -264,8 +264,10 @@ namespace Unicord.Universal.Models
 
             // var channels = Guild.Channels.Values;
             var channels =
-               (Guild.IsOwner ? Guild.Channels.Values :
+                (Guild.IsOwner ? Guild.Channels.Values :
                 Guild.Channels.Values.Where(c => c.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)));
+
+            
 
             if (channels.Any(c => c.IsCategory))
             {

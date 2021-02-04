@@ -70,18 +70,45 @@
             <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
         </Grid>
 
-        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
-        <StackPanel Grid.Row="4">
-            <TextBlock IsTextSelectionEnabled="True" TextWrapping="Wrap">
-                You are in <Run FontWeight="Bold" Text="{Binding ServerCountString, Mode=OneWay}"/> servers,
-                with <Run FontWeight="Bold" Text="{Binding ChannelsCountString, Mode=OneWay}"/> channels and
-                <Run FontWeight="Bold" Text="{Binding MemberCountString, Mode=OneWay}"/> members, and have
-                <Run FontWeight="Bold" Text="{Binding FriendCountString, Mode=OneWay}"/> friends alongside
-                <Run FontWeight="Bold" Text="{Binding OpenDMCountString, Mode=OneWay}"/> open direct messages.
-                <LineBreak/>
-                Currently synched: <Run FontWeight="Bold" Text="{Binding SynchedUserCountString, Mode=OneWay}"/> users, <Run FontWeight="Bold" Text="{Binding SynchedPresenceCountString, Mode=OneWay}"/> presences.
-            </TextBlock>
-        </StackPanel>
+        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,4" />
+        <Grid Grid.Row="4">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Friends" FontWeight="Bold" />
+            <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Right" Text="{Binding FriendCountString}"/>
+            
+            <TextBlock Grid.Row="1" Text="Servers" FontWeight="Bold" />
+            <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{Binding ServerCountString}"/>
+
+            <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Bold" />
+            <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding ChannelsCountString}"/>
+            
+            <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Bold" />
+            <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Right" Text="{Binding MemberCountString}"/>
+
+            <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Bold" />
+            <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Right" Text="{Binding OpenDMCountString}"/>
+            
+            <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Bold" />
+            <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedUserCountString}"/>            
+            
+            <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Bold" />
+            <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedPresenceCountString}"/>
+        </Grid>
 
         <Button x:Name="logoutButton" x:Uid="/AccountsSettingsPage/LogoutButton" Grid.Row="6" HorizontalAlignment="Stretch" Click="LogoutButton_Click"/>
     </Grid>

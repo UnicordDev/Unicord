@@ -47,6 +47,11 @@ namespace Unicord
         public const string MESSAGE_STYLE_DEFAULT = "DefaultMessageControlStyle";
 
         public const string TOAST_BACKGROUND_TASK_NAME = "ToastBackgroundTask";
+
+        public const string ADJUST_ROLE_COLOURS = "AdjustRoleColours";
+        public const bool ADJUST_ROLE_COLOURS_DEFAULT = true;
+        public const string MINIMUM_CONTRAST = "MinimumContrast";
+        public const double MINIMUM_CONTRAST_DEFAULT = 3.5;
     }
 
     public enum MediaTranscodeOptions

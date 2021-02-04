@@ -27,19 +27,20 @@ namespace Unicord.Universal.Pages.Settings
     {
         // these should be kept in order as they appear in the UI,
         // and in sync with Unicord.Universal.Services.SettingsPage
-        private static Dictionary<SettingsPageType, Type> _pages = new Dictionary<SettingsPageType, Type>()
-        {
-            [SettingsPageType.Acccounts] = typeof(AccountsSettingsPage),
-            [SettingsPageType.Messaging] = typeof(MessagingSettingsPage),
-            [SettingsPageType.Themes] = typeof(ThemesSettingsPage),
-            [SettingsPageType.Media] = typeof(MediaSettingsPage),
-            [SettingsPageType.Voice] = typeof(VoiceSettingsPage),
-            [SettingsPageType.Security] = typeof(SecuritySettingsPage),
+        private static Dictionary<SettingsPageType, Type> _pages
+            = new Dictionary<SettingsPageType, Type>()
+            {
+                [SettingsPageType.Acccounts] = typeof(AccountsSettingsPage),
+                [SettingsPageType.Messaging] = typeof(MessagingSettingsPage),
+                [SettingsPageType.Themes] = typeof(ThemesSettingsPage),
+                [SettingsPageType.Media] = typeof(MediaSettingsPage),
+                [SettingsPageType.Voice] = typeof(VoiceSettingsPage),
+                [SettingsPageType.Security] = typeof(SecuritySettingsPage),
 #if !STORE
-            [SettingsPageType.Debug] = typeof(AboutSettingsPage),
+                [SettingsPageType.Debug] = typeof(DebugSettingsPage),
 #endif
-            [SettingsPageType.About] = typeof(AboutSettingsPage),
-        };
+                [SettingsPageType.About] = typeof(AboutSettingsPage),
+            };
 
 #if STORE
         public bool IsDebug => false;
