@@ -14,8 +14,6 @@ namespace Unicord.Universal.Converters
         private Dictionary<uint, SolidColorBrush> _brushCache
          = new Dictionary<uint, SolidColorBrush>();
 
-        public double Contrast { get; set; } = 3.5;
-
         public Color DefaultBackgroundColour { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, string language)
@@ -39,10 +37,11 @@ namespace Unicord.Universal.Converters
                 return GetOrCreateBrush(winCol);
 
             var hslCol = ColorHelper.ToHsl(winCol);
+            var contrast = App.RoamingSettings.Read(MINIMUM_CONTRAST, MINIMUM_CONTRAST_DEFAULT);
             var backgroundCol = ColorHelper.ToHsl(parameter is Color ? (Color)parameter : DefaultBackgroundColour);
-            var dark = backgroundCol.L < 0.5;
-            var targetLuma = dark ? Contrast * (backgroundCol.L + 0.05) - 0.05 : (backgroundCol.L + 0.05) / Contrast - 0.05;
 
+            var dark = backgroundCol.L < 0.5;
+            var targetLuma = dark ? contrast * (backgroundCol.L + 0.05) - 0.05 : (backgroundCol.L + 0.05) / contrast - 0.05;
             if (dark ? hslCol.L < targetLuma : hslCol.L > targetLuma)
                 hslCol.L = targetLuma;
 

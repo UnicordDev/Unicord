@@ -15,7 +15,10 @@
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock x:Uid="/MessagingSettingsPage/MessagingSettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,8"/>        
+        <TextBlock x:Uid="/MessagingSettingsPage/MessagingSettingsHeader" 
+                   Text="Text and Images"
+                   Style="{ThemeResource SubheaderTextBlockStyle}"
+                   Margin="0,0,0,8"/>        
 
         
         <!-- 
@@ -33,7 +36,7 @@
         -->
 
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/TimestampsHeader" Text="Timestamps"/>
-        <TextBlock TextWrapping="Wrap" x:Uid="/MessagingSettingsPage/TimestampsSubheader"/>
+        <TextBlock TextWrapping="Wrap" x:Uid="/MessagingSettingsPage/TimestampsSubheader" Text="How do you want timestamps on messages to appear?"/>
         <!-- TODO: Use binding to display timestamps -->
         <ComboBox SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,4,0,8">
             <ComboBoxItem>
@@ -56,7 +59,9 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/ChatHeader" />
+        <TextBlock x:Uid="/MessagingSettingsPage/ChatHeader"
+                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                   Text="Chat" />
 
         <Grid Grid.Row="1" Margin="0,4,0,8">
             <Grid.ColumnDefinitions>
@@ -78,11 +83,44 @@
 
             <TextBlock Grid.Row="2" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/PromptLinks" />
             <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
-
-            <TextBlock Grid.Row="3" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AdjustRoleColours" />
-            <ToggleSwitch Grid.Row="4" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
         </Grid>
 
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/AdjustRoleColoursHeader" Text="Contrast Adjustment" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AdjustRoleColours" />
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
+
+            <Slider x:Name="MinimumContrastSlider"
+                    x:Uid="/MessagingSettingsPage/MinimumContrastSlider"
+                    Header="Minimum Contrast"
+                    Value="{Binding MinimumContrast, Mode=TwoWay}"
+                    Minimum="1"
+                    Maximum="21"
+                    StepFrequency="0.5"
+                    TickFrequency="1"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,8,0,0"/>
+
+            <Button x:Name="ContrastLearnMoreButton"
+                    x:Uid="/MessagingSettingsPage/LearnMoreButton"
+                    Content="Learn More"
+                    HorizontalAlignment="Right"
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Style="{ThemeResource TextBlockButtonStyle}"
+                    Click="ContrastLearnMoreButton_Click"/>
+        </Grid>
 
     </StackPanel>
 </Page>
