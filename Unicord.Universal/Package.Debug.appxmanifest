@@ -10,74 +10,74 @@
          xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 desktop desktop5 rescap">
-	<Identity Name="24101WamWooWamRD.Unicord.Canary" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.2.7.0" />
-	<mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
-	<Properties>
-		<DisplayName>ms-resource:AppDisplayName</DisplayName>
-		<PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
-		<Logo>Assets\Store\StoreLogo.png</Logo>
-	</Properties>
-	<Dependencies>
-		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.17763.0" />
-	</Dependencies>
-	<Resources>
+  <Identity Name="24101WamWooWamRD.Unicord.Canary" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.2.7.0" />
+  <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>ms-resource:AppDisplayName</DisplayName>
+    <PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
+    <Logo>Assets\Store\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.17763.0" />
+  </Dependencies>
+  <Resources>
     <Resource Language="EN-GB" />
     <Resource Language="EN-US" />
     <Resource Language="FR" />
-	</Resources>
-	<Applications>
-		<Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
-			<uap:VisualElements DisplayName="ms-resource:DevAppDisplayName" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="ms-resource:AppDisplayDescription" BackgroundColor="transparent">
-				<uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png" />
-				<uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" Square310x310Logo="Assets\Store\LargeTile.png" Square71x71Logo="Assets\Store\SmallTile.png" ShortName="Unicord Canary">
-					<uap:ShowNameOnTiles>
-						<uap:ShowOn Tile="square150x150Logo" />
-						<uap:ShowOn Tile="wide310x150Logo" />
-						<uap:ShowOn Tile="square310x310Logo" />
-					</uap:ShowNameOnTiles>
-				</uap:DefaultTile>
-				<uap:SplashScreen Image="Assets\Store\SplashScreen.png" BackgroundColor="#7289DA" />
-				<uap:InitialRotationPreference>
-					<uap:Rotation Preference="portrait" />
-				</uap:InitialRotationPreference>
-			</uap:VisualElements>
-			<Extensions>
-				<uap:Extension Category="windows.voipCall">
-				</uap:Extension>
-				<uap4:Extension Category="windows.contactPanel">
-					<uap4:ContactPanel />
-				</uap4:Extension>
-				<uap:Extension Category="windows.shareTarget">
-					<uap:ShareTarget Description="Share to Discord">
-						<uap:SupportedFileTypes>
-							<uap:SupportsAnyFileType />
-						</uap:SupportedFileTypes>
-						<uap:DataFormat>StorageItem</uap:DataFormat>
-						<uap:DataFormat>Bitmap</uap:DataFormat>
-						<uap:DataFormat>Text</uap:DataFormat>
-						<uap:DataFormat>WebLink</uap:DataFormat>
-					</uap:ShareTarget>
-				</uap:Extension>
-				<uap:Extension Category="windows.protocol">
-					<uap:Protocol Name="ms-contact-profile">
-						<uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
-						<uap:DisplayName>Unicord</uap:DisplayName>
-					</uap:Protocol>
-				</uap:Extension>
-				<uap:Extension Category="windows.protocol">
-					<uap:Protocol Name="ms-ipmessaging">
-						<uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
-						<uap:DisplayName>Unicord</uap:DisplayName>
-					</uap:Protocol>
-				</uap:Extension>
-				<uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
-					<uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
-				</uap:Extension>
-				<Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.Background.VoiceBackgroundTask">
-					<BackgroundTasks ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
-						<Task Type="systemEvent" />
-					</BackgroundTasks>
-				</Extension>
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
+      <uap:VisualElements DisplayName="ms-resource:DevAppDisplayName" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="ms-resource:AppDisplayDescription" BackgroundColor="transparent">
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" Square310x310Logo="Assets\Store\LargeTile.png" Square71x71Logo="Assets\Store\SmallTile.png" ShortName="Unicord Canary">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\Store\SplashScreen.png" BackgroundColor="#7289DA" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+        </uap:InitialRotationPreference>
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.voipCall">
+        </uap:Extension>
+        <uap4:Extension Category="windows.contactPanel">
+          <uap4:ContactPanel />
+        </uap4:Extension>
+        <uap:Extension Category="windows.shareTarget">
+          <uap:ShareTarget Description="Share to Discord">
+            <uap:SupportedFileTypes>
+              <uap:SupportsAnyFileType />
+            </uap:SupportedFileTypes>
+            <uap:DataFormat>StorageItem</uap:DataFormat>
+            <uap:DataFormat>Bitmap</uap:DataFormat>
+            <uap:DataFormat>Text</uap:DataFormat>
+            <uap:DataFormat>WebLink</uap:DataFormat>
+          </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="ms-contact-profile">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="ms-ipmessaging">
+            <uap:Logo>Assets\Store\Square44x44Logo.png</uap:Logo>
+            <uap:DisplayName>Unicord</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
+          <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
+        </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.Background.VoiceBackgroundTask">
+          <BackgroundTasks ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
+            <Task Type="systemEvent" />
+          </BackgroundTasks>
+        </Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.NotificationBackgroundTask">
           <BackgroundTasks>
             <Task Type="systemEvent" />
@@ -85,25 +85,137 @@
             <Task Type="general"/>
           </BackgroundTasks>
         </Extension>
-				<uap:Extension Category="windows.fileTypeAssociation">
-					<uap:FileTypeAssociation Name="uni-theme">
-						<uap:DisplayName>Unicord Theme</uap:DisplayName>
-						<uap:SupportedFileTypes>
-							<uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
-						</uap:SupportedFileTypes>
-					</uap:FileTypeAssociation>
-				</uap:Extension>
-			</Extensions>
-		</Application>
-	</Applications>
-	<Capabilities>
-		<Capability Name="internetClient" />
-		<uap:Capability Name="videosLibrary" />
-		<uap:Capability Name="picturesLibrary" />
-		<uap:Capability Name="contacts" />
-		<uap:Capability Name="voipCall" />
-		<uap:Capability Name="phoneCall" />
-		<DeviceCapability Name="microphone" />
-		<DeviceCapability Name="webcam" />
-	</Capabilities>
+
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="microsoft.gameBarUIExtension"
+                             Id="unicord-friendslist"
+                             DisplayName="Unicord"
+                             Description="Access Unicord while you play!"
+                             PublicFolder="GameBar">
+            <uap3:Properties>
+              <GameBarWidget Type="Standard">
+                <HomeMenuVisible>true</HomeMenuVisible>
+                <PinningSupported>true</PinningSupported>
+                <SettingsSupported AppExtensionId="unicord-gamebar-settings" />
+                <Window>
+                  <Size>
+                    <Height>475</Height>
+                    <Width>350</Width>
+                    <MinHeight>150</MinHeight>
+                    <MinWidth>300</MinWidth>
+                    <MaxHeight>600</MaxHeight>
+                    <MaxWidth>600</MaxWidth>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>true</Horizontal>
+                    <Vertical>true</Vertical>
+                  </ResizeSupported>
+                </Window>
+              </GameBarWidget>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="microsoft.gameBarUIExtension"
+                             Id="unicord-channel"
+                             DisplayName="Unicord"
+                             Description="Unicord Channel"
+                             PublicFolder="GameBar">
+            <uap3:Properties>
+              <GameBarWidget Type="Standard">
+                <HomeMenuVisible>false</HomeMenuVisible>
+                <PinningSupported>true</PinningSupported>
+                <SettingsSupported AppExtensionId="unicord-gamebar-settings" />
+                <Window>
+                  <Size>
+                    <Height>360</Height>
+                    <Width>640</Width>
+                    <MinHeight>150</MinHeight>
+                    <MinWidth>200</MinWidth>
+                    <MaxHeight>480</MaxHeight>
+                    <MaxWidth>854</MaxWidth>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>true</Horizontal>
+                    <Vertical>true</Vertical>
+                  </ResizeSupported>
+                </Window>
+              </GameBarWidget>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="microsoft.gameBarUIExtension"
+                             Id="unicord-gamebar-settings"
+                             DisplayName="Settings"
+                             Description="Settings"
+                             PublicFolder="GameBar">
+            <uap3:Properties>
+              <GameBarWidget Type="Settings">
+                <Window>
+                  <Size>
+                    <Height>300</Height>
+                    <Width>300</Width>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>false</Horizontal>
+                    <Vertical>false</Vertical>
+                  </ResizeSupported>
+                </Window>
+              </GameBarWidget>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="uni-theme">
+            <uap:DisplayName>Unicord Theme</uap:DisplayName>
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Type="include" Match="https://*.discord.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://discord.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://*.discordapp.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://discordapp.com" WindowsRuntimeAccess="none"/>
+      </uap:ApplicationContentUriRules>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <uap:Capability Name="videosLibrary" />
+    <uap:Capability Name="picturesLibrary" />
+    <uap:Capability Name="contacts" />
+    <uap:Capability Name="voipCall" />
+    <uap:Capability Name="phoneCall" />
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="webcam" />
+  </Capabilities>
+  <Extensions>
+    <!-- Enlighten COM on where to find Metadata Based Marshaling (MBM) data for the Game Bar private types
+       <Path> is a required element (by VS) and has to point to a binary in the package, but it's not used when the class id is 00000355-0000-0000-C000-000000000046 (MBM). Due to that we just put the Microsoft.Gaming.XboxGameBar.winmd here. -->
+    <Extension Category="windows.activatableClass.proxyStub">
+      <ProxyStub ClassId="00000355-0000-0000-C000-000000000046">
+        <Path>Microsoft.Gaming.XboxGameBar.winmd</Path>
+
+        <!-- include when using SDK version 5.1+-->
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetAuthHost" InterfaceId="DC263529-B12F-469E-BB35-B94069F5B15A" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetControlHost" InterfaceId="C309CAC7-8435-4082-8F37-784523747047" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarNavigationKeyCombo" InterfaceId="5EEA3DBF-09BB-42A5-B491-CF561E33C172" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetActivatedEventArgsPrivate" InterfaceId="782535A7-9407-4572-BFCB-316B4086F102" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetHost" InterfaceId="5D12BC93-212B-4B9F-9091-76B73BF56525" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate" InterfaceId="22ABA97F-FB0F-4439-9BDD-2C67B2D5AA8F" />
+
+        <!-- include when using SDK version 5.3+-->
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetHost2" InterfaceId="28717C8B-D8E8-47A8-AF47-A1D5263BAE9B" />
+        <Interface Name="Microsoft.Gaming.XboxGameBar.Private.IXboxGameBarWidgetPrivate2" InterfaceId="B2F7DB8C-7540-48DA-9B46-4E60CE0D9DEB" />
+
+      </ProxyStub>
+    </Extension>
+  </Extensions>
 </Package>

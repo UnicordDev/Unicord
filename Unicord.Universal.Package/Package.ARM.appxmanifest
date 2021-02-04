@@ -92,6 +92,12 @@
           </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Type="include" Match="https://*.discord.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://discord.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://*.discordapp.com" WindowsRuntimeAccess="none"/>
+        <uap:Rule Type="include" Match="https://discordapp.com" WindowsRuntimeAccess="none"/>
+      </uap:ApplicationContentUriRules>
     </Application>
   </Applications>
   <Capabilities>
