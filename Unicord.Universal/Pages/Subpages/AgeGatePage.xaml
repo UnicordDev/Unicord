@@ -1,12 +1,11 @@
 ﻿<Page
-    x:Class="Unicord.Universal.Pages.Subpages.ChannelWarningPage"
+    x:Class="Unicord.Universal.Pages.Subpages.AgeGatePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     mc:Ignorable="d">
 
@@ -21,27 +20,33 @@
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="120"
                     Text="&#xE7BA;" />
-                <TextBlock x:Uid="/ChannelWarningPage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
-                <TextBlock x:Uid="/ChannelWarningPage/ChannelWarningSubheader" TextWrapping="Wrap"/>
+                <TextBlock x:Uid="/AgeGatePage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+                <TextBlock x:Uid="/AgeGatePage/ChannelWarningSubheader" TextWrapping="Wrap"/>
 
                 <Grid Margin="0,8,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button x:Uid="/ChannelWarningPage/BackButton" 
+                    <Button x:Uid="/AgeGatePage/BackButton" 
                         HorizontalAlignment="Stretch"
-                        Click="BackButton_Click"
-                        w1809:CornerRadius="3,0,0,3"/>
-                    <Button x:Uid="/ChannelWarningPage/ContinueButton" 
+                        Click="BackButton_Click">
+                        <Button.Resources>
+                            <CornerRadius x:Key="ControlCornerRadius">2,0,0,2</CornerRadius>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Uid="/AgeGatePage/ContinueButton" 
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         Click="ContinueButton_Click"
-                        w1809:CornerRadius="0,3,3,0"
-                        Style="{ThemeResource AccentButtonStyle}" />
+                        Style="{ThemeResource AccentButtonStyle}">
+                        <Button.Resources>
+                            <CornerRadius x:Key="ControlCornerRadius">0,2,2,0</CornerRadius>
+                        </Button.Resources>
+                    </Button>
                 </Grid>
 
-                <CheckBox x:Uid="/ChannelWarningPage/DontAskAgain" 
+                <CheckBox x:Uid="/AgeGatePage/DontAskAgain" 
                     x:Name="notAgain"
                     Margin="0,8"
                     Content="Don't ask me again!" />

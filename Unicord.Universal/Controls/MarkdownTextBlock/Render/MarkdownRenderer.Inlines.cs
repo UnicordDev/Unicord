@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Unicord;
 using Unicord.Universal;
+using Unicord.Universal.Converters;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Parsers.Markdown.Inlines;
 using Unicord.Universal.Parsers.Markdown.Render;
@@ -560,7 +561,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
 
         private Brush GetDiscordBrush(DiscordColor color)
         {
-            return color.Value == 0 ? Foreground : new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+            return color.Value == 0 ? Foreground : (Brush)ColourBrushConverter.Convert(color, typeof(Brush), null, "");
         }
 
         protected override void RenderDiscord(DiscordInline element, IRenderContext context)
@@ -584,11 +585,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                         var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.TryGetCachedUser(element.Id, out var u) ? u : null;
                         if (user != null)
                         {
-                            if (user is DiscordMember me)
-                            {
-                                run.Foreground = GetDiscordBrush(me.Color);
-                            }
-
+                            run.Foreground = GetDiscordBrush(user.Color);
                             run.Text = IsSystemMessage ? user.DisplayName : $"@{user.DisplayName}";
                         }
                         else
@@ -598,8 +595,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     }
                     else if (element.DiscordType == DiscordInline.MentionType.Role)
                     {
-                        var role = client.Guilds.Values.SelectMany(g => g.Roles.Values).FirstOrDefault(r => r.Id == element.Id);
-                        if (role != null)
+                        if (Channel.Guild != null && Channel.Guild.Roles.TryGetValue(element.Id, out var role))
                         {
                             run.Text = $"@{role.Name}";
                             run.Foreground = GetDiscordBrush(role.Color);

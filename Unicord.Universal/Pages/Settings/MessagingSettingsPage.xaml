@@ -67,6 +67,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AutoPlayGIFs" />
@@ -77,6 +78,9 @@
 
             <TextBlock Grid.Row="2" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/PromptLinks" />
             <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
+
+            <TextBlock Grid.Row="3" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AdjustRoleColours" />
+            <ToggleSwitch Grid.Row="4" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
         </Grid>
 
 

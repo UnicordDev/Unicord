@@ -155,6 +155,7 @@ namespace Unicord.Universal.Controls
                     renderer.ImageMaxWidth = ImageMaxWidth;
                     renderer.WrapCodeBlock = WrapCodeBlock;
                     renderer.Channel = Channel;
+                    renderer.ColourBrushConverter = ColourBrushConverter;
                     renderer.IsSystemMessage = IsSystemMessage;
 
                     _rootElement.Child = renderer.Render();

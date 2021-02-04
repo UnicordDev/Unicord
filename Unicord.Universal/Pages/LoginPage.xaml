@@ -4,23 +4,142 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d" SizeChanged="Page_SizeChanged"
     Loaded="Page_Loaded">
+    <Page.Resources>
+        <Storyboard x:Key="ShowBrowserStoryboard" x:Name="ShowBrowserStoryboard">
+            <DoubleAnimation x:Name="ShowBrowserAnimation"
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="BrowserTranslateTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.50" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideBrowserStoryboard" 
+                    x:Name="HideBrowserStoryboard"
+                    Completed="HideBrowserStoryboard_Completed">
+            <DoubleAnimation x:Name="HideBrowserAnimation"
+                EasingFunction="{StaticResource EaseExit}"
+                Storyboard.TargetName="BrowserTranslateTransform"
+                Storyboard.TargetProperty="Y"
+                Duration="00:00:00.25" />
+        </Storyboard>
+        
+    </Page.Resources>
     <Grid>
-        <StackPanel MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
-            <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12"/>
-            <PasswordBox x:Name="tokenTextBox" x:Uid="/LoginPage/TokenTextBox" />
-            <Grid Margin="0,12">
+        <StackPanel MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">           
+            <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12" />
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="TokenLoginButton"
+                        Content="Login with Token"
+                        Click="TokenLoginButton_Click"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch">
+                    <Button.Resources>
+                        <CornerRadius x:Key="ControlCornerRadius">2,0,0,2</CornerRadius>
+                    </Button.Resources>
+                </Button>
+
+                <Button x:Name="ShowBrowserButton" 
+                        HorizontalAlignment="Stretch"
+                        Content="Login with Discord"
+                        BorderThickness="0"
+                        Click="ShowBrowserButton_Click"
+                        Grid.Column="1">
+                    <Button.Resources>
+                        <CornerRadius x:Key="ControlCornerRadius">0,2,2,0</CornerRadius>
+                        
+                        <SolidColorBrush x:Key="ButtonForeground" Color="White"/>
+                        <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White"/>
+                        <SolidColorBrush x:Key="ButtonForegroundPressed" Color="White"/>
+
+                        <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource DiscordBlurpleColour}"/>
+                        <SolidColorBrush x:Key="ButtonBorderBrush" Color="{ThemeResource DiscordBlurpleColour}"/>
+
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource DiscordBlurpleLight1Colour}"/>
+                        <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{ThemeResource DiscordBlurpleLight1Colour}"/>
+
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource DiscordBlurpleDark1Colour}"/>
+                        <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{ThemeResource DiscordBlurpleDark1Colour}"/>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+            
+        </StackPanel>
+
+        <Grid x:Name="BrowserGrid" 
+              Visibility="Visible"
+              Background="{ThemeResource MainBackgroundBrush}">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="BrowserTranslateTransform" />
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="BrowserTitlebarGrid"
+                  HorizontalAlignment="Stretch"
+                  Background="Transparent"
+                  IsHitTestVisible="False">
+                <Grid x:Name="BrowserTitlebarContent">
+                    <Image Source="/Assets/Store/Square44x44Logo.png" 
+                           Grid.Column="1" 
+                           HorizontalAlignment="Left" 
+                           Width="20" 
+                           Height="20" Margin="12,0"/>
+
+                    <TextBlock Text="Unicord" 
+                               Grid.Column="1" 
+                               Style="{StaticResource CaptionTextBlockStyle}" 
+                               Margin="44,8,0,0"/>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="BrowserControlsGrid"
+                  Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="loadFileButton" x:Uid="/LoginPage/LoadFileButton" Click="loadFileButton_Click" w1809:CornerRadius="3,0,0,3" MinWidth="150" HorizontalAlignment="Stretch" />
-                <Button x:Name="loginButton" x:Uid="/LoginPage/LoginButton" Grid.Column="1" Click="Button_Click" w1809:CornerRadius="0,3,3,0" MinWidth="125" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
+                <Button x:Name="BackButton"
+                        Style="{ThemeResource IconButtonStyle}"
+                        Click="BackButton_Click"
+                        Content="&#xE72B;"/>
+
+                <Button x:Name="RefreshButton"
+                        Grid.Column="1"
+                        Margin="2,0,0,0"
+                        Style="{ThemeResource IconButtonStyle}"
+                        Click="RefreshButton_Click"
+                        Content="&#xE72C;"/>
+
+                <TextBlock x:Name="BrowserSourceUrl"
+                           Grid.Column="2"
+                           Margin="8,0"
+                           VerticalAlignment="Center"
+                           IsTextSelectionEnabled="True"
+                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                    <Run x:Name="ProtocolRun" Text="https://"/><Run x:Name="HostnameRun" Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="youtube.com"/><Run x:Name="PathRun" Text="/watch?v=W4VTq0sa9yg"/>
+                </TextBlock>
             </Grid>
-        </StackPanel>
+
+            <ContentPresenter x:Name="BrowserContainer" Grid.Row="2"/>
+            <lib:ProgressBar x:Name="BrowserProgress" 
+                             Grid.Row="2" 
+                             VerticalAlignment="Top" 
+                             Background="Transparent"/>
+        </Grid>
     </Grid>
 </Page>

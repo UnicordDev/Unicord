@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.Net.WebSocket;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
-//using Microsoft.Gaming.XboxGameBar;
+#if XBOX_GAME_BAR
+using Microsoft.Gaming.XboxGameBar;
+#endif
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
-using Microsoft.UI.Xaml.Media;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -28,14 +27,12 @@ using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.ExtendedExecution.Foreground;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.System;
 using Windows.System.Profile;
-using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
@@ -50,8 +47,10 @@ namespace Unicord.Universal
 {
     sealed partial class App : Application
     {
-        //private static XboxGameBarWidget _chatListWidget;
-        //private static XboxGameBarWidget _friendsListWidget;
+#if XBOX_GAME_BAR
+        private static XboxGameBarWidget _chatListWidget;
+        private static XboxGameBarWidget _friendsListWidget;
+#endif
 
         private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
@@ -117,9 +116,11 @@ namespace Unicord.Universal
                 case ProtocolActivatedEventArgs protocol:
                     await OnProtocolActivatedAsync(protocol);
                     return;
-                //case XboxGameBarWidgetActivatedEventArgs xbox:
-                //    OnXboxGameBarActivated(xbox);
-                //    return;
+#if XBOX_GAME_BAR
+                case XboxGameBarWidgetActivatedEventArgs xbox:
+                    OnXboxGameBarActivated(xbox);
+                    return;
+#endif
                 default:
                     Debug.WriteLine(e.Kind);
                     break;
@@ -153,30 +154,50 @@ namespace Unicord.Universal
             deferral.Complete();
         }
 
-        //private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
-        //{
-        //    if (xbox.IsLaunchActivation)
-        //    {
-        //        var name = xbox.Uri.LocalPath;
-        //        var frame = new Frame();
-        //        frame.NavigationFailed += OnNavigationFailed;
-        //        Window.Current.Content = frame;
+#if XBOX_GAME_BAR
+        private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
+        {
+            Analytics.TrackEvent("Unicord_LaunchForGameBar");
 
-        //        if (name == "unicord-friendslist")
-        //        {
-        //            _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
-        //            Window.Current.Closed += OnFrendsListWidgetClosed;
+            if (xbox.IsLaunchActivation)
+            {
+                var name = xbox.Uri.LocalPath;
+                var frame = new Frame();
+                frame.NavigationFailed += OnNavigationFailed;
+                Window.Current.Content = frame;
 
-        //            frame.Navigate(typeof(GameBarMainPage));
-        //        }
-        //    }
-        //}
+                Logger.Log(xbox.Uri.LocalPath);
 
-        //private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
-        //{
-        //    Window.Current.Closed -= OnFrendsListWidgetClosed;
-        //    _friendsListWidget = null;
-        //}
+                if (name == "unicord-friendslist")
+                {
+                    _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
+                    Window.Current.Closed += OnFrendsListWidgetClosed;
+
+                    frame.Navigate(typeof(GameBarMainPage), new GameBarPageParameters(_friendsListWidget, typeof(GameBarFriendsPage), xbox.Uri));
+                }
+
+                if (name == "unicord-channel")
+                {
+                    _chatListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
+                    Window.Current.Closed += OnChatListWidgetClosed;
+
+                    frame.Navigate(typeof(GameBarMainPage),  new GameBarPageParameters(_chatListWidget, typeof(GameBarChannelListPage), xbox.Uri));
+                }
+            }
+        }
+
+        private void OnChatListWidgetClosed(object sender, CoreWindowEventArgs e)
+        {
+            Window.Current.Closed -= OnChatListWidgetClosed;
+            _chatListWidget = null;
+        }
+
+        private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
+        {
+            Window.Current.Closed -= OnFrendsListWidgetClosed;
+            _friendsListWidget = null;
+        }
+#endif
 
         private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
         {
@@ -532,6 +553,7 @@ namespace Unicord.Universal
 
         internal static async Task LogoutAsync()
         {
+            await WebView.ClearTemporaryWebDataAsync();
             await WindowingService.Current.CloseAllWindowsAsync();
             await ImageCache.Instance.ClearAsync();
             await Discord.DisconnectAsync();

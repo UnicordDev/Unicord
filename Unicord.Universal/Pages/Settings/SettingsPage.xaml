@@ -15,7 +15,7 @@
             <Setter Property="Padding" Value="12"/>
         </Style>
 
-        <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{StaticResource MainBackgroundColor}"/>
+        <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{StaticResource BackgroundTertiaryColour}"/>
     </Page.Resources>
 
     <lib:TabView x:Name="SettingsTabView"

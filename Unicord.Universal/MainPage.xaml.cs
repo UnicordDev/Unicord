@@ -57,7 +57,6 @@ namespace Unicord.Universal
                     break;
             }
 
-            WindowingService.Current.HandleTitleBarForWindow(titleBar, this);
 
             if (_isReady)
             {
@@ -67,6 +66,8 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            WindowingService.Current.HandleTitleBarForWindow(titleBar, this);
+
             //var engagementManager = StoreServicesEngagementManager.GetDefault();
             //await engagementManager.RegisterNotificationChannelAsync();
 
@@ -281,6 +282,9 @@ namespace Unicord.Universal
 
         internal void ShowConnectingOverlay()
         {
+            if (IsOverlayShown)
+                return;
+
             connectingOverlay.Visibility = Visibility.Visible;
             connectingProgress.IsIndeterminate = true;
             IsOverlayShown = true;
@@ -289,6 +293,9 @@ namespace Unicord.Universal
 
         internal void HideConnectingOverlay()
         {
+            if (!IsOverlayShown)
+                return;
+
             hideConnecting.Begin();
         }
 

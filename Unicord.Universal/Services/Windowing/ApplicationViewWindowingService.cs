@@ -177,14 +177,19 @@ namespace Unicord.Universal.Services.Windowing
                     var statusBar = StatusBar.GetForCurrentView();
                     if (statusBar != null)
                     {
-                        void OnApplicationViewBoundsChanged(ApplicationView sender, object args)
+                        if (contentRoot != null)
                         {
-                            var visibleBounds = sender.VisibleBounds;
-                            var bounds = coreApplicationView.CoreWindow.Bounds;
-                            var occludedHeight = bounds.Height - visibleBounds.Height - statusBar.OccludedRect.Height;
                             var margin = contentRoot.Margin;
+                            void OnApplicationViewBoundsChanged(ApplicationView sender, object args)
+                            {
+                                var visibleBounds = sender.VisibleBounds;
+                                var bounds = coreApplicationView.CoreWindow.Bounds;
+                                var occludedHeight = bounds.Height - visibleBounds.Height - statusBar.OccludedRect.Height;
+                                contentRoot.Margin = new Thickness(margin.Left, margin.Top, margin.Right, occludedHeight);
+                            }
 
-                            contentRoot.Margin = new Thickness(margin.Left, margin.Top, margin.Right, occludedHeight);
+                            applicationView.VisibleBoundsChanged += OnApplicationViewBoundsChanged;
+                            OnApplicationViewBoundsChanged(applicationView, null);
                         }
 
                         statusBar.BackgroundOpacity = 0;
@@ -195,9 +200,7 @@ namespace Unicord.Universal.Services.Windowing
                             titleBar.Height = statusBar.OccludedRect.Height;
                         }
 
-                        applicationView.VisibleBoundsChanged += OnApplicationViewBoundsChanged;
                         applicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                        OnApplicationViewBoundsChanged(applicationView, null);
                     }
                 }
                 else
@@ -213,10 +216,17 @@ namespace Unicord.Universal.Services.Windowing
 
                     if (titleBar != null)
                     {
+                        var originalMargin = titleBar.Margin;
+
                         // this method captures "titleBar" meaning the GC might not be able to collect it. 
                         void UpdateTitleBarLayout(CoreApplicationViewTitleBar sender, object ev)
                         {
                             titleBar.Height = sender.Height;
+                            titleBar.Margin = new Thickness(
+                                Math.Max(sender.SystemOverlayLeftInset, originalMargin.Left),
+                                originalMargin.Top,
+                                Math.Max(sender.SystemOverlayRightInset, originalMargin.Right),
+                                originalMargin.Bottom);
                         }
 
                         // i *believe* this handles it? not 100% sure
@@ -231,11 +241,13 @@ namespace Unicord.Universal.Services.Windowing
                             }
                         }
 
+                        UpdateTitleBarLayout(coreTitleBar, null);
                         coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
                         titleBar.Unloaded += ElementUnloaded;
                         titleBar.Visibility = Visibility.Visible;
 
-                        Window.Current.SetTitleBar(titleBar);
+                        if (contentRoot != null)
+                            Window.Current.SetTitleBar(titleBar);
                     }
                 }
             }

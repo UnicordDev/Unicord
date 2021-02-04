@@ -110,7 +110,7 @@ namespace Unicord.Universal.Services
                     {
                         if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
                         {
-                            _discordPage.MainFrame.Navigate(typeof(ChannelWarningPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                            _discordPage.MainFrame.Navigate(typeof(AgeGatePage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
                         }
                         else
                         {

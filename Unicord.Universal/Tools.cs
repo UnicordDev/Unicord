@@ -386,3 +386,10 @@ namespace Unicord.Universal
     }
 
 }
+
+// fun things i have to define because the C# compiler team decided to be dickwads
+
+namespace System.Runtime.CompilerServices
+{
+    public class IsExternalInit { }
+}
