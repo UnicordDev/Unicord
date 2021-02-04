@@ -184,6 +184,6 @@
     <value>Video Options</value>
   </data>
   <data name="VideoOptionsSubheader.Text" xml:space="preserve">
-    <value>If you need to, you can adjust the output resolution and quality of the compressed video here.</value>
+    <value>If you know what you're doing, you can adjust the quality, bitrate and resolution of the video output.</value>
   </data>
 </root>

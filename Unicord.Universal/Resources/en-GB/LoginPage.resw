@@ -123,6 +123,12 @@
   <data name="LoginButton.Content" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="LoginWithDiscordButton.Content" xml:space="preserve">
+    <value>Login with Discord</value>
+  </data>
+  <data name="LoginWithTokenButton.Content" xml:space="preserve">
+    <value>Login with Token</value>
+  </data>
   <data name="TokenTextBox.PlaceholderText" xml:space="preserve">
     <value>Discord Token</value>
   </data>

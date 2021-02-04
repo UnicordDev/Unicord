@@ -39,6 +39,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="TokenLoginButton"
+                        x:Uid="/LoginPage/LoginWithTokenButton"
                         Content="Login with Token"
                         Click="TokenLoginButton_Click"
                         BorderThickness="0"
@@ -49,6 +50,7 @@
                 </Button>
 
                 <Button x:Name="ShowBrowserButton" 
+                        x:Uid="/LoginPage/LoginWithDiscordButton"
                         HorizontalAlignment="Stretch"
                         Content="Login with Discord"
                         BorderThickness="0"

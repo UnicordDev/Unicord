@@ -98,12 +98,16 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AdjustRoleColours" />
-            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
+            <ToggleSwitch x:Name="AdjustRoleColours"
+                          Grid.Column="1" 
+                          Style="{ThemeResource NoTextToggleSwitchStyle}" 
+                          IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
 
             <Slider x:Name="MinimumContrastSlider"
                     x:Uid="/MessagingSettingsPage/MinimumContrastSlider"
                     Header="Minimum Contrast"
                     Value="{Binding MinimumContrast, Mode=TwoWay}"
+                    IsEnabled="{Binding IsOn, ElementName=AdjustRoleColours}"
                     Minimum="1"
                     Maximum="21"
                     StepFrequency="0.5"

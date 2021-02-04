@@ -47,5 +47,10 @@ namespace Unicord.Universal.Dialogs
         {
             TokenTextBox.Password = "";
         }
+
+        private void SubtitleTextBlock_LinkClicked(object sender, Controls.LinkClickedEventArgs e)
+        {
+
+        }
     }
 }

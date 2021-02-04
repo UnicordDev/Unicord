@@ -124,7 +124,7 @@
     <value>Colour Scheme</value>
   </data>
   <data name="ColourSchemeCaption.Text" xml:space="preserve">
-    <value>This setting won't be synchronized with Discord.</value>
+    <value>This setting won't be synchronised with Discord.</value>
   </data>
   <data name="ColourSchemeDark.Content" xml:space="preserve">
     <value>Dark</value>

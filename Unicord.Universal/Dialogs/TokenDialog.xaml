@@ -1,14 +1,15 @@
 ﻿<ContentDialog
+    x:Uid="/Dialogs/TokenDialog"
     x:Class="Unicord.Universal.Dialogs.TokenDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Unicord.Universal.Controls"
     mc:Ignorable="d"
-    PrimaryButtonText="Login"
-    SecondaryButtonText="Load from File"
-    CloseButtonText="Cancel"
+    PrimaryButtonText="PrimaryButtonText"
+    SecondaryButtonText="SecondaryButtonText"
+    CloseButtonText="CloseButtonText"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     CloseButtonClick="ContentDialog_CloseButtonClick">
@@ -19,8 +20,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TitleTextBlock" x:Uid="/Dialogs/TokenTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Grid.Column="1">Enter your Discord Token</TextBlock>
-        <TextBlock x:Name="SubtitleTextBlock" Grid.Row="1">Don't know where to look? <Hyperlink NavigateUri="">Click here for a guide.</Hyperlink></TextBlock>
+        <TextBlock x:Name="TitleTextBlock" x:Uid="/Dialogs/TokenTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Grid.Column="1" Text="/Dialogs/TokenTitle"/>
+        <controls:MarkdownTextBlock x:Name="SubtitleTextBlock"
+                                    x:Uid="/Dialogs/TokenSubtitle"
+                                    Grid.Row="1"
+                                    Text="/Dialogs/TokenSubtitle"
+                                    LinkClicked="SubtitleTextBlock_LinkClicked"/>
         <PasswordBox x:Name="TokenTextBox" Margin="0,12,0,0" Grid.Row="2"/>
     </Grid>
 </ContentDialog>
