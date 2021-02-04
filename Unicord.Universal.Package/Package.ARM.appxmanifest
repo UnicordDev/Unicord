@@ -21,6 +21,7 @@
   </Dependencies>
   <Resources>
     <Resource Language="EN-GB" />
+    <Resource Language="EN-US" />
     <Resource Language="FR" />
   </Resources>
   <Applications>
@@ -89,7 +90,7 @@
               <uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
-        </uap:Extension>       
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

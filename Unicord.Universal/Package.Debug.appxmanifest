@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-         xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" 
-         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
-				 xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" 
+         xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+				 xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
          xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
@@ -22,6 +22,7 @@
 	</Dependencies>
 	<Resources>
     <Resource Language="EN-GB" />
+    <Resource Language="EN-US" />
     <Resource Language="FR" />
 	</Resources>
 	<Applications>
@@ -91,7 +92,7 @@
 							<uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
 						</uap:SupportedFileTypes>
 					</uap:FileTypeAssociation>
-				</uap:Extension>   
+				</uap:Extension>
 			</Extensions>
 		</Application>
 	</Applications>

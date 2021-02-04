@@ -521,6 +521,30 @@
     <PRIResource Include="Resources\en-GB\Flyouts.resw" />
     <PRIResource Include="Resources\en-GB\Controls.resw" />
     <PRIResource Include="Resources\en-GB\Converters.resw" />
+    <PRIResource Include="Resources\en-GB\SearchPage.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\en-US\LoginPage.resw" />
+    <PRIResource Include="Resources\en-US\Dialogs.resw" />
+    <PRIResource Include="Resources\en-US\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\SettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\ChannelWarningPage.resw" />
+    <PRIResource Include="Resources\en-US\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\en-US\FriendsPage.resw" />
+    <PRIResource Include="Resources\en-US\PinsPage.resw" />
+    <PRIResource Include="Resources\en-US\UserListPage.resw" />
+    <PRIResource Include="Resources\en-US\ChannelPage.resw" />
+    <PRIResource Include="Resources\en-US\Voice.resw" />
+    <PRIResource Include="Resources\en-US\VideoEditor.resw" />
+    <PRIResource Include="Resources\en-US\Flyouts.resw" />
+    <PRIResource Include="Resources\en-US\Controls.resw" />
+    <PRIResource Include="Resources\en-US\Converters.resw" />
+    <PRIResource Include="Resources\en-US\SearchPage.resw" />
     <PRIResource Include="Resources\fr\AboutSettingsPage.resw" />
     <PRIResource Include="Resources\fr\AccountsSettingsPage.resw" />
     <PRIResource Include="Resources\fr\ChannelPage.resw" />
@@ -543,7 +567,6 @@
     <PRIResource Include="Resources\fr\VideoEditor.resw" />
     <PRIResource Include="Resources\fr\Voice.resw" />
     <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\SearchPage.resw" />
     <None Include="Unicord.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -1082,7 +1105,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
