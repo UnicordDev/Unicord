@@ -232,5 +232,6 @@ namespace Unicord.Universal.Controls.Markdown.Render
         public bool IsSystemMessage { get; set; }
 
         public ColourBrushConverter ColourBrushConverter { get; set; }
+        public bool IsHuge { get; internal set; }
     }
 }

@@ -388,7 +388,7 @@
                             Grid.Row="2"
                             Visibility="Collapsed" />
                     </Grid>
-
+                    
                     <Grid Grid.Row="1">
                         <ListView x:Name="MessageList"
                                   Background="{ThemeResource MainBackgroundBrush}"
@@ -433,8 +433,39 @@
                             <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
+                    
+                    <Grid Grid.Row="1" 
+                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                          Visibility="{Binding ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}"
+                          VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="42"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="2">
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontSize="18"
+                                   Margin="0,-6,0,0"
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                            ...
+                        </TextBlock>
+                        
+                        <ItemsControl Grid.Column="1"
+                                      Margin="4,4,4,0"
+                                      ItemTemplate="{StaticResource TypingUserTemplate}"
+                                      ItemsSource="{Binding TypingUsers}"               
+                                      Height="20">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsStackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Grid>
+
+                    <Grid Grid.Row="2"
+                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <controls1:UploadItemsControl x:Name="UploadItems"
                                                       Height="150"
                                                       Visibility="Collapsed"
@@ -535,18 +566,6 @@
                         <Grid.RenderTransform>
                             <TranslateTransform x:Name="BottomGridTransform"/>
                         </Grid.RenderTransform>
-
-                        <ItemsControl Grid.Row="1"
-                                      Margin="8,4,8,0"
-                                      ItemTemplate="{StaticResource TypingUserTemplate}"
-                                      ItemsSource="{x:Bind ViewModel.TypingUsers}"
-                                      Visibility="{x:Bind ViewModel.ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsStackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
 
                         <ProgressBar x:Name="SlowModeTimeout"
                                      Grid.Row="2"

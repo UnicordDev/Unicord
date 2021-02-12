@@ -124,10 +124,10 @@
     <value>Something went wrong downloading that, maybe try again later?</value>
   </data>
   <data name="AttachmentDownloadFailedTitle" xml:space="preserve">
-    <value>Failed to download!</value>
+    <value>Failed to download attachment!</value>
   </data>
-  <data name="AttachmentExtensionFormat" xml:space="preserve">
-    <value>Attachment Extension (*{0})</value>
+  <data name="AttachmentExtensionPlaceholder" xml:space="preserve">
+    <value>Attachment File Extension</value>
   </data>
   <data name="AttachmentSaveButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Save</value>

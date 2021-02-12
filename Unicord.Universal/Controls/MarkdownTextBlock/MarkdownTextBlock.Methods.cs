@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Unicord.Universal.Parsers.Markdown.Blocks;
+using Unicord.Universal.Parsers.Markdown.Inlines;
 
 namespace Unicord.Universal.Controls
 {
@@ -35,6 +37,44 @@ namespace Unicord.Universal.Controls
             where T : MarkdownRenderer
         {
             renderertype = typeof(T);
+        }
+
+        private bool IsHuge(MarkdownDocument markdown)
+        {
+            if (string.IsNullOrWhiteSpace(Text))
+                return false;
+
+            foreach (var item in markdown.Blocks)
+            {
+                if (item.Type != MarkdownBlockType.Paragraph)
+                {
+                    return false;
+                }
+
+                var paragraph = (ParagraphBlock)item;
+                for (int i = 0; i < paragraph.Inlines.Count; i++)
+                {
+                    var inline = paragraph.Inlines[i];
+                    if (inline.Type == MarkdownInlineType.TextRun)
+                    {
+                        var text = ((TextRunInline)inline).Text;
+                        if (!string.IsNullOrWhiteSpace(text) && !NeoSmart.Unicode.Emoji.IsEmoji(text))
+                            return false;
+                    }
+                    else if (inline.Type == MarkdownInlineType.Discord)
+                    {
+                        if (((DiscordInline)inline).DiscordType != DiscordInline.MentionType.Emote)
+                            return false;
+                    }
+                    else if (inline.Type != MarkdownInlineType.Emoji)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
+            return true;
         }
 
         /// <summary>
@@ -74,6 +114,8 @@ namespace Unicord.Universal.Controls
                     }
 
                     markdown.Parse(Text);
+                    markdownRenderedArgs.Document = markdown;
+
 
                     // Now try to display it
                     var renderer = Activator.CreateInstance(renderertype, markdown, this, this, this) as MarkdownRenderer;
@@ -82,12 +124,13 @@ namespace Unicord.Universal.Controls
                         throw new Exception("Markdown Renderer was not of the correct type.");
                     }
 
+                    renderer.IsHuge = IsHuge(markdown);
                     renderer.Background = Background;
                     renderer.BorderBrush = BorderBrush;
                     renderer.BorderThickness = BorderThickness;
                     renderer.CharacterSpacing = CharacterSpacing;
                     renderer.FontFamily = FontFamily;
-                    renderer.FontSize = FontSize;
+                    renderer.FontSize = renderer.IsHuge && AllowHugeEmoji ? 42 : FontSize;
                     renderer.FontStretch = FontStretch;
                     renderer.FontStyle = FontStyle;
                     renderer.FontWeight = FontWeight;

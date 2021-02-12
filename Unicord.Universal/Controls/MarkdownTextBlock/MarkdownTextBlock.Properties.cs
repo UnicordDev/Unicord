@@ -683,6 +683,16 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ColourBrushConverterProperty =
             DependencyProperty.Register("ColourBrushConverter", typeof(ColourBrushConverter), typeof(MarkdownTextBlock), new PropertyMetadata(null));
 
+        public bool AllowHugeEmoji
+        {
+            get { return (bool)GetValue(AllowHugeEmojiProperty); }
+            set { SetValue(AllowHugeEmojiProperty, value); }
+        }
+
+        public static readonly DependencyProperty AllowHugeEmojiProperty =
+            DependencyProperty.Register("AllowHugeEmoji", typeof(bool), typeof(MarkdownTextBlock), new PropertyMetadata(false));
+
+
         /// <summary>
         /// Holds a list of hyperlinks we are listening to.
         /// </summary>

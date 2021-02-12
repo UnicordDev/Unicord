@@ -216,7 +216,7 @@ namespace Unicord.Universal
             await send;
         }
 
-        internal static string GetItemTypeeFromExtension(string extension, string fallback = null)
+        internal static string GetItemTypeFromExtension(string extension, string fallback = null)
         {
             try
             {

@@ -95,6 +95,10 @@
     </Style>
     
     <SolidColorBrush x:Key="MentionedMessageBackgroundBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.16666"/>
+    <!--<LinearGradientBrush x:Key="MentionedMessageBackgroundBrush">
+        <GradientStop Color="#600078d7"/>
+        <GradientStop Color="#00000000" Offset="0.75"/>
+    </LinearGradientBrush>-->
 
     <Style TargetType="local:MessageControl">
         <!--<Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>-->
@@ -196,11 +200,12 @@
                                     </StackPanel>
 
                                     <wam:MarkdownTextBlock x:Name="Markdown"
-                                                       Channel="{Binding Channel}"
-                                                       Text="{Binding Content}" 
-                                                       IsTextSelectionEnabled="False" 
-                                                       WrapCodeBlock="True" 
-                                                       Margin="0,0,2,0" />
+                                                           Channel="{Binding Channel}"
+                                                           Text="{Binding Content}" 
+                                                           AllowHugeEmoji="True"
+                                                           IsTextSelectionEnabled="False" 
+                                                           WrapCodeBlock="True" 
+                                                           Margin="0,0,2,0" />
 
                                     <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
 
@@ -353,12 +358,13 @@
 
                             <StackPanel x:Name="Content" VerticalAlignment="Center" Grid.Column="1" Margin="8,0,0,0">
 
-                                <wam:MarkdownTextBlock x:Name="Markdown" 
-                                                       Channel="{Binding Channel}"
-                                                       Text="{Binding Content}" 
-                                                       IsTextSelectionEnabled="False" 
-                                                       WrapCodeBlock="True" 
-                                                       Margin="0,0,2,0" />
+                                <wam:MarkdownTextBlock x:Name="Markdown"
+                                                           Channel="{Binding Channel}"
+                                                           Text="{Binding Content}" 
+                                                           AllowHugeEmoji="True"
+                                                           IsTextSelectionEnabled="False" 
+                                                           WrapCodeBlock="True" 
+                                                           Margin="0,0,2,0" />
 
 
                                 <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
@@ -471,13 +477,14 @@
 
                             <StackPanel x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
 
-                                <wam:MarkdownTextBlock x:Name="Markdown" 
-                                                       Channel="{Binding Channel}"
-                                                       Text="{Binding Content}" 
-                                                       IsTextSelectionEnabled="False" 
-                                                       WrapCodeBlock="True" 
-                                                       Margin="0,0,2,0" />
-
+                                <wam:MarkdownTextBlock x:Name="Markdown"
+                                                           Channel="{Binding Channel}"
+                                                           Text="{Binding Content}" 
+                                                           AllowHugeEmoji="True"
+                                                           IsTextSelectionEnabled="False" 
+                                                           WrapCodeBlock="True" 
+                                                           Margin="0,0,2,0" />
+                                
                                 <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
 
                                 <ItemsControl x:Name="Embeds" 

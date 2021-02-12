@@ -16,3 +16,6 @@
 [submodule "Libraries/Native/webrtc-uwp-sdk"]
 	path = Libraries/Native/webrtc-uwp-sdk
 	url = https://github.com/webrtc-uwp/webrtc-uwp-sdk.git
+[submodule "Libraries/unicode.net"]
+	path = Libraries/unicode.net
+	url = https://github.com/wamwoowam/unicode.net

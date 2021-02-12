@@ -45,7 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -58,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -102,7 +102,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -113,7 +113,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -229,7 +229,6 @@
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\CodeInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\DiscordInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\EmojiInline.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\EmojiInline.EmojiCodes.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\HyperlinkInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\IInlineContainer.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\IInlineLeaf.cs" />
@@ -381,9 +380,6 @@
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\GameBar\GameBarChannelListPage.xaml.cs">
-      <DependentUpon>GameBarChannelListPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -485,11 +481,6 @@
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Store'">
-    <AppxManifest Include="Package.Debug.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
@@ -777,10 +768,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\GameBar\GameBarChannelListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -917,9 +904,9 @@
     <PackageReference Include="Microsoft.AppCenter.Push">
       <Version>3.4.3</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Gaming.XboxGameBar">
+    <!-- <PackageReference Include="Microsoft.Gaming.XboxGameBar">
       <Version>5.3.200605002</Version>
-    </PackageReference>
+    </PackageReference> -->
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>
     </PackageReference>
@@ -968,6 +955,10 @@
       <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\unicode.net\unicode\Unicode.csproj">
+      <Project>{01A262AF-E652-4381-88C3-2DCD7FDD9D93}</Project>
+      <Name>Unicode</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Unicord.Universal.Native\Unicord.Universal.Native.vcxproj">
       <Project>{2427b481-8e92-433f-8714-53a2cde1bf7f}</Project>
       <Name>Unicord.Universal.Native</Name>
@@ -995,34 +986,11 @@
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup Condition="'$(Platform)' != 'ARM'">
-    <Page Include="Pages\GameBar\GameBarFriendsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\GameBar\GameBarMainPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\GameBar\NotLoggedInPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Include="Pages\GameBar\GameBarFriendsPage.xaml.cs">
-      <DependentUpon>GameBarFriendsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\GameBar\GameBarMainPage.xaml.cs">
-      <DependentUpon>GameBarMainPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\GameBar\NotLoggedInPage.xaml.cs">
-      <DependentUpon>NotLoggedInPage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
   <Import Project="..\Unicord.Universal.Shared\Unicord.Universal.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
@@ -1036,7 +1004,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
@@ -1052,7 +1020,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
@@ -1084,7 +1052,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x64' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
@@ -1100,7 +1068,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM64' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM64\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE;XBOX_GAME_BAR</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>

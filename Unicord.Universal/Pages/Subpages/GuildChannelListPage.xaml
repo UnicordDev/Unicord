@@ -75,6 +75,7 @@
                                 FontWeight="Bold"
                                 Text="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource TitleCaseConverter}}"
                                 Visibility="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource HideOnNullConverter}}"
+                                Opacity="{Binding Key.Muted, Converter={StaticResource MutedConverter}}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap" />
                         </DataTemplate>

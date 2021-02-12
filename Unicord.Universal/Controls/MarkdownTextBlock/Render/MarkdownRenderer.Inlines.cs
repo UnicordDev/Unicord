@@ -623,14 +623,14 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 else
                 {
                     var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=128";
-                    var ui = new InlineUIContainer() { FontSize = FontSize + 10 };
-
+                    var ui = new InlineUIContainer() { FontSize = IsHuge ? 42 : 24 };
+                    var size = IsHuge ? 48 : 24;
                     var image = new Image()
                     {
-                        Source = new BitmapImage(new Uri(uri)),
-                        Height = FontSize + 10,
+                        Source = new BitmapImage(new Uri(uri)) { DecodePixelHeight = size, DecodePixelType = DecodePixelType.Logical },
+                        Height = size,
                         Stretch = Stretch.Uniform,
-                        RenderTransform = new TranslateTransform() { Y = 4 }
+                        RenderTransform = new TranslateTransform() { Y = IsHuge ? 8 : 4 }
                     };
 
                     ToolTipService.SetToolTip(image, element.Text);

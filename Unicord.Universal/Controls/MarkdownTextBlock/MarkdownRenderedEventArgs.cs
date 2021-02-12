@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using Unicord.Universal.Parsers.Markdown;
 
 namespace Unicord.Universal.Controls
 {
@@ -21,5 +22,6 @@ namespace Unicord.Universal.Controls
         /// Gets the exception if there was one. If the exception is null there was no error.
         /// </summary>
         public Exception Exception { get; }
+        public MarkdownDocument Document { get; internal set; }
     }
 }

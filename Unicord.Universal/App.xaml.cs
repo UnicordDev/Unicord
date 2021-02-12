@@ -13,6 +13,7 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
+using Unicord.Universal.Pages.GameBar;
 #endif
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
@@ -20,7 +21,6 @@ using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
-using Unicord.Universal.Pages.GameBar;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;

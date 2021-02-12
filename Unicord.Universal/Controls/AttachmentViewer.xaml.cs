@@ -7,6 +7,7 @@ using Unicord.Universal.Native;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Media.Core;
@@ -31,6 +32,7 @@ namespace Unicord.Universal.Controls
 
         private DispatcherTimer _timer;
         private StorageFile _shareFile;
+        private ResourceLoader _strings;
 
         public DiscordAttachment Attachment
         {
@@ -44,11 +46,11 @@ namespace Unicord.Universal.Controls
         public AttachmentViewer()
         {
             InitializeComponent();
+            _strings = ResourceLoader.GetForCurrentView("Controls");
         }
 
-        public AttachmentViewer(DiscordAttachment attachment)
+        public AttachmentViewer(DiscordAttachment attachment) : base()
         {
-            InitializeComponent();
             Attachment = attachment;
             DataContext = attachment;
             HorizontalAlignment = HorizontalAlignment.Left;
@@ -201,7 +203,7 @@ namespace Unicord.Universal.Controls
                 });
 
                 var extension = Path.GetExtension(Attachment.Url);
-                var extensionString = Tools.GetItemTypeeFromExtension(extension, "Attachment File Extension");
+                var extensionString = Tools.GetItemTypeFromExtension(extension, _strings.GetString("AttachmentExtensionPlaceholder"));
 
                 var picker = new FileSavePicker()
                 {
@@ -224,8 +226,8 @@ namespace Unicord.Universal.Controls
             {
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
-                    "Failed to download attachment",
-                    "Something went wrong downloading that attachment, maybe try again later?");
+                    _strings.GetString("AttachmentDownloadFailedTitle"),
+                    _strings.GetString("AttachmentDownloadFailedText"));
             }
 
             control.IsEnabled = true;
@@ -264,8 +266,8 @@ namespace Unicord.Universal.Controls
             {
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
-                    "Failed to download attachment",
-                    "Something went wrong downloading that attachment, maybe try again later?");
+                    _strings.GetString("AttachmentDownloadFailedTitle"),
+                    _strings.GetString("AttachmentDownloadFailedText"));
             }
 
             downloadProgressBar.Visibility = Visibility.Collapsed;
@@ -276,7 +278,7 @@ namespace Unicord.Universal.Controls
         {
             var request = args.Request;
 
-            request.Data.Properties.Title = $"Sharing {Path.GetFileName(Attachment.Url)}";
+            request.Data.Properties.Title = string.Format(_strings.GetString("SharingTitleFormat"), Path.GetFileName(Attachment.Url));
             request.Data.Properties.Description = Path.GetFileName(Attachment.Url);
 
             request.Data.SetWebLink(new Uri(Attachment.Url));
