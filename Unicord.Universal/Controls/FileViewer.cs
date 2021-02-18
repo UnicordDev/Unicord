@@ -63,10 +63,7 @@ namespace Unicord.Universal.Controls
 
                     using (var thumb = await f.GetThumbnailAsync(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale))
                     {
-                        if (thumb != null)
-                        {
-                            await source.SetSourceAsync(thumb);
-                        }
+                        await source.SetSourceAsync(thumb);
                     }
 
                 }

@@ -148,6 +148,9 @@
     <value>With this option enabled, you will be prompted by Windows before opening insecure links.</value>
     <comment>Tooltip for previous text</comment>
   </data>
+  <data name="ShowHugeEmoji.Text" xml:space="preserve">
+    <value>Huge Emoji</value>
+  </data>
   <data name="TimestampsHeader.Text" xml:space="preserve">
     <value>Timestamps</value>
   </data>

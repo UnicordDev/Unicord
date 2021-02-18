@@ -458,7 +458,7 @@ namespace Unicord.Universal.Controls
         {
             var channels = Channel.Guild.Channels.Values;
             sender.ItemsSource = channels.Where(c => c != null && c.Type != ChannelType.Voice && c.Type != ChannelType.Category && !string.IsNullOrWhiteSpace(c.Name))
-                                         .Where(c => c.CurrentPermissions.HasPermission(Permissions.AccessChannels))
+                                         .Where(c => c.CurrentPermissions.HasPermission(DSharpPlus.Permissions.AccessChannels))
                                          .Select(c => (channel: c, index: cult.IndexOf(c.Name, text, CompareOptions.IgnoreCase)))
                                          .Where(x => x.index != -1)
                                          .OrderByDescending(x => x.index)

@@ -4,10 +4,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Pages.Management.Channel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:permissions="using:Unicord.Universal.Controls.Permissions" xmlns:models="using:Unicord.Universal.Models"
     mc:Ignorable="d">
 
-    <Grid>
+    <Page.Resources>
+        <DataTemplate x:DataType="models:ChannelPermissionViewModel" 
+                      x:Key="PermissionOverwriteTemplate">
+            <CheckBox IsThreeState="True"
+                      Margin="0,4"
+                      IsChecked="{x:Bind Value}"
+                      HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="{x:Bind Title}"/>
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{x:Bind Subtitle}"/>
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+    </Page.Resources>
 
-    </Grid>
+    <StackPanel Padding="12,0">
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,8">General Permissions</TextBlock>
+        <ItemsControl ItemsSource="{Binding General}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
+
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Membership Permissions</TextBlock>
+        <ItemsControl ItemsSource="{Binding Membership}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
+
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Text Permissions</TextBlock>
+        <ItemsControl ItemsSource="{Binding Text}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
+    </StackPanel>
 </Page>

@@ -125,7 +125,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
-            <messages:SystemMessageControl Background="{ThemeResource MainBackgroundBrush}" Message="{x:Bind}" />
+            <messages:SystemMessageControl Background="{ThemeResource BackgroundTertiaryBrush}" Message="{x:Bind}" />
         </DataTemplate>
 
         <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
@@ -165,7 +165,7 @@
                 <controls:DropShadowPanel.RenderTransform>
                     <TranslateTransform x:Name="ContentTransform" />
                 </controls:DropShadowPanel.RenderTransform>
-                <Grid Background="{ThemeResource MainBackgroundBrush}">
+                <Grid Background="{ThemeResource BackgroundTertiaryBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -391,7 +391,7 @@
                     
                     <Grid Grid.Row="1">
                         <ListView x:Name="MessageList"
-                                  Background="{ThemeResource MainBackgroundBrush}"
+                                  Background="{ThemeResource BackgroundTertiaryBrush}"
                                   ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                                   ItemsSource="{x:Bind ViewModel.Messages}"
                                   ReorderMode="Disabled"
@@ -404,7 +404,7 @@
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel
-                                        Margin="0,8"
+                                        Margin="0,0,0,12"
                                         VerticalAlignment="Bottom"
                                         CacheLength="4"
                                         ItemsUpdatingScrollMode="KeepLastItemInView" />

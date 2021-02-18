@@ -15,7 +15,7 @@ namespace Unicord.Universal.Models
     public class FileUploadModel : IDisposable
     {
         public IStorageFile StorageFile { get; set; }
-        public ImageSource Thumbnail { get; set; }
+        public BitmapImage Thumbnail { get; set; }
         public string FileName { get; set; }
         public ulong Length { get; set; }
 
@@ -37,11 +37,15 @@ namespace Unicord.Universal.Models
 
         public async Task UpdateFromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
+            if (file is IStorageFilePropertiesWithAvailability availability && !availability.IsAvailable)
+                throw new InvalidOperationException("The selected file is unavailable.");
+            
             if (IsTemporary && StorageFile != null)
             {
                 await StorageFile.DeleteAsync();
             }
 
+            StorageFile = file;
             FileName = file.Name;
             IsTemporary = isTemporary;
             TranscodeFailed = transcodeFailed;
@@ -58,13 +62,9 @@ namespace Unicord.Universal.Models
             {
                 using (var thumbStream = await props.GetThumbnailAsync(ThumbnailMode.SingleItem, 256))
                 {
-                    var image = new BitmapImage();
-                    await image.SetSourceAsync(thumbStream);    
-                    Thumbnail = image;
+                    await (Thumbnail ??= new BitmapImage()).SetSourceAsync(thumbStream);
                 }
             }
-
-            StorageFile = file;
         }
 
         internal async Task<IInputStream> GetStreamAsync()

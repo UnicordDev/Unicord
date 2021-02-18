@@ -5,8 +5,8 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <Color x:Key="BackgroundPrimaryColour">#FFF0F0F0</Color>
-            <Color x:Key="BackgroundSecondaryColour">#FFF5F5F5</Color>
+            <Color x:Key="BackgroundPrimaryColour">#FFF5F5F5</Color>
+            <Color x:Key="BackgroundSecondaryColour">#FFF0F0F0</Color>
             <Color x:Key="BackgroundTertiaryColour">#FFEEEEEE</Color>
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFC50500"/>
             <LinearGradientBrush x:Key="BackgroundGradientBrush" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -19,7 +19,7 @@
         <ResourceDictionary x:Key="Dark">
             <Color x:Key="BackgroundPrimaryColour">#FF0F0F0F</Color>
             <Color x:Key="BackgroundSecondaryColour">#FF181818</Color>
-            <Color x:Key="BackgroundTertiaryColour">#FF1C1C1C</Color>            
+            <Color x:Key="BackgroundTertiaryColour">#FF1C1C1C</Color>
             <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
             <LinearGradientBrush x:Key="BackgroundGradientBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="#00000000" Offset="0.0" />
@@ -34,6 +34,7 @@
                         TintOpacity="0.60" 
                         FallbackColor="{ThemeResource BackgroundPrimaryColour}" 
                         TintColor="{ThemeResource BackgroundPrimaryColour}" />
+
     <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" 
                         BackgroundSource="Backdrop" 
                         TintOpacity="0.60" 
@@ -54,13 +55,13 @@
 
     <SolidColorBrush x:Key="BackgroundPrimaryBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
     <SolidColorBrush x:Key="BackgroundSecondaryBrush" Color="{ThemeResource BackgroundSecondaryColour}"/>
-    <SolidColorBrush x:Key="BackgroundTertiaryBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>    
+    <SolidColorBrush x:Key="BackgroundTertiaryBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
-    
+
     <Color x:Key="OfflinePresenceColour">#FF808080</Color>
-    <Color x:Key="OnlinePresenceColour">#FF43B581</Color>
+    <Color x:Key="OnlinePresenceColour">#FF33CC87</Color>
     <Color x:Key="IdlePresenceColour">#FFFFA500</Color>
-    <Color x:Key="DoNotDisturbPresenceColour">#FFF04747</Color>
+    <Color x:Key="DoNotDisturbPresenceColour">#FFE83030</Color>
     <Color x:Key="FallbackPresenceColour">#FF000000</Color>
 
     <!-- src: https://www.youtube.com/about/brand-resources/ -->

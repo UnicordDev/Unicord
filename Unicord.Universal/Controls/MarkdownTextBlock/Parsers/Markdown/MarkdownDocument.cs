@@ -232,9 +232,15 @@ namespace Unicord.Universal.Parsers.Markdown
                         // Some block elements must start on a new paragraph (tables, lists and code).
                         var endOfBlock = startOfNextLine;
 
-                        if (newBlockElement == null && (nonSpacePos > startOfLine || nonSpaceChar == '`') && !inlineOnly)
+                        if (newBlockElement == null && nonSpaceChar == '`' && !inlineOnly)
                         {
-                            newBlockElement = CodeBlock.Parse(markdown, realStartOfLine, end, quoteDepth, out endOfBlock);
+                            newBlockElement = CodeBlock.Parse(markdown, realStartOfLine, endOfBlock, quoteDepth, out endOfBlock);
+                        }
+
+                        // This check needs to go after the code block check.
+                        if (newBlockElement == null && nonSpaceChar == '>' && !inlineOnly)
+                        {
+                            newBlockElement = QuoteBlock.Parse(markdown, realStartOfLine, startOfNextLine, quoteDepth, out endOfBlock);
                         }
 
                         if (newBlockElement != null)

@@ -96,6 +96,12 @@ namespace Unicord.Universal.Models
             set => App.RoamingSettings.Save(WARN_UNSAFE_LINKS, value);
         }
 
+        public bool ShowHugeEmoji
+        {
+            get => App.RoamingSettings.Read(SHOW_HUGE_EMOJI, SHOW_HUGE_EMOJI_DEFAULT);
+            set => App.RoamingSettings.Save(SHOW_HUGE_EMOJI, value);
+        }
+
         public bool AdjustRoleColours
         {
             get => App.RoamingSettings.Read(ADJUST_ROLE_COLOURS, true);

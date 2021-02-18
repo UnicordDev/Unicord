@@ -10,12 +10,14 @@
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     xmlns:controls="using:Unicord.Universal.Controls"
-    xmlns:presence="using:Unicord.Universal.Controls.Presence"
+    xmlns:presence="using:Unicord.Universal.Controls.Presence" xmlns:users="using:Unicord.Universal.Controls.Users"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Controls/Messages.xaml"/>
         <ResourceDictionary Source="Controls/Emoji.xaml"/>
+        <ResourceDictionary Source="Controls/Users.xaml"/>
+        <ResourceDictionary Source="Controls/Permissions.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -300,7 +302,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Canvas Margin="0,0,0,0" Width="28" Height="28">
+            <!--<Canvas Margin="0,0,0,0" Width="28" Height="28">
                 <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
                     <lib:PersonPicture.ProfilePicture>
                         <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="28" DecodePixelHeight="28" DecodePixelType="Logical" />
@@ -311,7 +313,9 @@
                         <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
                     </Ellipse.Fill>
                 </Ellipse>
-            </Canvas>
+            </Canvas>-->
+
+            <users:AvatarControl Style="{ThemeResource SmallAvatarWithPresenceStyle}" Width="32" Height="32" Source="{Binding Converter={StaticResource DMIconConverter}}" Presence="{Binding Recipient.Presence}" />
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
                 <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
@@ -331,28 +335,11 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Canvas
-                Grid.RowSpan="2"
-                Width="38"
-                Height="38">
-                <lib:PersonPicture
-                    Width="38"
-                    Height="38"
-                    DisplayName="{Binding DisplayName}"
-                    ProfilePicture="{Binding AvatarUrl}" />
-                <Ellipse
-                    Canvas.Left="24"
-                    Canvas.Top="24"
-                    Width="16"
-                    Height="16"
-                    Stroke="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"
-                    StrokeThickness="2">
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Canvas>
-
+            <users:AvatarControl Style="{StaticResource SmallAvatarWithPresenceStyle}"
+                                 Width="38"
+                                 Height="38"
+                                 Source="{Binding AvatarUrl}"
+                                 Presence="{Binding Presence}"/>
             <Grid
                 Grid.Column="1"
                 Margin="8,0"

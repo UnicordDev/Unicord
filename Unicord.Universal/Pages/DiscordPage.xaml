@@ -373,7 +373,7 @@
                 x:Name="Content"
                 Grid.Column="1"
                 MinWidth="250"
-                Background="{ThemeResource MainBackgroundBrush}">
+                Background="{ThemeResource BackgroundTertiaryBrush}">
                 <Grid.RenderTransform>
                     <TranslateTransform x:Name="ContentTransform" />
                 </Grid.RenderTransform>
@@ -381,7 +381,7 @@
                     <Frame
                         x:Name="mainFrame"
                         HorizontalAlignment="Stretch"
-                        Background="{ThemeResource MainBackgroundBrush}"
+                        Background="{ThemeResource BackgroundTertiaryBrush}"
                         Navigated="mainFrame_Navigated"
                         SourcePageType="sub:FriendsPage" />
                 </Grid>
@@ -417,7 +417,7 @@
                 Background="{ThemeResource OverlayBackdrop}"
                 Opacity="0"
                 Tapped="SettingsOverlayBackground_Tapped" />
-            <Grid x:Name="SettingsContainer" Background="{ThemeResource MainBackgroundBrush}">
+            <Grid x:Name="SettingsContainer" Background="{ThemeResource BackgroundTertiaryBrush}">
                 <Grid.RenderTransform>
                     <TranslateTransform x:Name="SettingsPaneTransform" />
                 </Grid.RenderTransform>

@@ -24,7 +24,7 @@ namespace Unicord.Universal.Dialogs
         private bool _isMember => _member != null;
 
         public DiscordUser User { get => GetValue(UserProperty) as DiscordUser; set => SetValue(UserProperty, value); }
-        public Ellipse AnimatedEllipse => ellipse;
+
 
         public static readonly DependencyProperty UserProperty =
             DependencyProperty.Register("User", typeof(DiscordUser), typeof(ProfileOverlay), new PropertyMetadata(null, OnUserChanged));

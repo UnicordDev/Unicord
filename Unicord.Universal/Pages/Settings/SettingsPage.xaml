@@ -11,7 +11,7 @@
 
     <Page.Resources>
         <Style x:Key="SettingsFrameStyle" TargetType="Frame">
-            <Setter Property="Background" Value="{ThemeResource MainBackgroundBrush}"/>
+            <Setter Property="Background" Value="{ThemeResource BackgroundTertiaryBrush}"/>
             <Setter Property="Padding" Value="12"/>
         </Style>
 

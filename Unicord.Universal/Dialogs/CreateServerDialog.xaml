@@ -12,7 +12,7 @@
     PrimaryButtonText="Create"
     SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
+    Background="{ThemeResource BackgroundSecondaryBrush}"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
     <ContentDialog.Resources>
         <DataTemplate x:Key="SmallHeaderTemplate">

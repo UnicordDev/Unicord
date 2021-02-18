@@ -257,7 +257,8 @@ namespace Unicord.Universal.Controls.Markdown.Render
         /// </summary>
         protected override void RenderQuote(QuoteBlock element, IRenderContext context)
         {
-            if (!(context is UIElementCollectionRenderContext localContext))
+            var localContext = context as UIElementCollectionRenderContext;
+            if (localContext == null)
             {
                 throw new RenderContextIncorrectException();
             }

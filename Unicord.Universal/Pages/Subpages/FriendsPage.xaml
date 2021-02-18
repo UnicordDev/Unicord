@@ -11,7 +11,9 @@
     xmlns:commands="using:Unicord.Universal.Commands"
     xmlns:discord="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:models="using:Unicord.Universal.Models" xmlns:presence="using:Unicord.Universal.Controls.Presence"
+    xmlns:models="using:Unicord.Universal.Models" 
+    xmlns:presence="using:Unicord.Universal.Controls.Presence"
+    xmlns:users="using:Unicord.Universal.Controls.Users"
     NavigationCacheMode="Required"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
@@ -41,22 +43,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Canvas Width="64" Height="64" Margin="0,0,12,0">
-                    <Ellipse Width="64" Height="64">
-                        <Ellipse.Fill>
-                            <ImageBrush>
-                                <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{Binding User.AvatarUrl}" DecodePixelType="Logical" DecodePixelWidth="64" DecodePixelHeight="64"/>
-                                </ImageBrush.ImageSource>
-                            </ImageBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <Ellipse Width="20" Height="20" Canvas.Left="44" Canvas.Top="44" StrokeThickness="2" Stroke="#FF171717">
-                        <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding User.Presence, Converter={StaticResource PresenceColourConverter}}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Canvas>
+                <users:AvatarControl Width="64" Height="64" Margin="0,0,12,0" Style="{ThemeResource MediumAvatarWithPresenceStyle}" Source="{Binding User.AvatarUrl}" Presence="{Binding User.Presence}" />
                 <Grid Grid.Column="1" HorizontalAlignment="Stretch">
                     <Grid x:Name="mainContent" VerticalAlignment="Center" Opacity="1">
                         <Grid.RowDefinitions>
@@ -84,7 +71,7 @@
 
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
 
-        <Grid Background="{ThemeResource MainBackgroundBrush}">
+        <Grid Background="{ThemeResource BackgroundTertiaryBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>

@@ -27,7 +27,7 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty TargetHeightProperty =
             DependencyProperty.Register("TargetHeight", typeof(int), typeof(ScaledContentControl), new PropertyMetadata(0));
 
-        private FrameworkElement root;
+        private Window root;
 
         public ScaledContentControl()
         {
@@ -37,12 +37,12 @@ namespace Unicord.Universal.Controls
         protected override Size MeasureOverride(Size constraint)
         {
             if (root == null)
-                root = this.FindParent<MainPage>();
+                root = Window.Current;
 
             double width = TargetWidth;
             double height = TargetHeight;
-            var maxWidth = Math.Min(root.ActualWidth, MaxWidth);
-            var maxHeight = Math.Min(root.ActualHeight, MaxHeight);
+            var maxWidth = Math.Min(root.Bounds.Width, MaxWidth);
+            var maxHeight = Math.Min(root.Bounds.Height, MaxHeight);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? maxWidth : (int)constraint.Width, double.IsInfinity(constraint.Height) ? maxHeight : (int)constraint.Height);

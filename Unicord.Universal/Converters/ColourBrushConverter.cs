@@ -1,7 +1,10 @@
 ﻿using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp;
+using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Collections.Generic;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using static Unicord.Constants;
@@ -9,18 +12,26 @@ using ColorHelper = Microsoft.Toolkit.Uwp.Helpers.ColorHelper;
 
 namespace Unicord.Universal.Converters
 {
-    public class ColourBrushConverter : IValueConverter
+    public class ColourBrushConverter : DependencyObject, IValueConverter
     {
-        private Dictionary<uint, SolidColorBrush> _brushCache
-         = new Dictionary<uint, SolidColorBrush>();
+        private Dictionary<long, SolidColorBrush> _brushCache
+         = new Dictionary<long, SolidColorBrush>();
 
-        public Color DefaultBackgroundColour { get; set; }
+        public Color DefaultBackgroundColour
+        {
+            get { return (Color)GetValue(DefaultBackgroundColourProperty); }
+            set { SetValue(DefaultBackgroundColourProperty, value); }
+        }
+
+        public static readonly DependencyProperty DefaultBackgroundColourProperty =
+            DependencyProperty.Register("DefaultBackgroundColour", typeof(Color), typeof(ColourBrushConverter), new PropertyMetadata(Colors.Black));
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is Brush b)
                 return b;
 
+            var background = parameter is Color ? (Color)parameter : DefaultBackgroundColour;
             var col = new DiscordColor();
             if (value is DiscordColor)
                 col = (DiscordColor)value;
@@ -34,26 +45,58 @@ namespace Unicord.Universal.Converters
             var winCol = Color.FromArgb(255, col.R, col.G, col.B);
 
             if (!App.RoamingSettings.Read(ADJUST_ROLE_COLOURS, true))
-                return GetOrCreateBrush(winCol);
+                return GetOrCreateBrush(background, winCol);
 
             var hslCol = ColorHelper.ToHsl(winCol);
             var contrast = App.RoamingSettings.Read(MINIMUM_CONTRAST, MINIMUM_CONTRAST_DEFAULT);
-            var backgroundCol = ColorHelper.ToHsl(parameter is Color ? (Color)parameter : DefaultBackgroundColour);
+            var backgroundCol = ColorHelper.ToHsl(background);
+
+            var targetCol = winCol;
 
             var dark = backgroundCol.L < 0.5;
-            var targetLuma = dark ? contrast * (backgroundCol.L + 0.05) - 0.05 : (backgroundCol.L + 0.05) / contrast - 0.05;
-            if (dark ? hslCol.L < targetLuma : hslCol.L > targetLuma)
-                hslCol.L = targetLuma;
+            var luma = hslCol.L;
 
-            var targetCol = ColorHelper.FromHsl(hslCol.H, hslCol.S, hslCol.L, hslCol.A);
+            var targetLuma = 0.0;
 
-            return GetOrCreateBrush(winCol, targetCol);
+            if (dark)
+                targetLuma = (contrast * (backgroundCol.L + 0.05)) - 0.05;
+            else
+                targetLuma = ((backgroundCol.L + 0.05) / contrast) - 0.05;
+
+            if (dark ? luma < targetLuma : luma > targetLuma)
+                targetCol = TargetLuma(hslCol, targetLuma);
+
+
+            return GetOrCreateBrush(background, winCol, targetCol);
         }
 
-        private SolidColorBrush GetOrCreateBrush(Color colourKey, Color? value = null)
+        private Color TargetLuma(HslColor col, double target)
         {
-            var argb = (uint)((colourKey.A << 24) | (colourKey.R << 16) | (colourKey.G << 8) | colourKey.B);
+            var s = col.S;
+            var min = 0.0;
+            var max = 1.0;
 
+            s *= Math.Pow(col.L > 0.5 ? -col.L : col.L - 1, 7) + 1;
+
+            var d = (max - min) / 2;
+            var mid = min + d;
+
+            for (; d > 1.0 / 65536.0; d /= 2, mid = min + d)
+            {
+                if (mid > target)
+                    max = mid;
+                else
+                    min = mid;
+            }
+
+            return ColorHelper.FromHsl(col.H, s, mid, col.A);
+        }
+
+        private SolidColorBrush GetOrCreateBrush(Color background, Color colourKey, Color? value = null)
+        {
+            var bg = ColorHelper.ToInt(background);
+            var fg = ColorHelper.ToInt(colourKey);
+            var argb = (((long)bg) << 32) | (long)fg;
             if (_brushCache.TryGetValue(argb, out var brush))
                 return brush;
 

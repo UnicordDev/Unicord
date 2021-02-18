@@ -43,9 +43,9 @@
         <Setter Property="QuoteBackground" Value="Transparent" />
         <Setter Property="QuoteForeground" Value="{ThemeResource MarkdownQuoteForeground}" />
         <Setter Property="QuoteBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
-        <Setter Property="QuoteBorderThickness" Value="2, 0, 0, 0" />
-        <Setter Property="QuoteMargin" Value="7, 5, 0, 5" />
-        <Setter Property="QuotePadding" Value="7, 2, 0, 4" />
+        <Setter Property="QuoteBorderThickness" Value="4, 0, 0, 0" />
+        <Setter Property="QuoteMargin" Value="0,0,0,-2" />
+        <Setter Property="QuotePadding" Value="8,2,0,2" />
         <Setter Property="CodeBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
         <Setter Property="CodeBorderThickness" Value="0" />
         <Setter Property="InlineCodeBorderThickness" Value="0" />

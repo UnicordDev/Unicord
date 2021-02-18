@@ -11,10 +11,10 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
-    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)" xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" 
     NavigationCacheMode="Required"
-    Background="{ThemeResource MainBackgroundBrush}">
+    Background="{ThemeResource BackgroundTertiaryBrush}">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
         
@@ -242,7 +242,7 @@
                         </ScrollViewer>
 
                         <Grid x:Name="contentContainerOverlay" Grid.RowSpan="2" Visibility="Collapsed">
-                            <controls:RadialProgressBar x:Name="overlayProgressRing" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <lib:ProgressRing x:Name="overlayProgressRing" IsIndeterminate="False" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>
                     </Grid>
 

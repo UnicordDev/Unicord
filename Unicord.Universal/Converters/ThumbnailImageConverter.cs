@@ -14,7 +14,7 @@ namespace Unicord.Universal.Converters
             if (value is StorageItemThumbnail thumb)
             {
                 image = new BitmapImage();
-                image.SetSource(thumb);
+                _ = image.SetSourceAsync(thumb);
             }
 
             return image;

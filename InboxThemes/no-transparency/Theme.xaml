@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="SidebarPrimaryAcrylicWindowBrush" 
+                     Color="{ThemeResource BackgroundPrimaryColour}" />
+    <SolidColorBrush x:Key="SidebarPrimaryAcrylicElementBrush" 
+                     Color="{ThemeResource BackgroundPrimaryColour}" />
+    <SolidColorBrush x:Key="SidebarSecondaryAcrylicWindowBrush"
+                     Color="{ThemeResource BackgroundSecondaryColour}" />
+    <SolidColorBrush x:Key="SidebarSecondaryAcrylicElementBrush" 
+                     Color="{ThemeResource BackgroundSecondaryColour}" />
+    <SolidColorBrush x:Key="SpoilerAcrylicBrush"
+                     Color="{ThemeResource SystemChromeMediumColor}"/>
+
+    <SolidColorBrush x:Key="OverlayBackdrop" Color="#80000000"/>
+</ResourceDictionary>

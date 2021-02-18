@@ -23,6 +23,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="MinHeight" Value="{StaticResource PaneToggleButtonHeight}" />
             <Setter Property="MinWidth" Value="{StaticResource PaneToggleButtonWidth}" />
+            <Setter Property="Content" Value="&#xE700;"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -102,6 +103,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="NavigationBackButtonNormalStyle" BasedOn="{StaticResource IconButtonStyle}" TargetType="Button">
+            <Setter Property="Content" Value="&#xE72B;"/>
+            <Setter Property="Height" Value="42"/>
+        </Style>
+        <Style x:Key="NavigationBackButtonSmallStyle" BasedOn="{StaticResource IconButtonStyle}" TargetType="Button">
+            <Setter Property="Content" Value="&#xE72B;"/>
+            <Setter Property="Height" Value="42"/>
+        </Style>
     </Page.Resources>
     
     <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}" Color="{ThemeResource SystemChromeBlackMediumColor}">
@@ -113,9 +122,12 @@
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="42"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="AcceptButton" Grid.Column="1" Style="{ThemeResource StretchyIconButtonStyle}" Width="40" Height="40" Click="AcceptButton_Click">&#xE8FB;</Button>
+
+                <TextBlock Margin="52,0,0,0" VerticalAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" Text="Permissions for @everyone"/>
+
+                <Button x:Name="AcceptButton" Grid.Column="1" Style="{ThemeResource IconButtonStyle}" Click="AcceptButton_Click">&#xE8FB;</Button>
                 <lib:ProgressRing x:Name="ProgressRing" Grid.Column="1" IsActive="False" Margin="2" Width="28" Height="28"/>
             </Grid>
 
@@ -126,15 +138,8 @@
                                 PaneDisplayMode="LeftCompact"
                                 BackRequested="NavigationView_BackRequested"
                                 ItemInvoked="NavigationView_ItemInvoked"
-                                PaneToggleButtonStyle="{StaticResource CustomPaneToggleButtonStyle}"
-                                Header="{Binding SelectedItem.Content, ElementName=NavigationView}">
+                                PaneToggleButtonStyle="{StaticResource CustomPaneToggleButtonStyle}">
                 <lib:NavigationView.Resources>
-                    <Style x:Key="NavigationBackButtonNormalStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
-                        <Setter Property="Content" Value="&#xE72B;"/>
-                    </Style>
-                    <Style x:Key="NavigationBackButtonSmallStyle" BasedOn="{StaticResource PaneToggleButtonStyle}" TargetType="Button">
-                        <Setter Property="Content" Value="&#xE72B;"/>
-                    </Style>
                 </lib:NavigationView.Resources>
                 <lib:NavigationView.MenuItems>
                     <lib:NavigationViewItem Content="Overview" Tag="Overview" IsSelected="True">
@@ -142,7 +147,10 @@
                             <FontIcon Glyph="&#xE179;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
                     </lib:NavigationViewItem>
-                    <lib:NavigationViewItem Content="Permissions" Tag="Permissions">
+                    <lib:NavigationViewItem MenuItemsSource="{Binding PermissionOverwrites}" 
+                                            Content="Permissions"
+                                            Tag="Permissions"
+                                            SelectsOnInvoked="False">
                         <lib:NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE192;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </lib:NavigationViewItem.Icon>
@@ -159,8 +167,10 @@
                     </lib:NavigationViewItem>
                 </lib:NavigationView.MenuItems>
 
-                <ContentControl x:Name="MainContent" IsEnabled="True" Margin="0,8,0,12" HorizontalContentAlignment="Stretch" Grid.Row="1">
-                    <Frame x:Name="MainFrame" SourcePageType="pages:ChannelEditOverviewPage"/>
+                <ContentControl x:Name="MainContent" Margin="0,40,0,0" IsEnabled="True" HorizontalContentAlignment="Stretch" Grid.Row="1">
+                    <ScrollViewer>
+                        <Frame x:Name="MainFrame" Margin="0,8,0,12" SourcePageType="pages:ChannelEditOverviewPage"/>
+                    </ScrollViewer>
                 </ContentControl>
             </lib:NavigationView>
         </Grid>

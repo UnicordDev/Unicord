@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Unicord.Universal.Parsers.Markdown.Blocks;
 using Unicord.Universal.Parsers.Markdown.Inlines;
+using static Unicord.Constants;
 
 namespace Unicord.Universal.Controls
 {
@@ -41,7 +42,13 @@ namespace Unicord.Universal.Controls
 
         private bool IsHuge(MarkdownDocument markdown)
         {
+            if (!AllowHugeEmoji)
+                return false;
+
             if (string.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (!App.RoamingSettings.Read(SHOW_HUGE_EMOJI, SHOW_HUGE_EMOJI_DEFAULT))
                 return false;
 
             foreach (var item in markdown.Blocks)

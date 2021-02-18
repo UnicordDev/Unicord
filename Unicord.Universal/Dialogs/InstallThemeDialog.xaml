@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Unicord.Universal.Controls"
-    Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}"
+    Background="{ThemeResource BackgroundSecondaryBrush}"
     mc:Ignorable="d"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"

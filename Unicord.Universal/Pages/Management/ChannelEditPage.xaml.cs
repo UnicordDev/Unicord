@@ -19,8 +19,7 @@ namespace Unicord.Universal.Pages.Management
         private static readonly IReadOnlyDictionary<string, Type> TypeMap
             = new Dictionary<string, Type>()
             {
-                ["Overview"] = typeof(ChannelEditOverviewPage),
-                ["Permissions"] = typeof(ChannelEditPermissionsPage)
+                ["Overview"] = typeof(ChannelEditOverviewPage)
             };
 
         private ChannelEditViewModel _viewModel;
@@ -71,6 +70,10 @@ namespace Unicord.Universal.Pages.Management
                 {
                     MainFrame.Navigate(type);
                 }
+            }
+            else if (args.InvokedItemContainer.Tag is DiscordOverwrite overwrite)
+            {
+                MainFrame.Navigate(typeof(ChannelEditPermissionsPage), overwrite);
             }
         }
     }

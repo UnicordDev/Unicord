@@ -266,6 +266,7 @@
     <Compile Include="Controls\Messages\StickerControl.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
     <Compile Include="Controls\MessageTextBox.cs" />
+    <Compile Include="Controls\Permissions\PermissionsCheckBox.cs" />
     <Compile Include="Controls\Presence\InlinePresenceControl.xaml.cs">
       <DependentUpon>InlinePresenceControl.xaml</DependentUpon>
     </Compile>
@@ -285,6 +286,7 @@
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Users\AvatarControl.cs" />
     <Compile Include="Controls\VoiceConnectionControl.xaml.cs">
       <DependentUpon>VoiceConnectionControl.xaml</DependentUpon>
     </Compile>
@@ -362,6 +364,7 @@
     </Compile>
     <Compile Include="Misc\UnicordVersionProvider.cs" />
     <Compile Include="Models\AccountsSettingsModel.cs" />
+    <Compile Include="Models\ChannelPermissionEditViewModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageModel.cs" />
@@ -484,6 +487,11 @@
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Store'">
+    <AppxManifest Include="Package.Debug.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\DiscordClyde.Dark.svg" />
     <Content Include="Assets\DiscordClyde.Light.svg" />
@@ -560,6 +568,7 @@
     <PRIResource Include="Resources\fr\VideoEditor.resw" />
     <PRIResource Include="Resources\fr\Voice.resw" />
     <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\Permissions.resw" />
     <None Include="Unicord.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -869,6 +878,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Controls\Messages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Controls\Permissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Controls\Users.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

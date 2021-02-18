@@ -9,14 +9,14 @@
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:entities="using:DSharpPlus.Entities" xmlns:users="using:Unicord.Universal.Controls.Users"
     x:DefaultBindMode="OneWay" mc:Ignorable="d" MaxWidth="550">
 
     <toolkit:DropShadowPanel VerticalAlignment="Center" KeyUp="DropShadowPanel_PreviewKeyUp">
         <StackPanel>
             <Grid Padding="20" RequestedTheme="Dark">
                 <Grid.Background>
-                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark2}" />
+                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark1}" />
                 </Grid.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -25,7 +25,12 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Canvas Width="96" Height="96">
+                    <users:AvatarControl Width="96" Height="96"
+                                         Style="{StaticResource LargeAvatarWithPresenceStyle}"
+                                         Source="{x:Bind User.AvatarUrl}" 
+                                         Presence="{x:Bind User.Presence}"/>
+
+                    <!--<Canvas Width="96" Height="96">
                         <Ellipse x:Name="ellipse" Width="96" Height="96">
                             <Ellipse.Fill>
                                 <ImageBrush ImageSource="{x:Bind User.AvatarUrl}"/>
@@ -44,13 +49,20 @@
                                 <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}" />
                             </Ellipse.Fill>
                         </Ellipse>
-                    </Canvas>
+                    </Canvas>-->
                     <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">                    
+                        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" 
+                                   TextTrimming="CharacterEllipsis" 
+                                   TextWrapping="NoWrap">                    
                             <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,0,4,0" x:Name="nicknameTextBlock" Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{x:Bind _member.Color, Converter={StaticResource ColourBrushConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}">
-                            <Run Text="{x:Bind _member.DisplayName}"/>
+                        <TextBlock x:Name="nicknameTextBlock"
+                                   Margin="0,0,4,0" 
+                                   TextWrapping="NoWrap" 
+                                   Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}"
+                                   Foreground="{x:Bind _member.Color, Converter={StaticResource ColourBrushConverter}, ConverterParameter={StaticResource SystemAccentColorDark1}}" 
+                                   Text="{x:Bind _member.DisplayName}"
+                                   Style="{ThemeResource SubtitleTextBlockStyle}">                            
                         </TextBlock>
                     </StackPanel>
                     <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
@@ -69,7 +81,7 @@
                 </Grid.Background>
                 <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
             </Grid>
-            <Grid MinHeight="200" Padding="0,0,0,20" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid MinHeight="200" Padding="0,0,0,20" Background="{ThemeResource BackgroundSecondaryBrush}">
                 <Pivot SelectedIndex="0">
                     <Pivot.HeaderTemplate>
                         <DataTemplate>

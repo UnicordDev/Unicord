@@ -25,10 +25,10 @@ namespace Unicord.Universal.Controls.Flyouts
         }
 
         public bool CanKick =>
-            (Target.DataContext is DiscordMember member) ? member.Guild.CurrentMember.PermissionsIn(null).HasPermission(Permissions.KickMembers) : false;
+            (Target.DataContext is DiscordMember member) ? member.Guild.CurrentMember.PermissionsIn(null).HasPermission(DSharpPlus.Permissions.KickMembers) : false;
 
         public bool CanBan =>
-            (Target.DataContext is DiscordMember member) ? member.Guild.CurrentMember.PermissionsIn(null).HasPermission(Permissions.BanMembers) : false;
+            (Target.DataContext is DiscordMember member) ? member.Guild.CurrentMember.PermissionsIn(null).HasPermission(DSharpPlus.Permissions.BanMembers) : false;
 
         public bool CanChangeNickname
         {
@@ -39,11 +39,11 @@ namespace Unicord.Universal.Controls.Flyouts
                     var perms = member.PermissionsIn(null);
                     if (member.Id == App.Discord.CurrentUser.Id)
                     {
-                        return perms.HasPermission(Permissions.ChangeNickname);
+                        return perms.HasPermission(DSharpPlus.Permissions.ChangeNickname);
                     }
                     else
                     {
-                        return perms.HasPermission(Permissions.ManageNicknames);
+                        return perms.HasPermission(DSharpPlus.Permissions.ManageNicknames);
                     }
                 }
 

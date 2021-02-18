@@ -9,7 +9,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d" Loaded="Page_Loaded"
-    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+    Background="{ThemeResource BackgroundTertiaryBrush}">
     <Page.Resources>
         <CollectionViewSource x:Key="channelsListSource" x:Name="channelsListSource" IsSourceGrouped="True" />
     </Page.Resources>

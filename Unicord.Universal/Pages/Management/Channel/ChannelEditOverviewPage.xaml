@@ -14,7 +14,7 @@
 
             <StackPanel Visibility="{Binding IsText, Converter={StaticResource BoolVisibilityConverter}}">
                 <TextBlock>Topic</TextBlock>
-                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
+                <TextBox Padding="8,6" Margin="0,4,0,12" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="100" IsSpellCheckEnabled="True" MaxLength="1024" PlaceholderText="What's this channel for?" Text="{Binding Topic, Mode=TwoWay}"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>

@@ -79,7 +79,7 @@
 
         <Grid x:Name="BrowserGrid" 
               Visibility="Visible"
-              Background="{ThemeResource MainBackgroundBrush}">
+              Background="{ThemeResource BackgroundTertiaryBrush}">
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="BrowserTranslateTransform" />
             </Grid.RenderTransform>

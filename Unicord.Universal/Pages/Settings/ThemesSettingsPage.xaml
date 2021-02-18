@@ -114,7 +114,7 @@
                     Grid.Row="1"
                     HorizontalContentAlignment="Stretch"
                     Color="{ThemeResource SystemChromeBlackMediumLowColor}">
-                    <Grid x:Name="preview" Background="{ThemeResource MainBackgroundBrush}">
+                    <Grid x:Name="preview" Background="{ThemeResource BackgroundTertiaryBrush}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="28"/>
                             <ColumnDefinition Width="88"/>
@@ -163,7 +163,7 @@
                                 <ContentControl Style="{ThemeResource PreviewDM}"/>
                             </StackPanel>
                         </Grid>
-                        <Grid Grid.Column="2" Background="{ThemeResource MainBackgroundBrush}" Padding="8,12">
+                        <Grid Grid.Column="2" Background="{ThemeResource BackgroundTertiaryBrush}" Padding="8,12">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>

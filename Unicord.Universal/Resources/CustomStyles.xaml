@@ -975,6 +975,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <Style x:Key="TransparentExpanderStyle" TargetType="controls:Expander">
         <Setter Property="Header" Value="Header"/>
         <Setter Property="IsTabStop" Value="False"/>

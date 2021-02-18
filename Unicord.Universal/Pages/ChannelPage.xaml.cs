@@ -449,7 +449,7 @@ namespace Unicord.Universal.Pages
                     queryOption.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
 
                     var photosQuery = KnownFolders.PicturesLibrary.CreateFileQueryWithOptions(queryOption);
-                    var factory = new FileInformationFactory(photosQuery, ThumbnailMode.PicturesView, 256);
+                    var factory = new FileInformationFactory(photosQuery, ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale, true);
                     PhotosList.ItemsSource = factory.GetVirtualizedFilesVector();
                 }
                 catch (Exception ex)

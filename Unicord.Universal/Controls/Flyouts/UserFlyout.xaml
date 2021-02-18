@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:controls="using:Unicord.Universal.Controls" xmlns:user="using:Unicord.Universal.Controls.Users"
     mc:Ignorable="d">
 
     <Grid x:Name="Root" Width="256" Margin="-12">
@@ -24,20 +24,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Canvas Width="128" Height="128" HorizontalAlignment="Center" Margin="24,24,24,8">
-                <lib:PersonPicture Width="128" Height="128" DisplayName="{Binding DisplayName}" ProfilePicture="{Binding AvatarUrl}"/>
-                <Ellipse
-                    Canvas.Left="96"
-                    Canvas.Top="96"
-                    Width="32"
-                    Height="32"
-                    Stroke="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}"
-                    StrokeThickness="4">
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Canvas>
+
+            <user:AvatarControl Style="{ThemeResource HugeAvatarWithPresenceStyle}"
+                                Width="128"
+                                Height="128"
+                                Margin="24,24,24,8"
+                                Source="{Binding AvatarUrl}"
+                                Presence="{Binding Presence}"/>
             <StackPanel Grid.Row="1" RequestedTheme="Dark" >
                 <controls:UsernameControl User="{Binding}" FontSize="24" IconSize="24" HorizontalAlignment="Center" Margin="12,0" />
                 <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="16" Margin="0,0,0,24">

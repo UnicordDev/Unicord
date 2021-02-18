@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Unicord.Universal.Controls"
     mc:Ignorable="d" Loaded="Page_Loaded"
-    Background="{ThemeResource MainBackgroundBrush}">
+    Background="{ThemeResource BackgroundTertiaryBrush}">
 
     <Page.Resources>
         <Style x:Key="ThemeAccentButtonStyle" TargetType="Button">

@@ -585,8 +585,8 @@ namespace Unicord.Universal.Controls.Markdown.Render
                         var user = guild != null ? (guild.Members.TryGetValue(element.Id, out var memb) ? memb : null) : client.TryGetCachedUser(element.Id, out var u) ? u : null;
                         if (user != null)
                         {
-                            run.Foreground = GetDiscordBrush(user.Color);
                             run.Text = IsSystemMessage ? user.DisplayName : $"@{user.DisplayName}";
+                            run.Foreground = GetDiscordBrush(user.Color);
                         }
                         else
                         {
@@ -629,8 +629,9 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     {
                         Source = new BitmapImage(new Uri(uri)) { DecodePixelHeight = size, DecodePixelType = DecodePixelType.Logical },
                         Height = size,
+                        MaxWidth = size * 3,
                         Stretch = Stretch.Uniform,
-                        RenderTransform = new TranslateTransform() { Y = IsHuge ? 8 : 4 }
+                        RenderTransform = new TranslateTransform() { Y = 8 }
                     };
 
                     ToolTipService.SetToolTip(image, element.Text);
