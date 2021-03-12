@@ -25,20 +25,20 @@ namespace Unicord.Universal.Commands
             {
                 Analytics.TrackEvent("CopyUrlCommand_CopyMessageLink");
                 var serverText = message.Channel.Guild != null ? message.Channel.GuildId.ToString() : "@me";
-                package.SetText("https://" + $"discordapp.com/channels/{serverText}/{message.ChannelId}/{message.Id}/");
+                package.SetText("https://" + $"discordapp.com/channels/{serverText}/{message.ChannelId}/{message.Id}");
             }
 
             if (parameter is DiscordChannel channel)
             {
                 Analytics.TrackEvent("CopyUrlCommand_CopyChannelLink");
                 var serverText = channel.Guild != null ? channel.GuildId.ToString() : "@me";
-                package.SetText("https://" + $"discordapp.com/channels/{serverText}/{channel.Id}/");
+                package.SetText("https://" + $"discordapp.com/channels/{serverText}/{channel.Id}");
             }
 
             if (parameter is DiscordGuild guild)
             {
                 Analytics.TrackEvent("CopyUrlCommand_CopyGuildLink");
-                package.SetText("https://" + $"discordapp.com/channels/{guild.Id}/");
+                package.SetText("https://" + $"discordapp.com/channels/{guild.Id}");
             }
 
             Clipboard.SetContent(package);
