@@ -502,8 +502,21 @@ namespace Unicord.Universal.Controls.Markdown.Render
             }
             else
             {
-                var text = CreateTextBlock(localContext);
-                var childContext = new InlineRenderContext(text.Inlines, context)
+                var text = new RichTextBlock
+                {
+                    CharacterSpacing = CharacterSpacing,
+                    FontFamily = FontFamily,
+                    FontSize = FontSize,
+                    FontStretch = FontStretch,
+                    FontStyle = FontStyle,
+                    FontWeight = FontWeight,
+                    Foreground = localContext.Foreground,
+                    IsTextSelectionEnabled = IsTextSelectionEnabled,
+                    TextWrapping = TextWrapping
+                };
+
+                var paragraph = new Paragraph();
+                var childContext = new InlineRenderContext(paragraph.Inlines, context)
                 {
                     Parent = text
                 };
@@ -520,36 +533,47 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     text.FontWeight = FontWeights.Bold;
                 }
 
+                text.Blocks.Add(paragraph);
+
                 var borderthickness = InlineCodeBorderThickness;
                 var padding = InlineCodePadding;
                 var spacingoffset = -(borderthickness.Bottom + padding.Bottom);
                 var margin = new Thickness(0, spacingoffset, 0, spacingoffset);
 
-                var border = new Border
+                var grid = new Grid
                 {
                     BorderThickness = borderthickness,
                     BorderBrush = InlineCodeBorderBrush,
                     Background = InlineCodeBackground,
-                    Child = text,
                     Padding = padding,
                     Margin = margin
                 };
 
                 // Aligns content in InlineUI, see https://social.msdn.microsoft.com/Forums/silverlight/en-US/48b5e91e-efc5-4768-8eaf-f897849fcf0b/richtextbox-inlineuicontainer-vertical-alignment-issue?forum=silverlightarchieve
-                border.RenderTransform = new TranslateTransform
+                grid.RenderTransform = new TranslateTransform
                 {
                     Y = 4
                 };
 
+                grid.Children.Add(text);
+
                 if (App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
                 {
-                    text.Opacity = 0;
-                    border.Tapped += (o, e) => { text.Opacity = 1; };
+                    var border = new Border()
+                    {
+                        Background = InlineCodeBackground,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch
+                    };
+
+                    border.Tapped += (o, e) => { border.Opacity = 0; };
+
+                    grid.Children.Add(border);
                 }
 
                 var inlineUIContainer = new InlineUIContainer
                 {
-                    Child = border,
+                    Child = grid,
                 };
 
                 RootElement.Margin = new Thickness(0, 0, 0, 4);
@@ -622,6 +646,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 }
                 else
                 {
+                    var border = RootElement.FindParent<Border>();
                     var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=128";
                     var ui = new InlineUIContainer() { FontSize = IsHuge ? 42 : 24 };
                     var size = IsHuge ? 48 : 24;
@@ -639,6 +664,11 @@ namespace Unicord.Universal.Controls.Markdown.Render
 
                     RootElement.Margin = new Thickness(0, 0, 0, 4);
                     localContext.InlineCollection.Add(ui);
+
+                    if (!IsHuge && !(RootElement.RenderTransform is TranslateTransform tt))
+                    {
+                        RootElement.Margin = new Thickness(0, -6, 0, 0);
+                    }
                 }
             }
         }

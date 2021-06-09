@@ -9,9 +9,17 @@
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Controls"
-    xmlns:models="using:Unicord.Universal.Models" xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:models="using:Unicord.Universal.Models" 
+    xmlns:controls="using:Unicord.Universal.Controls" 
+    xmlns:converters="using:Unicord.Universal.Converters"
     NavigationCacheMode="Required"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector"
+                                                DMChannelTemplate="{StaticResource DMChannelTemplate}"
+                                                GroupChannelTemplate="{StaticResource GroupChannelTemplate}" />
+    </Page.Resources>
 
     <Page.DataContext>
         <models:DMChannelsViewModel />
@@ -39,8 +47,8 @@
         <ListView
             x:Name="dmsList"
             Grid.Row="2"
-            ItemTemplate="{StaticResource DMChannelTemplate}"
             ItemsSource="{Binding DMChannels}"
+            ItemTemplateSelector="{StaticResource ChannelTemplateSelector}"
             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
             SelectionChanged="dmsList_SelectionChanged"
             SingleSelectionFollowsFocus="False"

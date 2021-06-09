@@ -70,7 +70,7 @@
                 Storyboard.TargetProperty="X"
                 From="0"
                 To="450"
-                Duration="00:00:00.33" />
+                Duration="00:00:00.20" />
             <DoubleAnimation
                 Storyboard.TargetName="SettingsPaneTransform"
                 Storyboard.TargetProperty="Y"
@@ -81,7 +81,7 @@
                 Storyboard.TargetName="SettingsOverlayBackground"
                 Storyboard.TargetProperty="Opacity"
                 To="0"
-                Duration="00:00:00.33" />
+                Duration="00:00:00.20" />
         </Storyboard>
 
         <Storyboard
@@ -189,7 +189,6 @@
                         ItemTemplate="{StaticResource GuildsListTemplate}"
                         ItemsSource="{Binding Guilds}"
                         SelectedItem="{Binding SelectedGuild, Mode=TwoWay}"
-                        ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         SelectionChanged="GuildsList_SelectionChanged"
                         ShowsScrollingPlaceholders="False"
                         SingleSelectionFollowsFocus="False"
@@ -370,7 +369,7 @@
                 </controls1:DropShadowPanel>
             </Grid>
             <Grid
-                x:Name="Content"
+                x:Name="MainContent"
                 Grid.Column="1"
                 MinWidth="250"
                 Background="{ThemeResource BackgroundTertiaryBrush}">
@@ -384,6 +383,12 @@
                         Background="{ThemeResource BackgroundTertiaryBrush}"
                         Navigated="mainFrame_Navigated"
                         SourcePageType="sub:FriendsPage" />
+                    <!--<Border x:Name="SwipeHelper"
+                            Width="32" 
+                            ManipulationMode="All"
+                            HorizontalAlignment="Left"
+                            Background="Transparent" 
+                            Margin="0,72,0,42"/>-->
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -433,7 +438,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="ContentTransform.X" Value="0" />
-                        <Setter Target="Content.Margin" Value="0,0,0,0" />
+                        <Setter Target="MainContent.Margin" Value="0,0,0,0" />
                         <Setter Target="CloseItem.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
@@ -445,7 +450,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="ContentTransform.X" Value="0" />
-                        <Setter Target="Content.Margin" Value="-276,0,0,0" />
+                        <Setter Target="MainContent.Margin" Value="-276,0,0,0" />
                         <Setter Target="CloseItem.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>

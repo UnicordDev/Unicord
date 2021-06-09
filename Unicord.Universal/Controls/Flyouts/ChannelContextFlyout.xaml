@@ -9,7 +9,7 @@
 
     <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
         <MenuFlyoutItem.Icon>
-            <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+            <FontIcon Glyph="{Binding Converter={StaticResource ChannelSymbolConverter}}" FontFamily="{StaticResource FluentSystemIcons}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 

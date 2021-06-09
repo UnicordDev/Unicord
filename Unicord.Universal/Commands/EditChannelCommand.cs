@@ -45,7 +45,8 @@ namespace Unicord.Universal.Commands
                 if (page != null)
                 {
                     Analytics.TrackEvent("EditChannelCommand_Invoked");
-                    OverlayService.GetForCurrentView().ShowOverlay<ChannelEditPage>(channel);
+                    OverlayService.GetForCurrentView()
+                        .ShowOverlay<ChannelEditPage>(channel);
                 }
             }
         }

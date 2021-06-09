@@ -46,7 +46,7 @@ namespace Unicord.Universal.Controls
 
                 var transcodeFailed = false;
 
-                if (setting == MediaTranscodeOptions.Always || (setting == MediaTranscodeOptions.WhenNeeded && props.Size >= (ulong)model.UploadLimit))
+                if (!temporary && setting == MediaTranscodeOptions.Always || (setting == MediaTranscodeOptions.WhenNeeded && props.Size >= (ulong)model.UploadLimit))
                 {
                     MediaType? mediaType = null;
 
@@ -155,7 +155,7 @@ namespace Unicord.Universal.Controls
                         break;
                     case MediaType.Video:
                         tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(Path.ChangeExtension(file.Name, ".mp4"), CreationCollisionOption.GenerateUniqueName);
-                        success = await MediaTranscoding.TryTranscodeVideoAsync(file, tempFile, channelViewModel.HasNitro, progress, token);
+                        success = await MediaTranscoding.TryTranscodeVideoAsync(file, tempFile, progress, token);
                         break;
                     case MediaType.Photo:
                         tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
@@ -196,7 +196,7 @@ namespace Unicord.Universal.Controls
                 "This file failed to transcode, it may have been a format I don't understand, or your PC might not have the needed codecs. Sorry!");
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
+        private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
             var bigModel = DataContext as ChannelViewModel;
 
@@ -205,7 +205,8 @@ namespace Unicord.Universal.Controls
             bigModel.FileUploads.Remove(model);
             bigModel.FileUploads.Add(newModel);
 
-            OverlayService.GetForCurrentView().ShowOverlay<VideoEditor>(newModel);
+            await OverlayService.GetForCurrentView()
+                .ShowOverlay<VideoEditor>(newModel);
         }
 
         private void EditButton_Loaded(object sender, RoutedEventArgs e)

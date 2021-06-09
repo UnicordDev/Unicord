@@ -58,12 +58,10 @@ namespace Unicord.Universal.Models
                 CanEdit = true;
             }
 
-            if (file is IStorageItemProperties props)
+            if (file is IStorageItemProperties props && (Thumbnail?.Dispatcher.HasThreadAccess ?? true))
             {
-                using (var thumbStream = await props.GetThumbnailAsync(ThumbnailMode.SingleItem, 256))
-                {
-                    await (Thumbnail ??= new BitmapImage()).SetSourceAsync(thumbStream);
-                }
+                using var thumbStream = await props.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);
+                await (Thumbnail ??= new BitmapImage()).SetSourceAsync(thumbStream);
             }
         }
 

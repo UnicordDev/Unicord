@@ -1,4 +1,5 @@
 ﻿<ContentDialog
+    x:Name="Self"
     x:Class="Unicord.Universal.Dialogs.DeleteMessageDialog"
     x:Uid="/Dialogs/DeleteMessageDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,5 +11,5 @@
     mc:Ignorable="d"
     Background="{ThemeResource BackgroundSecondaryBrush}"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
-    <messages:MessageControl Message="{Binding}" IsEnabled="False" Background="Transparent" />
+    <messages:MessageControl x:Name="MessageControl" IsEnabled="False" Background="Transparent" />
 </ContentDialog>

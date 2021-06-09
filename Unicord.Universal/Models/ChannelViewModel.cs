@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Humanizer;
 using Microsoft.AppCenter.Analytics;
 using System;
 using System.Collections.Concurrent;
@@ -186,7 +187,7 @@ namespace Unicord.Universal.Models
 
                 if (Channel is DiscordDmChannel dm)
                 {
-                    return Strings.NaturalJoin(dm.Recipients.Select(r => r.Username));
+                    return dm.Recipients.Select(r => r.Username).Humanize();
                 }
 
                 return string.Empty;
@@ -385,6 +386,9 @@ namespace Unicord.Universal.Models
                         }, null);
                     }
 
+                    if (string.IsNullOrWhiteSpace(e.Message.Author.Username))
+                        _ = RequestMissingMembersAsync(new[] { e.Message });
+
                     if (!Messages.Any(m => m.Id == e.Message.Id))
                     {
                         _context.Post(a => Messages.Add(e.Message), null);
@@ -506,7 +510,7 @@ namespace Unicord.Universal.Models
         {
             if (Channel.Guild != null)
             {
-                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal).Distinct();
+                var usersToSync = messages.Select(m => m.Author).OfType<DiscordMember>().Where(u => u.IsLocal || string.IsNullOrWhiteSpace(u.Username)).Distinct();
                 Analytics.TrackEvent("ChannelViewModel_RequestMembers", new Dictionary<string, string> { ["Count"] = $"{usersToSync.Count()}" });
 
                 if (usersToSync.Any())
@@ -654,8 +658,6 @@ namespace Unicord.Universal.Models
 
         public async Task TriggerTypingAsync()
         {
-            Analytics.TrackEvent("ChannelViewModel_TriggerTyping");
-
             if ((DateTimeOffset.Now - _typingLastSent).Seconds > 10)
             {
                 _typingLastSent = DateTimeOffset.Now;

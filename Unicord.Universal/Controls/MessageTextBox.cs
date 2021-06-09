@@ -345,11 +345,13 @@ namespace Unicord.Universal.Controls
 
         public void OnSuggestBoxSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            sender.Text = Text;
+            //sender.Text = Text;
         }
 
         private void OnSuggestBoxQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            // Text = _suggestBox.Text; // fuck you 2
+
             if (args.ChosenSuggestion != null)
             {
                 if (_index != -1 && _length != -1)

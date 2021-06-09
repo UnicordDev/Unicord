@@ -30,7 +30,10 @@
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Membership Permissions</TextBlock>
         <ItemsControl ItemsSource="{Binding Membership}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Text Permissions</TextBlock>
-        <ItemsControl ItemsSource="{Binding Text}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
+        <TextBlock Visibility="{Binding IsTextChannel, Converter={ThemeResource BoolVisibilityConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Text Permissions</TextBlock>
+        <ItemsControl Visibility="{Binding IsTextChannel, Converter={ThemeResource BoolVisibilityConverter}}" ItemsSource="{Binding Text}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
+
+        <TextBlock Visibility="{Binding IsVoiceChannel, Converter={ThemeResource BoolVisibilityConverter}}" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,12,0,8">Voice Permissions</TextBlock>
+        <ItemsControl Visibility="{Binding IsVoiceChannel, Converter={ThemeResource BoolVisibilityConverter}}" ItemsSource="{Binding Voice}" ItemTemplate="{StaticResource PermissionOverwriteTemplate}"/>
     </StackPanel>
 </Page>

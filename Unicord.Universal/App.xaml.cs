@@ -201,7 +201,8 @@ namespace Unicord.Universal
 
         private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
         {
-            Analytics.TrackEvent("Unicord_LaunchForProtocol");
+            if (protocol.Uri.IsAbsoluteUri)
+                Analytics.TrackEvent("Unicord_LaunchForProtocol", new Dictionary<string, string>() { ["protocol"] = protocol.Uri.GetLeftPart(UriPartial.Authority) });
 
             if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
             {

@@ -52,22 +52,22 @@ namespace Unicord.Universal.Pages
                     DirectMessageTemplate = (DataTemplate)App.Current.Resources["NoIndicatorDMChannelTemplate"]
                 };
 
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
-                {
-                    var contact = _shareOperation.Contacts.FirstOrDefault();
-                    if (contact != null)
-                    {
-                        var id = await ContactListManager.TryGetChannelIdAsync(contact);
-                        if (id != 0)
-                        {
-                            guildBox.SelectedIndex = 0;
-                            channelsBox.SelectedItem = await App.Discord.CreateDmChannelAsync(id);
+                //if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+                //{
+                //    var contact = _shareOperation.Contacts.FirstOrDefault();
+                //    if (contact != null)
+                //    {
+                //        var id = await ContactListManager.TryGetChannelIdAsync(contact);
+                //        if (id != 0)
+                //        {
+                //            guildBox.SelectedIndex = 0;
+                //            channelsBox.SelectedItem = await App.Discord.CreateDmChannelAsync(id);
 
-                            target.Text = contact.DisplayName;
-                            destinationGrid.Visibility = Visibility.Collapsed;
-                        }
-                    }
-                }
+                //            target.Text = contact.DisplayName;
+                //            destinationGrid.Visibility = Visibility.Collapsed;
+                //        }
+                //    }
+                //}
 
                 _shareOperation.ReportStarted();
 
@@ -190,7 +190,7 @@ namespace Unicord.Universal.Pages
         }
     }
 
-    public class ChannelTemplateSelector : DataTemplateSelector
+    public class  ChannelTemplateSelector : DataTemplateSelector
     {
         public DataTemplate DirectMessageTemplate { get; set; }
         public DataTemplate ServerChannelTemplate { get; set; }

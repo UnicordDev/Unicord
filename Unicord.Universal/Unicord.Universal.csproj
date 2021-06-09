@@ -23,7 +23,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>
     </PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>7A1461C863ED96D6CE17D98028140DD9A227934D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>6BD8C4FCFA3FDEFC732E95AC6319476735CC564B</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>arm</AppxBundlePlatforms>
@@ -55,6 +55,7 @@
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
     <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -69,6 +70,7 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <LangVersion>latest</LangVersion>
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -83,6 +85,7 @@
     <LangVersion>latest</LangVersion>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -98,6 +101,7 @@
     <LangVersion>latest</LangVersion>
     <DebugSymbols>true</DebugSymbols>
     <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -110,6 +114,7 @@
     <ErrorReport>none</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -125,6 +130,7 @@
     <LangVersion>latest</LangVersion>
     <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -263,10 +269,12 @@
     <Compile Include="Controls\MarkdownTextBlock\Render\UIElementCollectionRenderContext.cs" />
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
+    <Compile Include="Converters\ComponentTemplateSelector.cs" />
+    <Compile Include="Interop\BitmapInterop.cs" />
+    <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Controls\Messages\StickerControl.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
     <Compile Include="Controls\MessageTextBox.cs" />
-    <Compile Include="Controls\Permissions\PermissionsCheckBox.cs" />
     <Compile Include="Controls\Presence\InlinePresenceControl.xaml.cs">
       <DependentUpon>InlinePresenceControl.xaml</DependentUpon>
     </Compile>
@@ -303,6 +311,8 @@
     <Compile Include="Converters\HideOnNullConverter.cs" />
     <Compile Include="Converters\DiscordUriConverter.cs" />
     <Compile Include="Converters\MemberOnlyConverter.cs" />
+    <Compile Include="Converters\ChannelTypeTemplateSelector.cs" />
+    <Compile Include="Converters\MessageTemplateSelector.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceConverters.cs" />
     <Compile Include="Converters\SystemMessageConverters.cs" />
@@ -363,7 +373,7 @@
       <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Misc\UnicordVersionProvider.cs" />
-    <Compile Include="Models\AccountsSettingsModel.cs" />
+    <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\ChannelPermissionEditViewModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
@@ -374,9 +384,9 @@
     <Compile Include="Models\GuildChannelListViewModel.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\SearchPageModel.cs" />
-    <Compile Include="Models\ThemesSettingsModel.cs" />
+    <Compile Include="Models\Settings\ThemesSettingsModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
-    <Compile Include="Models\VoiceSettingsModel.cs" />
+    <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
@@ -390,7 +400,7 @@
       <DependentUpon>ChannelEditPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChannelEditViewModel.cs" />
-    <Compile Include="Models\MessagingSettingsModel.cs" />
+    <Compile Include="Models\Settings\MessagingSettingsModel.cs" />
     <Compile Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml.cs">
       <DependentUpon>ChannelEditOverviewPage.xaml</DependentUpon>
     </Compile>
@@ -409,11 +419,11 @@
     <Compile Include="Pages\Settings\AccountsSettingsPage.xaml.cs">
       <DependentUpon>AccountsSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\MediaSettingsModel.cs" />
+    <Compile Include="Models\Settings\MediaSettingsModel.cs" />
     <Compile Include="Pages\Settings\MediaSettingsPage.xaml.cs">
       <DependentUpon>MediaSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\SecuritySettingsModel.cs" />
+    <Compile Include="Models\Settings\SecuritySettingsModel.cs" />
     <Compile Include="Pages\Settings\SecuritySettingsPage.xaml.cs">
       <DependentUpon>SecuritySettingsPage.xaml</DependentUpon>
     </Compile>
@@ -569,6 +579,8 @@
     <PRIResource Include="Resources\fr\Voice.resw" />
     <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
     <PRIResource Include="Resources\en-GB\Permissions.resw" />
+    <Content Include="Assets\SegoeIcons.ttf" />
+    <Content Include="Assets\FluentSystemIcons-Regular.ttf" />
     <None Include="Unicord.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -904,19 +916,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer">
-      <Version>2.8.25</Version>
+      <Version>2.8.11</Version>
     </PackageReference>
     <PackageReference Include="Markdig">
-      <Version>0.22.1</Version>
+      <Version>0.24.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>4.0.0</Version>
+      <Version>4.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>4.0.0</Version>
+      <Version>4.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>4.0.0</Version>
+      <Version>4.2.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Push">
       <Version>3.4.3</Version>
@@ -925,15 +937,12 @@
       <Version>5.3.200605002</Version>
     </PackageReference> -->
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.11</Version>
+      <Version>6.2.12</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Services.Store.Engagement">
       <Version>10.1901.28001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>6.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer">
       <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
@@ -946,13 +955,13 @@
       <Version>6.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0-prerelease.201202003</Version>
+      <Version>2.6.0-prerelease.210430001</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Unicode.net">
-      <Version>0.1.2</Version>
+    <PackageReference Include="System.Drawing.Common">
+      <Version>5.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -990,9 +999,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.Services.Store.Engagement, Version=10.0">
-      <Name>Microsoft Engagement Framework</Name>
-    </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
@@ -1017,6 +1023,7 @@
     <ErrorReport>none</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <DebugSymbols>true</DebugSymbols>
@@ -1033,6 +1040,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1049,6 +1057,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1065,6 +1074,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1081,6 +1091,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1097,6 +1108,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>

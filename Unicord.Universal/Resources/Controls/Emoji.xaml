@@ -10,16 +10,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:EmojiControl">
                     <Border>
-                        <Grid Width="{TemplateBinding Size}" Height="{TemplateBinding Size}" DataContext="{TemplateBinding Emoji}">
+                        <Grid Height="{TemplateBinding Size}" DataContext="{TemplateBinding Emoji}">
                             <Image x:Name="EmoteImage" 
                                    Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}" 
-                                   MaxWidth="{TemplateBinding Size}" 
                                    MaxHeight="{TemplateBinding Size}"
                                    ToolTipService.ToolTip="{Binding Name}">
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" 
                                                  DecodePixelType="Logical"
-                                                 DecodePixelWidth="{TemplateBinding Size}"
                                                  DecodePixelHeight="{TemplateBinding Size}" />
                                 </Image.Source>
                             </Image>

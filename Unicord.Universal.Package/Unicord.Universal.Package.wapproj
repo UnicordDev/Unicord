@@ -78,7 +78,7 @@
     <EntryPointProjectUniqueName>..\Unicord.Universal\Unicord.Universal.csproj</EntryPointProjectUniqueName>
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
-    <PackageCertificateThumbprint>C2ABDF93E0F106399DC04ADBAE43914168C96692</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>7A1461C863ED96D6CE17D98028140DD9A227934D</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -87,12 +87,17 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Store' And '$(Platform)' != 'ARM'">
+  <ItemGroup Condition="'$(Configuration)' == 'Store'">
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Store' And '$(Platform)' == 'ARM' ">
+  <ItemGroup Condition="'$(Configuration)' != 'Store'">
+    <AppxManifest Include="Package.Debug.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <!--<ItemGroup Condition="'$(Configuration)' == 'Store' And '$(Platform)' == 'ARM' ">
     <AppxManifest Include="Package.ARM.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
@@ -101,20 +106,18 @@
     <AppxManifest Include="Package.ARM.Debug.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Store' And '$(Platform)' != 'ARM'">
-    <AppxManifest Include="Package.Debug.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
-    <ProjectReference Condition="'$(Platform)' != 'ARM'" Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj">
+    <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
     </ProjectReference>
     <ProjectReference Include="..\Unicord.Universal\Unicord.Universal.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.StoreAssociation.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Unicord.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

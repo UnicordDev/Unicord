@@ -51,10 +51,10 @@
         <Setter Property="InlineCodeBorderThickness" Value="0" />
         <Setter Property="InlineCodePadding" Value="4, 2, 4, 2" />
         <Setter Property="CodeBackground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
-        <Setter Property="InlineCodeBackground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
+        <Setter Property="InlineCodeBackground" Value="{ThemeResource SystemControlBackgroundChromeLowBrush}"/>
         <Setter Property="InlineCodeBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
-        <Setter Property="CodeFontFamily" Value="/Assets/FiraCode-Regular.ttf#Fira Code"/>
-        <Setter Property="InlineCodeFontFamily" Value="/Assets/FiraCode-Regular.ttf#Fira Code"/>
+        <Setter Property="CodeFontFamily" Value="Consolas"/>
+        <Setter Property="InlineCodeFontFamily" Value="Consolas"/>
         <Setter Property="CodeMargin" Value="0, 7, 0, 7" />
         <Setter Property="CodePadding" Value="10, 6, 10, 6" />
         <Setter Property="EmojiFontFamily" Value="Segoe UI Emoji" />
@@ -635,7 +635,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="{StaticResource FluentSystemIcons}" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
             <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
         </Grid>

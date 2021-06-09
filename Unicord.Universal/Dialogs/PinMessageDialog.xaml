@@ -10,5 +10,5 @@
     mc:Ignorable="d"
     Background="{ThemeResource BackgroundSecondaryBrush}"
     PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
-    <messages:MessageControl Message="{Binding}" IsEnabled="False" Background="Transparent" />
+    <messages:MessageControl x:Name="MessageControl" IsEnabled="False" Background="Transparent" />
 </ContentDialog>

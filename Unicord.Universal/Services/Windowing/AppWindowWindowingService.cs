@@ -181,11 +181,12 @@ namespace Unicord.Universal.Services.Windowing
                         // i *believe* this handles it? not 100% sure
                         void ElementUnloaded(object sender, RoutedEventArgs e)
                         {
-                            (sender as FrameworkElement).Unloaded -= ElementUnloaded;
+                            var fel = sender as FrameworkElement;
+                            fel.Unloaded -= ElementUnloaded;
 
                             lock (_handledElements)
                             {
-                                _handledElements.Remove(sender as FrameworkElement);
+                                _handledElements.Remove(fel);
                             }
                         }
 

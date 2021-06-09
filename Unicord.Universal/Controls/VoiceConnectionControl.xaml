@@ -38,9 +38,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ToggleButton x:Name="muteToggleButton" Padding="0,8" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
-            <ToggleButton x:Name="deafenToggleButton" Padding="0,8" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
-            <lib:DropDownButton x:Name="RoutingButton" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{ThemeResource StretchyIconButtonStyle}"  Content="&#xE8EA;">
+            <ToggleButton x:Name="muteToggleButton" Padding="0,8" Margin="0,0,2,0" Grid.Column="0" IsChecked="{x:Bind ConnectionModel.Muted}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xEC54;"/>
+            <ToggleButton x:Name="deafenToggleButton" Padding="0,8" Margin="0,0,2,0" Grid.Column="1" IsChecked="{x:Bind ConnectionModel.Deafened}" Style="{ThemeResource StretchyIconToggleButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE74F;"/>
+            <lib:DropDownButton x:Name="RoutingButton" Margin="0,0,2,0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{ThemeResource StretchyIconButtonStyle}"  Content="&#xE8EA;">
                 <lib:DropDownButton.Flyout>
                     <MenuFlyout>
                         <lib:RadioMenuFlyoutItem Text="Earpiece">
@@ -61,7 +61,7 @@
                     </MenuFlyout>
                 </lib:DropDownButton.Flyout>
             </lib:DropDownButton>
-            <Button x:Name="disconnectButton" Padding="0,8" Grid.Column="3" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
+            <Button x:Name="disconnectButton" Padding="0,8" Margin="0,0,2,0" Grid.Column="3" Click="DisconnectButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE778;"/>
             <Button x:Name="voiceSettingsButton" Padding="0,8" Grid.Column="4" Click="VoiceSettingsButton_Click" Style="{ThemeResource StretchyIconButtonStyle}" HorizontalAlignment="Stretch" Content="&#xE713;"/>
         </Grid>
     </Grid>

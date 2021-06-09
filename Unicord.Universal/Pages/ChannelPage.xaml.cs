@@ -12,22 +12,26 @@ using Unicord.Universal.Commands;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
+using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
@@ -170,6 +174,9 @@ namespace Unicord.Universal.Pages
             {
                 var scrollViewer = MessageList.FindChild<ScrollViewer>("ScrollViewer");
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+                scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+                scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                scrollViewer.ManipulationMode = ManipulationModes.All;
 
                 var swipeService = SwipeOpenService.GetForCurrentView();
                 swipeService.AddAdditionalElement(MessageList);
@@ -322,6 +329,21 @@ namespace Unicord.Universal.Pages
                     }
 
                     return;
+                }
+
+                if (dataPackageView.Contains("DeviceIndependentBitmapV5"))
+                {
+                    try
+                    {
+                        var data = (IRandomAccessStream)(await dataPackageView.GetDataAsync("DeviceIndependentBitmapV5"));
+                        var file = await BitmapInterop.GetFromRandomAccessStreamAsync(data);
+                        await UploadItems.AddStorageFileAsync(file, true);
+                        return;
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
@@ -719,9 +741,9 @@ namespace Unicord.Universal.Pages
         {
             Analytics.TrackEvent("ChannelPage_ClosePane");
 
-            var helper = SwipeOpenService.GetForCurrentView().Helper;
-            if (helper != null)
-                helper.IsEnabled = true;
+            //var helper = SwipeOpenService.GetForCurrentView().Helper;
+            //if (helper != null)
+            //    helper.IsEnabled = true;
 
             IsPaneOpen = false;
             if (ActualWidth > (1024 - 276))

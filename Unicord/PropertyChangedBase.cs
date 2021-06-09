@@ -13,35 +13,15 @@ namespace Unicord
     /// </summary>
     public class NotifyPropertyChangeImpl : INotifyPropertyChanged
     {
-        private class ThreadHandlerCollection
-        {
-            public ThreadHandlerCollection(SynchronizationContext c)
-            {
-                context = c;
-            }
+        private ThreadLocal<ThreadHandlerCollection<PropertyChangedEventHandler>> _propertyChangedEvents;
 
-            public readonly SynchronizationContext context;
-            public PropertyChangedEventHandler events;
-
-            public void Add(PropertyChangedEventHandler handler)
-            {
-                events = (PropertyChangedEventHandler)Delegate.Combine(events, handler);
-            }
-
-            public void Remove(PropertyChangedEventHandler handler)
-            {
-                events = (PropertyChangedEventHandler)Delegate.Remove(events, handler);
-            }
-        }
-
-        private ThreadLocal<ThreadHandlerCollection> _propertyChangedEvents;
-
-        private ThreadHandlerCollection PropertyChangeEvents
+        private ThreadHandlerCollection<PropertyChangedEventHandler> PropertyChangeEvents
         {
             get
             {
                 if (_propertyChangedEvents == null)
-                    _propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection>(() => new ThreadHandlerCollection(SynchronizationContext.Current), true);
+                    _propertyChangedEvents = new ThreadLocal<ThreadHandlerCollection<PropertyChangedEventHandler>>(() =>
+                        new ThreadHandlerCollection<PropertyChangedEventHandler>(SynchronizationContext.Current), true);
 
                 try
                 {

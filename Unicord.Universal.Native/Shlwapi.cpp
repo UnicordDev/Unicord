@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Shlwapi.h"
 #include "Shlwapi.g.cpp"
+#include <Windows.h>
 
 namespace winrt::Unicord::Universal::Native::implementation {
 

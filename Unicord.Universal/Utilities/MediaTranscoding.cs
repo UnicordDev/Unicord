@@ -1,5 +1,6 @@
 ﻿using Microsoft.AppCenter.Analytics;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Unicord.Universal;
@@ -17,14 +18,14 @@ namespace Unicord.Universal.Utilities
 {
     internal static class MediaTranscoding
     {
-        public static async Task<bool> TryTranscodeVideoAsync(IStorageFile input, IStorageFile output, bool hq, IProgress<double?> progress, CancellationToken token = default)
+        public static async Task<bool> TryTranscodeVideoAsync(IStorageFile input, IStorageFile output, IProgress<double?> progress, CancellationToken token = default)
         {
             try
             {
                 Analytics.TrackEvent("MediaTranscoding_VideoTranscodeRequested");
 
                 var props = await (input as IStorageItemProperties).Properties.GetVideoPropertiesAsync();
-                var profile = CreateVideoEncodingProfileFromProps(hq, props);
+                var profile = CreateVideoEncodingProfileFromProps(props);
 
                 return await TryTranscodeMediaAsync(input, output, profile, progress, token);
             }
@@ -108,17 +109,16 @@ namespace Unicord.Universal.Utilities
             return false;
         }
 
-        public static MediaEncodingProfile CreateVideoEncodingProfileFromProps(bool hq, VideoProperties props)
+        public static MediaEncodingProfile CreateVideoEncodingProfileFromProps(VideoProperties props)
         {
             var width = (double)props.Width;
             var height = (double)props.Height;
-            var bitrate = hq ? (uint)2_000_000 : 1_115_000;
 
             double maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
             double maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
-            bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, bitrate);
+            var bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, 1_115_000u);
 
             if (width == 0)
                 width = maxWidth;
@@ -127,11 +127,7 @@ namespace Unicord.Universal.Utilities
 
             var profile = new MediaEncodingProfile()
             {
-                Container = new ContainerEncodingProperties()
-                {
-                    Subtype = MediaEncodingSubtypes.Mpeg4
-                },
-
+                Container = new ContainerEncodingProperties() { Subtype = MediaEncodingSubtypes.Mpeg4 },
                 Video = new VideoEncodingProperties()
                 {
                     Width = (uint)(Math.Round(width / 2.0) * 2),
@@ -139,7 +135,6 @@ namespace Unicord.Universal.Utilities
                     Subtype = MediaEncodingSubtypes.H264,
                     Bitrate = bitrate
                 },
-
                 Audio = new AudioEncodingProperties()
                 {
                     Bitrate = App.RoamingSettings.Read(AUDIO_BITRATE, 192u),

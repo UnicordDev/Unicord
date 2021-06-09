@@ -59,6 +59,7 @@ namespace Unicord.Universal.Models
 
     public class ChannelPermissionEditViewModel : ViewModelBase
     {
+        private DiscordChannel _channel;
         private DiscordOverwrite _overwrite;
         private ResourceLoader _resourceLoader;
 
@@ -89,8 +90,9 @@ namespace Unicord.Universal.Models
             Permissions.MoveMembers
         };
 
-        public ChannelPermissionEditViewModel(DiscordOverwrite overwrite)
+        public ChannelPermissionEditViewModel(DiscordChannel channel, DiscordOverwrite overwrite)
         {
+            _channel = channel;
             _overwrite = overwrite;
             _resourceLoader = ResourceLoader.GetForViewIndependentUse("Permissions");
 
@@ -99,6 +101,9 @@ namespace Unicord.Universal.Models
             Text = PERMISSION_GROUP_TEXT.Select(p => new ChannelPermissionViewModel(p, overwrite, _resourceLoader)).ToList();
             Voice = PERMISSION_GROUP_VOICE.Select(p => new ChannelPermissionViewModel(p, overwrite, _resourceLoader)).ToList();
         }
+
+        public bool IsTextChannel => _channel.Type == ChannelType.Text || _channel.Type == ChannelType.News;
+        public bool IsVoiceChannel => _channel.Type == ChannelType.Voice;
 
         public List<ChannelPermissionViewModel> General { get; }
         public List<ChannelPermissionViewModel> Membership { get; }

@@ -27,7 +27,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
-using GuidAttribute = System.Runtime.InteropServices.GuidAttribute;
 
 namespace Unicord.Universal
 {
@@ -164,7 +163,7 @@ namespace Unicord.Universal
             using (var bmp = await (await dataPackageView.GetBitmapAsync()).OpenReadAsync())
             {
                 var decoder = await BitmapDecoder.CreateAsync(bmp);
-                using (var softwareBmp = await decoder.GetSoftwareBitmapAsync())
+                using (var softwareBmp = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight))
                 {
                     var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
                     encoder.SetSoftwareBitmap(softwareBmp);
@@ -377,6 +376,11 @@ namespace Unicord.Universal
                 Emoji = await Task.Run(() => JsonConvert.DeserializeObject<Emoji[]>(emojiList));
             }
         }
+
+        public static bool IsText(this DiscordChannel channel) => 
+            channel.Type == ChannelType.Text || channel.Type == ChannelType.News || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group;
+        public static bool IsVoice(this DiscordChannel channel) =>
+            channel.Type == ChannelType.Voice || channel.Type == ChannelType.Stage;
 
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
         public static int UploadLimit(this DiscordUser user) =>

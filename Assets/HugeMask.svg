@@ -1,1 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 128 128" width="128pt" height="128pt"><defs><clipPath id="_clipPath_HwUUHThiXFvuLC2ocvCTKSKuPwTDMAko"><rect width="128" height="128"/></clipPath></defs><g clip-path="url(#_clipPath_HwUUHThiXFvuLC2ocvCTKSKuPwTDMAko)"><path d=" M 122.843 89.162 C 126.166 81.441 128 72.933 128 64 C 128 28.677 99.323 0 64 0 C 28.677 0 0 28.677 0 64 C 0 99.323 28.677 128 64 128 C 72.933 128 81.441 126.166 89.162 122.843 C 83.58 118.456 80 111.643 80 104 C 80 90.754 90.754 80 104 80 C 111.643 80 118.456 83.58 122.843 89.162 Z " fill-rule="evenodd" fill="rgb(0,0,0)"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generator: Gravit.io -->
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 128 128" width="128pt" height="128pt">
+    <defs>
+        <clipPath id="_clipPath_HwUUHThiXFvuLC2ocvCTKSKuPwTDMAko">
+            <rect width="128" height="128"/>
+        </clipPath>
+    </defs>
+    <g clip-path="url(#_clipPath_HwUUHThiXFvuLC2ocvCTKSKuPwTDMAko)">
+        <path d=" M 122.843 89.162 C 126.166 81.441 128 72.933 128 64 C 128 28.677 99.323 0 64 0 C 28.677 0 0 28.677 0 64 C 0 99.323 28.677 128 64 128 C 72.933 128 81.441 126.166 89.162 122.843 C 83.58 118.456 80 111.643 80 104 C 80 90.754 90.754 80 104 80 C 111.643 80 118.456 83.58 122.843 89.162 Z " fill-rule="evenodd" fill="rgb(0,0,0)"/>
+    </g>
+</svg>

@@ -7,21 +7,30 @@
     xmlns:wam="using:Unicord.Universal.Controls"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts" xmlns:emoji="using:Unicord.Universal.Controls.Emoji">
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts" xmlns:emoji="using:Unicord.Universal.Controls.Emoji" xmlns:converters="using:Unicord.Universal.Converters">
 
     <DataTemplate x:Key="DefaultReactionTemplate">
         <ToggleButton x:Name="ReactionToggleButton" 
                       ToolTipService.ToolTip="{Binding Emoji.Name}" 
                       IsChecked="{Binding IsMe}"
-                      Padding="0" 
-                      BorderThickness="2">
+                      Padding="1"
+                      BorderThickness="1">
+            <ToggleButton.Resources>
+                <SolidColorBrush x:Key="ToggleButtonBackground" Color="{ThemeResource SystemListLowColor}" Opacity="0.66"/>
+                <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="{ThemeResource SystemListLowColor}" />
+                <SolidColorBrush x:Key="ToggleButtonBorderBrushPointerOver" Color="{ThemeResource SystemListMediumColor}" />
+                <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{ThemeResource SystemAccentColor}" Opacity="0.66"/>
+                <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked" Color="{ThemeResource SystemAccentColorLight1}" />
+                <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{ThemeResource SystemAccentColor}" />
+                <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed" Color="{ThemeResource SystemAccentColorLight1}" />
+            </ToggleButton.Resources>
             <Grid Margin="2,0,4,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="18"/>
+                    <ColumnDefinition MinWidth="18" Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <emoji:EmojiControl Emoji="{Binding Emoji}" Size="18"/>
+                <emoji:EmojiControl Emoji="{Binding Emoji}" Size="18" />
                 <TextBlock Grid.Column="1" Margin="8,0,0,0" Text="{Binding Count}" FontSize="12" VerticalAlignment="Center"/>
             </Grid>
         </ToggleButton>
@@ -37,6 +46,105 @@
 
     <DataTemplate x:Key="DefaultStickerTemplate">
         <local:StickerControl Sticker="{Binding}" />
+    </DataTemplate>
+
+    <converters:ComponentTemplateSelector x:Key="ComponentTemplateSelector"
+                                          ActionRowTemplate="{StaticResource ActionRowComponentTemplate}"
+                                          PrimaryButtonTemplate="{StaticResource PrimaryButtonComponentTemplate}"
+                                          SecondaryButtonTemplate="{StaticResource SecondaryButtonComponentTemplate}"
+                                          SuccessButtonTemplate="{StaticResource SuccessButtonComponentTemplate}"
+                                          DangerButtonTemplate="{StaticResource DangerButtonComponentTemplate}"
+                                          LinkButtonTemplate="{StaticResource LinkButtonComponentTemplate}"
+                                          UnknownTemplate="{StaticResource FallbackComponentTemplate}"/>
+    
+    <DataTemplate x:Key="ActionRowComponentTemplate">
+        <ItemsControl ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                      ItemsSource="{Binding Components}" Margin="0,4,0,0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ButtonComponentContentTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <emoji:EmojiControl Grid.Column="0" Emoji="{Binding Emoji}" Size="16" Visibility="{Binding Emoji, Converter={StaticResource HideOnNullConverter}}" />
+            
+            <TextBlock Grid.Column="1" Text="{Binding Label}" Padding="12,0" Visibility="{Binding Label, Converter={StaticResource BoolVisibilityConverter}}"/>
+            
+            <TextBlock Grid.Column="2" 
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                       FontSize="16" 
+                       VerticalAlignment="Center"
+                       Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}">&#xE8A7;</TextBlock>
+        </Grid>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="PrimaryButtonComponentTemplate">
+        <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Style="{ThemeResource AccentButtonStyle}"
+                ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="SecondaryButtonComponentTemplate">
+        <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="SuccessButtonComponentTemplate">
+        <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
+            <Button.Resources>
+                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
+                <SolidColorBrush x:Key="ButtonForegroundPressed" Color="White"/>
+                
+                <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource SuccessColour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrush" Color="{ThemeResource SuccessColour}"/>
+
+                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SuccessLight1Colour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{ThemeResource SuccessLight1Colour}"/>
+
+                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SuccessDark1Colour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{ThemeResource SuccessDark1Colour}"/>
+            </Button.Resources>
+        </Button>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="DangerButtonComponentTemplate">
+        <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
+            <Button.Resources>
+                <SolidColorBrush x:Key="ButtonForeground" Color="{ThemeResource DangerForegroundColor}"/>
+                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{ThemeResource DangerForegroundColor}"/>
+                <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{ThemeResource DangerForegroundColor}"/>
+                
+                <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource DangerColour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrush" Color="{ThemeResource DangerColour}"/>
+
+                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource DangerLight1Colour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{ThemeResource DangerLight1Colour}"/>
+
+                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource DangerDark1Colour}"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{ThemeResource DangerDark1Colour}"/>
+            </Button.Resources>
+        </Button>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="LinkButtonComponentTemplate">
+        <Button MinWidth="68" BorderThickness="0" Padding="12,8"
+                ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FallbackComponentTemplate">
+        <TextBlock Foreground="{ThemeResource ErrorTextForegroundBrush}" Text="This component is broken! Yell at me!" />
     </DataTemplate>
 
     <Style TargetType="local:StickerControl">
@@ -116,7 +224,7 @@
                             <flyouts:MessageContextFlyout />
                         </Border.ContextFlyout>-->
 
-                        <Grid DataContext="{TemplateBinding Message}">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -155,7 +263,7 @@
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                                        Channel="{Binding Channel}"
                                                        Text="{Binding ReferencedMessage.Content}" 
-                                                       IsTextSelectionEnabled="False"
+                                                       IsTextSelectionEnabled="True"
                                                        VerticalAlignment="Center"
                                                        Margin="6,0" />
 
@@ -172,7 +280,7 @@
                                      Height="36"
                                      VerticalAlignment="Top">
                                     <Ellipse.Fill>
-                                        <ImageBrush>
+                                        <ImageBrush x:Name="ProfileImageBrush">
                                             <ImageBrush.ImageSource>
                                                 <BitmapImage DecodePixelWidth="36"
                                                          DecodePixelHeight="36"
@@ -203,26 +311,31 @@
                                                            Channel="{Binding Channel}"
                                                            Text="{Binding Content}" 
                                                            AllowHugeEmoji="True"
-                                                           IsTextSelectionEnabled="False" 
+                                                           IsTextSelectionEnabled="True" 
                                                            WrapCodeBlock="True" 
                                                            Margin="0,0,2,0" />
 
                                     <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
 
+                                    <ItemsControl x:Name="Components"
+                                              ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                              ItemsSource="{Binding Components}"
+                                              HorizontalAlignment="Left"/>
+                                    
                                     <ItemsControl x:Name="Embeds"
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
-                                              ItemsSource="{Binding Embeds}"
-                                                HorizontalAlignment="Left"/>
+                                                  ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                                  ItemsSource="{Binding Embeds}"
+                                                  HorizontalAlignment="Left"/>
 
                                     <ItemsControl x:Name="Attachments"
                                               ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
                                               ItemsSource="{Binding Attachments}"
-                                                HorizontalAlignment="Left"/>
+                                              HorizontalAlignment="Left"/>
 
                                     <ItemsControl x:Name="Stickers"
                                               ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
                                               ItemsSource="{Binding Stickers}"
-                                                HorizontalAlignment="Left"/>
+                                              HorizontalAlignment="Left"/>
 
                                     <ItemsControl x:Name="Reactions"
                                               Margin="0,4,0,0"
@@ -343,7 +456,7 @@
                                      Width="24"
                                      Height="24">
                                     <Ellipse.Fill>
-                                        <ImageBrush>
+                                        <ImageBrush x:Name="ProfileImageBrush">
                                             <ImageBrush.ImageSource>
                                                 <BitmapImage DecodePixelWidth="24"
                                                          DecodePixelHeight="24"

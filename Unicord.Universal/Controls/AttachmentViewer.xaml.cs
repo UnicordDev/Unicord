@@ -64,7 +64,7 @@ namespace Unicord.Universal.Controls
             }
 
             var url = Attachment.Url;
-            var fileExtension = Path.GetExtension(url);
+            var fileExtension = Path.GetExtension(url).ToLowerInvariant();
 
             if (_mediaExtensions.Contains(fileExtension))
             {
@@ -93,8 +93,17 @@ namespace Unicord.Universal.Controls
 
                 mainGrid.Content = mediaPlayer;
 
-                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
-                _timer.Tick += _timer_Tick;
+                detailsGrid.Visibility = Visibility.Collapsed;
+            }
+            else if (fileExtension == ".svg")
+            {
+                var source = new SvgImageSource(new Uri(Attachment.Url)) { RasterizePixelWidth = 640 };
+                var image = new Image();
+                image.Source = source;
+                image.Stretch = Stretch.Uniform;
+                mainGrid.Content = image;
+
+                detailsGrid.Visibility = Visibility.Collapsed;
             }
             else if (Attachment.Height != 0 && Attachment.Width != 0)
             {
@@ -108,8 +117,7 @@ namespace Unicord.Universal.Controls
                 imageElement.Tapped += Image_Tapped;
                 mainGrid.Content = imageElement;
 
-                _timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(3) };
-                _timer.Tick += _timer_Tick;
+                detailsGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -118,6 +126,7 @@ namespace Unicord.Universal.Controls
                 grid.PointerExited -= Grid_PointerExited;
             }
         }
+
 
         protected override Size MeasureOverride(Size constraint)
         {
@@ -154,9 +163,6 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            //var mediaPlayer = mainGrid.FindChild<MediaPlayerControl>();
-            //mediaPlayer?.meda.Pause();
-
             mainGrid.Content = null;
             _timer?.Stop();
         }

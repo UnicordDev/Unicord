@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Unicord.Universal.Controls"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged"
-    MaxWidth="1600" MaxHeight="900">
+    mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged">
 
     <Page.Resources>
         <ExponentialEase x:Key="Enter" Exponent="7" EasingMode="EaseOut" />
@@ -78,44 +77,48 @@
                     <TextBlock x:Uid="/VideoEditor/VideoEditorHeader" Grid.Column="1" Style="{ThemeResource BaseTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     <Button x:Name="acceptButton" Grid.Column="2" Style="{ThemeResource IconButtonStyle}" Click="AcceptButton_Click">&#xE8FB;</Button>
                 </Grid>
+                
                 <Grid Grid.Row="1" Margin="0">
                     <MediaPlayerElement x:Name="mediaElement" Stretch="Uniform"></MediaPlayerElement>
-                    <Grid x:Name="selectorGrid" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}" VerticalAlignment="Bottom" Grid.Row="2" Padding="8">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="playPauseButton" Click="PlayPauseButton_Click"  Style="{ThemeResource IconButtonStyle}" Content="&#xE768;" Margin="0,0,8,0"/>
-                            <TextBlock x:Name="startPointText" Text="00:00" VerticalAlignment="Center" Grid.Column="1" />
-                            <controls:RangeSelector VerticalAlignment="Center" x:Name="rangeSelector" Value="0.5" Grid.Column="2" StepFrequency="0.1" ValueChanged="RangeSelector_ValueChanged" RangeChanged="RangeSelector_RangeChanged" Grid.Row="2" Margin="8,0" />
-                            <TextBlock x:Name="endPointText" Text="00:00" Grid.Column="3" VerticalAlignment="Center"/>
-
-                            <Button Grid.Column="4" Margin="8,0,0,0" Style="{ThemeResource IconButtonStyle}" Content="&#xE767;">
-                                <Button.Flyout>
-                                    <Flyout x:Name="VolumeFlyout">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button x:Name="AudioMuteButton" Click="AudioMuteButton_Click" Style="{ThemeResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
-                                                <SymbolIcon x:Name="AudioMuteSymbol" Symbol="Volume"/>
-                                            </Button>
-                                            <Slider x:Name="VolumeSlider" HorizontalAlignment="Center" Value="85" ValueChanged="VolumeSlider_ValueChanged" IsThumbToolTipEnabled="False" Margin="0" VerticalAlignment="Center" Width="{ThemeResource MTCHorizontalVolumeSliderWidth}"/>
-                                            <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{ThemeResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
-                                        </StackPanel>
-                                    </Flyout>
-                                </Button.Flyout>
-                            </Button>
-                        </Grid>
-                    </Grid>
                 </Grid>
 
+                <Grid x:Name="selectorGrid" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}" VerticalAlignment="Bottom" Grid.Row="2" Padding="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="playPauseButton" Click="PlayPauseButton_Click" Style="{ThemeResource IconButtonStyle}" Content="&#xE768;" Margin="0,0,2,0"/>
+                    <Button x:Name="snapStartButton" Click="snapStartButton_Click" Style="{ThemeResource IconButtonStyle}" Content="&#xEDE1;" Grid.Column="1"/>
+
+                    <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Grid.Column="2">
+                        <Run x:Name="playheadPositionText" Text="00:00" />/<Run x:Name="startPointText" Text="00:00" />
+                    </TextBlock>
+                    <controls:RangeSelector VerticalAlignment="Center" x:Name="rangeSelector" Value="0.5" Grid.Column="3" StepFrequency="0.1" ValueChanged="RangeSelector_ValueChanged" RangeChanged="OnRangeChanged" Grid.Row="2" Margin="8,0" />
+                    <TextBlock x:Name="endPointText" Margin="0,0,8,0" Text="00:00" Grid.Column="4" VerticalAlignment="Center"/>
+                    
+                    <Button x:Name="snapEndButton" Click="snapEndButton_Click" Style="{ThemeResource IconButtonStyle}" Content="&#xEDE2;" Grid.Column="5" Margin="0,0,2,0"/>
+                    <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Content="&#xE767;">
+                        <Button.Flyout>
+                            <Flyout x:Name="VolumeFlyout">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="AudioMuteButton" Click="AudioMuteButton_Click" Style="{ThemeResource IconButtonStyle}" HorizontalAlignment="Center" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <SymbolIcon x:Name="AudioMuteSymbol" Symbol="Volume"/>
+                                    </Button>
+                                    <Slider x:Name="VolumeSlider" HorizontalAlignment="Center" Value="85" ValueChanged="VolumeSlider_ValueChanged" IsThumbToolTipEnabled="False" Margin="0" VerticalAlignment="Center" Width="{ThemeResource MTCHorizontalVolumeSliderWidth}"/>
+                                    <TextBlock x:Name="VolumeValue" HorizontalAlignment="Center" Margin="12,0,0,0" Style="{ThemeResource MediaTextBlockStyle}" Text="{Binding Value, ElementName=VolumeSlider}" VerticalAlignment="Center" Width="24"/>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </Grid>
             </Grid>
+            
             <Grid x:Name="overlayGrid" Opacity="0" Background="{ThemeResource OverlayBackdrop}" Visibility="Collapsed">
                 <StackPanel x:Name="overlayContent" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <StackPanel.RenderTransform>

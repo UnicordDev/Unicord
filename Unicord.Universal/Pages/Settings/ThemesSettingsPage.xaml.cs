@@ -80,7 +80,7 @@ namespace Unicord.Universal.Pages.Settings
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            App.LocalSettings.Save(SELECTED_THEME_NAMES, Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).ToList());
+            App.LocalSettings.Save(SELECTED_THEME_NAMES, Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Distinct().ToList());
 
             if (!Model.IsDirty)
                 return;
@@ -185,7 +185,7 @@ namespace Unicord.Universal.Pages.Settings
                 Model.SelectedThemes.Remove(item);
             }
 
-            var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Reverse().ToList();
+            var names = Model.SelectedThemes.OrderBy(t => Model.AvailableThemes.IndexOf(t)).Select(s => s.NormalisedName).Reverse().Distinct().ToList();
             App.LocalSettings.Save(SELECTED_THEME_NAMES, names);
 
             Model.IsDirty = true;

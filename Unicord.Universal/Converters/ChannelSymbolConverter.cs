@@ -7,26 +7,36 @@ namespace Unicord.Universal.Converters
 {
     class ChannelSymbolConverter : IValueConverter
     {
+        public string NSFWGlyph { get; set; } = "\xE7BA";
+        public string TextGlyph { get; set; } = "\xE8BD";
+        public string VoiceGlyph { get; set; } = "\xE767";
+        public string NewsGlyph { get; set; } = "\xE789";
+        public string StoreGlyph { get; set; } = "\xE719";
+        public string StageGlyph { get; set; } = "\xE93E";
+        public string UnknownGlyph { get; set; } = "\xE11B";
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value is DiscordChannel c)
             {
                 if (c.IsNSFW)
                 {
-                    return "\xE7BA";
+                    return NSFWGlyph;
                 }
 
                 var type = c.Type;
                 switch (type)
                 {
                     case ChannelType.Text:
-                        return "\xE8BD";
+                        return TextGlyph;
                     case ChannelType.Voice:
-                        return "\xE767";
+                        return VoiceGlyph;
                     case ChannelType.News:
-                        return "\xE789";
+                        return NewsGlyph;
                     case ChannelType.Store:
-                        return "\xE719";
+                        return StoreGlyph;
+                    case ChannelType.Stage:
+                        return StageGlyph;
                     default:
                         return "";
                 }

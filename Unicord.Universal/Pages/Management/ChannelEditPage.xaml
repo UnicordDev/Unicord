@@ -8,8 +8,8 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
+    NavigationCacheMode="Disabled"
     xmlns:pages="using:Unicord.Universal.Pages.Management.Channel"
-    MaxWidth="1024" MaxHeight="768"
     mc:Ignorable="d" Loaded="Page_Loaded">
     <Page.Resources>
         <Style x:Key="CustomPaneToggleButtonStyle" BasedOn="{StaticResource IconButtonStyle}" TargetType="Button">

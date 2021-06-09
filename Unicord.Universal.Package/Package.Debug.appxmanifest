@@ -10,7 +10,7 @@
          xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 desktop desktop5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord.Canary" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="1.2.7.0" />
+  <Identity Name="24101WamWooWamRD.Unicord.Canary" Publisher="CN=Wan Kerr Co. Ltd." Version="1.7.1.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -136,6 +136,7 @@
     <uap:Capability Name="voipCall" />
     <uap:Capability Name="phoneCall" />
     <rescap:Capability Name="runFullTrust"/>
+    <rescap:Capability Name="confirmAppClose"/>
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
   </Capabilities>

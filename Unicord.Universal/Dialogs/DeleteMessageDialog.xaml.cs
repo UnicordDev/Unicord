@@ -20,7 +20,7 @@ namespace Unicord.Universal.Dialogs
 
         private static void OnMessageSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as ContentDialog).DataContext = e.NewValue;
+            (d as DeleteMessageDialog).MessageControl.Message = e.NewValue as DiscordMessage;
         }
 
         public DeleteMessageDialog()

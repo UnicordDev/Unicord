@@ -3,10 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:wNone="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 32)"
-    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
@@ -121,7 +119,7 @@
         </Storyboard>
 
         <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
-            <messages:MessageControl Message="{x:Bind}" />
+            <messages:MessageControl Message="{x:Bind}" Background="Transparent" />
         </DataTemplate>
 
         <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
@@ -398,8 +396,6 @@
                                   SelectionChanged="MessageList_SelectionChanged"
                                   ShowsScrollingPlaceholders="False"
                                   SingleSelectionFollowsFocus="False"
-                                  ScrollViewer.HorizontalScrollMode="Disabled"
-                                  ScrollViewer.IsDeferredScrollingEnabled ="False"
                                   SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>

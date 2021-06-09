@@ -153,6 +153,9 @@ namespace Unicord.Universal.Pages
 
         private async void OnNavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
+            if (_browser == null)
+                return;
+
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 BrowserProgress.IsIndeterminate = false;

@@ -26,8 +26,8 @@ namespace Unicord.Universal.Pages.Management.Channel
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is DiscordOverwrite overwrite)
-                DataContext = new ChannelPermissionEditViewModel(overwrite);
+            if (e.Parameter is ChannelPermissionEditViewModel model)
+                DataContext = model;
         }
     }
 }

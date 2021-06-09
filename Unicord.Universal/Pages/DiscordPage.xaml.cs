@@ -52,6 +52,7 @@ namespace Unicord.Universal.Pages
             Model = DataContext as DiscordPageModel;
 
             _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
+            _helper.IsEnabled = false;
 
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
@@ -138,6 +139,9 @@ namespace Unicord.Universal.Pages
                         App.Discord.CreateMockUser("Unicord", "CORD"));
                     ShowNotification(message);
                 }
+
+                //var helper = SwipeOpenService.GetForCurrentView();
+                //helper.AddAdditionalElement(SwipeHelper);
 
                 var notificationService = BackgroundNotificationService.GetForCurrentView();
                 await notificationService.StartupAsync();
@@ -391,7 +395,7 @@ namespace Unicord.Universal.Pages
 
         private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _helper.IsEnabled = e.NewSize.Width <= 768;
+            // _helper.IsEnabled = e.NewSize.Width <= 768;
         }
 
         private void ClydeLogo_Tapped(object sender, TappedRoutedEventArgs e)

@@ -48,7 +48,7 @@ namespace Unicord.Universal.Shared
                 willNotify = false;
             }
 
-            if (message.Channel.NotificationMuted)
+            if (message.Channel.NotificationMuted || !message.Channel.Unread)
                 willNotify = false;
 
             return willNotify;

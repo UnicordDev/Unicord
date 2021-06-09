@@ -21,6 +21,8 @@ using Windows.Media.Editing;
 using Windows.Media.Playback;
 using Windows.Media.Transcoding;
 using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -45,7 +47,9 @@ namespace Unicord.Universal.Pages
         private bool _ready;
         private bool _succeeded;
         private StorageFile _tempFile;
-        private IAsyncOperationWithProgress<TranscodeFailureReason, double> _renderTask;
+        private IRandomAccessStream _tempStream;
+        private IAsyncActionWithProgress<double> _renderTask;
+
         private bool _playing;
         private bool _wasPlaying;
         private bool _playbackSkip;
@@ -54,6 +58,9 @@ namespace Unicord.Universal.Pages
         private double _startPosition;
         private bool _createdNew;
         private ResourceLoader _strings;
+
+        public Size PreferredSize =>
+            new Size(1280, 720);
 
         public VideoEditor()
         {
@@ -69,8 +76,17 @@ namespace Unicord.Universal.Pages
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            DoCleanup();
+        }
+
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            var coreWindow = CoreWindow.GetForCurrentThread();
+            coreWindow.KeyUp += OnWindowKeyUp;
+
+
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
@@ -113,6 +129,7 @@ namespace Unicord.Universal.Pages
                 }
             }
 
+
             if (_model.Composition.Clips.Count == 0)
             {
                 var clip = await MediaClip.CreateFromFileAsync(_model.StorageFile);
@@ -129,11 +146,17 @@ namespace Unicord.Universal.Pages
             rangeSelector.RangeMin = _model.Clip.TrimTimeFromStart.TotalSeconds;
             rangeSelector.RangeMax = _model.Clip.OriginalDuration.TotalSeconds - _model.Clip.TrimTimeFromEnd.TotalSeconds;
             rangeSelector.Value = rangeSelector.RangeMin;
-            startPointText.Text = _model.Clip.TrimTimeFromStart.ToString("mm\\:ss");
-            endPointText.Text = (_model.Clip.OriginalDuration - _model.Clip.TrimTimeFromEnd).ToString("mm\\:ss");
+
+            startPointText.Text = FormatTimeSpan(_model.Clip.TrimTimeFromStart);
+            endPointText.Text = FormatTimeSpan(_model.Clip.OriginalDuration - _model.Clip.TrimTimeFromEnd);
 
             _ready = true;
             UpdateMediaElementSource();
+        }
+
+        public string FormatTimeSpan(TimeSpan t)
+        {
+            return t.Hours > 0 ? t.ToString("hh\\:mm\\:ss") : t.ToString("mm\\:ss");
         }
 
         public void UpdateMediaElementSource()
@@ -149,7 +172,6 @@ namespace Unicord.Universal.Pages
             }
 
             _mediaStreamSource = _model.Composition.GeneratePreviewMediaStreamSource(Math.Min((int)mediaElement.ActualWidth, 1280), Math.Min((int)mediaElement.ActualHeight, 720));
-
             if (_mediaStreamSource != null)
             {
                 mediaElement.Source = MediaSource.CreateFromMediaStreamSource(_mediaStreamSource);
@@ -158,7 +180,6 @@ namespace Unicord.Universal.Pages
                 mediaElement.MediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
             }
         }
-
 
         private async void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -181,7 +202,7 @@ namespace Unicord.Universal.Pages
             ResizePreviewTimer();
         }
 
-        private void RangeSelector_RangeChanged(object sender, Controls.RangeChangedEventArgs e)
+        private void OnRangeChanged(object sender, Controls.RangeChangedEventArgs e)
         {
             if (!_ready)
             {
@@ -221,8 +242,8 @@ namespace Unicord.Universal.Pages
                     break;
             }
 
-            startPointText.Text = TimeSpan.FromSeconds(Math.Max(0, rangeSelector.RangeMin)).ToString("mm\\:ss");
-            endPointText.Text = TimeSpan.FromSeconds(Math.Min(_model.Clip.OriginalDuration.TotalSeconds, rangeSelector.RangeMax)).ToString("mm\\:ss");
+            startPointText.Text = FormatTimeSpan(TimeSpan.FromSeconds(Math.Max(0, rangeSelector.RangeMin)));
+            endPointText.Text = FormatTimeSpan(TimeSpan.FromSeconds(Math.Min(_model.Clip.OriginalDuration.TotalSeconds, rangeSelector.RangeMax)));
 
             ResizePreviewTimer();
         }
@@ -248,7 +269,8 @@ namespace Unicord.Universal.Pages
 
             _scrubSkip = true;
 
-            mediaElement.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(Math.Min(Math.Max(0, e - rangeSelector.RangeMin), mediaElement.MediaPlayer.PlaybackSession.NaturalDuration.TotalSeconds));
+            var playbackSession = mediaElement.MediaPlayer.PlaybackSession;
+            playbackSession.Position = TimeSpan.FromSeconds(Math.Min(Math.Max(0, e - rangeSelector.RangeMin), playbackSession.NaturalDuration.TotalSeconds));
             RestartPlayTimer();
         }
 
@@ -265,19 +287,32 @@ namespace Unicord.Universal.Pages
 
             Analytics.TrackEvent("VideoEditor_ExportStarted");
 
+            await SaveComposition();
+
+            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = App.RoamingSettings.Read(Constants.VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default) };
             var props = await (_model.StorageFile as StorageFile).Properties.GetVideoPropertiesAsync();
-            var profile = MediaTranscoding.CreateVideoEncodingProfileFromProps(true, props);
+            var profile = MediaTranscoding.CreateVideoEncodingProfileFromProps(props);
+            var source = _model.Composition.GenerateMediaStreamSource();
 
             if (_tempFile == null)
             {
                 _tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(Path.ChangeExtension(_model.StorageFile.Name, ".mp4"), CreationCollisionOption.GenerateUniqueName);
             }
 
-            await SaveComposition();
+            if (_tempStream != null)
+                _tempStream.Dispose();
 
-            _renderTask = _model.Composition.RenderToFileAsync(_tempFile, MediaTrimmingPreference.Precise, profile);
+            _tempStream = await _tempFile.OpenAsync(FileAccessMode.ReadWrite);
+            var result = await transcoder.PrepareMediaStreamSourceTranscodeAsync(source, _tempStream, profile);
+            if (!result.CanTranscode)
+            {
+                await UIUtilities.ShowErrorDialogAsync("Unable to Transcode!", $"Returned {result.FailureReason}");
+                return;
+            }
+
+            _renderTask = result.TranscodeAsync();
             _renderTask.Progress = OnProgress;
-            _renderTask.Completed = OnCompleted;
+            _renderTask.Completed += OnCompleted;
         }
 
         private async Task SaveComposition()
@@ -292,7 +327,7 @@ namespace Unicord.Universal.Pages
             await _model.Composition.SaveAsync(_model.CompositionFile);
         }
 
-        public async void OnProgress(IAsyncOperationWithProgress<TranscodeFailureReason, double> info, double progress)
+        public async void OnProgress(IAsyncActionWithProgress<double> info, double progress)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -301,48 +336,62 @@ namespace Unicord.Universal.Pages
             });
         }
 
-        private async void OnCompleted(IAsyncOperationWithProgress<TranscodeFailureReason, double> info, AsyncStatus status)
+        private async void OnCompleted(IAsyncActionWithProgress<double> info, AsyncStatus status)
         {
             Analytics.TrackEvent("VideoEditor_ExportFinished");
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                try
+                if (status == AsyncStatus.Canceled)
                 {
-                    var results = info.GetResults();
-
-                    if (status == AsyncStatus.Canceled)
-                    {
-                        return;
-                    }
-
-                    if (results != TranscodeFailureReason.None || status != AsyncStatus.Completed)
-                    {
-                        progressText.Visibility = Visibility.Collapsed;
-                        completedText.Text = "\xE711";
-                        completedText.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        progressText.Visibility = Visibility.Collapsed;
-                        completedText.Text = "\xE8FB";
-                        completedText.Visibility = Visibility.Visible;
-                        _succeeded = true;
-                    }
+                    CloseProcessingOverlay.Begin();
+                    return;
                 }
-                catch
+
+                if (status != AsyncStatus.Completed)
                 {
                     progressText.Visibility = Visibility.Collapsed;
                     completedText.Text = "\xE711";
                     completedText.Visibility = Visibility.Visible;
                 }
-                finally
+                else
                 {
-                    CloseProcessingOverlay.Begin();
+                    progressText.Visibility = Visibility.Collapsed;
+                    completedText.Text = "\xE8FB";
+                    completedText.Visibility = Visibility.Visible;
+                    _succeeded = true;
                 }
+
+                CloseProcessingOverlay.Begin();
             });
 
+            _tempStream.Dispose();
+            _tempStream = null;
             _renderTask = null;
         }
+
+        private void OnWindowKeyUp(CoreWindow sender, KeyEventArgs e)
+        {
+            var playbackSession = mediaElement.MediaPlayer.PlaybackSession;
+            if (playbackSession == null)
+                return;
+
+            var delta = 10d;
+            if (sender.GetKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
+                delta = 1;
+
+            if (e.VirtualKey == VirtualKey.Left)
+                playbackSession.Position = TimeSpan.FromSeconds(Math.Max(playbackSession.Position.TotalSeconds - delta, 0));
+
+            if (e.VirtualKey == VirtualKey.Right)
+                playbackSession.Position = TimeSpan.FromSeconds(Math.Min(playbackSession.Position.TotalSeconds + delta, playbackSession.NaturalDuration.TotalSeconds));
+
+            if (e.VirtualKey == VirtualKey.Space)
+            {
+                e.Handled = true;
+                TogglePlayPause();
+            }
+        }
+
 
         private async void CloseProcessingOverlay_Completed(object sender, object e)
         {
@@ -351,10 +400,13 @@ namespace Unicord.Universal.Pages
             if (_succeeded && _tempFile != null)
             {
                 await _model.UpdateFromStorageFileAsync(_tempFile, isTemporary: true);
+                await _model.Parent.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    var channelModel = (_model.Parent.DataContext as ChannelViewModel);
+                    channelModel.FileUploads.Remove(_model);
+                    channelModel.FileUploads.Add(_model);
+                });
 
-                var channelModel = (_model.Parent.DataContext as ChannelViewModel);
-                channelModel.FileUploads.Remove(_model);
-                channelModel.FileUploads.Add(_model);
 
                 Close();
             }
@@ -363,22 +415,36 @@ namespace Unicord.Universal.Pages
         private async void Close()
         {
             OverlayService.GetForCurrentView().CloseOverlay();
+            DoCleanup();
+        }
 
-            mediaElement.Source = null;
-            _mediaStreamSource = null;
-            _playTimer?.Stop();
-            _model = null;
-            _renderTask = null;
-            _tempFile = null;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+        private async void DoCleanup()
+        {
+            try
             {
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-                await StatusBar.GetForCurrentView().ShowAsync();
+                var window = CoreWindow.GetForCurrentThread();
+                window.KeyUp -= OnWindowKeyUp;
+
+                mediaElement.Source = null;
+                _mediaStreamSource = null;
+                _playTimer?.Stop();
+                _model = null;
+                _renderTask = null;
+                _tempFile = null;
+
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+                    await StatusBar.GetForCurrentView().ShowAsync();
+                }
+                else
+                {
+                    DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
+                Logger.LogError(ex);
             }
 
             GC.Collect();
@@ -404,7 +470,7 @@ namespace Unicord.Universal.Pages
         {
             if (_resizeTimer == null)
             {
-                _resizeTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1000) };
+                _resizeTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(500) };
                 _resizeTimer.Tick += _resizeTimer_Tick;
             }
 
@@ -461,7 +527,7 @@ namespace Unicord.Universal.Pages
             mediaElement.MediaPlayer.Pause();
         }
 
-        private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
+        private void TogglePlayPause()
         {
             if (_playing)
             {
@@ -471,6 +537,11 @@ namespace Unicord.Universal.Pages
             {
                 Play();
             }
+        }
+
+        private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePlayPause();
         }
 
         private async void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
@@ -484,7 +555,10 @@ namespace Unicord.Universal.Pages
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 _playbackSkip = true;
-                rangeSelector.Value = Math.Min(rangeSelector.RangeMin + sender.Position.TotalSeconds, rangeSelector.RangeMax);
+
+                var value = Math.Min(rangeSelector.RangeMin + sender.Position.TotalSeconds, rangeSelector.RangeMax);
+                playheadPositionText.Text = FormatTimeSpan(TimeSpan.FromSeconds(value));
+                rangeSelector.Value = value;
             });
         }
 
@@ -510,6 +584,22 @@ namespace Unicord.Universal.Pages
             {
                 mediaElement.MediaPlayer.Volume = e.NewValue / 100d;
             }
+        }
+
+        private void snapStartButton_Click(object sender, RoutedEventArgs e)
+        {
+            var old = rangeSelector.RangeMin;
+            rangeSelector.RangeMin = rangeSelector.Value;
+
+            OnRangeChanged(rangeSelector, new Controls.RangeChangedEventArgs(old, rangeSelector.RangeMin, Controls.RangeSelectorProperty.MinimumValue));
+        }
+
+        private void snapEndButton_Click(object sender, RoutedEventArgs e)
+        {
+            var old = rangeSelector.RangeMax;
+            rangeSelector.RangeMax = rangeSelector.Value;
+
+            OnRangeChanged(rangeSelector, new Controls.RangeChangedEventArgs(old, rangeSelector.RangeMax, Controls.RangeSelectorProperty.MaximumValue));
         }
     }
 }

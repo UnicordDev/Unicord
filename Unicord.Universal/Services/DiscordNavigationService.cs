@@ -57,6 +57,7 @@ namespace Unicord.Universal.Services
 
                 _discordPageModel.SelectedGuild = null;
                 _discordPageModel.IsFriendsSelected = true;
+                _discordPageModel.CurrentChannel = null;
 
                 if (_discordPageModel.PreviousDM != null && (page?.ViewModel.Channel != _discordPageModel.PreviousDM) && !skipPreviousDm)
                 {
@@ -124,10 +125,14 @@ namespace Unicord.Universal.Services
                 }
 
                 _discordPageModel.Navigating = false;
+                _discordPageModel.CurrentChannel = channel;
             }
             else if (channel?.Type == ChannelType.Voice)
             {
                 Analytics.TrackEvent("DiscordNavigationService_NavigateToVoiceChannel");
+
+                if (_discordPageModel.VoiceModel != null)
+                    await _discordPageModel.VoiceModel.DisconnectAsync();
 
                 try
                 {

@@ -14,11 +14,9 @@ namespace Unicord.Universal.Models
 {
     public class ChannelEditViewModel : NotifyPropertyChangeImpl
     {
-        private DiscordChannel _channel;
-
         public ChannelEditViewModel(DiscordChannel channel)
         {
-            _channel = channel;
+            Channel = channel;
 
             Name = channel.Name;
             Topic = channel.Topic;
@@ -50,13 +48,15 @@ namespace Unicord.Universal.Models
             }
         }
 
+        public DiscordChannel Channel { get; }
+
         public string Name { get; set; }
 
-        public bool IsText => _channel.Type == ChannelType.Text;
+        public bool IsText => Channel.Type == ChannelType.Text;
         public string Topic { get; set; }
         public bool NSFW { get; set; }
 
-        public bool IsVoice => _channel.Type == ChannelType.Voice;
+        public bool IsVoice => Channel.Type == ChannelType.Voice;
         public int Userlimit { get; set; }
         public int Bitrate { get; set; }
 
@@ -69,7 +69,7 @@ namespace Unicord.Universal.Models
 
             if (IsText)
             {
-                return _channel.ModifyAsync(m =>
+                return Channel.ModifyAsync(m =>
                 {
                     m.Name = Name;
                     m.Topic = Topic;
@@ -78,7 +78,7 @@ namespace Unicord.Universal.Models
             }
             if (IsVoice)
             {
-                return _channel.ModifyAsync(m =>
+                return Channel.ModifyAsync(m =>
                 {
                     m.Name = Name;
                     m.Userlimit = (int)Userlimit;

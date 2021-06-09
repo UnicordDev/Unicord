@@ -9,16 +9,24 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:converters="using:Unicord.Universal.Converters"
     mc:Ignorable="d">
+    <Page.Resources>
+        <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector" 
+                                            CategoryTemplate="{StaticResource ChannelListCategoryTemplate}" 
+                                            TextChannelTemplate="{StaticResource ChannelListTemplate}" 
+                                            VoiceChannelTemplate="{StaticResource ChannelListVoiceTemplate}"/>
+    </Page.Resources>
     <Grid>
         <!--<controls:SidebarSearchBox Grid.Row="1" />-->
 
         <ListView
             x:Name="channelsList"
             IsSynchronizedWithCurrentItem="False"
-            ItemTemplate="{StaticResource ChannelListTemplate}"
-            ItemsSource="{Binding ViewSource.View}"
+            SelectionMode="Single"
+            IsItemClickEnabled="True"
+            ItemTemplateSelector="{StaticResource ChannelTemplateSelector}"
+            ItemsSource="{Binding Channels}"
             ReorderMode="{Binding ReorderMode}"
             CanDrag="{Binding CanEdit}"
             CanDragItems="{Binding CanEdit}"
@@ -66,28 +74,14 @@
                     </Grid>
                 </Grid>
             </ListView.Header>
-            <ListView.GroupStyle>
-                <GroupStyle HidesIfEmpty="True">
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock
-                                FontSize="14"
-                                FontWeight="Bold"
-                                Text="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource TitleCaseConverter}}"
-                                Visibility="{Binding Key.Name, FallbackValue={Binding Key}, Converter={StaticResource HideOnNullConverter}}"
-                                Opacity="{Binding Key.Muted, Converter={StaticResource MutedConverter}}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Setters>
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
                         <Setter Property="Padding" Value="0,0" />
+                        <Setter Property="Margin" Value="0,0" />
+                        <Setter Property="MinHeight" Value="0" />
                     </Style.Setters>
                 </Style>
             </ListView.ItemContainerStyle>

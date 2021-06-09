@@ -4,16 +4,16 @@
 
 namespace winrt::Unicord::Universal::Native {
     HMODULE NativeHelpers::GetKernelModule() {
-        static HMODULE kernelModule;
+        static HMODULE __KernelModule;
 
-        if (kernelModule == nullptr) {
+        if (__KernelModule == nullptr) {
             MEMORY_BASIC_INFORMATION mbi;
             if (VirtualQuery(VirtualQuery, &mbi, sizeof(MEMORY_BASIC_INFORMATION))) {
-                kernelModule = reinterpret_cast<HMODULE>(mbi.AllocationBase);
+                __KernelModule = reinterpret_cast<HMODULE>(mbi.AllocationBase);
             }
         }
 
-        return kernelModule;
+        return __KernelModule;
     }
 
     HMODULE NativeHelpers::LoadLibrary(const std::wstring& lpLibFileName) {

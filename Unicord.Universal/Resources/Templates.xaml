@@ -178,7 +178,7 @@
                         <Grid x:Name="ElementElement" Grid.Row="1" Margin="2,2,-2,2" Padding="{TemplateBinding Padding}" Background="{TemplateBinding BorderBrush}">
                             <TextBlock x:Name="ElementText" Text="#" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}"  />
                         </Grid>
-                        <ScrollViewer x:Name="ContentElement" FontFamily="Segoe UI" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsTabStop="False" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" ZoomMode="Disabled"/>
+                        <ScrollViewer x:Name="ContentElement" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsTabStop="False" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" ZoomMode="Disabled"/>
                         <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.ColumnSpan="2" Grid.Column="1" Opacity="0.57" IsHitTestVisible="False" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" Text="{TemplateBinding PlaceholderText}" TextWrapping="{TemplateBinding TextWrapping}" TextAlignment="{TemplateBinding TextAlignment}"/>
                         <Button x:Name="DeleteButton" AutomationProperties.AccessibilityView="Raw" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" MinWidth="34" Margin="{ThemeResource HelperButtonThemePadding}" Grid.Row="1" Style="{ThemeResource DeleteButtonStyle}" VerticalAlignment="Stretch" Visibility="Collapsed"/>
                         <ContentPresenter x:Name="DescriptionPresenter" AutomationProperties.AccessibilityView="Raw"  Content="{TemplateBinding Description}" Grid.ColumnSpan="2" Grid.Column="0" Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" Grid.Row="2" x:Load="False"/>
@@ -204,24 +204,46 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ChannelListTemplate" x:DataType="entities:DiscordChannel">
-        <!--<lib:SwipeControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <lib:SwipeControl.RightItems>
-                <lib:SwipeItems>
-                    <lib:SwipeItem Text="Mute" BehaviorOnInvoked="Close"  Invoked="SwipeItem_Invoked">
-                        <lib:SwipeItem.IconSource>
-                            <lib:SymbolIconSource Symbol="Mute" />
-                        </lib:SwipeItem.IconSource>
-                    </lib:SwipeItem>
-                </lib:SwipeItems>
-            </lib:SwipeControl.RightItems>-->
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
+            <Grid Name="grid" 
+                  Margin="0,0,16,0"
+                  Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                <ToolTipService.ToolTip>
+                    <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
+                </ToolTipService.ToolTip>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Margin="0,4">
+                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="{StaticResource FluentSystemIcons}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
+
+                <Grid x:Name="unreadIndicator" x:Load="{x:Bind Unread}" MinWidth="4" Margin="0,-2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                    <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ChannelListCategoryTemplate" x:DataType="entities:DiscordChannel">
+        <Border ContextFlyout="{StaticResource ChannelContextFlyout}"
+                VerticalAlignment="Stretch" 
+                Background="Transparent" 
+                Margin="10,8,8,2"
+                Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+            <TextBlock FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontWeight="SemiBold" Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" TextWrapping="NoWrap" />           
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="entities:DiscordChannel">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Name="grid" 
-                  Margin="0,0,16,0"
+                  Margin="16,0"
                   IsHitTestVisible="True"
                   Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
                 <ToolTipService.ToolTip>
@@ -233,19 +255,15 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-
-                <Grid x:Name="unreadIndicator" x:Load="{x:Bind Unread}" MinWidth="4" Margin="0,2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlForegroundAccentBrush}">
-                    <TextBlock x:Name="mentionTextbox" VerticalAlignment="Center" Margin="2,0" x:Load="{x:Bind ReadState.MentionCount, Converter={StaticResource BoolConverter}}" Text="{x:Bind ReadState.MentionCount}" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}"/>
-                </Grid>
+                <TextBlock FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" FontFamily="{StaticResource FluentSystemIcons}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
                 <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" VerticalAlignment="Center" Grid.Column="2" Visibility="{Binding UserLimit, Converter={StaticResource BoolVisibilityConverter}}">
                     <Run Text="{Binding UserCount}"/>/<Run Text="{Binding UserLimit}"/>
                 </TextBlock>
             </Grid>
 
-            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
+            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding ConnectedUsers, Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel/>
@@ -253,7 +271,6 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </Grid>
-        <!--</lib:SwipeControl>-->
     </DataTemplate>
 
     <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
@@ -301,25 +318,35 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <!--<Canvas Margin="0,0,0,0" Width="28" Height="28">
-                <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
-                    <lib:PersonPicture.ProfilePicture>
-                        <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="28" DecodePixelHeight="28" DecodePixelType="Logical" />
-                    </lib:PersonPicture.ProfilePicture>
-                </lib:PersonPicture>
-                <Ellipse Canvas.Left="16" Canvas.Top="16" Width="14" Height="14" StrokeThickness="2" Stroke="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}">
-                    <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Recipient.Presence, Converter={StaticResource PresenceColourConverter}}"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Canvas>-->
-
+            
             <users:AvatarControl Style="{ThemeResource SmallAvatarWithPresenceStyle}" Width="32" Height="32" Source="{Binding Converter={StaticResource DMIconConverter}}" Presence="{Binding Recipient.Presence}" />
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
                 <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
                 <presence:InlinePresenceControl Presence="{Binding Recipient.Presence, Mode=OneWay}" />
+            </StackPanel>
+
+            <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource ComboBoxItemSelectedForegroundThemeBrush}" FontSize="12" VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="entities:DiscordDmChannel">
+        <Grid Padding="0,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <lib:PersonPicture Width="32" Height="32" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
+                <lib:PersonPicture.ProfilePicture>
+                    <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="32" DecodePixelType="Logical" />
+                </lib:PersonPicture.ProfilePicture>
+            </lib:PersonPicture>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
             </StackPanel>
 
             <Grid x:Name="unreadIndicator" Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}" MinWidth="4" Margin="-12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundAccentBrush}">

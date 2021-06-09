@@ -36,13 +36,13 @@
     <MenuFlyoutItem x:Name="PinFlyoutItem"
                     x:Uid="/Flyouts/Pin"
                     Command="{StaticResource PinMessageCommand}"
-                    CommandParameter="{Binding}"
+                    CommandParameter="{Binding Message}"
                     Icon="Pin"/>
 
     <MenuFlyoutItem x:Name="ReplyFlyoutItem"
                     x:Uid="/Flyouts/Reply"
                     Command="{StaticResource ReplyCommand}"
-                    CommandParameter="{Binding}">
+                    CommandParameter="{Binding Message}">
         <MenuFlyoutItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
         </MenuFlyoutItem.Icon>
@@ -74,7 +74,7 @@
                     x:Uid="/Flyouts/Delete"
                     Icon="Delete"
                     Command="{StaticResource DeleteMessageCommand}"
-                    CommandParameter="{Binding}"
+                    CommandParameter="{Binding Message}"
                     Foreground="{ThemeResource ErrorTextForegroundBrush}" />
 
     <MenuFlyoutSeparator />
@@ -82,7 +82,7 @@
     <MenuFlyoutItem x:Uid="/Flyouts/EditMode"
                     Text="Edit Mode"
                     Command="{StaticResource EditModeCommand}"
-                    CommandParameter="{Binding}">
+                    CommandParameter="{Binding Message}">
         <MenuFlyoutItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE762;" />
         </MenuFlyoutItem.Icon>
@@ -94,16 +94,16 @@
                     x:Uid="/Flyouts/Copy"
                     Icon="Copy"
                     Command="{StaticResource CopyMessageCommand}" 
-                    CommandParameter="{Binding}" />
+                    CommandParameter="{Binding Message}" />
 
     <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" 
                     Icon="Link" 
                     Command="{StaticResource CopyUrlCommand}"
-                    CommandParameter="{Binding}" />
+                    CommandParameter="{Binding Message}" />
     
     <MenuFlyoutItem x:Uid="/Flyouts/CopyID"
                     Icon="Copy" 
                     Command="{StaticResource CopyIdCommand}" 
-                    CommandParameter="{Binding}" />
+                    CommandParameter="{Binding Message}" />
 
 </MenuFlyout>

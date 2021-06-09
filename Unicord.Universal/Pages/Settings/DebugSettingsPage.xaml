@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" MaxHeight="500"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Debug"  Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,12"/>
+        <TextBlock Text="Debug" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,0,0,12"/>
         
 
     </Grid>

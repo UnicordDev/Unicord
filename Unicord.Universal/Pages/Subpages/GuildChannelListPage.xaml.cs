@@ -1,8 +1,10 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using System.Linq;
 using Unicord.Universal.Models;
 using Unicord.Universal.Services;
 using Windows.Foundation.Metadata;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -35,6 +37,14 @@ namespace Unicord.Universal.Pages.Subpages
             var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
             if (channel != null)
             {
+                if (channel.Type != ChannelType.Text && channel.Type != ChannelType.News)
+                {
+                    channelsList.SelectedItem = e.RemovedItems.FirstOrDefault();
+
+                    if (channel.Type != ChannelType.Voice)
+                        return;
+                }
+
                 var service = DiscordNavigationService.GetForCurrentView();
                 await service.NavigateAsync(channel);
             }
@@ -43,11 +53,10 @@ namespace Unicord.Universal.Pages.Subpages
         private void OnButtonClicked(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            var flyout = Flyout.GetAttachedFlyout(Header);
+            var flyout = FlyoutBase.GetAttachedFlyout(Header);
             if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
             {
-                var options = new FlyoutShowOptions();
-                options.Placement = FlyoutPlacementMode.BottomEdgeAlignedRight;
+                var options = new FlyoutShowOptions { Placement = FlyoutPlacementMode.BottomEdgeAlignedRight };
                 flyout.ShowAt(btn, options);
             }
             else

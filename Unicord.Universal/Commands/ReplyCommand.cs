@@ -26,7 +26,10 @@ namespace Unicord.Universal.Commands
         public void Execute(object parameter)
         {
             Analytics.TrackEvent("ReplyCommand_Invoked");
+
             var channelPage = Window.Current.Content.FindChild<ChannelPage>();
+            if (channelPage == null)
+                return;
 
             if (parameter is DiscordMessage message)
             {
@@ -39,6 +42,8 @@ namespace Unicord.Universal.Commands
                 if (channelPage?.ViewModel != null)
                     channelPage.ViewModel.ReplyTo = null;
             }
+
+            channelPage.FocusTextBox();
         }
     }
 }

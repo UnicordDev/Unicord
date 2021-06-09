@@ -54,7 +54,8 @@ namespace Unicord.Universal.Commands
                     if ((App.Discord.Relationships.TryGetValue(user.Id, out var rel) && rel.RelationshipType == DiscordRelationshipType.Friend) ||
                         App.Discord.Guilds.Any(g => g.Value.Members.ContainsKey(user.Id)))
                     {
-                        channel = await App.Discord.CreateDmChannelAsync(user.Id);
+                        // apparently this is bad
+                        // channel = await App.Discord.CreateDmChannelAsync(user.Id);
                     }
                 }
 

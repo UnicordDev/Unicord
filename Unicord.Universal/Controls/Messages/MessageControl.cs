@@ -5,7 +5,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Controls.Flyouts;
+using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages;
 using Windows.System;
 using Windows.UI.Core;
@@ -15,6 +18,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Controls.Messages
@@ -22,6 +27,8 @@ namespace Unicord.Universal.Controls.Messages
     public class MessageControl : Control
     {
         private bool _addedEditHandlers;
+        private ImageBrush _imageBrush;
+        private static int _handlers;
 
         #region Dependency Properties
         public DiscordMessage Message
@@ -32,6 +39,15 @@ namespace Unicord.Universal.Controls.Messages
 
         public static readonly DependencyProperty MessageProperty =
             DependencyProperty.Register("Message", typeof(DiscordMessage), typeof(MessageControl), new PropertyMetadata(null, OnPropertyChanged));
+
+        public MessageViewModel MessageViewModel
+        {
+            get { return (MessageViewModel)GetValue(MessageViewModelProperty); }
+            set { SetValue(MessageViewModelProperty, value); }
+        }
+
+        public static readonly DependencyProperty MessageViewModelProperty =
+            DependencyProperty.Register("MessageViewModel", typeof(MessageViewModel), typeof(MessageControl), new PropertyMetadata(null));
 
         public DiscordUser Author => Message.Author;
         public DiscordChannel Channel => Message.Channel;
@@ -53,27 +69,18 @@ namespace Unicord.Universal.Controls.Messages
         {
             this.DefaultStyleKey = typeof(MessageControl);
             this.Loaded += OnLoaded;
+            this.Unloaded += OnUnloaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            //if (this.Style == null)
-            //{
-            //    ApplyCustomStyles();
-            //}
+            MessageViewModel?.OnLoaded();
         }
 
-        //protected virtual void ApplyCustomStyles()
-        //{
-        //    // if the style isn't explicitly set, load it
-        //    if (!App.Current.Resources.TryGetValue(App.LocalSettings.Read(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT), out var obj) || !(obj is Style s))
-        //    {
-        //        s = App.Current.Resources[MESSAGE_STYLE_DEFAULT] as Style;
-        //        App.LocalSettings.Save(MESSAGE_STYLE_KEY, MESSAGE_STYLE_DEFAULT);
-        //    }
-
-        //    this.Style = s;
-        //}
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            MessageViewModel?.OnUnloaded();
+        }
 
         protected override void OnApplyTemplate()
         {
@@ -87,16 +94,54 @@ namespace Unicord.Universal.Controls.Messages
 
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
         {
+            if (MessageViewModel != null)
+                MessageViewModel.OnUnloaded();
+
             if (e.NewValue is DiscordMessage message)
             {
-                this.DataContext = message;
+                MessageViewModel = new MessageViewModel(message);
+                MessageViewModel.OnLoaded();
+
+                this.DataContext = MessageViewModel;
+                this.UpdateProfileImage(message);
                 this.UpdateCollapsedState();
             }
             else
             {
                 this.DataContext = null;
+                this.ClearProfileImage();
                 // reset
             }
+        }
+
+        private void ClearProfileImage()
+        {
+            if (_imageBrush == null)
+            {
+                var container = this.FindChild<Ellipse>("ImageContainer");
+                if (container == null || container.Fill == null)
+                    return;
+
+                _imageBrush = (ImageBrush)container.Fill;
+            }
+
+            _imageBrush.ImageSource = null;
+        }
+
+        private void UpdateProfileImage(DiscordMessage message)
+        {
+            this.ClearProfileImage();
+
+            if (_imageBrush == null || message.Author == null || message.Author.AvatarUrl == null)
+                return;
+
+            _imageBrush.ImageSource = new BitmapImage
+            {
+                UriSource = new Uri(message.Author.AvatarUrl),
+                DecodePixelHeight = 64,
+                DecodePixelWidth = 64,
+                DecodePixelType = DecodePixelType.Physical
+            };
         }
 
         // TODO: Could prolly move this somewhere better
@@ -120,7 +165,7 @@ namespace Unicord.Universal.Controls.Messages
                 var currentMember = Message.Channel.Guild?.CurrentMember;
 
                 if (Message.MentionEveryone ||
-                    Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) || 
+                    Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) ||
                     (currentMember != null && Message.MentionedRoleIds.Any(r => currentMember.RoleIds.Contains(r))))
                 {
                     VisualStateManager.GoToState(this, "Mention", false);
@@ -130,7 +175,9 @@ namespace Unicord.Universal.Controls.Messages
 
                 if (index > 0)
                 {
-                    if (list.Items[index - 1] is DiscordMessage other && other.MessageType == MessageType.Default && Message.MessageType == MessageType.Default)
+                    if (list.Items[index - 1] is DiscordMessage other
+                        && (other.MessageType == MessageType.Default || other.MessageType == MessageType.Reply)
+                        && Message.ReferencedMessage == null)
                     {
                         var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
                         if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))

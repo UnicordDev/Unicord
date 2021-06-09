@@ -117,26 +117,33 @@ namespace Unicord.Universal.Background
             await _tileManager.InitialiseAsync();
         }
 
-        private async Task OnDiscordMessage(MessageCreateEventArgs e)
+        private Task OnDiscordMessage(MessageCreateEventArgs e)
         {
-            try
+            _ = Task.Run(async () =>
             {
-                if (NotificationUtils.WillShowToast(e.Message))
+                try
                 {
-                    _toastManager?.HandleMessage(e.Message);
-                    _badgeManager?.Update();
+                    await Task.Delay(1000);
 
-                    if (_tileManager != null)
-                        await _tileManager.HandleMessageAsync(e.Message);
+                    if (NotificationUtils.WillShowToast(e.Message))
+                    {
+                        _toastManager?.HandleMessage(e.Message);
+                        _badgeManager?.Update();
+
+                        if (_tileManager != null)
+                            await _tileManager.HandleMessageAsync(e.Message);
+                    }
+
+                    if (_secondaryTileManager != null)
+                        await _secondaryTileManager.HandleMessageAsync(e.Message);
                 }
+                catch (Exception)
+                {
+                    // TODO: log
+                }
+            });
 
-                if (_secondaryTileManager != null)
-                    await _secondaryTileManager.HandleMessageAsync(e.Message);
-            }
-            catch (Exception)
-            {
-                // TODO: log
-            }
+            return Task.CompletedTask;
         }
 
         private async Task OnMessageAcknowledged(MessageAcknowledgeEventArgs e)

@@ -234,7 +234,7 @@ namespace Unicord.Universal.Parsers.Markdown
 
                         if (newBlockElement == null && nonSpaceChar == '`' && !inlineOnly)
                         {
-                            newBlockElement = CodeBlock.Parse(markdown, realStartOfLine, endOfBlock, quoteDepth, out endOfBlock);
+                            newBlockElement = CodeBlock.Parse(markdown, realStartOfLine, end, quoteDepth, out endOfBlock);
                         }
 
                         // This check needs to go after the code block check.

@@ -104,7 +104,7 @@
             <Grid x:Name="Title">
                 <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" Margin="20,12" Text="Installing Theme"/>
             </Grid>
-            <Grid x:Name="Content" Grid.Row="1" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}">
+            <Grid x:Name="ThemedContent" Grid.Row="1" Background="{ThemeResource SystemControlBackgroundChromeLowBrush}">
                 <controls:ThemePreviewControl x:Name="ThemePreview" Grid.Row="1" Margin="20,12" />
             </Grid>
 

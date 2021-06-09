@@ -7,7 +7,7 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return value is null ? false : value is bool b ? b : value is int i ? i > 0 ? true : false : true;
+            return value is not null && (value is bool b ? b : !(value is int i && i <= 0));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

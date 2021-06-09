@@ -264,7 +264,7 @@ namespace Unicord.Universal
 
                     if (dm == null && args.UserId != 0)
                     {
-                        dm = await App.Discord.CreateDmChannelAsync(args.UserId);
+                        // dm = await App.Discord.CreateDmChannelAsync(args.UserId);
                     }
 
                     await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), dm));

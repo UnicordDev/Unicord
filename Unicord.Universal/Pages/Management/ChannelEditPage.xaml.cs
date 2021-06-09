@@ -5,6 +5,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management.Channel;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -23,6 +24,9 @@ namespace Unicord.Universal.Pages.Management
             };
 
         private ChannelEditViewModel _viewModel;
+
+        public Size PreferredSize =>
+            new Size(1024, 768);
 
         public ChannelEditPage()
         {
@@ -73,7 +77,7 @@ namespace Unicord.Universal.Pages.Management
             }
             else if (args.InvokedItemContainer.Tag is DiscordOverwrite overwrite)
             {
-                MainFrame.Navigate(typeof(ChannelEditPermissionsPage), overwrite);
+                MainFrame.Navigate(typeof(ChannelEditPermissionsPage), new ChannelPermissionEditViewModel(_viewModel.Channel, overwrite));
             }
         }
     }

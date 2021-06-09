@@ -22,7 +22,7 @@ namespace Unicord.Universal.Dialogs
 
         private static void OnMessageSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as ContentDialog).DataContext = e.NewValue;
+            (d as PinMessageDialog).MessageControl.Message = e.NewValue as DiscordMessage;
             (d as ContentDialog).Title = (e.NewValue as DiscordMessage).Pinned ? "Unpin this message?" : "Pin this message?";
         }
 

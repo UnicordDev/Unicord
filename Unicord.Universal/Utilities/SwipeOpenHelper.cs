@@ -31,7 +31,10 @@ namespace Unicord.Universal.Utilities
         private double _xTotal = 0.0;
         private bool _isActive;
 
-        public bool IsEnabled { get; set; }
+        private UIElement _capturedElement;
+        private Pointer _capturedPointer;
+
+        public bool IsEnabled { get; set; } 
 
         public SwipeOpenHelper(UIElement target, UIElement reference, Storyboard openAnimation, Storyboard closeAnimation)
         {
@@ -55,6 +58,24 @@ namespace Unicord.Universal.Utilities
 
         public void AddAdditionalElement(UIElement element, bool handled = true)
         {
+            AddEventHandlers(element, handled);
+
+            if (element is FrameworkElement fel)
+            {
+                fel.Unloaded += OnAdditionalElementUnloaded;
+            }
+        }
+
+        private void OnAdditionalElementUnloaded(object sender, RoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            (sender as FrameworkElement).Unloaded -= OnAdditionalElementUnloaded;
+
+            RemoveEventHandlers(element);
+        }
+
+        private void AddEventHandlers(UIElement element, bool handled)
+        {
             var data = new AdditionalElementHandlerData()
             {
                 Pressed = new PointerEventHandler(OnPointerPressed),
@@ -70,33 +91,41 @@ namespace Unicord.Universal.Utilities
                 element.AddHandler(UIElement.PointerMovedEvent, data.Moved, handled);
                 element.AddHandler(UIElement.PointerReleasedEvent, data.Released, handled);
                 element.AddHandler(UIElement.PointerCanceledEvent, data.Cancelled, handled);
-
-                if (element is FrameworkElement fuck)
-                {
-                    fuck.Unloaded += OnAdditionalElementUnloaded;
-                }
             }
         }
 
-        private void OnAdditionalElementUnloaded(object sender, RoutedEventArgs e)
+        private void RemoveEventHandlers(UIElement element)
         {
-            var element = sender as UIElement;
-            var data = _attachedElements[element];
-            (sender as FrameworkElement).Unloaded -= OnAdditionalElementUnloaded;
+            if (_attachedElements.TryGetValue(element, out var data))
+            {
+                element.RemoveHandler(UIElement.PointerPressedEvent, data.Pressed);
+                element.RemoveHandler(UIElement.PointerMovedEvent, data.Moved);
+                element.RemoveHandler(UIElement.PointerReleasedEvent, data.Released);
+                element.RemoveHandler(UIElement.PointerCanceledEvent, data.Cancelled);
 
-            element.RemoveHandler(UIElement.PointerPressedEvent, data.Pressed);
-            element.RemoveHandler(UIElement.PointerMovedEvent, data.Moved);
-            element.RemoveHandler(UIElement.PointerReleasedEvent, data.Released);
-            element.RemoveHandler(UIElement.PointerCanceledEvent, data.Cancelled);
+                _attachedElements.Remove(element);
+            }
         }
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (!IsEnabled || _recogniser.IsActive)
+            if (!IsEnabled)
                 return;
 
-            (sender as UIElement).CapturePointer(e.Pointer);
-            _recogniser.ProcessDownEvent(e.GetCurrentPoint(sender as UIElement));
+            if (_recogniser.IsActive)
+            {
+                _recogniser.CompleteGesture();
+                if (_capturedElement != null && _capturedPointer != null)
+                    _capturedElement.ReleasePointerCapture(_capturedPointer);
+
+                _capturedElement = null;
+                _capturedPointer = null;
+            }
+
+            _capturedElement = (sender as UIElement);
+            _capturedPointer = e.Pointer;
+            _capturedElement.CapturePointer(_capturedPointer);
+            _recogniser.ProcessDownEvent(e.GetCurrentPoint(_reference));
         }
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
@@ -109,20 +138,22 @@ namespace Unicord.Universal.Utilities
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            if (!IsEnabled)
+            if (!IsEnabled || _capturedElement == null)
                 return;
 
-            _recogniser.ProcessUpEvent(e.GetCurrentPoint(sender as UIElement));
-            _target.ReleasePointerCapture(e.Pointer);
+            _recogniser.ProcessUpEvent(e.GetCurrentPoint(_reference));
+            _capturedElement.ReleasePointerCapture(_capturedPointer);
+            _capturedElement = null;
         }
 
         private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
         {
-            if (!IsEnabled)
+            if (!IsEnabled || _capturedElement == null)
                 return;
 
             _recogniser.CompleteGesture();
-            _target.ReleasePointerCapture(e.Pointer);
+            _capturedElement.ReleasePointerCapture(_capturedPointer);
+            _capturedElement = null;
         }
 
         private void OnManipulationStarted(GestureRecognizer sender, ManipulationStartedEventArgs args)

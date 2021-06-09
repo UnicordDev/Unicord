@@ -64,7 +64,8 @@ namespace Unicord.Universal
             {
                 var themes = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
                 Load(themes, themesDictionary);
-                Analytics.TrackEvent("Themes_Loaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
+                if (themes.Any())
+                    Analytics.TrackEvent("Themes_Loaded", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themes) });
 
             }
             finally
@@ -147,7 +148,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = compact });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             ThemesUpdated?.Invoke(null, new ThemeUpdatedEventArgs() { NewThemes = themes });
@@ -193,7 +194,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = compact });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             Analytics.TrackEvent("Themes_LoadedAsync", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themeNames) });
@@ -237,7 +238,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources() { UseCompactResources = themes.Values.Any(t => t.UseCompact) /* TODO */ });
+                target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             return themes;
@@ -506,6 +507,7 @@ namespace Unicord.Universal
         /// Use compact resources?
         /// </summary>
         [JsonProperty("use_compact")]
+        [Deprecated("No longer supported.", DeprecationType.Deprecate, 1)]
         public bool UseCompact { get; set; }
 
         /// <summary>
