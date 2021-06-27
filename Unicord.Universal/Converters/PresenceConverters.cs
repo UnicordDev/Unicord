@@ -60,6 +60,49 @@ namespace Unicord.Universal.Converters
         }
     }
 
+    class PresenceGeometryConverter : IValueConverter
+    {
+        public string Offline { get; set; }
+        public string Online { get; set; }
+        public string Idle { get; set; }
+        public string DoNotDisturb { get; set; }
+        public string Fallback { get; set; }
+        public string Streaming { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var presence = (DiscordPresence)value;
+            if (presence == null)
+                return Offline;
+
+            var streamActivity = presence.Activities?.FirstOrDefault(a => a?.ActivityType == ActivityType.Streaming) ?? presence.Activity;
+            if (streamActivity != null && streamActivity.ActivityType == ActivityType.Streaming)
+            {
+                return Streaming;
+            }
+
+            switch (presence.Status)
+            {
+                case UserStatus.Invisible:
+                case UserStatus.Offline:
+                    return Offline;
+                case UserStatus.Online:
+                    return Online;
+                case UserStatus.Idle:
+                    return Idle;
+                case UserStatus.DoNotDisturb:
+                    return DoNotDisturb;
+                default:
+                    return Fallback;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     class PresenceTextConverter : IValueConverter
     {
         private ResourceLoader _strings;

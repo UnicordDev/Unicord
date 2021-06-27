@@ -11,15 +11,12 @@ namespace Unicord.Universal.Converters
         {
             var setting = App.RoamingSettings.Read(Constants.TIMESTAMP_STYLE, TimestampStyle.Absolute);
 
-            if (!(value is DateTime t))
+            if (value is not DateTime t)
             {
-                t = default;
-
-                if (value is DateTimeOffset offset)
-                {
-                    t = offset.UtcDateTime;
-                }
+                t = value is DateTimeOffset dto ? dto.LocalDateTime : default;
             }
+
+            t = t.ToUniversalTime();
 
             var moment = new Moment(t);
             if (t != default)
@@ -31,7 +28,7 @@ namespace Unicord.Universal.Converters
                     case TimestampStyle.Absolute:
                         return moment.Calendar();
                     case TimestampStyle.Both:
-                        return $"{t.Humanize()} - {moment.Calendar()}";
+                        return $"{t.Humanize(true)} - {moment.Calendar()}";
                 }
             }
 

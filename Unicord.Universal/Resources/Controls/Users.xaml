@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Controls.Users">
+    xmlns:local="using:Unicord.Universal.Controls.Users" xmlns:presence="using:Unicord.Universal.Controls.Presence">
     
     <!-- /Assets/SmallMask.svg -->
     <x:String x:Key="AvatarGeometrySmall">M 31.042 21.478 C 31.66 19.767 32 17.923 32 16 C 32 7.169 24.831 0 16 0 C 7.169 0 0 7.169 0 16 C 0 24.831 7.169 32 16 32 C 17.923 32 19.767 31.66 21.478 31.042 C 19.397 29.832 18 27.578 18 25 C 18 21.137 21.137 18 25 18 C 27.578 18 29.832 19.397 31.042 21.478 Z</x:String>
@@ -14,7 +14,8 @@
 
     <!-- /Assets/HugeMask.svg -->
     <x:String x:Key="AvatarGeometryHuge">M 122.843 89.162 C 126.166 81.441 128 72.933 128 64 C 128 28.677 99.323 0 64 0 C 28.677 0 0 28.677 0 64 C 0 99.323 28.677 128 64 128 C 72.933 128 81.441 126.166 89.162 122.843 C 83.58 118.456 80 111.643 80 104 C 80 90.754 90.754 80 104 80 C 111.643 80 118.456 83.58 122.843 89.162 Z</x:String>
-    
+
+
     <Style TargetType="local:AvatarControl">
         <Setter Property="Template">
             <Setter.Value>
@@ -62,15 +63,12 @@
                                 </Path.Fill>
                             </Path>
 
-                            <Ellipse x:Name="PresenceEllipse"
-                                     Width="10"
-                                     Height="10"
-                                     Canvas.Left="20"
-                                     Canvas.Top="20">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Presence, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PresenceColourConverter}}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <presence:StatusIndicator x:Name="StatusIndicator"
+                                                      Presence="{TemplateBinding Presence}"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Canvas.Left="20"
+                                                      Canvas.Top="20" />
                         </Canvas>
                     </Viewbox>
                 </ControlTemplate>
@@ -103,15 +101,12 @@
                                 </Path.Fill>
                             </Path>
 
-                            <Ellipse x:Name="PresenceEllipse"
-                                     Width="18"
-                                     Height="18"
-                                     Canvas.Left="43"
-                                     Canvas.Top="43">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Presence, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PresenceColourConverter}}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <presence:StatusIndicator x:Name="StatusIndicator"
+                                                      Presence="{TemplateBinding Presence}"
+                                                      Width="18"
+                                                      Height="18"
+                                                      Canvas.Left="43"
+                                                      Canvas.Top="43" />
                         </Canvas>
                     </Viewbox>
                 </ControlTemplate>
@@ -144,15 +139,12 @@
                                 </Path.Fill>
                             </Path>
 
-                            <Ellipse x:Name="PresenceEllipse"
-                                     Width="28"
-                                     Height="28"
-                                     Canvas.Left="64"
-                                     Canvas.Top="64">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Presence, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PresenceColourConverter}}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <presence:StatusIndicator x:Name="StatusIndicator"
+                                                      Presence="{TemplateBinding Presence}"
+                                                      Width="28"
+                                                      Height="28"
+                                                      Canvas.Left="64"
+                                                      Canvas.Top="64"/>
                         </Canvas>
                     </Viewbox>
                 </ControlTemplate>
@@ -185,15 +177,12 @@
                                 </Path.Fill>
                             </Path>
 
-                            <Ellipse x:Name="PresenceEllipse"
-                                     Width="36"
-                                     Height="36"
-                                     Canvas.Left="86"
-                                     Canvas.Top="86">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Presence, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PresenceColourConverter}}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <presence:StatusIndicator x:Name="StatusIndicator"
+                                                      Presence="{TemplateBinding Presence}"
+                                                      Width="36"
+                                                      Height="36"
+                                                      Canvas.Left="86"
+                                                      Canvas.Top="86"/>
                         </Canvas>
                     </Viewbox>
                 </ControlTemplate>

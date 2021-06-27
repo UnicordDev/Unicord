@@ -12,12 +12,10 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
+    x:DefaultBindMode="OneWay"
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded">
     <UserControl.Resources>
-
-        <CollectionViewSource x:Name="source" x:Key="source"/>
-
         <DataTemplate x:Key="GroupHeaderTemplate" x:DataType="misc:EmojiGroup">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -25,52 +23,103 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid Width="24" Height="24" Margin="0,0,10,0">
-                    <lib:PersonPicture x:Name="iconImage" Visibility="{x:Bind Key.IconUrl, Converter={StaticResource HideOnNullConverter}}" Width="24" Height="24" ProfilePicture="{x:Bind Key.IconUrl}" DisplayName="{x:Bind Key.Name}" />
-                    <TextBlock x:Name="iconText" Visibility="{x:Bind Key.IconCharacter, Converter={StaticResource HideOnNullConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Text="{x:Bind Key.IconCharacter}" />
+                <Grid Width="24" Height="24" Margin="0,0,8,0">
+                    <lib:PersonPicture x:Name="iconImage" 
+                                       Visibility="{x:Bind Key.IconCharacter, Converter={StaticResource InverseBoolVisibilityConverter}}"
+                                       Width="24" 
+                                       Height="24"
+                                       ProfilePicture="{x:Bind Key.IconUrl}" 
+                                       DisplayName="{x:Bind Key.Name}" />
+
+                    <Viewbox Width="24" Height="24" Stretch="Uniform">
+                        <TextBlock x:Name="iconText" Visibility="{x:Bind Key.IconCharacter, Converter={StaticResource HideOnNullConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" LineHeight="24" Text="{x:Bind Key.IconCharacter}" />
+                    </Viewbox>
                 </Grid>
 
                 <TextBlock FontSize="14" VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind Key.Name}" />
             </Grid>
         </DataTemplate>
-
     </UserControl.Resources>
-    <GridView x:Name="view" 
-              b:ListViewBehaviour.FillBeforeWrap="True"
-              b:ListViewBehaviour.MinItemWidth="42"
-              SelectionMode="Single"
-              SingleSelectionFollowsFocus="False"
-              IsSynchronizedWithCurrentItem="False"
-              SelectionChanged="GridView_SelectionChanged" 
-              ItemsSource="{Binding Source={StaticResource source}}">
-        <GridView.Header>
-            <Grid Height="36" Margin="0,5,5,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="searchBox" x:Uid="/Controls/EmoteSearchBox" InputScope="Search" TextChanged="TextBox_TextChanged" VerticalAlignment="Center" Style="{ThemeResource MessageTextBoxStyle}" />
-                <Button Grid.Column="1" Style="{ThemeResource StretchyIconButtonStyle}" Content="&#xE721;" Width="36" Height="36" Click="Button_Click" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Bottom" />
-            </Grid>
-        </GridView.Header>
-        <GridView.ItemTemplate>
-            <DataTemplate x:DataType="entities:DiscordEmoji">
-                <emoji:EmojiControl Emoji="{Binding}"/>
-            </DataTemplate>
-        </GridView.ItemTemplate>
-        <GridView.ItemContainerStyle>
-            <Style TargetType="GridViewItem">
-                <Setter Property="BorderThickness" Value="1"/>
-            </Style>
-        </GridView.ItemContainerStyle>
-        <GridView.GroupStyle>
-            <GroupStyle HeaderTemplate="{StaticResource GroupHeaderTemplate}" />
-        </GridView.GroupStyle>
-        <GridView.ItemsPanel>
-            <ItemsPanelTemplate>
-                <ItemsWrapGrid Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-        </GridView.ItemsPanel>
-    </GridView>
+
+    <SemanticZoom>
+        <SemanticZoom.ZoomedInView>
+            <GridView x:Name="EmojiView" 
+                      b:ListViewBehaviour.FillBeforeWrap="True"
+                      b:ListViewBehaviour.MinItemWidth="48"
+                      SelectionMode="None"
+                      Margin="0,0,4,0"
+                      IsItemClickEnabled="True"
+                      ShowsScrollingPlaceholders="True"
+                      ItemClick="EmojiView_ItemClick"
+                      ItemsSource="{x:Bind Source.View}">
+                <GridView.Header>
+                    <Grid Height="36" Margin="0,5,5,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="searchBox" x:Uid="/Controls/EmoteSearchBox" InputScope="Search" TextChanged="TextBox_TextChanged" VerticalAlignment="Center" Style="{ThemeResource MessageTextBoxStyle}" />
+                        <Button Grid.Column="1" Style="{ThemeResource StretchyIconButtonStyle}" Content="&#xE721;" Width="36" Height="36" Click="Button_Click" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Bottom" />
+                    </Grid>
+                </GridView.Header>
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="entities:DiscordEmoji">
+                        <emoji:EmojiControl Emoji="{x:Bind}" IsEnabled="{x:Bind IsAvailable}" Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"/>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Padding" Value="4"/>
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.GroupStyle>
+                    <GroupStyle HeaderTemplate="{StaticResource GroupHeaderTemplate}" />
+                </GridView.GroupStyle>
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
+        </SemanticZoom.ZoomedInView>
+        <SemanticZoom.ZoomedOutView>
+            <ListView ItemsSource="{x:Bind Source.View.CollectionGroups}" 
+              SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                                <Grid Margin="0,0,8,0">
+                                    <lib:PersonPicture x:Name="iconImage" 
+                                                       Visibility="{Binding Group.Key.IconCharacter, Converter={StaticResource InverseBoolVisibilityConverter}}" 
+                                                       Width="32" 
+                                                       Height="32"
+                                                       ProfilePicture="{Binding Group.Key.IconUrl}" 
+                                                       DisplayName="{Binding Group.Key.Name}" />
+
+                                    <Viewbox Width="32" 
+                                             Height="32" 
+                                             Stretch="Uniform"
+                                             Visibility="{Binding Group.Key.IconCharacter, Converter={StaticResource HideOnNullConverter}}" >
+                                        <TextBlock x:Name="iconText" 
+                                                   VerticalAlignment="Center" 
+                                                   HorizontalAlignment="Center" 
+                                                   LineHeight="24"
+                                                   FontSize="24" 
+                                                   Text="{Binding Group.Key.IconCharacter}" />
+                                    </Viewbox>
+                            </Grid>
+                            <TextBlock FontSize="14" VerticalAlignment="Center" Grid.Column="1" Text="{Binding Group.Key.Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </SemanticZoom.ZoomedOutView>
+    </SemanticZoom>
 
 </UserControl>

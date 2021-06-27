@@ -35,11 +35,11 @@ namespace Unicord.Universal.Misc
             _emojis = emojis.ToList();
         }
 
-        public EmojiGroup(string category, IEnumerable<Emoji> emojis)
+        public EmojiGroup(string category, IEnumerable<NeoSmart.Unicode.SingleEmoji> emojis)
         {
             var first = emojis.First();
-            Key = new EmojiHeader() { Name = category, IconCharacter = first.Char };
-            _emojis = emojis.Select(e => DiscordEmoji.FromUnicode(e.Char)).ToList();
+            Key = new EmojiHeader() { Name = category, IconCharacter = first.Sequence.AsString };
+            _emojis = emojis.Select(e => DiscordEmoji.FromUnicode(e.Sequence.AsString)).ToList();
         }
 
         public EmojiHeader Key { get; }

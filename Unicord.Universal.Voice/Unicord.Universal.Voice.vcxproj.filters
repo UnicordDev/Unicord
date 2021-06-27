@@ -105,7 +105,4 @@
       <UniqueIdentifier>{fb467f89-17c7-4f0a-b9a7-70b09208ef2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="README.md" />
-  </ItemGroup>
 </Project>

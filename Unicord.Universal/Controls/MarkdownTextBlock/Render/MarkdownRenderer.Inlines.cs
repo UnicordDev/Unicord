@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Unicord;
 using Unicord.Universal;
+using Unicord.Universal.Controls.Emoji;
 using Unicord.Universal.Converters;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Parsers.Markdown.Inlines;
@@ -650,13 +651,12 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     var uri = $"https://cdn.discordapp.com/emojis/{element.Id}?size=128";
                     var ui = new InlineUIContainer() { FontSize = IsHuge ? 42 : 24 };
                     var size = IsHuge ? 48 : 24;
-                    var image = new Image()
+                    var image = new EmojiControl()
                     {
-                        Source = new BitmapImage(new Uri(uri)) { DecodePixelHeight = size, DecodePixelType = DecodePixelType.Logical },
-                        Height = size,
+                        Emoji = DiscordEmoji.FromGuildEmote(App.Discord, element.Id, element.Text),
+                        Size = size,
                         MaxWidth = size * 3,
-                        Stretch = Stretch.Uniform,
-                        RenderTransform = new TranslateTransform() { Y = 8 }
+                        RenderTransform = IsHuge ? null : new TranslateTransform() { Y = 8 }
                     };
 
                     ToolTipService.SetToolTip(image, element.Text);
@@ -665,9 +665,9 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     RootElement.Margin = new Thickness(0, 0, 0, 4);
                     localContext.InlineCollection.Add(ui);
 
-                    if (!IsHuge && !(RootElement.RenderTransform is TranslateTransform tt))
+                    if (!IsHuge && RootElement.RenderTransform is not TranslateTransform tt)
                     {
-                        RootElement.Margin = new Thickness(0, -6, 0, 0);
+                        RootElement.Margin = new Thickness(0, -8, 0, 0);
                     }
                 }
             }

@@ -11,10 +11,31 @@
                 <ControlTemplate TargetType="local:EmojiControl">
                     <Border>
                         <Grid Height="{TemplateBinding Size}" DataContext="{TemplateBinding Emoji}">
+                            <ToolTipService.ToolTip>
+                                <StackPanel>
+                                    <Image Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}" 
+                                           MaxHeight="128">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="{Binding Url}" 
+                                                         DecodePixelType="Logical"
+                                                         DecodePixelHeight="128" />
+                                        </Image.Source>
+                                    </Image>
+
+                                    <Viewbox MaxWidth="128" 
+                                             MaxHeight="128"
+                                             Visibility="{Binding Unicode, Converter={StaticResource BoolVisibilityConverter}}"
+                                             Stretch="Uniform">
+                                        <TextBlock Text="{Binding Unicode}" />
+                                    </Viewbox>
+                                    
+                                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{Binding Name}" Margin="0,4,0,0" HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                                </StackPanel>
+                            </ToolTipService.ToolTip>
+                            
                             <Image x:Name="EmoteImage" 
                                    Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}" 
-                                   MaxHeight="{TemplateBinding Size}"
-                                   ToolTipService.ToolTip="{Binding Name}">
+                                   MaxHeight="{TemplateBinding Size}">
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" 
                                                  DecodePixelType="Logical"

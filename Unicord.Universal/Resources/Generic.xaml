@@ -216,7 +216,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageElement">
                     <local:ScaledContentControl TargetWidth="{TemplateBinding ImageWidth}" TargetHeight="{TemplateBinding ImageHeight}">
-                        <controls:ImageEx x:Name="image" IsCacheEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
+                        <controls:ImageEx x:Name="image" IsCacheEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"/>
                     </local:ScaledContentControl>
                 </ControlTemplate>
             </Setter.Value>

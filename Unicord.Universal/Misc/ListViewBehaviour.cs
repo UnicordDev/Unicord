@@ -1,17 +1,16 @@
 ﻿using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Behaviours
 {
     public class ListViewBehaviour
     {
-        #region Properties
-
         /// <summary>
-        /// Declare new attached property. This property specifies the minium width
-        /// for child items in an items wrap grid panel. Setting this property
-        /// to an non zero value will enable dynamic sizing of items so that
+        /// This property specifies the minium width for child items in an items wrap grid panel. 
+        /// Setting this property o an non zero value will enable dynamic sizing of items so that
         /// when items are wrapped the items control is always filled out horizontally
         /// i.e. the width of items are increased to fill the empty space.
         /// </summary>
@@ -20,19 +19,14 @@ namespace Unicord.Universal.Behaviours
             typeof(ListViewBehaviour), new PropertyMetadata(0.0d, OnMinItemWidthChanged));
 
         /// <summary>
-        /// Only applicable when MinItemWidth is non zero. Typically the logic
-        /// behind MinItemWidth will only trigger if the number of items is
-        /// more than or equal to what a single row will accomodate. This property
-        /// specifies that the layout logic is also performed when there are
-        /// less items than what a single row will accomodate.
+        /// Only applicable when MinItemWidth is non zero. Typically the logic behind 
+        /// MinItemWidth will only trigger if the number of items is more than or equal to 
+        /// what a single row will accomodate. This property specifies that the layout logic
+        /// is also performed when there are less items than what a single row will accomodate.
         /// </summary>
         public static readonly DependencyProperty FillBeforeWrapProperty =
            DependencyProperty.RegisterAttached("FillBeforeWrap", typeof(bool),
            typeof(ListViewBehaviour), new PropertyMetadata(false));
-
-        #endregion
-
-        #region Accessors
 
         /// <summary>
         /// Returns the value of the FillBeforeWrap
@@ -74,61 +68,39 @@ namespace Unicord.Universal.Behaviours
             obj.SetValue(MinItemWidthProperty, value);
         }
 
-        #endregion
-
-        #region Methods
-
-        public static void OnMinItemWidthChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
+        private static void OnMinItemWidthChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
-            try
+            if (s is ListViewBase f)
             {
-                if (s is ListViewBase f)
-                {
-                    f.SizeChanged -= listView_SizeChanged;
+                f.SizeChanged -= OnListViewSizeChanged;
 
-                    if (((double)e.NewValue) > 0)
-                    {
-                        f.SizeChanged += listView_SizeChanged;
-                    }
+                if (((double)e.NewValue) > 0)
+                {
+                    f.SizeChanged += OnListViewSizeChanged;
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
             }
         }
 
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void listView_SizeChanged(object sender, SizeChangedEventArgs e)
+        private static void OnListViewSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //Unbox the sender.
+            // Unbox the sender.
             var itemsControl = sender as ListViewBase;
 
-            //Retrieve items panel.
-
-            //If the items panel is a wrap grid.
+            // If the items panel is a wrap grid.
             if (itemsControl.ItemsPanelRoot is ItemsWrapGrid itemsPanel)
             {
-                //Get total size (leave room for scrolling.)
-                var total = e.NewSize.Width - 10;
+                // Get total size
+                var total = e.NewSize.Width - (itemsPanel.Margin.Left + itemsPanel.Margin.Right + itemsControl.Padding.Left + itemsControl.Padding.Right);
 
-                //Minimum item size.
-                var itemMinSize = (double)itemsControl.GetValue(MinItemWidthProperty);
+                // Minimum item size.
+                var itemMinSize = Math.Min(total, (double)itemsControl.GetValue(MinItemWidthProperty));
 
-                //How many items can be fit whole.
+                // How many items can be fit whole.
                 var canBeFit = Math.Floor(total / itemMinSize);
 
-                //I could add logic that if the total items 
-                //are less then the number of items that 
-                //would fit then devide the total size by
-                //the number of items rather than the number
-                //of items that would actually fit.
+                // I could add logic that if the total items are less then the number of items that 
+                // would fit then devide the total size by the number of items rather than the number
+                // of items that would actually fit.
                 if ((bool)itemsControl.GetValue(FillBeforeWrapProperty) &&
                     itemsControl.Items.Count > 0 &&
                     itemsControl.Items.Count < canBeFit)
@@ -136,16 +108,16 @@ namespace Unicord.Universal.Behaviours
                     canBeFit = itemsControl.Items.Count;
                 }
 
-                //Set the items Panel item width appropriately.
-                //Note you will need your container to stretch
-                //along with the items panel or it will look 
-                //strange. 
-                //  <GridView.ItemContainerStyle>
-                //< Style TargetType = "GridViewItem" >
-                //< Setter Property = "HorizontalContentAlignment" Value = "Stretch" />
-                // < Setter Property = "HorizontalAlignment" Value = "Stretch" />
-                //</ Style >
-                // </ GridView.ItemContainerStyle >
+                // Set the items Panel item width appropriately.
+                // Note you will need your container to stretch
+                // along with the items panel or it will look 
+                // strange. 
+                // <GridView.ItemContainerStyle>
+                //     <Style TargetType="GridViewItem">
+                //         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                //         <Setter Property="HorizontalAlignment" Value="Stretch" />
+                //     </Style>
+                // </GridView.ItemContainerStyle>
                 itemsPanel.ItemWidth = total / canBeFit;
             }
         }

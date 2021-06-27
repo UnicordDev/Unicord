@@ -6,12 +6,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:entities="using:DSharpPlus.Entities"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:controls1="using:Unicord.Universal.Controls"
+    xmlns:converters="using:Unicord.Universal.Converters" 
+    xmlns:controls="using:Unicord.Universal.Controls"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
-    xmlns:wam="using:Unicord.Universal.Controls"
-    xmlns:converters="using:Unicord.Universal.Converters"
+    xmlns:presence="using:Unicord.Universal.Controls.Presence" 
+    xmlns:users="using:Unicord.Universal.Controls.Users"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     AllowDrop="True"
     DragEnter="ChannelPage_OnDragEnter"  
@@ -159,10 +160,10 @@
                 <Frame x:Name="SidebarFrame" />
             </Grid>
 
-            <controls:DropShadowPanel x:Name="MainDropShadowPanel" Style="{ThemeResource DropShadowPanelStyle}">
-                <controls:DropShadowPanel.RenderTransform>
+            <toolkit:DropShadowPanel x:Name="MainDropShadowPanel" Style="{ThemeResource DropShadowPanelStyle}">
+                <toolkit:DropShadowPanel.RenderTransform>
                     <TranslateTransform x:Name="ContentTransform" />
-                </controls:DropShadowPanel.RenderTransform>
+                </toolkit:DropShadowPanel.RenderTransform>
                 <Grid Background="{ThemeResource BackgroundTertiaryBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -203,17 +204,14 @@
                                             Style="{ThemeResource IconButtonStyle}" />
                                 </Grid>
 
-                                <Ellipse x:Name="UserImage"
-                                         x:Load="{x:Bind ViewModel.UserImageUrl, Converter={StaticResource BoolConverter}}"
-                                         Grid.Column="1"
-                                         Width="24"
-                                         Height="24"
-                                         Margin="12,0,0,0"
-                                         VerticalAlignment="Center">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding UserImageUrl}" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
+                                <users:AvatarControl x:Name="UserImage"
+                                                     x:Load="{x:Bind ViewModel.UserImageUrl, Converter={StaticResource BoolConverter}}"
+                                                     Source="{Binding UserImageUrl}"
+                                                     Grid.Column="1"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"/>
 
                                 <TextBlock x:Name="Header"
                                            Grid.Column="2"
@@ -229,24 +227,21 @@
                                         Text="{Binding ChannelName, Mode=OneWay, FallbackValue=WamWooWam}" /><Run Text="{Binding ChannelSuffix, Mode=OneWay, FallbackValue=#6402}" />
                                 </TextBlock>
 
-                                <Ellipse x:Name="RecipientStatus"
-                                         x:Load="{x:Bind ViewModel.Recipient, Converter={StaticResource BoolConverter}}"
-                                         Grid.Column="3"
-                                         Width="10"
-                                         Height="10"
-                                         Margin="-4,0,8,0">
-                                    <Ellipse.Fill>
-                                        <SolidColorBrush Color="{x:Bind ViewModel.Recipient.Presence, Converter={StaticResource PresenceColourConverter}, FallbackValue=Gray}" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
+                                <presence:StatusIndicator x:Name="RecipientStatusIndicator" 
+                                                          x:Load="{x:Bind ViewModel.Recipient, Converter={StaticResource BoolConverter}}"
+                                                          Grid.Column="3" 
+                                                          Width="10" 
+                                                          Height="10" 
+                                                          Margin="-4,0,8,0"
+                                                          Presence="{x:Bind ViewModel.Recipient.Presence}"/>
 
-                                <wam:MarkdownTextBlock x:Name="TopicText"
-                                                       Grid.Column="4"
-                                                       HorizontalAlignment="Stretch"
-                                                       VerticalAlignment="Center"
-                                                       Channel="{x:Bind ViewModel.Channel}"
-                                                       Text="{x:Bind ViewModel.Topic}"
-                                                       TextWrapping="NoWrap" />
+                                <controls:MarkdownTextBlock x:Name="TopicText"
+                                                            Grid.Column="4"
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Center"
+                                                            Channel="{x:Bind ViewModel.Channel}"
+                                                            Text="{x:Bind ViewModel.Topic}"
+                                                            TextWrapping="NoWrap" />
                             </Grid>
 
 
@@ -324,7 +319,7 @@
                                                             Visibility="{Binding IsPinned, Converter={StaticResource InverseBoolVisibilityConverter}}"
                                                             Command="{StaticResource PinChannelCommand}"
                                                             CommandParameter="{x:Bind ViewModel.Channel}"/>
-                                            
+
                                             <MenuFlyoutItem x:Uid="/ChannelPage/UnpinFromStart"
                                                             Icon="Unpin"
                                                             Visibility="{Binding IsPinned, Converter={StaticResource BoolVisibilityConverter}}"/>
@@ -386,7 +381,7 @@
                             Grid.Row="2"
                             Visibility="Collapsed" />
                     </Grid>
-                    
+
                     <Grid Grid.Row="1">
                         <ListView x:Name="MessageList"
                                   Background="{ThemeResource BackgroundTertiaryBrush}"
@@ -429,7 +424,7 @@
                             <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
-                    
+
                     <Grid Grid.Row="1" 
                           Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                           Visibility="{Binding ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}"
@@ -446,7 +441,7 @@
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
                             ...
                         </TextBlock>
-                        
+
                         <ItemsControl Grid.Column="1"
                                       Margin="4,4,4,0"
                                       ItemTemplate="{StaticResource TypingUserTemplate}"
@@ -462,14 +457,14 @@
 
                     <Grid Grid.Row="2"
                           Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-                        <controls1:UploadItemsControl x:Name="UploadItems"
+                        <controls:UploadItemsControl x:Name="UploadItems"
                                                       Height="150"
                                                       Visibility="Collapsed"
                                                       IsEnabled="{x:Bind ViewModel.ShowUploads}">
-                            <controls1:UploadItemsControl.RenderTransform>
+                            <controls:UploadItemsControl.RenderTransform>
                                 <TranslateTransform x:Name="UploadsTransform" Y="250" />
-                            </controls1:UploadItemsControl.RenderTransform>
-                        </controls1:UploadItemsControl>
+                            </controls:UploadItemsControl.RenderTransform>
+                        </controls:UploadItemsControl>
 
                         <Grid x:Name="PhotoPicker"
                               Height="150"
@@ -532,7 +527,7 @@
                                 </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <controls:ImageEx Height="150"
+                                        <toolkit:ImageEx Height="150"
                                                           Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
                                                           Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
                                     </DataTemplate>
@@ -594,9 +589,9 @@
 
                                 <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                 <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
-                                <wam:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
+                                <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
 
-                                <wam:MarkdownTextBlock x:Name="ReplyMarkdown"
+                                <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
                                                    Grid.Column="1"
                                                    Grid.ColumnSpan="3"
                                                    Grid.Row="1"
@@ -648,7 +643,7 @@
                                 </w1709:Button.KeyboardAccelerators>
                             </Button>
 
-                            <controls1:MessageTextBox x:Name="MessageTextBox" 
+                            <controls:MessageTextBox x:Name="MessageTextBox" 
                                                       Grid.Column="1"
                                                       VerticalAlignment="Center"
                                                       Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
@@ -669,7 +664,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </controls:DropShadowPanel>
+            </toolkit:DropShadowPanel>
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

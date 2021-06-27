@@ -58,6 +58,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            Logger.Log(Attachment.ContentType);
             if (Path.GetFileNameWithoutExtension(Attachment.Url).StartsWith("SPOILER_") && App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true))
             {
                 spoilerOverlay.Visibility = Visibility.Visible;
@@ -74,9 +75,6 @@ namespace Unicord.Universal.Controls
                     Source = MediaSource.CreateFromUri(new Uri(Attachment.ProxyUrl)),
                     PosterSource = Attachment.Width != 0 ? new BitmapImage(new Uri(Attachment.ProxyUrl + "?format=jpeg")) : null
                 };
-
-                mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
-                mediaPlayer.TransportControls.IsCompact = true;
 
                 if (Attachment.Width == 0)
                 {

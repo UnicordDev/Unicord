@@ -333,9 +333,9 @@ namespace Unicord.Universal
             var cult = CultureInfo.InvariantCulture.CompareInfo;
             var n = !string.IsNullOrWhiteSpace(text);
 
-            var emojiEnum = Emoji
+            var emojiEnum = NeoSmart.Unicode.Emoji.All
                     .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
-                    .GroupBy(e => e.Category)
+                    .GroupBy(e => e.Group)
                     .Select(g => new EmojiGroup(g.Key, g))
                     .ToList();
 
@@ -357,7 +357,8 @@ namespace Unicord.Universal
             {
                 enumerable = App.Discord.Guilds.Values
                     .SelectMany(g => g.Emojis.Values)
-                    .OrderBy(g => g.Name);
+                    .OrderBy(g => g.Name)
+                    .OrderByDescending(g => g.IsAvailable);
             }
             else
             {

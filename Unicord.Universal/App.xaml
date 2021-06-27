@@ -48,6 +48,14 @@
                                                 StreamingYouTube="{StaticResource StreamingYouTubePresenceColour}"
                                                 Fallback="{StaticResource FallbackPresenceColour}"/>
 
+            <converters:PresenceGeometryConverter x:Key="PresenceGeometryConverter" 
+                                                  Offline="{StaticResource OfflinePresenceGeometry}"
+                                                  Online="{StaticResource OnlinePresenceGeometry}"
+                                                  Idle="{StaticResource IdlePresenceGeometry}"
+                                                  DoNotDisturb="{StaticResource DoNotDisturbPresenceGeometry}"
+                                                  Streaming="{StaticResource StreamingPresenceGeometry}"
+                                                  Fallback="{StaticResource OnlinePresenceGeometry}"/>
+
             <converters:ColourBrushConverter x:Key="ColourBrushConverter" 
                                              DefaultBackgroundColour="{ThemeResource BackgroundTertiaryColour}"/>
             <converters:ChannelSymbolConverter x:Key="ChannelSymbolConverter"

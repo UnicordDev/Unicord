@@ -26,7 +26,7 @@
     <PackageCertificateThumbprint>6BD8C4FCFA3FDEFC732E95AC6319476735CC564B</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <NullableContextOptions>disable</NullableContextOptions>
@@ -269,6 +269,7 @@
     <Compile Include="Controls\MarkdownTextBlock\Render\UIElementCollectionRenderContext.cs" />
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
+    <Compile Include="Controls\Presence\StatusIndicator.cs" />
     <Compile Include="Converters\ComponentTemplateSelector.cs" />
     <Compile Include="Interop\BitmapInterop.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
@@ -894,6 +895,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Controls\Permissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Controls\Presences.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

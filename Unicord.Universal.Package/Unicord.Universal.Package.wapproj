@@ -72,7 +72,7 @@
   <PropertyGroup>
     <ProjectGuid>8e0255b7-b38e-423e-91c7-5637a01c2e13</ProjectGuid>
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\Unicord.Universal\Unicord.Universal.csproj</EntryPointProjectUniqueName>

@@ -11,11 +11,15 @@ using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Controls
 {
     public sealed partial class EmotePicker : UserControl
     {
+        private ulong _prevChannelId;
+
+        public CollectionViewSource Source { get; } = new CollectionViewSource() { IsSourceGrouped = true };
         public event EventHandler<DiscordEmoji> EmojiPicked;
 
         public DiscordChannel Channel
@@ -36,24 +40,23 @@ namespace Unicord.Universal.Controls
         {
             try
             {
-                source.IsSourceGrouped = true;
-                source.Source = await Tools.GetGroupedEmojiAsync(searchBox.Text.ToLowerInvariant(), Channel);
+                if (Channel.Id != _prevChannelId)
+                {
+                    Source.Source = await Tools.GetGroupedEmojiAsync(searchBox.Text.ToLowerInvariant(), Channel);
+                    _prevChannelId = Channel.Id;
+                }
             }
             catch { }
         }
 
         public void Unload()
         {
-            source.Source = null;
+            // Source.Source = null;
         }
 
-        private void GridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void EmojiView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.AddedItems.Any())
-            {
-                EmojiPicked?.Invoke(this, e.AddedItems.FirstOrDefault() as DiscordEmoji);
-                (sender as GridView).SelectedItem = null;
-            }
+            EmojiPicked?.Invoke(this, e.ClickedItem as DiscordEmoji);
         }
 
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)

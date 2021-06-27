@@ -14,6 +14,7 @@
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Controls/Presences.xaml"/>
         <ResourceDictionary Source="Controls/Messages.xaml"/>
         <ResourceDictionary Source="Controls/Emoji.xaml"/>
         <ResourceDictionary Source="Controls/Users.xaml"/>
