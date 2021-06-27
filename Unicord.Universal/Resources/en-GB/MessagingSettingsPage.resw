@@ -151,6 +151,9 @@
   <data name="ShowHugeEmoji.Text" xml:space="preserve">
     <value>Huge Emoji</value>
   </data>
+  <data name="ShowStatusGlyphs.Text" xml:space="preserve">
+    <value>Colourblind Friendly Status Indicators</value>
+  </data>
   <data name="TimestampsHeader.Text" xml:space="preserve">
     <value>Timestamps</value>
   </data>

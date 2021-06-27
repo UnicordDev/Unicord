@@ -78,7 +78,7 @@
     <EntryPointProjectUniqueName>..\Unicord.Universal\Unicord.Universal.csproj</EntryPointProjectUniqueName>
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
-    <PackageCertificateThumbprint>7A1461C863ED96D6CE17D98028140DD9A227934D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>CBB99112037FA88434855C973D1AB39B0D4B2F10</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -117,7 +117,7 @@
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Unicord.Universal_TemporaryKey.pfx" />
+    <None Include="Unicord.Universal.Package_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

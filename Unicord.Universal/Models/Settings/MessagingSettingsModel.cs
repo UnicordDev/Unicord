@@ -102,9 +102,15 @@ namespace Unicord.Universal.Models
             set => App.RoamingSettings.Save(SHOW_HUGE_EMOJI, value);
         }
 
+        public bool ShowStatusGlyphs
+        {
+            get => App.RoamingSettings.Read(SHOW_STATUS_GLYPHS, SHOW_STATUS_GLYPHS_DEFAULT);
+            set => App.RoamingSettings.Save(SHOW_STATUS_GLYPHS, value);
+        }
+
         public bool AdjustRoleColours
         {
-            get => App.RoamingSettings.Read(ADJUST_ROLE_COLOURS, true);
+            get => App.RoamingSettings.Read(ADJUST_ROLE_COLOURS, ADJUST_ROLE_COLOURS_DEFAULT);
             set => App.RoamingSettings.Save(ADJUST_ROLE_COLOURS, value);
         }
 

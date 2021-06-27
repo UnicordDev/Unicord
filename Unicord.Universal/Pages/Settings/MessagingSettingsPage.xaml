@@ -73,6 +73,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AutoPlayGIFs" />
@@ -86,6 +87,9 @@
             
             <TextBlock Grid.Row="3" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/ShowHugeEmoji" />
             <ToggleSwitch Grid.Row="3" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowHugeEmoji, Mode=TwoWay}" />
+            
+            <TextBlock Grid.Row="4" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/ShowStatusGlyphs" />
+            <ToggleSwitch Grid.Row="4" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowStatusGlyphs, Mode=TwoWay}" />
         </Grid>
 
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/AdjustRoleColoursHeader" Text="Contrast Adjustment" />

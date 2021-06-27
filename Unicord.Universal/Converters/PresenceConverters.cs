@@ -71,6 +71,11 @@ namespace Unicord.Universal.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if (!App.RoamingSettings.Read(Constants.SHOW_STATUS_GLYPHS, Constants.SHOW_STATUS_GLYPHS_DEFAULT))
+            {
+                return Fallback;
+            }
+
             var presence = (DiscordPresence)value;
             if (presence == null)
                 return Offline;
