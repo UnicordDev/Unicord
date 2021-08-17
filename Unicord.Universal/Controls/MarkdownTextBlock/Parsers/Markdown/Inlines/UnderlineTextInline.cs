@@ -1,23 +1,32 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿// ******************************************************************
+// Copyright (c) Microsoft. All rights reserved.
+// This code is licensed under the MIT License (MIT).
+// THE CODE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+// THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
+// ******************************************************************
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unicord.Universal.Parsers.Core;
 using Unicord.Universal.Parsers.Markdown.Helpers;
 
 namespace Unicord.Universal.Parsers.Markdown.Inlines
 {
     /// <summary>
-    /// Represents a span that contains bold text.
+    /// Represents a span that contains Underline text.
     /// </summary>
-    public class BoldTextInline : MarkdownInline, IInlineContainer
+    public class UnderlineTextInline : MarkdownInline, IInlineContainer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoldTextInline"/> class.
+        /// Initializes a new instance of the <see cref="UnderlineTextInline"/> class.
         /// </summary>
-        public BoldTextInline()
-            : base(MarkdownInlineType.Bold)
+        public UnderlineTextInline()
+            : base(MarkdownInlineType.Underline)
         {
         }
 
@@ -31,17 +40,16 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
         /// </summary>
         internal static void AddTripChars(List<InlineTripCharHelper> tripCharHelpers)
         {
-            tripCharHelpers.Add(new InlineTripCharHelper() { FirstChar = '*', Method = InlineParseMethod.Bold });
-            //tripCharHelpers.Add(new InlineTripCharHelper() { FirstChar = '_', Method = InlineParseMethod.Bold });
+            tripCharHelpers.Add(new InlineTripCharHelper() { FirstChar = '_', Method = InlineParseMethod.Underline });
         }
 
         /// <summary>
-        /// Attempts to parse a bold text span.
+        /// Attempts to parse a underline text span.
         /// </summary>
         /// <param name="markdown"> The markdown text. </param>
         /// <param name="start"> The location to start parsing. </param>
         /// <param name="maxEnd"> The location to stop parsing. </param>
-        /// <returns> A parsed bold text span, or <c>null</c> if this is not a bold text span. </returns>
+        /// <returns> A underline text span, or <c>null</c> if this is not a underline text span. </returns>
         internal static InlineParseResult Parse(string markdown, int start, int maxEnd)
         {
             if (start >= maxEnd - 1)
@@ -51,14 +59,14 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
 
             // Check the start sequence.
             string startSequence = markdown.Substring(start, 2);
-            if (startSequence != "**")
+            if (startSequence != "__")
             {
                 return null;
             }
 
             // Find the end of the span.  The end sequence (either '**' or '__') must be the same
             // as the start sequence.
-            var innerStart = start + 2;
+            int innerStart = start + 2;
             int innerEnd = Common.IndexOf(markdown, startSequence, innerStart, maxEnd);
             if (innerEnd == -1)
             {
@@ -84,10 +92,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
             }
 
             // We found something!
-            var result = new BoldTextInline
-            {
-                Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd)
-            };
+            var result = new UnderlineTextInline { Inlines = Common.ParseInlineChildren(markdown, innerStart, innerEnd) };
             return new InlineParseResult(result, start, innerEnd + 2);
         }
 
@@ -102,7 +107,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
                 return base.ToString();
             }
 
-            return "*" + string.Join(string.Empty, Inlines) + "*";
+            return "__" + string.Join(string.Empty, Inlines) + "__";
         }
     }
 }

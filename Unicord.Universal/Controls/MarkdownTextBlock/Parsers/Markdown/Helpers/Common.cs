@@ -20,6 +20,7 @@ namespace Unicord.Universal.Parsers.Markdown.Helpers
         static Common()
         {
             BoldItalicTextInline.AddTripChars(_triggerList);
+            UnderlineTextInline.AddTripChars(_triggerList);
             BoldTextInline.AddTripChars(_triggerList);
             ItalicTextInline.AddTripChars(_triggerList);
             MarkdownLinkInline.AddTripChars(_triggerList);
@@ -109,6 +110,10 @@ namespace Unicord.Universal.Parsers.Markdown.Helpers
                         {
                             case InlineParseMethod.BoldItalic:
                                 parseResult = BoldItalicTextInline.Parse(markdown, pos, end);
+                                break;
+
+                            case InlineParseMethod.Underline:
+                                parseResult = UnderlineTextInline.Parse(markdown, pos, end);
                                 break;
 
                             case InlineParseMethod.LinkReference:

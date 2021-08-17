@@ -528,8 +528,8 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <toolkit:ImageEx Height="150"
-                                                          Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
-                                                          Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
+                                                         Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
+                                                         Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>

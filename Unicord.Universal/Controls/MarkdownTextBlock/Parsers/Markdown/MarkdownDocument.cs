@@ -94,7 +94,7 @@ namespace Unicord.Universal.Parsers.Markdown
         /// </param>
         /// <returns> A list of parsed blocks. </returns>
         internal static List<MarkdownBlock> Parse(string markdown, bool inlineOnly, int start, int end, int quoteDepth, out int actualEnd)
-        {           
+        {
             // We need to parse out the list of blocks.
             // Some blocks need to start on a new paragraph (code, lists and tables) while other
             // blocks can start on any line (headers, horizontal rules and quotes).
@@ -107,6 +107,7 @@ namespace Unicord.Universal.Parsers.Markdown
             var previousRealtStartOfLine = start;
             var previousStartOfLine = start;
             var previousEndOfLine = start;
+            var skip = false;
 
             // Go line by line.
             while (startOfLine < end)
@@ -154,10 +155,9 @@ namespace Unicord.Universal.Parsers.Markdown
                         startOfLine = nonSpacePos;
 
                         // Ignore the first space after the quote character, if there is one.
-                        if (startOfLine < end && markdown[startOfLine] == ' ')
+                        if (!(startOfLine < end && markdown[startOfLine] == ' '))
                         {
-                            startOfLine++;
-                            nonSpacePos++;
+                            skip = true;
                         }
                     }
                     else
@@ -238,7 +238,7 @@ namespace Unicord.Universal.Parsers.Markdown
                         }
 
                         // This check needs to go after the code block check.
-                        if (newBlockElement == null && nonSpaceChar == '>' && !inlineOnly)
+                        if (newBlockElement == null && nonSpaceChar == '>' && !inlineOnly && nonSpacePos + 1 < end && markdown[nonSpacePos + 1] == ' ')
                         {
                             newBlockElement = QuoteBlock.Parse(markdown, realStartOfLine, startOfNextLine, quoteDepth, out endOfBlock);
                         }

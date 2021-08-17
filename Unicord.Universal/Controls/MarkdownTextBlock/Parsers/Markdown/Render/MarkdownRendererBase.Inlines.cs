@@ -47,6 +47,13 @@ namespace Unicord.Universal.Parsers.Markdown.Render
         protected abstract void RenderBoldRun(BoldTextInline element, IRenderContext context);
 
         /// <summary>
+        /// Renders an underlined run element.
+        /// </summary>
+        /// <param name="element"> The parsed inline element to render. </param>
+        /// <param name="context"> Persistent state. </param>
+        protected abstract void RenderUnderlineRun(UnderlineTextInline element, IRenderContext context);
+
+        /// <summary>
         /// Renders a link element
         /// </summary>
         /// <param name="element"> The parsed inline element to render. </param>

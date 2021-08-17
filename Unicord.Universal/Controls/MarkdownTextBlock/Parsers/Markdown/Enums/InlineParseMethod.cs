@@ -21,6 +21,8 @@ namespace Unicord.Universal.Parsers.Markdown
         /// </summary>
         BoldItalic,
 
+        Underline,
+
         /// <summary>
         /// A code element
         /// </summary>

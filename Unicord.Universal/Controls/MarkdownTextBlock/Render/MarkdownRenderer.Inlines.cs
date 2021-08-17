@@ -115,6 +115,38 @@ namespace Unicord.Universal.Controls.Markdown.Render
         }
 
         /// <summary>
+        /// Renders an underlined run element.
+        /// </summary>
+        /// <param name="element"> The parsed inline element to render. </param>
+        /// <param name="context"> Persistent state. </param>
+        protected override void RenderUnderlineRun(UnderlineTextInline element, IRenderContext context)
+        {
+            if (!(context is InlineRenderContext localContext))
+            {
+                throw new RenderContextIncorrectException();
+            }
+
+            // Create the text run
+            var boldSpan = new Span
+            {
+                TextDecorations = TextDecorations.Underline
+            };
+
+            var childContext = new InlineRenderContext(boldSpan.Inlines, context)
+            {
+                Parent = boldSpan,
+                WithinUnderline = true
+            };
+
+            // Render the children into the bold inline.
+            RenderInlineChildren(element.Inlines, childContext);
+
+            // Add it to the current inlines
+            localContext.InlineCollection.Add(boldSpan);
+        }
+
+
+        /// <summary>
         /// Renders a link element
         /// </summary>
         /// <param name="element"> The parsed inline element to render. </param>
@@ -425,6 +457,11 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     text.FontWeight = FontWeights.Bold;
                 }
 
+                if (localContext.WithinUnderline)
+                {
+                    text.TextDecorations = TextDecorations.Underline;
+                }
+
                 localContext.InlineCollection.Add(text);
             }
             else
@@ -441,6 +478,11 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 if (localContext.WithinBold)
                 {
                     text.FontWeight = FontWeights.Bold;
+                }
+
+                if(localContext.WithinUnderline)
+                {
+                    text.TextDecorations = TextDecorations.Underline;
                 }
 
                 var borderthickness = InlineCodeBorderThickness;
@@ -532,6 +574,11 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 if (localContext.WithinBold)
                 {
                     text.FontWeight = FontWeights.Bold;
+                }
+
+                if (localContext.WithinUnderline)
+                {
+                    text.TextDecorations = TextDecorations.Underline;
                 }
 
                 text.Blocks.Add(paragraph);

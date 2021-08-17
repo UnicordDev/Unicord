@@ -24,6 +24,8 @@ namespace Unicord.Universal.Parsers.Markdown
         /// </summary>
         Italic,
 
+        Underline,
+
         /// <summary>
         /// A link in markdown syntax
         /// </summary>

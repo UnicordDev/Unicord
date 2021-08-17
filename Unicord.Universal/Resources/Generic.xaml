@@ -55,8 +55,8 @@
         <Setter Property="InlineCodeBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
         <Setter Property="CodeFontFamily" Value="Consolas"/>
         <Setter Property="InlineCodeFontFamily" Value="Consolas"/>
-        <Setter Property="CodeMargin" Value="0, 7, 0, 7" />
-        <Setter Property="CodePadding" Value="10, 6, 10, 6" />
+        <Setter Property="CodeMargin" Value="0,4" />
+        <Setter Property="CodePadding" Value="8,4" />
         <Setter Property="EmojiFontFamily" Value="Segoe UI Emoji" />
         <Setter Property="Header1FontWeight" Value="Bold" />
         <Setter Property="Header1FontSize" Value="20" />
@@ -88,7 +88,7 @@
         <Setter Property="ListMargin" Value="0, 5, 0, 5" />
         <Setter Property="ListGutterWidth" Value="32" />
         <Setter Property="ListBulletSpacing" Value="8" />
-        <Setter Property="ParagraphMargin" Value="0, 5, 0, 5" />
+        <Setter Property="ParagraphMargin" Value="0,4" />
         <Setter Property="TableBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
         <Setter Property="TableBorderThickness" Value="1" />
         <Setter Property="TableCellPadding" Value="9, 4, 9, 4" />

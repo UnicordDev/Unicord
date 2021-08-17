@@ -116,6 +116,10 @@ namespace Unicord.Universal.Parsers.Markdown.Render
                     RenderTextRun((TextRunInline)element, context);
                     break;
 
+                case MarkdownInlineType.Underline:
+                    RenderUnderlineRun((UnderlineTextInline)element, context);
+                    break;
+
                 case MarkdownInlineType.Italic:
                     RenderItalicRun((ItalicTextInline)element, context);
                     break;

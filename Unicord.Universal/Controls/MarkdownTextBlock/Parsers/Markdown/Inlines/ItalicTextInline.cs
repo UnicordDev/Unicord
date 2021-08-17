@@ -78,6 +78,12 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
                 return null;
             }
 
+            // Discord avoids italicising snake_case_for_some_reason
+            if (startChar == '_' && innerEnd + 1 < maxEnd && !ParseHelpers.IsMarkdownWhiteSpace(markdown[innerEnd + 1]))
+            {
+                return null;
+            }
+
             // We found something!
             var result = new ItalicTextInline
             {

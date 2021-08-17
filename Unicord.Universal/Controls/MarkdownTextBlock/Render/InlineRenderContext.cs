@@ -29,8 +29,14 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 WithinBold = inlinecontext.WithinBold;
                 WithinItalics = inlinecontext.WithinItalics;
                 WithinHyperlink = inlinecontext.WithinHyperlink;
+                WithinUnderline = inlinecontext.WithinUnderline;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Current Element is being rendered inside an Italics Run.
+        /// </summary>
+        public bool WithinUnderline { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the Current Element is being rendered inside an Italics Run.

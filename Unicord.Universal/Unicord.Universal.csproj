@@ -246,6 +246,7 @@
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\StrikethroughTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\SpoilerTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\TextRunInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\UnderlineTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownBlock.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownDocument.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownElement.cs" />
