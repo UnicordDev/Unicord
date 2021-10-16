@@ -39,7 +39,11 @@
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
                         <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding User.Username, Mode=OneWay}"/>#<Run Text="{Binding User.Discriminator, Mode=OneWay}"/>
                     </TextBlock>
-                    <TextBlock Text="{Binding User.Email}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="email" VerticalAlignment="Center"/>
+                        <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
+                        <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
             <Button Grid.Column="1" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />

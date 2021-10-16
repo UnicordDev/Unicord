@@ -123,6 +123,12 @@
   <data name="ContactsUnavailable.Text" xml:space="preserve">
     <value>Contact syncing is not available on this device.</value>
   </data>
+  <data name="EmailHideButton.Content" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="EmailRevealButton.Content" xml:space="preserve">
+    <value>Reveal</value>
+  </data>
   <data name="FriendsText.Text" xml:space="preserve">
     <value>Friends</value>
   </data>
