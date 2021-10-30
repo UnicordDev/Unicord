@@ -1,21 +1,12 @@
 [submodule "Libraries/WamWooWam.Core"]
 	path = Libraries/WamWooWam.Core
 	url = https://github.com/WamWooWam/WamWooWam.Core
-[submodule "Libraries/Native/libsodium"]
-	path = Libraries/Native/libsodium
-	url = https://github.com/WamWooWam/libsodium
-[submodule "Libraries/Native/opus"]
-	path = Libraries/Native/opus
-	url = https://github.com/WamWooWam/opus
 [submodule "Libraries/MomentSharp"]
 	path = Libraries/MomentSharp
 	url = https://github.com/WamWooWam/MomentSharp
 [submodule "Libraries/DSharpPlus"]
 	path = Libraries/DSharpPlus
 	url = https://github.com/WamWooWam/DSharpPlus/
-[submodule "Libraries/Native/webrtc-uwp-sdk"]
-	path = Libraries/Native/webrtc-uwp-sdk
-	url = https://github.com/webrtc-uwp/webrtc-uwp-sdk.git
 [submodule "Libraries/unicode.net"]
 	path = Libraries/unicode.net
 	url = https://github.com/wamwoowam/unicode.net
