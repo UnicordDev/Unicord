@@ -1,7 +1,0 @@
-{
-    "name": "Square",
-    "short_description": "Compact and square.",
-    "author": "WamWooWam",
-    "display_logo": "images/logo.png",
-    "use_compact": true
-}

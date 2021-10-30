@@ -179,7 +179,7 @@ namespace Unicord.Universal.Parsers.Markdown.Blocks
             // Blank lines should be trimmed from the start and end.
             return new CodeBlock()
             {
-                Text = code.ToString().Trim('\r', '\n'),
+                Text = code.ToString().Trim('\r', '\n').Trim('`'),
                 CodeLanguage = !string.IsNullOrWhiteSpace(codeLanguage) ? codeLanguage.Trim() : null
             };
         }

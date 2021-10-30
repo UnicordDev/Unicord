@@ -10,12 +10,13 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
-using Unicord.Universal.Voice;
+//using Unicord.Universal.Voice;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
@@ -34,7 +35,7 @@ namespace Unicord.Universal.Pages
     public sealed partial class DiscordPage : Page
     {
         public Frame MainFrame => mainFrame;
-        public Frame SidebarFrame => sidebarFrame;
+        public Frame LeftSidebarFrame => leftSidebarFrame;
 
         private MainPageArgs _args;
         private bool _loaded;
@@ -44,7 +45,7 @@ namespace Unicord.Universal.Pages
 
         internal SwipeOpenHelper _helper;
 
-        private bool _isPaneOpen => ContentTransform.X != 0;
+        private bool _isPaneOpen => MainGridTransform.X != 0;
 
         public DiscordPage()
         {
@@ -56,6 +57,8 @@ namespace Unicord.Universal.Pages
 
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
+
+            //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -93,6 +96,8 @@ namespace Unicord.Universal.Pages
             }
             else
             {
+                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
                 iconGrid.Visibility = Visibility.Visible;
             }
         }
@@ -109,14 +114,12 @@ namespace Unicord.Universal.Pages
                 App.Discord.MessageCreated += Notification_MessageCreated;
 
                 UpdateTitleBar();
-                CheckSettingsPane();
 
                 _loaded = true;
 
                 this.FindParent<MainPage>().HideConnectingOverlay();
 
                 var service = DiscordNavigationService.GetForCurrentView();
-
                 if (_args != null && _args.ChannelId != 0 && App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToSpecifiedChannel");
@@ -126,7 +129,7 @@ namespace Unicord.Universal.Pages
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToFriendsPage");
                     Model.IsFriendsSelected = true;
-                    SidebarFrame.Navigate(typeof(DMChannelsPage));
+                    LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
 
@@ -193,15 +196,6 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            if (MainFrame.CurrentSourcePageType == typeof(ChannelPage))
-            {
-                notification.Margin = new Thickness(0, 42, 4, 0);
-            }
-            else
-            {
-                notification.Margin = new Thickness(0, 20, 4, 0);
-            }
-
             notification.Show(new MessageControl() { Message = message }, 7_000);
         }
 
@@ -228,7 +222,7 @@ namespace Unicord.Universal.Pages
 
         public void CloseSplitPane()
         {
-            if (ActualWidth <= 768 || ContentTransform.X < 0)
+            if (ActualWidth <= 768 || MainGridTransform.X < 0)
             {
                 _helper.Cancel();
                 ClosePaneMobileStoryboard.Begin();
@@ -250,18 +244,17 @@ namespace Unicord.Universal.Pages
             if (Model.Navigating)
                 return;
 
-            if (e.AddedItems.FirstOrDefault() is DiscordGuild g)
+            if (e.AddedItems.FirstOrDefault() is DiscordGuild guild)
             {
-                if (!g.IsUnavailable)
+                if (!guild.IsUnavailable)
                 {
-                    sidebarFrame.Navigate(typeof(GuildChannelListPage), g);
+                    LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guild);
                     Model.IsFriendsSelected = false;
                 }
                 else
                 {
                     Model.SelectedGuild = null;
-                    var loader = ResourceLoader.GetForViewIndependentUse();
-                    await UIUtilities.ShowErrorDialogAsync(loader.GetString("ServerUnavailableTitle"), loader.GetString("ServerUnavailableMessage"));
+                    await UIUtilities.ShowErrorDialogAsync("ServerUnavailableTitle", "ServerUnavailableMessage");
                 }
             }
         }
@@ -301,24 +294,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void CheckSettingsPane()
-        {
-            if (ActualWidth <= 768)
-            {
-                SettingsPaneTransform.Y = 0;
-                SettingsPaneTransform.X = 0;
-                SettingsContainer.Width = double.NaN;
-                SettingsContainer.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                SettingsPaneTransform.Y = 0;
-                SettingsContainer.Width = 450;
-                SettingsPaneTransform.X = 450;
-                SettingsContainer.HorizontalAlignment = HorizontalAlignment.Right;
-            }
-        }
-
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var service = SettingsService.GetForCurrentView();
@@ -335,31 +310,14 @@ namespace Unicord.Universal.Pages
             Analytics.TrackEvent("DiscordPage_OpenSettings");
 
             SettingsOverlayGrid.Visibility = Visibility.Visible;
-
-            CheckSettingsPane();
-
-            if (ActualWidth > 768)
-            {
-                OpenSettingsDesktopStoryboard.Begin();
-            }
-            else
-            {
-                OpenSettingsMobileStoryboard.Begin();
-            }
+            OpenSettingsDesktopStoryboard.Begin();
 
             SettingsGrid.Navigate(typeof(SettingsPage), page, new SuppressNavigationTransitionInfo());
         }
 
         internal void CloseSettings()
         {
-            if (ActualWidth > 768)
-            {
-                CloseSettingsDesktopStoryboard.Begin();
-            }
-            else
-            {
-                CloseSettingsMobileStoryboard.Begin();
-            }
+            CloseSettingsDesktopStoryboard.Begin();
         }
 
         private void CloseSettingsStoryboard_Completed(object sender, object e)

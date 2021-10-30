@@ -692,6 +692,23 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty AllowHugeEmojiProperty =
             DependencyProperty.Register("AllowHugeEmoji", typeof(bool), typeof(MarkdownTextBlock), new PropertyMetadata(false));
 
+        public CornerRadius CodeCornerRadius
+        {
+            get { return (CornerRadius)GetValue(CodeCornerRadiusProperty); }
+            set { SetValue(CodeCornerRadiusProperty, value); }
+        }
+
+        public static readonly DependencyProperty CodeCornerRadiusProperty =
+            DependencyProperty.Register("CodeCornerRadius", typeof(CornerRadius), typeof(MarkdownTextBlock), new PropertyMetadata(null));
+
+        public CornerRadius InlineCodeCornerRadius
+        {
+            get { return (CornerRadius)GetValue(InlineCodeCornerRadiusProperty); }
+            set { SetValue(InlineCodeCornerRadiusProperty, value); }
+        }
+
+        public static readonly DependencyProperty InlineCodeCornerRadiusProperty =
+            DependencyProperty.Register("InlineCodeCornerRadius", typeof(CornerRadius), typeof(MarkdownTextBlock), new PropertyMetadata(null));
 
         /// <summary>
         /// Holds a list of hyperlinks we are listening to.

@@ -1,0 +1,13 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls">
+
+    <flyouts:ChannelContextFlyout x:Key="ChannelContextFlyout"/>
+    <flyouts:DirectMessageContextFlyout x:Key="DirectMessageContextFlyout"/>
+    <flyouts:GuildContextFlyout x:Key="GuildContextFlyout"/>
+    <flyouts:MessageContextFlyout x:Key="MessageContextFlyout"/>
+    <flyouts:UserListContextFlyout x:Key="UserListContextFlyout"/>
+
+</ResourceDictionary>

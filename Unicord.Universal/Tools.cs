@@ -8,9 +8,12 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Net.Abstractions;
 using DSharpPlus.Net.Serialization;
+using Humanizer;
+using Humanizer.Bytes;
+using NeoSmart.Unicode;
 using Newtonsoft.Json;
 using Unicord.Universal.Misc;
-using Unicord.Universal.Native;
+//using Unicord.Universal.Native;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
@@ -36,7 +39,6 @@ namespace Unicord.Universal
         private const int NITRO_CLASSIC_UPLOAD_LIMIT = 52_428_800;
         private const int UPLOAD_LIMIT = 8_388_608;
 
-        public static Emoji[] Emoji { get; internal set; }
         public static HttpClient HttpClient => _httpClient.Value;
 
         private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
@@ -51,23 +53,32 @@ namespace Unicord.Universal
 
         public static string ToFileSizeString(ulong size)
         {
-            try
-            {
-                return Shlwapi.StrFormatByteSizeEx(size, SFBSFlags.TruncateUndisplayedDecimalDigits);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return Files.SizeSuffix((long)size);
-            }
+            return ByteSize.FromBytes(size).ToString("#.##");
         }
 
         public static Task DownloadToFileAsync(Uri url, StorageFile file)
         {
-            return DownloadToFileWithProgressAsync(url, file, new Progress<HttpProgress>());
+            return DownloadToFileAsync(url, file, new Progress<HttpProgress>());
         }
 
-        public static async Task DownloadToFileWithProgressAsync(Uri url, StorageFile file, IProgress<HttpProgress> progress)
+        public static Task DownloadToFileAsync(Uri url, StorageFile file, IProgress<double?> progress)
+        {
+            void HttpProgressToDouble(HttpProgress p)
+            {
+                if (p.TotalBytesToReceive.HasValue)
+                {
+                    progress?.Report(p.BytesReceived / (double)p.TotalBytesToReceive.Value);
+                }
+                else
+                {
+                    progress?.Report(null);
+                }
+            }
+
+            return DownloadToFileAsync(url, file, new Progress<HttpProgress>(HttpProgressToDouble));
+        }
+
+        public static async Task DownloadToFileAsync(Uri url, StorageFile file, IProgress<HttpProgress> progress)
         {
             CachedFileManager.DeferUpdates(file);
 
@@ -106,7 +117,7 @@ namespace Unicord.Universal
             return list;
         }
 
-        public static T FindParent<T>(this DependencyObject obj) where T : DependencyObject
+        public static T FindParent<T>(this DependencyObject obj, string controlName = null) where T : FrameworkElement
         {
             var parent = VisualTreeHelper.GetParent(obj);
             if (parent == null)
@@ -114,7 +125,7 @@ namespace Unicord.Universal
                 return default;
             }
 
-            return parent is T obj1 ? obj1 : parent.FindParent<T>();
+            return parent is T obj1 && (controlName == null || obj1.Name == controlName) ? obj1 : parent.FindParent<T>(controlName);
         }
 
         public static T FindChild<T>(this DependencyObject parent, string controlName = null) where T : FrameworkElement
@@ -142,6 +153,8 @@ namespace Unicord.Universal
                 var emoteAccelerator = new KeyboardAccelerator() { Key = key, Modifiers = modifiers, ScopeOwner = element };
                 emoteAccelerator.Invoked += handler;
 
+                if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode"))
+                    element.KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
                 element.KeyboardAccelerators.Add(emoteAccelerator);
             }
         }
@@ -219,7 +232,7 @@ namespace Unicord.Universal
         {
             try
             {
-                return Shlwapi.AssocQueryString(ASSOCF.NONE, ASSOCSTR.FRIENDLYAPPNAME, extension, "");
+                //return Shlwapi.AssocQueryString(ASSOCF.NONE, ASSOCSTR.FRIENDLYAPPNAME, extension, "");
             }
             catch (Exception ex)
             {
@@ -315,31 +328,27 @@ namespace Unicord.Universal
             return ~lo < 0 ? lo : ~lo;
         }
 
-        public static async Task<List<DiscordEmoji>> GetEmojiAsync(DiscordChannel channel)
+        public static List<DiscordEmoji> GetEmoji(DiscordChannel channel)
         {
-            await EnsureEmojiListAsync();
-
             var guildEmoji = GetAllowedGuildEmoji(channel).ToList();
             guildEmoji.AddRange(DiscordEmoji.UnicodeEmojis.Select(e => DiscordEmoji.FromName(App.Discord, e.Key)));
 
             return guildEmoji;
         }
 
-        public static async Task<List<EmojiGroup>> GetGroupedEmojiAsync(string text, DiscordChannel channel)
+        public static List<EmojiGroup> GetGroupedEmoji(string text, DiscordChannel channel)
         {
-            await EnsureEmojiListAsync();
-
             var guildEmoji = GetAllowedGuildEmoji(channel);
             var cult = CultureInfo.InvariantCulture.CompareInfo;
             var n = !string.IsNullOrWhiteSpace(text);
 
-            var emojiEnum = NeoSmart.Unicode.Emoji.All
+            var emojiEnum = Emoji.All
                     .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
                     .GroupBy(e => e.Group)
                     .Select(g => new EmojiGroup(g.Key, g))
                     .ToList();
 
-            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
+            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.DiscordName, text, CompareOptions.IgnoreCase) >= 0 : true)
                 .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
                 .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
                 .Select(g => new EmojiGroup(g.Key, g))
@@ -353,7 +362,8 @@ namespace Unicord.Universal
         private static IEnumerable<DiscordEmoji> GetAllowedGuildEmoji(DiscordChannel channel)
         {
             IEnumerable<DiscordEmoji> enumerable = null;
-            if ((channel.IsPrivate || channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)) && App.Discord.CurrentUser.HasNitro())
+            var hasNitro = App.Discord.CurrentUser.HasNitro();
+            if ((channel.IsPrivate || channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)) && hasNitro)
             {
                 enumerable = App.Discord.Guilds.Values
                     .SelectMany(g => g.Emojis.Values)
@@ -362,23 +372,13 @@ namespace Unicord.Universal
             }
             else
             {
-                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name);
+                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name).Where(e => e.IsAnimated ? hasNitro : true);
             }
 
             return enumerable ?? Enumerable.Empty<DiscordEmoji>();
         }
 
-        private static async Task EnsureEmojiListAsync()
-        {
-            if (Emoji == null)
-            {
-                var emojiFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/emoji.json"));
-                var emojiList = await FileIO.ReadTextAsync(emojiFile);
-                Emoji = await Task.Run(() => JsonConvert.DeserializeObject<Emoji[]>(emojiList));
-            }
-        }
-
-        public static bool IsText(this DiscordChannel channel) => 
+        public static bool IsText(this DiscordChannel channel) =>
             channel.Type == ChannelType.Text || channel.Type == ChannelType.News || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group;
         public static bool IsVoice(this DiscordChannel channel) =>
             channel.Type == ChannelType.Voice || channel.Type == ChannelType.Stage;

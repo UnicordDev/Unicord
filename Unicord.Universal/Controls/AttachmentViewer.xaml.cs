@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DSharpPlus.Entities;
-using Unicord.Universal.Native;
+using Microsoft.Toolkit.Uwp.Helpers;
+//using Unicord.Universal.Native;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -11,6 +12,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -28,7 +30,8 @@ namespace Unicord.Universal.Controls
         private static readonly string[] _mediaExtensions =
             new string[] { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus" };
 
-        private bool _audioOnly;
+        private Size? naturalSize = null;
+        private bool useNaturalSize = false;
 
         private DispatcherTimer _timer;
         private StorageFile _shareFile;
@@ -67,8 +70,11 @@ namespace Unicord.Universal.Controls
             var url = Attachment.Url;
             var fileExtension = Path.GetExtension(url).ToLowerInvariant();
 
+            naturalSize = Attachment.Width != 0 && Attachment.Height != 0 ? new Size(Attachment.Width, Attachment.Height) : null;
             if (_mediaExtensions.Contains(fileExtension))
             {
+                useNaturalSize = true;
+
                 var mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = true,
@@ -76,21 +82,15 @@ namespace Unicord.Universal.Controls
                     PosterSource = Attachment.Width != 0 ? new BitmapImage(new Uri(Attachment.ProxyUrl + "?format=jpeg")) : null
                 };
 
-                if (Attachment.Width == 0)
-                {
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
-                    {
-                        mediaPlayer.TransportControls.ShowAndHideAutomatically = false;
-                    }
+                mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
+                mediaPlayer.TransportControls.IsCompact = true;
 
-                    mediaPlayer.VerticalAlignment = VerticalAlignment.Top;
-                    mediaPlayer.VerticalContentAlignment = VerticalAlignment.Top;
-                    detailsGrid.Visibility = Visibility.Collapsed;
-                    _audioOnly = true;
+                if (naturalSize == null)
+                {
+                    mediaPlayer.MediaPlayer.MediaOpened += OnMediaOpened;
                 }
 
-                mainGrid.Content = mediaPlayer;
-
+                mainGrid.Child = mediaPlayer;
                 detailsGrid.Visibility = Visibility.Collapsed;
             }
             else if (fileExtension == ".svg")
@@ -99,12 +99,14 @@ namespace Unicord.Universal.Controls
                 var image = new Image();
                 image.Source = source;
                 image.Stretch = Stretch.Uniform;
-                mainGrid.Content = image;
+                mainGrid.Child = image;
 
                 detailsGrid.Visibility = Visibility.Collapsed;
             }
             else if (Attachment.Height != 0 && Attachment.Width != 0)
             {
+                useNaturalSize = true;
+
                 var imageElement = new ImageElement()
                 {
                     ImageWidth = Attachment.Width,
@@ -113,46 +115,50 @@ namespace Unicord.Universal.Controls
                 };
 
                 imageElement.Tapped += Image_Tapped;
-                mainGrid.Content = imageElement;
+                mainGrid.Child = imageElement;
 
                 detailsGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
                 detailsTransform.Y = 0;
-                grid.PointerEntered -= Grid_PointerEntered;
-                grid.PointerExited -= Grid_PointerExited;
+            }
+
+            InvalidateMeasure();
+        }
+
+        private void OnMediaOpened(MediaPlayer sender, object args)
+        {
+            if (naturalSize != null) return;
+
+            var width = sender.PlaybackSession.NaturalVideoWidth;
+            var height = sender.PlaybackSession.NaturalVideoHeight;
+            if (width != 0 && height != 0)
+            {
+                this.Dispatcher.AwaitableRunAsync(() =>
+                {
+                    naturalSize = new Size(width, height);
+                    InvalidateMeasure();
+                });
             }
         }
 
-
         protected override Size MeasureOverride(Size constraint)
         {
-            if (Attachment.Width != 0)
+            if (naturalSize != null)
             {
-                double width = Attachment.Width;
-                double height = Attachment.Height;
+                double width = naturalSize.Value.Width;
+                double height = naturalSize.Value.Height;
 
                 Drawing.ScaleProportions(ref width, ref height, 640, 480);
-                Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
-
-                mainGrid.Width = width;
-                mainGrid.Height = height;
-
-                Clip = new RectangleGeometry() { Rect = new Rect(0, 0, width, height) };
+                Drawing.ScaleProportions(ref width, ref height, Math.Min(constraint.Width, 640), Math.Min(constraint.Height, 480));
 
                 return new Size(width, height);
             }
-            else if (_audioOnly)
+            else if (useNaturalSize)
             {
                 var width = (int)Math.Min(constraint.Width, 480);
-                var height = 42;
-
-                mainGrid.Width = width;
-                mainGrid.Height = height;
-
-                Clip = new RectangleGeometry() { Rect = new Rect(0, 0, width, height) };
-
+                var height = 46;
                 return new Size(width, height);
             }
 
@@ -161,7 +167,7 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            mainGrid.Content = null;
+            mainGrid.Child = null;
             _timer?.Stop();
         }
 
@@ -223,7 +229,7 @@ namespace Unicord.Universal.Controls
 
                 if (file != null)
                 {
-                    await Tools.DownloadToFileWithProgressAsync(new Uri(Attachment.Url), file, progress);
+                    await Tools.DownloadToFileAsync(new Uri(Attachment.Url), file, progress);
                 }
             }
             catch (Exception ex)
@@ -262,7 +268,7 @@ namespace Unicord.Universal.Controls
                     downloadProgressBar.Value = p.BytesReceived;
                 });
 
-                await Tools.DownloadToFileWithProgressAsync(new Uri(Attachment.Url), _shareFile, progress);
+                await Tools.DownloadToFileAsync(new Uri(Attachment.Url), _shareFile, progress);
                 transferManager.DataRequested += _dataTransferManager_DataRequested;
                 DataTransferManager.ShowShareUI();
             }

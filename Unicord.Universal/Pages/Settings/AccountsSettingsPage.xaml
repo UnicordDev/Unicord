@@ -60,7 +60,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="contactsUnavailable" x:Uid="/AccountsSettingsPage/ContactsUnavailable"  Grid.ColumnSpan="2" Visibility="Collapsed" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+            <TextBlock x:Name="contactsUnavailable" x:Uid="/AccountsSettingsPage/ContactsUnavailable"  Grid.ColumnSpan="2" Visibility="Collapsed" TextWrapping="WrapWholeWords" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
 
             <ProgressBar Grid.Row="1" x:Name="syncingProgressBar" Visibility="Collapsed" VerticalAlignment="Top" Grid.ColumnSpan="2" />
             <toolkit:MarkdownTextBlock x:Name="md" x:Uid="/AccountsSettingsPage/SyncPeopleText" Grid.Row="1" VerticalAlignment="Center" Background="Transparent" LinkClicked="OnMarkdownLinkClicked" TextWrapping="WrapWholeWords"/>

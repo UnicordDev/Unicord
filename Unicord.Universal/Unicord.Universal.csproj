@@ -4,43 +4,32 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{9DA969AF-DA57-4723-9A74-8E4E26A325FF}</ProjectGuid>
+    <ProjectGuid>{67FAEA09-9D99-4ADC-A6C3-610702B7A3DA}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Unicord.Universal</RootNamespace>
     <AssemblyName>Unicord.Universal</AssemblyName>
-    <DefaultLanguage>en-GB</DefaultLanguage>
-    <LangVersion>9</LangVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <LangVersion>9</LangVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
-    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
-    <FileAlignment>512</FileAlignment>
-    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>
-    </PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>6BD8C4FCFA3FDEFC732E95AC6319476735CC564B</PackageCertificateThumbprint>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64|arm</AppxBundlePlatforms>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-    <NullableContextOptions>disable</NullableContextOptions>
-    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
-    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <HockeyAppResourceId>b87a8458e7a24a688e6c3a2d11d08657</HockeyAppResourceId>
-    <AppxWinMdCacheEnabled>false</AppxWinMdCacheEnabled>
-    <AppxBundleAutoResourcePackageQualifiers>
-    </AppxBundleAutoResourcePackageQualifiers>
+    <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <PackageCertificatePassword />
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -50,11 +39,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
-    <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
-    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -62,58 +48,75 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <LangVersion>latest</LangVersion>
-    <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;ARM</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
-    <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -121,15 +124,12 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>none</ErrorReport>
+    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <LangVersion>latest</LangVersion>
-    <EnableGatekeeperAnalysis>false</EnableGatekeeperAnalysis>
-    <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -141,33 +141,36 @@
     </Compile>
     <Compile Include="Commands\AcknowledgeCommand.cs" />
     <Compile Include="Commands\BanCommand.cs" />
+    <Compile Include="Commands\ChangeNicknameCommand.cs" />
+    <Compile Include="Commands\CopyIdCommand.cs" />
     <Compile Include="Commands\CopyMessageCommand.cs" />
     <Compile Include="Commands\CopyUrlCommand.cs" />
-    <Compile Include="Commands\CopyIdCommand.cs" />
-    <Compile Include="Commands\EditModeCommand.cs" />
-    <Compile Include="Commands\EditChannelCommand.cs" />
-    <Compile Include="Commands\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\DeleteMessageCommand.cs" />
+    <Compile Include="Commands\EditChannelCommand.cs" />
+    <Compile Include="Commands\EditModeCommand.cs" />
+    <Compile Include="Commands\Generic\DownloadCommand.cs" />
+    <Compile Include="Commands\Generic\ShareCommand.cs" />
     <Compile Include="Commands\KickCommand.cs" />
+    <Compile Include="Commands\MessageUserCommand.cs" />
     <Compile Include="Commands\MuteCommand.cs" />
     <Compile Include="Commands\OpenNewWindowCommand.cs" />
     <Compile Include="Commands\PinChannelCommand.cs" />
     <Compile Include="Commands\PinMessageCommand.cs" />
-    <Compile Include="Commands\MessageUserCommand.cs" />
+    <Compile Include="Commands\Messages\ReactCommand.cs" />
     <Compile Include="Commands\ReplyCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
     <Compile Include="Controls\AttachmentViewer.xaml.cs">
       <DependentUpon>AttachmentViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\EmbedViewer.xaml.cs">
-      <DependentUpon>EmbedViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Embeds\EmbedFieldControl.xaml.cs">
       <DependentUpon>EmbedFieldControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Embeds\EmbedVideoControl.xaml.cs">
       <DependentUpon>EmbedVideoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EmbedViewer.xaml.cs">
+      <DependentUpon>EmbedViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
     <Compile Include="Controls\EmotePicker.xaml.cs">
@@ -188,6 +191,9 @@
     </Compile>
     <Compile Include="Controls\Flyouts\MessageContextFlyout.xaml.cs">
       <DependentUpon>MessageContextFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Flyouts\UserFlyout.xaml.cs">
+      <DependentUpon>UserFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Flyouts\UserListContextFlyout.xaml.cs">
       <DependentUpon>UserListContextFlyout.xaml</DependentUpon>
@@ -243,8 +249,8 @@
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\ItalicTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\LinkAnchorInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\MarkdownLinkInline.cs" />
-    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\StrikethroughTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\SpoilerTextInline.cs" />
+    <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\StrikethroughTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\TextRunInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\Inlines\UnderlineTextInline.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Parsers\Markdown\MarkdownBlock.cs" />
@@ -268,12 +274,10 @@
     <Compile Include="Controls\MarkdownTextBlock\Render\RenderContext.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Render\RenderContextIncorrectException.cs" />
     <Compile Include="Controls\MarkdownTextBlock\Render\UIElementCollectionRenderContext.cs" />
+    <Compile Include="Controls\Messages\AttachmentControl.cs" />
+    <Compile Include="Controls\Messages\AttachmentMediaControl.cs" />
     <Compile Include="Controls\Messages\MessageControl.cs" />
     <Compile Include="Controls\Messages\MessageEditTools.cs" />
-    <Compile Include="Controls\Presence\StatusIndicator.cs" />
-    <Compile Include="Converters\ComponentTemplateSelector.cs" />
-    <Compile Include="Interop\BitmapInterop.cs" />
-    <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Controls\Messages\StickerControl.cs" />
     <Compile Include="Controls\Messages\SystemMessageControl.cs" />
     <Compile Include="Controls\MessageTextBox.cs" />
@@ -283,37 +287,42 @@
     <Compile Include="Controls\Presence\PresenceControl.xaml.cs">
       <DependentUpon>PresenceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Presence\StatusIndicator.cs" />
     <Compile Include="Controls\RangeSelector\RangeChangedEventArgs.cs" />
     <Compile Include="Controls\RangeSelector\RangeSelector.cs" />
     <Compile Include="Controls\RichPresenceControl.xaml.cs">
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScaledContainer.cs" />
+    <Compile Include="Controls\ScaledContentControl.cs" />
     <Compile Include="Controls\SidebarSearchBox.cs" />
     <Compile Include="Controls\ThemePreviewControl.xaml.cs">
       <DependentUpon>ThemePreviewControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UniversalWebView.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UsernameControl.cs" />
     <Compile Include="Controls\Users\AvatarControl.cs" />
-    <Compile Include="Controls\VoiceConnectionControl.xaml.cs">
+    <Compile Include="Controls\Voice\VoiceConnectionControl.xaml.cs">
       <DependentUpon>VoiceConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\UsernameControl.cs" />
-    <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Converters\BoolOpacityConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\ChannelSymbolConverter.cs" />
+    <Compile Include="Converters\ChannelTypeTemplateSelector.cs" />
     <Compile Include="Converters\ColourBrushConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
+    <Compile Include="Converters\DiscordUriConverter.cs" />
     <Compile Include="Converters\DMIconConverter.cs" />
     <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
-    <Compile Include="Converters\DiscordUriConverter.cs" />
     <Compile Include="Converters\MemberOnlyConverter.cs" />
-    <Compile Include="Converters\ChannelTypeTemplateSelector.cs" />
+    <Compile Include="Converters\Messages\AttachmentTemplateSelector.cs" />
+    <Compile Include="Converters\Messages\AttachmentTypeConverter.cs" />
+    <Compile Include="Converters\Messages\ComponentTemplateSelector.cs" />
     <Compile Include="Converters\MessageTemplateSelector.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceConverters.cs" />
@@ -329,6 +338,9 @@
     </Compile>
     <Compile Include="Dialogs\ChangeNicknameDialog.xaml.cs">
       <DependentUpon>ChangeNicknameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ConfirmationDialog.xaml.cs">
+      <DependentUpon>ConfirmationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CreateServerDialog.xaml.cs">
       <DependentUpon>CreateServerDialog.xaml</DependentUpon>
@@ -357,25 +369,21 @@
     <Compile Include="Dialogs\ProfileOverlay.xaml.cs">
       <DependentUpon>ProfileOverlay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ConfirmationDialog.xaml.cs">
-      <DependentUpon>ConfirmationDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\TokenDialog.xaml.cs">
       <DependentUpon>TokenDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Integration\ContactListManager.cs" />
     <Compile Include="Integration\JumpListManager.cs" />
+    <Compile Include="Integration\WindowsHelloManager.cs" />
+    <Compile Include="Interop\BitmapInterop.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Misc\Emoji.cs" />
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
-    <Compile Include="Controls\Flyouts\UserFlyout.xaml.cs">
-      <DependentUpon>UserFlyout.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Misc\UnicordVersionProvider.cs" />
-    <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
+    <Compile Include="Models\ChannelEditViewModel.cs" />
     <Compile Include="Models\ChannelPermissionEditViewModel.cs" />
     <Compile Include="Models\ChannelViewModel.cs" />
     <Compile Include="Models\CreateServerModel.cs" />
@@ -385,15 +393,27 @@
     <Compile Include="Models\FriendsViewModel.cs" />
     <Compile Include="Models\GuildChannelListViewModel.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
+    <Compile Include="Models\Messages\AttachmentViewModel.cs" />
+    <Compile Include="Models\Messages\MessageViewModel.cs" />
+    <Compile Include="Models\Messages\ReactionViewModel.cs" />
     <Compile Include="Models\SearchPageModel.cs" />
+    <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
+    <Compile Include="Models\Settings\MediaSettingsModel.cs" />
+    <Compile Include="Models\Settings\MessagingSettingsModel.cs" />
+    <Compile Include="Models\Settings\SecuritySettingsModel.cs" />
     <Compile Include="Models\Settings\ThemesSettingsModel.cs" />
-    <Compile Include="Models\ViewModelBase.cs" />
+    <Compile Include="Models\Settings\RootSettingsModel.cs" />
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
+    <Compile Include="Models\ViewModelBase.cs" />
+    <Compile Include="Models\Voice\VoiceConnectionModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InstallThemePage.xaml.cs">
+      <DependentUpon>InstallThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -401,19 +421,11 @@
     <Compile Include="Pages\Management\ChannelEditPage.xaml.cs">
       <DependentUpon>ChannelEditPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\ChannelEditViewModel.cs" />
-    <Compile Include="Models\Settings\MessagingSettingsModel.cs" />
     <Compile Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml.cs">
       <DependentUpon>ChannelEditOverviewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml.cs">
       <DependentUpon>ChannelEditPermissionsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Settings\DebugSettingsPage.xaml.cs">
-      <DependentUpon>DebugSettingsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
-      <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\AboutSettingsPage.xaml.cs">
       <DependentUpon>AboutSettingsPage.xaml</DependentUpon>
@@ -421,11 +433,15 @@
     <Compile Include="Pages\Settings\AccountsSettingsPage.xaml.cs">
       <DependentUpon>AccountsSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Settings\MediaSettingsModel.cs" />
+    <Compile Include="Pages\Settings\DebugSettingsPage.xaml.cs">
+      <DependentUpon>DebugSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\MediaSettingsPage.xaml.cs">
       <DependentUpon>MediaSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Settings\SecuritySettingsModel.cs" />
+    <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
+      <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SecuritySettingsPage.xaml.cs">
       <DependentUpon>SecuritySettingsPage.xaml</DependentUpon>
     </Compile>
@@ -462,13 +478,16 @@
     <Compile Include="Pages\Subpages\UserListPage.xaml.cs">
       <DependentUpon>UserListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\InstallThemePage.xaml.cs">
-      <DependentUpon>InstallThemePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\VideoEditor.xaml.cs">
       <DependentUpon>VideoEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Themes\Controls\Messages.xaml.cs">
+      <DependentUpon>Messages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Themes\Templates.xaml.cs">
+      <DependentUpon>Templates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\BackgroundNotificationService.cs" />
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\DiscordNavigationService.cs" />
@@ -476,121 +495,35 @@
     <Compile Include="Services\OverlayService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SwipeOpenService.cs" />
-    <Compile Include="Resources\Templates.xaml.cs">
-      <DependentUpon>Templates.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Services\Windowing\ApplicationViewWindowingService.cs" />
     <Compile Include="Services\Windowing\AppWindowWindowingService.cs" />
     <Compile Include="Services\Windowing\WindowingService.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
+    <Compile Include="Utilities\MediaTranscoding.cs" />
+    <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />
     <Compile Include="Utilities\ThemeHelpers.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
-    <Compile Include="Tools.cs" />
-    <Compile Include="Integration\WindowsHelloManager.cs" />
-    <Compile Include="Utilities\MediaTranscoding.cs" />
-    <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\ThemePostprocessor.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
-    <Compile Include="Voice\VoiceConnectionModel.cs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Store'">
+  <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Store'">
-    <AppxManifest Include="Package.Debug.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\DiscordClyde.Dark.svg" />
     <Content Include="Assets\DiscordClyde.Light.svg" />
-    <Content Include="Assets\DiscordWordMark.Dark.svg" />
-    <Content Include="Assets\example-avatar.png" />
-    <Content Include="Assets\FiraCode-Regular.ttf" />
-    <Content Include="Assets\segmdl2.ttf" />
-    <Content Include="Assets\emoji.json" />
-    <PRIResource Include="Resources\en-GB\Resources.resw" />
-    <PRIResource Include="Resources\en-GB\LoginPage.resw" />
-    <PRIResource Include="Resources\en-GB\Dialogs.resw" />
-    <PRIResource Include="Resources\en-GB\AboutSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\AccountsSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\MediaSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\MessagingSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\SecuritySettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\SettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\ThemesSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\VoiceSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\AgeGatePage.resw" />
-    <PRIResource Include="Resources\en-GB\DMChannelsPage.resw" />
-    <PRIResource Include="Resources\en-GB\FriendsPage.resw" />
-    <PRIResource Include="Resources\en-GB\PinsPage.resw" />
-    <PRIResource Include="Resources\en-GB\UserListPage.resw" />
-    <PRIResource Include="Resources\en-GB\ChannelPage.resw" />
-    <PRIResource Include="Resources\en-GB\Voice.resw" />
-    <PRIResource Include="Resources\en-GB\VideoEditor.resw" />
-    <PRIResource Include="Resources\en-GB\Flyouts.resw" />
-    <PRIResource Include="Resources\en-GB\Controls.resw" />
-    <PRIResource Include="Resources\en-GB\Converters.resw" />
-    <PRIResource Include="Resources\en-GB\SearchPage.resw" />
-    <PRIResource Include="Resources\en-US\Resources.resw" />
-    <PRIResource Include="Resources\en-US\LoginPage.resw" />
-    <PRIResource Include="Resources\en-US\Dialogs.resw" />
-    <PRIResource Include="Resources\en-US\AboutSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\AccountsSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\MediaSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\MessagingSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\SecuritySettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\SettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\ThemesSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\VoiceSettingsPage.resw" />
-    <PRIResource Include="Resources\en-US\AgeGatePage.resw" />
-    <PRIResource Include="Resources\en-US\DMChannelsPage.resw" />
-    <PRIResource Include="Resources\en-US\FriendsPage.resw" />
-    <PRIResource Include="Resources\en-US\PinsPage.resw" />
-    <PRIResource Include="Resources\en-US\UserListPage.resw" />
-    <PRIResource Include="Resources\en-US\ChannelPage.resw" />
-    <PRIResource Include="Resources\en-US\Voice.resw" />
-    <PRIResource Include="Resources\en-US\VideoEditor.resw" />
-    <PRIResource Include="Resources\en-US\Flyouts.resw" />
-    <PRIResource Include="Resources\en-US\Controls.resw" />
-    <PRIResource Include="Resources\en-US\Converters.resw" />
-    <PRIResource Include="Resources\en-US\SearchPage.resw" />
-    <PRIResource Include="Resources\fr\AboutSettingsPage.resw" />
-    <PRIResource Include="Resources\fr\AccountsSettingsPage.resw" />
-    <PRIResource Include="Resources\fr\ChannelPage.resw" />
-    <PRIResource Include="Resources\fr\AgeGatePage.resw" />
-    <PRIResource Include="Resources\fr\Controls.resw" />
-    <PRIResource Include="Resources\fr\Converters.resw" />
-    <PRIResource Include="Resources\fr\Dialogs.resw" />
-    <PRIResource Include="Resources\fr\DMChannelsPage.resw" />
-    <PRIResource Include="Resources\fr\Flyouts.resw" />
-    <PRIResource Include="Resources\fr\FriendsPage.resw" />
-    <PRIResource Include="Resources\fr\LoginPage.resw" />
-    <PRIResource Include="Resources\fr\MediaSettingsPage.resw" />
-    <PRIResource Include="Resources\fr\MessagingSettingsPage.resw" />
-    <PRIResource Include="Resources\fr\PinsPage.resw" />
-    <PRIResource Include="Resources\fr\Resources.resw" />
-    <PRIResource Include="Resources\fr\SecuritySettingsPage.resw" />
-    <PRIResource Include="Resources\fr\SettingsPage.resw" />
-    <PRIResource Include="Resources\fr\ThemesSettingsPage.resw" />
-    <PRIResource Include="Resources\fr\UserListPage.resw" />
-    <PRIResource Include="Resources\fr\VideoEditor.resw" />
-    <PRIResource Include="Resources\fr\Voice.resw" />
-    <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
-    <PRIResource Include="Resources\en-GB\Permissions.resw" />
-    <Content Include="Assets\SegoeIcons.ttf" />
-    <Content Include="Assets\FluentSystemIcons-Regular.ttf" />
-    <None Include="Unicord.Universal_TemporaryKey.pfx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\DiscordWordMark.Light.svg" />
     <Content Include="Assets\DiscordLogo.Dark.svg" />
     <Content Include="Assets\DiscordLogo.Default.svg" />
     <Content Include="Assets\DiscordLogo.Light.svg" />
-    <Content Include="Assets\StoreLogo.backup.png" />
+    <Content Include="Assets\DiscordSplashScreen.Dark.svg" />
+    <Content Include="Assets\DiscordSplashScreen.Light.svg" />
+    <Content Include="Assets\DiscordWordMark.Dark.svg" />
+    <Content Include="Assets\DiscordWordMark.Light.svg" />
+    <Content Include="Assets\example-avatar.png" />
     <Content Include="Assets\Store\BadgeLogo.scale-100.png" />
     <Content Include="Assets\Store\BadgeLogo.scale-125.png" />
     <Content Include="Assets\Store\BadgeLogo.scale-150.png" />
@@ -606,6 +539,11 @@
     <Content Include="Assets\Store\SmallTile.scale-150.png" />
     <Content Include="Assets\Store\SmallTile.scale-200.png" />
     <Content Include="Assets\Store\SmallTile.scale-400.png" />
+    <Content Include="Assets\Store\SplashScreen.light.scale-100.png" />
+    <Content Include="Assets\Store\SplashScreen.light.scale-125.png" />
+    <Content Include="Assets\Store\SplashScreen.light.scale-150.png" />
+    <Content Include="Assets\Store\SplashScreen.light.scale-200.png" />
+    <Content Include="Assets\Store\SplashScreen.light.scale-400.png" />
     <Content Include="Assets\Store\SplashScreen.scale-100.png" />
     <Content Include="Assets\Store\SplashScreen.scale-125.png" />
     <Content Include="Assets\Store\SplashScreen.scale-150.png" />
@@ -646,307 +584,24 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Store\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Controls\MarkdownTextBlock\About.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="Controls\AttachmentViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\EmbedViewer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\EmotePicker.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\AddServerFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\ChannelContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\DirectMessageContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\GuildContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\MessageContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Presence\InlinePresenceControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Presence\PresenceControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\RichPresenceControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ThemePreviewControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\UploadItemsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\VoiceConnectionControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\BanDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\ChangeNicknameDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\ConfirmationDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\CreateServerDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\DeleteMessageDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\ErrorDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\GuildDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\InstallThemeDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\KickDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\ManageThemeDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\PinMessageDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\ProfileOverlay.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\TokenDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Flyouts\UserFlyout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ChannelPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\DiscordPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\LoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Management\ChannelEditPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\DebugSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\MessagingSettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\Settings\AboutSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\AccountsSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\MediaSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\SecuritySettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\SettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\ThemesSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Settings\VoiceSettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\SharePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\AgeGatePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\DMChannelsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\FriendsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\GuildChannelListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\PinsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\SearchPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Subpages\UserListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\InstallThemePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\VideoEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Colours.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Controls\Emoji.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Controls\Messages.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Controls\Permissions.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Controls\Presences.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Controls\Users.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\CustomStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Templates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Humanizer">
-      <Version>2.8.11</Version>
-    </PackageReference>
-    <PackageReference Include="Markdig">
-      <Version>0.24.0</Version>
+      <Version>2.8.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>4.2.0</Version>
+      <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>4.2.0</Version>
+      <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>4.2.0</Version>
+      <Version>4.3.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Push">
-      <Version>3.4.3</Version>
-    </PackageReference>
-    <!-- <PackageReference Include="Microsoft.Gaming.XboxGameBar">
-      <Version>5.3.200605002</Version>
-    </PackageReference> -->
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.12</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Services.Store.Engagement">
-      <Version>10.1901.28001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>6.1.1</Version>
@@ -960,172 +615,437 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
       <Version>6.1.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.6.0-prerelease.210430001</Version>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
     </PackageReference>
-    <PackageReference Include="System.Drawing.Common">
-      <Version>5.0.2</Version>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="Unicord.Universal.Voice">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="WindowsStateTriggers">
+      <Version>1.1.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="Controls\AttachmentViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\EmbedViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\EmotePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\AddServerFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\ChannelContextFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\DirectMessageContextFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\GuildContextFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\MessageContextFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\UserFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Presence\InlinePresenceControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Presence\PresenceControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\RichPresenceControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ThemePreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\UploadItemsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Voice\VoiceConnectionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\BanDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ChangeNicknameDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ConfirmationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CreateServerDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DeleteMessageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ErrorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\GuildDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\InstallThemeDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\KickDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ManageThemeDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PinMessageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ProfileOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\TokenDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ChannelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\DiscordPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\InstallThemePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Management\ChannelEditPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditOverviewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Management\Channel\ChannelEditPermissionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\AboutSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\AccountsSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\DebugSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\MediaSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\MessagingSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SecuritySettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\ThemesSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\VoiceSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SharePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\AgeGatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\DMChannelsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\FriendsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\GuildChannelListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\PinsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\SearchPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Subpages\UserListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\VideoEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Colours.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Emoji.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Messages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Permissions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Presences.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\UniversalWebView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Users.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\CustomStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\RS2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\RS2\ContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Controls\Flyouts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Templates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\emoji.json" />
+    <Content Include="Assets\FiraCode-Regular.ttf" />
+    <Content Include="Assets\FluentSystemIcons-Regular.ttf" />
+    <Content Include="Assets\segmdl2.ttf" />
+    <Content Include="Assets\SegoeIcons.ttf" />
+    <None Include="Unicord.Universal_TemporaryKey.pfx" />
+    <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\Voice.resw" />
+    <PRIResource Include="Resources\fr\VideoEditor.resw" />
+    <PRIResource Include="Resources\fr\UserListPage.resw" />
+    <PRIResource Include="Resources\fr\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\SettingsPage.resw" />
+    <PRIResource Include="Resources\fr\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
+    <PRIResource Include="Resources\fr\PinsPage.resw" />
+    <PRIResource Include="Resources\fr\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\LoginPage.resw" />
+    <PRIResource Include="Resources\fr\FriendsPage.resw" />
+    <PRIResource Include="Resources\fr\Flyouts.resw" />
+    <PRIResource Include="Resources\fr\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\fr\Dialogs.resw" />
+    <PRIResource Include="Resources\fr\Converters.resw" />
+    <PRIResource Include="Resources\fr\Controls.resw" />
+    <PRIResource Include="Resources\fr\ChannelPage.resw" />
+    <PRIResource Include="Resources\fr\AgeGatePage.resw" />
+    <PRIResource Include="Resources\fr\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\fr\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\Voice.resw" />
+    <PRIResource Include="Resources\en-US\VideoEditor.resw" />
+    <PRIResource Include="Resources\en-US\UserListPage.resw" />
+    <PRIResource Include="Resources\en-US\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\SettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\SearchPage.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\en-US\PinsPage.resw" />
+    <PRIResource Include="Resources\en-US\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\LoginPage.resw" />
+    <PRIResource Include="Resources\en-US\FriendsPage.resw" />
+    <PRIResource Include="Resources\en-US\Flyouts.resw" />
+    <PRIResource Include="Resources\en-US\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\en-US\Dialogs.resw" />
+    <PRIResource Include="Resources\en-US\Converters.resw" />
+    <PRIResource Include="Resources\en-US\Controls.resw" />
+    <PRIResource Include="Resources\en-US\ChannelPage.resw" />
+    <PRIResource Include="Resources\en-US\AgeGatePage.resw" />
+    <PRIResource Include="Resources\en-US\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\en-US\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\Voice.resw" />
+    <PRIResource Include="Resources\en-GB\VideoEditor.resw" />
+    <PRIResource Include="Resources\en-GB\UserListPage.resw" />
+    <PRIResource Include="Resources\en-GB\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\SettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\SearchPage.resw" />
+    <PRIResource Include="Resources\en-GB\Resources.resw" />
+    <PRIResource Include="Resources\en-GB\PinsPage.resw" />
+    <PRIResource Include="Resources\en-GB\Permissions.resw" />
+    <PRIResource Include="Resources\en-GB\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\LoginPage.resw" />
+    <PRIResource Include="Resources\en-GB\FriendsPage.resw" />
+    <PRIResource Include="Resources\en-GB\Flyouts.resw" />
+    <PRIResource Include="Resources\en-GB\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\en-GB\Dialogs.resw" />
+    <PRIResource Include="Resources\en-GB\Converters.resw" />
+    <PRIResource Include="Resources\en-GB\Controls.resw" />
+    <PRIResource Include="Resources\en-GB\ChannelPage.resw" />
+    <PRIResource Include="Resources\en-GB\AgeGatePage.resw" />
+    <PRIResource Include="Resources\en-GB\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\en-GB\AboutSettingsPage.resw" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj">
-      <Project>{95b0d2a9-7675-46ae-91d9-ed57dfdf47c4}</Project>
+      <Project>{c01b8589-13fe-4a6d-b159-6644977f58de}</Project>
       <Name>DSharpPlus.Rest</Name>
     </ProjectReference>
-    <ProjectReference Include="..\libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
-      <Project>{0a9dfe2d-7e59-4e58-a28c-e38028f2cfa0}</Project>
+    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
+      <Project>{0f4b3af7-9320-41ae-82d0-3737949499c7}</Project>
       <Name>DSharpPlus</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp\MomentSharp.csproj">
-      <Project>{95d6c6bd-2d67-4395-a7c0-234fa418ba19}</Project>
+      <Project>{8a4a933c-c579-4c36-9133-7d6721f99aec}</Project>
       <Name>MomentSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
-      <Project>{1a5b4fad-45ed-47dc-94a0-e14a0ecb5336}</Project>
-      <Name>WamWooWam.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\unicode.net\unicode\Unicode.csproj">
-      <Project>{01A262AF-E652-4381-88C3-2DCD7FDD9D93}</Project>
+      <Project>{c5ca3873-bf6a-4711-abed-f9d27d37ffb2}</Project>
       <Name>Unicode</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Unicord.Universal.Native\Unicord.Universal.Native.vcxproj">
-      <Project>{2427b481-8e92-433f-8714-53a2cde1bf7f}</Project>
-      <Name>Unicord.Universal.Native</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Unicord.Universal.Voice\Unicord.Universal.Voice.vcxproj">
-      <Project>{e3bc526e-debd-4f76-a669-9adade1d4fc8}</Project>
-      <Name>Unicord.Universal.Voice</Name>
+    <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
+      <Project>{6e8e3c2c-a7d2-4971-a97d-fa831e3ecf15}</Project>
+      <Name>WamWooWam.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Unicord\Unicord.csproj">
-      <Project>{9b4bb6a4-4aa7-4b7c-ac3e-12a52832a245}</Project>
+      <Project>{31e5688d-ae40-4b4b-8d99-132805a1082b}</Project>
       <Name>Unicord</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
-      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
-    </SDKReference>
-    <SDKReference Include="WindowsDesktop, Version=10.0.18362.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.18362.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.19041.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
   <Import Project="..\Unicord.Universal.Shared\Unicord.Universal.Shared.projitems" Label="Shared" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <Optimize>true</Optimize>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <Optimize>true</Optimize>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Store|ARM64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM64\Store\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;STORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

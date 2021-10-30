@@ -328,7 +328,7 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        private async void OnSuggestionBoxTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs e)
+        private void OnSuggestionBoxTextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs e)
         {
             if (e.Reason != AutoSuggestionBoxTextChangeReason.UserInput)
                 return;
@@ -340,7 +340,7 @@ namespace Unicord.Universal.Controls
                 ShouldSendTyping?.Invoke(this, null);
             }
 
-            await UpdateAutoSuggestBoxSource(sender);
+            UpdateAutoSuggestBoxSource(sender);
         }
 
         public void OnSuggestBoxSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
@@ -380,7 +380,7 @@ namespace Unicord.Universal.Controls
             }
         }
 
-        private async Task UpdateAutoSuggestBoxSource(AutoSuggestBox sender)
+        private void UpdateAutoSuggestBoxSource(AutoSuggestBox sender)
         {
             // don't ya just love off by one?
             var position = _textBox.SelectionStart.Clamp(0, Text.Length - 1);
@@ -427,7 +427,7 @@ namespace Unicord.Universal.Controls
 
             if (Text[_index] == ':' && _length > 2)
             {
-                await UpdateSourceForEmojiMentionsAsync(sender, text, cult);
+                UpdateSourceForEmojiMentions(sender, text, cult);
                 return;
             }
 
@@ -460,18 +460,18 @@ namespace Unicord.Universal.Controls
         {
             var channels = Channel.Guild.Channels.Values;
             sender.ItemsSource = channels.Where(c => c != null && c.Type != ChannelType.Voice && c.Type != ChannelType.Category && !string.IsNullOrWhiteSpace(c.Name))
-                                         .Where(c => c.CurrentPermissions.HasPermission(DSharpPlus.Permissions.AccessChannels))
+                                         .Where(c => c.CurrentPermissions.HasPermission(Permissions.AccessChannels))
                                          .Select(c => (channel: c, index: cult.IndexOf(c.Name, text, CompareOptions.IgnoreCase)))
                                          .Where(x => x.index != -1)
                                          .OrderByDescending(x => x.index)
                                          .Select(x => x.channel);
         }
 
-        private async Task UpdateSourceForEmojiMentionsAsync(AutoSuggestBox sender, string text, CompareInfo cult)
+        private void UpdateSourceForEmojiMentions(AutoSuggestBox sender, string text, CompareInfo cult)
         {
             if (_emoji == null)
             {
-                _emoji = await Tools.GetEmojiAsync(Channel);
+                _emoji = Tools.GetEmoji(Channel);
             }
 
             sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.GetSearchName(), text, CompareOptions.IgnoreCase)))

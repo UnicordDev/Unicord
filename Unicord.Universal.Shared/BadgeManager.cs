@@ -28,7 +28,7 @@ namespace Unicord.Universal.Shared
                 if (!unread)
                     return;
 
-                var badgeNumber = _discord.Guilds.Values.Sum(g => g.MentionCount) + _discord.PrivateChannels.Values.Sum(g => g.ReadState?.MentionCount);
+                var badgeNumber = _discord.Guilds.Values.Sum(g => Math.Max(g.MentionCount, 0)) + _discord.PrivateChannels.Values.Sum(g => Math.Max(g.ReadState?.MentionCount ?? 0, 0));
                 if (badgeNumber != 0)
                 {
                     var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeNumber);

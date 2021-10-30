@@ -4,7 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:converters="using:Unicord.Universal.Converters"
-    xmlns:commands="using:Unicord.Universal.Commands" xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts" RequiresPointerMode="WhenRequested">
+    xmlns:commands="using:Unicord.Universal.Commands" 
+    xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
+    RequiresPointerMode="WhenRequested">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -12,22 +14,33 @@
                     <SvgImageSource x:Key="DiscordClyde" UriSource="Assets/DiscordClyde.Light.svg" />
                     <SvgImageSource x:Key="DiscordLogo" UriSource="Assets/DiscordLogo.Light.svg"/>
                     <SvgImageSource x:Key="DiscordWordMark" UriSource="Assets/DiscordWordMark.Light.svg"/>
+                    <BitmapImage x:Key="DiscordSplashScreen" UriSource="Assets/Store/SplashScreen.light.png" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <SvgImageSource x:Key="DiscordClyde" UriSource="Assets/DiscordClyde.Dark.svg" />
                     <SvgImageSource x:Key="DiscordLogo" UriSource="Assets/DiscordLogo.Dark.svg"/>
                     <SvgImageSource x:Key="DiscordWordMark" UriSource="Assets/DiscordWordMark.Dark.svg"/>
+                    <BitmapImage x:Key="DiscordSplashScreen" UriSource="Assets/Store/SplashScreen.png" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Default">
+                    <SvgImageSource x:Key="DiscordClyde" UriSource="Assets/DiscordClyde.Light.svg" />
                     <SvgImageSource x:Key="DiscordLogo" UriSource="Assets/DiscordLogo.Light.svg"/>
                     <SvgImageSource x:Key="DiscordWordMark" UriSource="Assets/DiscordWordMark.Light.svg"/>
+                    <BitmapImage x:Key="DiscordSplashScreen" UriSource="Assets/Store/SplashScreen.light.png" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Colours.xaml"/>
-                <ResourceDictionary Source="Resources/Generic.xaml"/>
-                <ResourceDictionary Source="Resources/CustomStyles.xaml"/>
-                
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" 
+                                       ControlsResourcesVersion="Version2" />
+
+                <ResourceDictionary Source="Themes/Colours.xaml"/>
+                <ResourceDictionary Source="Themes/Generic.xaml"/>
+                <ResourceDictionary Source="Themes/CustomStyles.xaml"/>
+
+                <ResourceDictionary Source="Themes/RS2.xaml"/>
+                <!--<ResourceDictionary Source="Themes/RS4.xaml"/>
+                <ResourceDictionary Source="Themes/RS5.xaml"/>-->
+
                 <!-- Resource dictionaries with code behinds must be instantated like this for InitializeComponent to be called -->
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
             </ResourceDictionary.MergedDictionaries>
@@ -58,6 +71,7 @@
 
             <converters:ColourBrushConverter x:Key="ColourBrushConverter" 
                                              DefaultBackgroundColour="{ThemeResource BackgroundTertiaryColour}"/>
+            
             <converters:ChannelSymbolConverter x:Key="ChannelSymbolConverter"
                                                NSFWGlyph="&#xF86A;"
                                                TextGlyph="&#xF57E;"
@@ -105,78 +119,42 @@
             <commands:SettingsCommand x:Key="SettingsCommand" />
             <commands:PinChannelCommand x:Key="PinChannelCommand" />
 
-            <flyouts:ChannelContextFlyout x:Key="ChannelContextFlyout"/>
-            <flyouts:DirectMessageContextFlyout x:Key="DirectMessageContextFlyout"/>
-            <flyouts:GuildContextFlyout x:Key="GuildContextFlyout"/>
-            <flyouts:MessageContextFlyout x:Key="MessageContextFlyout"/>
-            <flyouts:UserListContextFlyout x:Key="UserListContextFlyout"/>
-
             <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
             <x:Double x:Key="ContentControlFontSize">14</x:Double>                        
 
             <FontFamily x:Key="SegoeMDL2Assets">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
             <FontFamily x:Key="FluentSystemIcons">/Assets/FluentSystemIcons-Regular.ttf#FluentSystemIcons-Regular</FontFamily>
             <FontFamily x:Key="SymbolThemeFontFamily">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
-            <FontFamily x:Key="ContentControlThemeFontFamily">Segoe UI</FontFamily>
-            <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI</FontFamily>
-            <!--<StaticResource x:Key="SymbolThemeFontFamily" ResourceKey="SegoeMDL2Assets"/>-->
-
-            <Style TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
-            </Style>
-
-            <Style x:Key="HeaderTextBlockStyle" BasedOn="{StaticResource HeaderTextBlockStyle}" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-            </Style>
-
-            <Style x:Key="SubheaderTextBlockStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-            </Style>
-
-            <Style x:Key="TitleTextBlockStyle" BasedOn="{StaticResource TitleTextBlockStyle}" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-            </Style>
-
-            <Style x:Key="SubtitleTextBlockStyle" BasedOn="{StaticResource SubtitleTextBlockStyle}" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-            </Style>
-
-            <Style x:Key="CaptionTextBlockStyle" BasedOn="{StaticResource CaptionTextBlockStyle}" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-            </Style>
             
-            <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+            <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="UseLayoutRounding" Value="True"/>
-                <Setter Property="Template" Value="{StaticResource IconButtonTemplate}"/>
             </Style>
 
             <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
+                <Setter Property="BorderBrush" Value="Transparent" />
                 <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
 
             <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">
-                <Setter Property="Width" Value="40"/>
-                <Setter Property="MinHeight" Value="40"/>
+                <!--<Setter Property="MinWidth" Value="32"/>
+                <Setter Property="Height" Value="32"/>-->
+                <Setter Property="Padding" Value="8" />
             </Style>
 
-            <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
+            <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource DefaultToggleButtonStyle}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="UseLayoutRounding" Value="True"/>
-                <Setter Property="Template" Value="{StaticResource IconToggleButtonTemplate}"/>
+                <Setter Property="BorderBrush" Value="Transparent" />
             </Style>
 
             <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource StretchyIconToggleButtonStyle}">
-                <Setter Property="Width" Value="40"/>
-                <Setter Property="Height" Value="40"/>
+                <Setter Property="Padding" Value="8" />
             </Style>
-
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

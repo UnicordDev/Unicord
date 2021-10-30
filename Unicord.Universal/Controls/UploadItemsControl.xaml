@@ -16,89 +16,83 @@
     mc:Ignorable="d">
 
     <Grid>
-        <controls:DockPanel
-            x:Name="uploadGrid"
-            Grid.Row="2"
-            LastChildFill="True">
-            <Grid
-                x:Name="uploadSizeContainer"
-                Grid.Row="1"
-                Grid.Column="1"
-                controls:DockPanel.Dock="Right"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+        <controls:DockPanel x:Name="uploadGrid"
+                            Grid.Row="2"
+                            LastChildFill="True">
+            <Grid x:Name="uploadSizeContainer"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  controls:DockPanel.Dock="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Grid Margin="10">
+                <Grid Margin="8">
                     <ProgressBar
                         x:Name="uploadSizeBar"
-                        Height="5"
-                        HorizontalAlignment="Stretch"
-                        Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}"
+                        Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource AccentFillColorDefaultBrush}}"
                         Maximum="{Binding UploadLimit}"
                         RenderTransformOrigin="0.5, 0.5"
                         Value="{Binding UploadProgressBarValue}">
                         <ProgressBar.RenderTransform>
-                            <RotateTransform x:Name="uploadSizeBarTransform" Angle="90" />
+                            <RotateTransform x:Name="uploadSizeBarTransform" Angle="-90" />
                         </ProgressBar.RenderTransform>
+                        <ProgressBar.Resources>
+                            <CornerRadius x:Key="ControlCornerRadius">2</CornerRadius>
+                        </ProgressBar.Resources>
                     </ProgressBar>
                 </Grid>
 
-                <TextBlock
-                    x:Name="uploadSizeText"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="0,10,10,10"
-                    VerticalAlignment="Bottom"
-                    Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource ApplicationForegroundThemeBrush}}">
-                    <Run
-                        x:Name="sizeRun"
-                        FontSize="20"
-                        Text="{Binding DisplayUploadSize, FallbackValue=0.00}" />
-                    /<Run Text="{Binding DisplayUploadLimit, FallbackValue=8.00 MB}" /></TextBlock>
+                <TextBlock x:Name="uploadSizeText"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Margin="-4,8,8,8"
+                           VerticalAlignment="Bottom"
+                           Foreground="{Binding UploadInfoForeground, TargetNullValue={ThemeResource ApplicationForegroundThemeBrush}}">
+                    <Run x:Name="sizeRun"
+                         FontSize="20"
+                         Text="{Binding DisplayUploadSize, FallbackValue='0.0'}" />
+                    /<Run Text="{Binding DisplayUploadLimit, FallbackValue='8.0 MB'}" /></TextBlock>
             </Grid>
 
-            <ListView
-                x:Name="uploadList"
-                win1809:ScrollViewer.CanContentRenderOutsideBounds="True"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                IsItemClickEnabled="True"
-                ItemClick="UploadList_ItemClick"
-                ItemsSource="{Binding FileUploads}"
-                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                ScrollViewer.HorizontalScrollMode="Enabled"
-                ScrollViewer.IsHorizontalRailEnabled="True"
-                ScrollViewer.IsVerticalRailEnabled="False"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollMode="Disabled"
-                SelectionMode="None">
+            <ListView x:Name="uploadList"
+                      IsItemClickEnabled="True"
+                      ItemClick="UploadList_ItemClick"
+                      ItemsSource="{Binding FileUploads}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollMode="Enabled"
+                      ScrollViewer.IsHorizontalRailEnabled="True"
+                      ScrollViewer.IsVerticalRailEnabled="False"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollMode="Disabled"
+                      SelectionMode="None">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <ItemsStackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
                         <Setter Property="VerticalAlignment" Value="Stretch" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="4,0"/>
+                        <Setter Property="Padding" Value="4"/>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:FileUploadModel">
-                        <Grid MaxWidth="250" VerticalAlignment="Stretch">
-                            <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
-
+                        <Grid MaxWidth="250" VerticalAlignment="Stretch" CornerRadius="4">
+                            <Grid MaxWidth="250">
+                                <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Source="{Binding Thumbnail}" />
+                            </Grid>
+                            
                             <Grid HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch">
-
                                 <Rectangle Fill="{ThemeResource BackgroundGradientBrush}"/>
 
-                                <Grid
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Bottom">
+                                <Grid HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Bottom"
+                                      Padding="4">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
@@ -107,12 +101,12 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" Margin="12,0,0,0" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" Margin="8,0,0,0" TextTrimming="CharacterEllipsis"/>
 
                                     <Button x:Name="transcodeFailedButton"
                                             x:Uid="/Controls/TranscodeFailedButton"
                                             Grid.Column="1"
-                                            Margin="2,0,0,0"
+                                            Margin="4,0,0,0"
                                             Click="TranscodeFailedButton_Click"
                                             Content="&#xE783;"
                                             Foreground="{ThemeResource ErrorTextForegroundBrush}"
@@ -123,7 +117,7 @@
                                     <Button x:Name="editButton"
                                             x:Uid="/Controls/EditButton"
                                             Grid.Column="2"
-                                            Margin="2,0,0,0"
+                                            Margin="4,0,0,0"
                                             Click="EditButton_Click"
                                             Content="&#xE8B2;"
                                             Style="{ThemeResource IconButtonStyle}"
@@ -134,7 +128,7 @@
                                     <ToggleButton x:Name="spoilerButton"
                                                   x:Uid="/Controls/SpoilerButton"
                                                   Grid.Column="3"
-                                            Margin="2,0,0,0"
+                                                  Margin="4,0,0,0"
                                                   Content="&#xE890;"
                                                   IsChecked="{Binding Spoiler, Mode=TwoWay}"
                                                   Style="{ThemeResource IconToggleButtonStyle}"
@@ -142,7 +136,7 @@
 
                                     <Button x:Name="removeItemButton"
                                             Grid.Column="4"
-                                            Margin="2,0,0,0"
+                                            Margin="4,0,0,0"
                                             Click="RemoveItemButton_Click"
                                             Content="&#xE74D;"
                                             Style="{ThemeResource IconButtonStyle}"
@@ -166,7 +160,7 @@
                         Margin="10"
                         Style="{ThemeResource TitleTextBlockStyle}"
                         TextAlignment="Center" />
-                    <ProgressBar
+                    <winui:ProgressBar
                         x:Name="transcodeProgress"
                         MaxWidth="350"
                         IsIndeterminate="False" />
@@ -199,7 +193,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="uploadSizeContainer.(controls:DockPanel.Dock)" Value="Bottom" />
-                        <Setter Target="uploadSizeBar.Margin" Value="10" />
+                        <Setter Target="uploadSizeBar.Margin" Value="8" />
                         <Setter Target="uploadSizeBarTransform.Angle" Value="0" />
                         <Setter Target="sizeRun.FontSize" Value="20" />
                     </VisualState.Setters>

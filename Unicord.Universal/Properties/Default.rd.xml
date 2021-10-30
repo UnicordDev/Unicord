@@ -17,17 +17,10 @@
 
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Application>
-    <!--
-      An Assembly element with Name="*Application*" applies to all assemblies in
-      the application package. The asterisks are not wildcards.
-    -->
-    <!--<Assembly Name="*Application*" Dynamic="Required All" />-->
-    
-    
     <!-- Add your application specific runtime directives here. -->
-    <Assembly Name="DSharpPlus" Serialize="Required All" />
-    <Assembly Name="DSharpPlus.Rest" Serialize="Required All" />
-
-
+    <Namespace Name="DSharpPlus.Entities" Serialize="Required PublicAndInternal" />
+    <Namespace Name="DSharpPlus.Net" Serialize="Required PublicAndInternal" />
+    <Namespace Name="DSharpPlus.Net.Abstractions" Serialize="Required PublicAndInternal" />
+    <Type Name="Unicord.Universal.Theme" Serialize="Required Public" />
   </Application>
 </Directives>

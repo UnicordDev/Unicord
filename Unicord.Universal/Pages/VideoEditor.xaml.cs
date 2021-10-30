@@ -92,10 +92,6 @@ namespace Unicord.Universal.Pages
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
                 await StatusBar.GetForCurrentView().HideAsync();
             }
-            else
-            {
-                WindowingService.Current.HandleTitleBarForControl(topGrid);
-            }
 
             if (_model.StorageFile == null)
             {
@@ -170,8 +166,8 @@ namespace Unicord.Universal.Pages
             {
                 mediaElement.MediaPlayer.PlaybackSession.PositionChanged -= PlaybackSession_PositionChanged;
             }
-
-            _mediaStreamSource = _model.Composition.GeneratePreviewMediaStreamSource(Math.Min((int)mediaElement.ActualWidth, 1280), Math.Min((int)mediaElement.ActualHeight, 720));
+            
+            _mediaStreamSource = _model.Composition.GeneratePreviewMediaStreamSource(Math.Min((int)MediaGrid.ActualWidth, 1280), Math.Min((int)MediaGrid.ActualHeight, 720));
             if (_mediaStreamSource != null)
             {
                 mediaElement.Source = MediaSource.CreateFromMediaStreamSource(_mediaStreamSource);
@@ -402,7 +398,7 @@ namespace Unicord.Universal.Pages
                 await _model.UpdateFromStorageFileAsync(_tempFile, isTemporary: true);
                 await _model.Parent.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    var channelModel = (_model.Parent.DataContext as ChannelViewModel);
+                    var channelModel = _model.Parent.DataContext as ChannelViewModel;
                     channelModel.FileUploads.Remove(_model);
                     channelModel.FileUploads.Add(_model);
                 });
@@ -470,7 +466,7 @@ namespace Unicord.Universal.Pages
         {
             if (_resizeTimer == null)
             {
-                _resizeTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(500) };
+                _resizeTimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(100) };
                 _resizeTimer.Tick += _resizeTimer_Tick;
             }
 

@@ -11,41 +11,51 @@
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded" Unloaded="Page_Unloaded" 
+    mc:Ignorable="d" 
+    Loaded="Page_Loaded" 
+    Unloaded="Page_Unloaded" 
     NavigationCacheMode="Required"
-    Background="{ThemeResource BackgroundTertiaryBrush}">
+    lib:BackdropMaterial.ApplyToRootOrPageBackground="True">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
-        
+
         <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
         <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
 
-        <Storyboard x:Name="showConnecting" x:Key="showConnecting">
+        <!-- TODO: redo connecting animations -->
+
+        <Storyboard x:Name="ShowConnecting" x:Key="ShowConnecting">
 
             <DoubleAnimation From="0" To="1"
-                             Storyboard.TargetName="connectingOverlay"
+                             Storyboard.TargetName="ConnectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
                              EasingFunction="{StaticResource CircleEase}"/>
 
+            <DoubleAnimation From="1" To="0"
+                             Storyboard.TargetName="ContentRoot"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0.50"
+                             EasingFunction="{StaticResource CircleEase}"/>
+            
             <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="mainScale"
+                             Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource CircleEase}"/>
             <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="mainScale"
+                             Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource CircleEase}"/>
 
-            <DoubleAnimation From="1.25" To="1" 
-                             Storyboard.TargetName="connectingScale"
+            <DoubleAnimation From="1.15" To="1" 
+                             Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource CircleEase}"/>
-            <DoubleAnimation From="1.25" To="1" 
-                             Storyboard.TargetName="connectingScale"
+            <DoubleAnimation From="1.15" To="1" 
+                             Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
                              EasingFunction="{StaticResource CircleEase}"/>
@@ -53,32 +63,36 @@
         </Storyboard>
         <Storyboard x:Name="hideConnecting" x:Key="hideConnecting"
                     Completed="hideConnecting_Completed">
-            <DoubleAnimation To="0"
-                             Storyboard.TargetName="connectingOverlay"
+            <DoubleAnimation To="1"
+                             Storyboard.TargetName="ContentRoot"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.50"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-
+                             Duration="0:0:0.25"/>
             <DoubleAnimation To="1" 
-                             Storyboard.TargetName="mainScale"
+                             Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.40"
+                             Duration="0:0:0.25"
                              EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation To="1" 
-                             Storyboard.TargetName="mainScale"
+                             Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.40"
+                             Duration="0:0:0.25"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
-            <DoubleAnimation To="1.25" 
-                             Storyboard.TargetName="connectingScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.40"
+            <DoubleAnimation To="0"
+                             Storyboard.TargetName="ConnectingOverlay"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
-            <DoubleAnimation To="1.25" 
-                             Storyboard.TargetName="connectingScale"
+            
+            <DoubleAnimation To="1.15" 
+                             Storyboard.TargetName="ConnectingScale"
+                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                             Duration="0:0:0.15"
+                             EasingFunction="{StaticResource EaseExit}"/>
+            <DoubleAnimation To="1.15" 
+                             Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.40"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
 
@@ -167,47 +181,59 @@
             <DoubleAnimation From="0" To="1"
                              Storyboard.TargetName="CustomOverlayGrid"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="CustomPaneScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="0.85" To="1" 
                              Storyboard.TargetName="CustomPaneScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.30"
                              EasingFunction="{StaticResource EaseEnter}"/>
 
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CustomOverlayGrid" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="0:0:0.0">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+            </ObjectAnimationUsingKeyFrames>
+
         </Storyboard>
-        <Storyboard x:Name="HideOverlayStoryboard" x:Key="HideOverlayStoryboard"
-                    Completed="HideOverlayStoryboard_Completed">
+        <Storyboard x:Name="HideOverlayStoryboard" x:Key="HideOverlayStoryboard">
             <DoubleAnimation From="1" To="0"
                              Storyboard.TargetName="CustomOverlayGrid"
                              Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.25"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="CustomPaneScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="CustomPaneScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.20"
+                             Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
+
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CustomOverlayGrid" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="0:0:0.15">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+            </ObjectAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
-    <Grid x:Name="everything">
-        <Grid>
-            <Grid x:Name="mainContent" RenderTransformOrigin="0.5, 0.5">
-                <Grid.RenderTransform>
-                    <ScaleTransform x:Name="mainScale" ScaleX="1" ScaleY="1"/>
-                </Grid.RenderTransform>
+    <Grid x:Name="Everything">
+        <Grid x:Name="ContentRoot"
+              RenderTransformOrigin="0.5, 0.5">
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="MainScale" ScaleX="1" ScaleY="1"/>
+            </Grid.RenderTransform>
+            <Grid x:Name="mainContent">
                 <Frame x:Name="rootFrame" />
                 <Grid x:Name="overlayGrid"/>
             </Grid>
@@ -241,7 +267,7 @@
                         </ScrollViewer>
 
                         <Grid x:Name="contentContainerOverlay" Grid.RowSpan="2" Visibility="Collapsed">
-                            <lib:ProgressRing x:Name="overlayProgressRing" IsIndeterminate="False" Maximum="100" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Grid>
                     </Grid>
 
@@ -260,9 +286,9 @@
                     </Grid>
                 </Grid>
             </Grid>
-            
+
             <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
-                <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource OverlayBackdrop}"/>
+                <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource SmokeFillColorDefaultBrush}"/>
                 <Grid RenderTransformOrigin="0.5, 0.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RenderTransform>
                         <ScaleTransform x:Name="userInfoScale" ScaleX="1" ScaleY="1"/>
@@ -274,32 +300,60 @@
 
             <Grid x:Name="CustomOverlayGrid"
                   Opacity="0"
-                  Background="{ThemeResource OverlayBackdrop}" 
-                  Visibility="Collapsed">
+                  Visibility="Collapsed"
+                  Background="{ThemeResource SmokeFillColorDefaultBrush}">
                 <Grid x:Name="CustomContainer"
-                      RenderTransformOrigin="0.5,0.5">
+                      RenderTransformOrigin="0.5,0.5"
+                      Background="{ThemeResource AcrylicInAppFillColorBaseBrush}" 
+                      Margin="32"
+                      CornerRadius="8">
                     <Grid.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
-                        </TransformGroup>
+                        <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
                     </Grid.RenderTransform>
                     <Frame x:Name="CustomOverlayFrame" />
                 </Grid>
             </Grid>
 
-            <Grid x:Name="fullscreenCanvas" Background="{ThemeResource OverlayBackdrop}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
-            
-            <Grid x:Name="connectingOverlay" Visibility="Collapsed" Opacity="0" RenderTransformOrigin="0.5, 0.5" Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-                <Grid.RenderTransform>
-                    <ScaleTransform x:Name="connectingScale" ScaleX="1" ScaleY="1"/>
-                </Grid.RenderTransform>
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20">
-                    <Image MaxWidth="350" Source="{ThemeResource DiscordWordMark}" Margin="0,4"/>
-                    <ProgressBar x:Name="connectingProgress" MaxWidth="350" HorizontalAlignment="Stretch" IsIndeterminate="False" />
-                </StackPanel>
+            <Border x:Name="FullscreenBorder" 
+                    Background="{ThemeResource OverlayBackdrop}"
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch" 
+                    Visibility="Collapsed"/>
+        </Grid>
+
+        <Grid x:Name="ConnectingOverlay" 
+              Visibility="Collapsed" 
+              Opacity="0" 
+              RenderTransformOrigin="0.5, 0.5" 
+              Background="Transparent">
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="ConnectingScale" ScaleX="1" ScaleY="1"/>
+            </Grid.RenderTransform>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Image x:Name="ExtendedSplashImage"
+                       Grid.RowSpan="3"
+                       Source="{ThemeResource DiscordSplashScreen}"
+                       VerticalAlignment="Center"
+                       Margin="16"
+                       Stretch="Uniform"
+                       MaxWidth="620"/>
+                
+                <lib:ProgressRing x:Name="ConnectingProgress" 
+                                  Grid.Row="2"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Center"
+                                  IsIndeterminate="False"
+                                  Width="32"
+                                  Height="32"/>
             </Grid>
         </Grid>
 
-        <Grid x:Name="titleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="274,0,0,0" Background="Transparent"/>
+        <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>
     </Grid>
 </Page>

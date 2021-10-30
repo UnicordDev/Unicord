@@ -107,12 +107,11 @@ namespace Unicord.Universal.Controls
             if (obj == null)
             {
                 if (!transcodeProgress.IsIndeterminate)
-                {
                     transcodeProgress.IsIndeterminate = true;
-                }
             }
             else
             {
+                transcodeProgress.IsIndeterminate = false;
                 transcodeProgress.Value = obj.Value;
             }
         }
@@ -181,6 +180,7 @@ namespace Unicord.Universal.Controls
 
             if (tempFile != null)
                 await tempFile.DeleteAsync();
+
             return null;
         }
 
@@ -206,7 +206,7 @@ namespace Unicord.Universal.Controls
             bigModel.FileUploads.Add(newModel);
 
             await OverlayService.GetForCurrentView()
-                .ShowOverlay<VideoEditor>(newModel);
+                .ShowOverlayAsync<VideoEditor>(newModel);
         }
 
         private void EditButton_Loaded(object sender, RoutedEventArgs e)

@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Unicord.Universal.Voice;
+using Unicord.Universal.Models.Voice;
 
 namespace Unicord.Universal.Models
 {
@@ -21,6 +21,7 @@ namespace Unicord.Universal.Models
         private DiscordDmChannel _selectedDM;
         private DiscordGuild _selectedGuild;
         private bool _isFriendsSelected;
+        private bool _isRightPaneOpen;
 
         public DiscordPageModel()
         {
@@ -73,6 +74,7 @@ namespace Unicord.Universal.Models
         public DiscordDmChannel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
         public DiscordGuild SelectedGuild { get => _selectedGuild; set => OnPropertySet(ref _selectedGuild, value); }
         public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
+        public bool IsRightPaneOpen { get => _isRightPaneOpen; set => OnPropertySet(ref _isRightPaneOpen, value); }
         public DiscordDmChannel PreviousDM { get; set; }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)

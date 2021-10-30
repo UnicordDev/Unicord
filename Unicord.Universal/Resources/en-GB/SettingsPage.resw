@@ -117,25 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>About Unicord</value>
+  <data name="AboutItem.Content" xml:space="preserve">
+    <value>About</value>
   </data>
-  <data name="HomeItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="MediaItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="MediaItem.Content" xml:space="preserve">
     <value>Audio and Video</value>
   </data>
-  <data name="MessagingItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="MessagingItem.Content" xml:space="preserve">
     <value>Text and Images</value>
   </data>
-  <data name="SecurityItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="SecurityItem.Content" xml:space="preserve">
     <value>Security and Privacy</value>
   </data>
-  <data name="ThemesItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Themes</value>
+  <data name="ThemesItem.Content" xml:space="preserve">
+    <value>Appearence and Themes</value>
   </data>
-  <data name="VoiceItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Voice</value>
+  <data name="VoiceItem.Content" xml:space="preserve">
+    <value>Voice and Video</value>
   </data>
 </root>

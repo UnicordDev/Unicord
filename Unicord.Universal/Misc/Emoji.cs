@@ -6,18 +6,6 @@ using Newtonsoft.Json;
 
 namespace Unicord.Universal.Misc
 {
-    public class Emoji
-    {
-        [JsonProperty("char")]
-        public string Char { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("group")]
-        public string Category { get; set; }
-    }
-
     public class EmojiHeader
     {
         public string Name { get; set; }

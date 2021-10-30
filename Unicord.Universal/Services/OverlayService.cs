@@ -26,7 +26,7 @@ namespace Unicord.Universal.Services
             _systemNavigationManager = SystemNavigationManager.GetForCurrentView();
         }
 
-        public async Task ShowOverlay<T>(object model = null) where T : Page, IOverlay, new()
+        public async Task ShowOverlayAsync<T>(object model = null) where T : Page, IOverlay, new()
         {
             if (App.LocalSettings.Read("WindowedOverlays", false))
             {

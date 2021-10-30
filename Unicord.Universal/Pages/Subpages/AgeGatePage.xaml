@@ -6,51 +6,48 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
     mc:Ignorable="d">
 
-    <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
-        <Grid Background="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
-            <StackPanel
+    <Grid>
+        <StackPanel
                 MaxWidth="450"
                 Margin="20"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-                <TextBlock
+            <TextBlock
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="120"
                     Text="&#xE7BA;" />
-                <TextBlock x:Uid="/AgeGatePage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
-                <TextBlock x:Uid="/AgeGatePage/ChannelWarningSubheader" TextWrapping="Wrap"/>
+            <TextBlock x:Uid="/AgeGatePage/ChannelWarningHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <TextBlock x:Uid="/AgeGatePage/ChannelWarningSubheader" TextWrapping="Wrap"/>
 
-                <Grid Margin="0,8,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Uid="/AgeGatePage/BackButton" 
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Uid="/AgeGatePage/BackButton" 
                         HorizontalAlignment="Stretch"
                         Click="BackButton_Click">
-                        <Button.Resources>
-                            <CornerRadius x:Key="ControlCornerRadius">2,0,0,2</CornerRadius>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Uid="/AgeGatePage/ContinueButton" 
+                    <Button.Resources>
+                        <CornerRadius x:Key="ControlCornerRadius">2,0,0,2</CornerRadius>
+                    </Button.Resources>
+                </Button>
+                <Button x:Uid="/AgeGatePage/ContinueButton" 
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         Click="ContinueButton_Click"
                         Style="{ThemeResource AccentButtonStyle}">
-                        <Button.Resources>
-                            <CornerRadius x:Key="ControlCornerRadius">0,2,2,0</CornerRadius>
-                        </Button.Resources>
-                    </Button>
-                </Grid>
+                    <Button.Resources>
+                        <CornerRadius x:Key="ControlCornerRadius">0,2,2,0</CornerRadius>
+                    </Button.Resources>
+                </Button>
+            </Grid>
 
-                <CheckBox x:Uid="/AgeGatePage/DontAskAgain" 
+            <CheckBox x:Uid="/AgeGatePage/DontAskAgain" 
                     x:Name="notAgain"
                     Margin="0,8"
                     Content="Don't ask me again!" />
-            </StackPanel>
-        </Grid>
-    </controls:DropShadowPanel>
+        </StackPanel>
+    </Grid>
 </Page>

@@ -35,7 +35,7 @@ namespace Unicord.Universal.Commands
                         return true;
                     }
 
-                    if (currentMember.PermissionsIn(message.Channel).HasFlag(Permissions.ManageMessages))
+                    if (currentMember.PermissionsIn(message.Channel).HasPermission(Permissions.ManageMessages))
                     {
                         return true;
                     }

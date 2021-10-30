@@ -14,7 +14,7 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return parameter is DiscordMessage || parameter is DiscordChannel || parameter is DiscordGuild;
+            return parameter is DiscordMessage || parameter is DiscordChannel || parameter is DiscordGuild || parameter is string;
         }
 
         public void Execute(object parameter)
@@ -39,6 +39,12 @@ namespace Unicord.Universal.Commands
             {
                 Analytics.TrackEvent("CopyUrlCommand_CopyGuildLink");
                 package.SetText("https://" + $"discordapp.com/channels/{guild.Id}");
+            }
+
+            if (parameter is string str && Uri.TryCreate(str, UriKind.Absolute, out var uri))
+            {
+                package.SetText(str);
+                package.SetWebLink(uri);
             }
 
             Clipboard.SetContent(package);

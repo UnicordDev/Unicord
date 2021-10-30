@@ -36,13 +36,13 @@ namespace Unicord.Universal.Controls
             InitializeComponent();
         }
 
-        public async Task Load()
+        public void Load()
         {
             try
             {
                 if (Channel.Id != _prevChannelId)
                 {
-                    Source.Source = await Tools.GetGroupedEmojiAsync(searchBox.Text.ToLowerInvariant(), Channel);
+                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel);
                     _prevChannelId = Channel.Id;
                 }
             }
@@ -59,23 +59,24 @@ namespace Unicord.Universal.Controls
             EmojiPicked?.Invoke(this, e.ClickedItem as DiscordEmoji);
         }
 
-        private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(searchBox.Text) || searchBox.Text.Length > 2)
             {
-                await Load();
+                Load();
             }
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             InputPane.GetForCurrentView()?.TryHide();
-            await Load();
+
+            Load();
         }
 
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            await Load();
+            Load();
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

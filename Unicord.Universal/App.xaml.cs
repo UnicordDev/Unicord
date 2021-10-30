@@ -10,7 +10,6 @@ using DSharpPlus.EventArgs;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Push;
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
@@ -83,7 +82,7 @@ namespace Unicord.Universal
 
             if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
             {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Push), typeof(Analytics), typeof(Crashes));
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Analytics), typeof(Crashes));
             }
         }
 
@@ -96,14 +95,14 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            try
-            {
-                ThemeManager.LoadCurrentTheme(Resources);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
+            //try
+            //{
+            //    ThemeManager.LoadCurrentTheme(Resources);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.LogError(ex);
+            //}
 
             switch (e)
             {
@@ -281,7 +280,7 @@ namespace Unicord.Universal
 
                 try
                 {
-                    ThemeManager.LoadCurrentTheme(Resources);
+                    //ThemeManager.LoadCurrentTheme(Resources);
                 }
                 catch (Exception ex)
                 {
