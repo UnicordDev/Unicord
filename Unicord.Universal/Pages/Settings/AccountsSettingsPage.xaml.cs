@@ -17,6 +17,8 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
 
+            email.Text = GetHiddenEmail(App.Discord.CurrentUser.Email);
+
             MarkdownDocument.KnownSchemes.Add("ms-people");
 
             syncContactsSwitch.IsOn = App.RoamingSettings.Read(SYNC_CONTACTS, true);
@@ -58,6 +60,29 @@ namespace Unicord.Universal.Pages.Settings
         private async void OnMarkdownLinkClicked(object sender, LinkClickedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri(e.Link));
+        }
+
+        private void EmailRevealButton_Click(object sender, RoutedEventArgs e)
+        {
+            email.Text = App.Discord.CurrentUser.Email;
+
+            EmailRevealButton.Visibility = Visibility.Collapsed;
+            EmailHideButton.Visibility = Visibility.Visible;
+        }
+
+        private void EmailHideButton_Click(object sender, RoutedEventArgs e)
+        {
+            email.Text = GetHiddenEmail(App.Discord.CurrentUser.Email);
+
+            EmailHideButton.Visibility = Visibility.Collapsed;
+            EmailRevealButton.Visibility = Visibility.Visible;
+        }
+
+        private string GetHiddenEmail(string email)
+        {
+            string domain = email.Split('@')[1];
+
+            return $"*****@{domain}";
         }
     }
 }
