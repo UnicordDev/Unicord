@@ -107,7 +107,8 @@
 
     </Page.Resources>
     <Grid>
-        <Grid VerticalAlignment="Top" 
+        <Grid x:Name="TitleBarGrid"
+              VerticalAlignment="Top" 
               Height="32">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="56"/>

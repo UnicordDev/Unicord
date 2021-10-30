@@ -7,6 +7,7 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:settings="using:SettingsControl"
     x:DefaultBindMode="TwoWay"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
@@ -14,109 +15,55 @@
         <models:SecuritySettingsModel />
     </Page.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <StackPanel>
 
-        <TextBlock x:Uid="/SecuritySettingsPage/SecuritySettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}"  />
-
-        <TextBlock x:Uid="/SecuritySettingsPage/DiagnosticDataHeader" 
-                   Grid.Row="1"
-                   Margin="0,8,0,0"
-                   Style="{ThemeResource SubtitleTextBlockStyle}"/>
-
-        <Grid Grid.Row="2" Margin="0,4,0,12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-
-            <TextBlock x:Uid="/SecuritySettingsPage/DiagnosticDataToggle" VerticalAlignment="Center"/>
-            <ToggleSwitch
-                Grid.Column="1"
-                IsOn="{Binding EnableAnalytics, Mode=TwoWay}"
-                Style="{ThemeResource NoTextToggleSwitchStyle}"
-                Toggled="ToggleSwitch_Toggled" />
-        </Grid>
-
-        <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"
-                   Grid.Row="3"
-                   Style="{ThemeResource SubtitleTextBlockStyle}" />
-
+        <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/DiagnosticDataBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableAnalytics, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
+        
         <controls:MarkdownTextBlock
             x:Name="unavailableText"
             x:Uid="/SecuritySettingsPage/WindowsHelloUnavailable"
             Grid.Row="4"
-            Margin="0,12,0,0"
+            Margin="0,4"
+            FontSize="12"
             Background="Transparent"
             Foreground="{StaticResource ErrorTextForegroundBrush}"
             TextWrapping="Wrap"/>
+
+        <StackPanel Margin="4,16">
+            <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"
+                   Text="Windows Hello"
+                   Grid.Row="3"
+                   Style="{ThemeResource BaseTextBlockStyle}"/>
+            <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloSubHeader"
+                       FontSize="12"
+                       Opacity="0.75"/>
+        </StackPanel>
+
         <ContentControl
             x:Name="settingsContent"
-            Grid.Row="5"
-            Margin="0,12"
             HorizontalContentAlignment="Stretch">
             <StackPanel>
-                <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloOptionsHeader" TextWrapping="Wrap" />
-
-                <Grid Margin="0,12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloLogin" VerticalAlignment="Center" />
-                    <ToggleSwitch
-                        Grid.Column="1"
-                        IsOn="{Binding HelloForLogin, Mode=TwoWay}"
-                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
-
-                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloSettings"
-                        Grid.Row="1"
-                        VerticalAlignment="Center"/>
-                    <ToggleSwitch
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        IsOn="{Binding HelloForSettings, Mode=TwoWay}"
-                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
-
-                    <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloNSFW"
-                        Grid.Row="2"
-                        VerticalAlignment="Center"
-                        Text="Access NSFW channels" />
-                    <ToggleSwitch
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        IsOn="{Binding HelloForNSFW, Mode=TwoWay}"
-                        Style="{ThemeResource NoTextToggleSwitchStyle}" />
-
-                </Grid>
-
-                <TimePicker x:Uid="/SecuritySettingsPage/WindowsHelloAuthenticationTimeout"
-                    HorizontalAlignment="Stretch"
-                    Time="{Binding AuthenticationTime, Mode=TwoWay}" />
+                <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/LoginBlock">
+                    <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding HelloForLogin, Mode=TwoWay}" />
+                </settings:SettingsBlockControl>
+                <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/SettingsBlock">
+                    <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding HelloForSettings, Mode=TwoWay}" />
+                </settings:SettingsBlockControl>
+                <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/AccessNSFWBlock">
+                    <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding HelloForNSFW, Mode=TwoWay}" />
+                </settings:SettingsBlockControl>
+                <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/StayAuthenticatedBlock">
+                    <TimePicker HorizontalAlignment="Stretch" Time="{Binding AuthenticationTime, Mode=TwoWay}" />
+                </settings:SettingsBlockControl>
             </StackPanel>
         </ContentControl>
 
 
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2"><Hyperlink>Privacy Policy</Hyperlink></TextBlock>
-
-    </Grid>
+    </StackPanel>
 </Page>

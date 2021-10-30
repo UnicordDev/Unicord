@@ -16,6 +16,8 @@
         </Style>
 
         <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{StaticResource BackgroundTertiaryColour}"/>
+        <Thickness x:Key="NavigationViewHeaderMargin">22,32,22,0</Thickness>
+        <Thickness x:Key="NavigationViewMinimalHeaderMargin">-52,42,22,0</Thickness>
     </Page.Resources>
 
     <Page.DataContext>
@@ -23,7 +25,7 @@
     </Page.DataContext>
 
     <lib:NavigationView x:Name="NavView"
-                        Header="Settings"
+                        Header="{Binding SelectedItem.Content, ElementName=NavView}"
                         IsSettingsVisible="False"
                         IsBackEnabled="True"
                         BackRequested="NavView_BackRequested"
@@ -34,7 +36,7 @@
         </lib:NavigationView.Resources>
 
         <lib:NavigationView.MenuItems>
-            <lib:NavigationViewItem Tag="Home">
+            <!--<lib:NavigationViewItem Tag="Accounts">
                 <StackPanel Orientation="Horizontal">
                     <lib:PersonPicture Width="24" 
                                        Height="24"
@@ -47,8 +49,14 @@
                         <Run Text="@"/><Run Text="{Binding CurrentUser.Username}" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/><Run Text="#"/><Run Text="{Binding CurrentUser.Discriminator}"/>
                     </TextBlock>
                 </StackPanel>
-            </lib:NavigationViewItem>
+            </lib:NavigationViewItem>-->
 
+            <lib:NavigationViewItem Tag="Accounts" x:Uid="/SettingsPage/AccountsItem">
+                <lib:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE910;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                </lib:NavigationViewItem.Icon>
+            </lib:NavigationViewItem>
+            
             <lib:NavigationViewItem Tag="Messaging" x:Uid="/SettingsPage/MessagingItem">
                 <lib:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE70F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
@@ -88,6 +96,8 @@
                 </lib:NavigationViewItem.Icon>
             </lib:NavigationViewItem>
         </lib:NavigationView.FooterMenuItems>
-        
+        <ScrollViewer Margin="20">
+            <Frame x:Name="MainFrame" />
+        </ScrollViewer>
     </lib:NavigationView>
 </Page>

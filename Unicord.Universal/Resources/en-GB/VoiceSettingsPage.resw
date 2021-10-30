@@ -123,20 +123,29 @@
   <data name="AudioDevicesSubheader.Text" xml:space="preserve">
     <value>Here you can choose the audio devices you want to use for voice calls.</value>
   </data>
-  <data name="AutomaticGainControl.Text" xml:space="preserve">
+  <data name="AudioProcessingHeader.Text" xml:space="preserve">
+    <value>Audio Processing</value>
+  </data>
+  <data name="AutomaticGainControlBlock.Title" xml:space="preserve">
     <value>Automatic Gain Control</value>
   </data>
-  <data name="EchoCancellation.Text" xml:space="preserve">
+  <data name="EchoCancellationBlock.Title" xml:space="preserve">
     <value>Echo Cancellation</value>
+  </data>
+  <data name="InputDeviceBlock.Title" xml:space="preserve">
+    <value>Input Device</value>
   </data>
   <data name="InputDevices.Header" xml:space="preserve">
     <value>Input Device</value>
   </data>
+  <data name="NoiseSuppressionBlock.Description" xml:space="preserve">
+    <value>Automatically removes background hiss from your microphone.</value>
+  </data>
+  <data name="NoiseSuppressionBlock.Title" xml:space="preserve">
+    <value>Noise Suppression</value>
+  </data>
   <data name="NoiseSuppressionDisabled.Content" xml:space="preserve">
     <value>Disabled</value>
-  </data>
-  <data name="NoiseSuppressionHeader.Text" xml:space="preserve">
-    <value>Noise Suppression</value>
   </data>
   <data name="NoiseSuppressionHigh.Content" xml:space="preserve">
     <value>High</value>
@@ -147,13 +156,13 @@
   <data name="NoiseSuppressionMedium.Content" xml:space="preserve">
     <value>Medium</value>
   </data>
-  <data name="NoiseSuppressionSubheader.Text" xml:space="preserve">
-    <value>Unicord can dynamically reduce the amount of noise or hiss on your microphone if needed.</value>
+  <data name="OutputDeviceBlock.Title" xml:space="preserve">
+    <value>Output Device</value>
   </data>
   <data name="OutputDevices.Header" xml:space="preserve">
     <value>Output Device</value>
   </data>
-  <data name="VoiceActivity.Text" xml:space="preserve">
+  <data name="VoiceActivityBlock.Title" xml:space="preserve">
     <value>Voice Activity</value>
   </data>
   <data name="VoiceSettingsHeader.Text" xml:space="preserve">

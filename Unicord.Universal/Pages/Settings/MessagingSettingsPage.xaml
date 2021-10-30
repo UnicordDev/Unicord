@@ -9,18 +9,13 @@
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
+    xmlns:settings="using:SettingsControl"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:MessagingSettingsModel />
     </Page.DataContext>
 
     <StackPanel>
-        <TextBlock x:Uid="/MessagingSettingsPage/MessagingSettingsHeader" 
-                   Text="Text and Images"
-                   Style="{ThemeResource SubheaderTextBlockStyle}"
-                   Margin="0,0,0,8"/>        
-
-        
         <!-- 
             Temporarily disabled for performance reasons
         
@@ -35,103 +30,111 @@
             </ListBox>
         -->
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/TimestampsHeader" Text="Timestamps"/>
-        <TextBlock TextWrapping="Wrap" x:Uid="/MessagingSettingsPage/TimestampsSubheader" Text="How do you want timestamps on messages to appear?"/>
-        <!-- TODO: Use binding to display timestamps -->
-        <ComboBox SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,4,0,8">
-            <ComboBoxItem>
-                <Grid>
-                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleRelative" />
-                    <TextBlock Text="3 minutes ago" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
-                </Grid>
-            </ComboBoxItem>
-            <ComboBoxItem>
-                <Grid>
-                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleAbsolute" />
-                    <TextBlock Text="Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
-                </Grid>
-            </ComboBoxItem>
-            <ComboBoxItem>
-                <Grid>
-                    <TextBlock x:Uid="/MessagingSettingsPage/TimestampStyleBoth" />
-                    <TextBlock Text="3 minutes ago - Today at 12:34" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" HorizontalAlignment="Right"/>
-                </Grid>
-            </ComboBoxItem>
-        </ComboBox>
-
+        
         <TextBlock x:Uid="/MessagingSettingsPage/ChatHeader"
-                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                   Text="Chat" />
+                   Style="{ThemeResource BaseTextBlockStyle}"
+                   Margin="4,0,4,16"/>
 
-        <Grid Grid.Row="1" Margin="0,4,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AutoPlayGIFs" />
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/AutoPlayGIFsBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF4A9;"/>
+            </settings:SettingsBlockControl.Icon>
             <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AutoPlayGifs, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
 
-            <TextBlock Grid.Row="1" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/EnableSpoilers" />
-            <ToggleSwitch Grid.Row="1" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/EnableSpoilersBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE890;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableSpoilers, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
 
-            <TextBlock Grid.Row="2" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/PromptLinks" />
-            <ToggleSwitch Grid.Row="2" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
-            
-            <TextBlock Grid.Row="3" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/ShowHugeEmoji" />
-            <ToggleSwitch Grid.Row="3" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowHugeEmoji, Mode=TwoWay}" />
-            
-            <TextBlock Grid.Row="4" VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/ShowStatusGlyphs" />
-            <ToggleSwitch Grid.Row="4" Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowStatusGlyphs, Mode=TwoWay}" />
-        </Grid>
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/PromptLinksBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE71B;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding WarnUnsafeLinks, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
 
-        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/MessagingSettingsPage/AdjustRoleColoursHeader" Text="Contrast Adjustment" />
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/ShowHugeEmojiBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xED54;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowHugeEmoji, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock VerticalAlignment="Center" x:Uid="/MessagingSettingsPage/AdjustRoleColours" />
-            <ToggleSwitch x:Name="AdjustRoleColours"
-                          Grid.Column="1" 
-                          Style="{ThemeResource NoTextToggleSwitchStyle}" 
-                          IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" />
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/TimestampStyleBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC92;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ComboBox ItemsSource="{Binding TimestampStyles}" 
+                      SelectedIndex="{Binding TimestampStyle, Mode=TwoWay}" 
+                      SelectionChanged="ComboBox_SelectionChanged" 
+                      HorizontalAlignment="Right"
+                      MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Style}" />
+                            <TextBlock Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, ConverterParameter={Binding Style}}"  Margin="4,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </settings:SettingsBlockControl>
 
-            <Slider x:Name="MinimumContrastSlider"
-                    x:Uid="/MessagingSettingsPage/MinimumContrastSlider"
-                    Header="Minimum Contrast"
-                    Value="{Binding MinimumContrast, Mode=TwoWay}"
-                    IsEnabled="{Binding IsOn, ElementName=AdjustRoleColours}"
-                    Minimum="1"
-                    Maximum="21"
-                    StepFrequency="0.5"
-                    TickFrequency="1"
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    Margin="0,8,0,0"/>
+        <TextBlock x:Uid="/MessagingSettingsPage/AdjustRoleColoursHeader"  
+                   Style="{ThemeResource BaseTextBlockStyle}" 
+                   Text="Accessibility"
+                   Margin="4,16"/>
 
-            <Button x:Name="ContrastLearnMoreButton"
-                    x:Uid="/MessagingSettingsPage/LearnMoreButton"
-                    Content="Learn More"
-                    HorizontalAlignment="Right"
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2"
-                    Style="{ThemeResource TextBlockButtonStyle}"
-                    Click="ContrastLearnMoreButton_Click"/>
-        </Grid>
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/ShowStatusGlyphsBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE776;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowStatusGlyphs, Mode=TwoWay}" />
+        </settings:SettingsBlockControl>
+
+
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/AdjustRoleColoursBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;"/>
+            </settings:SettingsBlockControl.Icon>
+            <settings:SettingsBlockControl.ExpandableContent>
+                <Grid Padding="20,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Slider x:Name="MinimumContrastSlider"
+                            x:Uid="/MessagingSettingsPage/MinimumContrastSlider"
+                            Header="Minimum Contrast"
+                            Value="{Binding MinimumContrast, Mode=TwoWay}"
+                            IsEnabled="{Binding IsOn, ElementName=AdjustRoleColours}"
+                            Minimum="1"
+                            Maximum="21"
+                            StepFrequency="0.5"
+                            TickFrequency="1"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Margin="0,8,0,0"/>
+
+                    <Button x:Name="ContrastLearnMoreButton"
+                            x:Uid="/MessagingSettingsPage/LearnMoreButton"
+                            Content="Learn More"
+                            HorizontalAlignment="Right"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
+                            Style="{ThemeResource TextBlockButtonStyle}"
+                            Click="ContrastLearnMoreButton_Click"/>
+                </Grid>
+            </settings:SettingsBlockControl.ExpandableContent>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" Margin="0,0,-24,0" />
+        </settings:SettingsBlockControl>
+
+        
 
     </StackPanel>
 </Page>

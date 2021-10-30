@@ -25,50 +25,6 @@ namespace Unicord.Universal.Models
             AvailableThemes.CollectionChanged += OnAvailableThemesUpdated;
         }
 
-        public async Task ReloadThemes()
-        {
-            IsLoading = true;
-
-            var availableThemes = new List<Theme>();
-            var selectedThemeNames = App.LocalSettings.Read(SELECTED_THEME_NAMES, new List<string>());
-            var availableThemeNames = App.LocalSettings.Read(AVAILABLE_THEME_NAMES, new List<string>());
-            var themeDirectory = await ApplicationData.Current.LocalFolder.CreateFolderAsync(THEME_FOLDER_NAME, CreationCollisionOption.OpenIfExists);
-            var directories = await themeDirectory.GetFoldersAsync();
-            foreach (var directory in directories)
-            {
-                if (await directory.TryGetItemAsync(THEME_METADATA_NAME) is StorageFile themeJson)
-                {
-                    try
-                    {
-                        var theme = JsonConvert.DeserializeObject<Theme>(await FileIO.ReadTextAsync(themeJson));
-                        availableThemes.Add(theme);
-
-                        if (!availableThemeNames.Contains(theme.NormalisedName))
-                        {
-                            availableThemeNames.Add(theme.NormalisedName);
-                        }
-                    }
-                    catch { }
-                }
-            }
-
-            AvailableThemes.Clear();
-            foreach (var theme in availableThemes.OrderBy(t => availableThemeNames.IndexOf(t.NormalisedName)))
-            {
-                AvailableThemes.Add(theme);
-            }
-
-            SelectedThemes.Clear();
-            foreach (var theme in availableThemes.Where(t => selectedThemeNames.Contains(t.NormalisedName)))
-            {
-                SelectedThemes.Add(theme);
-            }
-
-            IsLoading = false;
-            InvokePropertyChanged(nameof(ShowThemesPlaceholder));
-            App.LocalSettings.Save(AVAILABLE_THEME_NAMES, availableThemeNames);
-        }
-
         private void OnAvailableThemesUpdated(object sender, NotifyCollectionChangedEventArgs e)
         {
             App.LocalSettings.Save(AVAILABLE_THEME_NAMES, AvailableThemes.ToList().Select(t => t.NormalisedName));

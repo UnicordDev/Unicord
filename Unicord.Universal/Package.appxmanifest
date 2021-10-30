@@ -8,14 +8,14 @@
   IgnorableNamespaces="uap uap4 mp">
 
   <Identity Name="24101WamWooWamRD.Unicord" 
-            Publisher="CN=Wan Kerr Co. Ltd."
+            Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B"
             Version="2.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <mp:PhoneIdentity PhoneProductId="e8adef53-9a75-41ce-88eb-b971a1ee9d57" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
-    <PublisherDisplayName>wamwo</PublisherDisplayName>
+    <PublisherDisplayName>Wan Kerr Co. Ltd.</PublisherDisplayName>
     <Logo>Assets\Store\StoreLogo.png</Logo>
   </Properties>
 

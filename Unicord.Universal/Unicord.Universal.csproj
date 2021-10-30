@@ -25,11 +25,12 @@
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -294,6 +295,13 @@
       <DependentUpon>RichPresenceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScaledContentControl.cs" />
+    <Compile Include="Controls\Settings\Converters.cs" />
+    <Compile Include="Controls\Settings\SettingsBlockControl.xaml.cs">
+      <DependentUpon>SettingsBlockControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Settings\SettingsDisplayControl.xaml.cs">
+      <DependentUpon>SettingsDisplayControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SidebarSearchBox.cs" />
     <Compile Include="Controls\ThemePreviewControl.xaml.cs">
       <DependentUpon>ThemePreviewControl.xaml</DependentUpon>
@@ -585,6 +593,7 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <Content Include="Controls\MarkdownTextBlock\About.txt" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -693,6 +702,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\RichPresenceControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Settings\SettingsBlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Settings\SettingsDisplayControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -9,7 +9,7 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var setting = App.RoamingSettings.Read(Constants.TIMESTAMP_STYLE, TimestampStyle.Absolute);
+            var setting = parameter is TimestampStyle ? (TimestampStyle)parameter : App.RoamingSettings.Read(Constants.TIMESTAMP_STYLE, TimestampStyle.Absolute);
 
             if (value is not DateTime t)
             {

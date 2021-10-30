@@ -117,20 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AdjustRoleColours.Text" xml:space="preserve">
+  <data name="AdjustRoleColoursBlock.Title" xml:space="preserve">
     <value>Adjust User Colours for Readability</value>
   </data>
   <data name="AdjustRoleColoursHeader.Text" xml:space="preserve">
     <value>Contrast Adjustment</value>
   </data>
-  <data name="AutoPlayGIFs.Text" xml:space="preserve">
+  <data name="AutoPlayGIFsBlock.Title" xml:space="preserve">
     <value>Automatically Play GIFs</value>
   </data>
   <data name="ChatHeader.Text" xml:space="preserve">
-    <value>Chat</value>
+    <value>Messages</value>
   </data>
-  <data name="EnableSpoilers.Text" xml:space="preserve">
-    <value>Enable Spoilers</value>
+  <data name="EnableSpoilersBlock.Title" xml:space="preserve">
+    <value>Hide Spoilered Content</value>
   </data>
   <data name="LearnMoreButton.Content" xml:space="preserve">
     <value>Learn More</value>
@@ -141,27 +141,27 @@
   <data name="MinimumContrastSlider.Header" xml:space="preserve">
     <value>Minimum Contrast</value>
   </data>
-  <data name="PromptLinks.Text" xml:space="preserve">
-    <value>Prompt for Untrusted Links</value>
-  </data>
-  <data name="PromptLinks.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="PromptLinksBlock.Description" xml:space="preserve">
     <value>With this option enabled, you will be prompted by Windows before opening insecure links.</value>
     <comment>Tooltip for previous text</comment>
   </data>
-  <data name="ShowHugeEmoji.Text" xml:space="preserve">
+  <data name="PromptLinksBlock.Title" xml:space="preserve">
+    <value>Prompt for Untrusted Links</value>
+  </data>
+  <data name="ShowHugeEmojiBlock.Title" xml:space="preserve">
     <value>Huge Emoji</value>
   </data>
-  <data name="ShowStatusGlyphs.Text" xml:space="preserve">
-    <value>Colourblind Friendly Status Indicators</value>
-  </data>
-  <data name="TimestampsHeader.Text" xml:space="preserve">
-    <value>Timestamps</value>
+  <data name="ShowStatusGlyphsBlock.Title" xml:space="preserve">
+    <value>Colourblind-friendly Status Indicators</value>
   </data>
   <data name="TimestampsSubheader.Text" xml:space="preserve">
     <value>How do you want timestamps on messages to appear?</value>
   </data>
   <data name="TimestampStyleAbsolute.Text" xml:space="preserve">
     <value>Absolute</value>
+  </data>
+  <data name="TimestampStyleBlock.Title" xml:space="preserve">
+    <value>Timestamp Style</value>
   </data>
   <data name="TimestampStyleBoth.Text" xml:space="preserve">
     <value>Both</value>

@@ -11,234 +11,42 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:universal="using:Unicord.Universal"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:settings="using:SettingsControl"
     mc:Ignorable="d" x:DefaultBindMode="TwoWay" d:DesignWidth="450" Loaded="Page_Loaded">
 
-    <Page.Resources>
-        <Style x:Key="PreviewEllipse" TargetType="Ellipse">
-            <Setter Property="Width" Value="18"/>
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="0,2"/>
-            <Setter Property="Fill" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-        </Style>
-        <Style x:Key="PreviewTab" TargetType="Rectangle">
-            <Setter Property="Width" Value="32"/>
-            <Setter Property="Height" Value="12"/>
-            <Setter Property="Margin" Value="2,0"/>
-            <Setter Property="RadiusX" Value="6"/>
-            <Setter Property="RadiusY" Value="6"/>
-            <Setter Property="Fill" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-        </Style>
-        <Style x:Key="PreviewFriend" TargetType="ContentControl">
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="4,0"/>
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Ellipse Width="28" Height="28" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                            <Rectangle Grid.Column="1" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Margin="4,0,0,0" Height="6" RadiusX="3" RadiusY="3" />
-                        </Grid>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="PreviewDM" TargetType="ContentControl">
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="0,2"/>
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Ellipse Width="12" Height="12" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                            <Rectangle Grid.Column="1" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Margin="4,0" Height="6" RadiusX="3" RadiusY="3" />
-                        </Grid>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+    <StackPanel>
 
-        <DataTemplate x:Key="ThemeTemplate">
-            <Grid RightTapped="Grid_Tapped">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <Border Padding="8" 
+                Margin="0,0,0,8"
+                BorderBrush="{ThemeResource SystemFillColorCautionBackground}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Visibility="{Binding IsDirty, Converter={StaticResource BoolVisibilityConverter}}">
+            <Border.Background>
+                <SolidColorBrush Color="{ThemeResource SystemFillColorCautionBackground}" Opacity="0.66"/>
+            </Border.Background>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                           Text="&#xF167;"
+                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                           FontSize="16"
+                           VerticalAlignment="Center"
+                           Margin="4,4,12,4"/>
+                <TextBlock x:Uid="/ThemesSettingsPage/RelaunchRequired"
+                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
 
-                <Rectangle Width="12" Height="12" Fill="{Binding DisplayColourBrush, Mode=OneWay, TargetNullValue={ThemeResource SystemControlBackgroundAccentBrush}}" Margin="0,0,8,0"/>
-                <TextBlock Grid.Column="1" Text="{Binding Name}"/>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <TextBlock x:Uid="/ThemesSettingsPage/ThemesSettingsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" />
-        <!--<TextBlock TextWrapping="Wrap" Grid.Row="1" Text="Wanna spice up how Unicord looks? Change some settings here to make things look just how you want them."/>-->
-
-        <ContentControl
-            x:Name="settingsContent"
-            Grid.Row="2"
-            Margin="0,4"
-            VerticalContentAlignment="Stretch"
-            HorizontalContentAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="300"/>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <StackPanel>
-                    <TextBlock x:Name="relaunchRequired" x:Uid="/ThemesSettingsPage/RelaunchRequired" Visibility="Collapsed" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
-                    <TextBlock x:Name="themeLoadError" TextWrapping="Wrap" Visibility="{Binding IsDirty, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,8"/>
-                </StackPanel>
-                
-                <controls:DropShadowPanel
-                    Grid.Row="1"
-                    HorizontalContentAlignment="Stretch"
-                    Color="{ThemeResource SystemChromeBlackMediumLowColor}">
-                    <Grid x:Name="preview" Background="{ThemeResource BackgroundTertiaryBrush}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="28"/>
-                            <ColumnDefinition Width="88"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid Background="{ThemeResource SidebarPrimaryAcrylicElementBrush}">
-                            <StackPanel Margin="0,6" HorizontalAlignment="Center">
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Rectangle Margin="2,2" Height="2" Stroke="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                <Grid>
-                                    <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                    <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                </Grid>
-                                <Grid>
-                                    <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                    <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                </Grid>
-                                <Grid>
-                                    <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                    <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                </Grid>
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                                <Ellipse Style="{ThemeResource PreviewEllipse}"/>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Grid.Column="1" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
-                            <StackPanel Margin="4,6">
-                                <Border Height="18" Margin="0,2,0,4">
-                                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Width="64" Height="10" RadiusX="5" RadiusY="5" />
-                                </Border>
-
-                                <Grid>
-                                    <ContentControl Style="{ThemeResource PreviewDM}"/>
-                                    <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="12" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                </Grid>
-                                <Grid>
-                                    <ContentControl Style="{ThemeResource PreviewDM}"/>
-                                    <Rectangle Width="2" Margin="-4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="12" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                </Grid>
-                                <ContentControl Style="{ThemeResource PreviewDM}"/>
-                                <ContentControl Style="{ThemeResource PreviewDM}"/>
-                                <ContentControl Style="{ThemeResource PreviewDM}"/>
-                                <ContentControl Style="{ThemeResource PreviewDM}"/>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Grid.Column="2" Background="{ThemeResource BackgroundTertiaryBrush}" Padding="8,12">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Rectangle HorizontalAlignment="Left" Fill="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Width="100" Height="16" RadiusX="8" RadiusY="8" />
-                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="-2,8">
-                                <Rectangle Style="{ThemeResource PreviewTab}" />
-                                <Rectangle Style="{ThemeResource PreviewTab}" />
-                                <Rectangle Style="{ThemeResource PreviewTab}" />
-                                <Rectangle Style="{ThemeResource PreviewTab}" />
-                            </StackPanel>
-                            <Grid Grid.Row="2" Margin="-4,4,0,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <ContentControl Style="{ThemeResource PreviewFriend}"/>
-                                <ContentControl Grid.Column="1" Style="{ThemeResource PreviewFriend}"/>
-                                <ContentControl Grid.Column="2" Style="{ThemeResource PreviewFriend}"/>
-                                <ContentControl Grid.Column="3" Style="{ThemeResource PreviewFriend}"/>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </controls:DropShadowPanel>
-
-                <StackPanel Grid.Row="2" Margin="0,8,0,4">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/ThemesSettingsPage/ColourScheme" Margin="0,4"/>
-                    <ComboBox SelectedIndex="{x:Bind Model.ColourScheme}" HorizontalAlignment="Stretch" Margin="0,4">
-                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDefault" />
-                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeLight" />
-                        <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDark" />
-                    </ComboBox>
-                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" x:Uid="/ThemesSettingsPage/ColourSchemeCaption" />
-                </StackPanel>
-
-                <StackPanel Grid.Row="3" Margin="0,4,0,4">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" x:Uid="/ThemesSettingsPage/MainThemeHeader" Margin="0,4"/>
-                    <!-- links TBD -->
-                    <TextBlock x:Uid="/ThemesSettingsPage/MainThemeSubheader" TextWrapping="WrapWholeWords"/>
-                    <Grid Margin="4,8,4,0" MinHeight="200">
-                        <ListView x:Name="themesList"
-                            SelectionMode="Multiple"
-                            ItemsSource="{Binding AvailableThemes}"
-                            ItemTemplate="{StaticResource ThemeTemplate}"
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                            ReorderMode="Enabled"
-                            CanReorderItems="True"
-                            CanDragItems="True"
-                            CanDrag="True"
-                            AllowDrop="True"
-                            SelectionChanged="ThemesList_SelectionChanged"
-                            DragOver="ThemesList_DragOver"
-                            DragItemsStarting="ThemesList_DragItemsStarting"
-                            DragItemsCompleted="ThemesList_DragItemsCompleted"
-                            Drop="ThemesList_Drop"
-                            VerticalAlignment="Stretch">
-                        </ListView>
-
-                        <TextBlock Visibility="{Binding ShowThemesPlaceholder, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" LineHeight="16">
-                            Click <Run FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Text="&#xE710;" /> to add a theme, or drag an archive here!
-                        </TextBlock>
-                    </Grid>
-                    <StackPanel w1709:Spacing="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,4">
-                        <Button x:Name="AddThemesButton" 
-                                Click="AddThemesButton_Click"
-                                Style="{ThemeResource IconButtonStyle}" 
-                                Content="&#xE710;">
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-        </ContentControl>
-    </Grid>
+        <settings:SettingsBlockControl x:Uid="/ThemesSettingsPage/ColourSchemeBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE771;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ComboBox SelectedIndex="{Binding ColourScheme}" MinWidth="200" >
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDefault" />
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeLight" />
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDark" />
+            </ComboBox>
+        </settings:SettingsBlockControl>
+    </StackPanel>
 </Page>

@@ -91,14 +91,16 @@ namespace Unicord.Universal.Pages
         {
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                WindowingService.Current.HandleTitleBarForControl(sidebarMainGrid);
-                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid);
+                WindowingService.Current.HandleTitleBarForControl(sidebarMainGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
+                TitleBarGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
                 WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
                 WindowingService.Current.HandleTitleBarForControl(MainContent, true);
-                iconGrid.Visibility = Visibility.Visible;
+                TitleBarGrid.Visibility = Visibility.Visible;
             }
         }
 

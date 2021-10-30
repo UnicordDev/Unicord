@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Services;
-using Unicord.Universal.Utilities;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Lib = Microsoft.UI.Xaml.Controls;
@@ -30,7 +20,7 @@ namespace Unicord.Universal.Pages.Settings
         private static Dictionary<SettingsPageType, Type> _pages
             = new Dictionary<SettingsPageType, Type>()
             {
-                [SettingsPageType.Acccounts] = typeof(AccountsSettingsPage),
+                [SettingsPageType.Accounts] = typeof(AccountsSettingsPage),
                 [SettingsPageType.Messaging] = typeof(MessagingSettingsPage),
                 [SettingsPageType.Themes] = typeof(ThemesSettingsPage),
                 [SettingsPageType.Media] = typeof(MediaSettingsPage),
@@ -50,7 +40,7 @@ namespace Unicord.Universal.Pages.Settings
         public SettingsPage()
         {
             InitializeComponent();
-
+            NavView.SelectedItem = NavView.MenuItems[0];
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -80,7 +70,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            //WindowingService.Current.HandleTitleBarForControl(SettingsTabView, true);
+
         }
 
         private void SettingsCloseButton_Click(object sender, RoutedEventArgs e)
@@ -95,7 +85,19 @@ namespace Unicord.Universal.Pages.Settings
 
         private void NavView_SelectionChanged(Lib.NavigationView sender, Lib.NavigationViewSelectionChangedEventArgs args)
         {
+            if (args.SelectedItemContainer.Tag is string str && Enum.TryParse<SettingsPageType>(str, out var page))
+            {
+                if (_pages.TryGetValue(page, out var type))
+                {
+                    var transitionInfo = args.RecommendedNavigationTransitionInfo;
+                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+                    {
+                        transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom };
+                    }
 
+                    MainFrame.Navigate(type, transitionInfo);
+                }
+            }
         }
     }
 }

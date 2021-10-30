@@ -722,7 +722,7 @@
         <Setter Property="ManipulationMode" Value="System,TranslateX"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
         <Setter Property="FocusVisualMargin" Value="-7,-3,-7,-3"/>
-        <Setter Property="Margin" Value="0,8"/>
+        <Setter Property="Margin" Value="0"/>
         <Setter Property="MinWidth" Value="48"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">

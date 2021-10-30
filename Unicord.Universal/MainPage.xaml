@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="using:Unicord.Universal.Pages"    
     xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+    xmlns:not1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
@@ -351,9 +352,42 @@
                                   IsIndeterminate="False"
                                   Width="32"
                                   Height="32"/>
+
+                <not1709:ProgressRing x:Name="ConnectingProgress1" 
+                                      Grid.Row="2"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Center"
+                                      Width="32"
+                                      Height="32"/>
             </Grid>
         </Grid>
 
         <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="769" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CustomContainer.Margin" Value="32" />
+                        <Setter Target="CustomContainer.CornerRadius" Value="8" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CustomContainer.Margin" Value="0" />
+                        <Setter Target="CustomContainer.CornerRadius" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

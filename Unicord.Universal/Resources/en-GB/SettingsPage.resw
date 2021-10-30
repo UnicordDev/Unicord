@@ -120,6 +120,9 @@
   <data name="AboutItem.Content" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="AccountsItem.Content" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
   <data name="MediaItem.Content" xml:space="preserve">
     <value>Audio and Video</value>
   </data>
@@ -133,6 +136,6 @@
     <value>Appearence and Themes</value>
   </data>
   <data name="VoiceItem.Content" xml:space="preserve">
-    <value>Voice and Video</value>
+    <value>Voice Calls</value>
   </data>
 </root>

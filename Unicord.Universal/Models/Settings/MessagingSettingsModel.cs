@@ -17,6 +17,18 @@ namespace Unicord.Universal.Models
         public DiscordMessage ExampleMessage { get; set; }
     }
 
+    public class TimestampStyleModel
+    {
+        public TimestampStyleModel(TimestampStyle style, DateTime timestamp)
+        {
+            Style = style;
+            Timestamp = timestamp;
+        }
+
+        public TimestampStyle Style { get; set; }
+        public DateTime Timestamp { get; set; }
+    }
+
     class MessagingSettingsModel : NotifyPropertyChangeImpl
     {
         public MessagingSettingsModel()
@@ -83,6 +95,13 @@ namespace Unicord.Universal.Models
             get => (int)App.RoamingSettings.Read(TIMESTAMP_STYLE, Unicord.TimestampStyle.Absolute);
             set => App.RoamingSettings.Save(TIMESTAMP_STYLE, (TimestampStyle)value);
         }
+
+        public TimestampStyleModel[] TimestampStyles { get; } = new[]
+        {
+            new TimestampStyleModel(Unicord.TimestampStyle.Relative, DateTime.Now.AddMinutes(-3)),
+            new TimestampStyleModel(Unicord.TimestampStyle.Absolute, DateTime.Now.AddMinutes(-3)),
+            new TimestampStyleModel(Unicord.TimestampStyle.Both, DateTime.Now.AddMinutes(-3)),
+        };
 
         public bool AutoPlayGifs
         {

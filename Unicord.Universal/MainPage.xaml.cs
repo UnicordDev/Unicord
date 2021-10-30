@@ -45,7 +45,7 @@ namespace Unicord.Universal
 #if DEBUG
             this.AddAccelerator(Windows.System.VirtualKey.C, Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Shift, (_, _) =>
             {
-                if (IsOverlayShown) 
+                if (IsOverlayShown)
                 {
                     HideConnectingOverlay();
                 }
@@ -56,7 +56,7 @@ namespace Unicord.Universal
             });
 #endif
         }
-      
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             switch (e.Parameter)
@@ -115,6 +115,8 @@ namespace Unicord.Universal
 
                     IsOverlayShown = true;
                     ConnectingProgress.IsIndeterminate = true;
+                    if (ConnectingProgress1 != null)
+                        ConnectingProgress1.IsActive = true;
 
                     result.RetrievePassword();
 
@@ -325,6 +327,8 @@ namespace Unicord.Universal
 
             ConnectingOverlay.Visibility = Visibility.Visible;
             ConnectingProgress.IsIndeterminate = true;
+            if (ConnectingProgress1 != null)
+                ConnectingProgress1.IsActive = true;
             IsOverlayShown = true;
             ShowConnecting.Begin();
         }
@@ -341,6 +345,8 @@ namespace Unicord.Universal
         {
             ConnectingOverlay.Visibility = Visibility.Collapsed;
             ConnectingProgress.IsIndeterminate = false;
+            if (ConnectingProgress1 != null)
+                ConnectingProgress1.IsActive = false;
             IsOverlayShown = false;
         }
 

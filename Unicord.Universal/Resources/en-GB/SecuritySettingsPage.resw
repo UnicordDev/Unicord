@@ -117,32 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccessNSFWBlock.Title" xml:space="preserve">
+    <value>Access NSFW channels</value>
+  </data>
+  <data name="DiagnosticDataBlock.Title" xml:space="preserve">
+    <value>Send Diagnostic and Usage Data</value>
+  </data>
   <data name="DiagnosticDataHeader.Text" xml:space="preserve">
     <value>Diagnostic and Usage data</value>
   </data>
-  <data name="DiagnosticDataToggle.Text" xml:space="preserve">
-    <value>Send Diagnostic and Usage data</value>
+  <data name="LoginBlock.Title" xml:space="preserve">
+    <value>Login</value>
   </data>
   <data name="SecuritySettingsHeader.Text" xml:space="preserve">
     <value>Security and Privacy</value>
   </data>
-  <data name="WindowsHelloAuthenticationTimeout.Header" xml:space="preserve">
+  <data name="SettingsBlock.Title" xml:space="preserve">
+    <value>Change Settings</value>
+  </data>
+  <data name="StayAuthenticatedBlock.Title" xml:space="preserve">
     <value>Keep me authenticated for</value>
   </data>
   <data name="WindowsHelloHeader.Text" xml:space="preserve">
     <value>Windows Hello</value>
   </data>
-  <data name="WindowsHelloLogin.Text" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="WindowsHelloNSFW.Text" xml:space="preserve">
-    <value>Access NSFW channels</value>
-  </data>
   <data name="WindowsHelloOptionsHeader.Text" xml:space="preserve">
     <value>Require Windows Hello authentication to:</value>
   </data>
-  <data name="WindowsHelloSettings.Text" xml:space="preserve">
-    <value>Change settings</value>
+  <data name="WindowsHelloSubHeader.Text" xml:space="preserve">
+    <value>Require Windows Hello authentication to:</value>
   </data>
   <data name="WindowsHelloToggle.Text" xml:space="preserve">
     <value />
