@@ -784,11 +784,13 @@ namespace Unicord.Universal.Pages
         }
 
         private MessageViewModel _reactionModel;
-        internal void ShowReactionPicker(MessageControl control)
+        internal void ShowReactionPicker(MessageViewModel model)
         {
-            _reactionModel = (MessageViewModel)control.DataContext;
+            var control = MessageList.ContainerFromItem(model.Message);
+            if (control is not FrameworkElement element) return;
 
-            EmoteFlyout.ShowAt(control);
+            _reactionModel = model;
+            EmoteFlyout.ShowAt(element);
         }
 
         private void EmotePicker_EmojiPicked(object sender, DiscordEmoji e)
@@ -800,6 +802,7 @@ namespace Unicord.Universal.Pages
 
             if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift) != CoreVirtualKeyStates.Down)
             {
+                _reactionModel = null;
                 EmoteFlyout.Hide();
             }
         }

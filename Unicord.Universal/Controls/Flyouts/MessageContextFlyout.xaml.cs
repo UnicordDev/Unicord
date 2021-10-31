@@ -47,7 +47,7 @@ namespace Unicord.Universal.Controls.Flyouts
             var control = this.Target.FindParent<MessageControl>();
             var page = this.Target.FindParent<ChannelPage>();
 
-            page.ShowReactionPicker(control);
+            page.ShowReactionPicker(control.MessageViewModel);
         }
 
         // HACK

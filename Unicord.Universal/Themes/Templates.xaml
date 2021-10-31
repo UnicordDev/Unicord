@@ -332,7 +332,8 @@
                            Margin="8,4"
                            MinWidth="8"
                            MinHeight="8"
-                           Value="{x:Bind MentionCount}"/>
+                           Value="{x:Bind MentionCount}"
+                           Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"/>
         </Grid>
     </DataTemplate>
 
