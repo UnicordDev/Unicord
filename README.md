@@ -9,21 +9,19 @@ A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tr
 So you wanna build Unicord, well you're gonna need to have a few things handy.
 
 ### Prerequisites
- - Windows 10 build 1809+
- - Visual Studio 2017/2019 (with UWP tooling for both .NET and C++)
- - Windows 10 SDK build 17763+ (subject to change)
+ - Windows 11 (Build 22000+)
+ - Visual Studio 2019 or later, with the Universal Windows Platform workload.
+ - Windows 11 SDK Build 22000
 
 ### Building and Installing
 Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:
 
+````sh
+$ git submodule update --init --recursive
 ```
-git submodule update --recursive
-```
-Or if it doesn't work
-```
-git submodule update --init --recursive
-```
-From here, building should be as simple as double clicking `Unicord.sln`, ensuring your targets are appropriate to your testing platform (i.e. Debug x64), and hitting F5. Once built and deployed, it should show in your start menu as "Unicord Canary", data and settings are kept separate from the Store version, so they can be installed side by side.
+
+From here, building should be as simple as double clicking `Unicord.sln`, ensuring your targets are appropriate to your testing platform (i.e. Debug x64), and hitting F5. 
+Once built and deployed, it should show in your start menu as "Unicord Canary", data and settings are kept separate from the Store version, so they can be installed side by side.
 
 ![Canary](https://i.imgur.com/NaMdkZ4.png)
 
