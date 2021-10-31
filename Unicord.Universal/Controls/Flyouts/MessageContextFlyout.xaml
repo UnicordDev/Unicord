@@ -18,6 +18,15 @@
         </AppBarButton.Icon>
     </AppBarButton>
 
+    <AppBarButton ToolTipService.ToolTip="View Profile"
+                  Command="{StaticResource OpenUserOverlayCommand}"
+                  CommandParameter="{Binding Author}"
+                  Click="HideOnClick">
+        <AppBarButton.Icon>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7ee;" />
+        </AppBarButton.Icon>
+    </AppBarButton>
+
     <AppBarButton ToolTipService.ToolTip="Reply"
                   Command="{StaticResource ReplyCommand}"
                   CommandParameter="{Binding Message}"
@@ -26,16 +35,7 @@
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
         </AppBarButton.Icon>
     </AppBarButton>
-
-    <AppBarButton ToolTipService.ToolTip="Pin"
-                  Command="{StaticResource PinMessageCommand}"
-                  CommandParameter="{Binding Message}"
-                  Click="HideOnClick">
-        <AppBarButton.Icon>
-            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE718;" />
-        </AppBarButton.Icon>
-    </AppBarButton>
-
+    
     <AppBarButton ToolTipService.ToolTip="Copy Message"
                   Command="{StaticResource CopyMessageCommand}" 
                   CommandParameter="{Binding Message}"
@@ -56,14 +56,6 @@
 
     <lib:CommandBarFlyout.SecondaryCommands>
 
-        <AppBarButton Label="View Profile"
-                      Command="{StaticResource OpenUserOverlayCommand}"
-                      CommandParameter="{Binding Author}">
-            <AppBarButton.Icon>
-                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7ee;" />
-            </AppBarButton.Icon>
-        </AppBarButton>
-
         <AppBarButton Label="Change Nickname"
                       Command="{StaticResource ChangeNicknameCommand}"
                       CommandParameter="{Binding Author}">
@@ -73,6 +65,15 @@
         </AppBarButton>
 
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
+
+
+        <AppBarButton Label="Pin"
+                      Command="{StaticResource PinMessageCommand}"
+                      CommandParameter="{Binding Message}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE718;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
 
         <AppBarButton Label="Edit"
                       Click="EditFlyoutItem_Click"

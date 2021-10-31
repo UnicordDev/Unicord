@@ -92,6 +92,14 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+
+            <Button x:Name="ShowSidebarButton"
+                    Margin="8,0,8,0"
+                    Click="ShowSidebarButton_Click" 
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource IconButtonStyle}" 
+                    Content="&#xE700;"/>
+
             <TextBlock x:Uid="/FriendsPage/FriendsHeader" 
                        FontFamily="XamlAutoFontFamily"
                        Style="{ThemeResource TitleLargeTextBlockStyle}"
@@ -151,29 +159,29 @@
                 </PivotItem>
             </Pivot.Items>
         </Pivot>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="769" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
-
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup>
-            <VisualState x:Name="WideState">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="769" />
-                </VisualState.StateTriggers>
-
-                <VisualState.Setters>
-                    <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
-                </VisualState.Setters>
-            </VisualState>
-
-            <VisualState x:Name="NarrowState">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="0" />
-                </VisualState.StateTriggers>
-
-                <VisualState.Setters>
-                    <Setter Target="showSidebarButton.Visibility" Value="Visible" />
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
 </Page>

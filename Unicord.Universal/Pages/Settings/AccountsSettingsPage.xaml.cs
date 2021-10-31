@@ -76,9 +76,11 @@ namespace Unicord.Universal.Pages.Settings
 
         private string GetHiddenEmail(string email)
         {
-            string domain = email.Split('@')[1];
+            var split = email.Split('@');
+            var start = split[0].TrimEnd('@');
+            var domain = split[1];
 
-            return $"*****@{domain}";
+            return $"{new string('●', start.Length)}@{domain}";
         }
     }
 }

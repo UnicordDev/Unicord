@@ -341,7 +341,6 @@
                        Grid.RowSpan="3"
                        Source="{ThemeResource DiscordSplashScreen}"
                        VerticalAlignment="Center"
-                       Margin="16"
                        Stretch="Uniform"
                        MaxWidth="620"/>
                 
