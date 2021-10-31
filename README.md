@@ -16,7 +16,7 @@ So you wanna build Unicord, well you're gonna need to have a few things handy.
 ### Building and Installing
 Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:
 
-````sh
+```sh
 $ git submodule update --init --recursive
 ```
 
