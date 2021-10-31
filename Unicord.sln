@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Universal", "Unicord.Universal\Unicord.Universal.csproj", "{67FAEA09-9D99-4ADC-A6C3-610702B7A3DA}"
 EndProject
@@ -20,6 +20,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharpPlus.Rest", "Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj", "{C01B8589-13FE-4A6D-B159-6644977F58DE}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Unicord.Universal.Shared", "Unicord.Universal.Shared\Unicord.Universal.Shared.shproj", "{118F9D67-9235-4FC6-BF23-9ABE0CD693DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository Items", "Repository Items", "{6163A08C-4E23-48B7-9ACF-C8E4A8429B33}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.gitmodules = .gitmodules
+		azure-pipelines.yml = azure-pipelines.yml
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

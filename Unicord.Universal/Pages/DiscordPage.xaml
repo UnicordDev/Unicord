@@ -111,7 +111,7 @@
               VerticalAlignment="Top" 
               Height="32">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="56"/>
+                <ColumnDefinition Width="64"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -120,7 +120,6 @@
                   Visibility="Visible">
                 <Image Width="18"
                        Height="18"
-                       HorizontalAlignment="Center"
                        Source="{StaticResource DiscordClyde}">
                 </Image>
             </Grid>
