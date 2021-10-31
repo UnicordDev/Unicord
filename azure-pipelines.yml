@@ -23,7 +23,7 @@ steps:
   name: signingCert
   displayName: 'Download CA certificate'
   inputs:
-    secureFile: 'Unicord.Universal_StoreKey.pfx'
+    secureFile: 'Unicord.Universal_TemporaryKey.pfx'
 
 - task: NuGetToolInstaller@1
 
