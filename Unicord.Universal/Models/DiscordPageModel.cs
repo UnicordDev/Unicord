@@ -34,6 +34,7 @@ namespace Unicord.Universal.Models
 
             var guilds = App.Discord.Guilds;
             var folders = App.Discord.UserSettings?.GuildFolders;
+            var ids = new HashSet<ulong>();
             if (folders != null)
             {
                 foreach (var folder in folders)
@@ -43,7 +44,10 @@ namespace Unicord.Universal.Models
                         foreach (var id in folder.GuildIds)
                         {
                             if (guilds.TryGetValue(id, out var server))
+                            {
                                 Guilds.Add(new GuildListViewModel(server));
+                                ids.Add(id);
+                            }
                         }
 
                         continue;
@@ -52,13 +56,18 @@ namespace Unicord.Universal.Models
                     var folderItems = folder.GuildIds.Select(id => guilds.TryGetValue(id, out var server) ? server : null)
                                                      .Where(g => g != null);
 
+                    foreach (var item in folderItems)
+                        ids.Add(item.Id);
+
                     Guilds.Add(new GuildListFolderViewModel(folder, folderItems));
                 }
             }
 
-            //foreach (var guild in App.Discord.Guilds.Values)
-            //{
-            //}
+            foreach (var guild in App.Discord.Guilds.Values)
+            {
+                if (!ids.Contains(guild.Id))
+                    Guilds.Insert(0, new GuildListViewModel(guild));
+            }
 
             var dms = App.Discord.PrivateChannels.Values;
             foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0).OrderByDescending(d => d.ReadState?.LastMessageId))
