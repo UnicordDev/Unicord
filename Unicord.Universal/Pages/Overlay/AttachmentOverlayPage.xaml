@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="Unicord.Universal.Pages.Overlay.AttachmentOverlayPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Pages.Overlay"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:controls="using:Unicord.Universal.Controls"
+    mc:Ignorable="d">
+
+    <Grid x:Name="contentContainer">
+        <Border Tapped="contentContainer_Tapped"
+                Background="{ThemeResource SmokeFillColorDefaultBrush}"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="2"
+                                ScaleY="2"/>
+            </Border.RenderTransform>
+        </Border>
+
+        <Grid>
+            <ScrollViewer MinZoomFactor="1" 
+                          IsVerticalRailEnabled="False"
+                          VerticalScrollBarVisibility="Auto"
+                          VerticalScrollMode="Enabled"
+                          IsHorizontalRailEnabled="False"
+                          HorizontalScrollBarVisibility="Auto"
+                          HorizontalScrollMode="Enabled" 
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch"
+                          VerticalContentAlignment="Stretch"
+                          ZoomMode="Enabled">
+
+                <controls:ScaledContentControl x:Name="scaledControl" MaxWidth="Infinity" MaxHeight="Infinity">
+                    <Image x:Name="attachmentImage">
+                        <Image.Source>
+                            <BitmapImage x:Name="AttachmentSource" DownloadProgress="AttachmentSource_DownloadProgress" ImageOpened="AttachmentSource_ImageOpened" />
+                        </Image.Source>
+                    </Image>
+                </controls:ScaledContentControl>
+            </ScrollViewer>
+
+            <Grid x:Name="contentContainerOverlay" Grid.RowSpan="2" Visibility="Visible">
+                <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" IsIndeterminate="False"/>
+            </Grid>
+        </Grid>
+
+        <Grid Margin="8" VerticalAlignment="Top">
+            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click" />
+        </Grid>
+    </Grid>
+</Page>

@@ -63,44 +63,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:AttachmentMediaControl">
                     <Border>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="MediaType">
-                                <VisualState x:Name="Video">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsVideo}"/>
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Margin" Value="0"/>
-                                        <Setter Target="MediaPlayer.MaxHeight" Value="480"/>
-                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="True"/>
-                                        <Setter Target="AudioInfo.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MediaPlayer.TransportControls">
-                                            <Setter.Value>
-                                                <MediaTransportControls Style="{ThemeResource MediaTransportControlsStyle}"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Audio">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsAudio}"/>
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Margin" Value="8"/>
-                                        <Setter Target="MediaPlayer.MaxHeight" Value="46"/>
-                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="False"/>
-                                        <Setter Target="AudioInfo.Visibility" Value="Visible"/>
-                                        <Setter Target="MediaPlayer.TransportControls">
-                                            <Setter.Value>
-                                                <MediaTransportControls Style="{ThemeResource AudioMediaTransportControlsStyle}"
-                                                                        IsFullWindowButtonVisible="False"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-
                         <Grid x:Name="Root">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -172,6 +134,45 @@
                                 <MediaPlayerElement x:Name="MediaPlayer" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True"/>
                             </controls:ScaledContentControl>
                         </Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="MediaType">
+                                <VisualState x:Name="Video">
+                                    <VisualState.StateTriggers>
+                                        <StateTrigger IsActive="{Binding IsVideo}"/>
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.Margin" Value="0"/>
+                                        <Setter Target="MediaPlayer.MaxHeight" Value="480"/>
+                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="True"/>
+                                        <Setter Target="AudioInfo.Visibility" Value="Collapsed"/>
+                                        <Setter Target="MediaPlayer.TransportControls">
+                                            <Setter.Value>
+                                                <MediaTransportControls Style="{ThemeResource MediaTransportControlsStyle}"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Audio">
+                                    <VisualState.StateTriggers>
+                                        <StateTrigger IsActive="{Binding IsAudio}"/>
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="Root.Margin" Value="8"/>
+                                        <Setter Target="MediaPlayer.MaxHeight" Value="46"/>
+                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="False"/>
+                                        <Setter Target="AudioInfo.Visibility" Value="Visible"/>
+                                        <Setter Target="MediaPlayer.TransportControls">
+                                            <Setter.Value>
+                                                <MediaTransportControls Style="{ThemeResource AudioMediaTransportControlsStyle}"
+                                                                        IsFullWindowButtonVisible="False"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

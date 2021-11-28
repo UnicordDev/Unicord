@@ -29,6 +29,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Pages
 {
@@ -58,6 +59,7 @@ namespace Unicord.Universal.Pages
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
 
+            //GuildsView.RegisterPropertyChangedCallback(MUXC.TreeView.SelectedItemProperty, )
             //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
         }
 
@@ -176,18 +178,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if (e.Handled)
-                return;
-
-            if (SettingsOverlayGrid.Visibility == Visibility.Visible)
-            {
-                CloseSettings();
-                e.Handled = true;
-            }
-        }
-
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
             if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
@@ -241,26 +231,6 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private async void GuildsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (Model.Navigating)
-                return;
-
-            if (e.AddedItems.FirstOrDefault() is DiscordGuild guild)
-            {
-                if (!guild.IsUnavailable)
-                {
-                    LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guild);
-                    Model.IsFriendsSelected = false;
-                }
-                else
-                {
-                    Model.SelectedGuild = null;
-                    await UIUtilities.ShowErrorDialogAsync("ServerUnavailableTitle", "ServerUnavailableMessage");
-                }
-            }
-        }
-
         private async void UnreadDms_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Model.Navigating)
@@ -289,43 +259,17 @@ namespace Unicord.Universal.Pages
 
         private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
-            if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
-            {
-                await App.Discord.UpdateUserSettingsAsync(enumerable);
-            }
+            //var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
+            //if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
+            //{
+            //    await App.Discord.UpdateUserSettingsAsync(enumerable);
+            //}
         }
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var service = SettingsService.GetForCurrentView();
             await service.OpenAsync();
-        }
-
-        private void SettingsOverlayBackground_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            CloseSettings();
-        }
-
-        internal void OpenSettings(SettingsPageType page)
-        {
-            Analytics.TrackEvent("DiscordPage_OpenSettings");
-
-            SettingsOverlayGrid.Visibility = Visibility.Visible;
-            OpenSettingsDesktopStoryboard.Begin();
-
-            SettingsGrid.Navigate(typeof(SettingsPage), page, new SuppressNavigationTransitionInfo());
-        }
-
-        internal void CloseSettings()
-        {
-            CloseSettingsDesktopStoryboard.Begin();
-        }
-
-        private void CloseSettingsStoryboard_Completed(object sender, object e)
-        {
-            SettingsOverlayGrid.Visibility = Visibility.Collapsed;
-            SettingsGrid.Navigate(typeof(Page), null, new SuppressNavigationTransitionInfo());
         }
 
         private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
@@ -361,6 +305,32 @@ namespace Unicord.Universal.Pages
         private void ClydeLogo_Tapped(object sender, TappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+        }
+
+        private async void TreeView_ItemInvoked(MUXC.TreeView sender, MUXC.TreeViewItemInvokedEventArgs args)
+        {
+            if (args.InvokedItem is GuildListFolderViewModel viewModel)
+            {
+                viewModel.IsExpanded = !viewModel.IsExpanded;
+            }
+
+            if (args.InvokedItem is GuildListViewModel guildVM)
+            {
+                if (Model.Navigating)
+                    return;
+
+                if (!guildVM.Guild.IsUnavailable)
+                {
+                    LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    Model.IsFriendsSelected = false;
+                }
+                else
+                {
+                    await UIUtilities.ShowErrorDialogAsync("ServerUnavailableTitle", "ServerUnavailableMessage");
+                }
+            }
+
+            sender.SelectedItem = null;
         }
     }
 }

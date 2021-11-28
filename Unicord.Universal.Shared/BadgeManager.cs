@@ -28,27 +28,27 @@ namespace Unicord.Universal.Shared
                 if (!unread)
                     return;
 
-                var badgeNumber = _discord.Guilds.Values.Sum(g => Math.Max(g.MentionCount, 0)) + _discord.PrivateChannels.Values.Sum(g => Math.Max(g.ReadState?.MentionCount ?? 0, 0));
-                if (badgeNumber != 0)
-                {
-                    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeNumber);
-                    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
-
-                    badgeElement.SetAttribute("value", badgeNumber.ToString());
-                    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                }
-                //else if (unread)
+                //var badgeNumber = _discord.Guilds.Values.Sum(g => Math.Max(g.MentionCount, 0)) + _discord.PrivateChannels.Values.Sum(g => Math.Max(g.ReadState?.MentionCount ?? 0, 0));
+                //if (badgeNumber != 0)
                 //{
-                //    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
+                //    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeNumber);
                 //    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
 
-                //    badgeElement.SetAttribute("value", "available");
+                //    badgeElement.SetAttribute("value", badgeNumber.ToString());
                 //    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
                 //}
-                else
-                {
-                    _badgeUpdateManager.Clear();
-                }
+                ////else if (unread)
+                ////{
+                ////    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
+                ////    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
+
+                ////    badgeElement.SetAttribute("value", "available");
+                ////    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
+                ////}
+                //else
+                //{
+                //    _badgeUpdateManager.Clear();
+                //}
             }
             catch (Exception)
             {

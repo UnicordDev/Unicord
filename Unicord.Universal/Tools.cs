@@ -105,18 +105,6 @@ namespace Unicord.Universal
             catch { }
         }
 
-        public static async Task<ContactAnnotationList> GetAnnotationListAsync(ContactAnnotationStore store)
-        {
-            var lists = await store.FindAnnotationListsAsync();
-            var list = lists.FirstOrDefault();
-            if (list == null)
-            {
-                list = await store.CreateAnnotationListAsync();
-            }
-
-            return list;
-        }
-
         public static T FindParent<T>(this DependencyObject obj, string controlName = null) where T : FrameworkElement
         {
             var parent = VisualTreeHelper.GetParent(obj);

@@ -96,47 +96,7 @@
                              Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
-
-        <Storyboard x:Name="showContent" x:Key="showContent">
-
-            <DoubleAnimation From="0" To="1"
-                             Storyboard.TargetName="contentOverlay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-
-            <DoubleAnimation From="0.85" To="1" 
-                             Storyboard.TargetName="contentScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-            <DoubleAnimation From="0.85" To="1" 
-                             Storyboard.TargetName="contentScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-
-        </Storyboard>
-        <Storyboard x:Name="hideContent" x:Key="hideContent"
-                    Completed="hideContent_Completed">
-            <DoubleAnimation From="1" To="0"
-                             Storyboard.TargetName="contentOverlay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-
-            <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="contentScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-            <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="contentScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-        </Storyboard>
-
+        
         <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay">
 
             <DoubleAnimation From="0" To="1"
@@ -234,59 +194,11 @@
             <Grid.RenderTransform>
                 <ScaleTransform x:Name="MainScale" ScaleX="1" ScaleY="1"/>
             </Grid.RenderTransform>
+            
             <Grid x:Name="mainContent">
                 <Frame x:Name="rootFrame" />
                 <Grid x:Name="overlayGrid"/>
-            </Grid>
-            <Grid x:Name="contentOverlay" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Opacity="0" AllowDrop="True">
-                <Canvas Background="{StaticResource OverlayBackdrop}" Tapped="contentOverlay_Tapped"/>
-                <Grid x:Name="contentContainer">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid RenderTransformOrigin="0.5, 0.5">
-                        <Grid.RenderTransform>
-                            <ScaleTransform x:Name="contentScale" ScaleX="1" ScaleY="1"/>
-                        </Grid.RenderTransform>
-                        <ScrollViewer MinZoomFactor="1" 
-                                      IsVerticalRailEnabled="False"
-                                      VerticalScrollBarVisibility="Auto"
-                                      VerticalScrollMode="Enabled"
-                                      IsHorizontalRailEnabled="False"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      HorizontalScrollMode="Enabled" 
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"
-                                      VerticalContentAlignment="Stretch"
-                                      ZoomMode="Enabled"
-                                      Tapped="contentOverlay_Tapped">
-                            <controls1:ScaledContentControl x:Name="scaledControl" MaxWidth="Infinity" MaxHeight="Infinity">
-                                <Image x:Name="attachmentImage"/>
-                            </controls1:ScaledContentControl>
-                        </ScrollViewer>
-
-                        <Grid x:Name="contentContainerOverlay" Grid.RowSpan="2" Visibility="Collapsed">
-                            <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </Grid>
-                    </Grid>
-
-                    <Grid x:Name="subText" Grid.Row="1" HorizontalAlignment="Stretch" Margin="4" Visibility="Collapsed" fc:ColumnSpacing="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" Tapped="contentOverlay_Tapped"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE74E;" x:Name="saveButton" Grid.Column="2" ToolTipService.ToolTip="Save"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72D;" x:Name="shareButton" ToolTipService.ToolTip="Share" Grid.Column="3"/>
-                        <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE71B;" x:Name="openButton" ToolTipService.ToolTip="Open Original" Grid.Column="4"/>
-                    </Grid>
-                </Grid>
-            </Grid>
+            </Grid>            
 
             <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
                 <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource SmokeFillColorDefaultBrush}"/>
@@ -305,8 +217,6 @@
                   Background="{ThemeResource SmokeFillColorDefaultBrush}">
                 <Grid x:Name="CustomContainer"
                       RenderTransformOrigin="0.5,0.5"
-                      Background="{ThemeResource AcrylicInAppFillColorBaseBrush}" 
-                      Margin="32"
                       CornerRadius="8">
                     <Grid.RenderTransform>
                         <ScaleTransform x:Name="CustomPaneScale" ScaleX="1" ScaleY="1" />
@@ -361,32 +271,6 @@
             </Grid>
         </Grid>
 
-        <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>
-        
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AdaptiveStates">
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="769" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="CustomContainer.Margin" Value="32" />
-                        <Setter Target="CustomContainer.CornerRadius" Value="8" />
-                    </VisualState.Setters>
-                </VisualState>
-
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="CustomContainer.Margin" Value="0" />
-                        <Setter Target="CustomContainer.CornerRadius" Value="0" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>        
     </Grid>
 </Page>

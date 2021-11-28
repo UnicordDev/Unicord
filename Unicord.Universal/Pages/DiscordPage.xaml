@@ -11,7 +11,8 @@
     xmlns:sub="using:Unicord.Universal.Pages.Subpages"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
-    xmlns:triggers="using:WindowsStateTriggers"
+    xmlns:converters="using:Unicord.Universal.Converters"
+    xmlns:triggers="using:WindowsStateTriggers" xmlns:voice="using:Unicord.Universal.Controls.Voice"
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
@@ -22,50 +23,7 @@
     </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
-        <Storyboard x:Key="OpenSettingsDesktopStoryboard" 
-                    x:Name="OpenSettingsDesktopStoryboard">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="SettingsPaneTransform"
-                Storyboard.TargetProperty="X"
-                From="450"
-                To="0"
-                Duration="00:00:00.50" />
-            <DoubleAnimation
-                Storyboard.TargetName="SettingsPaneTransform"
-                Storyboard.TargetProperty="Y"
-                To="0"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="SettingsOverlayBackground"
-                Storyboard.TargetProperty="Opacity"
-                To="1"
-                Duration="00:00:00.50" />
-        </Storyboard>
-        <Storyboard x:Key="CloseSettingsDesktopStoryboard"
-                    x:Name="CloseSettingsDesktopStoryboard"
-                    Completed="CloseSettingsStoryboard_Completed">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="SettingsPaneTransform"
-                Storyboard.TargetProperty="X"
-                From="0"
-                To="450"
-                Duration="00:00:00.20" />
-            <DoubleAnimation
-                Storyboard.TargetName="SettingsPaneTransform"
-                Storyboard.TargetProperty="Y"
-                To="0"
-                Duration="00:00:00" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseExit}"
-                Storyboard.TargetName="SettingsOverlayBackground"
-                Storyboard.TargetProperty="Opacity"
-                To="0"
-                Duration="00:00:00.20" />
-        </Storyboard>
-
+        
         <Storyboard x:Key="OpenPaneMobileStoryboard" 
                     x:Name="OpenPaneMobileStoryboard">
             <DoubleAnimation
@@ -96,15 +54,7 @@
                 To="0"
                 Duration="00:00:00.25" />
         </Storyboard>
-
-        <MenuFlyout x:Key="PowerUsersMenu">
-            <MenuFlyoutItem IsEnabled="False" Text="Power Users Menu">
-                <MenuFlyoutItem.Icon>
-                    <PathIcon HorizontalAlignment="Stretch" Data="M114.65,47.25c-12.94-9.72-25.26-9.45-25.26-9.45l-1.25,1.44c15.28,4.68,22.38,11.43,22.38,11.43A73.23,73.23,0,0,0,83.46,42a76,76,0,0,0-18.16.18,8.87,8.87,0,0,0-1.53.18,67.48,67.48,0,0,0-20.4,5.67c-3.33,1.53-5.31,2.61-5.31,2.61s7.46-7.11,23.65-11.79l-.9-1.08s-12.32-.27-25.26,9.45c0,0-12.95,23.49-12.95,52.47,0,0,7.55,13,27.42,13.68,0,0,3.32-4.05,6-7.47-11.42-3.42-15.73-10.62-15.73-10.62s.9.63,2.52,1.53a1.24,1.24,0,0,0,.36.27c.27.18.54.27.81.45a52,52,0,0,0,6.56,3.06,75.29,75.29,0,0,0,13.21,3.87,62.94,62.94,0,0,0,23.29.09,59.08,59.08,0,0,0,13-3.87,51.45,51.45,0,0,0,10.34-5.31s-4.5,7.38-16.27,10.71c2.7,3.42,5.93,7.29,5.93,7.29,19.87-.63,27.51-13.68,27.51-13.68C127.6,70.74,114.65,47.25,114.65,47.25ZM58.29,91.35c-5,0-9.17-4.5-9.17-10s4.05-10,9.17-10,9.26,4.5,9.17,10S63.41,91.35,58.29,91.35Zm32.81,0c-5,0-9.17-4.5-9.17-10s4-10,9.17-10,9.17,4.5,9.17,10S96.23,91.35,91.1,91.35Z"/>
-                </MenuFlyoutItem.Icon>
-            </MenuFlyoutItem>
-        </MenuFlyout>
-
+        
     </Page.Resources>
     <Grid>
         <Grid x:Name="TitleBarGrid"
@@ -159,135 +109,119 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="sidebarMainGrid" Margin="0,32,0,0">
+                    <ScrollViewer>
+                        <StackPanel>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <ListView Grid.Row="1"
-                              AllowDrop="True"
-                              CanDrag="True"
-                              CanDragItems="True"
-                              CanReorderItems="True"
-                              DragItemsCompleted="guildsList_DragItemsCompleted"
-                              ItemTemplate="{StaticResource GuildsListTemplate}"
-                              ItemsSource="{Binding Guilds}"
-                              SelectedItem="{Binding SelectedGuild, Mode=TwoWay}"
-                              SelectionChanged="GuildsList_SelectionChanged"
-                              ShowsScrollingPlaceholders="False"
-                              SingleSelectionFollowsFocus="False"
-                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                        <ListView.Header>
-                            <StackPanel Margin="0,0,0,0">
-                                <ListViewItem x:Name="CloseItem"
+                            <ListViewItem x:Name="CloseItem"
                                               MinWidth="0"
                                               Padding="0"
                                               HorizontalContentAlignment="Stretch"
                                               Tapped="CloseItem_Tapped">
-                                    <FontIcon Width="36" Height="36" Glyph="&#xE700;" />
-                                </ListViewItem>
-                                <ListViewItem x:Name="FriendsItem"
+                                <FontIcon Width="36" Height="36" Glyph="&#xE700;" />
+                            </ListViewItem>
+                            <ListViewItem x:Name="FriendsItem"
                                               MinWidth="0"
                                               Padding="0"
                                               IsSelected="{Binding IsFriendsSelected}"
                                               HorizontalContentAlignment="Stretch"
                                               Tapped="friendsItem_Tapped">
-                                    <SymbolIcon Width="36" Height="36" Symbol="People" />
-                                </ListViewItem>
+                                <SymbolIcon Width="36" Height="36" Symbol="People" />
+                            </ListViewItem>
 
-                                <ListView ItemsSource="{Binding UnreadDMs}"
+                            <ListView ItemsSource="{Binding UnreadDMs}"
                                           SelectedItem="{Binding SelectedDM}"
                                           Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"
                                           ScrollViewer.VerticalScrollMode="Disabled"
                                           SingleSelectionFollowsFocus="False"
                                           SelectionChanged="UnreadDms_SelectionChanged">
-                                    <ListView.HeaderTemplate>
-                                        <DataTemplate>
-                                            <lib:NavigationViewItemSeparator Margin="16,0" />
-                                        </DataTemplate>
-                                    </ListView.HeaderTemplate>
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
-                                            <Setter Property="MinWidth" Value="0" />
-                                            <Setter Property="Padding" Value="0" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <lib:PersonPicture Width="42" 
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <lib:NavigationViewItemSeparator Margin="16,0" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                        <Setter Property="MinWidth" Value="0" />
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <lib:PersonPicture Width="42" 
                                                                    Height="42"
                                                                    Margin="0,4"
                                                                    DisplayName="{Binding Converter={StaticResource DMNameConverter}}"
                                                                    ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}" />
 
-                                                <lib:InfoBadge VerticalAlignment="Top"
+                                            <lib:InfoBadge VerticalAlignment="Top"
                                                                HorizontalAlignment="Right"
                                                                Margin="4"
                                                                MinWidth="8"
                                                                MinHeight="8"
                                                                Value="{Binding ReadState.MentionCount}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <lib:NavigationViewItemSeparator Margin="16,0" />
-                            </StackPanel>
-                        </ListView.Header>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
-                                <Setter Property="MinWidth" Value="0" />
-                                <Setter Property="Padding" Value="0" />
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.Footer>
-                            <StackPanel Margin="0,0,0,8">
-                                <lib:NavigationViewItemSeparator Margin="16,0" />
-                                <ListViewItem
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                            <lib:NavigationViewItemSeparator Margin="16,0" />
+
+                            <lib:TreeView x:Name="GuildsView"
+                                          ItemsSource="{Binding Guilds}"
+                                          ItemInvoked="TreeView_ItemInvoked">
+                                <lib:TreeView.ItemTemplateSelector>
+                                    <converters:GuildListTemplateSelector GuildTemplate="{StaticResource GuildsListTemplate}" 
+                                                                          GuildFolderTemplate="{StaticResource GuildsListFolderTemplate}"/>
+                                </lib:TreeView.ItemTemplateSelector>
+                                <lib:TreeView.ItemContainerStyle>
+                                    <Style TargetType="lib:TreeViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                        <Setter Property="MinWidth" Value="0" />
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </lib:TreeView.ItemContainerStyle>
+                            </lib:TreeView>
+
+                            <lib:NavigationViewItemSeparator Margin="16,0" />
+                            <ListViewItem
                                     x:Name="createServerItem"
                                     MinWidth="0"
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="CreateServerItem_Tapped">
-                                    <!--<FlyoutBase.AttachedFlyout>
-                                        <Flyout>
-                                            <flyouts:AddServerFlyout />
-                                        </Flyout>
-                                    </FlyoutBase.AttachedFlyout>-->
-                                    <SymbolIcon
+                                <SymbolIcon
                                         Width="36"
                                         Height="36"
                                         Symbol="Add" />
-                                </ListViewItem>
-                                <ListViewItem
+                            </ListViewItem>
+                            <ListViewItem
                                     x:Name="findServerIcon"
                                     MinWidth="0"
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="FindServerIcon_Tapped">
-                                    <SymbolIcon
+                                <SymbolIcon
                                         Width="36"
                                         Height="36"
                                         Symbol="Find" />
-                                </ListViewItem>
-                                <lib:NavigationViewItemSeparator Margin="16,0" />
-                                <ListViewItem
+                            </ListViewItem>
+                            <lib:NavigationViewItemSeparator Margin="16,0" />
+                            <ListViewItem
                                     x:Name="settingsItem"
                                     MinWidth="0"
                                     Padding="0"
                                     HorizontalContentAlignment="Stretch"
                                     Tapped="SettingsItem_Tapped">
-                                    <SymbolIcon
+                                <SymbolIcon
                                         Width="36"
                                         Height="36"
                                         Symbol="Setting" />
-                                </ListViewItem>
-                            </StackPanel>
-                        </ListView.Footer>
-                    </ListView>
+                            </ListViewItem>
+
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
 
                 <Grid x:Name="sidebarSecondaryGrid"
@@ -314,7 +248,7 @@
                               BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                               BorderThickness="1"
                               Visibility="{Binding VoiceModel, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                            <!--<controls:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>-->
+                            <voice:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
                         </Grid>
 
                         <Grid Grid.Row="2"
@@ -410,21 +344,7 @@
                 </Grid>
             </Grid>
         </Grid>
-
-        <Grid x:Name="SettingsOverlayGrid" Visibility="Collapsed">
-            <Grid
-                x:Name="SettingsOverlayBackground"
-                Background="{ThemeResource OverlayBackdrop}"
-                Opacity="0"
-                Tapped="SettingsOverlayBackground_Tapped" />
-            <Grid x:Name="SettingsContainer" Background="{ThemeResource BackgroundTertiaryBrush}">
-                <Grid.RenderTransform>
-                    <TranslateTransform x:Name="SettingsPaneTransform" />
-                </Grid.RenderTransform>
-                <Frame x:Name="SettingsGrid"/>
-            </Grid>
-        </Grid>
-
+        
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="RightPaneStates">
                 <VisualState x:Name="PaneClosedLarge">
@@ -460,7 +380,7 @@
                                          Duration="00:00:00.25" />
                     </Storyboard>
                 </VisualState>
-                
+
                 <VisualState x:Name="PaneOpen">
                     <VisualState.StateTriggers>
                         <triggers:EqualsStateTrigger Value="{x:Bind Model.IsRightPaneOpen, Mode=OneWay}"

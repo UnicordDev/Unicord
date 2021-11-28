@@ -56,6 +56,8 @@ namespace Unicord.Universal.Services
             {
                 Analytics.TrackEvent("DiscordNavigationService_NavigateToFriendsPage");
 
+                if (_discordPageModel.SelectedGuild != null)
+                    _discordPageModel.SelectedGuild.IsSelected = false;
                 _discordPageModel.SelectedGuild = null;
                 _discordPageModel.IsFriendsSelected = true;
                 _discordPageModel.CurrentChannel = null;
@@ -83,6 +85,9 @@ namespace Unicord.Universal.Services
                 _discordPageModel.Navigating = true;
                 _discordPage.CloseSplitPane(); // pane service?
 
+                if (_discordPageModel.SelectedGuild != null)
+                    _discordPageModel.SelectedGuild.IsSelected = false;
+
                 _discordPageModel.SelectedGuild = null;
                 _discordPageModel.SelectedDM = null;
                 _discordPageModel.IsFriendsSelected = false;
@@ -99,7 +104,8 @@ namespace Unicord.Universal.Services
                 }
                 else if (channel.Guild != null)
                 {
-                    _discordPageModel.SelectedGuild = channel.Guild;
+                    _discordPageModel.SelectedGuild = _discordPageModel.ViewModelFromGuild(channel.Guild);
+                    _discordPageModel.SelectedGuild.IsSelected = true;
 
                     if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());

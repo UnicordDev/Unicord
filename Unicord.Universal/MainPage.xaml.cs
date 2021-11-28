@@ -355,102 +355,12 @@ namespace Unicord.Universal
             rootFrame.Navigate(type);
         }
 
-        internal void ShowAttachmentOverlay(Uri url, int width, int height, RoutedEventHandler openHandler, RoutedEventHandler saveHandler, RoutedEventHandler shareHandler)
+        public void HideUserOverlay()
         {
-            if (attachmentImage.Source == null)
-            {
-                contentContainerOverlay.Visibility = Visibility.Visible;
-                subText.Visibility = Visibility.Visible;
-                contentOverlay.Visibility = Visibility.Visible;
-                showContent.Begin();
-
-                _openHandler = openHandler;
-                _saveHandler = saveHandler;
-                _shareHandler = shareHandler;
-                openButton.Click += _openHandler;
-                saveButton.Click += _saveHandler;
-                shareButton.Click += _shareHandler;
-
-                scaledControl.TargetWidth = width;
-                scaledControl.TargetHeight = height;
-                attachmentImage.MaxWidth = width;
-                attachmentImage.MaxHeight = height;
-
-                if ((attachmentImage.Source as BitmapImage)?.UriSource != url)
-                {
-                    var src = new BitmapImage();
-                    attachmentImage.Source = src;
-
-                    overlayProgressRing.Value = 0;
-                    contentContainerOverlay.Visibility = Visibility.Visible;
-
-                    var p = new Progress<int>(e => overlayProgressRing.Value = e);
-                    var handler = new DownloadProgressEventHandler((o, e) => ((IProgress<int>)p).Report(e.Progress));
-
-                    src.DownloadProgress += handler;
-                    src.ImageOpened += (o, e) =>
-                    {
-                        contentContainerOverlay.Visibility = Visibility.Collapsed;
-                        src.DownloadProgress -= handler;
-                    };
-
-                    src.UriSource = url;
-                }
-            }
-            else
-            {
-                ResetOverlay();
-                ShowAttachmentOverlay(url, width, height, openHandler, saveHandler, shareHandler);
-            }
-        }
-
-        public void HideOverlay()
-        {
-            if (contentOverlay.Visibility == Visibility.Visible)
-            {
-                hideContent.Begin();
-            }
-
             if (userInfoOverlay.Visibility == Visibility.Visible)
             {
                 hideUserOverlay.Begin();
             }
-        }
-
-        private void ResetOverlay()
-        {
-            contentOverlay.Visibility = Visibility.Collapsed;
-
-            if (_openHandler != null)
-            {
-                openButton.Click -= _openHandler;
-            }
-
-            if (_saveHandler != null)
-            {
-                saveButton.Click -= _saveHandler;
-            }
-
-            if (_shareHandler != null)
-            {
-                shareButton.Click -= _shareHandler;
-            }
-
-            _openHandler = null;
-            _saveHandler = null;
-            _shareHandler = null;
-
-            attachmentImage.Source = null;
-        }
-
-        private void hideContent_Completed(object sender, object e)
-        {
-            ResetOverlay();
-        }
-
-        private void contentOverlay_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            HideOverlay();
         }
 
         private void hideUserOverlay_Completed(object sender, object e)
@@ -478,12 +388,6 @@ namespace Unicord.Universal
 
         private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (contentOverlay.Visibility == Visibility.Visible)
-            {
-                e.Handled = true;
-                hideContent.Begin();
-            }
-
             if (userInfoOverlay.Visibility == Visibility.Visible)
             {
                 e.Handled = true;

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Models.Messages;
+using Unicord.Universal.Pages.Overlay;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -42,6 +44,14 @@ namespace Unicord.Universal.Controls.Messages
         public AttachmentControl()
         {
             this.DefaultStyleKey = typeof(AttachmentControl);
+            this.Tapped += OnTapped;
+        }
+
+        private async void OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (Attachment != null)
+                await OverlayService.GetForCurrentView()
+                                    .ShowOverlayAsync<AttachmentOverlayPage>(Attachment);
         }
     }
 }

@@ -314,8 +314,11 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.StorageItems))
                 {
                     Analytics.TrackEvent("ChannelPage_StorageItemsFromPaste");
-
                     e.Handled = true;
+
+                    if (PhotoPicker.Visibility == Visibility.Visible)
+                        HidePhotoPicker.Begin();
+
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
                     {
@@ -331,6 +334,9 @@ namespace Unicord.Universal.Pages
                     {
                         var data = (IRandomAccessStream)await dataPackageView.GetDataAsync("DeviceIndependentBitmapV5");
                         var file = await BitmapInterop.GetFromRandomAccessStreamAsync(data);
+
+                        if (PhotoPicker.Visibility == Visibility.Visible)
+                            HidePhotoPicker.Begin();
                         await UploadItems.AddStorageFileAsync(file, true);
                         return;
                     }
@@ -343,8 +349,11 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
                 {
                     Analytics.TrackEvent("ChannelPage_ImageFromPaste");
-
                     e.Handled = true;
+
+                    if (PhotoPicker.Visibility == Visibility.Visible)
+                        HidePhotoPicker.Begin();
+
                     var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
                     await UploadItems.AddStorageFileAsync(file, true);
 

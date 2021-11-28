@@ -179,13 +179,6 @@ namespace Unicord.Universal.Controls
 
         private void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.FindParent<MainPage>()?.ShowAttachmentOverlay(
-                new Uri(Attachment.ProxyUrl),
-                Attachment.Width,
-                Attachment.Height,
-                OnOpenMenuClick,
-                OnSaveMenuClick,
-                OnShareMenuClick);
         }
 
         private async void OnSaveMenuClick(object sender, RoutedEventArgs e)

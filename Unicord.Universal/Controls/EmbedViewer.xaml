@@ -119,8 +119,8 @@
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
                                         <BitmapImage DecodePixelHeight="20"
-                                                 DecodePixelWidth="20"
-                                                 UriSource="{Binding ProxyIconUrl, Converter={StaticResource DiscordUriConverter}}" />
+                                                     DecodePixelWidth="20"
+                                                     UriSource="{Binding ProxyIconUrl, Converter={StaticResource DiscordUriConverter}}" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill>
@@ -133,13 +133,14 @@
 
                 <Grid Grid.Column="1">
                     <Image x:Name="ThumbnailImage"
-                       Width="96"
-                       Height="96"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Top"
-                       ImageFailed="Thumbnail_ImageFailed"
-                       Source="{Binding Thumbnail.Url, Converter={StaticResource DiscordUriConverter}}"
-                       Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" />
+                           Width="96"
+                           Height="96"
+                           Margin="12,0,0,0"
+                           VerticalAlignment="Top"
+                           ImageFailed="Thumbnail_ImageFailed"
+                           Tapped="ThumbnailImage_Tapped"
+                           Source="{Binding Thumbnail.Url, Converter={StaticResource DiscordUriConverter}}"
+                           Visibility="{Binding Thumbnail.Url, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" />
                 </Grid>
             </Grid>
         </Border>

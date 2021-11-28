@@ -14,133 +14,138 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Image Source="{ThemeResource DiscordClyde}" Width="150" />
-        <TextBlock x:Uid="AppDisplayNameText" Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" />
-        <TextBlock x:Uid="AppDisplayDescriptionText" Grid.Row="2" TextWrapping="WrapWholeWords" FontSize="18" />
+        <Image HorizontalAlignment="Left"
+               Source="{ThemeResource DiscordWordMark}"
+               MaxWidth="400"
+               Margin="-6,-16,0,0"/>
+        <!--<TextBlock x:Uid="AppDisplayNameText" Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" />-->
+        <TextBlock x:Uid="AppDisplayDescriptionText" 
+                   Grid.Row="2" 
+                   TextWrapping="WrapWholeWords"                    
+                   Style="{ThemeResource TitleTextBlockStyle}"
+                   FontFamily="Segoe UI Variable Display" />
 
-        <ScrollViewer Grid.Row="3" Margin="0,10,0,0">
-            <StackPanel>
-                <TextBlock x:Uid="/AboutSettingsPage/AcknowledgementsText" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,5" />
-                <RichTextBlock>
-                    <Paragraph>
-                        <Bold>DSharpPlus</Bold>
-                        <Run>- A C# library for making bots using the Discord API.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2015 Mike Santiago</Run>
-                        <LineBreak/>
-                        <Run>Copyright © 2016-2018 DSharpPlus Development Team</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/DSharpPlus/DSharpPlus/blob/master/LICENSE">MIT licence</Hyperlink>
-                    </Paragraph>
+        <StackPanel Grid.Row="3" Margin="0,8,0,0">
+            <TextBlock x:Uid="/AboutSettingsPage/AcknowledgementsText" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,5" />
+            <RichTextBlock>
+                <Paragraph>
+                    <Bold>DSharpPlus</Bold>
+                    <Run>- A C# library for making bots using the Discord API.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2015 Mike Santiago</Run>
+                    <LineBreak/>
+                    <Run>Copyright © 2016-2018 DSharpPlus Development Team</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/DSharpPlus/DSharpPlus/blob/master/LICENSE">MIT licence</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>Windows Community Toolkit</Bold>
-                        <Run>- A collection of helper functions, custom controls, and app services.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © .NET Foundation and Contributors</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/master/license.md">MIT licence</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>Windows Community Toolkit</Bold>
+                    <Run>- A collection of helper functions, custom controls, and app services.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © .NET Foundation and Contributors</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/master/license.md">MIT licence</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>ColorCode-Universal</Bold>
-                        <Run>- A port of ColorCode to .NET Standard.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © Microsoft Corporation, William Bradley 2017</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/WilliamABradley/ColorCode-Universal/blob/master/license.md">Microsoft Public License</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>ColorCode-Universal</Bold>
+                    <Run>- A port of ColorCode to .NET Standard.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © Microsoft Corporation, William Bradley 2017</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/WilliamABradley/ColorCode-Universal/blob/master/license.md">Microsoft Public License</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>Newtonsoft.Json</Bold>
-                        <Run>- A popular high-performance JSON framework for .NET.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2007 James Newton-King</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md">MIT licence</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>Newtonsoft.Json</Bold>
+                    <Run>- A popular high-performance JSON framework for .NET.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2007 James Newton-King</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md">MIT licence</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>libsodium</Bold>
-                        <Run>- A modern, portable, easy to use crypto library.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2013-2018 Frank Denis &lt;j at pureftpd dot org&gt;</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/jedisct1/libsodium/blob/master/LICENSE">ISC License</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>libsodium</Bold>
+                    <Run>- A modern, portable, easy to use crypto library.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2013-2018 Frank Denis &lt;j at pureftpd dot org&gt;</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/jedisct1/libsodium/blob/master/LICENSE">ISC License</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>libopus</Bold>
-                        <Run>- Modern audio compression for the internet.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2001-2011 Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin, Timothy B. Terriberry, CSIRO, Gregory Maxwell, Mark Borgerding, Erik de Castro Lopo</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/xiph/opus/blob/master/LICENSE_PLEASE_READ.txt">BSD License</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>libopus</Bold>
+                    <Run>- Modern audio compression for the internet.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2001-2011 Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin, Timothy B. Terriberry, CSIRO, Gregory Maxwell, Mark Borgerding, Erik de Castro Lopo</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/xiph/opus/blob/master/LICENSE_PLEASE_READ.txt">BSD License</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>QueryString.NET</Bold>
-                        <Run>- A QueryString library for generating and parsing query strings using C#.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2015 Windows Notifications</Run>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/WindowsNotifications/QueryString.NET/blob/master/LICENSE">MIT License</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>QueryString.NET</Bold>
+                    <Run>- A QueryString library for generating and parsing query strings using C#.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2015 Windows Notifications</Run>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/WindowsNotifications/QueryString.NET/blob/master/LICENSE">MIT License</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Bold>Unicode.NET</Bold>
-                        <Run>- A Unicode library for .NET, supporting UTF8, UTF16, and UTF32.</Run>
-                    </Paragraph>
-                    <Paragraph>
-                        <Run>Copyright © 2017 NeoSmart Technologies</Run>
-                        <Hyperlink NavigateUri="https://neosmart.net/">https://neosmart.net/</Hyperlink>
-                    </Paragraph>
-                    <Paragraph>Used under the
-                        <Hyperlink NavigateUri="https://github.com/WindowsNotifications/QueryString.NET/blob/master/LICENSE">MIT License</Hyperlink>
-                    </Paragraph>
+                <Paragraph>
+                    <Bold>Unicode.NET</Bold>
+                    <Run>- A Unicode library for .NET, supporting UTF8, UTF16, and UTF32.</Run>
+                </Paragraph>
+                <Paragraph>
+                    <Run>Copyright © 2017 NeoSmart Technologies</Run>
+                    <Hyperlink NavigateUri="https://neosmart.net/">https://neosmart.net/</Hyperlink>
+                </Paragraph>
+                <Paragraph>Used under the
+                    <Hyperlink NavigateUri="https://github.com/WindowsNotifications/QueryString.NET/blob/master/LICENSE">MIT License</Hyperlink>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Run>Discord, the Discord Logo, Clyde and so on are trademarks of Hammer and Chisel. Unicord is in no way associated with nor endorced by these people, but they're cool!</Run>
-                    </Paragraph>
+                <Paragraph>
+                    <Run>Discord, the Discord Logo, Clyde and so on are trademarks of Discord Inc. Unicord is in no way associated with nor endorced by these people, but they're cool!</Run>
+                </Paragraph>
 
-                    <Paragraph/>
+                <Paragraph/>
 
-                    <Paragraph>
-                        <Run Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="Hey you read all this shit? You're pretty cool too, hit me up! @WamWooWam#6402"/>
-                    </Paragraph>
+                <Paragraph>
+                    <Run Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Text="Hey you read all this? You're pretty cool too, hit me up! @WamWooWam#6402"/>
+                </Paragraph>
 
-                </RichTextBlock>
-            </StackPanel>
-        </ScrollViewer>
+            </RichTextBlock>
+        </StackPanel>
     </Grid>
 </Page>
