@@ -30,10 +30,10 @@ body:
       label: Steps To Reproduce
       description: Steps to reproduce the behavior.
       placeholder: |
-        1. In this environment...
-        2. With this config...
-        3. Run '...'
-        4. See error...
+        1. Click this button...
+        2. Press that button...
+        3. Do '...'
+        4. See bug...
     validations:
       required: true
   - type: textarea
@@ -49,7 +49,7 @@ body:
       required: true
   - type: dropdown
     attributes:
-      label: Windows version
+      label: Windows Version
       description: Which Windows version did you experience this bug on?
       multiple: true
       options:
@@ -68,8 +68,9 @@ body:
   - type: dropdown
     id: platform
     attributes:
-      label: What platform are you seeing the problem on?
-      multiple: false
+      label: Platform?
+      description: Which platform did you experience this bug on?
+      multiple: true
       options:
         - Desktop
         - Mobile
