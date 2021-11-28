@@ -1,0 +1,27 @@
+name: New feature
+description: Suggest a new feature
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the feature you're requesting.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: textarea
+    attributes:
+      label: Summary
+      description: Describe in short the feature you want to be added.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reasoning
+      description: Explain in detail why this feature should be added to Unicord. If it already exists in Discord, mention this.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Questions
+      description: Is there anything currently up in the air about this proposal?
