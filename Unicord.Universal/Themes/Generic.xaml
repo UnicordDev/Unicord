@@ -1,0 +1,810 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls"
+    xmlns:wam="using:Unicord.Universal.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:entities="using:DSharpPlus.Entities"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:emoji="using:Unicord.Universal.Controls.Emoji"
+    mc:Ignorable="d">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default" />
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="MarkdownBorderBrush" Color="#FFBEBEBE" />
+            <SolidColorBrush x:Key="MarkdownBackgroundBrush" Color="#FFF6F8FA" />
+            <SolidColorBrush x:Key="MarkdownInlineCodeBackgroundBrush" Color="#FFDDDFE1" />
+            <SolidColorBrush x:Key="MarkdownQuoteForeground" Color="#FF6E747C" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="MarkdownBorderBrush" Color="#FF424242" />
+            <SolidColorBrush x:Key="MarkdownBackgroundBrush" Color="#FF202020" />
+            <SolidColorBrush x:Key="MarkdownInlineCodeBackgroundBrush" Color="#FF363636" />
+            <SolidColorBrush x:Key="MarkdownQuoteForeground" Color="#FFBEC1C5" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+
+    <Style x:Key="CleanListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="Padding" Value="0,2" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <Style TargetType="wam:MarkdownTextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="LinkForeground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+        <Setter Property="QuoteBackground" Value="Transparent" />
+        <Setter Property="QuoteForeground" Value="{ThemeResource MarkdownQuoteForeground}" />
+        <Setter Property="QuoteBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
+        <Setter Property="QuoteBorderThickness" Value="4, 0, 0, 0" />
+        <Setter Property="QuoteMargin" Value="0,0,0,-2" />
+        <Setter Property="QuotePadding" Value="8,2,0,2" />
+        <Setter Property="InlineCodeBorderThickness" Value="1" />
+        <Setter Property="InlineCodePadding" Value="4, 2, 4, 2" />
+        
+        <Setter Property="CodeFontFamily" Value="Consolas"/>
+        <Setter Property="CodeBackground" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+        <Setter Property="CodeBorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="CodeBorderThickness" Value="1" />
+        <Setter Property="CodeCornerRadius" Value="4"/>
+        
+        <Setter Property="InlineCodeBackground" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+        <Setter Property="InlineCodeBorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="InlineCodeFontFamily" Value="Consolas"/>
+        <Setter Property="InlineCodeCornerRadius" Value="2"/>
+        
+        <Setter Property="CodeMargin" Value="0,4" />
+        <Setter Property="CodePadding" Value="8,4" />
+        <Setter Property="EmojiFontFamily" Value="Segoe UI Emoji" />
+        <Setter Property="Header1FontWeight" Value="Bold" />
+        <Setter Property="Header1FontSize" Value="20" />
+        <Setter Property="Header1Margin" Value="0, 15, 0, 15" />
+        <Setter Property="Header1Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="Header2FontWeight" Value="Normal" />
+        <Setter Property="Header2FontSize" Value="20" />
+        <Setter Property="Header2Margin" Value="0, 15, 0, 15" />
+        <Setter Property="Header2Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="Header3FontWeight" Value="Bold" />
+        <Setter Property="Header3FontSize" Value="17" />
+        <Setter Property="Header3Margin" Value="0, 10, 0, 10" />
+        <Setter Property="Header3Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="Header4FontWeight" Value="Normal" />
+        <Setter Property="Header4FontSize" Value="17" />
+        <Setter Property="Header4Margin" Value="0, 10, 0, 10" />
+        <Setter Property="Header4Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="Header5FontWeight" Value="Bold" />
+        <Setter Property="Header5FontSize" Value="15" />
+        <Setter Property="Header5Margin" Value="0, 10, 0, 5" />
+        <Setter Property="Header5Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="Header6FontWeight" Value="Normal" />
+        <Setter Property="Header6FontSize" Value="15" />
+        <Setter Property="Header6Margin" Value="0, 10, 0, 0" />
+        <Setter Property="Header6Foreground" Value="{ThemeResource DefaultTextForegroundThemeBrush}" />
+        <Setter Property="HorizontalRuleBrush" Value="{ThemeResource MarkdownBorderBrush}" />
+        <Setter Property="HorizontalRuleMargin" Value="0, 7, 0, 7" />
+        <Setter Property="HorizontalRuleThickness" Value="2" />
+        <Setter Property="ListMargin" Value="0, 5, 0, 5" />
+        <Setter Property="ListGutterWidth" Value="32" />
+        <Setter Property="ListBulletSpacing" Value="8" />
+        <Setter Property="ParagraphMargin" Value="0,4" />
+        <Setter Property="TableBorderBrush" Value="{ThemeResource MarkdownBorderBrush}" />
+        <Setter Property="TableBorderThickness" Value="1" />
+        <Setter Property="TableCellPadding" Value="9, 4, 9, 4" />
+        <Setter Property="TableMargin" Value="0, 5, 0, 5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="ColourBrushConverter" Value="{StaticResource ColourBrushConverter}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="wam:MarkdownTextBlock">
+                    <Border x:Name="RootElement"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:ImageEx">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
+        <Setter Property="IsCacheEnabled" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:ImageEx">
+                    <Grid Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Image Name="PlaceholderImage"
+                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                               Opacity="1.0"
+                               Source="{TemplateBinding PlaceholderSource}"
+                               Stretch="{TemplateBinding PlaceholderStretch}" />
+                        <Image Name="Image"
+                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                               NineGrid="{TemplateBinding NineGrid}"
+                               Opacity="0.0"
+                               Stretch="{TemplateBinding Stretch}" />
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Failed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Loading">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage" Storyboard.TargetProperty="Opacity">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Loaded">
+                                    <Storyboard>
+                                        <DoubleAnimation AutoReverse="False"
+                                                         BeginTime="0"
+                                                         Storyboard.TargetName="Image"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="00:00:00.15"
+                                                         From="0"
+                                                         To="1" />
+                                        <DoubleAnimation AutoReverse="False"
+                                                         BeginTime="0"
+                                                         Storyboard.TargetName="PlaceholderImage"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="00:00:00.15"
+                                                         From="1"
+                                                         To="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unloaded" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:FileViewer">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:FileViewer">
+                    <Image Name="image" Height="128" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:UsernameControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:UsernameControl">
+                    <Grid DataContext="{TemplateBinding User}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="authorName"
+                                   VerticalAlignment="Bottom"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}, FallbackValue={ThemeResource DefaultTextForegroundThemeBrush}}"
+                                   Text="{Binding DisplayName}"
+                                   TextWrapping="NoWrap" />
+                        <TextBlock Visibility="{Binding IsBot, Converter={StaticResource BoolVisibilityConverter}}" VerticalAlignment="Center" Margin="8,0,0,0" Grid.Column="1" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="{TemplateBinding IconSize}" FontWeight="Normal" Text="&#xE99A;" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:ImageElement">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ImageElement">
+                    <local:ScaledContentControl TargetWidth="{TemplateBinding ImageWidth}" TargetHeight="{TemplateBinding ImageHeight}">
+                        <controls:ImageEx x:Name="image" IsCacheEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"/>
+                    </local:ScaledContentControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:ScaledContentControl">
+        <Setter Property="MaxWidth" Value="640"/>
+        <Setter Property="MaxHeight" Value="480"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ScaledContentControl">
+                    <ContentPresenter 
+                        x:Name="ContentPresenter" 
+                        Content="{TemplateBinding Content}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:IconLabelButton" BasedOn="{StaticResource CleanButtonStyle}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:IconLabelButton">
+                    <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="PointerOver"/>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}"/>
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}"/>
+                                        <Setter Target="IconBlock.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}"/>
+                                    </VisualState.Setters>
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.(media:RevealBrush.State)" Value="Pressed"/>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}"/>
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}"/>
+                                        <Setter Target="IconBlock.Foreground" Value="{ThemeResource ButtonForegroundPressed}"/>
+                                    </VisualState.Setters>
+                                    <Storyboard>
+                                        <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushDisabled}"/>
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundDisabled}"/>
+                                        <Setter Target="IconBlock.Foreground" Value="{ThemeResource ButtonForegroundDisabled}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" AutomationProperties.AccessibilityView="Raw">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="IconBlock" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Icon}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}"/>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MessageTextBoxStyle" TargetType="TextBox">
+        <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
+        <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
+        <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="MaxHeight" Value="90"/>
+        <Setter Property="InputScope" Value="Chat"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="MaxLength" Value="2000"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <!--<Setter Property="AcceptsReturn" Value="True"/>-->
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+        <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+        <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundDisabled}"/>
+                                        <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Normal" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border x:Name="BorderElement"
+                                    Grid.Row="1"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Grid.ColumnSpan="2"
+                                    Grid.RowSpan="1" />
+                        <ScrollViewer x:Name="ContentElement"
+                                    Grid.Row="1"
+                                    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                                    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                                    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                    Margin="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}"
+                                    IsTabStop="False"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    ZoomMode="Disabled" />
+                        <ContentPresenter x:Name="PlaceholderTextContentPresenter"
+                                    Grid.Row="1"
+                                    Opacity="0.56"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Margin="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Grid.ColumnSpan="2"
+                                    VerticalAlignment="Center"                                    
+                                    Content="{TemplateBinding PlaceholderText}"
+                                    TextWrapping="NoWrap"
+                                    IsHitTestVisible="False" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- These names are way too fucking long -->
+
+    <DataTemplate x:Key="MessageTextBoxUserSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <lib:PersonPicture Width="24" Height="24" DisplayName="{Binding DisplayName}">
+                <lib:PersonPicture.ProfilePicture>
+                    <BitmapImage UriSource="{Binding NonAnimatedAvatarUrl}" DecodePixelWidth="24" DecodePixelHeight="24" DecodePixelType="Logical" />
+                </lib:PersonPicture.ProfilePicture>
+            </lib:PersonPicture>
+
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                <Run>@</Run><Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username, Mode=OneWay}"/>#<Run Text="{Binding Discriminator, Mode=OneWay}"/>
+            </TextBlock>
+
+            <Ellipse Width="8"
+                     Height="8"
+                     Margin="0"
+                     Grid.Column="2"
+                     VerticalAlignment="Center">
+                <Ellipse.Fill>
+                    <SolidColorBrush Color="{Binding Presence, Converter={StaticResource PresenceColourConverter}}" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxRoleSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                           FontSize="16" 
+                           Text="&#xE910;" />
+            </Grid>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxChannelSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                           FontSize="16" 
+                           Text="{Binding Converter={StaticResource ChannelSymbolConverter}}" />
+            </Grid>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxEmojiSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--<Grid Width="24" Height="24">
+                <TextBlock VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontSize="18" 
+                           Text="{Binding Name}" />
+            </Grid>-->
+
+            <emoji:EmojiControl Emoji="{Binding}"
+                                Size="24"/>
+
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding DiscordName}" VerticalAlignment="Center"/>
+
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageTextBoxEmoteSuggestionTemplate">
+        <Grid Margin="16,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <emoji:EmojiControl Emoji="{Binding}"
+                                Size="24"/>
+            
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+
+            <Ellipse Grid.Column="2" 
+                     VerticalAlignment="Center" 
+                     Width="16" 
+                     Height="16" 
+                     ToolTipService.ToolTip="{Binding Guild.Name}"
+                     Visibility="{Binding Guild, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                <Ellipse.Fill>
+                    <ImageBrush>
+                        <ImageBrush.ImageSource>
+                            <BitmapImage DecodePixelWidth="16" DecodePixelHeight="16" DecodePixelType="Logical" UriSource="{Binding Guild.IconUrl}"/>
+                        </ImageBrush.ImageSource>
+                    </ImageBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </DataTemplate>
+
+    <local:DiscordEntityTemplateSelector x:Key="MessageTextBoxSuggestionTemplateSelector"
+                                         UserTemplate="{StaticResource MessageTextBoxUserSuggestionTemplate}"
+                                         RoleTemplate="{StaticResource MessageTextBoxRoleSuggestionTemplate}"
+                                         ChannelTemplate="{StaticResource MessageTextBoxChannelSuggestionTemplate}"
+                                         EmojiTemplate="{StaticResource MessageTextBoxEmojiSuggestionTemplate}"
+                                         EmoteTemplate="{StaticResource MessageTextBoxEmoteSuggestionTemplate}" />
+
+    <Style TargetType="local:MessageTextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:MessageTextBox">
+                    <Grid >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- TextWrapping Wrap -->
+                            <AutoSuggestBox x:Name="PART_TextBox"
+                                            VerticalAlignment="Stretch"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            Background="{TemplateBinding Background}"
+                                            IsEnabled="{TemplateBinding IsEnabled}"
+                                            PlaceholderText="{TemplateBinding PlaceholderText}"
+                                            TextBoxStyle="{StaticResource MessageTextBoxStyle}"
+                                            ItemTemplateSelector="{StaticResource MessageTextBoxSuggestionTemplateSelector}">
+                                <AutoSuggestBox.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Style.Setters>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                            <Setter Property="Padding" Value="0,0" />
+                                        </Style.Setters>
+                                    </Style>
+                                </AutoSuggestBox.ItemContainerStyle>
+                            </AutoSuggestBox>
+
+                            <TextBlock x:Name="PART_SlowModeIcon"
+                                        Margin="8"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        Text="&#xE916;"
+                                        ToolTipService.ToolTip="{Binding SlowModeText}"
+                                        Visibility="{Binding ShowSlowMode, Converter={StaticResource BoolVisibilityConverter}}" />
+
+                            <ToggleButton x:Name="PART_EmoteButton"
+                                          Grid.Column="1"
+                                          Content="&#xED54;"
+                                          Margin="4,0,0,0"
+                                          Style="{ThemeResource IconToggleButtonStyle}">
+                                <FlyoutBase.AttachedFlyout>
+                                    <Flyout>
+                                        <local:EmotePicker x:Name="PART_EmotePicker" 
+                                                        Width="300" 
+                                                        Height="300" 
+                                                        HorizontalAlignment="Stretch" 
+                                                        VerticalAlignment="Stretch" 
+                                                        Channel="{TemplateBinding Channel}" />
+                                    </Flyout>
+                                </FlyoutBase.AttachedFlyout>
+                            </ToggleButton>
+
+                            <Button x:Name="PART_SendButton"
+                                Grid.Column="2"
+                                Content="&#xE724;"
+                                Margin="4,0,0,0"
+                                IsEnabled="{TemplateBinding SendButtonEnabled}"
+                                Visibility="{TemplateBinding SendButtonVisibility}"
+                                Style="{ThemeResource IconButtonStyle}" />
+
+                            <Button x:Name="PART_SubmitButton"
+                                Grid.Column="3"
+                                Content="&#xE73E;"
+                                Margin="4,0,0,0"
+                                IsEnabled="{TemplateBinding SubmitButtonEnabled}"
+                                Visibility="{TemplateBinding SubmitButtonVisibility}"
+                                Style="{ThemeResource IconButtonStyle}" />
+
+                            <Button x:Name="PART_CancelButton"
+                                Grid.Column="4"
+                                Content="&#xE711;"
+                                Margin="4,0,0,0"
+                                IsEnabled="{TemplateBinding CancelButtonEnabled}"
+                                Visibility="{TemplateBinding CancelButtonVisibility}"
+                                Style="{ThemeResource IconButtonStyle}" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 
+        i'd prefer these to be in ./Templates.xaml but because that file has a code behind
+        windows says no
+    -->
+
+    <DataTemplate x:Key="NoIndicatorDMChannelTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NoIndicatorChannelListTemplate">
+        <Grid Name="grid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" IsHitTestVisible="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="{StaticResource FluentSystemIcons}" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+            <TextBlock Grid.Column="1" FontSize="14" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+
+        </Grid>
+    </DataTemplate>
+
+
+    <Style TargetType="local:SidebarSearchBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SidebarSearchBox">
+                    <AutoSuggestBox
+                            x:Name="searchBox"
+                            Grid.Row="1"
+                            Margin="8,4"
+                            BorderThickness="1"
+                            PlaceholderText="Find some people!"
+                            QueryIcon="Find" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <ControlTemplate x:Key="CustomNotificationTemplate"
+                     TargetType="controls:InAppNotification">
+        <Grid>
+            <Grid x:Name="RootGrid"
+                  MaxWidth="{TemplateBinding MaxWidth}"
+                  Margin="{TemplateBinding Margin}"
+                  Padding="{TemplateBinding Padding}"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
+                  Visibility="{TemplateBinding Visibility}"
+                  CornerRadius="8">
+
+                <Grid.RenderTransform>
+                    <CompositeTransform />
+                </Grid.RenderTransform>
+
+                <ContentPresenter x:Name="PART_Presenter"
+                                  Grid.Column="0"
+                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Center"
+                                  ContentTransitions="{TemplateBinding ContentTransitions}"
+                                  TextWrapping="WrapWholeWords" />
+            </Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="State">
+                    <VisualState x:Name="Collapsed">
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="1"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      EasingFunction="{StaticResource EaseExit}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+
+                    <VisualState x:Name="Visible">
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      EasingFunction="{StaticResource EaseEnter}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseEnter}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseEnter}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="1"
+                                                      EasingFunction="{StaticResource EaseEnter}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      EasingFunction="{StaticResource EaseEnter}" />
+                                <EasingDoubleKeyFrame controls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Value="0"
+                                                      EasingFunction="{StaticResource EaseEnter}"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </Grid>
+    </ControlTemplate>
+
+
+    <Style x:Key="CustomInAppNotificationsStyle" TargetType="controls:InAppNotification">
+        <Setter Property="Background" Value="{ThemeResource FlyoutPresenterBackground}" />
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SystemControlTransientBorderBrush}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="MinHeight" Value="55" />
+        <Setter Property="FontSize" Value="{ThemeResource ContentControlFontSize}" />
+        <Setter Property="RenderTransformOrigin" Value="0.5,1" />
+        <Setter Property="Margin" Value="24,12" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="MaxWidth" Value="960" />
+        <Setter Property="MinWidth" Value="132" />
+        <Setter Property="AnimationDuration" Value="0:0:0.100" />
+        <Setter Property="VerticalOffset" Value="100" />
+        <Setter Property="HorizontalOffset" Value="0" />
+        <Setter Property="AutomationProperties.LandmarkType" Value="Custom" />
+        <!--  The setter value is localized using x:Uid but we still need to set it explicitly to avoid a compiler warning  -->
+        <Setter x:Uid="WCT_InAppNotification_LandmarkProperty" Property="AutomationProperties.LocalizedLandmarkType" Value="Notification" />
+        <Setter Property="AutomationProperties.LiveSetting" Value="Assertive" />
+        <Setter Property="Template" Value="{StaticResource CustomNotificationTemplate}" />
+    </Style>
+
+
+</ResourceDictionary>

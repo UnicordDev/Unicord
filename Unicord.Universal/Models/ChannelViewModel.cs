@@ -340,6 +340,8 @@ namespace Unicord.Universal.Models
 
         public bool ShowTypingContainer =>
             ShowSlowMode || ShowTypingUsers;
+        public bool HideTypingContainer =>
+            !ShowTypingContainer;
 
         public DateTimeOffset LastAccessed { get; internal set; }
 
@@ -383,6 +385,8 @@ namespace Unicord.Universal.Models
                         {
                             TypingUsers.Remove(usr);
                             UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
+                            UnsafeInvokePropertyChanged(nameof(ShowTypingContainer));
+                            UnsafeInvokePropertyChanged(nameof(HideTypingContainer));
                         }, null);
                     }
 
@@ -683,6 +687,8 @@ namespace Unicord.Universal.Models
                 {
                     TypingUsers.Add(Channel.Guild != null && Channel.Guild.Members.TryGetValue(e.User.Id, out var member) ? member : e.User);
                     UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
+                    UnsafeInvokePropertyChanged(nameof(ShowTypingContainer));
+                    UnsafeInvokePropertyChanged(nameof(HideTypingContainer));
                 }, null);
 
                 new Task(async () => await HandleTypingStartAsync(e)).Start();
@@ -702,6 +708,8 @@ namespace Unicord.Universal.Models
                 {
                     TypingUsers.Remove(e.User);
                     UnsafeInvokePropertyChanged(nameof(ShowTypingUsers));
+                    UnsafeInvokePropertyChanged(nameof(ShowTypingContainer));
+                    UnsafeInvokePropertyChanged(nameof(HideTypingContainer));
                 }, null);
             });
         }

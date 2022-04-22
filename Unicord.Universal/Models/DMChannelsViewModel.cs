@@ -8,7 +8,7 @@ using DSharpPlus.EventArgs;
 
 namespace Unicord.Universal.Models
 {
-    public class DMChannelsViewModel : NotifyPropertyChangeImpl, IDisposable
+    public class DMChannelsViewModel : ViewModelBase, IDisposable
     {
         private SynchronizationContext _syncContext;
         private int _selectedItem = -1;

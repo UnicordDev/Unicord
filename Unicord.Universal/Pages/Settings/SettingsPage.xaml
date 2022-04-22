@@ -5,113 +5,123 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:local="using:Unicord.Universal.Pages.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:models="using:Unicord.Universal.Models"
     Loaded="Page_Loaded"
-    mc:Ignorable="d" Background="{ThemeResource NavigationViewTopPaneBackground}">
+    mc:Ignorable="d">
 
     <Page.Resources>
-        <Style x:Key="SettingsFrameStyle" TargetType="Frame">
-            <Setter Property="Background" Value="{ThemeResource BackgroundTertiaryBrush}"/>
-            <Setter Property="Padding" Value="12"/>
-        </Style>
-
-        <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{StaticResource BackgroundTertiaryColour}"/>
+        <Thickness x:Key="NavigationViewHeaderMargin">22,32,22,0</Thickness>
+        <Thickness x:Key="NavigationViewMinimalHeaderMargin">-52,42,22,0</Thickness>
     </Page.Resources>
 
-    <lib:TabView x:Name="SettingsTabView"
-                 IsAddTabButtonVisible="False"
-                 TabWidthMode="Compact"
-                 VerticalAlignment="Stretch"
-                 VerticalContentAlignment="Stretch"
-                 CanDragTabs="False"
-                 CanReorderTabs="False"
-                 Background="Transparent">
+    <Page.DataContext>
+        <models:RootSettingsModel/>
+    </Page.DataContext>
+    <Border x:Name="MainBorder"
+            Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
+        <lib:NavigationView x:Name="NavView"
+                            Header="{Binding SelectedItem.Content, ElementName=NavView}"
+                            IsSettingsVisible="False"
+                            IsBackEnabled="True"
+                            BackRequested="NavView_BackRequested"
+                            SelectionChanged="NavView_SelectionChanged">
+            <lib:NavigationView.Resources>
+                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,8</CornerRadius>
+                <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorAltBrush" />
+            </lib:NavigationView.Resources>
 
-        <lib:TabView.TabStripHeader>
-            <Button x:Name="SettingsCloseButton" 
-                    VerticalAlignment="Bottom" 
-                    HorizontalAlignment="Right"
-                    Margin="8,4"
-                    Padding="4"
-                    FontSize="16"
-                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                    Background="Transparent"
-                    Click="SettingsCloseButton_Click">
-                &#xE72B;
-            </Button>
-        </lib:TabView.TabStripHeader>
+            <lib:NavigationView.MenuItems>
+                <!--<lib:NavigationViewItem Tag="Accounts">
+                <StackPanel Orientation="Horizontal">
+                    <lib:PersonPicture Width="24" 
+                                       Height="24"
+                                       DisplayName="{Binding AccountDisplayName}"
+                                       ProfilePicture="{Binding AccountItemImage}"/>
 
-        <lib:TabViewItem Header="Accounts" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE77B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AccountsSettingsPage"/>
+                    <TextBlock Margin="8,0"
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                        <Run Text="@"/><Run Text="{Binding CurrentUser.Username}" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/><Run Text="#"/><Run Text="{Binding CurrentUser.Discriminator}"/>
+                    </TextBlock>
+                </StackPanel>
+            </lib:NavigationViewItem>-->
+
+                <lib:NavigationViewItem Tag="Accounts" x:Uid="/SettingsPage/AccountsItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE910;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+                <lib:NavigationViewItem Tag="Messaging" x:Uid="/SettingsPage/MessagingItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE70F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+                <lib:NavigationViewItem Tag="Themes" x:Uid="/SettingsPage/ThemesItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE771;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+                <lib:NavigationViewItem Tag="Media" x:Uid="/SettingsPage/MediaItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA69;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+                <lib:NavigationViewItem Tag="Voice" x:Uid="/SettingsPage/VoiceItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE720;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+                <lib:NavigationViewItem Tag="Security" x:Uid="/SettingsPage/SecurityItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE72E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
+            </lib:NavigationView.MenuItems>
+
+            <lib:NavigationView.FooterMenuItems>
+                <lib:NavigationViewItem Tag="About" x:Uid="/SettingsPage/AboutItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+            </lib:NavigationView.FooterMenuItems>
+            <ScrollViewer Margin="20">
+                <Frame x:Name="MainFrame" />
             </ScrollViewer>
-        </lib:TabViewItem>
+        </lib:NavigationView>
 
-        <lib:TabViewItem Header="Text &amp; Images" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE70F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MessagingSettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
 
-        <lib:TabViewItem Header="Appearance" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE771;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:ThemesSettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="769" />
+                    </VisualState.StateTriggers>
 
-        <lib:TabViewItem Header="Audio &amp; Video" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xEA69;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:MediaSettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
+                    <VisualState.Setters>
+                        <Setter Target="MainBorder.Margin" Value="32" />
+                        <Setter Target="MainBorder.CornerRadius" Value="8" />
+                    </VisualState.Setters>
+                </VisualState>
 
-        <lib:TabViewItem Header="Microphone &amp; Camera" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE720;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:VoiceSettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
 
-        <lib:TabViewItem Header="Security &amp; Privacy" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE72E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
-        
-        <lib:TabViewItem x:Name="DebugItem" Visibility="{x:Bind IsDebug, Converter={StaticResource BoolVisibilityConverter}}" Header="Debug" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE90F;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:SecuritySettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
-
-        <lib:TabViewItem Header="About" IsClosable="False">
-            <lib:TabViewItem.IconSource>
-                <lib:FontIconSource Glyph="&#xE946;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-            </lib:TabViewItem.IconSource>
-            <ScrollViewer>
-                <Frame Style="{StaticResource SettingsFrameStyle}" SourcePageType="local:AboutSettingsPage"/>
-            </ScrollViewer>
-        </lib:TabViewItem>
-    </lib:TabView>
-
+                    <VisualState.Setters>
+                        <Setter Target="MainBorder.Margin" Value="0" />
+                        <Setter Target="MainBorder.CornerRadius" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Border>
 </Page>

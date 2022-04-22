@@ -22,7 +22,7 @@ namespace Unicord.Universal.Commands
         public async void Execute(object parameter)
         {
             var settings = SettingsService.GetForCurrentView();
-            await settings.OpenAsync(parameter is SettingsPageType t ? t : SettingsPageType.Acccounts);
+            await settings.OpenAsync(parameter is SettingsPageType t ? t : SettingsPageType.Accounts);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Unicord.Universal.Models
         public ulong Length { get; set; }
 
         public bool IsTemporary { get; set; }
+        public bool CanCrop { get; set; }
         public bool CanEdit { get; set; }
         public bool TranscodeFailed { get; set; }
 
@@ -58,6 +59,11 @@ namespace Unicord.Universal.Models
                 CanEdit = true;
             }
 
+            if (file.ContentType.StartsWith("image"))
+            {
+                CanCrop = true;
+            }
+
             if (file is IStorageItemProperties props && (Thumbnail?.Dispatcher.HasThreadAccess ?? true))
             {
                 using var thumbStream = await props.GetThumbnailAsync(ThumbnailMode.SingleItem, 256);
@@ -90,6 +96,7 @@ namespace Unicord.Universal.Models
             IsTemporary = original.IsTemporary;
             Spoiler = original.Spoiler;
             CanEdit = original.CanEdit;
+            CanCrop = original.CanCrop;
         }
 
         public UploadItemsControl Parent { get; set; }

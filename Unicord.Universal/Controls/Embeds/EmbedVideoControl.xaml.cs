@@ -46,37 +46,16 @@ namespace Unicord.Universal.Controls.Embeds
                 uri = embedBuilder.Uri;
             }
 
-            var executionMode = WebViewExecutionMode.SameThread;
-            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-            {
-                executionMode = WebViewExecutionMode.SeparateProcess;
-            }
-
-            var browser = new WebView(executionMode)
+            var browser = new UniversalWebView()
             {
                 Source = uri,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
-            browser.ContainsFullScreenElementChanged += Browser_ContainsFullScreenElementChanged;
-
             content.Children.Add(browser);
 
             posterContainer.Visibility = Visibility.Collapsed;
-        }
-
-        private void Browser_ContainsFullScreenElementChanged(WebView sender, object args)
-        {
-            var service = FullscreenService.GetForCurrentView();
-            if (sender.ContainsFullScreenElement)
-            {
-                service.EnterFullscreen(sender, content);
-            }
-            else
-            {
-                service.LeaveFullscreen(sender, content);
-            }
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -88,37 +67,6 @@ namespace Unicord.Universal.Controls.Embeds
             WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
 
             return new Size(width, height);
-        }
-
-        private void UserControl_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
-        {
-            CleanupWebView();
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            CleanupWebView();
-        }
-
-        private void CleanupWebView()
-        {
-            var firstChild = content.Children.OfType<WebView>().FirstOrDefault();
-            if (firstChild is WebView)
-            {
-                content.Children.Remove(firstChild);
-                posterContainer.Visibility = Visibility.Visible;
-
-                firstChild.Navigate(new Uri("about:blank"));
-
-                try
-                {
-                    UnloadObject(firstChild);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                }
-            }
         }
     }
 }

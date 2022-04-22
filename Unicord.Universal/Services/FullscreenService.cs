@@ -15,11 +15,11 @@ namespace Unicord.Universal.Services
     internal class FullscreenService : BaseService<FullscreenService>
     {
         private MainPage _page;
-        private Grid _canvas;
+        private Border _canvas;
         private ApplicationView _view;
 
         private FrameworkElement _fullscreenElement;
-        private Panel _fullscreenParent;
+        private Border _fullscreenParent;
 
         public event EventHandler<EventArgs> FullscreenEntered;
         public event EventHandler<EventArgs> FullscreenExited;
@@ -29,7 +29,7 @@ namespace Unicord.Universal.Services
         protected override void Initialise()
         {
             _page = Window.Current.Content.FindChild<MainPage>();
-            _canvas = _page?.FindChild<Grid>("fullscreenCanvas");
+            _canvas = _page?.FindChild<Border>("FullscreenBorder");
             _view = ApplicationView.GetForCurrentView();
             _isInitialised = true;
 
@@ -54,22 +54,19 @@ namespace Unicord.Universal.Services
             }
         }
 
-        public void EnterFullscreen(FrameworkElement element, Panel parent)
+        public void EnterFullscreen(FrameworkElement element, Border parent)
         {
             Analytics.TrackEvent("FullscreenService_EnterFullscreen");
 
             _view.TryEnterFullScreenMode();
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
 
-            parent.Children.Remove(element);
+            parent.Child = null;
             _fullscreenElement = element;
             _fullscreenParent = parent;
 
             _canvas.Visibility = Visibility.Visible;
-            _canvas.Children.Add(element);
-
-            element.Width = double.NaN;
-            element.Height = double.NaN;
+            _canvas.Child = element;
 
             FullscreenEntered?.Invoke(this, null);
         }
@@ -84,28 +81,25 @@ namespace Unicord.Universal.Services
             _fullscreenElement = null;
             _fullscreenParent = null;
 
-            _canvas.Children.Clear();
+            _canvas.Child = null;
             _canvas.Visibility = Visibility.Collapsed;
 
             FullscreenExited?.Invoke(this, null);
         }
 
-        public void LeaveFullscreen(FrameworkElement element, Panel parent)
+        public void LeaveFullscreen(FrameworkElement element, Border parent)
         {
             Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
 
-            _view.ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            _canvas.Child = null;
+            _canvas.Visibility = Visibility.Collapsed;
 
-            _canvas.Children.Remove(element);
-            parent.Children.Insert(0, element);
-            element.Width = double.NaN;
-            element.Height = double.NaN;
-
+            _fullscreenParent.Child = _fullscreenElement;
             _fullscreenElement = null;
             _fullscreenParent = null;
 
-            _canvas.Visibility = Visibility.Collapsed;
+            _view.ExitFullScreenMode();
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
             FullscreenExited?.Invoke(this, null);
         }

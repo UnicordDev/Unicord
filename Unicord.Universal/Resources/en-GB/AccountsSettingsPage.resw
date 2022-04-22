@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BackgroundNotifications.Text" xml:space="preserve">
+  <data name="AccountsSettingsPage.Tag" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
+  <data name="BackgroundNotificationsBlock.Description" xml:space="preserve">
+    <value>Allow Unicord to run in the background to show notifications &amp; update live tiles.</value>
+  </data>
+  <data name="BackgroundNotificationsBlock.Title" xml:space="preserve">
     <value>Background Notifications</value>
   </data>
   <data name="ContactsUnavailable.Text" xml:space="preserve">
@@ -135,8 +141,8 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
-  <data name="LogoutButton.Content" xml:space="preserve">
-    <value>Logout</value>
+  <data name="LogoutBlock.Title" xml:space="preserve">
+    <value>Log out</value>
   </data>
   <data name="LogoutPromptMessage" xml:space="preserve">
     <value>Are you sure you want to logout?</value>
@@ -146,6 +152,12 @@
   </data>
   <data name="StatisticsText.Text" xml:space="preserve">
     <value>Statistics</value>
+  </data>
+  <data name="SyncContactsBlock.Description" xml:space="preserve">
+    <value>Sync your Discord friends with the People app.</value>
+  </data>
+  <data name="SyncContactsBlock.Title" xml:space="preserve">
+    <value>Sync Contacts</value>
   </data>
   <data name="SyncPeopleText.Text" xml:space="preserve">
     <value>Sync my friends with [Windows People](ms-people:)</value>

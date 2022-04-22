@@ -7,12 +7,12 @@ trigger:
 - master
 
 pool:
-  vmImage: 'vs2017-win2016'
+  vmImage: 'windows-latest'
 
 variables:
   solution: '**/Unicord.sln'
   buildPlatform: 'x86|x64|ARM'
-  buildConfiguration: 'Store'
+  buildConfiguration: 'Release'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
 
 steps:
@@ -23,7 +23,7 @@ steps:
   name: signingCert
   displayName: 'Download CA certificate'
   inputs:
-    secureFile: 'Unicord.Universal_StoreKey.pfx'
+    secureFile: 'Unicord.Universal_TemporaryKey.pfx'
 
 - task: NuGetToolInstaller@1
 
@@ -39,18 +39,18 @@ steps:
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)"
                   /p:AppxPackageDir="$(appxPackageDir)" 
                   /p:AppxBundle=Always
-                  /p:UapAppxPackageBuildMode=StoreUpload
+                  /p:UapAppxPackageBuildMode=SideloadOnly
                   /p:AppxPackageSigningEnabled=true
                   /p:PackageCertificateThumbprint="" 
                   /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"
                   /p:UseSubFolderForOutputDirDuringMultiPlatformBuild=false'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**\bin\$(BuildConfiguration)\**'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+# - task: CopyFiles@2
+#   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+#   inputs:
+#     SourceFolder: '$(system.defaultworkingdirectory)'
+#     Contents: '**\bin\$(BuildConfiguration)\**'
+#     TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'

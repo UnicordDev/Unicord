@@ -13,6 +13,8 @@
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:presence="using:Unicord.Universal.Controls.Presence" 
     xmlns:users="using:Unicord.Universal.Controls.Users"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)" 
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     AllowDrop="True"
     DragEnter="ChannelPage_OnDragEnter"  
@@ -30,37 +32,100 @@
             x:Key="EaseOut"
             EasingMode="EaseIn"
             Exponent="4.5" />
+        
+        <Flyout x:Key="EmoteFlyout" x:Name="EmoteFlyout" w1903:ShouldConstrainToRootBounds="False">
+            <controls:EmotePicker x:Name="EmotePicker" 
+                                  Width="300" 
+                                  Height="300" 
+                                  HorizontalAlignment="Stretch" 
+                                  VerticalAlignment="Stretch" 
+                                  Channel="{x:Bind ViewModel.Channel, Mode=OneTime}" 
+                                  EmojiPicked="EmotePicker_EmojiPicked"/>
+        </Flyout>
 
         <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
 
-        <Storyboard x:Name="ShowPhotoPicker" Completed="ShowPhotoPicker_Completed">
+        <Storyboard x:Name="ShowPhotoPicker">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PhotoPicker" 
+                                           Storyboard.TargetProperty="Visibility">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItemsBackground" 
+                                           Storyboard.TargetProperty="BorderThickness">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,1" />
+            </ObjectAnimationUsingKeyFrames>
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="PhotoTransform"
                 Storyboard.TargetProperty="Y"
                 To="0"
-                Duration="00:00:00.50" />
-        </Storyboard>
-        <Storyboard x:Name="HidePhotoPicker" Completed="HidePhotoPicker_Completed">
+                Duration="00:00:00.30" />
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
+                EasingFunction="{StaticResource EaseExit}"
+                Storyboard.TargetName="UploadsTransform"
+                Storyboard.TargetProperty="Y"
+                To="200"
+                Duration="00:00:00.15" />
+            
+        </Storyboard>
+        <Storyboard x:Name="HidePhotoPicker">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItemsBackground" 
+                                           Storyboard.TargetProperty="BorderThickness">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PhotoPicker" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="00:00:00.30">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="PhotoTransform"
                 Storyboard.TargetProperty="Y"
                 To="200"
                 Duration="00:00:00.15" />
-        </Storyboard>
-
-        <Storyboard x:Name="ShowUploadPanel" Completed="ShowUploadPanel_Completed">
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseIn}"
+                EasingFunction="{StaticResource EaseEnter}"
                 Storyboard.TargetName="UploadsTransform"
                 Storyboard.TargetProperty="Y"
                 To="0"
-                Duration="00:00:00.50" />
+                Duration="00:00:00.30" />
         </Storyboard>
-        <Storyboard x:Name="HideUploadPanel" Completed="HideUploadPanel_Completed">
+
+        <Storyboard x:Name="ShowUploadPanel">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItemsBackground" 
+                                           Storyboard.TargetProperty="BorderThickness">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,1" />
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItems" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="00:00:00.00">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+            </ObjectAnimationUsingKeyFrames>
             <DoubleAnimation
-                EasingFunction="{StaticResource EaseOut}"
+                EasingFunction="{StaticResource EaseEnter}"
+                Storyboard.TargetName="UploadsTransform"
+                Storyboard.TargetProperty="Y"
+                To="0"
+                Duration="00:00:00.30" />
+        </Storyboard>
+        <Storyboard x:Name="HideUploadPanel">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItemsBackground" 
+                                           Storyboard.TargetProperty="BorderThickness">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UploadItems" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="00:00:00.15">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PhotoPicker" 
+                                           Storyboard.TargetProperty="Visibility"
+                                           BeginTime="00:00:00.15">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimation
+                EasingFunction="{StaticResource EaseExit}"
                 Storyboard.TargetName="UploadsTransform"
                 Storyboard.TargetProperty="Y"
                 To="200"
@@ -78,8 +143,7 @@
 
         <Storyboard
             x:Key="ClosePaneStoryboard"
-            x:Name="ClosePaneStoryboard"
-            Completed="ClosePaneStoryboard_Completed">
+            x:Name="ClosePaneStoryboard">
             <DoubleAnimation
                 EasingFunction="{StaticResource EaseIn}"
                 Storyboard.TargetName="ContentTransform"
@@ -150,21 +214,11 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid
-                x:Name="SidebarGrid"
-                Width="276"
-                Padding="{Binding Padding, ElementName=TopGrid}"
-                HorizontalAlignment="Right"
-                Background="{ThemeResource SidebarSecondaryAcrylicWindowBrush}"
-                Visibility="Collapsed">
-                <Frame x:Name="SidebarFrame" />
-            </Grid>
-
-            <toolkit:DropShadowPanel x:Name="MainDropShadowPanel" Style="{ThemeResource DropShadowPanelStyle}">
-                <toolkit:DropShadowPanel.RenderTransform>
+            <Grid x:Name="MainDropShadowPanel">
+                <Grid.RenderTransform>
                     <TranslateTransform x:Name="ContentTransform" />
-                </toolkit:DropShadowPanel.RenderTransform>
-                <Grid Background="{ThemeResource BackgroundTertiaryBrush}">
+                </Grid.RenderTransform>
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -172,10 +226,11 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid x:Name="TopGrid" VerticalAlignment="Top" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid x:Name="TopGrid"
+                          VerticalAlignment="Top"
+                          BorderThickness="0,0,0,1"
+                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.RenderTransform>
@@ -197,7 +252,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!--  because VisualStateManager is wank  -->
-                                <Grid x:Name="ShowSidebarButtonContainer" Margin="0,0,-4,0">
+                                <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
                                     <Button x:Name="ShowSidebarButton"
                                             Click="ShowSidebarButton_Click"
                                             Content="&#xE700;"
@@ -249,6 +304,7 @@
                                         Grid.Column="1"
                                         HorizontalAlignment="Right"
                                         Opacity="1"
+                                        Padding="2,0"
                                         Orientation="Horizontal">
 
                                 <StackPanel.RenderTransform>
@@ -266,7 +322,7 @@
                                 <ToggleButton x:Name="MuteButton"
                                               x:Uid="/ChannelPage/MuteButton"
                                               Content="&#xE74F;"
-                                              Margin="2,0,0,0"
+                                              Margin="2,4"
                                               IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=OneWay}"
                                               Style="{ThemeResource IconToggleButtonStyle}">
                                     <w1709:ToggleButton.KeyboardAccelerators>
@@ -276,7 +332,7 @@
                                 <Button x:Name="SearchButton"
                                         x:Uid="/ChannelPage/SearchButton"
                                         Content="&#xE721;"
-                                        Margin="2,0,0,0"
+                                        Margin="2,4"
                                         Click="SearchButton_Click"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
@@ -287,7 +343,7 @@
                                         x:Uid="/ChannelPage/PinsButton"
                                         Click="pinsButton_Click"
                                         Content="&#xE718;"
-                                        Margin="2,0,0,0"
+                                        Margin="2,4"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
@@ -298,7 +354,7 @@
                                         x:Load="{x:Bind ViewModel.ShowUserlistButton}"
                                         Click="UserListButton_Click"
                                         Content="&#xE716;"
-                                        Margin="2,0,0,0"
+                                        Margin="4"
                                         Style="{ThemeResource IconButtonStyle}">
                                     <w1709:Button.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
@@ -309,7 +365,7 @@
                                     x:Name="MoreOptionsButton"
                                     x:Uid="/ChannelPage/MoreOptionsButton"
                                     Content="&#xE712;"
-                                    Margin="2,0,0,0"
+                                    Margin="2,4"
                                     Style="{ThemeResource IconButtonStyle}">
                                     <lib:DropDownButton.Flyout>
                                         <lib:MenuBarItemFlyout>
@@ -372,30 +428,30 @@
                             </StackPanel>
 
                         </Grid>
-                        <ProgressBar
+                        
+                        <lib:ProgressBar
                             x:Name="LoadingProgress"
-                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
                             Visibility="Collapsed" />
-                        <ProgressBar
+                        <lib:ProgressBar
                             x:Name="UploadProgress"
-                            Grid.Row="2"
+                            VerticalAlignment="Bottom"
                             Visibility="Collapsed" />
                     </Grid>
 
                     <Grid Grid.Row="1">
                         <ListView x:Name="MessageList"
-                                  Background="{ThemeResource BackgroundTertiaryBrush}"
                                   ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
                                   ItemsSource="{x:Bind ViewModel.Messages}"
                                   ReorderMode="Disabled"
                                   SelectionChanged="MessageList_SelectionChanged"
                                   ShowsScrollingPlaceholders="False"
                                   SingleSelectionFollowsFocus="False"
-                                  SelectionMode="None">
+                                  SelectionMode="None"
+                                  Padding="0,0,0,12">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <ItemsStackPanel
-                                        Margin="0,0,0,12"
                                         VerticalAlignment="Bottom"
                                         CacheLength="4"
                                         ItemsUpdatingScrollMode="KeepLastItemInView" />
@@ -413,259 +469,273 @@
                             </ListView.ItemContainerStyle>
                         </ListView>
 
-                        <StackPanel
-                            x:Name="NoMessages"
-                            Margin="16"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Visibility="Collapsed">
+                        <StackPanel x:Name="NoMessages"
+                                    Margin="16"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Visibility="Collapsed">
                             <TextBlock FontSize="110" Text=":(" />
                             <TextBlock x:Uid="/ChannelPage/NoMessagesHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
                             <TextBlock x:Uid="/ChannelPage/NoMessagesSubheader" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
 
-                    <Grid Grid.Row="1" 
-                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                          Visibility="{Binding ShowTypingUsers, Converter={StaticResource BoolVisibilityConverter}}"
-                          VerticalAlignment="Bottom">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="42"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   FontSize="18"
-                                   Margin="0,-6,0,0"
-                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
-                            ...
-                        </TextBlock>
-
-                        <ItemsControl Grid.Column="1"
-                                      Margin="4,4,4,0"
-                                      ItemTemplate="{StaticResource TypingUserTemplate}"
-                                      ItemsSource="{Binding TypingUsers}"               
-                                      Height="20">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsStackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </Grid>
-
-                    <Grid Grid.Row="2"
-                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-                        <controls:UploadItemsControl x:Name="UploadItems"
-                                                      Height="150"
-                                                      Visibility="Collapsed"
-                                                      IsEnabled="{x:Bind ViewModel.ShowUploads}">
-                            <controls:UploadItemsControl.RenderTransform>
-                                <TranslateTransform x:Name="UploadsTransform" Y="250" />
-                            </controls:UploadItemsControl.RenderTransform>
-                        </controls:UploadItemsControl>
-
-                        <Grid x:Name="PhotoPicker"
-                              Height="150"
-                              Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                              Visibility="Collapsed">
-                            <Grid.RenderTransform>
-                                <TranslateTransform x:Name="PhotoTransform" Y="200" />
-                            </Grid.RenderTransform>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid Width="40" Margin="0,0,4,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Button
-                                    x:Name="OpenPopoutButton"
-                                    x:Uid="/ChannelPage/OpenPopoutButton"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Click="OpenPopoutButton_Click"
-                                    Content="&#xE722;"
-                                    Style="{ThemeResource StretchyIconButtonStyle}" />
-                                <Button
-                                    x:Name="OpenLocalButton"
-                                    x:Uid="/ChannelPage/OpenLocalButton"
-                                    Grid.Row="2"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Click="OnOpenLocalButtonClick"
-                                    Content="&#xE8DA;"
-                                    Style="{ThemeResource StretchyIconButtonStyle}" />
-                            </Grid>
-
-                            <ListView x:Name="PhotosList"
-                                    Grid.Column="1"
-                                    ShowsScrollingPlaceholders="True"
-                                    SingleSelectionFollowsFocus="False"
-                                    SelectionMode="None"
-                                    IsItemClickEnabled="True"
-                                    ItemClick="PhotosList_ItemClick"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                    ScrollViewer.HorizontalScrollMode="Enabled"
-                                    ScrollViewer.IsHorizontalRailEnabled="True"
-                                    ScrollViewer.IsVerticalRailEnabled="False"
-                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                    ScrollViewer.VerticalScrollMode="Disabled">
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <ItemsStackPanel Orientation="Horizontal" CacheLength="4" />
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Padding" Value="4,0"/>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <toolkit:ImageEx Height="150"
-                                                         Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
-                                                         Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}" />
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-
-                            <lib:ProgressRing
-                                x:Name="LoadingImagesRing"
-                                Grid.Column="1"
-                                Width="42"
-                                Height="42"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                        </Grid>
-                    </Grid>
-
-                    <Grid x:Name="FooterGrid"
-                          Grid.Row="3"
-                          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid Grid.Row="2" 
+                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"                          
+                          BorderThickness="1"
+                          CornerRadius="4"
+                          Margin="12,0,12,12">
+                        
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Grid.RenderTransform>
-                            <TranslateTransform x:Name="BottomGridTransform"/>
-                        </Grid.RenderTransform>
-
-                        <ProgressBar x:Name="SlowModeTimeout"
-                                     Grid.Row="2"
-                                     Maximum="{x:Bind ViewModel.PerUserRateLimit}"
-                                     Visibility="{x:Bind ViewModel.ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
-                                     Value="{x:Bind ViewModel.SlowModeTimeout}" />
-
-                        <Grid x:Name="ReplyingToGrid"
-                              Grid.Row="3"
-                              Visibility="{x:Bind ViewModel.ReplyTo, Converter={StaticResource HideOnNullConverter}, Mode=OneWay}">
-
+                        
+                        <Grid x:Name="TypingGrid"
+                              Grid.Row="1" 
+                              Visibility="Collapsed"
+                              VerticalAlignment="Bottom">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="42"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Grid VerticalAlignment="Center" 
-                                  Padding="4,0" 
-                                  DataContext="{x:Bind ViewModel.ReplyTo, Mode=OneWay}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            <TextBlock VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       FontSize="18"
+                                       Margin="0,-8,0,0"
+                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
+                                ...
+                            </TextBlock>
 
-                                <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                                <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
-                                <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
-
-                                <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
-                                                   Grid.Column="1"
-                                                   Grid.ColumnSpan="3"
-                                                   Grid.Row="1"
-                                                   FontSize="12"
-                                                   InlineOnly="True"
-                                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                                   Channel="{Binding Channel}"
-                                                   Text="{Binding Content}" 
-                                                   IsTextSelectionEnabled="False"
-                                                   VerticalAlignment="Center"
-                                                   Margin="4,2,0,0" />
-                            </Grid>
-
-                            <ToggleButton x:Name="ReplyPingToggle"
-                                          x:Uid="/ChannelPage/ReplyPingToggle"
-                                          Grid.Column="1"
-                                          Content="&#xE910;"
-                                          Margin="2,0,0,0"
-                                          IsChecked="{x:Bind ViewModel.ReplyPing, Mode=TwoWay}"
-                                          Style="{ThemeResource IconToggleButtonStyle}"/>
-
-                            <Button x:Name="ReplyCancel"
-                                    x:Uid="/ChannelPage/ReplyCancel"
-                                    Grid.Column="2"
-                                    Content="&#xE711;"
-                                    Margin="2,0,0,0"
-                                    Command="{StaticResource ReplyCommand}"
-                                    CommandParameter="{x:Null}"
-                                    Style="{ThemeResource IconButtonStyle}"/>
+                            <ItemsControl Grid.Column="1"
+                                          Margin="4,4,4,4"
+                                          ItemTemplate="{StaticResource TypingUserTemplate}"
+                                          ItemsSource="{Binding TypingUsers}"               
+                                          Height="16">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsStackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
                         </Grid>
 
-                        <Grid
-                            Grid.Row="4"
-                            MinHeight="42"
-                            MaxHeight="100">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="UploadButton"
-                                    x:Load="{x:Bind ViewModel.CanUpload}"
-                                    Click="uploadButton_Click"
-                                    Content="&#xE898;"
-                                    Style="{ThemeResource IconButtonStyle}">
-                                <w1709:Button.KeyboardAccelerators>
-                                    <w1709:KeyboardAccelerator Modifiers="Control,Shift" Key="U"/>
-                                </w1709:Button.KeyboardAccelerators>
-                            </Button>
+                        <Grid Grid.Row="2" 
+                              x:Name="UploadItemsBackground"
+                              BorderThickness="1"
+                              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">                        
+                            <controls:UploadItemsControl x:Name="UploadItems"
+                                                         Height="150"
+                                                         Visibility="Collapsed"
+                                                         IsEnabled="{x:Bind ViewModel.ShowUploads}">
+                                <controls:UploadItemsControl.RenderTransform>
+                                    <TranslateTransform x:Name="UploadsTransform" Y="250" />
+                                </controls:UploadItemsControl.RenderTransform>
+                            </controls:UploadItemsControl>
 
-                            <controls:MessageTextBox x:Name="MessageTextBox" 
-                                                      Grid.Column="1"
-                                                      VerticalAlignment="Center"
-                                                      Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
-                                                      PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder, Mode=OneWay}" 
-                                                      Channel="{x:Bind ViewModel.Channel, Mode=OneWay}"
-                                                      CurrentUser="{x:Bind ViewModel.CurrentUser, Mode=OneWay}"
-                                                      SendButtonEnabled="{x:Bind ViewModel.CanSend, Mode=OneWay}"
-                                                      BorderBrush="Transparent"
-                                                      BorderThickness="0"
-                                                      Background="Transparent"
-                                                      Paste="OnMessageTextBoxPaste"
-                                                      SendButtonVisibility="Visible"
-                                                      SubmitButtonVisibility="Collapsed"
-                                                      CancelButtonVisibility="Collapsed"
-                                                      SendInvoked="MessageTextBox_SendInvoked"
-                                                      EditInvoked="MessageTextBox_EditInvoked"
-                                                      ShouldSendTyping="MessageTextBox_ShouldSendTyping" />
+                            <Grid x:Name="PhotoPicker"
+                                  Height="150"
+                                  CornerRadius="4,4,0,0"
+                                  Visibility="Collapsed">
+                                <Grid.RenderTransform>
+                                    <TranslateTransform x:Name="PhotoTransform" Y="200" />
+                                </Grid.RenderTransform>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Button
+                                        x:Name="OpenPopoutButton"
+                                        x:Uid="/ChannelPage/OpenPopoutButton"
+                                        VerticalAlignment="Stretch"
+                                        Click="OpenPopoutButton_Click"
+                                        Content="&#xE722;"
+                                        Style="{ThemeResource StretchyIconButtonStyle}"
+                                        Margin="4,4,4,2"/>
+                                    <Button
+                                        x:Name="OpenLocalButton"
+                                        x:Uid="/ChannelPage/OpenLocalButton"
+                                        Grid.Row="2"
+                                        VerticalAlignment="Stretch"
+                                        Click="OnOpenLocalButtonClick"
+                                        Content="&#xE8DA;"
+                                        Margin="4,2,4,4"
+                                        Style="{ThemeResource StretchyIconButtonStyle}" />
+                                </Grid>
+
+                                <ListView x:Name="PhotosList"
+                                        Grid.Column="1"
+                                        ShowsScrollingPlaceholders="True"
+                                        SingleSelectionFollowsFocus="False"
+                                        SelectionMode="None"
+                                        IsItemClickEnabled="True"
+                                        ItemClick="PhotosList_ItemClick"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                        ScrollViewer.HorizontalScrollMode="Enabled"
+                                        ScrollViewer.IsHorizontalRailEnabled="True"
+                                        ScrollViewer.IsVerticalRailEnabled="False"
+                                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                        ScrollViewer.VerticalScrollMode="Disabled">
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ItemsStackPanel Orientation="Horizontal" CacheLength="4" />
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                            <Setter Property="Padding" Value="4"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4">
+                                                <toolkit:ImageEx Height="150"
+                                                                 Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"
+                                                                 Source="{Binding Thumbnail, Converter={StaticResource ThumbnailImageConverter}}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </Grid>
+
+                        <Grid x:Name="FooterGrid" Grid.Row="3">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="BottomGridTransform"/>
+                            </Grid.RenderTransform>
+
+                            <ProgressBar x:Name="SlowModeTimeout"
+                                         Grid.Row="2"
+                                         Maximum="{x:Bind ViewModel.PerUserRateLimit}"
+                                         Visibility="{x:Bind ViewModel.ShowSlowModeTimeout, Converter={StaticResource BoolVisibilityConverter}}"
+                                         Value="{x:Bind ViewModel.SlowModeTimeout}"
+                                         Margin="0,-2,0,0"
+                                         w1809:CornerRadius="4,4,0,0"/>
+
+                            <Grid x:Name="ReplyingToGrid"
+                                  Padding="4,4,4,0"
+                                  Grid.Row="3"
+                                  Visibility="{x:Bind ViewModel.ReplyTo, Converter={StaticResource HideOnNullConverter}, Mode=OneWay}">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid VerticalAlignment="Center" 
+                                      Padding="4,0" 
+                                      DataContext="{x:Bind ViewModel.ReplyTo, Mode=OneWay}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="&#xE97A;" Margin="4,0" VerticalAlignment="Center" FontSize="16" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                    <TextBlock x:Uid="/ChannelPage/ReplyingTo" Margin="4,0" Grid.Column="1"/>
+                                    <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" Grid.Column="2" FontSize="14" IconSize="14"/>
+
+                                    <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
+                                                       Grid.Column="1"
+                                                       Grid.ColumnSpan="3"
+                                                       Grid.Row="1"
+                                                       FontSize="12"
+                                                       InlineOnly="True"
+                                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                                       Channel="{Binding Channel}"
+                                                       Text="{Binding Content}" 
+                                                       IsTextSelectionEnabled="False"
+                                                       VerticalAlignment="Center"
+                                                       Margin="4,2,0,0" />
+                                </Grid>
+
+                                <ToggleButton x:Name="ReplyPingToggle"
+                                              x:Uid="/ChannelPage/ReplyPingToggle"
+                                              Grid.Column="1"
+                                              Content="&#xE910;"
+                                        Margin="4,0,0,0"
+                                              IsChecked="{x:Bind ViewModel.ReplyPing, Mode=TwoWay}"
+                                              Style="{ThemeResource IconToggleButtonStyle}"/>
+
+                                <Button x:Name="ReplyCancel"
+                                        x:Uid="/ChannelPage/ReplyCancel"
+                                        Grid.Column="2"
+                                        Content="&#xE711;"
+                                        Margin="4,0,0,0"
+                                        Command="{StaticResource ReplyCommand}"
+                                        CommandParameter="{x:Null}"
+                                        Style="{ThemeResource IconButtonStyle}"/>
+                            </Grid>
+
+                            <Grid
+                                Grid.Row="4"
+                                MinHeight="42"
+                                MaxHeight="100"
+                                Margin="4,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="UploadButton"
+                                        x:Load="{x:Bind ViewModel.CanUpload}"
+                                        Click="uploadButton_Click"
+                                        Content="&#xE898;"
+                                        Style="{ThemeResource IconButtonStyle}">
+                                    <w1709:Button.KeyboardAccelerators>
+                                        <w1709:KeyboardAccelerator Modifiers="Control,Shift" Key="U"/>
+                                    </w1709:Button.KeyboardAccelerators>
+                                </Button>
+
+                                <controls:MessageTextBox x:Name="MessageTextBox" 
+                                                          Grid.Column="1"
+                                                          VerticalAlignment="Center"
+                                                          Text="{x:Bind ViewModel.MessageText, Mode=TwoWay}"
+                                                          PlaceholderText="{x:Bind ViewModel.ChannelPlaceholder, Mode=OneWay}" 
+                                                          Channel="{x:Bind ViewModel.Channel, Mode=OneWay}"
+                                                          CurrentUser="{x:Bind ViewModel.CurrentUser, Mode=OneWay}"
+                                                          SendButtonEnabled="{x:Bind ViewModel.CanSend, Mode=OneWay}"
+                                                          BorderBrush="Transparent"
+                                                          BorderThickness="0"
+                                                          Background="Transparent"
+                                                          Paste="OnMessageTextBoxPaste"
+                                                          SendButtonVisibility="Visible"
+                                                          SubmitButtonVisibility="Collapsed"
+                                                          CancelButtonVisibility="Collapsed"
+                                                          SendInvoked="MessageTextBox_SendInvoked"
+                                                          EditInvoked="MessageTextBox_EditInvoked"
+                                                          ShouldSendTyping="MessageTextBox_ShouldSendTyping" />
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </toolkit:DropShadowPanel>
+            </Grid>
         </Grid>
+        
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="VeryWideState">
@@ -699,6 +769,26 @@
                     <VisualState.Setters>
                         <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
                         <Setter Target="SidebarGrid.(Grid.Column)" Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="TypingGroup">
+                <VisualState x:Name="IsTyping">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{Binding ShowTypingContainer}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="UploadItemsBackground.CornerRadius" Value="0"/>
+                        <Setter Target="TypingGrid.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NotTyping">
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{Binding HideTypingContainer}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="UploadItemsBackground.CornerRadius" Value="4,4,0,0"/>
+                        <Setter Target="TypingGrid.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

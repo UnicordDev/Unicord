@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Controls.Messages;
+using Unicord.Universal.Pages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -16,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Controls.Flyouts
 {
-    public sealed partial class MessageContextFlyout : MenuFlyout
+    public sealed partial class MessageContextFlyout : Microsoft.UI.Xaml.Controls.CommandBarFlyout
     {
         public MessageControl Parent
         {
@@ -35,7 +36,24 @@ namespace Unicord.Universal.Controls.Flyouts
         // todo: is there a less shit way of doing this?
         private void EditFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
+            this.Hide();
             this.Target.FindParent<MessageControl>().BeginEdit();
+        }
+
+        // ditto
+        private void AddReactionButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            var control = this.Target.FindParent<MessageControl>();
+            var page = this.Target.FindParent<ChannelPage>();
+
+            page.ShowReactionPicker(control.MessageViewModel);
+        }
+
+        // HACK
+        private void HideOnClick(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
         }
     }
 }

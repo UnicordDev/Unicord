@@ -45,7 +45,7 @@
 
     </UserControl.Resources>
 
-    <Grid Name="grid" Background="{StaticResource SystemControlBackgroundChromeMediumBrush}" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
+    <Grid Name="grid" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyout.Items>
@@ -57,7 +57,11 @@
             </MenuFlyout>
         </Grid.ContextFlyout>
 
-        <ContentControl x:Name="mainGrid" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Rectangle Fill="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                   RadiusX="4"
+                   RadiusY="4"/>
+
+        <Border x:Name="mainGrid" />
 
         <Grid x:Name="detailsGrid" RenderTransformOrigin="0.5,0.5" fc:ColumnSpacing="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{ThemeResource SidebarSecondaryAcrylicElementBrush}">
             <Grid.ColumnDefinitions>
@@ -75,7 +79,7 @@
                 <TextBlock Padding="12,0" Text="{Binding FileName}" TextTrimming="CharacterEllipsis" FontWeight="Bold"/>
                 <TextBlock Padding="12,0" Text="{Binding FileSize,Converter={StaticResource FileSizeConverter}}" FontSize="12"/>
             </StackPanel>
-            
+
             <Button x:Uid="/Controls/AttachmentShareButton" Grid.Column="2" Content="&#xE72D;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="OnShareMenuClick"/>
             <Button x:Uid="/Controls/AttachmentCopyUrlButton" Grid.Column="3" Content="&#xE71B;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="CopyUrlItem_Click"/>
             <Button x:Uid="/Controls/AttachmentSaveButton" Grid.Column="4" Content="&#xE896;" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Click="OnSaveMenuClick"/>

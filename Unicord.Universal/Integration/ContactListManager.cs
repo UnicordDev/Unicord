@@ -55,7 +55,7 @@ namespace Unicord.Universal.Integration
                     var list = lists.FirstOrDefault(l => l.DisplayName == CONTACT_LIST_NAME) ?? (await store.CreateContactListAsync(CONTACT_LIST_NAME));
 
                     var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                    var annotationList = await Tools.GetAnnotationListAsync(annotationStore);
+                    var annotationList = await GetAnnotationListAsync(annotationStore);
                     var allContacts = await store.FindContactsAsync();
 
                     // remove all contacts no longer in the user's friends list
@@ -99,7 +99,7 @@ namespace Unicord.Universal.Integration
             if (annotationList == null)
             {
                 var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                annotationList = await Tools.GetAnnotationListAsync(annotationStore);
+                annotationList = await GetAnnotationListAsync(annotationStore);
             }
 
             folder = folder ?? await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
@@ -175,6 +175,18 @@ namespace Unicord.Universal.Integration
             }
 
             return RandomAccessStreamReference.CreateFromFile(tempFile);
+        }
+
+        private static async Task<ContactAnnotationList> GetAnnotationListAsync(ContactAnnotationStore store)
+        {
+            var lists = await store.FindAnnotationListsAsync();
+            var list = lists.FirstOrDefault();
+            if (list == null)
+            {
+                list = await store.CreateAnnotationListAsync();
+            }
+
+            return list;
         }
     }
 }

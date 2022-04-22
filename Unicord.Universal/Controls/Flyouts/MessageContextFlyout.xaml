@@ -1,109 +1,125 @@
-﻿<MenuFlyout
+﻿<lib:CommandBarFlyout
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     x:Class="Unicord.Universal.Controls.Flyouts.MessageContextFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Controls.Flyouts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    
-    <MenuFlyoutItem x:Name="AddReactionFlyoutItem"
-                    x:Uid="/Flyouts/AddReaction"
-                    Icon="Emoji" />
+    mc:Ignorable="d"
+    Placement="Right"
+    AlwaysExpanded="True">
 
-    <MenuFlyoutSeparator />
+    <AppBarButton x:Name="AddReactionButton" 
+                  Click="AddReactionButton_Click"
+                  ToolTipService.ToolTip="Add Reaction">
+        <AppBarButton.Icon>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE899;" />
+        </AppBarButton.Icon>
+    </AppBarButton>
 
-    <MenuFlyoutItem x:Name="ProfileFlyoutItem"
-                    x:Uid="/Flyouts/Profile"                    
-                    Icon="OtherUser"
-                    Command="{StaticResource OpenUserOverlayCommand}"
-                    CommandParameter="{Binding Author}" />
+    <AppBarButton ToolTipService.ToolTip="View Profile"
+                  Command="{StaticResource OpenUserOverlayCommand}"
+                  CommandParameter="{Binding Author}"
+                  Click="HideOnClick">
+        <AppBarButton.Icon>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7ee;" />
+        </AppBarButton.Icon>
+    </AppBarButton>
 
-    <MenuFlyoutItem x:Name="MessageFlyoutItem"
-                    x:Uid="/Flyouts/Message"
-                    Command="{StaticResource MessageUserCommand}"
-                    CommandParameter="{Binding Author}"
-                    Icon="Message"/>
-
-    <MenuFlyoutSeparator />
-
-    <MenuFlyoutItem x:Name="ChangeNicknameFlyoutItem"
-                    x:Uid="/Flyouts/ChangeNickname"
-                    Command="{StaticResource ChangeNicknameCommand}"
-                    CommandParameter="{Binding Author}"
-                    Icon="Rename"/>
-
-    <MenuFlyoutItem x:Name="PinFlyoutItem"
-                    x:Uid="/Flyouts/Pin"
-                    Command="{StaticResource PinMessageCommand}"
-                    CommandParameter="{Binding Message}"
-                    Icon="Pin"/>
-
-    <MenuFlyoutItem x:Name="ReplyFlyoutItem"
-                    x:Uid="/Flyouts/Reply"
-                    Command="{StaticResource ReplyCommand}"
-                    CommandParameter="{Binding Message}">
-        <MenuFlyoutItem.Icon>
+    <AppBarButton ToolTipService.ToolTip="Reply"
+                  Command="{StaticResource ReplyCommand}"
+                  CommandParameter="{Binding Message}"
+                  Click="HideOnClick">
+        <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
-        </MenuFlyoutItem.Icon>
-    </MenuFlyoutItem>
-
-    <MenuFlyoutItem x:Name="KickFlyoutItem"
-                    x:Uid="/Flyouts/Kick"
-                    Foreground="{ThemeResource ErrorTextForegroundBrush}"
-                    Icon="LeaveChat"
-                    Command="{StaticResource KickCommand}"
-                    CommandParameter="{Binding Author}" />
-
-    <MenuFlyoutItem x:Name="BanFlyoutItem"
-                    x:Uid="/Flyouts/Ban"
-                    Foreground="{ThemeResource ErrorTextForegroundBrush}"
-                    Icon="Remove"
-                    Command="{StaticResource BanCommand}"
-                    CommandParameter="{Binding Author}" />
-
-    <MenuFlyoutSeparator />
-
-    <MenuFlyoutItem x:Name="EditFlyoutItem"
-                    x:Uid="/Flyouts/Edit"
-                    Icon="Edit" 
-                    Click="EditFlyoutItem_Click"
-                    IsEnabled="{Binding Author.IsCurrent}" />
-
-    <MenuFlyoutItem x:Name="DeleteFlyoutItem"
-                    x:Uid="/Flyouts/Delete"
-                    Icon="Delete"
-                    Command="{StaticResource DeleteMessageCommand}"
-                    CommandParameter="{Binding Message}"
-                    Foreground="{ThemeResource ErrorTextForegroundBrush}" />
-
-    <MenuFlyoutSeparator />
-
-    <MenuFlyoutItem x:Uid="/Flyouts/EditMode"
-                    Text="Edit Mode"
-                    Command="{StaticResource EditModeCommand}"
-                    CommandParameter="{Binding Message}">
-        <MenuFlyoutItem.Icon>
-            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE762;" />
-        </MenuFlyoutItem.Icon>
-    </MenuFlyoutItem>
-
-    <MenuFlyoutSeparator />
-
-    <MenuFlyoutItem x:Name="CopyFlyoutItem"
-                    x:Uid="/Flyouts/Copy"
-                    Icon="Copy"
-                    Command="{StaticResource CopyMessageCommand}" 
-                    CommandParameter="{Binding Message}" />
-
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" 
-                    Icon="Link" 
-                    Command="{StaticResource CopyUrlCommand}"
-                    CommandParameter="{Binding Message}" />
+        </AppBarButton.Icon>
+    </AppBarButton>
     
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyID"
-                    Icon="Copy" 
-                    Command="{StaticResource CopyIdCommand}" 
-                    CommandParameter="{Binding Message}" />
+    <AppBarButton ToolTipService.ToolTip="Copy Message"
+                  Command="{StaticResource CopyMessageCommand}" 
+                  CommandParameter="{Binding Message}"
+                  Click="HideOnClick">
+        <AppBarButton.Icon>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe8c8;" />
+        </AppBarButton.Icon>
+    </AppBarButton>
 
-</MenuFlyout>
+    <AppBarButton ToolTipService.ToolTip="Copy Link"
+                  Command="{StaticResource CopyUrlCommand}"
+                  CommandParameter="{Binding Message}"
+                  Click="HideOnClick">
+        <AppBarButton.Icon>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe71b;" />
+        </AppBarButton.Icon>
+    </AppBarButton>
+
+    <lib:CommandBarFlyout.SecondaryCommands>
+
+        <AppBarButton Label="Change Nickname"
+                      Command="{StaticResource ChangeNicknameCommand}"
+                      CommandParameter="{Binding Author}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe8ac;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
+
+
+        <AppBarButton Label="Pin"
+                      Command="{StaticResource PinMessageCommand}"
+                      CommandParameter="{Binding Message}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE718;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarButton Label="Edit"
+                      Click="EditFlyoutItem_Click"
+                      IsEnabled="{Binding Author.IsCurrent}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe70f;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarButton Label="Delete"
+                      Command="{StaticResource DeleteMessageCommand}"
+                      CommandParameter="{Binding Message}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe74d;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
+
+        <AppBarButton Label="Kick"
+                      Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                      Command="{StaticResource KickCommand}"
+                      CommandParameter="{Binding Author}">
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe89b;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarButton Label="Ban"
+                      Foreground="{ThemeResource SystemFillColorCriticalBrush}"                      
+                      Command="{StaticResource BanCommand}"
+                      CommandParameter="{Binding Author}" >
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe738;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+        <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
+
+        <AppBarButton Label="Copy ID"
+                      Command="{StaticResource CopyIdCommand}" 
+                      CommandParameter="{Binding Message}" >
+            <AppBarButton.Icon>
+                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xec7a;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+    </lib:CommandBarFlyout.SecondaryCommands>
+</lib:CommandBarFlyout>

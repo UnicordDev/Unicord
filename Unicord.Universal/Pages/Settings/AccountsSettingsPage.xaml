@@ -8,6 +8,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:settings="using:SettingsControl"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:AccountsSettingsModel />
@@ -24,12 +25,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid Margin="12">
+        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+            <Grid Margin="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -46,78 +46,84 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-            <Button Grid.Column="1" Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Top" Content="&#xE70F;" />
-        </Grid>
+        </Border>
+
+        <TextBlock x:Uid="/AccountsSettingsPage/FriendsText" Grid.Row="1" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
+
+        <StackPanel Grid.Row="2">
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock">
+                <settings:SettingsBlockControl.Icon>
+                    <SymbolIcon Symbol="People"/>
+                </settings:SettingsBlockControl.Icon>
+                <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" />
+            </settings:SettingsBlockControl>
+
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock">
+                <settings:SettingsBlockControl.Icon>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE7E7;"/>
+                </settings:SettingsBlockControl.Icon>
+                <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" />
+            </settings:SettingsBlockControl>
+        </StackPanel>
+
+        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
         
-        <TextBlock x:Uid="/AccountsSettingsPage/FriendsText"  Grid.Row="1" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-        
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Grid.Row="4"
+                Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <TextBlock x:Name="contactsUnavailable" x:Uid="/AccountsSettingsPage/ContactsUnavailable"  Grid.ColumnSpan="2" Visibility="Collapsed" TextWrapping="WrapWholeWords" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+                <TextBlock Grid.Row="0" Text="Friends" FontWeight="Bold" />
+                <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Right" Text="{Binding FriendCountString}"/>
 
-            <ProgressBar Grid.Row="1" x:Name="syncingProgressBar" Visibility="Collapsed" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-            <toolkit:MarkdownTextBlock x:Name="md" x:Uid="/AccountsSettingsPage/SyncPeopleText" Grid.Row="1" VerticalAlignment="Center" Background="Transparent" LinkClicked="OnMarkdownLinkClicked" TextWrapping="WrapWholeWords"/>
-            <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Grid.Row="1" Text="Servers" FontWeight="Bold" />
+                <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{Binding ServerCountString}"/>
 
-            <TextBlock x:Uid="/AccountsSettingsPage/BackgroundNotifications" Grid.Row="2" VerticalAlignment="Center" TextWrapping="WrapWholeWords"/>
-            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" />
-        </Grid>
+                <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Bold" />
+                <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding ChannelsCountString}"/>
 
-        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,4" />
-        <Grid Grid.Row="4">
+                <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Bold" />
+                <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Right" Text="{Binding MemberCountString}"/>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Bold" />
+                <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Right" Text="{Binding OpenDMCountString}"/>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Bold" />
+                <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedUserCountString}"/>
 
-            <TextBlock Grid.Row="0" Text="Friends" FontWeight="Bold" />
-            <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Right" Text="{Binding FriendCountString}"/>
-            
-            <TextBlock Grid.Row="1" Text="Servers" FontWeight="Bold" />
-            <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{Binding ServerCountString}"/>
+                <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Bold" />
+                <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedPresenceCountString}"/>
 
-            <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Bold" />
-            <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding ChannelsCountString}"/>
-            
-            <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Bold" />
-            <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Right" Text="{Binding MemberCountString}"/>
+                <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Bold" />
+                <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Right" Text="{Binding EmoteCountString}"/>
+            </Grid>
+        </Border>
 
-            <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Bold" />
-            <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Right" Text="{Binding OpenDMCountString}"/>
-            
-            <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Bold" />
-            <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedUserCountString}"/>            
-            
-            <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Bold" />
-            <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedPresenceCountString}"/>
-            
-            <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Bold" />
-            <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Right" Text="{Binding EmoteCountString}"/>
-        </Grid>
-
-        <Button x:Name="logoutButton" x:Uid="/AccountsSettingsPage/LogoutButton" Grid.Row="6" HorizontalAlignment="Stretch" Click="LogoutButton_Click"/>
+        <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/LogoutBlock"
+                                       IsClickable="True"
+                                       Click="LogoutButton_Click"
+                                       Grid.Row="6">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF3B1;"/>
+            </settings:SettingsBlockControl.Icon>
+        </settings:SettingsBlockControl>
     </Grid>
 </Page>

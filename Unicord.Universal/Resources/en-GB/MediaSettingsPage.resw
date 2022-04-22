@@ -147,11 +147,11 @@
   <data name="LargePresetSubheader.Text" xml:space="preserve">
     <value>720p, ~1536kbps</value>
   </data>
-  <data name="MediaCompressionHeader.Text" xml:space="preserve">
-    <value>Media Compression</value>
+  <data name="MediaCompressionBlock.Description" xml:space="preserve">
+    <value>Unicord can automatically compress audio, video and images to fit within your upload limit.</value>
   </data>
-  <data name="MediaCompressionSubheader.Text" xml:space="preserve">
-    <value>Unicord can automatically compress video to fit within your upload limit!</value>
+  <data name="MediaCompressionBlock.Title" xml:space="preserve">
+    <value>Automatically Compress Media</value>
   </data>
   <data name="MediumPresetItem.Text" xml:space="preserve">
     <value>Medium</value>

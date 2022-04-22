@@ -12,122 +12,118 @@
     xmlns:entities="using:DSharpPlus.Entities" xmlns:users="using:Unicord.Universal.Controls.Users"
     x:DefaultBindMode="OneWay" mc:Ignorable="d" MaxWidth="550">
 
-    <toolkit:DropShadowPanel VerticalAlignment="Center" KeyUp="DropShadowPanel_PreviewKeyUp">
-        <StackPanel>
-            <Grid Padding="20" RequestedTheme="Dark">
-                <Grid.Background>
-                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark1}" />
-                </Grid.Background>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable Display</FontFamily>
+        <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Medium</FontWeight>
+    </UserControl.Resources>
 
-                    <users:AvatarControl Width="96" Height="96"
+    <Border VerticalAlignment="Center"
+            Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
+            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            BorderThickness="1,1,1,1"
+            CornerRadius="8">
+        <StackPanel>
+            <Border Background="{ThemeResource LayerFillColorAltBrush}"
+                    CornerRadius="8,8,0,0">
+                <Grid Padding="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <users:AvatarControl Width="96" Height="96"
                                          Style="{StaticResource LargeAvatarWithPresenceStyle}"
                                          Source="{x:Bind User.AvatarUrl}" 
                                          Presence="{x:Bind User.Presence}"/>
-
-                    <!--<Canvas Width="96" Height="96">
-                        <Ellipse x:Name="ellipse" Width="96" Height="96">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{x:Bind User.AvatarUrl}"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <Ellipse
-                            Canvas.Left="70"
-                            Canvas.Top="70"
-                            Width="28"
-                            Height="28"
-                            StrokeThickness="4">
-                            <Ellipse.Stroke>
-                                <SolidColorBrush Color="{ThemeResource SystemAccentColorDark2}" />
-                            </Ellipse.Stroke>
-                            <Ellipse.Fill>
-                                <SolidColorBrush Color="{x:Bind User.Presence, Converter={StaticResource PresenceColourConverter}}" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-                    </Canvas>-->
-                    <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}" 
+                        <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Style="{ThemeResource TitleTextBlockStyle}" 
                                    TextTrimming="CharacterEllipsis" 
-                                   TextWrapping="NoWrap">                    
+                                   TextWrapping="NoWrap"
+                                   FontFamily="Segoe UI Variable Display">                    
                             <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                        </TextBlock>
-                        <TextBlock x:Name="nicknameTextBlock"
+                            </TextBlock>
+                            <TextBlock x:Name="nicknameTextBlock"
                                    Margin="0,0,4,0" 
                                    TextWrapping="NoWrap" 
                                    Visibility="{x:Bind _member.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}"
-                                   Foreground="{x:Bind _member.Color, Converter={StaticResource ColourBrushConverter}, ConverterParameter={StaticResource SystemAccentColorDark1}}" 
+                                   Foreground="{x:Bind _member.Color, Converter={StaticResource ColourBrushConverter}}" 
                                    Text="{x:Bind _member.DisplayName}"
-                                   Style="{ThemeResource SubtitleTextBlockStyle}">                            
-                        </TextBlock>
-                    </StackPanel>
-                    <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind _user}" />
-                        <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   FontFamily="Segoe UI Variable Display">
+                            </TextBlock>
+                        </StackPanel>
+                        <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind _user}" />
+                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" >
-                <Grid.Background>
-                    <SolidColorBrush Color="{ThemeResource SystemAccentColorDark1}" />
-                </Grid.Background>
-                <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
-            </Grid>
-            <Grid MinHeight="200" Padding="0,0,0,20" Background="{ThemeResource BackgroundSecondaryBrush}">
-                <Pivot SelectedIndex="0">
-                    <Pivot.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                        </DataTemplate>
-                    </Pivot.HeaderTemplate>
-                    <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember, Mode=OneTime}" >
-                        <StackPanel>
-                            <StackPanel x:Name="rolesList" Visibility="{x:Bind _member.Roles, Converter={StaticResource BoolVisibilityConverter}}">
-                                <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
-                                <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <toolkit:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                            </StackPanel>
-                            
-                            <TextBlock x:Uid="/Dialogs/ProfileJoinedServer" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
-                            <TextBlock Text="{x:Bind _member.JoinedAt, Converter={StaticResource DateTimeConverter}}"/>
-                        </StackPanel>
-                    </PivotItem>
-                    <PivotItem x:Uid="/Dialogs/ProfileMutualServers">
-                        <PivotItem.Content>
-                            <ListView x:Name="mutualServers" MaxHeight="180" SelectionMode="None">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
+            </Border>
+            <Border Background="{ThemeResource LayerFillColorAltBrush}">
+                <Grid Grid.Row="1" 
+                      Visibility="{x:Bind _user.Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
+                    <controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />
+                </Grid>
+            </Border>
+            <Border>
+                <Grid MinHeight="200"
+                      Padding="0,0,0,20"
+                      BorderThickness="0,1,0,0"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                    <Pivot SelectedIndex="0">
+                        <Pivot.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                            </DataTemplate>
+                        </Pivot.HeaderTemplate>
+                        <PivotItem x:Name="guildOverlay" Header="{x:Bind _member.Guild.Name}" x:Load="{x:Bind _isMember, Mode=OneTime}" >
+                            <StackPanel>
+                                <StackPanel x:Name="rolesList" 
+                                            Visibility="{x:Bind _member.Roles, Converter={StaticResource BoolVisibilityConverter}}">
+                                    <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
+                                    <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind _member.Roles}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <toolkit:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </StackPanel>
 
-                                            <lib:PersonPicture ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}" Width="36" Height="36" Margin="0,4"/>
-                                            <TextBlock Grid.Column="1" Margin="12,0" Text="{Binding Name}" VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </PivotItem.Content>
-                    </PivotItem>
-                    <PivotItem x:Uid="/Dialogs/ProfileConnections">
-                    </PivotItem>
-                </Pivot>
-            </Grid>
+                                <TextBlock x:Uid="/Dialogs/ProfileJoinedServer" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
+                                <TextBlock Text="{x:Bind _member.JoinedAt, Converter={StaticResource DateTimeConverter}}"/>
+                            </StackPanel>
+                        </PivotItem>
+                        <PivotItem x:Uid="/Dialogs/ProfileMutualServers">
+                            <PivotItem.Content>
+                                <ListView x:Name="mutualServers" MaxHeight="180" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <lib:PersonPicture ProfilePicture="{Binding IconUrl}" DisplayName="{Binding Name}" Width="36" Height="36" Margin="0,4"/>
+                                                <TextBlock Grid.Column="1" Margin="12,0" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </PivotItem.Content>
+                        </PivotItem>
+                        <PivotItem x:Uid="/Dialogs/ProfileConnections">
+                        </PivotItem>
+                    </Pivot>
+                </Grid>
+            </Border>
         </StackPanel>
-    </toolkit:DropShadowPanel>
+    </Border>
 </UserControl>

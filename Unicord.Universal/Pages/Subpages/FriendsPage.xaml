@@ -21,14 +21,26 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <Style x:Key="RelationshipItemContainerStyle" BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
+        <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
+        <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Semibold</FontWeight>
+        
+        <Style x:Key="RelationshipItemContainerStyle" BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
         </Style>
 
         <!-- is there a way to simplify this? -->
         <DataTemplate x:Key="FriendRelationshipTemplate" x:DataType="discord:DiscordRelationship">
-            <Grid Padding="10" HorizontalAlignment="Stretch" Background="#00FFFFFF" PointerCanceled="Grid_PointerCanceled" PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited">
+            <Grid Padding="8"
+                  HorizontalAlignment="Stretch" 
+                  CornerRadius="4"
+                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  PointerCanceled="Grid_PointerCanceled" 
+                  PointerEntered="Grid_PointerEntered"
+                  PointerExited="Grid_PointerExited">
                 <Grid.Resources>
                     <Storyboard x:Key="pointerEntered" Duration="00:00:00.20">
                         <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
@@ -50,7 +62,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Name="text" Text="{Binding User.Username}" FontWeight="Bold"/>
+                        <TextBlock Name="text" Text="{Binding User.Username}" FontSize="16" FontWeight="SemiBold" />
                         <presence:InlinePresenceControl Presence="{Binding User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
                     </Grid>
                     <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -68,74 +80,86 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="12,12,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-    <controls:DropShadowPanel Style="{ThemeResource DropShadowPanelStyle}">
+            <Button x:Name="ShowSidebarButton"
+                    Margin="8,0,8,0"
+                    Click="ShowSidebarButton_Click" 
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource IconButtonStyle}" 
+                    Content="&#xE700;"/>
 
-        <Grid Background="{ThemeResource BackgroundTertiaryBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Margin="12,12,12,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="showSidebarButton" Click="ShowSidebarButton_Click" VerticalAlignment="Center" Style="{ThemeResource IconButtonStyle}" Content="&#xE700;"/>
-                <TextBlock x:Uid="/FriendsPage/FriendsHeader" Style="{ThemeResource SubheaderTextBlockStyle}" Grid.Column="1" Margin="12" Grid.Row="2"/>
-            </Grid>
-            <Pivot Margin="12,0,12,12" 
-                   IsHeaderItemsCarouselEnabled="False" 
-                   ManipulationMode="None" 
-                   SelectedIndex="1" 
-                   Grid.Row="3">
-                <Pivot.Items>
-                    <PivotItem x:Uid="/FriendsPage/FriendsAllItem">
-                        <GridView x:Name="AllView"
-                                  ItemsSource="{Binding All}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="True"
-                                  ItemClick="OnItemClick"
-                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
-                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
-                    </PivotItem>
-                    <PivotItem x:Uid="/FriendsPage/FriendsOnlineItem">
-                        <GridView x:Name="OnlineView"
-                                  ItemsSource="{Binding Online}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="True"
-                                  ItemClick="OnItemClick"
-                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
-                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
-                    </PivotItem>
-                    <!-- 
+            <TextBlock x:Uid="/FriendsPage/FriendsHeader" 
+                       FontFamily="XamlAutoFontFamily"
+                       Style="{ThemeResource TitleLargeTextBlockStyle}"
+                       Grid.Column="1"
+                       Margin="12"
+                       Grid.Row="2"/>
+        </Grid>
+        <Pivot Margin="12,-8,12,0" 
+               IsHeaderItemsCarouselEnabled="False" 
+               ManipulationMode="None" 
+               SelectedIndex="1" 
+               Grid.Row="3">
+            <Pivot.Items>
+                <PivotItem x:Uid="/FriendsPage/FriendsAllItem"
+                           Padding="0,8,0,0">
+                    <GridView x:Name="AllView"
+                              ItemsSource="{Binding All}"
+                              SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              ItemClick="OnItemClick"
+                              ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                              ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
+                </PivotItem>
+                <PivotItem x:Uid="/FriendsPage/FriendsOnlineItem"
+                           Padding="0,8,0,0">
+                    <GridView x:Name="OnlineView"
+                              ItemsSource="{Binding Online}"
+                              SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              ItemClick="OnItemClick"
+                              ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                              ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
+                </PivotItem>
+                <!-- 
                         these two groups should use different templates 
                         for accepting/declining requests and unblocking 
                     -->
-                    <PivotItem x:Uid="/FriendsPage/FriendsPendingItem">
-                        <GridView x:Name="PendingView"
-                                  ItemsSource="{Binding Pending}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="True"
-                                  ItemClick="OnItemClick"
-                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
-                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
-                    </PivotItem>
-                    <PivotItem x:Uid="/FriendsPage/FriendsBlockedItem">
-                        <GridView x:Name="BlockedView"
-                                  ItemsSource="{Binding Blocked}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="True"
-                                  ItemClick="OnItemClick"
-                                  ItemTemplate="{StaticResource FriendRelationshipTemplate}"
-                                  ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
-                    </PivotItem>
-                </Pivot.Items>
-            </Pivot>           
-        </Grid>
-        
+                <PivotItem x:Uid="/FriendsPage/FriendsPendingItem"
+                           Padding="0,8,0,0">
+                    <GridView x:Name="PendingView"
+                              ItemsSource="{Binding Pending}"
+                              SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              ItemClick="OnItemClick"
+                              ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                              ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
+                </PivotItem>
+                <PivotItem x:Uid="/FriendsPage/FriendsBlockedItem"
+                           Padding="0,8,0,0">
+                    <GridView x:Name="BlockedView"
+                              ItemsSource="{Binding Blocked}"
+                              SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              ItemClick="OnItemClick"
+                              ItemTemplate="{StaticResource FriendRelationshipTemplate}"
+                              ItemContainerStyle="{ThemeResource RelationshipItemContainerStyle}"/>
+                </PivotItem>
+            </Pivot.Items>
+        </Pivot>
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="WideState">
@@ -144,7 +168,7 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Collapsed" />
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
 
@@ -154,10 +178,10 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="showSidebarButton.Visibility" Value="Visible" />
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-    </controls:DropShadowPanel>
+    </Grid>
 </Page>

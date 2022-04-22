@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
-using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
@@ -74,7 +73,7 @@ namespace Unicord.Universal.Pages.Subpages
             if (item != null)
             {
                 var element = (sender as ListView).ContainerFromItem(item);
-                AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
+                //AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
                 userList.SelectedItem = null;
             }
         }

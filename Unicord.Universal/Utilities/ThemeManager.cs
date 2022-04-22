@@ -148,7 +148,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources());
+                // target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             ThemesUpdated?.Invoke(null, new ThemeUpdatedEventArgs() { NewThemes = themes });
@@ -194,7 +194,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources());
+                //target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             Analytics.TrackEvent("Themes_LoadedAsync", new Dictionary<string, string>() { ["SelectedThemes"] = JsonConvert.SerializeObject(themeNames) });
@@ -238,7 +238,7 @@ namespace Unicord.Universal
             finally
             {
                 // ensure XamlControlsResources gets loaded even if theme loading itself fails
-                target.MergedDictionaries.Insert(0, new XamlControlsResources());
+                // target.MergedDictionaries.Insert(0, new XamlControlsResources());
             }
 
             return themes;

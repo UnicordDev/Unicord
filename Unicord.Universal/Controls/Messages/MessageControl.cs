@@ -7,7 +7,6 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Unicord.Universal.Controls.Flyouts;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages;
 using Windows.System;

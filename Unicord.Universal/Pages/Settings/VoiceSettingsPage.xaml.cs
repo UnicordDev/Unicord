@@ -57,11 +57,11 @@ namespace Unicord.Universal.Pages.Settings
         {
             try
             {
-                if (this.FindParent<DiscordPage>().DataContext is DiscordPageModel model)
+                if (this.FindParent<DiscordPage>()?.DataContext is DiscordPageModel model)
                 {
                     var inputInfo = Model.InputDevice;
                     var outputInfo = Model.OutputDevice;
-                    await (model?.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id) ?? Task.CompletedTask);
+                    //await (model?.VoiceModel?.UpdatePreferredAudioDevicesAsync(outputInfo?.Id, inputInfo?.Id) ?? Task.CompletedTask);
                 }
             }
             catch { }

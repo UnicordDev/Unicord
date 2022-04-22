@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Messages;
 
 namespace Unicord.Universal.Models.Messages
 {
@@ -25,30 +28,36 @@ namespace Unicord.Universal.Models.Messages
             Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
             Attachments = new ObservableCollection<DiscordAttachment>(Message.Attachments);
             Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
-            Reactions = new ObservableCollection<DiscordReaction>(Message.Reactions);
             Components = new ObservableCollection<DiscordComponent>(Message.Components);
+
+            ReactCommand = new ReactCommand(discordMessage);
+            Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public DiscordMessage Message { get; }
 
-        public DiscordMessage ReferencedMessage 
+        public DiscordMessage ReferencedMessage
             => Message.ReferencedMessage;
-        public DiscordChannel Channel 
+        public DiscordChannel Channel
             => Message.Channel;
-        public DiscordUser Author 
+        public DiscordUser Author
             => Message.Author;
-        public DateTimeOffset Timestamp 
+        public DateTimeOffset Timestamp
             => Message.Timestamp;
-        public string Content 
+        public string Content
             => Message.Content;
 
         public ObservableCollection<DiscordEmbed> Embeds { get; }
         public ObservableCollection<DiscordAttachment> Attachments { get; }
         public ObservableCollection<DiscordSticker> Stickers { get; }
-        public ObservableCollection<DiscordReaction> Reactions { get; }
         public ObservableCollection<DiscordComponent> Components { get; }
+
+        // TODO: Move the above to individual view models
+        public ObservableCollection<ReactionViewModel> Reactions { get; }
+
+        public ICommand ReactCommand { get; }
 
         internal void OnLoaded()
         {
@@ -136,9 +145,8 @@ namespace Unicord.Universal.Models.Messages
             {
                 Embeds.Clear();
                 foreach (var embed in e.Message.Embeds)
-                {
                     Embeds.Add(embed);
-                }
+
             }, null);
 
             return Task.CompletedTask;
@@ -146,17 +154,23 @@ namespace Unicord.Universal.Models.Messages
 
         private void UpdateReactions()
         {
-            foreach (var reaction in Message.Reactions)
+            // TODO: would an observable dictionary type be faster here?
+            // probably.
+            _context.Post((o) =>
             {
-                if (!Reactions.Contains(reaction))
-                    _context.Post((o) => Reactions.Add(reaction), null);
-            }
+                foreach (var reaction in Message.Reactions)
+                {
+                    ReactionViewModel model;
+                    if ((model = Reactions.FirstOrDefault(r => r.Equals(reaction))) == null)
+                        Reactions.Add(new ReactionViewModel(reaction, ReactCommand));
+                }
 
-            foreach (var reaction in Reactions.ToList())
-            {
-                if (!Message.Reactions.Contains(reaction))
-                    _context.Post((o) => Reactions.Remove(reaction), null);
-            }
+                foreach (var model in Reactions.ToList())
+                {
+                    if (!Message.Reactions.Any(r => r.Emoji == model.Emoji))
+                        Reactions.Remove(model);
+                }
+            }, null);
         }
     }
 }

@@ -7,9 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource BackgroundSecondaryBrush}"
+    Style="{ThemeResource DefaultContentDialogStyle}"
     PrimaryButtonText="Save"
-    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
     SecondaryButtonText="Cancel">
 
     <Grid>
@@ -19,7 +18,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="title" x:Uid="/Dialogs/ChangeNicknameTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Grid.Column="1"></TextBlock>
-        <TextBlock x:Name="content" x:Uid="/Dialogs/ChangeNicknameSubtitle" Grid.Row="1" TextWrapping="Wrap" Foreground="{ThemeResource ErrorTextForegroundBrush}" Margin="0,0,0,12"></TextBlock>
+        <TextBlock x:Name="content" x:Uid="/Dialogs/ChangeNicknameSubtitle" Grid.Row="1" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCautionBrush}" Margin="0,0,0,12"></TextBlock>
         <TextBox x:Name="inputBox" Grid.Row="2"></TextBox>
     </Grid>
 </ContentDialog>

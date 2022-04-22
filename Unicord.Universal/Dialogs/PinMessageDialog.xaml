@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     mc:Ignorable="d"
-    Background="{ThemeResource BackgroundSecondaryBrush}"
-    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}">
+    Style="{ThemeResource DefaultContentDialogStyle}">
     <messages:MessageControl x:Name="MessageControl" IsEnabled="False" Background="Transparent" />
 </ContentDialog>

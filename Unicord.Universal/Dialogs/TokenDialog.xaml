@@ -11,8 +11,8 @@
     PrimaryButtonText="PrimaryButtonText"
     SecondaryButtonText="SecondaryButtonText"
     CloseButtonText="CloseButtonText"
-    Background="{ThemeResource BackgroundSecondaryBrush}"
-    PrimaryButtonStyle="{ThemeResource AccentButtonStyle}"
+    Style="{ThemeResource DefaultContentDialogStyle}"
+    DefaultButton="Primary"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     CloseButtonClick="ContentDialog_CloseButtonClick">
 

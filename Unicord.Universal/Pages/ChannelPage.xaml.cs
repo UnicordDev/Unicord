@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
@@ -14,17 +13,14 @@ using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
-using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
-using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.BulkAccess;
@@ -35,7 +31,6 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
-using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -75,9 +70,7 @@ namespace Unicord.Universal.Pages
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
             {
                 if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
-                {
                     KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
-                }
 
                 this.AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
             }
@@ -112,10 +105,10 @@ namespace Unicord.Universal.Pages
                     LeaveEditMode();
                 }
 
-                if (IsPaneOpen)
-                {
-                    ClosePane();
-                }
+                //if (IsPaneOpen)
+                //{
+                //    ClosePane();
+                //}
 
                 var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
                 if (ViewModel != null)
@@ -134,7 +127,7 @@ namespace Unicord.Universal.Pages
                 }
 
                 var args = this.FindParent<MainPage>()?.Arguments;
-                WindowingService.Current.HandleTitleBarForControl(TopGrid);
+
                 WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
                 model.TruncateMessages();
 
@@ -143,6 +136,8 @@ namespace Unicord.Universal.Pages
 
                 if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
                     MessageTextBox.Focus(FocusState.Keyboard);
+                else if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
+                    WindowingService.Current.HandleTitleBarForControl(TopGrid);
 
                 while (_channelHistory.Count > 10)
                 {
@@ -166,7 +161,6 @@ namespace Unicord.Universal.Pages
             var navigation = SystemNavigationManager.GetForCurrentView();
             navigation.BackRequested -= Navigation_BackRequested;
         }
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -238,7 +232,7 @@ namespace Unicord.Universal.Pages
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
 
-            //  await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
+            // await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
 
             try
             {
@@ -280,11 +274,11 @@ namespace Unicord.Universal.Pages
                 }
             }
 
-            if (IsPaneOpen)
-            {
-                await Dispatcher.AwaitableRunAsync(() =>
-                    SidebarFrame.Navigate(SidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
-            }
+            //if (IsPaneOpen)
+            //{
+            //    await Dispatcher.AwaitableRunAsync(() =>
+            //        SidebarFrame.Navigate(SidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
+            //}
 
             await JumpListManager.AddToListAsync(_viewModel.Channel);
         }
@@ -320,8 +314,11 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.StorageItems))
                 {
                     Analytics.TrackEvent("ChannelPage_StorageItemsFromPaste");
-
                     e.Handled = true;
+
+                    if (PhotoPicker.Visibility == Visibility.Visible)
+                        HidePhotoPicker.Begin();
+
                     var items = (await dataPackageView.GetStorageItemsAsync()).OfType<StorageFile>();
                     foreach (var item in items)
                     {
@@ -335,8 +332,11 @@ namespace Unicord.Universal.Pages
                 {
                     try
                     {
-                        var data = (IRandomAccessStream)(await dataPackageView.GetDataAsync("DeviceIndependentBitmapV5"));
+                        var data = (IRandomAccessStream)await dataPackageView.GetDataAsync("DeviceIndependentBitmapV5");
                         var file = await BitmapInterop.GetFromRandomAccessStreamAsync(data);
+
+                        if (PhotoPicker.Visibility == Visibility.Visible)
+                            HidePhotoPicker.Begin();
                         await UploadItems.AddStorageFileAsync(file, true);
                         return;
                     }
@@ -349,8 +349,11 @@ namespace Unicord.Universal.Pages
                 if (dataPackageView.Contains(StandardDataFormats.Bitmap))
                 {
                     Analytics.TrackEvent("ChannelPage_ImageFromPaste");
-
                     e.Handled = true;
+
+                    if (PhotoPicker.Visibility == Visibility.Visible)
+                        HidePhotoPicker.Begin();
+
                     var file = await Tools.GetImageFileFromDataPackage(dataPackageView);
                     await UploadItems.AddStorageFileAsync(file, true);
 
@@ -458,10 +461,7 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                PhotoPicker.Visibility = Visibility.Visible;
                 ShowPhotoPicker.Begin();
-
-                LoadingImagesRing.IsActive = true;
 
                 try
                 {
@@ -479,8 +479,6 @@ namespace Unicord.Universal.Pages
                     // TODO: Port
                     Logger.LogError(ex);
                 }
-
-                LoadingImagesRing.IsActive = false;
             }
         }
 
@@ -606,30 +604,6 @@ namespace Unicord.Universal.Pages
             catch { }
         }
 
-        private void ShowPhotoPicker_Completed(object sender, object e)
-        {
-
-        }
-
-        private void HidePhotoPicker_Completed(object sender, object e)
-        {
-            PhotosList.ItemsSource = null;
-            LoadingImagesRing.IsActive = false;
-            PhotoPicker.Visibility = Visibility.Collapsed;
-        }
-
-        private void ShowUploadPanel_Completed(object sender, object e)
-        {
-            // just to make sure
-            UploadItems.Visibility = Visibility.Visible;
-        }
-
-        private void HideUploadPanel_Completed(object sender, object e)
-        {
-            PhotoPicker.Visibility = Visibility.Collapsed;
-            UploadItems.Visibility = Visibility.Collapsed;
-        }
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             HidePhotoPicker.Begin();
@@ -642,12 +616,12 @@ namespace Unicord.Universal.Pages
 
         private void pinsButton_Click(object sender, RoutedEventArgs e)
         {
-            TogglePane(typeof(PinsPage), ViewModel.Channel);
+            // TogglePane(typeof(PinsPage), ViewModel.Channel);
         }
 
         private void UserListButton_Click(object sender, RoutedEventArgs e)
         {
-            TogglePane(typeof(UserListPage), ViewModel.Channel);
+            // TogglePane(typeof(UserListPage), ViewModel.Channel);
         }
 
         private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
@@ -716,75 +690,13 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void OpenPane(Type t = null, object parameter = null)
-        {
-            Analytics.TrackEvent("ChannelPage_OpenPane" + t.Name);
-
-            var helper = SwipeOpenService.GetForCurrentView().Helper;
-            if (helper != null)
-                helper.IsEnabled = false;
-
-            IsPaneOpen = true;
-            SidebarGrid.Visibility = Visibility.Visible;
-            if (ActualWidth <= (1024 - 276))
-            {
-                OpenPaneStoryboard.Begin();
-            }
-
-            if (t != null && SidebarFrame.CurrentSourcePageType != t)
-            {
-                SidebarFrame.Navigate(t, parameter);
-            }
-        }
-
-        private void ClosePane()
-        {
-            Analytics.TrackEvent("ChannelPage_ClosePane");
-
-            //var helper = SwipeOpenService.GetForCurrentView().Helper;
-            //if (helper != null)
-            //    helper.IsEnabled = true;
-
-            IsPaneOpen = false;
-            if (ActualWidth > (1024 - 276))
-            {
-                SidebarGrid.Visibility = Visibility.Collapsed;
-            }
-
-            ClosePaneStoryboard.Begin();
-
-            SidebarFrame.Navigate(typeof(Page));
-        }
-
-        public void TogglePane(Type t = null, object parameter = null)
-        {
-            if (IsPaneOpen && SidebarFrame.CurrentSourcePageType == t)
-            {
-                ClosePane();
-            }
-            else
-            {
-                OpenPane(t, parameter);
-            }
-        }
-
-        private void ClosePaneStoryboard_Completed(object sender, object e)
-        {
-            SidebarGrid.Visibility = Visibility.Collapsed;
-        }
-
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            TogglePane(typeof(SearchPage), ViewModel.Channel);
+            // TogglePane(typeof(SearchPage), ViewModel.Channel);
         }
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (IsPaneOpen && ActualWidth <= (1024 - 276))
-            {
-                ClosePane();
-            }
-
             var page = this.FindParent<DiscordPage>();
             if (page != null)
             {
@@ -878,6 +790,30 @@ namespace Unicord.Universal.Pages
         private async void PinToStartItem_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private MessageViewModel _reactionModel;
+        internal void ShowReactionPicker(MessageViewModel model)
+        {
+            var control = MessageList.ContainerFromItem(model.Message);
+            if (control is not FrameworkElement element) return;
+
+            _reactionModel = model;
+            EmoteFlyout.ShowAt(element);
+        }
+
+        private void EmotePicker_EmojiPicked(object sender, DiscordEmoji e)
+        {
+            if (_reactionModel != null)
+            {
+                _reactionModel.ReactCommand.Execute(e);
+            }
+
+            if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift) != CoreVirtualKeyStates.Down)
+            {
+                _reactionModel = null;
+                EmoteFlyout.Hide();
+            }
         }
     }
 }

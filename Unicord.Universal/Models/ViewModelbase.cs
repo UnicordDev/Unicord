@@ -11,7 +11,7 @@ namespace Unicord.Universal.Models
     /// <summary>
     /// A non thread-safe version of <see cref="DSharpPlus.Entities.PropertyChangedBase"/> for view models and internal classes.
     /// </summary>
-    public abstract class ViewModelBase
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

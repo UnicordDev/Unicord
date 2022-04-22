@@ -17,7 +17,7 @@ namespace Unicord.Universal.Commands
         }
 
         public async void Execute(object parameter)
-        {
+        { 
             if (parameter is DiscordChannel channel && channel.ReadState?.Unread == true && channel.LastMessageId != 0 && channel.IsText())
             {
                 Analytics.TrackEvent("AcknowledgeCommand_AckChannel");

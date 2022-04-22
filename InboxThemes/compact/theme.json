@@ -1,7 +1,0 @@
-{
-    "name": "Compact",
-    "short_description": "Shrinks controls across the board making the whole of Unicord a little more compact.",
-    "author": "WamWooWam",
-    "display_logo": "images/logo.png",
-    "use_compact": true
-}

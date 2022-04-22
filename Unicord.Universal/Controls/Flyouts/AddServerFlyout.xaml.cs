@@ -25,7 +25,7 @@ namespace Unicord.Universal.Controls.Flyouts
 
         private async void CreateServerButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<Flyout>()?.Hide();
+            // this.FindParent<Flyout>()?.Hide();
 
             var dialog = new CreateServerDialog();
             await dialog.ShowAsync();

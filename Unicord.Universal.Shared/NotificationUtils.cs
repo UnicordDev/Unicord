@@ -77,7 +77,8 @@ namespace Unicord.Universal.Shared
             {
                 foreach (var channel in message.MentionedChannels)
                 {
-                    messageText = messageText.Replace(channel.Mention, $"#{channel.Name}");
+                    if (channel != null)
+                        messageText = messageText.Replace(channel.Mention, $"#{channel.Name}");
                 }
 
                 foreach (var roleId in message.MentionedRoleIds)
