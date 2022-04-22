@@ -225,7 +225,7 @@
                 </Grid>
             </Grid>
 
-            <Border x:Name="FullscreenBorder" 
+            <Grid x:Name="FullscreenBorder" 
                     Background="{ThemeResource OverlayBackdrop}"
                     VerticalAlignment="Stretch" 
                     HorizontalAlignment="Stretch" 

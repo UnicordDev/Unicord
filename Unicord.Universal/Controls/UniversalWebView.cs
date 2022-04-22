@@ -1,5 +1,5 @@
 ﻿
-#if false
+#if true
 #define HAS_WEBVIEW_2
 #endif
 
@@ -28,8 +28,8 @@ namespace Unicord.Universal.Controls
     public class UniversalWebView : Control
     {
         private bool _isLoaded;
-        private Border _root;
-        private Border _fullscreenBorder;
+        private Grid _root;
+        private Grid _fullscreenBorder;
         private WebView _webView;
 
 #if HAS_WEBVIEW_2
@@ -72,8 +72,8 @@ namespace Unicord.Universal.Controls
             if (_isLoaded) return;
             _isLoaded = true;
 
-            _root = this.FindChild<Border>("PART_Root");
-            _fullscreenBorder = Window.Current.Content.FindChild<Border>("FullscreenBorder");
+            _root = this.FindChild<Grid>("PART_Root");
+            _fullscreenBorder = Window.Current.Content.FindChild<Grid>("FullscreenBorder");
 
 #if HAS_WEBVIEW_2
             if (IsWebView2Available.Value)
@@ -81,7 +81,7 @@ namespace Unicord.Universal.Controls
                 _webView2 = new WebView2 { Source = Source };
                 _webView2.CoreWebView2Initialized += OnCoreWebView2Initialized;
 
-                _root.Child = _webView2;
+                _root.Children.Add(_webView2);
                 return;
             }
 #endif
@@ -93,16 +93,16 @@ namespace Unicord.Universal.Controls
             _webView = new WebView(executionMode) { Source = Source };
             _webView.ContainsFullScreenElementChanged += OnWebViewFullScreenElementChanged;
 
-            _root.Child = _webView;
+            _root.Children.Add(_webView);
         }
 
         private void OnWebViewFullScreenElementChanged(WebView sender, object args)
         {
-            var service = FullscreenService.GetForCurrentView();
-            if (sender.ContainsFullScreenElement)
-                service.EnterFullscreen(_webView, _root);
-            else
-                service.LeaveFullscreen(_webView, _root);
+            //var service = FullscreenService.GetForCurrentView();
+            //if (sender.ContainsFullScreenElement)
+            //    service.EnterFullscreen(_webView, _root);
+            //else
+            //    service.LeaveFullscreen(_webView, _root);
         }
 
 #if HAS_WEBVIEW_2
@@ -117,7 +117,7 @@ namespace Unicord.Universal.Controls
             this.Title = sender.DocumentTitle;
         }
 
-        private void OnWebView2FullScreenElementChanged(CoreWebView2 sender, object args)
+        private async void OnWebView2FullScreenElementChanged(CoreWebView2 sender, object args)
         {
             //var service = FullscreenService.GetForCurrentView();
             //if (sender.ContainsFullScreenElement)
@@ -125,18 +125,22 @@ namespace Unicord.Universal.Controls
             //else
             //    service.LeaveFullscreen(_webView2, _root);
 
+
             if (sender.ContainsFullScreenElement)
             {
-                _root.Child = null;
-                _fullscreenBorder.Child = _webView2;
+                _root.Children.Remove(_webView2);
+                _fullscreenBorder.Children.Add(_webView2);
                 _fullscreenBorder.Visibility = Visibility.Visible;
             }
             else
             {
-                _fullscreenBorder.Child = null;
                 _fullscreenBorder.Visibility = Visibility.Collapsed;
-                _root.Child = _webView2;
+                _fullscreenBorder.Children.Remove(_webView2);
+                _root.Children.Add(_webView2);
+                //_root.Children.Add(_webView2);
             }
+
+            await _webView2.EnsureCoreWebView2Async();
         }
 #endif
     }

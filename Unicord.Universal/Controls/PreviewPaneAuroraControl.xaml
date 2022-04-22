@@ -1,0 +1,1282 @@
+﻿<UserControl x:Class="System.Windows.Shell.Aurora.PreviewPaneAuroraControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:System.Windows.Shell.Aurora"
+             mc:Ignorable="d"  Background="White"
+             d:DesignHeight="160" d:DesignWidth="800">
+    <!--
+        Windows PreviewPane Aurora for Beta2 of the WinFX Runtime Components
+        Converted from Zoronax's extracted XAML by Blackice and Obliteron
+    -->
+    <Viewbox HorizontalAlignment="Right"
+             VerticalAlignment="Bottom"
+             Stretch="UniformToFill">
+        <Canvas Width="1080" Height="160" Name="BackgroundLayer" Background="#FF5A6B7D">
+            <Canvas.Clip>
+                <RectangleGeometry Rect="0 0 1080 160"/>
+            </Canvas.Clip>
+            <Canvas Name="Lights3_Still">
+
+                <Path Data="M 0 0 L 149.6 0 L 149.6 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119" X="-74.8" />
+                            <RotateTransform CenterX="0" CenterY="0" Angle="8.6" />
+                            <TranslateTransform Y="119.4" X="74.8" />
+                            <TranslateTransform Y="-33" X="512" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.03" Color="#008599B4" />
+                                    <GradientStop Offset="0.46" Color="#BB8599B4" />
+                                    <GradientStop Offset="0.59" Color="#938599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 48.77 0 L 48.77 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-24" />
+                            <TranslateTransform Y="119.4" X="24" />
+                            <TranslateTransform Y="-39.9" X="646" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.41" Color="#DD8599B4" />
+                                    <GradientStop Offset="0.61" Color="#998599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 32.7 0 L 32.7 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.3" X="710.5" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.1" Color="#338599B4" />
+                                    <GradientStop Offset="0.5" Color="#668599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+
+            <Canvas Name="Lights2_Still">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform x:Name="BL1" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="Canvas.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="BL1" Storyboard.TargetProperty="X" From="0" To="-500" AutoReverse="True" RepeatBehavior="Forever" Duration="0:1:0" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+                <Path Data="M 0 0 L 19.98 0 L 19.98 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-39.9" X="723.8" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.53" Color="#668599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 32.95 0 L 32.95 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.25" X="789.87" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#558599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 41.67 0 L 41.67 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.49" X="805.86" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#798599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 36.43 0 L 36.43 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.35" X="855.86" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.35" Color="#498599B4" />
+                                    <GradientStop Offset="0.74" Color="#3D8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 73.89 0 L 73.89 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-36.94" />
+                            <RotateTransform Angle="8.43" />
+                            <TranslateTransform Y="119.4" X="36.94" />
+                            <TranslateTransform Y="-38.06" X="422.34" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#4C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 127.56 0 L 127.56 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-63.78" />
+                            <RotateTransform Angle="-7.6" />
+                            <TranslateTransform Y="119.4" X="63.78" />
+                            <TranslateTransform Y="-36.76" X="599" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.51" Color="#5F8599B4" />
+                                    <GradientStop Offset="0.67" Color="#EE8599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 40.94 0 L 40.94 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-20.47" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="20.47" />
+                            <TranslateTransform Y="-40.31" X="832" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.19" Color="#118599B4" />
+                                    <GradientStop Offset="0.36" Color="#6A8599B4" />
+                                    <GradientStop Offset="0.56" Color="#5F8599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+            <Canvas Name="Lights2">
+                <Path Data="M 0 0 L 19.98 0 L 19.98 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-39.9" X="723.8" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.53" Color="#508599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 32.95 0 L 32.95 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.25" X="789.87" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#418599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 41.67 0 L 41.67 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.49" X="805.86" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#798599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 36.43 0 L 36.43 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-40.35" X="855.86" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.35" Color="#498599B4" />
+                                    <GradientStop Offset="0.74" Color="#3D8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 73.89 0 L 73.89 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-36.94" />
+                            <RotateTransform Angle="8.43" />
+                            <TranslateTransform Y="119.4" X="36.94" />
+                            <TranslateTransform Y="-38.06" X="422.34" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#4C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 127.56 0 L 127.56 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-63.78" />
+                            <RotateTransform Angle="-7.6" />
+                            <TranslateTransform Y="119.4" X="63.78" />
+                            <TranslateTransform Y="-36.76" X="599" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.51" Color="#5F8599B4" />
+                                    <GradientStop Offset="0.67" Color="#5B8599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 40.94 0 L 40.94 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-20.47" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="20.47" />
+                            <TranslateTransform Y="-40.31" X="832" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.19" Color="#118599B4" />
+                                    <GradientStop Offset="0.36" Color="#6A8599B4" />
+                                    <GradientStop Offset="0.56" Color="#5F8599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+
+            <Canvas Name="Lights1_Still">
+                <Canvas.RenderTransform>
+                    <TranslateTransform Y="-10" X="48" />
+                </Canvas.RenderTransform>
+
+
+                <Path Data="M 0 0 L 48.77 0 L 48.77 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-24.38" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="24.38" />
+                            <TranslateTransform Y="-39.9" X="678.48" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.4" Color="#368599B4" />
+                                    <GradientStop Offset="0.63" Color="#1C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 63.31 0 L 63.31 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-31.65" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="31.65" />
+                            <TranslateTransform Y="-40.29" X="716.47" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.53" Color="#418599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 100.5 0 L 100.5 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-50.25" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="50.25" />
+                            <TranslateTransform Y="-42.1" X="809.73" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#3A8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="8.4" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-37.22" X="428.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.413" Color="#4C8599B4" />
+                                    <GradientStop Offset="0.58" Color="#418599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="12.5" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-50.22" X="317.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#188599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="-2.6" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-37.22" X="263.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#1C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 118.43 0 L 118.43 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-59.2" />
+                            <RotateTransform Angle="8.43" />
+                            <TranslateTransform Y="119.4" X="59" />
+                            <TranslateTransform Y="-38" X="184.45" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.52" Color="#638599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 95.27 0 L 95.27 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.408859" X="-47.635498" />
+                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.00002646" ScaleY="0.999997139" />
+                            <SkewTransform AngleX="0" AngleY="0.00240422646" />
+                            <RotateTransform Angle="-3.6980257" />
+                            <TranslateTransform Y="119.408859" X="47.635498" />
+                            <TranslateTransform Y="-38.2194977" X="134.034119" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.413580239" Color="#548599B4" />
+                                    <GradientStop Offset="0.598765433" Color="#278599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+
+            <Canvas Name="Lights1">
+                <Canvas.RenderTransform>
+                    <TranslateTransform Y="-10" X="48" x:Name="BL2" />
+                </Canvas.RenderTransform>
+
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="Canvas.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="BL2" Storyboard.TargetProperty="X" From="48" To="400" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:20" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+                <Path Data="M 0 0 L 48.77 0 L 48.77 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-24.38" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="24.38" />
+                            <TranslateTransform Y="-39.9" X="678.48" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.4" Color="#368599B4" />
+                                    <GradientStop Offset="0.63" Color="#1C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 63.31 0 L 63.31 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-31.65" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="31.65" />
+                            <TranslateTransform Y="-40.29" X="716.47" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.53" Color="#418599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 100.5 0 L 100.5 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-50.25" />
+                            <RotateTransform Angle="-3" />
+                            <TranslateTransform Y="119.4" X="50.25" />
+                            <TranslateTransform Y="-42.1" X="809.73" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#3A8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="8.4" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-37.22" X="428.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.12" Color="#118599B4" />
+                                    <GradientStop Offset="0.413" Color="#4C8599B4" />
+                                    <GradientStop Offset="0.58" Color="#418599B4" />
+                                    <GradientStop Offset="0.86" Color="#128599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="12.5" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-50.22" X="317.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#188599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 85.34 0 L 85.34 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-42.67" />
+                            <RotateTransform Angle="-2.6" />
+                            <TranslateTransform Y="119.4" X="42.67" />
+                            <TranslateTransform Y="-37.22" X="263.28" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#1C8599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 118.43 0 L 118.43 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-59.2" />
+                            <RotateTransform Angle="8.43" />
+                            <TranslateTransform Y="119.4" X="59" />
+                            <TranslateTransform Y="-38" X="184.45" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.52" Color="#638599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 95.27 0 L 95.27 238.8 L 0 238.8 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.408859" X="-47.635498" />
+                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.00002646" ScaleY="0.999997139" />
+                            <SkewTransform AngleX="0" AngleY="0.00240422646" />
+                            <RotateTransform Angle="-3.6980257" />
+                            <TranslateTransform Y="119.408859" X="47.635498" />
+                            <TranslateTransform Y="-38.2194977" X="134.034119" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.413580239" Color="#548599B4" />
+                                    <GradientStop Offset="0.598765433" Color="#278599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+
+            <Canvas Name="RightCurtains2">
+                <Canvas.RenderTransform>
+                    <TranslateTransform Y="0" X="44" />
+                </Canvas.RenderTransform>
+
+                <Path Data="M 0 0 C 8.48 75.87 9.53 153.54 3.57 232.9" x:Name="BL3">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-60.82" X="977" x:Name="BL4" />
+                    </Path.RenderTransform>
+
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Path.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BL4" Storyboard.TargetProperty="X" From="970" To="980" AutoReverse="False" RepeatBehavior="Forever" Duration="0:0:8" />
+                                        <DoubleAnimation Storyboard.TargetName="BL3" Storyboard.TargetProperty="Opacity" From="0" To="1" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:4" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Path.Triggers>
+
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.74" Color="#6A8599B4" />
+                                    <GradientStop Offset="1" Color="#8F8599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 C 12.35 65.81 13.89 133.16 5.2 201.98" x:Name="BL5">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1.5" ScaleY="1.2" />
+                            <TranslateTransform Y="-60.82" X="977" x:Name="BL6" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Path.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BL6" Storyboard.TargetProperty="X" From="935" To="950" AutoReverse="False" RepeatBehavior="Forever" Duration="0:0:6" />
+                                        <DoubleAnimation Storyboard.TargetName="BL5" Storyboard.TargetProperty="Opacity" From="0" To="1" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Path.Triggers>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.3" Color="#008599B4" />
+                                    <GradientStop Offset="0.7" Color="#7D8599B4" />
+                                    <GradientStop Offset="1" Color="#AAFFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 16.86 0 C 22.66 63.35 21.98 121.89 16.86 175 L 0 175 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="-177" />
+                            <TranslateTransform Y="-5.74" X="910" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.15" Color="#008599B4" />
+                                    <GradientStop Offset="0.43" Color="#638599B4" />
+                                    <GradientStop Offset="0.74" Color="#6E8599B4" />
+                                    <GradientStop Offset="0.93" Color="#4CFFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 16.86 0 C 22.66 63.35 21.98 121.89 16.86 175 L 0 175 Z">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-5.74" X="950" />
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.15" Color="#008599B4" />
+                                    <GradientStop Offset="0.43" Color="#338599B4" />
+                                    <GradientStop Offset="0.74" Color="#338599B4" />
+                                    <GradientStop Offset="0.93" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 C 29.26 69.48 32.9 140.59 12.33 213.25" x:Name="BL7">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-106.62" X="-12.67" />
+                            <RotateTransform Angle="183.38" />
+                            <TranslateTransform Y="106.629211" X="12.67" />
+                            <TranslateTransform Y="-45.16" X="882.92" x:Name="BL8" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Path.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BL8" Storyboard.TargetProperty="X" From="870" To="880" AutoReverse="False" RepeatBehavior="Forever" Duration="0:0:6" />
+                                        <DoubleAnimation Storyboard.TargetName="BL7" Storyboard.TargetProperty="Opacity" From="0" To="1" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Path.Triggers>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.32" Color="#008599B4" />
+                                    <GradientStop Offset="0.77" Color="#BC8599B4" />
+                                    <GradientStop Offset="1" Color="#E1FFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 12 0 L 12 191 L 0 191 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="6" />
+                            <TranslateTransform Y="-20" X="882" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#2FFFFFFF" />
+                                    <GradientStop Offset="0.27" Color="#588599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+            </Canvas>
+
+            <Canvas Name="RightCurtains1">
+                <Canvas.RenderTransform>
+                    <TranslateTransform Y="0" X="44" />
+                </Canvas.RenderTransform>
+
+
+                <Path Data="M 0 0 C 21.44 80.89 24.11 163.69 9.04 248.28" x:Name="BL9">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-124.14" X="-9.28" />
+                            <RotateTransform Angle="-173" />
+                            <TranslateTransform Y="124.14" X="9.28" />
+                            <TranslateTransform Y="-45.47" X="892" x:Name="BL10" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Path.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BL10" Storyboard.TargetProperty="X" From="880" To="900" AutoReverse="False" RepeatBehavior="Forever" Duration="0:0:6" />
+                                        <DoubleAnimation Storyboard.TargetName="BL9" Storyboard.TargetProperty="Opacity" From="0" To="1" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Path.Triggers>
+
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.37" Color="#008599B4" />
+                                    <GradientStop Offset="0.64" Color="#BC8599B4" />
+                                    <GradientStop Offset="1" Color="#F0FFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 12.75 0 C 14.20 81.08 13.58 150.04 1.73559380201027E-08 216.11">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-108.05" X="-6.64" />
+                            <RotateTransform Angle="4" />
+                            <TranslateTransform Y="108.05" X="6.64" />
+                            <TranslateTransform Y="-16.17" X="893.79" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.32" Color="#008599B4" />
+                                    <GradientStop Offset="0.64" Color="#8C8599B4" />
+                                    <GradientStop Offset="1" Color="#8FFFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 12 0 L 12 191 L 0 191 Z">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-15.11" X="881.11" />
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#75FFFFFF" />
+                                    <GradientStop Offset="0.27" Color="#B18599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 L 21.8 0 L 21.8 191 L 0 191 Z">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-15" X="898" />
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#41FFFFFF" />
+                                    <GradientStop Offset="0.27" Color="#458599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 C 17.9 69.48 20.13 140.59 7.54 213.25" x:Name="BL11">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-106.62" X="-7.75" />
+                            <RotateTransform Angle="-176" />
+                            <TranslateTransform Y="106.62" X="7.75" />
+                            <TranslateTransform Y="-45.45" X="827" x:Name="BL12" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Path.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BL12" Storyboard.TargetProperty="X" From="827" To="857" AutoReverse="False" RepeatBehavior="Forever" Duration="0:0:8" />
+                                        <DoubleAnimation Storyboard.TargetName="BL11" Storyboard.TargetProperty="Opacity" From="0" To="1" AutoReverse="True" RepeatBehavior="Forever" Duration="0:0:4" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Path.Triggers>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.32" Color="#008599B4" />
+                                    <GradientStop Offset="0.77" Color="#338599B4" />
+                                    <GradientStop Offset="1" Color="#BB8599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+            </Canvas>
+
+
+            <Canvas Name="LeftCurtains1">
+
+
+                <Path Data="M 0 0 C 16 69 18 140.59 6. 213">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-106.62" X="-7.17" />
+                            <RotateTransform Angle="-185" />
+                            <TranslateTransform Y="106.62" X="7.17" />
+                            <TranslateTransform Y="-3.44" X="21.32" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.3" ScaleY="1.3" />
+                                    <TranslateTransform Y="8" X="0" />
+                                </TransformGroup>
+                            </LinearGradientBrush.Transform>
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.2" Color="#008599B4" />
+                                    <GradientStop Offset="0.6" Color="#448599B4" />
+                                    <GradientStop Offset="1" Color="#77FFFFFF" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+
+                <Path Data="M 0 0 C 6.77 83.18 25.15 141.47 56 173">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-5" X="50" />
+                    </Path.RenderTransform>
+                    <Path.Stroke>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.Transform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="90" />
+                                </TransformGroup>
+                            </LinearGradientBrush.Transform>
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#558599B4" />
+                                    <GradientStop Offset="0.56" Color="#998599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Stroke>
+                </Path>
+
+                <Path Data="M 1.44 0 C -3.44 55.57 4.19 111.95 22.44 169">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-3" X="115.95" />
+                    </Path.RenderTransform>
+                    <Path.Stroke>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.32" ScaleY="1.32" />
+                                    <RotateTransform Angle="90" />
+                                </TransformGroup>
+                            </LinearGradientBrush.Transform>
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#338599B4" />
+                                    <GradientStop Offset="0.56" Color="#668599B4" />
+                                    <GradientStop Offset="1" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Stroke>
+
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.32" ScaleY="1.32" />
+                                </TransformGroup>
+                            </LinearGradientBrush.Transform>
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#338599B4" />
+                                    <GradientStop Offset="0.5" Color="#008599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+
+
+            <Canvas Name="LeftCurtains2">
+
+
+                <Path Data="M 0 0 L 32 0 L 32 166 L 15 166 C -0.53 120.05 0.33 64.88 0 0">
+                    <Path.RenderTransform>
+                        <TranslateTransform Y="-3.12" X="15" />
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.5" Color="#118599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 31.95 0 C 20.57 83.5 19.42 163.5 31.95 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-15.97" />
+                            <RotateTransform Angle="-5.9" />
+                            <TranslateTransform Y="119.4" X="15.97" />
+                            <TranslateTransform Y="-50.36" X="117.29" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0.44" Color="#008599B4" />
+                                    <GradientStop Offset="0.77" Color="#228599B4" />
+                                    <GradientStop Offset="1" Color="#448599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+
+                <Path Data="M 0 0 L 31.95 0 C 41.28 61.96 41.03 141.02 31.95 238.81 L 0 238.81 Z">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="-119.4" X="-19.43" />
+                            <RotateTransform Angle="3.7" />
+                            <TranslateTransform Y="119.4" X="19.43" />
+                            <TranslateTransform Y="-13.71" X="113.27" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStopCollection>
+                                    <GradientStop Offset="0" Color="#008599B4" />
+                                    <GradientStop Offset="0.87" Color="#158599B4" />
+                                    <GradientStop Offset="1" Color="#668599B4" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+</UserControl>

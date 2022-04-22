@@ -9,7 +9,7 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
     xmlns:flyouts="using:Unicord.Universal.Controls.Flyouts"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:converters="using:Unicord.Universal.Converters"
+    xmlns:converters="using:Unicord.Universal.Converters" xmlns:aurora="using:System.Windows.Shell.Aurora"
     mc:Ignorable="d">
     <Page.Resources>
         <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector" 
@@ -48,10 +48,10 @@
                         </flyouts:GuildContextFlyout>
                     </FlyoutBase.AttachedFlyout>
 
-                    <Grid Visibility="{Binding HeaderImage, Converter={StaticResource HideOnNullConverter}}"
-                          CornerRadius="4,4,0,0">
-                        <controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill" HorizontalAlignment="Center" />
-                        <Rectangle Fill="{ThemeResource BackgroundGradientBrush}" />
+                    <Grid CornerRadius="4,4,0,0">
+                        <!--<controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill" HorizontalAlignment="Center" />-->
+                        <aurora:PreviewPaneAuroraControl Height="128"/>
+                        <Rectangle Fill="{ThemeResource BackgroundGradientBrush}" IsHitTestVisible="False" />
                     </Grid>
 
                     <Grid VerticalAlignment="Bottom" Height="48">

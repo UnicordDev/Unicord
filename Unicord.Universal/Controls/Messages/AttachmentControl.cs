@@ -49,9 +49,11 @@ namespace Unicord.Universal.Controls.Messages
 
         private async void OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            if (Attachment != null)
-                await OverlayService.GetForCurrentView()
-                                    .ShowOverlayAsync<AttachmentOverlayPage>(Attachment);
+            if (Attachment == null || ViewModel == null || ViewModel.Type != AttachmentType.Image)
+                return;
+
+            await OverlayService.GetForCurrentView()
+                                .ShowOverlayAsync<AttachmentOverlayPage>(Attachment);
         }
     }
 }

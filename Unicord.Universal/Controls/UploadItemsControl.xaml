@@ -124,6 +124,17 @@
                                             ToolTipService.ToolTip="Edit this clip"
                                             Visibility="{Binding CanEdit, Converter={StaticResource BoolVisibilityConverter}}">
                                     </Button>
+                                    
+                                    <Button x:Name="CropButton"
+                                            x:Uid="/Controls/EditButton"
+                                            Grid.Column="2"
+                                            Margin="4,0,0,0"
+                                            Click="CropButton_Click"
+                                            Content="&#xe7a8;"
+                                            Style="{ThemeResource IconButtonStyle}"
+                                            ToolTipService.ToolTip="Crop this Image"
+                                            Visibility="{Binding CanCrop, Converter={StaticResource BoolVisibilityConverter}}">
+                                    </Button>
 
                                     <ToggleButton x:Name="spoilerButton"
                                                   x:Uid="/Controls/SpoilerButton"
