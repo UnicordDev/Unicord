@@ -10,7 +10,6 @@ using DSharpPlus.Net.Abstractions;
 using DSharpPlus.Net.Serialization;
 using Newtonsoft.Json;
 using Unicord.Universal.Misc;
-using Unicord.Universal.Native;
 using WamWooWam.Core;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
@@ -51,15 +50,7 @@ namespace Unicord.Universal
 
         public static string ToFileSizeString(ulong size)
         {
-            try
-            {
-                return Shlwapi.StrFormatByteSizeEx(size, SFBSFlags.TruncateUndisplayedDecimalDigits);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
                 return Files.SizeSuffix((long)size);
-            }
         }
 
         public static Task DownloadToFileAsync(Uri url, StorageFile file)
@@ -217,15 +208,6 @@ namespace Unicord.Universal
 
         internal static string GetItemTypeFromExtension(string extension, string fallback = null)
         {
-            try
-            {
-                return Shlwapi.AssocQueryString(ASSOCF.NONE, ASSOCSTR.FRIENDLYAPPNAME, extension, "");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-
             return fallback;
         }
 
@@ -339,7 +321,7 @@ namespace Unicord.Universal
                     .Select(g => new EmojiGroup(g.Key, g))
                     .ToList();
 
-            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
+            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.DiscordName, text, CompareOptions.IgnoreCase) >= 0 : true)
                 .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
                 .OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
                 .Select(g => new EmojiGroup(g.Key, g))
