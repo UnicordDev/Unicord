@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Unicord.Universal.Models
@@ -13,6 +14,12 @@ namespace Unicord.Universal.Models
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        protected SynchronizationContext syncContext;
+        public ViewModelBase()
+        {
+            syncContext = SynchronizationContext.Current;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         // Holy hell is the C# Discord great.
@@ -29,7 +36,7 @@ namespace Unicord.Universal.Models
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);
-            PropertyChanged?.Invoke(this, args);
+            syncContext.Post((o) => PropertyChanged?.Invoke(this, args), null);
         }
     }
 }

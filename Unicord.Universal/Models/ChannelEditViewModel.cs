@@ -23,6 +23,8 @@ namespace Unicord.Universal.Models
             NSFW = channel.IsNSFW;
             Userlimit = channel.UserLimit;
             Bitrate = channel.Bitrate / 1000;
+
+            // this is awful and horrible and bad
             PermissionOverwrites = new ObservableCollection<NavigationViewItem>();
 
             foreach (var overwrite in channel.PermissionOverwrites.OrderBy(o => o.Type))

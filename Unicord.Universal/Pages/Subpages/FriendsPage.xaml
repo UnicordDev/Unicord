@@ -17,7 +17,7 @@
     NavigationCacheMode="Required"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
-        <models:FriendsViewModel/>
+        <models:FriendsPageViewModel/>
     </Page.DataContext>
 
     <Page.Resources>

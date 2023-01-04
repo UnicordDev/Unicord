@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Models.Messages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -69,45 +70,45 @@ namespace Unicord.Universal.Pages.Subpages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            messages.ItemsSource = Enumerable.Empty<DiscordMessage>();
+            messages.ItemsSource = Enumerable.Empty<MessageViewModel>();
 
             if (e.Parameter is DiscordChannel channel)
             {
-                _channel = channel;
+                //_channel = channel;
 
-                try
-                {
-                    noMessages.Visibility = Visibility.Collapsed;
-                    ratelimited.Visibility = Visibility.Collapsed;
-                    progress.IsActive = true;
+                //try
+                //{
+                //    noMessages.Visibility = Visibility.Collapsed;
+                //    ratelimited.Visibility = Visibility.Collapsed;
+                //    progress.IsActive = true;
 
-                    if (!_pinsCache.TryGetValue(channel.Id, out var pins))
-                    {
-                        var p = await channel.GetPinnedMessagesAsync();
-                        pins = new ObservableCollection<DiscordMessage>();
-                        foreach (var m in p)
-                        {
-                            pins.Add(m);
-                        }
+                //    if (!_pinsCache.TryGetValue(channel.Id, out var pins))
+                //    {
+                //        var p = await channel.GetPinnedMessagesAsync();
+                //        pins = new ObservableCollection<DiscordMessage>();
+                //        foreach (var m in p)
+                //        {
+                //            pins.Add(m);
+                //        }
 
-                        _pinsCache[channel.Id] = pins;
-                    }
+                //        _pinsCache[channel.Id] = pins;
+                //    }
 
-                    messages.ItemsSource = pins;
+                //    messages.ItemsSource = pins;
 
-                    if (!pins.Any())
-                    {
-                        noMessages.Visibility = Visibility.Visible;
-                    }
-                }
-                catch (RateLimitException)
-                {
-                    ratelimited.Visibility = Visibility.Visible;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                }
+                //    if (!pins.Any())
+                //    {
+                //        noMessages.Visibility = Visibility.Visible;
+                //    }
+                //}
+                //catch (RateLimitException)
+                //{
+                //    ratelimited.Visibility = Visibility.Visible;
+                //}
+                //catch (Exception ex)
+                //{
+                //    Logger.LogError(ex);
+                //}
             }
 
             progress.IsActive = false;

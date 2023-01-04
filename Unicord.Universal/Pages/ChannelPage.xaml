@@ -14,7 +14,7 @@
     xmlns:presence="using:Unicord.Universal.Controls.Presence" 
     xmlns:users="using:Unicord.Universal.Controls.Users"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)" 
-    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)" xmlns:messages1="using:Unicord.Universal.Models.Messages"
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     AllowDrop="True"
     DragEnter="ChannelPage_OnDragEnter"  
@@ -183,19 +183,19 @@
                 Duration="00:00:00.33" />
         </Storyboard>
 
-        <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="entities:DiscordMessage">
-            <messages:MessageControl Message="{x:Bind}" Background="Transparent" />
+        <DataTemplate x:Key="DefaultMessageTemplate" x:DataType="messages1:MessageViewModel">
+            <messages:MessageControl MessageViewModel="{x:Bind}" Background="Transparent" />
         </DataTemplate>
 
-        <DataTemplate x:Key="SystemMessageTemplate" x:DataType="entities:DiscordMessage">
-            <messages:SystemMessageControl Background="{ThemeResource BackgroundTertiaryBrush}" Message="{x:Bind}" />
+        <DataTemplate x:Key="SystemMessageTemplate" x:DataType="messages1:MessageViewModel">
+            <messages:SystemMessageControl Background="{ThemeResource BackgroundTertiaryBrush}" MessageViewModel="{x:Bind}" />
         </DataTemplate>
 
-        <DataTemplate x:Key="EditingMessageTemplate" x:DataType="entities:DiscordMessage">
+        <DataTemplate x:Key="EditingMessageTemplate" x:DataType="messages1:MessageViewModel">
             <messages:MessageControl
                 Background="Transparent"
                 IsEnabled="False"
-                Message="{x:Bind}"
+                MessageViewModel="{x:Bind}"
                 Opacity="0.5" />
         </DataTemplate>
 
@@ -745,7 +745,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
-                        <Setter Target="SidebarGrid.(Grid.Column)" Value="1" />
+                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="1" />-->
                         <Setter Target="ContentTransform.X" Value="0" />
                     </VisualState.Setters>
                 </VisualState>
@@ -757,7 +757,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
-                        <Setter Target="SidebarGrid.(Grid.Column)" Value="0" />
+                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="0" />-->
                     </VisualState.Setters>
                 </VisualState>
 
@@ -768,7 +768,7 @@
 
                     <VisualState.Setters>
                         <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
-                        <Setter Target="SidebarGrid.(Grid.Column)" Value="0" />
+                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="0" />-->
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

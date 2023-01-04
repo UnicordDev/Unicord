@@ -16,7 +16,7 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return (parameter is DiscordChannel channel) && channel.Type != ChannelType.Voice && WindowingService.Current.Supported;
+            return (parameter is DiscordChannel channel) && channel.Type != ChannelType.Voice && WindowingService.Current.IsSupported;
         }
 
         public async void Execute(object parameter)

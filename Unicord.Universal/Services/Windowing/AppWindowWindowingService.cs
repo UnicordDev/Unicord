@@ -10,6 +10,7 @@ using Unicord.Universal.Models;
 using Unicord.Universal.Shared;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Core.Preview;
 using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,15 +32,17 @@ namespace Unicord.Universal.Services.Windowing
             public UIContext Context { get; set; }
         }
 
+
+        private object defaultUIContext = new object();
         private AppWindowHandle _mainWindowHandle;
 
-        private ConcurrentDictionary<UIContext, AppWindowHandle> _uiContextDictionary
-            = new ConcurrentDictionary<UIContext, AppWindowHandle>();
+        private ConcurrentDictionary<object, AppWindowHandle> _uiContextDictionary
+            = new ConcurrentDictionary<object, AppWindowHandle>();
 
         private ConcurrentDictionary<AppWindowHandle, ulong> _windowChannelDictionary
             = new ConcurrentDictionary<AppWindowHandle, ulong>();
 
-        public override bool Supported
+        public override bool IsSupported
             => true;
 
         public AppWindowWindowingService()
@@ -50,14 +53,14 @@ namespace Unicord.Universal.Services.Windowing
         public override void SetMainWindow(UIElement reference)
         {
             _mainWindowHandle = new AppWindowHandle(reference.UIContext);
-            _uiContextDictionary[reference.UIContext] = _mainWindowHandle;
+            _uiContextDictionary[reference.UIContext ?? defaultUIContext] = _mainWindowHandle;
         }
 
         public override WindowHandle GetHandle(UIElement reference)
         {
-            if (!_uiContextDictionary.TryGetValue(reference.UIContext, out var handle))
+            if (!_uiContextDictionary.TryGetValue(reference.UIContext ?? defaultUIContext, out var handle))
             {
-                handle = _uiContextDictionary[reference.UIContext] = new AppWindowHandle(reference.UIContext);
+                handle = _uiContextDictionary[reference.UIContext ?? defaultUIContext] = new AppWindowHandle(reference.UIContext);
             }
 
             return handle;
@@ -83,7 +86,7 @@ namespace Unicord.Universal.Services.Windowing
 
         public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
         {
-            if (!Supported)
+            if (!IsSupported)
                 return null;
 
             if (await ActivateOtherWindowAsync(channel, currentWindow))
@@ -96,6 +99,8 @@ namespace Unicord.Universal.Services.Windowing
             window.RequestSize(new Size(Window.Current.Bounds.Width - 276, Window.Current.Bounds.Height));
             window.Title = NotificationUtils.GetChannelHeaderName(channel);
 
+            var handle = (AppWindowHandle)CreateOrUpdateHandle(window);
+
             var frame = new Frame();
             frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true });
 
@@ -103,8 +108,6 @@ namespace Unicord.Universal.Services.Windowing
             var frame2 = ElementCompositionPreview.GetAppWindowContent(window);
 
             await window.TryShowAsync();
-
-            var handle = (AppWindowHandle)CreateOrUpdateHandle(frame, window);
             window.Closed += (o, e) =>
             {
                 _uiContextDictionary.TryRemove(handle.Context, out _);
@@ -122,7 +125,7 @@ namespace Unicord.Universal.Services.Windowing
 
         public override async Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
         {
-            if (!Supported)
+            if (!IsSupported)
                 return false;
 
             var handle = currentWindow as AppWindowHandle;
@@ -163,7 +166,7 @@ namespace Unicord.Universal.Services.Windowing
                 var handle = (AppWindowHandle)GetHandle(contentRoot);
                 if (handle.Window == null)
                 {
-                    _legacyWindowingService.HandleTitleBarForWindow(titleBar, contentRoot);
+                    //_legacyWindowingService.HandleTitleBarForWindow(titleBar, contentRoot);
                 }
                 else
                 {
@@ -234,11 +237,11 @@ namespace Unicord.Universal.Services.Windowing
             }
         }
 
-        private WindowHandle CreateOrUpdateHandle(UIElement content, AppWindow window)
+        private WindowHandle CreateOrUpdateHandle(AppWindow window)
         {
-            if (!_uiContextDictionary.TryGetValue(content.UIContext, out var handle))
+            if (!_uiContextDictionary.TryGetValue(window.UIContext, out var handle))
             {
-                handle = _uiContextDictionary[content.UIContext] = new AppWindowHandle(content.UIContext);
+                handle = _uiContextDictionary[window.UIContext] = new AppWindowHandle(window.UIContext);
             }
 
             handle.Window = window;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -27,17 +28,8 @@ namespace Unicord.Universal.Controls.Messages
     {
         private bool _addedEditHandlers;
         private ImageBrush _imageBrush;
-        private static int _handlers;
 
         #region Dependency Properties
-        public DiscordMessage Message
-        {
-            get => (DiscordMessage)GetValue(MessageProperty);
-            set => SetValue(MessageProperty, value);
-        }
-
-        public static readonly DependencyProperty MessageProperty =
-            DependencyProperty.Register("Message", typeof(DiscordMessage), typeof(MessageControl), new PropertyMetadata(null, OnPropertyChanged));
 
         public MessageViewModel MessageViewModel
         {
@@ -46,19 +38,13 @@ namespace Unicord.Universal.Controls.Messages
         }
 
         public static readonly DependencyProperty MessageViewModelProperty =
-            DependencyProperty.Register("MessageViewModel", typeof(MessageViewModel), typeof(MessageControl), new PropertyMetadata(null));
-
-        public DiscordUser Author => Message.Author;
-        public DiscordChannel Channel => Message.Channel;
+            DependencyProperty.Register("MessageViewModel", typeof(MessageViewModel), typeof(MessageControl), new PropertyMetadata(null, OnPropertyChanged));
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is MessageControl control)
+            if (d is MessageControl control && e.Property == MessageViewModelProperty)
             {
-                if (e.Property == MessageProperty)
-                {
-                    control.OnMessageChanged(e);
-                }
+                control.OnMessageChanged(e);
             }
         }
 
@@ -67,18 +53,6 @@ namespace Unicord.Universal.Controls.Messages
         public MessageControl()
         {
             this.DefaultStyleKey = typeof(MessageControl);
-            this.Loaded += OnLoaded;
-            this.Unloaded += OnUnloaded;
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            MessageViewModel?.OnLoaded();
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            MessageViewModel?.OnUnloaded();
         }
 
         protected override void OnApplyTemplate()
@@ -86,22 +60,11 @@ namespace Unicord.Universal.Controls.Messages
             this.UpdateCollapsedState();
         }
 
-        protected override void OnRightTapped(RightTappedRoutedEventArgs e)
-        {
-            base.OnRightTapped(e);
-        }
-
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (MessageViewModel != null)
-                MessageViewModel.OnUnloaded();
-
-            if (e.NewValue is DiscordMessage message)
+            if (e.NewValue is MessageViewModel message)
             {
-                MessageViewModel = new MessageViewModel(message);
-                MessageViewModel.OnLoaded();
-
-                this.DataContext = MessageViewModel;
+                this.DataContext = message;
                 this.UpdateProfileImage(message);
                 this.UpdateCollapsedState();
             }
@@ -127,7 +90,7 @@ namespace Unicord.Universal.Controls.Messages
             _imageBrush.ImageSource = null;
         }
 
-        private void UpdateProfileImage(DiscordMessage message)
+        private void UpdateProfileImage(MessageViewModel message)
         {
             this.ClearProfileImage();
 
@@ -144,53 +107,39 @@ namespace Unicord.Universal.Controls.Messages
         }
 
         // TODO: Could prolly move this somewhere better
+        // bro what was i thinking :skull:
         private void UpdateCollapsedState()
         {
-            if (Message == null || !IsEnabled)
+            if (MessageViewModel == null || !IsEnabled)
                 return;
 
             VisualStateManager.GoToState(this, "NotEditing", false);
             VisualStateManager.GoToState(this, "NoMention", false);
 
-            var list = this.FindParent<ListView>();
-            if (list != null)
+            if (MessageViewModel.Parent == null)
             {
-                if (list.SelectionMode == ListViewSelectionMode.Multiple)
-                {
-                    VisualStateManager.GoToState(this, "EditMode", false);
-                    return;
-                }
+                VisualStateManager.GoToState(this, "None", false);
+                return;
+            }
 
-                var currentMember = Message.Channel.Guild?.CurrentMember;
+            if (MessageViewModel.Parent.IsEditMode)
+            {
+                VisualStateManager.GoToState(this, "EditMode", false);
+                return;
+            }
 
-                if (Message.MentionEveryone ||
-                    Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) ||
-                    (currentMember != null && Message.MentionedRoleIds.Any(r => currentMember.RoleIds.Contains(r))))
-                {
-                    VisualStateManager.GoToState(this, "Mention", false);
-                }
+            if (MessageViewModel.IsMention)
+            {
+                VisualStateManager.GoToState(this, "Mention", false);
+            }
 
-                var index = list.Items.IndexOf(Message);
-
-                if (index > 0)
-                {
-                    if (list.Items[index - 1] is DiscordMessage other
-                        && (other.MessageType == MessageType.Default || other.MessageType == MessageType.Reply)
-                        && Message.ReferencedMessage == null)
-                    {
-                        var timeSpan = (Message.CreationTimestamp - other.CreationTimestamp);
-                        if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
-                        {
-                            VisualStateManager.GoToState(this, "Collapsed", false);
-                            return;
-                        }
-                    }
-                }
-                VisualStateManager.GoToState(this, "Normal", false);
+            if (MessageViewModel.IsCollapsed)
+            {
+                VisualStateManager.GoToState(this, "Collapsed", false);
             }
             else
             {
-                VisualStateManager.GoToState(this, "None", false);
+                VisualStateManager.GoToState(this, "Normal", false);
             }
         }
 
@@ -223,11 +172,13 @@ namespace Unicord.Universal.Controls.Messages
         {
             try
             {
+                // TODO: this is horrible
                 var control = this.FindChild<MessageEditTools>();
                 var editBox = control.FindChild<TextBox>("MessageEditBox");
-                if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != Message.Content)
+                var message = MessageViewModel.Message;
+                if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != message.Content)
                 {
-                    await Message.ModifyAsync(editBox.Text);
+                    await message.ModifyAsync(editBox.Text);
                 }
             }
             catch (Exception ex)

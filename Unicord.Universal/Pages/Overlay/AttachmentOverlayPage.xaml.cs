@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -31,12 +32,12 @@ namespace Unicord.Universal.Pages.Overlay
         {
             contentContainerOverlay.Visibility = Visibility.Visible;
 
-            if (e.Parameter is DiscordAttachment attachment)
+            if (e.Parameter is AttachmentViewModel attachment)
             {
-                scaledControl.TargetWidth = attachment.Width;
-                scaledControl.TargetHeight = attachment.Height;
-                attachmentImage.MaxWidth = attachment.Width;
-                attachmentImage.MaxHeight = attachment.Height;
+                scaledControl.TargetWidth = attachment.NaturalWidth;
+                scaledControl.TargetHeight = attachment.NaturalHeight;
+                attachmentImage.MaxWidth = attachment.NaturalWidth;
+                attachmentImage.MaxHeight = attachment.NaturalHeight;
 
                 AttachmentSource.UriSource = new Uri(attachment.ProxyUrl);
             }

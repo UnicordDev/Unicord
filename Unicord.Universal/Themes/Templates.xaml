@@ -13,7 +13,8 @@
     xmlns:presence="using:Unicord.Universal.Controls.Presence"
     xmlns:users="using:Unicord.Universal.Controls.Users"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core" xmlns:media1="using:Microsoft.Xaml.Interactions.Media"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
+    xmlns:media1="using:Microsoft.Xaml.Interactions.Media"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
@@ -324,7 +325,8 @@
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="models:GuildListViewModel">
         <lib:TreeViewItem IsSelected="{x:Bind IsSelected}" 
                           ContextFlyout="{StaticResource GuildContextFlyout}"
-                          ToolTipService.ToolTip="{x:Bind Name}">
+                          ToolTipService.ToolTip="{x:Bind Name}"
+                          ToolTipService.Placement="Left">
             <Grid>
                 <lib:PersonPicture Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
                 <lib:InfoBadge VerticalAlignment="Top"
@@ -340,8 +342,9 @@
 
     <DataTemplate x:Key="GuildsListFolderTemplate" x:DataType="models:GuildListFolderViewModel">
         <lib:TreeViewItem ItemsSource="{x:Bind Children}" 
-                            IsExpanded="{Binding IsExpanded}" 
-                            ToolTipService.ToolTip="{x:Bind Name}">
+                          IsExpanded="{Binding IsExpanded}" 
+                          ToolTipService.ToolTip="{x:Bind Name}"
+                          ToolTipService.Placement="Left">
             <Grid>
                 <Ellipse Margin="0,4" 
                          Width="42" 

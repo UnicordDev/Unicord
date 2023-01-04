@@ -724,7 +724,7 @@ namespace Unicord.Universal.Pages
 
         private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowingService.Current.Supported)
+            if (WindowingService.Current.IsSupported)
             {
                 var handle = WindowingService.Current.GetHandle(this);
                 var newHandle = await WindowingService.Current.OpenChannelWindowAsync(_viewModel.Channel, handle);

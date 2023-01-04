@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:messages="using:Unicord.Universal.Controls.Messages" 
     xmlns:entities="using:DSharpPlus.Entities" 
-    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls" xmlns:messages1="using:Unicord.Universal.Models.Messages"
     mc:Ignorable="d"
     d:DesignWidth="276">
 
@@ -79,14 +79,14 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="entities:DiscordMessage">
+                <DataTemplate x:DataType="messages1:MessageViewModel">
                     <messages:MessageControl
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Opacity="{Binding Hit, Converter={StaticResource BoolOpacityConverter}}"
                         IsEnabled="False"
                         Margin="4,8"
-                        Message="{x:Bind}" />
+                        MessageViewModel="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.GroupStyle>

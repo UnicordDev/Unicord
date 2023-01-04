@@ -16,12 +16,12 @@ namespace Unicord.Universal.Services
 
     public abstract class WindowingService
     {
-
         private static Lazy<WindowingService> _windowingServiceLazy = new Lazy<WindowingService>(() => new ApplicationViewWindowingService(), true);
+       
         public static WindowingService Current
             => _windowingServiceLazy.Value;
 
-        public abstract bool Supported { get; }
+        public abstract bool IsSupported { get; }
 
         public abstract void SetMainWindow(UIElement reference);
 

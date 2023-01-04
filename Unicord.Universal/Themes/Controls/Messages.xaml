@@ -12,7 +12,8 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
     xmlns:messages="using:Unicord.Universal.Models.Messages" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)">
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    x:DefaultBindMode="OneWay">
 
     <converters:AttachmentTemplateSelector x:Key="AttachmentTemplateSelector"
                                            ImageTemplate="{StaticResource DefaultAttachmentImageTemplate}"
@@ -117,14 +118,14 @@
                                                 Command="{Binding ShareCommand}">
                                         <Grid DataContext="{Binding ShareProgress}">
                                             <muxc:ProgressRing Width="16" Height="16" 
-                                                                   Opacity="{Binding ProgressOpacity}"
-                                                                   IsIndeterminate="{Binding IsIndeterminate}"
-                                                                   Value="{Binding Progress}"
-                                                                   Maximum="1" />
+                                                               Opacity="{Binding ProgressOpacity}"
+                                                               IsIndeterminate="{Binding IsIndeterminate}"
+                                                               Value="{Binding Progress}"
+                                                               Maximum="1" />
                                             <TextBlock Text="&#xe72d;" 
-                                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                                           FontSize="16"
-                                                           Opacity="{Binding IconOpacity}"/>
+                                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                       FontSize="16"
+                                                       Opacity="{Binding IconOpacity}"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -316,7 +317,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultAttachmentTemplate">
-        <local:AttachmentControl Attachment="{Binding}" />
+        <local:AttachmentControl ViewModel="{Binding}" />
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultStickerTemplate">
@@ -726,7 +727,7 @@
                             <flyouts:MessageContextFlyout />
                         </Border.ContextFlyout>-->
 
-                        <Grid DataContext="{TemplateBinding Message}">
+                        <Grid DataContext="{TemplateBinding MessageViewModel}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition x:Name="AutoColumn" Width="90" />
                                 <ColumnDefinition Width="*"/>
@@ -859,7 +860,7 @@
                             <flyouts:MessageContextFlyout />
                         </Border.ContextFlyout>-->
 
-                        <Grid DataContext="{TemplateBinding Message}">
+                        <Grid DataContext="{TemplateBinding MessageViewModel}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="90" />
                                 <ColumnDefinition Width="*"/>
@@ -964,7 +965,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:SystemMessageControl">
 
-                    <Grid Margin="0,12,8,0" DataContext="{TemplateBinding Message}">
+                    <Grid Margin="0,12,8,0" DataContext="{TemplateBinding MessageViewModel}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="*"/>

@@ -42,6 +42,7 @@ namespace Unicord.Universal
         public MainPage()
         {
             InitializeComponent();
+
 #if DEBUG
             this.AddAccelerator(Windows.System.VirtualKey.C, Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Shift, (_, _) =>
             {
@@ -160,14 +161,6 @@ namespace Unicord.Universal
 
             var navigation = SystemNavigationManager.GetForCurrentView();
             navigation.BackRequested -= Navigation_BackRequested;
-
-            if (App.Discord != null)
-            {
-                App.Discord.Ready -= OnDiscordReady;
-                App.Discord.Resumed -= OnDiscordResumed;
-                App.Discord.SocketClosed -= OnDiscordDisconnected;
-                App.Discord.LoggedOut -= OnLoggedOut;
-            }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -253,7 +246,7 @@ namespace Unicord.Universal
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordResumed(ReadyEventArgs e)
+        private async Task OnDiscordResumed(ResumedEventArgs e)
         {
             await HideDisconnectingMessage();
         }

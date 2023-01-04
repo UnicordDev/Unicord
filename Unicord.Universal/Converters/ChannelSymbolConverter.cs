@@ -13,6 +13,8 @@ namespace Unicord.Universal.Converters
         public string NewsGlyph { get; set; } = "\xE789";
         public string StoreGlyph { get; set; } = "\xE719";
         public string StageGlyph { get; set; } = "\xE93E";
+        public string ForumGlyph { get; set; } = "\xE93E";
+        public string DirectoryGlyph { get; set; } = "\xE93E";
         public string UnknownGlyph { get; set; } = "\xE11B";
 
         public object Convert(object value, Type targetType, object parameter, string language)
@@ -25,21 +27,17 @@ namespace Unicord.Universal.Converters
                 }
 
                 var type = c.Type;
-                switch (type)
+                return type switch
                 {
-                    case ChannelType.Text:
-                        return TextGlyph;
-                    case ChannelType.Voice:
-                        return VoiceGlyph;
-                    case ChannelType.News:
-                        return NewsGlyph;
-                    case ChannelType.Store:
-                        return StoreGlyph;
-                    case ChannelType.Stage:
-                        return StageGlyph;
-                    default:
-                        return "";
-                }
+                    ChannelType.Text => TextGlyph,
+                    ChannelType.Voice => VoiceGlyph,
+                    ChannelType.Announcement => NewsGlyph,
+                    ChannelType.Store => StoreGlyph,
+                    ChannelType.Stage => StageGlyph,
+                    ChannelType.Directory => DirectoryGlyph,
+                    ChannelType.Forum => ForumGlyph,
+                    _ => UnknownGlyph,
+                };
             }
 
             return "";

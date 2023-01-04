@@ -13,6 +13,9 @@ namespace Unicord.Universal.Models
 {
     internal interface IGuildListViewModel
     {
+        string Name { get; }
+        bool Unread { get; }
+        int MentionCount { get; }
         bool TryGetModelForGuild(DiscordGuild guild, out GuildListViewModel model);
     }
 
@@ -76,7 +79,6 @@ namespace Unicord.Universal.Models
         public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null)
         {
             Guild = guild;
-            Guild.PropertyChanged += OnPropertyChanged;
 
             _parent = parent;
             _currentMember = guild.CurrentMember;

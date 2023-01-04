@@ -17,15 +17,7 @@ namespace Unicord.Universal.Models.Messages
         public ReactionViewModel(DiscordReaction reaction, ICommand reactCommand)
         {
             _reaction = reaction;
-            _reaction.PropertyChanged += OnReactionPropertyChange;
-
             ReactCommand = reactCommand;
-        }
-
-        private void OnReactionPropertyChange(object sender, PropertyChangedEventArgs e)
-        {
-            // forward property change events from the model to the view model
-            InvokePropertyChanged(e.PropertyName);
         }
 
         public DiscordEmoji Emoji => 

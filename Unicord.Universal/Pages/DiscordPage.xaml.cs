@@ -10,6 +10,7 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
@@ -41,7 +42,7 @@ namespace Unicord.Universal.Pages
         private MainPageArgs _args;
         private bool _loaded;
 
-        internal DiscordPageModel Model { get; }
+        internal DiscordPageViewModel Model { get; }
         internal bool IsWindowVisible { get; private set; }
 
         internal SwipeOpenHelper _helper;
@@ -51,7 +52,7 @@ namespace Unicord.Universal.Pages
         public DiscordPage()
         {
             InitializeComponent();
-            Model = DataContext as DiscordPageModel;
+            Model = DataContext as DiscordPageViewModel;
 
             _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
             _helper.IsEnabled = false;
@@ -137,16 +138,6 @@ namespace Unicord.Universal.Pages
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
 
-                if (_args?.ThemeLoadException != null)
-                {
-                    Analytics.TrackEvent("DiscordPage_ThemeErrorMessageShown");
-
-                    var message = App.Discord.CreateMockMessage(
-                        $"We had some trouble loading your selected themes, so we disabled them for this launch. For more information, see settings.",
-                        App.Discord.CreateMockUser("Unicord", "CORD"));
-                    ShowNotification(message);
-                }
-
                 //var helper = SwipeOpenService.GetForCurrentView();
                 //helper.AddAdditionalElement(SwipeHelper);
 
@@ -156,7 +147,7 @@ namespace Unicord.Universal.Pages
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
                 {
-                    (DataContext as DiscordPageModel).VoiceModel = possibleConnection;
+                    (DataContext as DiscordPageViewModel).VoiceModel = possibleConnection;
                 }
 
                 await ContactListManager.UpdateContactsListAsync();
@@ -188,7 +179,7 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            notification.Show(new MessageControl() { Message = message }, 7_000);
+            notification.Show(new MessageControl() { MessageViewModel = new MessageViewModel(message) }, 7_000);
         }
 
         public void ToggleSplitPane()
@@ -223,7 +214,7 @@ namespace Unicord.Universal.Pages
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var message = (((InAppNotification)sender).Content as MessageControl)?.Message;
+            var message = (((InAppNotification)sender).Content as MessageControl)?.MessageViewModel;
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();

@@ -6,35 +6,36 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Models
 {
     public class SearchMessageGrouping :
-        IGrouping<DiscordMessage, DiscordMessage>,
-        IReadOnlyCollection<DiscordMessage>,
-        IReadOnlyList<DiscordMessage>,
-        IEnumerable<DiscordMessage>
+        IGrouping<MessageViewModel, MessageViewModel>,
+        IReadOnlyCollection<MessageViewModel>,
+        IReadOnlyList<MessageViewModel>,
+        IEnumerable<MessageViewModel>
     {
-        private IReadOnlyList<DiscordMessage> _value;
+        private IReadOnlyList<MessageViewModel> _value;
 
-        public SearchMessageGrouping(DiscordMessage key, IReadOnlyList<DiscordMessage> value)
+        public SearchMessageGrouping(MessageViewModel key, IReadOnlyList<MessageViewModel> value)
         {
             Key = key;
             _value = value;
         }
 
-        public DiscordMessage this[int index] => _value[index];
+        public MessageViewModel this[int index] => _value[index];
 
-        public DiscordMessage Key { get; }
+        public MessageViewModel Key { get; }
 
         public int Count => _value.Count;
 
-        public IEnumerator<DiscordMessage> GetEnumerator() => _value.GetEnumerator();
+        public IEnumerator<MessageViewModel> GetEnumerator() => _value.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_value).GetEnumerator();
     }
 
-    public class SearchPageModel : NotifyPropertyChangeImpl
+    public class SearchPageViewModel : NotifyPropertyChangeImpl
     {
         private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
         private DiscordChannel _channel;
@@ -85,7 +86,7 @@ namespace Unicord.Universal.Models
 
         public CollectionViewSource ViewSource { get; set; }
 
-        public SearchPageModel(DiscordChannel channel)
+        public SearchPageViewModel(DiscordChannel channel)
         {
             _channel = channel;
             ViewSource = new CollectionViewSource();
@@ -119,7 +120,9 @@ namespace Unicord.Universal.Models
                     WaitingForIndex = false;
                     TotalMessages = result.TotalResults;
                     TotalPages = (int)Math.Ceiling(result.TotalResults / 25d);
-                    ViewSource.Source = result.Messages.Select(g => new SearchMessageGrouping(g.FirstOrDefault(g => g.Hit.HasValue && g.Hit.Value), g));
+                    ViewSource.Source = result.Messages
+                                              .Select(g => new SearchMessageGrouping(new MessageViewModel(g.FirstOrDefault(g => g.Hit.HasValue && g.Hit.Value)), g.Select(v => new MessageViewModel(v)).ToList()))
+                                              .ToList();
                 }
             }
             catch (Exception ex)

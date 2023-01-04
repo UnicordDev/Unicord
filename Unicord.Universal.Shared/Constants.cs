@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Unicord
 {
@@ -55,10 +56,13 @@ namespace Unicord
         public const bool   ADJUST_ROLE_COLOURS_DEFAULT = true;
 
         public const string SHOW_STATUS_GLYPHS = "ShowStatusGlyphs";
-        public const bool SHOW_STATUS_GLYPHS_DEFAULT = true;
+        public const bool   SHOW_STATUS_GLYPHS_DEFAULT = true;
 
         public const string MINIMUM_CONTRAST = "MinimumContrast";
         public const double MINIMUM_CONTRAST_DEFAULT = 3.5;
+
+        public const string ENABLE_WEBP = "EnableWebp";
+        public const bool   ENABLE_WEBP_DEFAULT = false;
     }
 
     public enum MediaTranscodeOptions

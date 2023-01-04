@@ -19,6 +19,7 @@ using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -28,6 +29,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.System;
@@ -516,6 +518,8 @@ namespace Unicord.Universal
                             Discord.Ready += ReadyHandler;
                             Discord.SocketErrored += SocketErrored;
                             Discord.ClientErrored += ClientErrored;
+
+                            DiscordClientMessenger.Register(Discord);
 
                             await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null : DateTimeOffset.Now);
                         }

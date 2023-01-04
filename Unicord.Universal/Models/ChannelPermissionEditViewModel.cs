@@ -102,7 +102,7 @@ namespace Unicord.Universal.Models
             Voice = PERMISSION_GROUP_VOICE.Select(p => new ChannelPermissionViewModel(p, overwrite, _resourceLoader)).ToList();
         }
 
-        public bool IsTextChannel => _channel.Type == ChannelType.Text || _channel.Type == ChannelType.News;
+        public bool IsTextChannel => _channel.Type == ChannelType.Text || _channel.Type == ChannelType.Announcement;
         public bool IsVoiceChannel => _channel.Type == ChannelType.Voice;
 
         public List<ChannelPermissionViewModel> General { get; }

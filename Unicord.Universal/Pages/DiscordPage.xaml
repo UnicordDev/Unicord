@@ -12,14 +12,15 @@
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:converters="using:Unicord.Universal.Converters"
-    xmlns:triggers="using:WindowsStateTriggers" xmlns:voice="using:Unicord.Universal.Controls.Voice"
+    xmlns:voice="using:Unicord.Universal.Controls.Voice"
+    xmlns:triggers="using:WindowsStateTriggers" 
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
     SizeChanged="Self_SizeChanged"
     mc:Ignorable="d">
     <Page.DataContext>
-        <models:DiscordPageModel/>
+        <models:DiscordPageViewModel/>
     </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />

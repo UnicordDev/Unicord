@@ -31,7 +31,7 @@ namespace Unicord.Universal.Services.Windowing
         private ConcurrentDictionary<int, ulong> _windowChannelDictionary
              = new ConcurrentDictionary<int, ulong>();
 
-        public override bool Supported => true; // todo: work this out
+        public override bool IsSupported => true; // todo: work this out
 
         public override void SetMainWindow(UIElement reference)
         {
@@ -69,7 +69,7 @@ namespace Unicord.Universal.Services.Windowing
 
         public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
         {
-            if (!Supported)
+            if (!IsSupported)
                 return null;
 
             if (await ActivateOtherWindowAsync(channel, currentWindow))
@@ -120,7 +120,7 @@ namespace Unicord.Universal.Services.Windowing
 
         public override async Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
         {
-            if (!Supported)
+            if (!IsSupported)
                 return false;
 
             var handle = currentWindow as ApplicationViewWindowHandle;

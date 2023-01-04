@@ -1,5 +1,7 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,33 +13,43 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Messages;
+using Unicord.Universal.Models.Messaging;
 
 namespace Unicord.Universal.Models.Messages
 {
-    public class MessageViewModel : INotifyPropertyChanged
+    public class MessageViewModel : ViewModelBase
     {
-        private bool _isLoaded;
-        private static int _handlers;
-        private SynchronizationContext _context;
-
-        public MessageViewModel(DiscordMessage discordMessage)
+        public MessageViewModel(DiscordMessage discordMessage, ChannelViewModel parent = null)
         {
-            _context = SynchronizationContext.Current;
-
             Message = discordMessage;
-            Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
-            Attachments = new ObservableCollection<DiscordAttachment>(Message.Attachments);
-            Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
-            Components = new ObservableCollection<DiscordComponent>(Message.Components);
+            Parent = parent;
 
             ReactCommand = new ReactCommand(discordMessage);
+            Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
+            Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a)));
+            Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
+            Components = new ObservableCollection<DiscordComponent>(Message.Components);
             Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
-        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageUpdateEventArgs>(this, (t, e) => t.OnMessageUpdated(e.Event));
+            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
+            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this, (t, e) => t.OnReactionRemoved(e.Event));
+            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this, (t, e) => t.OnReactionGroupRemoved(e.Event));
+            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this, (t, e) => t.OnReactionsCleared(e.Event));
+
+            if (parent != null && parent.Channel.Guild != null)
+            {
+                WeakReferenceMessenger.Default.Register<MessageViewModel, DiscordEventMessage<GuildMemberUpdateEventArgs>>(this,
+                    (t, e) => t.OnGuildMemberUpdate(e.Event));
+            }
+        }
 
         public DiscordMessage Message { get; }
 
+        public ChannelViewModel Parent { get; }
+
+        public ulong Id
+            => Message.Id;
         public DiscordMessage ReferencedMessage
             => Message.ReferencedMessage;
         public DiscordChannel Channel
@@ -48,9 +60,49 @@ namespace Unicord.Universal.Models.Messages
             => Message.Timestamp;
         public string Content
             => Message.Content;
+        public bool IsEdited
+            => Message.IsEdited;
+        public bool IsSystemMessage
+            => Message.MessageType != MessageType.Default && Message.MessageType != MessageType.Reply;
+
+        public bool IsMention
+        {
+            get
+            {
+                var currentMember = Message.Channel.Guild?.CurrentMember;
+                return Message.MentionEveryone || Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) ||
+                    (currentMember != null && Message.MentionedRoleIds.Any(r => currentMember.RoleIds.Contains(r)));
+            }
+        }
+
+        // todo: cache probably
+        public bool IsCollapsed
+        {
+            get
+            {
+                if (Parent == null) return false;
+
+                var index = Parent.Messages.IndexOf(this);
+                if (index > 0)
+                {
+                    if (Parent.Messages[index - 1] is MessageViewModel other
+                        && (other.Message.MessageType == MessageType.Default || other.Message.MessageType == MessageType.Reply)
+                        && Message.ReferencedMessage == null)
+                    {
+                        var timeSpan = (Message.CreationTimestamp - other.Message.CreationTimestamp);
+                        if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+        }
 
         public ObservableCollection<DiscordEmbed> Embeds { get; }
-        public ObservableCollection<DiscordAttachment> Attachments { get; }
+        public ObservableCollection<AttachmentViewModel> Attachments { get; }
         public ObservableCollection<DiscordSticker> Stickers { get; }
         public ObservableCollection<DiscordComponent> Components { get; }
 
@@ -58,44 +110,6 @@ namespace Unicord.Universal.Models.Messages
         public ObservableCollection<ReactionViewModel> Reactions { get; }
 
         public ICommand ReactCommand { get; }
-
-        internal void OnLoaded()
-        {
-            if (App.Discord != null && !_isLoaded)
-            {
-                _isLoaded = true;
-                _handlers++;
-
-                Message.PropertyChanged += OnPropertyChanged;
-                App.Discord.MessageUpdated += OnMessageUpdated;
-                App.Discord.MessageReactionAdded += OnReactionAdded;
-                App.Discord.MessageReactionRemoved += OnReactionRemoved;
-                App.Discord.MessageReactionsCleared += OnReactionsCleared;
-                App.Discord.MessageReactionRemovedEmoji += OnReactionGroupRemoved;
-            }
-        }
-
-        internal void OnUnloaded()
-        {
-            if (App.Discord != null && _isLoaded)
-            {
-                _isLoaded = false;
-                _handlers--;
-
-                Message.PropertyChanged -= OnPropertyChanged;
-                App.Discord.MessageUpdated -= OnMessageUpdated;
-                App.Discord.MessageReactionAdded -= OnReactionAdded;
-                App.Discord.MessageReactionRemoved -= OnReactionRemoved;
-                App.Discord.MessageReactionsCleared -= OnReactionsCleared;
-                App.Discord.MessageReactionRemovedEmoji -= OnReactionGroupRemoved;
-                Logger.Log(_handlers);
-            }
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            PropertyChanged?.Invoke(this, e);
-        }
 
         private Task OnReactionAdded(MessageReactionAddEventArgs e)
         {
@@ -120,7 +134,7 @@ namespace Unicord.Universal.Models.Messages
             if (e.Message.Id != Message.Id)
                 return Task.CompletedTask;
 
-            _context.Post((o) => ((MessageViewModel)o).Reactions.Clear(), this);
+            syncContext.Post((o) => ((MessageViewModel)o).Reactions.Clear(), this);
             return Task.CompletedTask;
         }
 
@@ -133,15 +147,21 @@ namespace Unicord.Universal.Models.Messages
             return Task.CompletedTask;
         }
 
-        private Task OnMessageUpdated(MessageUpdateEventArgs e)
+        private void OnMessageUpdated(MessageUpdateEventArgs e)
         {
             if (e.Message.Id != Message.Id)
-                return Task.CompletedTask;
+                return;
+
+            if (e.MessageBefore.Content != e.Message.Content)
+                InvokePropertyChanged(nameof(Content));
+
+            if (e.MessageBefore.IsEdited != e.Message.IsEdited)
+                InvokePropertyChanged(nameof(IsEdited));
 
             if (Embeds.SequenceEqual(e.Message.Embeds))
-                return Task.CompletedTask;
+                return;
 
-            _context.Post((o) =>
+            syncContext.Post((o) =>
             {
                 Embeds.Clear();
                 foreach (var embed in e.Message.Embeds)
@@ -149,28 +169,41 @@ namespace Unicord.Universal.Models.Messages
 
             }, null);
 
-            return Task.CompletedTask;
+            return;
         }
 
-        private void UpdateReactions()
+        private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {
-            // TODO: would an observable dictionary type be faster here?
-            // probably.
-            _context.Post((o) =>
-            {
-                foreach (var reaction in Message.Reactions)
-                {
-                    ReactionViewModel model;
-                    if ((model = Reactions.FirstOrDefault(r => r.Equals(reaction))) == null)
-                        Reactions.Add(new ReactionViewModel(reaction, ReactCommand));
-                }
+            if (e.Member.Id != Author.Id)
+                return;
 
-                foreach (var model in Reactions.ToList())
-                {
-                    if (!Message.Reactions.Any(r => r.Emoji == model.Emoji))
-                        Reactions.Remove(model);
-                }
-            }, null);
+            if (e.Guild.Id != Channel.GuildId)
+                return;
+
+            if (Author is not DiscordMember member && !e.Guild.GetCachedMember(Author.Id, out member))
+                return;
+
+            InvokePropertyChanged(nameof(Author));
         }
+
+        // TODO: would an observable dictionary type be faster here?
+        // probably.
+        private void UpdateReactions() => syncContext.Post((o) =>
+        {
+            foreach (var reaction in Message.Reactions)
+            {
+                ReactionViewModel model;
+                if ((model = Reactions.FirstOrDefault(r => r.Equals(reaction))) == null)
+                    Reactions.Add(new ReactionViewModel(reaction, ReactCommand));
+                else
+                    model.InvokePropertyChanged("");
+            }
+
+            foreach (var model in Reactions.ToList())
+            {
+                if (!Message.Reactions.Any(r => r.Emoji == model.Emoji))
+                    Reactions.Remove(model);
+            }
+        }, null);
     }
 }

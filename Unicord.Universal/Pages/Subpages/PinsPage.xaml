@@ -9,7 +9,7 @@
     xmlns:insider="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:messages="using:Unicord.Universal.Controls.Messages" xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:messages="using:Unicord.Universal.Controls.Messages" xmlns:lib="using:Microsoft.UI.Xaml.Controls" xmlns:messages1="using:Unicord.Universal.Models.Messages"
     mc:Ignorable="d">
 
     <Grid>
@@ -67,13 +67,13 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="entities:DiscordMessage">
+                <DataTemplate x:DataType="messages1:MessageViewModel">
                     <messages:MessageControl
                         Background="Transparent"
                         BorderBrush="Transparent"
                         IsEnabled="False"
                         Margin="4,8"
-                        Message="{x:Bind}" />
+                        MessageViewModel="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

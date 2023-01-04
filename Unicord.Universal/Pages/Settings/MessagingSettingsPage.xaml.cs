@@ -30,7 +30,6 @@ namespace Unicord.Universal.Pages.Settings
         {
             // dirty hack to work around databinding fuckery
             App.RoamingSettings.Save("TimestampStyle", (TimestampStyle)(sender as ComboBox).SelectedIndex);
-            (DataContext as MessagingSettingsModel).RegenerateMessage();
         }
 
         private async void ContrastLearnMoreButton_Click(object sender, RoutedEventArgs e)

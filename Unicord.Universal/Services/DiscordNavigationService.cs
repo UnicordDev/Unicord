@@ -32,7 +32,7 @@ namespace Unicord.Universal.Services
     {
         private MainPage _mainPage;
         private DiscordPage _discordPage;
-        private DiscordPageModel _discordPageModel;
+        private DiscordPageViewModel _discordPageModel;
         private SystemNavigationManager _navigation;
         private Stack<NavigationEvent> _navigationStack;
 
@@ -42,7 +42,7 @@ namespace Unicord.Universal.Services
 
             _mainPage = Window.Current.Content.FindChild<MainPage>();
             _discordPage = Window.Current.Content.FindChild<DiscordPage>();
-            _discordPageModel = _discordPage.DataContext as DiscordPageModel;
+            _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
 
             _navigationStack = new Stack<NavigationEvent>();
             _navigation = SystemNavigationManager.GetForCurrentView();

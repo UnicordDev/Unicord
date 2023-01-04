@@ -48,9 +48,9 @@
                         </flyouts:GuildContextFlyout>
                     </FlyoutBase.AttachedFlyout>
 
-                    <Grid CornerRadius="4,4,0,0">
-                        <!--<controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill" HorizontalAlignment="Center" />-->
-                        <aurora:PreviewPaneAuroraControl Height="128"/>
+                    <Grid CornerRadius="4,4,0,0"
+                          Visibility="{Binding HeaderImage, Converter={StaticResource HideOnNullConverter}}">
+                        <controls1:ImageEx Source="{Binding HeaderImage}" Height="128" Stretch="UniformToFill" HorizontalAlignment="Center" />
                         <Rectangle Fill="{ThemeResource BackgroundGradientBrush}" IsHitTestVisible="False" />
                     </Grid>
 

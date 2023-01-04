@@ -6,40 +6,34 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Messages;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters
 {
+    // todo: both of these should be in a viewmodel
     public class SystemMessageSymbolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is DiscordMessage message)
+            if (value is MessageViewModel message)
             {
-                switch (message.MessageType)
+                return message.Message.MessageType switch
                 {
-                    case MessageType.RecipientAdd:
-                        return "\xE72A";
-                    case MessageType.RecipientRemove:
-                        return "\xE72B";
-                    case MessageType.Call:
-                        return "\xE717";
-                    case MessageType.ChannelNameChange:
-                    case MessageType.ChannelIconChange:
-                        return "\xE70F";
-                    case MessageType.ChannelPinnedMessage:
-                        return "\xE840";
-                    case MessageType.GuildMemberJoin:
-                        return "\xE72A";
-                    case MessageType.UserPremiumGuildSubscription:
-                    case MessageType.TierOneUserPremiumGuildSubscription:
-                    case MessageType.TierTwoUserPremiumGuildSubscription:
-                    case MessageType.TierThreeUserPremiumGuildSubscription:
-                        return "\xECAD";
-                    default:
-                        return "\xE783";
-                }
+                    MessageType.RecipientAdd => "\xE72A",
+                    MessageType.RecipientRemove => "\xE72B",
+                    MessageType.Call => "\xE717",
+                    MessageType.ChannelNameChange
+                        or MessageType.ChannelIconChange => "\xE70F",
+                    MessageType.ChannelPinnedMessage => "\xE840",
+                    MessageType.GuildMemberJoin => "\xE72A",
+                    MessageType.UserPremiumGuildSubscription
+                        or MessageType.TierOneUserPremiumGuildSubscription
+                        or MessageType.TierTwoUserPremiumGuildSubscription
+                        or MessageType.TierThreeUserPremiumGuildSubscription => "\xECAD",
+                    _ => "\xE783",
+                };
             }
 
             return "";
@@ -105,9 +99,9 @@ namespace Unicord.Universal.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is DiscordMessage message)
+            if (value is MessageViewModel message)
             {
-                switch (message.MessageType)
+                switch (message.Message.MessageType)
                 {
                     case MessageType.RecipientAdd:
                         return string.Format(_strings.GetString("UserJoinedGroupFormat"), message.Author.Mention);
@@ -122,7 +116,7 @@ namespace Unicord.Universal.Converters
                     case MessageType.ChannelPinnedMessage:
                         return string.Format(_strings.GetString("UserMessagePinFormat"), message.Author.Mention);
                     case MessageType.GuildMemberJoin:
-                        return string.Format(WelcomeStrings[(int)(message.CreationTimestamp.ToUnixTimeMilliseconds() % WelcomeStrings.Count())], message.Author.Mention);
+                        return string.Format(WelcomeStrings[(int)(message.Message.CreationTimestamp.ToUnixTimeMilliseconds() % WelcomeStrings.Count())], message.Author.Mention);
                     case MessageType.UserPremiumGuildSubscription:
                         return string.Format(_strings.GetString(
                             string.IsNullOrWhiteSpace(message.Content) ?

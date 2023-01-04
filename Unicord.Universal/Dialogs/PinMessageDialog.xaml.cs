@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
+using Unicord.Universal.Models.Messages;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -22,7 +23,8 @@ namespace Unicord.Universal.Dialogs
 
         private static void OnMessageSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as PinMessageDialog).MessageControl.Message = e.NewValue as DiscordMessage;
+            // todo: why
+            (d as PinMessageDialog).MessageControl.MessageViewModel = new MessageViewModel(e.NewValue as DiscordMessage);
             (d as ContentDialog).Title = (e.NewValue as DiscordMessage).Pinned ? "Unpin this message?" : "Pin this message?";
         }
 

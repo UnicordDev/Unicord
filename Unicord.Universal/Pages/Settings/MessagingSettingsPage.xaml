@@ -63,6 +63,26 @@
             <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding ShowHugeEmoji, Mode=TwoWay}" />
         </settings:SettingsBlockControl>
 
+
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/EnableWebPBlock"   
+                                       Title="Use Webp where possible"
+                                       Description="Reduce bandwidth with a more efficient image codec">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE158;"/>
+            </settings:SettingsBlockControl.Icon>
+
+            <Grid>
+                <Button Content="Get from the Microsoft Store"
+                        Command="{Binding OpenWebPStoreLinkCommand}"
+                        Visibility="{Binding CanUseWebP, Converter={StaticResource InverseBoolVisibilityConverter}}"/>
+                <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" 
+                              IsOn="{Binding EnableWebP, Mode=TwoWay}"
+                              Visibility="{Binding CanUseWebP, Converter={StaticResource BoolVisibilityConverter}}"/>
+            </Grid>
+            
+        </settings:SettingsBlockControl>
+
+        
         <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/TimestampStyleBlock">
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC92;"/>

@@ -13,7 +13,7 @@ namespace Unicord.Universal.Converters
             {
                 if (c.Type == ChannelType.Private)
                 {
-                    return c.Recipients[0].GetAvatarUrl(ImageFormat.Png, 64);
+                    return c.Recipients[0].GetAvatarUrl(ImageFormat.WebP, 64);
                 }
 
                 if (c.Type == ChannelType.Group)

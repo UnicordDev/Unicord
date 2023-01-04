@@ -63,6 +63,8 @@ namespace Unicord.Universal.Models.Messages
             Tools.ToFileSizeString(_attachment.FileSize);
         public string Url =>
             _attachment.Url;
+        public string ProxyUrl =>
+            _attachment.ProxyUrl;
         public bool IsSpoiler =>
             _attachment.FileName.StartsWith("SPOILER_");
         public double NaturalWidth =>

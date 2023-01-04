@@ -78,7 +78,9 @@
                                                VoiceGlyph="&#xFC64;"
                                                NewsGlyph="&#xF538;"
                                                StoreGlyph="&#xF92C;"
-                                               StageGlyph="&#xF30E;"/>
+                                               StageGlyph="&#xF30E;"
+                                               ForumGlyph="&#xF308;"
+                                               DirectoryGlyph="&#xF42F;"/>
             
             <converters:DateTimeConverter x:Key="DateTimeConverter"/>
             <converters:PresenceTextConverter x:Key="PresenceTextConverter"/>

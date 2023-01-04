@@ -17,15 +17,6 @@ namespace Unicord.Universal.Controls.Messages
 {
     public sealed class AttachmentControl : Control
     {
-        public DiscordAttachment Attachment
-        {
-            get => (DiscordAttachment)GetValue(AttachmentProperty);
-            set => SetValue(AttachmentProperty, value);
-        }
-
-        public static readonly DependencyProperty AttachmentProperty =
-            DependencyProperty.Register("Attachment", typeof(DiscordAttachment), typeof(AttachmentControl), new PropertyMetadata(null, OnAttachmentPropertyChanged));
-
         public AttachmentViewModel ViewModel
         {
             get { return (AttachmentViewModel)GetValue(ViewModelProperty); }
@@ -35,12 +26,6 @@ namespace Unicord.Universal.Controls.Messages
         public static readonly DependencyProperty ViewModelProperty =
             DependencyProperty.Register("ViewModel", typeof(AttachmentViewModel), typeof(AttachmentControl), new PropertyMetadata(null));
 
-        private static void OnAttachmentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = (AttachmentControl)d;
-            control.ViewModel = new AttachmentViewModel(control.Attachment);
-        }
-
         public AttachmentControl()
         {
             this.DefaultStyleKey = typeof(AttachmentControl);
@@ -49,11 +34,11 @@ namespace Unicord.Universal.Controls.Messages
 
         private async void OnTapped(object sender, TappedRoutedEventArgs e)
         {
-            if (Attachment == null || ViewModel == null || ViewModel.Type != AttachmentType.Image)
+            if (ViewModel == null || ViewModel.Type != AttachmentType.Image)
                 return;
 
             await OverlayService.GetForCurrentView()
-                                .ShowOverlayAsync<AttachmentOverlayPage>(Attachment);
+                                .ShowOverlayAsync<AttachmentOverlayPage>(ViewModel);
         }
     }
 }

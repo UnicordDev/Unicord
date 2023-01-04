@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
+using Unicord.Universal.Models.Messages;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,7 +21,8 @@ namespace Unicord.Universal.Dialogs
 
         private static void OnMessageSet(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as DeleteMessageDialog).MessageControl.Message = e.NewValue as DiscordMessage;
+            // todo: why
+            (d as DeleteMessageDialog).MessageControl.MessageViewModel = new MessageViewModel(e.NewValue as DiscordMessage);
         }
 
         public DeleteMessageDialog()

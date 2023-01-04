@@ -1,32 +1,27 @@
-﻿using System;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+using Unicord.Universal.Models.Messaging;
 
 namespace Unicord.Universal.Models
 {
-    public class FriendsViewModel : ViewModelBase, IDisposable
+    public class FriendsPageViewModel : ViewModelBase
     {
         private SynchronizationContext _syncContext;
 
-        // for binary searches
-        private List<DiscordRelationship> _allList;
-        private List<DiscordRelationship> _onlineList;
-
-        public FriendsViewModel()
+        public FriendsPageViewModel()
         {
             All = new ObservableCollection<DiscordRelationship>();
             Online = new ObservableCollection<DiscordRelationship>();
             Blocked = new ObservableCollection<DiscordRelationship>();
             Pending = new ObservableCollection<DiscordRelationship>();
-
-            _allList = new List<DiscordRelationship>();
-            _onlineList = new List<DiscordRelationship>();
 
             // capture the current synchronisation context to invoke
             // methods on the dispatcher
@@ -38,12 +33,8 @@ namespace Unicord.Universal.Models
                 {
                     case DiscordRelationshipType.Friend:
                         All.Add(rel);
-                        _allList.Add(rel);
                         if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
-                        {
                             Online.Add(rel);
-                            _onlineList.Add(rel);
-                        }
                         break;
                     case DiscordRelationshipType.Blocked:
                         Blocked.Add(rel);
@@ -57,9 +48,9 @@ namespace Unicord.Universal.Models
                 }
             }
 
-            App.Discord.RelationshipAdded += Discord_RelationshipAdded;
-            App.Discord.RelationshipRemoved += Discord_RelationshipRemoved;
-            App.Discord.PresenceUpdated += Discord_PresenceUpdated;
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipAddedEventArgs>(this, (t, v) => t.OnRelationshipAdded(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipRemovedEventArgs>(this, (t, v) => t.OnRelationshipRemoved(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
         }
 
         public DiscordUser CurrentUser => App.Discord.CurrentUser;
@@ -75,30 +66,30 @@ namespace Unicord.Universal.Models
             switch (rel.RelationshipType)
             {
                 case DiscordRelationshipType.Friend:
-                    int i;
-
                     if (!skipAll)
                     {
-                        i = _allList.BinarySearch(rel);
-                        if (i < 0)
+                        _syncContext.Post(a =>
                         {
-                            i = ~i;
-                        }
+                            var i = All.BinarySearch(rel);
+                            if (i < 0)
+                                i = ~i;
 
-                        _allList.Insert(i, rel);
-                        _syncContext.Post(a => All.Insert(i, rel), null);
+                            i = Math.Min(i, All.Count - 1);
+                            All.Insert(i, rel);
+                        }, null);
                     }
 
                     if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
                     {
-                        i = _onlineList.BinarySearch(rel);
-                        if (i < 0)
+                        _syncContext.Post(a =>
                         {
-                            i = ~i;
-                        }
+                            var i = Online.BinarySearch(rel);
+                            if (i < 0)
+                                i = ~i;
 
-                        _onlineList.Insert(i, rel);
-                        _syncContext.Post(a => Online.Insert(i, rel), null);
+                            i = Math.Min(i, Online.Count);
+                            Online.Insert(i, rel);
+                        }, null);
                     }
                     break;
                 case DiscordRelationshipType.Blocked:
@@ -117,25 +108,20 @@ namespace Unicord.Universal.Models
         {
             if (!skipAll)
             {
-                if (_allList.Remove(rel))
-                    _syncContext.Post(a => All.Remove(rel), null);
+                _syncContext.Post(a => All.Remove(rel), null);
             }
 
-            if (_onlineList.Remove(rel))
-                _syncContext.Post(a => Online.Remove(rel), null);
-
-            if (Pending.Contains(rel)) // is this actually faster?
-                _syncContext.Post(a => Pending.Remove(rel), null);
-
-            if (Blocked.Contains(rel)) // ^^
-                _syncContext.Post(a => Blocked.Remove(rel), null);
+            _syncContext.Post(a => Online.Remove(rel), null);
+            _syncContext.Post(a => Pending.Remove(rel), null);
+            _syncContext.Post(a => Blocked.Remove(rel), null);
         }
 
-        private Task Discord_PresenceUpdated(PresenceUpdateEventArgs e)
+        private Task OnPresenceUpdated(PresenceUpdateEventArgs e)
         {
             if (e.User != null && e.PresenceBefore?.Status != e.Status)
             {
-                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) && rel?.RelationshipType == DiscordRelationshipType.Friend)
+                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) &&
+                    rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
                     SortRelationship(rel, true);
                 }
@@ -144,26 +130,16 @@ namespace Unicord.Universal.Models
             return Task.CompletedTask;
         }
 
-        private Task Discord_RelationshipAdded(RelationshipEventArgs e)
+        private Task OnRelationshipAdded(RelationshipAddedEventArgs e)
         {
             SortRelationship(e.Relationship);
             return Task.CompletedTask;
         }
 
-        private Task Discord_RelationshipRemoved(RelationshipEventArgs e)
+        private Task OnRelationshipRemoved(RelationshipRemovedEventArgs e)
         {
             RemoveRelationship(e.Relationship);
             return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            if (App.Discord != null)
-            {
-                App.Discord.RelationshipAdded -= Discord_RelationshipAdded;
-                App.Discord.RelationshipRemoved -= Discord_RelationshipRemoved;
-                App.Discord.PresenceUpdated -= Discord_PresenceUpdated;
-            }
         }
     }
 }

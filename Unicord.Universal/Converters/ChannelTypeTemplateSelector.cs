@@ -22,7 +22,7 @@ namespace Unicord.Universal.Converters
                 {
                     case ChannelType.Text:
                     case ChannelType.Store:
-                    case ChannelType.News:
+                    case ChannelType.Announcement:
                     case ChannelType.Unknown:
                         return TextChannelTemplate;
                     case ChannelType.Voice:

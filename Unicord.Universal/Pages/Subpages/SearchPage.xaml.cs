@@ -10,7 +10,7 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class SearchPage : Page
     {
-        public SearchPageModel ViewModel { get; set; }
+        public SearchPageViewModel ViewModel { get; set; }
 
         public SearchPage()
         {
@@ -21,7 +21,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (e.Parameter is DiscordChannel channel)
             {
-                ViewModel = new SearchPageModel(channel);
+                ViewModel = new SearchPageViewModel(channel);
                 Root.DataContext = ViewModel;
             }
             else
