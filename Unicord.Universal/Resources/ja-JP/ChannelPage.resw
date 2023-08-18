@@ -179,7 +179,7 @@
     <value>返信</value>
   </data>
   <data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Toggle pinging the original author.</value>
+    <value>作者からの返信を強調表示する</value>
   </data>
   <data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>検索</value>
