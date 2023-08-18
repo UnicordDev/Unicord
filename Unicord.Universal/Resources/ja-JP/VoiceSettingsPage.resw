@@ -163,7 +163,7 @@
     <value>出力デバイス</value>
   </data>
   <data name="VoiceActivityBlock.Title" xml:space="preserve">
-    <value>音声アクティビティ</value>
+    <value>音声検出</value>
   </data>
   <data name="VoiceSettingsHeader.Text" xml:space="preserve">
     <value>音声</value>
