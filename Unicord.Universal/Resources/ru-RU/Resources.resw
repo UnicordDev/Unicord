@@ -117,46 +117,45 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDisplayDescription" xml:space="preserve">
-    <value>A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience.</value>
-  </data>
-  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
-    <value>A Discord client for the Universal Windows Platform</value>
-  </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Unicord</value>
-  </data>
-  <data name="AppDisplayNameText.Text" xml:space="preserve">
-    <value>Unicord</value>
-  </data>
-  <data name="DevAppDisplayName" xml:space="preserve">
-    <value>Unicord Canary</value>
-  </data>
-  <data name="LoginFailedDialogMessage" xml:space="preserve">
-    <value>Something went wrong logging you in! Check your details and try again!</value>
-  </data>
-  <data name="LoginFailedDialogTitle" xml:space="preserve">
-    <value>Unable to login!</value>
-  </data>
-  <data name="RecentChannelsJumpListGroup" xml:space="preserve">
-    <value>Recent Channels</value>
-  </data>
-  <data name="RecentPeopleJumpListGroup" xml:space="preserve">
-    <value>Recent People</value>
-  </data>
-  <data name="ServerUnavailableMessage" xml:space="preserve">
-    <value>It seems this server is having some problems, and is currently unavailable, sorry!</value>
-  </data>
-  <data name="ServerUnavailableTitle" xml:space="preserve">
-    <value>This server is unavailable!</value>
-  </data>
-  <data name="VerifyLoginDisplayReason" xml:space="preserve">
-    <value>Verify your identitiy to login to Unicord!</value>
-  </data>
-  <data name="VerifyNSFWDisplayReason" xml:space="preserve">
-    <value>Verify your identity to access this channel!</value>
-  </data>
-  <data name="VerifySettingsDisplayReason" xml:space="preserve">
-    <value>Verify your identity to open settings!</value>
-  </data>
-</root>
+ <data name="AppDisplayDescription" xml:space="preserve">
+  <value>Бесплатный, открытый клиент Discord для Windows 10 и Windows 10 Mobile, который стремится предоставить быстрый, эффективный, естественный опыт использования Discord.</value>
+</data>
+<data name="AppDisplayDescriptionText.Text" xml:space="preserve">
+  <value>Клиент Discord для универсальной платформы Windows</value>
+</data>
+<data name="AppDisplayName" xml:space="preserve">
+  <value>Unicord</value>
+</data>
+<data name="AppDisplayNameText.Text" xml:space="preserve">
+  <value>Unicord</value>
+</data>
+<data name="DevAppDisplayName" xml:space="preserve">
+  <value>Unicord Canary</value>
+</data>
+<data name="LoginFailedDialogMessage" xml:space="preserve">
+  <value>Что-то пошло не так при входе! Проверьте свои данные и попробуйте снова!</value>
+</data>
+<data name="LoginFailedDialogTitle" xml:space="preserve">
+  <value>Не удалось войти!</value>
+</data>
+<data name="RecentChannelsJumpListGroup" xml:space="preserve">
+  <value>Последние каналы</value>
+</data>
+<data name="RecentPeopleJumpListGroup" xml:space="preserve">
+  <value>Последние пользователи</value>
+</data>
+<data name="ServerUnavailableMessage" xml:space="preserve">
+  <value>Похоже, у этого сервера возникли проблемы и он временно недоступен, извините!</value>
+</data>
+<data name="ServerUnavailableTitle" xml:space="preserve">
+  <value>Этот сервер недоступен!</value>
+</data>
+<data name="VerifyLoginDisplayReason" xml:space="preserve">
+  <value>Подтвердите свою личность, чтобы войти в Unicord!</value>
+</data>
+<data name="VerifyNSFWDisplayReason" xml:space="preserve">
+  <value>Подтвердите свою личность, чтобы получить доступ к этому каналу!</value>
+</data>
+<data name="VerifySettingsDisplayReason" xml:space="preserve">
+  <value>Подтвердите свою личность, чтобы открыть настройки!</value>
+</data>
