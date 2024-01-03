@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccessChannelsSubtitle" xml:space="preserve">
+  <value>Позволяет участникам просматривать этот канал по умолчанию. Если отключить, канал станет частным.</value>
+</data>
+<data name="AccessChannelsTitle" xml:space="preserve">
+  <value>Просмотр канала</value>
+</data>
+<data name="AddReactionsSubtitle" xml:space="preserve">
+  <value>Позволяет участникам добавлять новые реакции к сообщению в этом канале.</value>
+</data>
+<data name="AddReactionsTitle" xml:space="preserve">
+  <value>Разрешить реакции</value>
+</data>
+<data name="AttachFilesSubtitle" xml:space="preserve">
+  <value>Позволяет участникам загружать файлы или медиа в этот канал.</value>
+</data>
+<data name="AttachFilesTitle" xml:space="preserve">
+  <value>Прикрепить файлы</value>
+</data>
+<data name="CreateInstantInviteSubtitle" xml:space="preserve">
+  <value>Позволяет участникам создавать пригласительные ссылки для этого канала.</value>
+</data>
+<data name="CreateInstantInviteTitle" xml:space="preserve">
+  <value>Создать приглашение</value>
+</data>
+<data name="DeafenMembersSubtitle" xml:space="preserve">
+  <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
+</data>
+<data name="DeafenMembersTitle" xml:space="preserve">
+  <value>Заглушить участников</value>
+</data>
+<data name="EmbedLinksSubtitle" xml:space="preserve">
+  <value>Позволяет создавать встроенные материалы для ссылок, размещенных в этом канале.</value>
+</data>
+<data name="EmbedLinksTitle" xml:space="preserve">
+  <value>Встраивать ссылки</value>
+</data>
+<data name="ManageChannelsSubtitle" xml:space="preserve">
+  <value>Позволяет участникам удалять этот канал, а также изменять его название, описание и настройки.</value>
+</data>
+<data name="ManageChannelsTitle" xml:space="preserve">
+  <value>Управление каналом</value>
+</data>
+<data name="ManageMessagesSubtitle" xml:space="preserve">
+  <value>Позволяет участникам удалять и закреплять сообщения.</value>
+</data>
+<data name="ManageMessagesTitle" xml:space="preserve">
+  <value>Управление сообщениями</value>
+</data>
+<data name="ManageRolesSubtitle" xml:space="preserve">
+  <value>Позволяет участникам изменять разрешения этого канала.</value>
+</data>
+<data name="ManageRolesTitle" xml:space="preserve">
+  <value>Управление разрешениями</value>
+</data>
+<data name="ManageWebhooksSubtitle" xml:space="preserve">
+  <value>Позволяет участникам управлять вебхуками в этом канале.</value>
+</data>
+<data name="ManageWebhooksTitle" xml:space="preserve">
+  <value>Управление вебхуками</value>
+</data>
+<data name="MentionEveryoneSubtitle" xml:space="preserve">
+  <value>Позволяет участникам использовать @everyone и @here в этом канале, а также @упоминать все роли.</value>
+</data>
+<data name="MentionEveryoneTitle" xml:space="preserve">
+  <value>Упоминание @everyone, @here и всех ролей</value>
+</data>
+<data name="MoveMembersSubtitle" xml:space="preserve">
+  <value>Позволяет участникам перемещать других участников в этот голосовой канал или отключать их.</value>
+</data>
+<data name="MoveMembersTitle" xml:space="preserve">
+  <value>Перемещение участников</value>
+</data>
+<data name="MuteMembersSubtitle" xml:space="preserve">
+  <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
+</data>
+<data name="MuteMembersTitle" xml:space="preserve">
+  <value>Заглушить участников</value>
+</data>
+<data name="PrioritySpeakerSubtitle" xml:space="preserve">
+  <value>Позволяет участникам легче слышать в этом голосовом канале, используя клавишу Push to Talk (приоритет).</value>
+</data>
+<data name="PrioritySpeakerTitle" xml:space="preserve">
+  <value>Приоритетный спикер</value>
+</data>
+<data name="ReadMessageHistorySubtitle" xml:space="preserve">
+  <value>Позволяет участникам читать предыдущие сообщения, отправленные в этом канале. Без этого разрешения участники могут видеть только сообщения, отправленные при просмотре этого канала.</value>
+</data>
+<data name="ReadMessageHistoryTitle" xml:space="preserve">
+  <value>Чтение истории сообщений</value>
+</data>
+<data name="SendMessagesSubtitle" xml:space="preserve">
+  <value>Позволяет участникам отправлять сообщения в этом канале.</value>
+</data>
+<data name="SendMessagesTitle" xml:space="preserve">
+  <value>Отправка сообщений</value>
+</data>
+<data name="SendTtsMessagesSubtitle" xml:space="preserve">
+  <value>Позволяет участникам отправлять сообщения с использованием текста в речь в этом канале.</value>
+</data>
+<data name="SendTtsMessagesTitle" xml:space="preserve">
+  <value>Отправка текстово-голосовых сообщений</value>
+</data>
+<data name="SpeakSubtitle" xml:space="preserve">
+  <value>Позволяет участникам разговаривать в этом голосовом канале. Отключите это и Просмотр канала, чтобы создать частный голосовой канал.</value>
+</data>
+<data name="SpeakTitle" xml:space="preserve">
+  <value>Говорить</value>
+</data>
+<data name="StreamSubtitle" xml:space="preserve">
+  <value>Позволяет участникам использовать веб-камеру, общий экран или вести трансляцию в этом канале.</value>
+</data>
+<data name="StreamTitle" xml:space="preserve">
+  <value>Видео</value>
+</data>
+<data name="UseExternalEmojisSubtitle" xml:space="preserve">
+  <value>Позволяет участникам Discord Nitro использовать эмодзи из других серверов.</value>
+</data>
+<data name="UseExternalEmojisTitle" xml:space="preserve">
+  <value>Использовать внешние эмодзи</value>
+</data>
+<data name="UseVoiceDetectionSubtitle" xml:space="preserve">
+  <value>Отключение этого разрешения обязывает использовать функцию нажатия клавиши для разговора в этом канале.</value>
+</data>
+<data name="UseVoiceDetectionTitle" xml:space="preserve">
+  <value>Использовать голосовую активацию</value>
+</data>
+<data name="UseVoiceSubtitle" xml:space="preserve">
+  <value>Позволяет участникам присоединяться к этому голосовому каналу и слышать других.</value>
+</data>
+<data name="UseVoiceTitle" xml:space="preserve">
+  <value>Подключение</value>
+</data>
+</root>

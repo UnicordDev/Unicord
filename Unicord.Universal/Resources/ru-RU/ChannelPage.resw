@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <xml
+<resheader name="resmimetype">
+  <value>text/microsoft-resx</value>
+</resheader>
+<resheader name="version">
+  <value>2.0</value>
+</resheader>
+<resheader name="reader">
+  <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+</resheader>
+<resheader name="writer">
+  <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+</resheader>
+<data name="ChannelReadonlyText" xml:space="preserve">
+  <value>Этот канал только для чтения.</value>
+</data>
+<data name="CloseEditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Закрыть</value>
+</data>
+<data name="DeleteAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Удалить</value>
+</data>
+<data name="ImmuneSlowModeFormat" xml:space="preserve">
+  <value>Вы иммунны к медленному режиму {0} в этом канале!</value>
+</data>
+<data name="MassDeleteMessage" xml:space="preserve">
+  <value>Вы уверены, что хотите удалить все эти сообщения?</value>
+</data>
+<data name="MassDeleteTitle" xml:space="preserve">
+  <value>Удалить эти сообщения?</value>
+</data>
+<data name="MessageChannelFormat" xml:space="preserve">
+  <value>Сообщение {0}{1}</value>
+  <comment>Сообщение {ChannelPrefix}{ChannelName}</comment>
+</data>
+<data name="MoreOptionsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Еще</value>
+</data>
+<data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Без звука</value>
+</data>
+<data name="NewWindowItem.Text" xml:space="preserve">
+  <value>Открыть в новом окне</value>
+</data>
+<data name="NewWindowNormal.Text" xml:space="preserve">
+  <value>Открыть в обычном окне</value>
+</data>
+<data name="NewWindowOverlay.Text" xml:space="preserve">
+  <value>Открыть в оверлейном окне</value>
+</data>
+<data name="NoMessagesHeader.Text" xml:space="preserve">
+  <value>Здесь ничего нет!</value>
+</data>
+<data name="NoMessagesSubheader.Text" xml:space="preserve">
+  <value>Я не могу загрузить сообщения для этого канала, извините!</value>
+</data>
+<data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Открыть</value>
+</data>
+<data name="OpenPopoutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Сделать фото или видео</value>
+</data>
+<data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Закрепленные сообщения</value>
+</data>
+<data name="PinToStart.Text" xml:space="preserve">
+  <value>Закрепить на старт</value>
+</data>
+<data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Отменить</value>
+</data>
+<data name="ReplyingTo.Text" xml:space="preserve">
+  <value>Отвечает</value>
+</data>
+<data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Переключить оповещение об оригинальном авторе.</value>
+</data>
+<data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Поиск</value>
+</data>
+<data name="SlowModeFormat" xml:space="preserve">
+  <value>Сообщения можно отправлять каждые {0}!</value>
+</data>
+<data name="UnpinFromStart.Text" xml:space="preserve">
+  <value>Открепить от старта</value>
+</data>
+<data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Список пользователей</value>
+</data>
+</root>
