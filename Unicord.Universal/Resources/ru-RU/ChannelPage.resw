@@ -1,6 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -57,93 +116,82 @@
   </resheader>
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  <xml
-<resheader name="resmimetype">
-  <value>text/microsoft-resx</value>
-</resheader>
-<resheader name="version">
-  <value>2.0</value>
-</resheader>
-<resheader name="reader">
-  <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-</resheader>
-<resheader name="writer">
-  <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-</resheader>
-<data name="ChannelReadonlyText" xml:space="preserve">
-  <value>Этот канал только для чтения.</value>
-</data>
-<data name="CloseEditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Закрыть</value>
-</data>
-<data name="DeleteAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Удалить</value>
-</data>
-<data name="ImmuneSlowModeFormat" xml:space="preserve">
-  <value>Вы иммунны к медленному режиму {0} в этом канале!</value>
-</data>
-<data name="MassDeleteMessage" xml:space="preserve">
-  <value>Вы уверены, что хотите удалить все эти сообщения?</value>
-</data>
-<data name="MassDeleteTitle" xml:space="preserve">
-  <value>Удалить эти сообщения?</value>
-</data>
-<data name="MessageChannelFormat" xml:space="preserve">
-  <value>Сообщение {0}{1}</value>
-  <comment>Сообщение {ChannelPrefix}{ChannelName}</comment>
-</data>
-<data name="MoreOptionsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Еще</value>
-</data>
-<data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Без звука</value>
-</data>
-<data name="NewWindowItem.Text" xml:space="preserve">
-  <value>Открыть в новом окне</value>
-</data>
-<data name="NewWindowNormal.Text" xml:space="preserve">
-  <value>Открыть в обычном окне</value>
-</data>
-<data name="NewWindowOverlay.Text" xml:space="preserve">
-  <value>Открыть в оверлейном окне</value>
-</data>
-<data name="NoMessagesHeader.Text" xml:space="preserve">
-  <value>Здесь ничего нет!</value>
-</data>
-<data name="NoMessagesSubheader.Text" xml:space="preserve">
-  <value>Я не могу загрузить сообщения для этого канала, извините!</value>
-</data>
-<data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Открыть</value>
-</data>
-<data name="OpenPopoutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Сделать фото или видео</value>
-</data>
-<data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Закрепленные сообщения</value>
-</data>
-<data name="PinToStart.Text" xml:space="preserve">
-  <value>Закрепить на старт</value>
-</data>
-<data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Отменить</value>
-</data>
-<data name="ReplyingTo.Text" xml:space="preserve">
-  <value>Отвечает</value>
-</data>
-<data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Переключить оповещение об оригинальном авторе.</value>
-</data>
-<data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Поиск</value>
-</data>
-<data name="SlowModeFormat" xml:space="preserve">
-  <value>Сообщения можно отправлять каждые {0}!</value>
-</data>
-<data name="UnpinFromStart.Text" xml:space="preserve">
-  <value>Открепить от старта</value>
-</data>
-<data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-  <value>Список пользователей</value>
-</data>
+  </resheader>
+  <data name="ChannelReadonlyText" xml:space="preserve">
+    <value>Этот канал только для чтения.</value>
+  </data>
+  <data name="CloseEditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="DeleteAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ImmuneSlowModeFormat" xml:space="preserve">
+    <value>Вы иммунны к медленному режиму {0} в этом канале!</value>
+  </data>
+  <data name="MassDeleteMessage" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить все эти сообщения?</value>
+  </data>
+  <data name="MassDeleteTitle" xml:space="preserve">
+    <value>Удалить эти сообщения?</value>
+  </data>
+  <data name="MessageChannelFormat" xml:space="preserve">
+    <value>Написать {0}{1}</value>
+    <comment>Message {ChannelPrefix}{ChannelName}</comment>
+  </data>
+  <data name="MoreOptionsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Ещё</value>
+  </data>
+  <data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Без звука</value>
+  </data>
+  <data name="NewWindowItem.Text" xml:space="preserve">
+    <value>Открыть в новом окне</value>
+  </data>
+  <data name="NewWindowNormal.Text" xml:space="preserve">
+    <value>Открыть в обычном окне</value>
+  </data>
+  <data name="NewWindowOverlay.Text" xml:space="preserve">
+    <value>Открыть в оверлейном окне</value>
+  </data>
+  <data name="NoMessagesHeader.Text" xml:space="preserve">
+    <value>Здесь ничего нет!</value>
+  </data>
+  <data name="NoMessagesSubheader.Text" xml:space="preserve">
+    <value>Я не могу загрузить сообщения для этого канала, извините!</value>
+  </data>
+  <data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="OpenPopoutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Сделать фото или видео</value>
+  </data>
+  <data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Закреплённые сообщения</value>
+  </data>
+  <data name="PinToStart.Text" xml:space="preserve">
+    <value>Закрепить на начальном экране</value>
+  </data>
+  <data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="ReplyingTo.Text" xml:space="preserve">
+    <value>Ответить</value>
+    <comment>Replying to {Member}</comment>
+  </data>
+  <data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переключить оповещение автора.</value>
+  </data>
+  <data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="SlowModeFormat" xml:space="preserve">
+    <value>Сообщения можно отправлять каждые {0}!</value>
+  </data>
+  <data name="UnpinFromStart.Text" xml:space="preserve">
+    <value>Открепить от начального экрана</value>
+  </data>
+  <data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Список пользователей</value>
+  </data>
 </root>

@@ -117,40 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-<data name="AccessNSFWBlock.Title" xml:space="preserve">
-  <value>Доступ к каналам для взрослых</value>
-</data>
-<data name="DiagnosticDataBlock.Title" xml:space="preserve">
-  <value>Отправлять диагностические и использованные данные</value>
-</data>
-<data name="DiagnosticDataHeader.Text" xml:space="preserve">
-  <value>Диагностические и использованные данные</value>
-</data>
-<data name="LoginBlock.Title" xml:space="preserve">
-  <value>Вход</value>
-</data>
-<data name="SecuritySettingsHeader.Text" xml:space="preserve">
-  <value>Безопасность и конфиденциальность</value>
-</data>
-<data name="SettingsBlock.Title" xml:space="preserve">
-  <value>Изменить настройки</value>
-</data>
-<data name="StayAuthenticatedBlock.Title" xml:space="preserve">
-  <value>Оставаться в системе для</value>
-</data>
-<data name="WindowsHelloHeader.Text" xml:space="preserve">
-  <value>Windows Hello</value>
-</data>
-<data name="WindowsHelloOptionsHeader.Text" xml:space="preserve">
-  <value>Требовать аутентификации с помощью Windows Hello для:</value>
-</data>
-<data name="WindowsHelloSubHeader.Text" xml:space="preserve">
-  <value>Требовать аутентификации с помощью Windows Hello для:</value>
-</data>
-<data name="WindowsHelloToggle.Text" xml:space="preserve">
-  <value />
-</data>
-<data name="WindowsHelloUnavailable.Text" xml:space="preserve">
-  <value>Windows Hello недоступен на этом устройстве. Хотите [изменить это?](ms-settings:signinoptions)</value>
-</data>
+  <data name="AccessNSFWBlock.Title" xml:space="preserve">
+    <value>Доступ к каналам для взрослых</value>
+  </data>
+  <data name="DiagnosticDataBlock.Title" xml:space="preserve">
+    <value>Отправлять диагностические и использованные данные</value>
+  </data>
+  <data name="DiagnosticDataHeader.Text" xml:space="preserve">
+    <value>Диагностические и использованные данные</value>
+  </data>
+  <data name="LoginBlock.Title" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="SecuritySettingsHeader.Text" xml:space="preserve">
+    <value>Безопасность и конфиденциальность</value>
+  </data>
+  <data name="SettingsBlock.Title" xml:space="preserve">
+    <value>Изменить настройки</value>
+  </data>
+  <data name="StayAuthenticatedBlock.Title" xml:space="preserve">
+    <value>Оставаться в системе в течение</value>
+  </data>
+  <data name="WindowsHelloHeader.Text" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WindowsHelloOptionsHeader.Text" xml:space="preserve">
+    <value>Требовать аутентификации с помощью Windows Hello для:</value>
+  </data>
+  <data name="WindowsHelloSubHeader.Text" xml:space="preserve">
+    <value>Требовать аутентификации с помощью Windows Hello для:</value>
+  </data>
+  <data name="WindowsHelloToggle.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WindowsHelloUnavailable.Text" xml:space="preserve">
+    <value>Windows Hello недоступен на этом устройстве. Хотите [изменить это?](ms-settings:signinoptions)</value>
+  </data>
 </root>

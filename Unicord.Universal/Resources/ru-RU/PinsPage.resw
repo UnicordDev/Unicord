@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NoPinsHeader.Text" xml:space="preserve">
-  <value>Нет закрепленных сообщений!</value>
-</data>
-<data name="NoPinsSubheader.Text" xml:space="preserve">
-  <value>В этом канале нет закрепленных сообщений! Если у вас есть соответствующие разрешения, закрепите что-нибудь!</value>
-</data>
-<data name="PinsHeader.Text" xml:space="preserve">
-  <value>Закрепленные сообщения</value>
-</data>
-<data name="RatelimitedHeader.Text" xml:space="preserve">
-  <value>Упс!</value>
-</data>
-<data name="RatelimitedSubheader.Text" xml:space="preserve">
-  <value>Эй! Помедленнее, вы превысили лимит запросов!</value>
-</data>
+    <value>Нет закреплённых сообщений!</value>
+  </data>
+  <data name="NoPinsSubheader.Text" xml:space="preserve">
+    <value>В этом канале нет закреплённых сообщений! Если у вас есть соответствующие разрешения, закрепите что-нибудь!</value>
+  </data>
+  <data name="PinsHeader.Text" xml:space="preserve">
+    <value>Закреплённые сообщения</value>
+  </data>
+  <data name="RatelimitedHeader.Text" xml:space="preserve">
+    <value>Упс!</value>
+  </data>
+  <data name="RatelimitedSubheader.Text" xml:space="preserve">
+    <value>Эй! Помедленнее, вы превысили лимит запросов!</value>
+  </data>
 </root>

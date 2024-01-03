@@ -118,135 +118,135 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccessChannelsSubtitle" xml:space="preserve">
-  <value>Позволяет участникам просматривать этот канал по умолчанию. Если отключить, канал станет частным.</value>
-</data>
-<data name="AccessChannelsTitle" xml:space="preserve">
-  <value>Просмотр канала</value>
-</data>
-<data name="AddReactionsSubtitle" xml:space="preserve">
-  <value>Позволяет участникам добавлять новые реакции к сообщению в этом канале.</value>
-</data>
-<data name="AddReactionsTitle" xml:space="preserve">
-  <value>Разрешить реакции</value>
-</data>
-<data name="AttachFilesSubtitle" xml:space="preserve">
-  <value>Позволяет участникам загружать файлы или медиа в этот канал.</value>
-</data>
-<data name="AttachFilesTitle" xml:space="preserve">
-  <value>Прикрепить файлы</value>
-</data>
-<data name="CreateInstantInviteSubtitle" xml:space="preserve">
-  <value>Позволяет участникам создавать пригласительные ссылки для этого канала.</value>
-</data>
-<data name="CreateInstantInviteTitle" xml:space="preserve">
-  <value>Создать приглашение</value>
-</data>
-<data name="DeafenMembersSubtitle" xml:space="preserve">
-  <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
-</data>
-<data name="DeafenMembersTitle" xml:space="preserve">
-  <value>Заглушить участников</value>
-</data>
-<data name="EmbedLinksSubtitle" xml:space="preserve">
-  <value>Позволяет создавать встроенные материалы для ссылок, размещенных в этом канале.</value>
-</data>
-<data name="EmbedLinksTitle" xml:space="preserve">
-  <value>Встраивать ссылки</value>
-</data>
-<data name="ManageChannelsSubtitle" xml:space="preserve">
-  <value>Позволяет участникам удалять этот канал, а также изменять его название, описание и настройки.</value>
-</data>
-<data name="ManageChannelsTitle" xml:space="preserve">
-  <value>Управление каналом</value>
-</data>
-<data name="ManageMessagesSubtitle" xml:space="preserve">
-  <value>Позволяет участникам удалять и закреплять сообщения.</value>
-</data>
-<data name="ManageMessagesTitle" xml:space="preserve">
-  <value>Управление сообщениями</value>
-</data>
-<data name="ManageRolesSubtitle" xml:space="preserve">
-  <value>Позволяет участникам изменять разрешения этого канала.</value>
-</data>
-<data name="ManageRolesTitle" xml:space="preserve">
-  <value>Управление разрешениями</value>
-</data>
-<data name="ManageWebhooksSubtitle" xml:space="preserve">
-  <value>Позволяет участникам управлять вебхуками в этом канале.</value>
-</data>
-<data name="ManageWebhooksTitle" xml:space="preserve">
-  <value>Управление вебхуками</value>
-</data>
-<data name="MentionEveryoneSubtitle" xml:space="preserve">
-  <value>Позволяет участникам использовать @everyone и @here в этом канале, а также @упоминать все роли.</value>
-</data>
-<data name="MentionEveryoneTitle" xml:space="preserve">
-  <value>Упоминание @everyone, @here и всех ролей</value>
-</data>
-<data name="MoveMembersSubtitle" xml:space="preserve">
-  <value>Позволяет участникам перемещать других участников в этот голосовой канал или отключать их.</value>
-</data>
-<data name="MoveMembersTitle" xml:space="preserve">
-  <value>Перемещение участников</value>
-</data>
-<data name="MuteMembersSubtitle" xml:space="preserve">
-  <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
-</data>
-<data name="MuteMembersTitle" xml:space="preserve">
-  <value>Заглушить участников</value>
-</data>
-<data name="PrioritySpeakerSubtitle" xml:space="preserve">
-  <value>Позволяет участникам легче слышать в этом голосовом канале, используя клавишу Push to Talk (приоритет).</value>
-</data>
-<data name="PrioritySpeakerTitle" xml:space="preserve">
-  <value>Приоритетный спикер</value>
-</data>
-<data name="ReadMessageHistorySubtitle" xml:space="preserve">
-  <value>Позволяет участникам читать предыдущие сообщения, отправленные в этом канале. Без этого разрешения участники могут видеть только сообщения, отправленные при просмотре этого канала.</value>
-</data>
-<data name="ReadMessageHistoryTitle" xml:space="preserve">
-  <value>Чтение истории сообщений</value>
-</data>
-<data name="SendMessagesSubtitle" xml:space="preserve">
-  <value>Позволяет участникам отправлять сообщения в этом канале.</value>
-</data>
-<data name="SendMessagesTitle" xml:space="preserve">
-  <value>Отправка сообщений</value>
-</data>
-<data name="SendTtsMessagesSubtitle" xml:space="preserve">
-  <value>Позволяет участникам отправлять сообщения с использованием текста в речь в этом канале.</value>
-</data>
-<data name="SendTtsMessagesTitle" xml:space="preserve">
-  <value>Отправка текстово-голосовых сообщений</value>
-</data>
-<data name="SpeakSubtitle" xml:space="preserve">
-  <value>Позволяет участникам разговаривать в этом голосовом канале. Отключите это и Просмотр канала, чтобы создать частный голосовой канал.</value>
-</data>
-<data name="SpeakTitle" xml:space="preserve">
-  <value>Говорить</value>
-</data>
-<data name="StreamSubtitle" xml:space="preserve">
-  <value>Позволяет участникам использовать веб-камеру, общий экран или вести трансляцию в этом канале.</value>
-</data>
-<data name="StreamTitle" xml:space="preserve">
-  <value>Видео</value>
-</data>
-<data name="UseExternalEmojisSubtitle" xml:space="preserve">
-  <value>Позволяет участникам Discord Nitro использовать эмодзи из других серверов.</value>
-</data>
-<data name="UseExternalEmojisTitle" xml:space="preserve">
-  <value>Использовать внешние эмодзи</value>
-</data>
-<data name="UseVoiceDetectionSubtitle" xml:space="preserve">
-  <value>Отключение этого разрешения обязывает использовать функцию нажатия клавиши для разговора в этом канале.</value>
-</data>
-<data name="UseVoiceDetectionTitle" xml:space="preserve">
-  <value>Использовать голосовую активацию</value>
-</data>
-<data name="UseVoiceSubtitle" xml:space="preserve">
-  <value>Позволяет участникам присоединяться к этому голосовому каналу и слышать других.</value>
-</data>
-<data name="UseVoiceTitle" xml:space="preserve">
-  <value>Подключение</value>
-</data>
+    <value>Позволяет участникам просматривать этот канал по умолчанию. Если отключить, канал станет частным.</value>
+  </data>
+  <data name="AccessChannelsTitle" xml:space="preserve">
+    <value>Просмотр канала</value>
+  </data>
+  <data name="AddReactionsSubtitle" xml:space="preserve">
+    <value>Позволяет участникам добавлять новые реакции к сообщению в этом канале.</value>
+  </data>
+  <data name="AddReactionsTitle" xml:space="preserve">
+    <value>Разрешить реакции</value>
+  </data>
+  <data name="AttachFilesSubtitle" xml:space="preserve">
+    <value>Позволяет участникам загружать файлы или медиа в этот канал.</value>
+  </data>
+  <data name="AttachFilesTitle" xml:space="preserve">
+    <value>Прикрепить файлы</value>
+  </data>
+  <data name="CreateInstantInviteSubtitle" xml:space="preserve">
+    <value>Позволяет участникам создавать пригласительные ссылки для этого канала.</value>
+  </data>
+  <data name="CreateInstantInviteTitle" xml:space="preserve">
+    <value>Создать приглашение</value>
+  </data>
+  <data name="DeafenMembersSubtitle" xml:space="preserve">
+    <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
+  </data>
+  <data name="DeafenMembersTitle" xml:space="preserve">
+    <value>Заглушить участников</value>
+  </data>
+  <data name="EmbedLinksSubtitle" xml:space="preserve">
+    <value>Позволяет создавать встроенные материалы для ссылок, размещенных в этом канале.</value>
+  </data>
+  <data name="EmbedLinksTitle" xml:space="preserve">
+    <value>Встраивать ссылки</value>
+  </data>
+  <data name="ManageChannelsSubtitle" xml:space="preserve">
+    <value>Позволяет участникам удалять этот канал, а также изменять его название, описание и настройки.</value>
+  </data>
+  <data name="ManageChannelsTitle" xml:space="preserve">
+    <value>Управление каналом</value>
+  </data>
+  <data name="ManageMessagesSubtitle" xml:space="preserve">
+    <value>Позволяет участникам удалять и закреплять сообщения.</value>
+  </data>
+  <data name="ManageMessagesTitle" xml:space="preserve">
+    <value>Управление сообщениями</value>
+  </data>
+  <data name="ManageRolesSubtitle" xml:space="preserve">
+    <value>Позволяет участникам изменять разрешения этого канала.</value>
+  </data>
+  <data name="ManageRolesTitle" xml:space="preserve">
+    <value>Управление разрешениями</value>
+  </data>
+  <data name="ManageWebhooksSubtitle" xml:space="preserve">
+    <value>Позволяет участникам управлять вебхуками в этом канале.</value>
+  </data>
+  <data name="ManageWebhooksTitle" xml:space="preserve">
+    <value>Управление вебхуками</value>
+  </data>
+  <data name="MentionEveryoneSubtitle" xml:space="preserve">
+    <value>Позволяет участникам использовать @everyone и @here в этом канале, а также @упоминать все роли.</value>
+  </data>
+  <data name="MentionEveryoneTitle" xml:space="preserve">
+    <value>Упоминание @everyone, @here и всех ролей</value>
+  </data>
+  <data name="MoveMembersSubtitle" xml:space="preserve">
+    <value>Позволяет участникам перемещать других участников в этот голосовой канал или отключать их.</value>
+  </data>
+  <data name="MoveMembersTitle" xml:space="preserve">
+    <value>Перемещение участников</value>
+  </data>
+  <data name="MuteMembersSubtitle" xml:space="preserve">
+    <value>Позволяет участникам заглушать звук других участников в этом голосовом канале.</value>
+  </data>
+  <data name="MuteMembersTitle" xml:space="preserve">
+    <value>Заглушить участников</value>
+  </data>
+  <data name="PrioritySpeakerSubtitle" xml:space="preserve">
+    <value>Позволяет участникам легче слышать в этом голосовом канале, используя клавишу Push to Talk (приоритет).</value>
+  </data>
+  <data name="PrioritySpeakerTitle" xml:space="preserve">
+    <value>Приоритетный режим</value>
+  </data>
+  <data name="ReadMessageHistorySubtitle" xml:space="preserve">
+    <value>Позволяет участникам читать предыдущие сообщения, отправленные в этом канале. Без этого разрешения участники могут видеть только сообщения, отправленные при просмотре этого канала.</value>
+  </data>
+  <data name="ReadMessageHistoryTitle" xml:space="preserve">
+    <value>Чтение истории сообщений</value>
+  </data>
+  <data name="SendMessagesSubtitle" xml:space="preserve">
+    <value>Позволяет участникам отправлять сообщения в этом канале.</value>
+  </data>
+  <data name="SendMessagesTitle" xml:space="preserve">
+    <value>Отправка сообщений</value>
+  </data>
+  <data name="SendTtsMessagesSubtitle" xml:space="preserve">
+    <value>Позволяет участникам отправлять сообщения с использованием преобразования текста в речь в этом канале.</value>
+  </data>
+  <data name="SendTtsMessagesTitle" xml:space="preserve">
+    <value>Отправка сообщений text-to-speech</value>
+  </data>
+  <data name="SpeakSubtitle" xml:space="preserve">
+    <value>Позволяет участникам разговаривать в этом голосовом канале. Отключите это и Просмотр канала, чтобы создать частный голосовой канал.</value>
+  </data>
+  <data name="SpeakTitle" xml:space="preserve">
+    <value>Говорить</value>
+  </data>
+  <data name="StreamSubtitle" xml:space="preserve">
+    <value>Позволяет участникам использовать веб-камеру, общий экран или вести трансляцию в этом канале.</value>
+  </data>
+  <data name="StreamTitle" xml:space="preserve">
+    <value>Видео</value>
+  </data>
+  <data name="UseExternalEmojisSubtitle" xml:space="preserve">
+    <value>Позволяет участникам Discord Nitro использовать эмодзи из других серверов.</value>
+  </data>
+  <data name="UseExternalEmojisTitle" xml:space="preserve">
+    <value>Использовать внешние эмодзи</value>
+  </data>
+  <data name="UseVoiceDetectionSubtitle" xml:space="preserve">
+    <value>Отключение этого разрешения обязывает использовать функцию нажатия клавиши для разговора в этом канале.</value>
+  </data>
+  <data name="UseVoiceDetectionTitle" xml:space="preserve">
+    <value>Использовать голосовую активацию</value>
+  </data>
+  <data name="UseVoiceSubtitle" xml:space="preserve">
+    <value>Позволяет участникам присоединяться к этому голосовому каналу и слышать других.</value>
+  </data>
+  <data name="UseVoiceTitle" xml:space="preserve">
+    <value>Подключение</value>
+  </data>
 </root>

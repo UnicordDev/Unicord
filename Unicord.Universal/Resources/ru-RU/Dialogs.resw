@@ -1,7 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
-  -->
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -59,129 +116,128 @@
   </resheader>
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-</resheader>
-<data name="BanDeleteFromLastDay.Content" xml:space="preserve">
-  <value>За последние 24 часа</value>
-</data>
-<data name="BanDeleteFromLastWeek.Content" xml:space="preserve">
-  <value>За последнюю неделю</value>
-</data>
-<data name="BanDeleteMessagesBox.Header" xml:space="preserve">
-  <value>Удалить сообщения</value>
-</data>
-<data name="BanDeleteNoMessages.Content" xml:space="preserve">
-  <value>Не удалять сообщения</value>
-</data>
-<data name="BanDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Да!</value>
-</data>
-<data name="BanDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Нет</value>
-</data>
-<data name="BanDialogHeaderFormat" xml:space="preserve">
-  <value>Забанить @{0}#{1}?</value>
-</data>
-<data name="BanReason.Header" xml:space="preserve">
-  <value>Причина бана</value>
-</data>
-<data name="ChangeNicknameDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Сохранить</value>
-</data>
-<data name="ChangeNicknameDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Отмена</value>
-</data>
-<data name="ChangeNicknameSubtitle.Text" xml:space="preserve">
-  <value>Ники видны всем, так что не будь неадекватом, да?</value>
-</data>
-<data name="ChangeNicknameTitle.Text" xml:space="preserve">
-  <value>Изменить никнейм</value>
-</data>
-<data name="ConfirmationDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Да</value>
-</data>
-<data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Нет</value>
-</data>
-<data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Да!</value>
-</data>
-<data name="DeleteMessageDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Нет</value>
-</data>
-<data name="DeleteMessageDialog.Title" xml:space="preserve">
-  <value>Удалить это сообщение?</value>
-</data>
-<data name="ErrorDialog.PrimaryButtonText" xml:space="preserve">
-  <value>ОК</value>
-</data>
-<data name="InstallThemeBy.Text" xml:space="preserve">
-  <value>От</value>
-</data>
-<data name="InstallThemeDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Установить</value>
-</data>
-<data name="InstallThemeDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Отмена</value>
-</data>
-<data name="InvalidThemeFileNotFound" xml:space="preserve">
-  <value>Указанный файл темы не найден!</value>
-</data>
-<data name="InvalidThemeFileNoThemesFound" xml:space="preserve">
-  <value>Указанный файл темы, по-видимому, не содержит темы!</value>
-</data>
-<data name="InvalidThemeFileTitle" xml:space="preserve">
-  <value>Неверный файл темы!</value>
-</data>
-<data name="KickDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Да!</value>
-</data>
-<data name="KickDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Нет</value>
-</data>
-<data name="KickDialogHeaderFormat" xml:space="preserve">
-  <value>Выгнать @{0}#{1}?</value>
-</data>
-<data name="KickReason.Header" xml:space="preserve">
-  <value>Причина выговора</value>
-</data>
-<data name="PinMessageDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Конечно!</value>
-</data>
-<data name="PinMessageDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Может быть нет</value>
-</data>
-<data name="PinMessageDialog.Title" xml:space="preserve">
-  <value>Закрепить это сообщение?</value>
-</data>
-<data name="ProfileConnections.Header" xml:space="preserve">
-  <value>Связи</value>
-</data>
-<data name="ProfileJoinedServer.Text" xml:space="preserve">
-  <value>Присоединился к серверу</value>
-</data>
-<data name="ProfileMutualServers.Header" xml:space="preserve">
-  <value>Общие серверы</value>
-</data>
-<data name="ProfileRoles.Text" xml:space="preserve">
-  <value>Роли</value>
-</data>
-<data name="ThemeInstallFailure" xml:space="preserve">
-  <value>Не удалось установить тему!</value>
-</data>
-<data name="TokenDialog.CloseButtonText" xml:space="preserve">
-  <value>Отмена</value>
-</data>
-<data name="TokenDialog.PrimaryButtonText" xml:space="preserve">
-  <value>Войти</value>
-</data>
-<data name="TokenDialog.SecondaryButtonText" xml:space="preserve">
-  <value>Загрузить из файла</value>
-</data>
-<data name="TokenSubtitle.Text" xml:space="preserve">
-  <value>Не знаете, где искать? [Нажмите здесь для руководства.](https://example.com/)</value>
-</data>
-<data name="TokenTitle.Text" xml:space="preserve">
-  <value>Введите ваш токен Discord</value>
-</data>
+  </resheader>
+  <data name="BanDeleteFromLastDay.Content" xml:space="preserve">
+    <value>За последние 24 часа</value>
+  </data>
+  <data name="BanDeleteFromLastWeek.Content" xml:space="preserve">
+    <value>За последнюю неделю</value>
+  </data>
+  <data name="BanDeleteMessagesBox.Header" xml:space="preserve">
+    <value>Удалить сообщения</value>
+  </data>
+  <data name="BanDeleteNoMessages.Content" xml:space="preserve">
+    <value>Не удалять сообщения</value>
+  </data>
+  <data name="BanDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Да!</value>
+  </data>
+  <data name="BanDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="BanDialogHeaderFormat" xml:space="preserve">
+    <value>Забанить @{0}#{1}?</value>
+  </data>
+  <data name="BanReason.Header" xml:space="preserve">
+    <value>Причина бана</value>
+  </data>
+  <data name="ChangeNicknameDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="ChangeNicknameDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ChangeNicknameSubtitle.Text" xml:space="preserve">
+    <value>Ники видны всем, так что не будь неадекватом, да?</value>
+  </data>
+  <data name="ChangeNicknameTitle.Text" xml:space="preserve">
+    <value>Изменить никнейм</value>
+  </data>
+  <data name="ConfirmationDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Да!</value>
+  </data>
+  <data name="DeleteMessageDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="DeleteMessageDialog.Title" xml:space="preserve">
+    <value>Удалить это сообщение?</value>
+  </data>
+  <data name="ErrorDialog.PrimaryButtonText" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="InstallThemeBy.Text" xml:space="preserve">
+    <value>От</value>
+  </data>
+  <data name="InstallThemeDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="InstallThemeDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="InvalidThemeFileNotFound" xml:space="preserve">
+    <value>Указанный файл темы не найден!</value>
+  </data>
+  <data name="InvalidThemeFileNoThemesFound" xml:space="preserve">
+    <value>Указанный файл темы, по-видимому, не содержит темы!</value>
+  </data>
+  <data name="InvalidThemeFileTitle" xml:space="preserve">
+    <value>Неверный файл темы!</value>
+  </data>
+  <data name="KickDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Да!</value>
+  </data>
+  <data name="KickDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="KickDialogHeaderFormat" xml:space="preserve">
+    <value>Выгнать @{0}#{1}?</value>
+  </data>
+  <data name="KickReason.Header" xml:space="preserve">
+    <value>Причина изгнания</value>
+  </data>
+  <data name="PinMessageDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Конечно!</value>
+  </data>
+  <data name="PinMessageDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Может быть нет</value>
+  </data>
+  <data name="PinMessageDialog.Title" xml:space="preserve">
+    <value>Закрепить это сообщение?</value>
+  </data>
+  <data name="ProfileConnections.Header" xml:space="preserve">
+    <value>Связи</value>
+  </data>
+  <data name="ProfileJoinedServer.Text" xml:space="preserve">
+    <value>Присоединился к серверу</value>
+  </data>
+  <data name="ProfileMutualServers.Header" xml:space="preserve">
+    <value>Общие серверы</value>
+  </data>
+  <data name="ProfileRoles.Text" xml:space="preserve">
+    <value>Роли</value>
+  </data>
+  <data name="ThemeInstallFailure" xml:space="preserve">
+    <value>Не удалось установить тему!</value>
+  </data>
+  <data name="TokenDialog.CloseButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="TokenDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="TokenDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Загрузить из файла</value>
+  </data>
+  <data name="TokenSubtitle.Text" xml:space="preserve">
+    <value>Не знаете, где искать? [Нажмите здесь для руководства.](https://example.com/)</value>
+  </data>
+  <data name="TokenTitle.Text" xml:space="preserve">
+    <value>Введите ваш токен Discord</value>
+  </data>
 </root>
-```

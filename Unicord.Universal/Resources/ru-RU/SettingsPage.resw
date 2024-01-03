@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutItem.Content" xml:space="preserve">
-  <value>О нас</value>
-</data>
-<data name="AccountsItem.Content" xml:space="preserve">
-  <value>Учетные записи</value>
-</data>
-<data name="MediaItem.Content" xml:space="preserve">
-  <value>Аудио и Видео</value>
-</data>
-<data name="MessagingItem.Content" xml:space="preserve">
-  <value>Текст и изображения</value>
-</data>
-<data name="SecurityItem.Content" xml:space="preserve">
-  <value>Безопасность и конфиденциальность</value>
-</data>
-<data name="ThemesItem.Content" xml:space="preserve">
-  <value>Внешний вид и темы</value>
-</data>
-<data name="VoiceItem.Content" xml:space="preserve">
-  <value>Голосовые звонки</value>
-</data>
+    <value>О приложении</value>
+  </data>
+  <data name="AccountsItem.Content" xml:space="preserve">
+    <value>Учетные записи</value>
+  </data>
+  <data name="MediaItem.Content" xml:space="preserve">
+    <value>Аудио и видео</value>
+  </data>
+  <data name="MessagingItem.Content" xml:space="preserve">
+    <value>Текст и изображения</value>
+  </data>
+  <data name="SecurityItem.Content" xml:space="preserve">
+    <value>Безопасность и конфиденциальность</value>
+  </data>
+  <data name="ThemesItem.Content" xml:space="preserve">
+    <value>Внешний вид и темы</value>
+  </data>
+  <data name="VoiceItem.Content" xml:space="preserve">
+    <value>Голосовые звонки</value>
+  </data>
 </root>

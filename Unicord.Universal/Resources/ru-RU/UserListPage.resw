@@ -116,8 +116,8 @@
   </resheader>
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-<resheader>
-  <data name="UserListHeader.Text" xml:space="preserve">
+  </resheader>
+    <data name="UserListHeader.Text" xml:space="preserve">
     <value>Пользователи</value>
   </data>
   <data name="UserSearchBox.PlaceholderText" xml:space="preserve">

@@ -117,8 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ResultsText.Text" xml:space="preserve">
+    <data name="ResultsText.Text" xml:space="preserve">
     <value>Результаты</value>
+    </data>
 <data name="SearchBox.PlaceholderText" xml:space="preserve">
   <value>Поиск...</value>
 </data>
