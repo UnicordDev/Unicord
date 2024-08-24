@@ -5,9 +5,9 @@
     <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <RuntimeIdentifiers>win7-x64;win7-x86;win7-arm</RuntimeIdentifiers>
-    <PublishTrimmed>true</PublishTrimmed>
     <Platforms>AnyCPU;x64;x86;ARM;ARM64</Platforms>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>

@@ -10,6 +10,8 @@ using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages.Settings;
@@ -218,7 +220,7 @@ namespace Unicord.Universal.Pages
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(message.Channel);
+                await service.NavigateAsync(message.Channel.Channel);
             }
         }
 
@@ -227,9 +229,9 @@ namespace Unicord.Universal.Pages
             if (Model.Navigating)
                 return;
 
-            if (e.AddedItems.FirstOrDefault() is DiscordDmChannel c)
+            if (e.AddedItems.FirstOrDefault() is ChannelViewModel c)
             {
-                await DiscordNavigationService.GetForCurrentView().NavigateAsync(c);
+                await DiscordNavigationService.GetForCurrentView().NavigateAsync(c.Channel);
             }
         }
 

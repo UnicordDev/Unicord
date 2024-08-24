@@ -14,7 +14,10 @@
     xmlns:users="using:Unicord.Universal.Controls.Users"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
-    xmlns:media1="using:Microsoft.Xaml.Interactions.Media"
+    xmlns:media1="using:Microsoft.Xaml.Interactions.Media" 
+    xmlns:channels="using:Unicord.Universal.Controls.Channels"
+    xmlns:channelVms="using:Unicord.Universal.Models.Channels"
+    xmlns:guildVMs="using:Unicord.Universal.Models.Guild"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
@@ -25,6 +28,7 @@
         <ResourceDictionary Source="Controls/Permissions.xaml"/>
         <ResourceDictionary Source="Controls/UniversalWebView.xaml"/>
         <ResourceDictionary Source="Controls/Flyouts.xaml"/>
+        <ResourceDictionary Source="Controls/Channels.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -210,41 +214,15 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListTemplate" x:DataType="entities:DiscordChannel">
-        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
-            <Grid Name="grid" 
-                  Margin="0,0,16,0"
-                  Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
-                <ToolTipService.ToolTip>
-                    <ToolTip IsEnabled="{Binding Topic, Converter={StaticResource BoolConverter}}">
-                        <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto" MinWidth="16"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="{StaticResource FluentSystemIcons}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
-
-                <lib:InfoBadge x:Name="unreadIndicator" 
-                               x:Load="{x:Bind Unread, Mode=OneWay}" 
-                               Grid.Column="2" 
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center"
-                               MinWidth="8"
-                               MinHeight="8"
-                               Margin="0"
-                               Value="{x:Bind ReadState.NullableMentionCount, Mode=OneWay}" />
-            </Grid>
-        </Grid>
+    <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListCategoryTemplate" x:DataType="entities:DiscordChannel">
+    <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource DirectMessageChannelListStyle}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ChannelListCategoryTemplate">
         <Border ContextFlyout="{StaticResource ChannelContextFlyout}"
                 VerticalAlignment="Stretch" 
                 Background="Transparent" 
@@ -254,8 +232,8 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="entities:DiscordChannel">
-        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
+    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVms:ChannelListViewModel">
+        <!--<Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -288,7 +266,9 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
-        </Grid>
+        </Grid>-->
+
+        <channels:ChannelListControl Channel="{Binding}"/>
     </DataTemplate>
 
     <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
@@ -322,7 +302,7 @@
     </DataTemplate>
 
 
-    <DataTemplate x:Key="GuildsListTemplate" x:DataType="models:GuildListViewModel">
+    <DataTemplate x:Key="GuildsListTemplate" x:DataType="guildVMs:GuildListViewModel">
         <lib:TreeViewItem IsSelected="{x:Bind IsSelected}" 
                           ContextFlyout="{StaticResource GuildContextFlyout}"
                           ToolTipService.ToolTip="{x:Bind Name}"
@@ -340,7 +320,7 @@
         </lib:TreeViewItem>
     </DataTemplate>
 
-    <DataTemplate x:Key="GuildsListFolderTemplate" x:DataType="models:GuildListFolderViewModel">
+    <DataTemplate x:Key="GuildsListFolderTemplate" x:DataType="guildVMs:GuildListFolderViewModel">
         <lib:TreeViewItem ItemsSource="{x:Bind Children}" 
                           IsExpanded="{Binding IsExpanded}" 
                           ToolTipService.ToolTip="{x:Bind Name}"
@@ -470,7 +450,7 @@
         </lib:TreeViewItem>
     </DataTemplate>
 
-    <DataTemplate x:Key="DMChannelTemplate" x:DataType="entities:DiscordDmChannel">
+    <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
         <Grid Margin="0,0,4,0" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -514,7 +494,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="entities:DiscordDmChannel">
+    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
         <Grid Padding="0,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

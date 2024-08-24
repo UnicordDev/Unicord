@@ -1,6 +1,7 @@
 ﻿using System;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Channels;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters
@@ -9,6 +10,9 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if (value is ChannelViewModel vm)
+                value = vm.Channel;
+
             if (value is DiscordDmChannel c)
             {
                 if (c.Type == ChannelType.Private)

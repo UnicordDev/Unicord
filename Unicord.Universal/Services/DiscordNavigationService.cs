@@ -7,11 +7,11 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Utilities;
-//using Unicord.Universal.Voice;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -49,6 +49,7 @@ namespace Unicord.Universal.Services
             _navigation.BackRequested += OnBackRequested;
         }
 
+        // TODO: this is kinda bad and should really be more in DiscordPageModel
         internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
             var page = _discordPage.MainFrame.Content as ChannelPage;
@@ -62,7 +63,7 @@ namespace Unicord.Universal.Services
                 _discordPageModel.IsFriendsSelected = true;
                 _discordPageModel.CurrentChannel = null;
 
-                if (_discordPageModel.PreviousDM != null && (page?.ViewModel.Channel != _discordPageModel.PreviousDM) && !skipPreviousDm)
+                if (_discordPageModel.PreviousDM != null && (page?.ViewModel.Channel != _discordPageModel.PreviousDM.Channel) && !skipPreviousDm)
                 {
                     _discordPageModel.SelectedDM = _discordPageModel.PreviousDM;
                     _discordPage.MainFrame.Navigate(typeof(ChannelPage), _discordPageModel.PreviousDM);
@@ -97,8 +98,7 @@ namespace Unicord.Universal.Services
 
                 if (channel is DiscordDmChannel dm)
                 {
-                    _discordPageModel.SelectedDM = dm;
-                    _discordPageModel.PreviousDM = dm;
+                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm);
                     _discordPageModel.IsFriendsSelected = true;
                     _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }

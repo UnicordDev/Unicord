@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BadgeManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.pub.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MutedExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondaryTileManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TileManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ToastManager.cs" />

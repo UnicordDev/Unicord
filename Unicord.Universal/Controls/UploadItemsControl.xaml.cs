@@ -41,7 +41,7 @@ namespace Unicord.Universal.Controls
             {
                 await _transcodeWait.WaitAsync();
 
-                var model = DataContext as ChannelViewModel;
+                var model = DataContext as ChannelPageViewModel;
                 var type = file.ContentType;
                 var progress = new Progress<double?>(UpdateProgressBar);
                 var setting = App.RoamingSettings.Read(Constants.AUTO_TRANSCODE_MEDIA, MediaTranscodeOptions.WhenNeeded);
@@ -123,7 +123,7 @@ namespace Unicord.Universal.Controls
         private async void RemoveItemButton_Click(object sender, RoutedEventArgs e)
         {
             var item = (sender as FrameworkElement).DataContext as FileUploadModel;
-            var channelViewModel = DataContext as ChannelViewModel;
+            var channelViewModel = DataContext as ChannelPageViewModel;
             channelViewModel.FileUploads.Remove(item);
 
             if (item.IsTemporary)
@@ -146,7 +146,7 @@ namespace Unicord.Universal.Controls
         {
             var success = false;
             StorageFile tempFile = null;
-            var channelViewModel = (ChannelViewModel)DataContext;
+            var channelViewModel = (ChannelPageViewModel)DataContext;
 
             try
             {
@@ -202,7 +202,7 @@ namespace Unicord.Universal.Controls
 
         private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            var bigModel = DataContext as ChannelViewModel;
+            var bigModel = DataContext as ChannelPageViewModel;
 
             var model = (sender as FrameworkElement).DataContext as FileUploadModel;
             var newModel = new EditedFileUploadModel(model) { Parent = this };

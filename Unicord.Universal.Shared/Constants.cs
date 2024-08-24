@@ -17,12 +17,27 @@ namespace Unicord
         public const string WARN_UNSAFE_LINKS = "WarnUnsafeLinks";
 
         public const string VIDEO_BITRATE = "VideoBitrate";
+        public const uint DEFAULT_VIDEO_BITRATE = 1_115_000u;
+
         public const string VIDEO_WIDTH = "VideoWidth";
+        public const int DEFAULT_VIDEO_WIDTH = 854;
+
         public const string VIDEO_HEIGHT = "VideoHeight";
+        public const int DEFAULT_VIDEO_HEIGHT = 480;
 
         public const string AUDIO_BITRATE = "AudioBitrate";
+        public const uint DEFAULT_AUDIO_BITRATE = 192 * 1000;
+
         public const string AUDIO_SAMPLERATE = "AudioSampleRate";
+        public const uint DEFAULT_AUDIO_SAMPLERATE = 48000u;
+
         public const string VIDEO_PROCESSING = "VideoProcessingAlgorithm";
+
+        public const string SAVE_PHOTOS = "SavePhotos";
+        public const bool DEFAULT_SAVE_PHOTOS = true;
+
+        public const string VIDEO_PRESERVE_FRAMERATE = "PreserveFrameRate";
+        public const bool DEFAULT_VIDEO_PRESERVE_FRAMERATE = true;
 
         public const string VERIFY_LOGIN = "HelloForLogin";
         public const string VERIFY_NSFW = "HelloForNSFW";

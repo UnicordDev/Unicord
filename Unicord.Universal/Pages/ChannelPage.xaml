@@ -323,7 +323,7 @@
                                               x:Uid="/ChannelPage/MuteButton"
                                               Content="&#xE74F;"
                                               Margin="2,4"
-                                              IsChecked="{x:Bind ViewModel.Channel.Muted, Mode=OneWay}"
+                                              IsChecked="{x:Bind ViewModel.Muted, Mode=OneWay}"
                                               Style="{ThemeResource IconToggleButtonStyle}">
                                     <w1709:ToggleButton.KeyboardAccelerators>
                                         <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>

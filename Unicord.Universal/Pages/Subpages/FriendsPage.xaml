@@ -62,7 +62,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Name="text" Text="{Binding User.Username}" FontSize="16" FontWeight="SemiBold" />
+                        <TextBlock Name="text" Text="{Binding User.DisplayName}" FontSize="16" FontWeight="SemiBold" />
                         <presence:InlinePresenceControl Presence="{Binding User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
                     </Grid>
                     <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">

@@ -14,7 +14,6 @@ using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Messages;
-using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
@@ -41,10 +40,10 @@ namespace Unicord.Universal.Pages
 {
     public sealed partial class ChannelPage : Page, INotifyPropertyChanged
     {
-        private readonly List<ChannelViewModel> _channelHistory
-            = new List<ChannelViewModel>();
+        private readonly List<ChannelPageViewModel> _channelHistory
+            = new List<ChannelPageViewModel>();
 
-        public ChannelViewModel ViewModel
+        public ChannelPageViewModel ViewModel
         {
             get => _viewModel;
             private set
@@ -56,7 +55,7 @@ namespace Unicord.Universal.Pages
 
         public bool IsPaneOpen { get; private set; }
 
-        private ChannelViewModel _viewModel;
+        private ChannelPageViewModel _viewModel;
         private bool _scrollHandlerAdded;
         private DispatcherTimer _titleBarTimer;
 
@@ -123,7 +122,7 @@ namespace Unicord.Universal.Pages
                 }
                 else
                 {
-                    model = new ChannelViewModel(chan, windowHandle);
+                    model = new ChannelPageViewModel(chan, windowHandle);
                 }
 
                 var args = this.FindParent<MainPage>()?.Arguments;
@@ -261,18 +260,17 @@ namespace Unicord.Universal.Pages
             {
                 LoadingProgress.Visibility = Visibility.Collapsed;
                 LoadingProgress.IsIndeterminate = false;
-            }).ConfigureAwait(false);
 
-            if (ViewModel.Channel.ReadState?.Unread == true)
-            {
-                var id = ViewModel.Channel.ReadState.LastMessageId;
-                var message = ViewModel.Messages.FirstOrDefault(m => m.Id == id) ?? ViewModel.Messages.FirstOrDefault();
-                if (message != null)
+                if (ViewModel.ReadState.Unread == true)
                 {
-                    await Dispatcher.AwaitableRunAsync(() =>
-                        MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading)).ConfigureAwait(false);
+                    var id = ViewModel.ReadState.LastMessageId;
+                    var message = ViewModel.Messages.FirstOrDefault(m => m.Id == id) ?? ViewModel.Messages.FirstOrDefault();
+                    if (message != null)
+                    {
+                        MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading);
+                    }
                 }
-            }
+            }).ConfigureAwait(false);
 
             //if (IsPaneOpen)
             //{
@@ -291,12 +289,12 @@ namespace Unicord.Universal.Pages
 
             if (!e.IsIntermediate)
             {
-                if (scroll.VerticalOffset >= (scroll.ScrollableHeight - scroll.ViewportHeight) && ViewModel.Channel.ReadState?.Unread != false)
+                if (scroll.VerticalOffset >= (scroll.ScrollableHeight - scroll.ViewportHeight) && ViewModel.ReadState.Unread != false)
                 {
-                    var message = MessageList.Items.LastOrDefault() as DiscordMessage;
+                    var message = ViewModel.Messages.LastOrDefault();
                     if (message != null)
                     {
-                        await message.AcknowledgeAsync().ConfigureAwait(false);
+                        await message.Message.AcknowledgeAsync().ConfigureAwait(false);
                     }
                 }
                 else if (scroll.VerticalOffset <= 150)
@@ -362,8 +360,6 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
-                // TODO: Port
-                // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "PasteFailure" });
                 Logger.LogError(ex);
                 await UIUtilities.ShowErrorDialogAsync(
                     "Failed to upload.",

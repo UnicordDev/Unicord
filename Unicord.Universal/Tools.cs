@@ -331,8 +331,8 @@ namespace Unicord.Universal
 
         // adapted from corefx
         // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
-        public static int BinarySearch<TCollection, TOther>(this IList<TCollection> collection, TOther item)
-            where TOther : IComparable<TOther> where TCollection : IComparable<TOther>
+        public static int BinarySearch<TCollection>(this IList<TCollection> collection, TCollection item) 
+            where TCollection : IComparable<TCollection>
         {
             var lo = 0;
             var hi = collection.Count - 1;
@@ -410,11 +410,6 @@ namespace Unicord.Universal
 
             return enumerable ?? Enumerable.Empty<DiscordEmoji>();
         }
-
-        public static bool IsText(this DiscordChannel channel) =>
-            channel.Type == ChannelType.Text || channel.Type == ChannelType.Announcement || channel.Type == ChannelType.Private || channel.Type == ChannelType.Group;
-        public static bool IsVoice(this DiscordChannel channel) =>
-            channel.Type == ChannelType.Voice || channel.Type == ChannelType.Stage;
 
         public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
         public static int UploadLimit(this DiscordUser user) => user.PremiumType switch

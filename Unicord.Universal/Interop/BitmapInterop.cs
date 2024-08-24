@@ -173,11 +173,9 @@ namespace Unicord.Universal.Interop
 
         private static unsafe SoftwareBitmap CreateSoftwareBitmap(byte[] data)
         {
-            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-
-            try
+            fixed (byte* dataPtr = data)
             {
-                var info = Marshal.PtrToStructure<BITMAPINFOHEADER>(handle.AddrOfPinnedObject());
+                var info = *(BITMAPINFOHEADER*)dataPtr;
                 var bytesPerPixel = info.biBitCount >> 3;
 
                 if (info.biSizeImage == 0)
@@ -215,7 +213,7 @@ namespace Unicord.Universal.Interop
                     else
                     {
                         // remove padding copying row by row
-                        var scan0 = (byte*)((long)handle.AddrOfPinnedObject() + scanOffset);
+                        var scan0 = dataPtr + scanOffset;
                         for (int row = 0; row < info.biHeight; row++)
                         {
                             var dataBeginPointer = scan0 + (row * stride);
@@ -227,11 +225,6 @@ namespace Unicord.Universal.Interop
 
                 return bmp;
             }
-            finally
-            {
-                handle.Free();
-            }
         }
     }
-
 }

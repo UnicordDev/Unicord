@@ -15,6 +15,7 @@ namespace Unicord.Universal.Models.Messages
         private DiscordReaction _reaction;
 
         public ReactionViewModel(DiscordReaction reaction, ICommand reactCommand)
+            : base(null)
         {
             _reaction = reaction;
             ReactCommand = reactCommand;

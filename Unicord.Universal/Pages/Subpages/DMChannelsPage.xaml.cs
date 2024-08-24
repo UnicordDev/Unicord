@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.UI;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -40,7 +41,9 @@ namespace Unicord.Universal.Pages.Subpages
 
             if (e.Parameter is DiscordDmChannel channel)
             {
-                _model.SelectedIndex = _model.DMChannels.IndexOf(channel);
+                var model = _model.DMChannels.FirstOrDefault(m => m.Channel == channel);
+                if (model is not null)
+                    _model.SelectedIndex = _model.DMChannels.IndexOf(model);
             }
             else
             {
@@ -61,11 +64,11 @@ namespace Unicord.Universal.Pages.Subpages
             if (dataContext.UpdatingIndex)
                 return;
 
-            var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
+            var channel = e.AddedItems.FirstOrDefault() as ChannelListViewModel;
             if (channel != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(channel);
+                await service.NavigateAsync(channel.Channel);
             }
         }
     }

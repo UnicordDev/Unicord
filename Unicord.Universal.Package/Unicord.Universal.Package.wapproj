@@ -44,26 +44,6 @@
       <Configuration>Release</Configuration>
       <Platform>AnyCPU</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|AnyCPU">
-      <Configuration>Store</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|ARM">
-      <Configuration>Store</Configuration>
-      <Platform>arm</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|ARM64">
-      <Configuration>Store</Configuration>
-      <Platform>ARM64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|x64">
-      <Configuration>Store</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|x86">
-      <Configuration>Store</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
     <WapProjPath Condition="'$(WapProjPath)'==''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
@@ -71,14 +51,14 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>8e0255b7-b38e-423e-91c7-5637a01c2e13</ProjectGuid>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\Unicord.Universal\Unicord.Universal.csproj</EntryPointProjectUniqueName>
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
-    <PackageCertificateThumbprint>CBB99112037FA88434855C973D1AB39B0D4B2F10</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>2C5F1F6080F0648BF786147323B846D8D0BA1638</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -87,26 +67,11 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Store'">
+  <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Store'">
-    <AppxManifest Include="Package.Debug.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <!--<ItemGroup Condition="'$(Configuration)' == 'Store' And '$(Platform)' == 'ARM' ">
-    <AppxManifest Include="Package.ARM.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Store' And '$(Platform)' == 'ARM' ">
-    <AppxManifest Include="Package.ARM.Debug.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>

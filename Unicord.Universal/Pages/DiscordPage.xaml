@@ -266,13 +266,12 @@
                             <lib:PersonPicture Margin="8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding CurrentUser.Username}"/>
+                                <TextBlock Text="{Binding CurrentUser.DisplayName}"/>
                                 <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" 
                                            FontSize="10" 
                                            FontFamily="Segoe UI Variable Small" 
-                                           Margin="0,-2,0,0">
-                                    #<Run Text="{Binding CurrentUser.Discriminator}"/>
-                                </TextBlock>
+                                           Margin="0,-2,0,0" 
+                                           Text="{Binding CurrentUser.Username}"/>
                             </StackPanel>
 
                             <Button x:Name="SettingsButton"

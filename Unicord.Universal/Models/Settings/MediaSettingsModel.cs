@@ -24,39 +24,38 @@ namespace Unicord.Universal.Models
 
         public int VideoBitrate
         {
-            get => App.RoamingSettings.Read(VIDEO_BITRATE, 1_150_000) / 1000;
+            get => (int)(App.RoamingSettings.Read(VIDEO_BITRATE, DEFAULT_VIDEO_BITRATE) / 1000);
             set => App.RoamingSettings.Save(VIDEO_BITRATE, value * 1000);
         }
 
         public int AudioBitrate
         {
-            get => App.RoamingSettings.Read(AUDIO_BITRATE, 192);
-            set => App.RoamingSettings.Save(AUDIO_BITRATE, value);
+            get => (int)(App.RoamingSettings.Read(AUDIO_BITRATE, DEFAULT_AUDIO_BITRATE) / 1000);
+            set => App.RoamingSettings.Save(AUDIO_BITRATE, value * 1000);
         }
-
 
         public int VideoWidth
         {
-            get => App.RoamingSettings.Read(VIDEO_WIDTH, 854);
+            get => App.RoamingSettings.Read(VIDEO_WIDTH, DEFAULT_VIDEO_WIDTH);
             set => App.RoamingSettings.Save(VIDEO_WIDTH, value);
         }
 
         public int VideoHeight
         {
-            get => App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
+            get => App.RoamingSettings.Read(VIDEO_HEIGHT, DEFAULT_VIDEO_HEIGHT);
             set => App.RoamingSettings.Save(VIDEO_HEIGHT, value);
         }
 
         public bool SavePhotos
         {
-            get => App.RoamingSettings.Read("SavePhotos", true);
-            set => App.RoamingSettings.Save("SavePhotos", value);
+            get => App.RoamingSettings.Read(SAVE_PHOTOS, DEFAULT_SAVE_PHOTOS);
+            set => App.RoamingSettings.Save(SAVE_PHOTOS, value);
         }
 
         public bool PreserveFrameRate
         {
-            get => App.RoamingSettings.Read("PreserveFrameRate", true);
-            set => App.RoamingSettings.Save("PreserveFrameRate", value);
+            get => App.RoamingSettings.Read(VIDEO_PRESERVE_FRAMERATE, DEFAULT_VIDEO_PRESERVE_FRAMERATE);
+            set => App.RoamingSettings.Save(VIDEO_PRESERVE_FRAMERATE, value);
         }
 
         public List<string> AvailableResolutions => new List<string> { "144p", "240p", "360p", "480p", "720p", "1080p" };

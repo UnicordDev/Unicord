@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Unicord.Universal.Services;
 //using Unicord.Universal.Native;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -82,8 +83,24 @@ namespace Unicord.Universal.Controls
                     PosterSource = Attachment.Width != 0 ? new BitmapImage(new Uri(Attachment.ProxyUrl + "?format=jpeg")) : null
                 };
 
-                mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
-                mediaPlayer.TransportControls.IsCompact = true;
+                var controls = new CustomMediaTransportControls();
+                controls.FullWindowRequested += async (o, ev) =>
+                {
+                    if (mediaPlayer.IsFullWindow)
+                    {
+                        await FullscreenService.GetForCurrentView()
+                                               .LeaveFullscreenAsync(mediaPlayer, mainGrid);
+                    }
+                    else
+                    {
+                        await FullscreenService.GetForCurrentView()
+                                               .EnterFullscreenAsync(mediaPlayer, mainGrid);
+                    }
+
+                    mediaPlayer.IsFullWindow = !mediaPlayer.IsFullWindow;
+                };
+
+                mediaPlayer.TransportControls = controls;
 
                 if (naturalSize == null)
                 {

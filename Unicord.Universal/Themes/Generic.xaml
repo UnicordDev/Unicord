@@ -806,5 +806,5 @@
         <Setter Property="Template" Value="{StaticResource CustomNotificationTemplate}" />
     </Style>
 
-
+   
 </ResourceDictionary>

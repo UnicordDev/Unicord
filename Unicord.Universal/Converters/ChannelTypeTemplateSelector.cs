@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Channels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -14,11 +15,10 @@ namespace Unicord.Universal.Converters
         public DataTemplate GroupChannelTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
-        {          
-
-            if (item is DiscordChannel channel)
+        {
+            if (item is ChannelListViewModel channel)
             {
-                switch (channel.Type)
+                switch (channel.ChannelType)
                 {
                     case ChannelType.Text:
                     case ChannelType.Store:

@@ -5,24 +5,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models
 {
     public class DMChannelsViewModel : ViewModelBase, IDisposable
     {
-        private SynchronizationContext _syncContext;
         private int _selectedItem = -1;
 
-        public DMChannelsViewModel()
+        public DMChannelsViewModel() : base(null)
         {
-            _syncContext = SynchronizationContext.Current;
-            DMChannels = new ObservableCollection<DiscordDmChannel>(App.Discord.PrivateChannels.Values.OrderByDescending(r => r.ReadState?.LastMessageId));
+            DMChannels = new ObservableCollection<DmChannelListViewModel>(
+                App.Discord.PrivateChannels.Values
+                .Select(s => new DmChannelListViewModel(s))
+                .OrderByDescending(r => r.ReadState?.LastMessageId));
+
             App.Discord.DmChannelCreated += OnDmCreated;
             App.Discord.DmChannelDeleted += OnDmDeleted;
             App.Discord.MessageCreated += OnMessageCreated;
         }
 
-        public ObservableCollection<DiscordDmChannel> DMChannels { get; set; }
+        public ObservableCollection<DmChannelListViewModel> DMChannels { get; set; }
 
         public int SelectedIndex { get => _selectedItem; set => OnPropertySet(ref _selectedItem, value); }
         public bool UpdatingIndex { get; set; }
@@ -36,13 +39,13 @@ namespace Unicord.Universal.Models
 
         private Task OnDmCreated(DmChannelCreateEventArgs e)
         {
-            _syncContext.Post(o => DMChannels.Insert(0, o as DiscordDmChannel), e.Channel);
+            syncContext.Post(o => DMChannels.Insert(0, new DmChannelListViewModel(o as DiscordDmChannel)), e.Channel);
             return Task.CompletedTask;
         }
 
         private Task OnDmDeleted(DmChannelDeleteEventArgs e)
         {
-            _syncContext.Post(o => DMChannels.Remove(o as DiscordDmChannel), e.Channel);
+            syncContext.Post(o => DMChannels.Remove(DMChannels.FirstOrDefault(s => s.Channel == o as DiscordDmChannel)), e.Channel);
             return Task.CompletedTask;
         }
 
@@ -51,8 +54,8 @@ namespace Unicord.Universal.Models
             if (e.Channel is DiscordDmChannel dm)
             {
                 var current = DMChannels.ElementAtOrDefault(SelectedIndex);
-                var index = DMChannels.IndexOf(dm);
-                _syncContext.Post(o =>
+                var index = DMChannels.IndexOf(DMChannels.FirstOrDefault(s => s.Channel == dm));
+                syncContext.Post(o =>
                 {
                     // BUGBUG: this is very bad
                     UpdatingIndex = true;
@@ -62,7 +65,7 @@ namespace Unicord.Universal.Models
                     }
                     else if (index < 0)
                     {
-                        DMChannels.Insert(0, dm);
+                        DMChannels.Insert(0, new DmChannelListViewModel(dm));
                     }
 
                     SelectedIndex = current == null ? -1 : DMChannels.IndexOf(current);
