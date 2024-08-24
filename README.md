@@ -37,6 +37,7 @@ Unicord accepts contributions! Want a feature that doesn't already exist? Feel f
 
 ## Get in Touch
 We have a Discord server specifically for Unicord development and testing, join here:
+
 [![Unicord](https://discordapp.com/api/guilds/648519011130408980/widget.png?style=banner2)](https://discord.gg/64g7M5Y)
 
 ## License
