@@ -227,6 +227,13 @@ namespace Unicord.Universal.Parsers.Markdown
                     // Or a horizontal rule if the line contains nothing but 3 '*', '-' or '_' characters (with optional whitespace).
                     MarkdownBlock newBlockElement = null;
 
+                    if (newBlockElement == null && nonSpaceChar == '#' && nonSpacePos == startOfLine)
+                    {
+                        // Hash-prefixed header.
+                        newBlockElement = HeaderBlock.ParseHashPrefixedHeader(markdown, startOfLine, endOfLine);
+                    }
+
+
                     if (newBlockElement == null)
                     {
                         // Some block elements must start on a new paragraph (tables, lists and code).
