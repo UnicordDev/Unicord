@@ -21,9 +21,7 @@
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.22000.0" />
   </Dependencies>
   <Resources>
-    <Resource Language="EN-GB" />
-    <Resource Language="EN-US" />
-    <Resource Language="FR" />
+		<Resource Language="x-generate"/>
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
