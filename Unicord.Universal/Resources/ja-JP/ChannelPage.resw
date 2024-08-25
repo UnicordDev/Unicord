@@ -149,7 +149,7 @@
     <value>新しいウィンドウで開く</value>
   </data>
   <data name="NewWindowNormal.Text" xml:space="preserve">
-    <value>通常ウィンドウでで開く</value>
+    <value>通常ウィンドウで開く</value>
   </data>
   <data name="NewWindowOverlay.Text" xml:space="preserve">
     <value>オーバーレイで開く</value>
@@ -158,7 +158,7 @@
     <value>表示するものがありません</value>
   </data>
   <data name="NoMessagesSubheader.Text" xml:space="preserve">
-    <value>申し訳ございません。このチャンネル内のメッセージを読み込むことができませんでした。</value>
+    <value>申し訳ありません。このチャンネル内のメッセージを読み込むことができませんでした。</value>
   </data>
   <data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>ローカルの画像を参照する</value>
