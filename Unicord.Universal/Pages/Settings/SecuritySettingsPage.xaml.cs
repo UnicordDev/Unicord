@@ -9,6 +9,7 @@ using Unicord.Universal.Models;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Credentials.UI;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,6 +47,11 @@ namespace Unicord.Universal.Pages.Settings
         private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             await AppCenter.SetEnabledAsync((sender as ToggleSwitch).IsOn);
+        }
+
+        private async void unavailableText_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri(e.Link));
         }
     }
 }

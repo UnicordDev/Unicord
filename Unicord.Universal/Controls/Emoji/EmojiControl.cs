@@ -32,6 +32,15 @@ namespace Unicord.Universal.Controls.Emoji
         public static readonly DependencyProperty SizeProperty =
             DependencyProperty.Register("Size", typeof(double), typeof(EmojiControl), new PropertyMetadata(32));
 
+        public bool Animate
+        {
+            get { return (bool)GetValue(AnimateProperty); }
+            set { SetValue(AnimateProperty, value); }
+        }
+
+        public static readonly DependencyProperty AnimateProperty =
+            DependencyProperty.Register("Animate", typeof(bool), typeof(EmojiControl), new PropertyMetadata(false));
+
         public EmojiControl()
         {
             this.DefaultStyleKey = typeof(EmojiControl);

@@ -19,7 +19,7 @@ using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Messages
 {
-    public class MessageViewModel : ViewModelBase
+    public class MessageViewModel : ViewModelBase, ISnowflake
     {
         public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
             : base((ViewModelBase)parentMessage ?? parent)

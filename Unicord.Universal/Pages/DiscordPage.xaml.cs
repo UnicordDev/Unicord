@@ -8,6 +8,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
@@ -314,7 +315,19 @@ namespace Unicord.Universal.Pages
 
                 if (!guildVM.Guild.IsUnavailable)
                 {
-                    LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    //LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
+                    if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
+                    {
+                        channel = guildVM.Guild.Channels.Values
+                            .Where(c => c.IsText())
+                            .OrderBy(c => c.Position)
+                            .FirstOrDefault(c => c.IsAccessible());
+                    }
+
+                    await DiscordNavigationService.GetForCurrentView()
+                        .NavigateAsync(channel);
+
                     Model.IsFriendsSelected = false;
                 }
                 else

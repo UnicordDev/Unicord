@@ -6,8 +6,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Shared;
+using Windows.ApplicationModel.AppService;
 using Windows.Storage;
-using NotificationUtils = Unicord.Universal.Shared.NotificationUtils;
 
 namespace Unicord.Universal.Background
 {
@@ -19,10 +19,11 @@ namespace Unicord.Universal.Background
         private SecondaryTileManager _secondaryTileManager;
         private ToastManager _toastManager = null;
 
-        private NotifyIcon _notifyIcon;
-        private ContextMenuStrip _contextMenu;
-        private ToolStripMenuItem _openMenuItem;
-        private ToolStripMenuItem _closeMenuItem;
+        private readonly NotifyIcon _notifyIcon;
+        private readonly ContextMenuStrip _contextMenu;
+        private readonly ToolStripMenuItem _openMenuItem;
+        private readonly ToolStripMenuItem _closeMenuItem;
+        private readonly AppServiceConnection _connection;
 
         private Task _connectTask;
         private string _token = null;
@@ -54,7 +55,7 @@ namespace Unicord.Universal.Background
             _contextMenu.Items.Add(_closeMenuItem);
 
             _contextMenu.ResumeLayout(false);
-            _notifyIcon.ContextMenuStrip = _contextMenu;
+            _notifyIcon.ContextMenuStrip = _contextMenu;            
 
             _connectTask = Task.Run(async () => await InitialiseAsync());
             _notifyIcon.Visible = true;
@@ -115,6 +116,17 @@ namespace Unicord.Universal.Background
         private async Task OnReady(ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();
+
+            var timer = new Timer();
+            timer.Interval = 1000;
+            timer.Tick += OnGCTimer;
+            timer.Start();
+        }
+
+        private void OnGCTimer(object sender, EventArgs e)
+        {
+            (sender as Timer).Stop();
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
         }
 
         private Task OnDiscordMessage(MessageCreateEventArgs e)

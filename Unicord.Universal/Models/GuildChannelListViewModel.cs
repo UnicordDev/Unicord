@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messaging;
 using Windows.UI.Xaml.Controls;
@@ -28,7 +29,7 @@ namespace Unicord.Universal.Models
 
         public DiscordGuild Guild { get; }
         public string Name => Guild.Name;
-        public string HeaderImage => Guild.BannerUrl;
+        public string HeaderImage => Guild.GetBannerUrl();
         public ObservableCollection<ChannelListViewModel> Channels { get; set; }
         public ListViewReorderMode ReorderMode => CanEdit ? ListViewReorderMode.Enabled : ListViewReorderMode.Disabled;
 

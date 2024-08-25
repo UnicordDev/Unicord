@@ -77,7 +77,7 @@ namespace Unicord
         public const double MINIMUM_CONTRAST_DEFAULT = 3.5;
 
         public const string ENABLE_WEBP = "EnableWebp";
-        public const bool   ENABLE_WEBP_DEFAULT = false;
+        public const bool   ENABLE_WEBP_DEFAULT = true;
     }
 
     public enum MediaTranscodeOptions

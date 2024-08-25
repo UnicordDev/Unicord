@@ -2,6 +2,8 @@
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 
 namespace Unicord.Universal.Commands
 {
@@ -13,12 +15,14 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is DiscordChannel || parameter is DiscordGuild)
-            {
-                return true;
-            }
+            //if (parameter is DiscordChannel || parameter is DiscordGuild)
+            //{
+            //    return true;
+            //}
 
-            return true;
+            //return true;
+
+            return parameter is DiscordChannel or DiscordGuild or ChannelViewModel or GuildViewModel;
         }
 
         public async void Execute(object parameter)

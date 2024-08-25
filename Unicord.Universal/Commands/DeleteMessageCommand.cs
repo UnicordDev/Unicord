@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Commands
@@ -19,7 +20,8 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is DiscordMessage message)
+            if (parameter is DiscordMessage message || 
+                (parameter is MessageViewModel messageVM && (message = messageVM.Message) != null))
             {
                 if (message.Author.Id == App.Discord.CurrentUser.Id)
                 {

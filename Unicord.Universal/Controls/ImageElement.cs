@@ -65,22 +65,21 @@ namespace Unicord.Universal.Controls
                 {
                     element._templated = element.ApplyTemplate();
                 }
-                else
-                {
-                    LoadImage(element);
-                }
+
+                LoadImage(element);
             }
         }
 
         private static void LoadImage(ImageElement element)
         {
             var image = element.GetTemplateChild("image") as ImageEx;
+            if (image == null) return;
 
             double width = element.ImageWidth;
             double height = element.ImageHeight;
             Drawing.ScaleProportions(ref width, ref height, 640, 480);
 
-            element._img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"?width={(int)width}&height={(int)height}"))
+            element._img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"&width={(int)width}&height={(int)height}"))
             {
                 DecodePixelWidth = (int)width,
                 DecodePixelHeight = (int)height

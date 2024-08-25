@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Misc
 {
@@ -19,7 +21,7 @@ namespace Unicord.Universal.Misc
 
         public EmojiGroup(DiscordGuild guild, IEnumerable<DiscordEmoji> emojis)
         {
-            Key = new EmojiHeader() { Name = guild.Name, IconUrl = guild.IconUrl };
+            Key = new EmojiHeader() { Name = guild.Name, IconUrl = guild.GetIconUrl(32) };
             _emojis = emojis.ToList();
         }
 

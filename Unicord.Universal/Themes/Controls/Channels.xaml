@@ -124,7 +124,7 @@
                                    MinWidth="8"
                                    MinHeight="8"
                                    Margin="0"
-                                   Value="{Binding MentionCount, Mode=OneWay}" />
+                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
                         </Grid>
                     </Grid>
                 </ControlTemplate>

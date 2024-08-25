@@ -8,10 +8,11 @@ using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Unicord.Universal.Models.Messages;
 using Windows.UI;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Models.User
 {
-    public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>
+    public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>, ISnowflake
     {
         private readonly DiscordUser _user;
         private readonly DiscordMember _member;
@@ -45,7 +46,7 @@ namespace Unicord.Universal.Models.User
             => _member?.DisplayName ?? (_user.GlobalName ?? _user.Username);
 
         public string AvatarUrl
-            => _member?.NonAnimatedAvatarUrl ?? _user.NonAnimatedAvatarUrl;
+            => (_member as DiscordUser)?.GetAvatarUrl(64) ?? _user.GetAvatarUrl(64);
 
         public string Mention
             => _user.Mention;
@@ -67,8 +68,7 @@ namespace Unicord.Universal.Models.User
             if (_member == null || e.Member.Id != _member.Id || e.Guild.Id != _member.Guild.Id)
                 return;
 
-            if (e.NicknameBefore != e.NicknameAfter)
-                InvokePropertyChanged(nameof(DisplayName));
+            InvokePropertyChanged(nameof(DisplayName));
 
             if (!e.RolesBefore.SequenceEqual(e.RolesAfter))
                 InvokePropertyChanged(nameof(Color));
@@ -78,6 +78,8 @@ namespace Unicord.Universal.Models.User
         {
             if (_user == null || e.UserAfter.Id != _user.Id)
                 return;
+
+            InvokePropertyChanged(nameof(DisplayName));
 
             if (e.UserAfter.AvatarHash != e.UserBefore.AvatarHash)
                 InvokePropertyChanged(nameof(AvatarUrl));

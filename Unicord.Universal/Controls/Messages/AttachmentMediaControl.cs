@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Models.Messages;
@@ -15,7 +16,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Controls.Messages
 {
-    public sealed class AttachmentMediaControl : Control
+    public sealed class AttachmentMediaControl : Control, INotifyPropertyChanged
     {
         private MediaPlayerElement _mediaPlayerElement;
         private Border _mediaPlayerBorder;
@@ -27,7 +28,14 @@ namespace Unicord.Universal.Controls.Messages
         }
 
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(AttachmentViewModel), typeof(AttachmentMediaControl), new PropertyMetadata(null));
+            DependencyProperty.Register("ViewModel", typeof(AttachmentViewModel), typeof(AttachmentMediaControl), new PropertyMetadata(null, OnAttachmentChange));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private static void OnAttachmentChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((AttachmentMediaControl)d).OnAttachmentChanged(e);
+        }
 
         public AttachmentMediaControl()
         {
@@ -51,8 +59,31 @@ namespace Unicord.Universal.Controls.Messages
             if (mediaPlayerElement.TransportControls is not CustomMediaTransportControls transportControls)
                 return;
 
-            mediaPlayerBorder.DataContext = this.ViewModel;
+            //mediaPlayerBorder.DataContext = this.ViewModel;
             transportControls.FullWindowRequested += OnFullWindowRequested;
+        }
+
+        private void OnAttachmentChanged(DependencyPropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ViewModel)));
+
+            //if (e.NewValue != null && e.NewValue is AttachmentViewModel vm)
+            //{
+            //    if (!ApplyTemplate()) return;
+
+            //    if (GetTemplateChild("MediaPlayer") is not MediaPlayerElement mediaPlayerElement)
+            //        return;
+
+            //    if (vm.Type == AttachmentType.Audio)
+            //    {
+            //        mediaPlayerElement.TransportControls.Style = (Style)Application.Current.Resources["AudioMediaTransportControlsStyle"];
+            //        mediaPlayerElement.TransportControls.IsCompact = true;
+            //    }
+            //    //else if (vm.Type == AttachmentType.Video)
+            //    //{
+            //    //    mediaPlayerElement.TransportControls.Style = (Style)Application.Current.Resources[typeof(CustomMediaTransportControls)];
+            //    //}
+            //}
         }
 
         private async void OnFullWindowRequested(object sender, EventArgs e)

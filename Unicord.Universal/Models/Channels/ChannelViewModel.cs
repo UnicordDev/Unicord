@@ -14,7 +14,7 @@ using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Channels
 {
-    public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>
+    public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>, ISnowflake
     {
         private readonly DiscordChannel _channel;
         private UserViewModel _recipient;

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;
 using Unicord.Universal.Services;
@@ -18,7 +19,8 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is DiscordChannel channel)
+            if (parameter is DiscordChannel channel ||
+                (parameter is ChannelViewModel channelVM && (channel = channelVM.Channel) != null))
             {
                 if (channel is DiscordDmChannel)
                     return false;

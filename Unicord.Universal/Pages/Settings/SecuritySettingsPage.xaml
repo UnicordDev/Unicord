@@ -32,7 +32,8 @@
             FontSize="12"
             Background="Transparent"
             Foreground="{StaticResource ErrorTextForegroundBrush}"
-            TextWrapping="Wrap"/>
+            TextWrapping="Wrap"
+            LinkClicked="unavailableText_LinkClicked"/>
 
         <StackPanel Margin="4,16">
             <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"

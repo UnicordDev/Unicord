@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Services;
@@ -26,6 +27,7 @@ using Windows.Web.Http;
 
 namespace Unicord.Universal.Controls
 {
+    [Obsolete]
     public sealed partial class AttachmentViewer : UserControl
     {
         private static readonly string[] _mediaExtensions =
@@ -71,6 +73,11 @@ namespace Unicord.Universal.Controls
             var url = Attachment.Url;
             var fileExtension = Path.GetExtension(url).ToLowerInvariant();
 
+            var thumbUrl = new UriBuilder(Attachment.ProxyUrl);
+            var query = HttpUtility.ParseQueryString(thumbUrl.Query);
+            query["format"] = Tools.ShouldUseWebP ? "webp" : "jpeg";
+            thumbUrl.Query = query.ToString();
+
             naturalSize = Attachment.Width != 0 && Attachment.Height != 0 ? new Size(Attachment.Width, Attachment.Height) : null;
             if (_mediaExtensions.Contains(fileExtension))
             {
@@ -80,7 +87,7 @@ namespace Unicord.Universal.Controls
                 {
                     AreTransportControlsEnabled = true,
                     Source = MediaSource.CreateFromUri(new Uri(Attachment.ProxyUrl)),
-                    PosterSource = Attachment.Width != 0 ? new BitmapImage(new Uri(Attachment.ProxyUrl + "?format=jpeg")) : null
+                    PosterSource = Attachment.Width != 0 ? new BitmapImage(thumbUrl.Uri) : null
                 };
 
                 var controls = new CustomMediaTransportControls();
@@ -128,7 +135,7 @@ namespace Unicord.Universal.Controls
                 {
                     ImageWidth = Attachment.Width,
                     ImageHeight = Attachment.Height,
-                    ImageUri = new Uri(Attachment.ProxyUrl)
+                    ImageUri = thumbUrl.Uri
                 };
 
                 imageElement.Tapped += Image_Tapped;

@@ -367,23 +367,6 @@ namespace Unicord.Universal
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 
-        protected override async void OnFileActivated(FileActivatedEventArgs args)
-        {
-            if (Window.Current.Content != null)
-            {
-                ApplicationView view = null;
-                var coreView = CoreApplication.CreateNewView();
-                await coreView.Dispatcher.AwaitableRunAsync(() => view = SetupCurrentView());
-                await ApplicationViewSwitcher.TryShowAsStandaloneAsync(view.Id, ViewSizePreference.UseMinimum);
-                await coreView.Dispatcher.AwaitableRunAsync(() => OnFileActivatedForWindow(args));
-            }
-            else
-            {
-                SetupCurrentView();
-                OnFileActivatedForWindow(args);
-            }
-        }
-
         private static ApplicationView SetupCurrentView()
         {
             var view = ApplicationView.GetForCurrentView();
@@ -395,29 +378,12 @@ namespace Unicord.Universal
             return view;
         }
 
-        private void OnFileActivatedForWindow(FileActivatedEventArgs args)
-        {
-            if (Window.Current.Content is Frame f)
-            {
-                f.Navigate(typeof(InstallThemePage), args);
-            }
-        }
-
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
         {
             if (!(Window.Current.Content is Frame rootFrame))
             {
                 UpgradeSettings();
                 Analytics.TrackEvent("Unicord_LaunchForShare");
-
-                try
-                {
-                    ThemeManager.LoadCurrentTheme(Resources);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                }
 
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();

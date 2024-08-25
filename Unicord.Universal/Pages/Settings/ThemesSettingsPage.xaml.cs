@@ -64,8 +64,6 @@ namespace Unicord.Universal.Pages.Settings
         {
             if (!Model.IsDirty)
                 return;
-
-            await ThemeHelpers.RequestRestartAsync();
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)

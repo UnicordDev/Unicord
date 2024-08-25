@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using System;
 using System.Linq;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
@@ -15,6 +16,7 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class GuildChannelListPage : Page
     {
+        private bool _suspend = false;
         public DiscordGuild Guild { get; private set; }
 
         public GuildChannelListPage()
@@ -31,7 +33,7 @@ namespace Unicord.Universal.Pages.Subpages
         private async void channelsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var viewModel = e.AddedItems.FirstOrDefault() as ChannelListViewModel;
-            if (viewModel != null)
+            if (viewModel != null && !_suspend)
             {
                 if (viewModel.ChannelType != ChannelType.Text && viewModel.ChannelType != ChannelType.Announcement)
                 {
@@ -59,6 +61,16 @@ namespace Unicord.Universal.Pages.Subpages
             {
                 flyout.ShowAt(Header);
             }
+        }
+
+        internal void SetSelectedChannel(DiscordChannel channel)
+        {
+            _suspend = true;
+            var viewModel = (GuildChannelListViewModel)DataContext;
+            var channelVM = viewModel.Channels.FirstOrDefault(c => c.Channel == channel);
+
+            channelsList.SelectedItem = channelVM;
+            _suspend = false;
         }
     }
 }

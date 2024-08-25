@@ -230,6 +230,10 @@ namespace Unicord.Universal.Pages
         private async Task Load()
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
+            if (ViewModel.Channel.Guild != null)
+            {
+                App.RoamingSettings.Save($"GuildPreviousChannels::{ViewModel.Channel.Guild.Id}", ViewModel.Channel.Id);
+            }
 
             // await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
 

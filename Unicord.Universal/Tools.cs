@@ -40,8 +40,8 @@ namespace Unicord.Universal
     {
         private const int NITRO_UPLOAD_LIMIT = 104_857_600;
         private const int NITRO_CLASSIC_UPLOAD_LIMIT = 52_428_800;
-        private const int NITRO_BASIC_UPLOAD_LIMIT = 20_971_520;
-        private const int UPLOAD_LIMIT = 8_388_608;
+        private const int NITRO_BASIC_UPLOAD_LIMIT = 52_428_800;
+        private const int UPLOAD_LIMIT = 26_214_400;
 
         public static HttpClient HttpClient => _httpClient.Value;
 
@@ -383,7 +383,7 @@ namespace Unicord.Universal
             var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.DiscordName, text, CompareOptions.IgnoreCase) >= 0 : true)
                 .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
                 // todo: fix
-                //.OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
+                .OrderBy(g => App.Discord.UserSettings.GuildPositions?.IndexOf(g.Key.Id) ?? 0)
                 .Select(g => new EmojiGroup(g.Key, g))
                 .ToList() : new List<EmojiGroup>();
 
@@ -411,7 +411,7 @@ namespace Unicord.Universal
             return enumerable ?? Enumerable.Empty<DiscordEmoji>();
         }
 
-        public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
+        public static bool HasNitro(this DiscordUser user) => user.PremiumType != 0;
         public static int UploadLimit(this DiscordUser user) => user.PremiumType switch
         {
             PremiumType.NitroClassic => NITRO_CLASSIC_UPLOAD_LIMIT,
@@ -439,7 +439,7 @@ namespace Unicord.Universal
         public static bool HasWebPSupport()
             => hasWebPSupport.Value;
 
-        public static bool ShouldUseWebP()
+        public static bool ShouldUseWebP
             => HasWebPSupport() && App.LocalSettings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
     }
 

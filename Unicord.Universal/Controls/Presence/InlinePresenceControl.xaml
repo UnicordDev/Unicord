@@ -17,7 +17,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <emoji:EmojiControl Emoji="{Binding CondencedPresence.Emoji}" Size="14" VerticalAlignment="Top" Margin="0,2,4,0" Visibility="{Binding CondencedPresence.Emoji, Converter={StaticResource HideOnNullConverter}}" />
+        <emoji:EmojiControl Emoji="{Binding CondencedPresence.Emoji}" Animate="False" Size="14" VerticalAlignment="Top" Margin="0,2,4,0" Visibility="{Binding CondencedPresence.Emoji, Converter={StaticResource HideOnNullConverter}}" />
         <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{Binding TextWrapping}">
             <Run Text="{Binding CondencedPresence.StatusText, Mode=OneWay}" /> <Run Text="{Binding CondencedPresence.StatusName, Mode=OneWay}" FontWeight="SemiBold" />
         </TextBlock>

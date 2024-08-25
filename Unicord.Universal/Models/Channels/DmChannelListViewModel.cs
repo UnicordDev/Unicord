@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Extensions;
 using Humanizer;
 
 namespace Unicord.Universal.Models.Channels
@@ -18,7 +19,7 @@ namespace Unicord.Universal.Models.Channels
         {
             _name = DmChannel.Name ?? DmChannel.Recipients.Select(s => s.DisplayName).Humanize();
             if (channel.Type == ChannelType.Private)
-                AvatarUrl = channel.Recipients.First().AvatarUrl;
+                AvatarUrl = channel.Recipients.First().GetAvatarUrl(32);
         }
 
         public override DiscordChannel Channel 

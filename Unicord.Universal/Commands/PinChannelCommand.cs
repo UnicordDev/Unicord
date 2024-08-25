@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Shared;
 using Windows.UI.StartScreen;
 
@@ -19,12 +20,13 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return parameter is DiscordChannel channel && !SecondaryTile.Exists($"Channel_{channel.Id}");
+            return (parameter is DiscordChannel channel || (parameter is ChannelViewModel channelVm && (channel = channelVm.Channel) != null)) && 
+                !SecondaryTile.Exists($"Channel_{channel.Id}");
         }
 
         public async void Execute(object parameter)
         {
-            if (parameter is DiscordChannel channel && !SecondaryTile.Exists($"Channel_{channel.Id}"))
+            if ((parameter is DiscordChannel channel || (parameter is ChannelViewModel channelVm && (channel = channelVm.Channel) != null)) && !SecondaryTile.Exists($"Channel_{channel.Id}"))
             {
                 Analytics.TrackEvent("PinChannelCommand_PinChannel");
 

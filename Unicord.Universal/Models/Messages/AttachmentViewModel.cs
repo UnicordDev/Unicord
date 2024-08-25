@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Input;
 using Unicord.Universal.Commands;
 using Windows.Foundation;
@@ -33,12 +34,12 @@ namespace Unicord.Universal.Models.Messages
         private static readonly HashSet<string> _mediaExtensions =
               new HashSet<string> { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg" };
 
-        private SynchronizationContext _syncContext;
         private DiscordAttachment _attachment;
         private AttachmentType _type;
         private Size? _naturalSize;
         private object _source;
         private bool _sourceInvalidated;
+        private string _posterSource = "";
 
         private MediaSource _mediaSource;
         private MediaPlaybackItem _mediaPlaybackItem;
@@ -46,7 +47,6 @@ namespace Unicord.Universal.Models.Messages
         public AttachmentViewModel(DiscordAttachment attachment)
             : base(null)
         {
-            _syncContext = SynchronizationContext.Current;
             _attachment = attachment;
             _type = GetAttachmentType(attachment);
             _sourceInvalidated = false;
@@ -56,6 +56,16 @@ namespace Unicord.Universal.Models.Messages
 
             ShareProgress = new ProgressInfo();
             ShareCommand = new ShareCommand(attachment.Url, attachment.FileName, ShareProgress);
+
+            if (_attachment.Width != 0)
+            {
+                var thumbUrl = new UriBuilder(_attachment.ProxyUrl);
+                var query = HttpUtility.ParseQueryString(thumbUrl.Query);
+                query["format"] = Tools.ShouldUseWebP ? "webp" : "jpeg";
+                thumbUrl.Query = query.ToString();
+
+                _posterSource = thumbUrl.Uri.ToString();
+            }
         }
 
         public string FileName =>
@@ -73,10 +83,10 @@ namespace Unicord.Universal.Models.Messages
         public double NaturalHeight =>
             _attachment.Height != 0 ? _attachment.Height : _naturalSize?.Height ?? double.NaN;
         public AttachmentType Type { get => _type; private set => OnPropertySet(ref _type, value); }
+
         public object Source =>
             GetOrCreateSource();
-        public string PosterSource =>
-             _attachment.Width != 0 ? _attachment.ProxyUrl + "?format=jpeg" : null;
+        public string PosterSource { get => _posterSource; private set => OnPropertySet(ref _posterSource, value); }
 
         public bool IsVideo =>
             Type == AttachmentType.Video;
@@ -140,7 +150,7 @@ namespace Unicord.Universal.Models.Messages
 
                 _naturalSize = new Size(props.Width, props.Height);
                 _type = AttachmentType.Video;
-                _syncContext.Post((_) =>
+                syncContext.Post((_) =>
                 {
                     InvokePropertyChanged(nameof(NaturalWidth));
                     InvokePropertyChanged(nameof(NaturalHeight));

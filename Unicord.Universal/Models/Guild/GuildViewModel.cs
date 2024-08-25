@@ -15,7 +15,7 @@ using Windows.System;
 
 namespace Unicord.Universal.Models.Guild
 {
-    public class GuildViewModel : ViewModelBase
+    public class GuildViewModel : ViewModelBase, ISnowflake
     {
         private readonly DiscordMember _currentMember = null;
         private ConcurrentDictionary<ulong, ChannelViewModel> _accessibleChannels;
@@ -41,7 +41,7 @@ namespace Unicord.Universal.Models.Guild
             Guild.Name;
 
         public string IconUrl =>
-            Guild.IconUrl;
+            Guild.GetIconUrl(64);
 
         public bool Muted
             => Guild.IsMuted();

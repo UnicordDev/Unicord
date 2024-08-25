@@ -83,7 +83,6 @@ namespace Unicord.Universal.Services.Windowing
             {
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
-                try { ThemeManager.LoadCurrentTheme(App.Current.Resources); } catch { }
 
                 var frame = new Frame();
                 window.Content = frame;

@@ -17,8 +17,8 @@
 
     <converters:AttachmentTemplateSelector x:Key="AttachmentTemplateSelector"
                                            ImageTemplate="{StaticResource DefaultAttachmentImageTemplate}"
-                                           VideoTemplate="{StaticResource DefaultAttachmentMediaTemplate}"
-                                           AudioTemplate="{StaticResource DefaultAttachmentMediaTemplate}"
+                                           VideoTemplate="{StaticResource VideoAttachmentMediaTemplate}"
+                                           AudioTemplate="{StaticResource AudioAttachmentMediaTemplate}"
                                            GenericTemplate="{StaticResource DefaultAttachmentGenericTemplate}"/>
 
     <converters:AttachmentTypeConverter x:Key="AttachmentTypeConverter"/>
@@ -175,6 +175,108 @@
         </Setter>
     </Style>
 
+    <Style x:Key="AttachmentAudioControlStyle" TargetType="local:AttachmentMediaControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AttachmentMediaControl">
+                    <Grid x:Name="Root" Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid x:Name="AudioInfo" Margin="4,2,4,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="32"
+                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                           Text="&#xe8d6;"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding FileName}" Style="{ThemeResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                                <TextBlock Text="{Binding FileSize}" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="4,0,0,0">
+                                <Button x:Name="DownloadButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding DownloadCommand}">
+                                    <Grid DataContext="{Binding DownloadProgress, Mode=OneWay}">
+                                        <muxc:ProgressRing Width="16" Height="16" 
+                                                                   Opacity="{Binding ProgressOpacity, Mode=OneWay}"
+                                                                   IsIndeterminate="{Binding IsIndeterminate, Mode=OneWay}"
+                                                                   Value="{Binding Progress, Mode=OneWay}"
+                                                                   Maximum="1" />
+                                        <TextBlock Text="&#xe896;" 
+                                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                           FontSize="16"
+                                                           Opacity="{Binding IconOpacity, Mode=OneWay}"/>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="CopyLinkButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Content="&#xe71b;"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding CopyCommand}"/>
+
+                                <Button x:Name="ShareButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding ShareCommand}">
+                                    <Grid DataContext="{Binding ShareProgress}">
+                                        <muxc:ProgressRing Width="16" Height="16" 
+                                                               Opacity="{Binding ProgressOpacity}"
+                                                               IsIndeterminate="{Binding IsIndeterminate}"
+                                                               Value="{Binding Progress}"
+                                                               Maximum="1" />
+                                        <TextBlock Text="&#xe72d;" 
+                                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                       FontSize="16"
+                                                       Opacity="{Binding IconOpacity}"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                            <MediaPlayerElement x:Name="MediaPlayer" MaxHeight="46" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
+                                <MediaPlayerElement.TransportControls>
+                                    <controls:CustomMediaTransportControls Style="{StaticResource AudioMediaTransportControlsStyle}"/>
+                                </MediaPlayerElement.TransportControls>
+                            </MediaPlayerElement>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AttachmentVideoControlStyle" TargetType="local:AttachmentMediaControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AttachmentMediaControl">
+                    <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                        <controls:ScaledContentControl x:Name="MediaPlayerContainer" ForceSize="True" TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
+                            <MediaPlayerElement x:Name="MediaPlayer" MaxHeight="480" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
+                                <MediaPlayerElement.TransportControls>
+                                    <controls:CustomMediaTransportControls/>
+                                </MediaPlayerElement.TransportControls>
+                            </MediaPlayerElement>
+                        </controls:ScaledContentControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <DataTemplate x:Key="DefaultAttachmentImageTemplate">
         <controls:ScaledContentControl TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
             <controls:ImageElement ImageWidth="{Binding NaturalWidth}" ImageHeight="{Binding NaturalHeight}" ImageUri="{Binding Source}" />
@@ -185,6 +287,13 @@
         <local:AttachmentMediaControl ViewModel="{Binding}"/>
     </DataTemplate>
 
+    <DataTemplate x:Key="VideoAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
+        <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentVideoControlStyle}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="AudioAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
+        <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentAudioControlStyle}"/>
+    </DataTemplate>
+    
     <w1809:ScalarTransition x:Key="FadeTransition" Duration="00:00:00.2" />
 
     <DataTemplate x:Key="DefaultAttachmentGenericTemplate" x:DataType="messages:AttachmentViewModel">

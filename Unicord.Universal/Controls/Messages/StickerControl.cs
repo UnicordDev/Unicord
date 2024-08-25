@@ -42,7 +42,7 @@ namespace Unicord.Universal.Controls.Messages
 
         private static void OnStickerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if(e.NewValue is DiscordSticker s && d is StickerControl c)
+            if (e.NewValue is DiscordSticker s && d is StickerControl c)
             {
                 c.UpdateSticker(s);
             }
@@ -62,10 +62,12 @@ namespace Unicord.Universal.Controls.Messages
                     break;
                 case DiscordStickerType.Lottie:
                     {
-                        var player = new AnimatedVisualPlayer();
-                        player.AutoPlay = true;
-                        player.Width = 150;
-                        player.Height = 150;
+                        var player = new AnimatedVisualPlayer
+                        {
+                            AutoPlay = true,
+                            Width = 150,
+                            Height = 150
+                        };
 
                         var source = new LottieVisualSource();
                         source.UriSource = new Uri(s.GetAssetUrl());

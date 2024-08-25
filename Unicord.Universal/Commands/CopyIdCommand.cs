@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Models;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Unicord.Universal.Commands
@@ -14,7 +15,7 @@ namespace Unicord.Universal.Commands
 
         public bool CanExecute(object parameter)
         {
-            return parameter is SnowflakeObject;
+            return parameter is SnowflakeObject or ISnowflake;
         }
 
         public void Execute(object parameter)
@@ -25,6 +26,15 @@ namespace Unicord.Universal.Commands
 
                 var package = new DataPackage();
                 package.SetText(snowflake.Id.ToString());
+                Clipboard.SetContent(package);
+            }
+
+            if (parameter is ISnowflake sf)
+            {
+                Analytics.TrackEvent("CopyIdCommand_Invoked");
+
+                var package = new DataPackage();
+                package.SetText(sf.Id.ToString());
                 Clipboard.SetContent(package);
             }
         }

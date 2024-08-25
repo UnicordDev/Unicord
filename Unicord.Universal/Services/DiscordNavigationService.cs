@@ -109,6 +109,11 @@ namespace Unicord.Universal.Services
 
                     if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
+
+                    if(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
+                    {
+                        g.SetSelectedChannel(channel);
+                    }
                 }
 
                 if (channel.IsNSFW)

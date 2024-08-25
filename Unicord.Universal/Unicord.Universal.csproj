@@ -32,6 +32,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <PackageCertificateThumbprint>0C606AB2406E4DC3ED98B463C970D98865ED9735</PackageCertificateThumbprint>
+    <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -168,6 +169,8 @@
     <Compile Include="Controls\Channels\ChannelIconControl.cs" />
     <Compile Include="Controls\Channels\ChannelListControl.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
+    <Compile Include="Extensions\GuildExtensions.cs" />
+    <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
@@ -313,9 +316,6 @@
       <DependentUpon>SettingsDisplayControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SidebarSearchBox.cs" />
-    <Compile Include="Controls\ThemePreviewControl.xaml.cs">
-      <DependentUpon>ThemePreviewControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\UniversalWebView.cs" />
     <Compile Include="Controls\UploadItemsControl.xaml.cs">
       <DependentUpon>UploadItemsControl.xaml</DependentUpon>
@@ -373,14 +373,8 @@
     <Compile Include="Dialogs\GuildDialog.xaml.cs">
       <DependentUpon>GuildDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\InstallThemeDialog.xaml.cs">
-      <DependentUpon>InstallThemeDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\KickDialog.xaml.cs">
       <DependentUpon>KickDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\ManageThemeDialog.xaml.cs">
-      <DependentUpon>ManageThemeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\PinMessageDialog.xaml.cs">
       <DependentUpon>PinMessageDialog.xaml</DependentUpon>
@@ -417,6 +411,7 @@
     <Compile Include="Models\Guild\GuildListFolderViewModel.cs" />
     <Compile Include="Models\Guild\GuildListViewModel.cs" />
     <Compile Include="Models\Guild\IGuildListViewModel.cs" />
+    <Compile Include="Models\ISnowflake.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\Messages\AttachmentViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
@@ -440,9 +435,6 @@
     </Compile>
     <Compile Include="Pages\DiscordPage.xaml.cs">
       <DependentUpon>DiscordPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\InstallThemePage.xaml.cs">
-      <DependentUpon>InstallThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -535,9 +527,6 @@
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />
-    <Compile Include="Utilities\ThemeHelpers.cs" />
-    <Compile Include="Utilities\ThemeManager.cs" />
-    <Compile Include="Utilities\ThemePostprocessor.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -666,6 +655,9 @@
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.8.6</Version>
     </PackageReference>
+    <PackageReference Include="Shim.System.Numerics">
+      <Version>6.0.0</Version>
+    </PackageReference>
     <PackageReference Include="Unicord.Universal.Voice">
       <Version>1.0.2</Version>
     </PackageReference>
@@ -750,10 +742,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ThemePreviewControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\UploadItemsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -790,15 +778,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogs\InstallThemeDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Dialogs\KickDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\ManageThemeDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -823,10 +803,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\DiscordPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\InstallThemePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -985,6 +961,55 @@
     <Content Include="Assets\FluentSystemIcons-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
     <Content Include="Assets\SegoeIcons.ttf" />
+    <PRIResource Include="Resources\ja-JP\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\AgeGatePage.resw" />
+    <PRIResource Include="Resources\ja-JP\ChannelPage.resw" />
+    <PRIResource Include="Resources\ja-JP\Controls.resw" />
+    <PRIResource Include="Resources\ja-JP\Converters.resw" />
+    <PRIResource Include="Resources\ja-JP\Dialogs.resw" />
+    <PRIResource Include="Resources\ja-JP\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\Flyouts.resw" />
+    <PRIResource Include="Resources\ja-JP\FriendsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\LoginPage.resw" />
+    <PRIResource Include="Resources\ja-JP\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\Permissions.resw" />
+    <PRIResource Include="Resources\ja-JP\PinsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\Resources.resw" />
+    <PRIResource Include="Resources\ja-JP\SearchPage.resw" />
+    <PRIResource Include="Resources\ja-JP\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\SettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\UserListPage.resw" />
+    <PRIResource Include="Resources\ja-JP\VideoEditor.resw" />
+    <PRIResource Include="Resources\ja-JP\Voice.resw" />
+    <PRIResource Include="Resources\ja-JP\VoiceSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\AboutSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\AccountsSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\AgeGatePage.resw" />
+    <PRIResource Include="Resources\ru-RU\ChannelPage.resw" />
+    <PRIResource Include="Resources\ru-RU\Controls.resw" />
+    <PRIResource Include="Resources\ru-RU\Converters.resw" />
+    <PRIResource Include="Resources\ru-RU\Dialogs.resw" />
+    <PRIResource Include="Resources\ru-RU\DMChannelsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\Flyouts.resw" />
+    <PRIResource Include="Resources\ru-RU\FriendsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\LoginPage.resw" />
+    <PRIResource Include="Resources\ru-RU\MediaSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\MessagingSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\Permissions.resw" />
+    <PRIResource Include="Resources\ru-RU\PinsPage.resw" />
+    <None Include="Resources\ru-RU\Readme" />
+    <PRIResource Include="Resources\ru-RU\Resources.resw" />
+    <PRIResource Include="Resources\ru-RU\SearchPage.resw" />
+    <PRIResource Include="Resources\ru-RU\SecuritySettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\SettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\ThemesSettingsPage.resw" />
+    <PRIResource Include="Resources\ru-RU\UserListPage.resw" />
+    <PRIResource Include="Resources\ru-RU\VideoEditor.resw" />
+    <PRIResource Include="Resources\ru-RU\Voice.resw" />
+    <PRIResource Include="Resources\ru-RU\VoiceSettingsPage.resw" />
     <None Include="Unicord.Universal_TemporaryKey.pfx" />
     <PRIResource Include="Resources\fr\VoiceSettingsPage.resw" />
     <PRIResource Include="Resources\fr\Voice.resw" />

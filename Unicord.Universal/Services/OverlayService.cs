@@ -36,8 +36,6 @@ namespace Unicord.Universal.Services
                 var t = default(T);
                 await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    ThemeManager.LoadCurrentTheme(App.Current.Resources);
-
                     var frame = new Frame();
                     frame.Navigate(typeof(T), model);
 

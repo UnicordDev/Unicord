@@ -1,4 +1,5 @@
 ﻿using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,9 +58,11 @@ namespace Unicord.Universal.Services
             }
         }
 
-        public Task EnterFullscreenAsync(FrameworkElement element, Border parent)
+        public async Task EnterFullscreenAsync(FrameworkElement element, Border parent)
         {
             Analytics.TrackEvent("FullscreenService_EnterFullscreen");
+
+            LeaveFullscreen();
 
             var tcs = new TaskCompletionSource<object>();
             var maxWidth = Window.Current.Bounds.Width;
@@ -70,12 +73,10 @@ namespace Unicord.Universal.Services
                 var info = DisplayInformation.GetForCurrentView();
                 maxWidth = info.ScreenWidthInRawPixels / info.RawPixelsPerViewPixel;
                 maxHeight = info.ScreenHeightInRawPixels / info.RawPixelsPerViewPixel;
-
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait;
             }
 
-            var bounds = element.TransformToVisual(null)
-                                .TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+            var bounds = parent.TransformToVisual(null)
+                               .TransformBounds(new Rect(0, 0, parent.ActualWidth, parent.ActualHeight));
 
             Canvas.SetLeft(element, 0);
             Canvas.SetTop(element, 0);
@@ -85,11 +86,18 @@ namespace Unicord.Universal.Services
             var ratioX = (double)maxWidth / bounds.Width;
             var ratioY = (double)maxHeight / bounds.Height;
 
-            var transformCollection = new CompositeTransform();
-            transformCollection.TranslateX = (bounds.Left + (bounds.Width / 2)) - (maxWidth / 2);
-            transformCollection.TranslateY = (bounds.Top + (bounds.Height / 2)) - (maxHeight / 2);
-            transformCollection.ScaleX = bounds.Width / maxWidth;
-            transformCollection.ScaleY = bounds.Height / maxHeight;
+            var transformCollection = new CompositeTransform
+            {
+                TranslateX = (bounds.Left + (bounds.Width / 2)) - (maxWidth / 2),
+                TranslateY = (bounds.Top + (bounds.Height / 2)) - (maxHeight / 2),
+                ScaleX = bounds.Width / maxWidth,
+                ScaleY = bounds.Height / maxHeight
+            };
+
+            VisualTreeHelper.DisconnectChildrenRecursive(parent);
+            _fullscreenElement = element;
+            _fullscreenParent = parent;
+            _canvas.Children.Add(element);
 
             element.RenderTransformOrigin = new Point(0.5, 0.5);
             element.RenderTransform = transformCollection;
@@ -100,13 +108,6 @@ namespace Unicord.Universal.Services
             AnimateDouble(transformCollection, storyboard, 0, "TranslateX");
             AnimateDouble(transformCollection, storyboard, 0, "TranslateY");
 
-            parent.Child = null;
-            _fullscreenElement = element;
-            _fullscreenParent = parent;
-
-            _canvas.Children.Add(element);
-            _canvas.Visibility = Visibility.Visible;
-
             storyboard.Completed += (o, ev) =>
             {
                 tcs.SetResult(null);
@@ -115,18 +116,18 @@ namespace Unicord.Universal.Services
 
             storyboard.Begin();
 
-            return tcs.Task;
+            _canvas.Visibility = Visibility.Visible;
+            await tcs.Task;
         }
 
         public void LeaveFullscreen()
         {
-            Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
-
             _view.ExitFullScreenMode();
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
             _fullscreenElement = null;
             _fullscreenParent = null;
+
+            VisualTreeHelper.DisconnectChildrenRecursive(_canvas);
 
             _canvas.Children.Clear();
             _canvas.Visibility = Visibility.Collapsed;
@@ -139,7 +140,6 @@ namespace Unicord.Universal.Services
             var tcs = new TaskCompletionSource<object>();
 
             Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
-
 
             var bounds = parent.TransformToVisual(null)
                                .TransformBounds(new Rect(0, 0, parent.ActualWidth, parent.ActualHeight));
@@ -157,26 +157,16 @@ namespace Unicord.Universal.Services
             AnimateDouble(transformCollection, storyboard, (bounds.Left + (bounds.Width / 2)) - (element.ActualWidth / 2), "TranslateX");
             AnimateDouble(transformCollection, storyboard, (bounds.Top + (bounds.Height / 2)) - (element.ActualHeight / 2), "TranslateY");
 
-
             storyboard.Begin();
             storyboard.Completed += (o, ev) =>
             {
-                _view.ExitFullScreenMode();
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
                 element.RenderTransform = null;
                 element.Width = double.NaN;
                 element.Height = double.NaN;
 
-                _canvas.Children.Clear();
-                _canvas.Visibility = Visibility.Collapsed;
-
-                _fullscreenParent.Child = _fullscreenElement;
-                _fullscreenElement = null;
-                _fullscreenParent = null;
+                LeaveFullscreen();
 
                 tcs.SetResult(null);
-                FullscreenExited?.Invoke(this, null);
             };
 
             return tcs.Task;
@@ -187,14 +177,13 @@ namespace Unicord.Universal.Services
             var scaleXAnimation = new DoubleAnimation()
             {
                 To = to,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                EasingFunction = new CircleEase() { EasingMode = EasingMode.EaseOut }
+                Duration = new Duration(TimeSpan.FromSeconds(1.0 / 3.0)),
+                EasingFunction = new ExponentialEase() { Exponent = 5, EasingMode = EasingMode.EaseOut }
             };
 
             Storyboard.SetTarget(scaleXAnimation, transformCollection);
             Storyboard.SetTargetProperty(scaleXAnimation, property);
             storyboard.Children.Add(scaleXAnimation);
         }
-
     }
 }
