@@ -160,7 +160,7 @@
     <value>連絡先を同期</value>
   </data>
   <data name="SyncPeopleText.Text" xml:space="preserve">
-    <value>Sync my friends with [Windows People](ms-people:)</value>
+    <value>[Windows People](ms-people:)間でフレンドを同期</value>
     <comment>Markdown capable</comment>
   </data>
 </root>
