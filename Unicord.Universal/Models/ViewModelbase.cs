@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
 
 namespace Unicord.Universal.Models
 {
@@ -14,10 +16,15 @@ namespace Unicord.Universal.Models
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        protected DiscordClient discord;
         protected SynchronizationContext syncContext;
-        public ViewModelBase()
+
+        public ViewModelBase(ViewModelBase parent = null)
         {
-            syncContext = SynchronizationContext.Current;
+            discord = App.Discord; // capture the discord client
+            syncContext = parent?.syncContext ?? SynchronizationContext.Current;
+            Debug.Assert(discord != null);
+            Debug.Assert(syncContext != null);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -36,7 +43,7 @@ namespace Unicord.Universal.Models
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);
-            syncContext.Post((o) => PropertyChanged?.Invoke(this, args), null);
+            syncContext.Post((o) => PropertyChanged?.Invoke(this, (PropertyChangedEventArgs)o), args);
         }
     }
 }

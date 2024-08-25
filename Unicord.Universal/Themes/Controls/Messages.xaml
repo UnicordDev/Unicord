@@ -131,9 +131,15 @@
                                 </StackPanel>
                             </Grid>
 
-                            <controls:ScaledContentControl x:Name="MediaPlayerContainer" Grid.Row="1" TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
-                                <MediaPlayerElement x:Name="MediaPlayer" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True"/>
-                            </controls:ScaledContentControl>
+                            <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                                <controls:ScaledContentControl x:Name="MediaPlayerContainer" TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
+                                    <MediaPlayerElement x:Name="MediaPlayer" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
+                                        <MediaPlayerElement.TransportControls>
+                                            <controls:CustomMediaTransportControls/>
+                                        </MediaPlayerElement.TransportControls>
+                                    </MediaPlayerElement>
+                                </controls:ScaledContentControl>
+                            </Border>
                         </Grid>
 
                         <VisualStateManager.VisualStateGroups>
@@ -147,11 +153,6 @@
                                         <Setter Target="MediaPlayer.MaxHeight" Value="480"/>
                                         <Setter Target="MediaPlayerContainer.ForceSize" Value="True"/>
                                         <Setter Target="AudioInfo.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MediaPlayer.TransportControls">
-                                            <Setter.Value>
-                                                <MediaTransportControls Style="{ThemeResource MediaTransportControlsStyle}"/>
-                                            </Setter.Value>
-                                        </Setter>
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Audio">
@@ -163,12 +164,6 @@
                                         <Setter Target="MediaPlayer.MaxHeight" Value="46"/>
                                         <Setter Target="MediaPlayerContainer.ForceSize" Value="False"/>
                                         <Setter Target="AudioInfo.Visibility" Value="Visible"/>
-                                        <Setter Target="MediaPlayer.TransportControls">
-                                            <Setter.Value>
-                                                <MediaTransportControls Style="{ThemeResource AudioMediaTransportControlsStyle}"
-                                                                        IsFullWindowButtonVisible="False"/>
-                                            </Setter.Value>
-                                        </Setter>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -531,7 +526,7 @@
                                                 <BitmapImage DecodePixelWidth="16"
                                                          DecodePixelHeight="16"
                                                          DecodePixelType="Logical" 
-                                                         UriSource="{Binding ReferencedMessage.Author.NonAnimatedAvatarUrl}" />
+                                                         UriSource="{Binding ReferencedMessage.Author.AvatarUrl}" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>
@@ -543,7 +538,7 @@
                                                        FontSize="12"
                                                        InlineOnly="True"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                                       Channel="{Binding Channel}"
+                                                       Channel="{Binding Channel.Channel}"
                                                        Text="{Binding ReferencedMessage.Content}" 
                                                        IsTextSelectionEnabled="True"
                                                        VerticalAlignment="Center"
@@ -567,7 +562,7 @@
                                                 <BitmapImage DecodePixelWidth="36"
                                                          DecodePixelHeight="36"
                                                          DecodePixelType="Logical" 
-                                                         UriSource="{Binding Author.NonAnimatedAvatarUrl}" />
+                                                         UriSource="{Binding Author.AvatarUrl}" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>
@@ -590,7 +585,7 @@
                                     </StackPanel>
 
                                     <controls:MarkdownTextBlock x:Name="Markdown"
-                                                           Channel="{Binding Channel}"
+                                                           Channel="{Binding Channel.Channel}"
                                                            Text="{Binding Content}" 
                                                            AllowHugeEmoji="True"
                                                            IsTextSelectionEnabled="True" 
@@ -743,7 +738,7 @@
                                                 <BitmapImage DecodePixelWidth="24"
                                                          DecodePixelHeight="24"
                                                          DecodePixelType="Logical" 
-                                                         UriSource="{Binding Author.NonAnimatedAvatarUrl}" />
+                                                         UriSource="{Binding Author.AvatarUrl}" />
                                             </ImageBrush.ImageSource>
                                         </ImageBrush>
                                     </Ellipse.Fill>

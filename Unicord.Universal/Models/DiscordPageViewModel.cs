@@ -9,29 +9,28 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Channel;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
 
 namespace Unicord.Universal.Models
 {
     // TODO: Move functionality from DiscordPage.xaml.cs into this class
-    class DiscordPageViewModel : NotifyPropertyChangeImpl
+    class DiscordPageViewModel : ViewModelBase
     {
-        private readonly SynchronizationContext _syncContext;
         private VoiceConnectionModel _voiceModel;
         private DiscordUser _currentUser;
         private DiscordChannel _currentChannel;
-        private DiscordDmChannel _selectedDM;
+        private ChannelViewModel _selectedDM;
         private GuildListViewModel _selectedGuild;
         private bool _isFriendsSelected;
         private bool _isRightPaneOpen;
 
         public DiscordPageViewModel()
         {
-            _syncContext = SynchronizationContext.Current;
-
             Guilds = new ObservableCollection<IGuildListViewModel>();
-            UnreadDMs = new ObservableCollection<DiscordDmChannel>();
+            UnreadDMs = new ObservableCollection<ChannelViewModel>();
             CurrentUser = App.Discord.CurrentUser;
 
             var guilds = App.Discord.Guilds;
@@ -75,7 +74,7 @@ namespace Unicord.Universal.Models
             foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0)
                                   .OrderByDescending(d => d.ReadState?.LastMessageId))
             {
-                UnreadDMs.Add(dm);
+                UnreadDMs.Add(new ChannelViewModel(dm));
             }
 
             WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
@@ -87,17 +86,17 @@ namespace Unicord.Universal.Models
 
         public bool Navigating { get; internal set; }
         public ObservableCollection<IGuildListViewModel> Guilds { get; }
-        public ObservableCollection<DiscordDmChannel> UnreadDMs { get; }
+        public ObservableCollection<ChannelViewModel> UnreadDMs { get; }
 
         public DiscordUser CurrentUser { get => _currentUser; set => OnPropertySet(ref _currentUser, value); }
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
 
         public DiscordChannel CurrentChannel { get => _currentChannel; set => OnPropertySet(ref _currentChannel, value); }
-        public DiscordDmChannel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
+        public ChannelViewModel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
         public GuildListViewModel SelectedGuild { get => _selectedGuild; set => OnPropertySet(ref _selectedGuild, value); }
         public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
         public bool IsRightPaneOpen { get => _isRightPaneOpen; set => OnPropertySet(ref _isRightPaneOpen, value); }
-        public DiscordDmChannel PreviousDM { get; set; }
+        public ChannelViewModel PreviousDM { get; set; }
 
         public GuildListViewModel ViewModelFromGuild(DiscordGuild guild)
         {
@@ -130,16 +129,29 @@ namespace Unicord.Universal.Models
             return Task.CompletedTask;
         }
 
-        private void UpdateReadState(DiscordDmChannel dm)
+        private void UpdateReadState(DiscordDmChannel channel)
         {
-            if (dm.ReadState?.MentionCount > 0 && !UnreadDMs.Contains(dm))
+            var shouldShow = channel.ReadState.MentionCount > 0;
+            var dm = UnreadDMs.FirstOrDefault(d => channel.Id == d.Channel.Id);
+            syncContext.Post((o) =>
             {
-                _syncContext.Post((o) => UnreadDMs.Insert(0, dm), null);
-            }
-            else if (dm.ReadState?.MentionCount == 0)
-            {
-                _syncContext.Post((o) => UnreadDMs.Remove(dm), null);
-            }
+                if (shouldShow)
+                {
+                    if (dm == null)
+                    {
+                        dm = new ChannelViewModel(channel, false, this);
+                        UnreadDMs.Insert(0, dm);
+                    }
+                    else
+                    {
+                        UnreadDMs.Move(UnreadDMs.IndexOf(dm), 0);
+                    }
+                }
+                else
+                {
+                    UnreadDMs.Remove(dm);
+                }
+            }, null);
         }
 
         private Task OnGuildCreated(GuildCreateEventArgs e)
@@ -147,7 +159,7 @@ namespace Unicord.Universal.Models
             var vm = this.ViewModelFromGuild(e.Guild);
             if (vm == null)
             {
-                _syncContext.Post(d => Guilds.Insert(0, new GuildListViewModel(e.Guild)), null);
+                syncContext.Post(d => Guilds.Insert(0, new GuildListViewModel(e.Guild)), null);
             }
 
             return Task.CompletedTask;
@@ -158,7 +170,7 @@ namespace Unicord.Universal.Models
             var vm = this.ViewModelFromGuild(e.Guild);
             if (vm == null)
             {
-                _syncContext.Post(d =>
+                syncContext.Post(d =>
                 {
                     Guilds.Remove(vm);
                     foreach (var guildFolder in Guilds.OfType<GuildListFolderViewModel>())

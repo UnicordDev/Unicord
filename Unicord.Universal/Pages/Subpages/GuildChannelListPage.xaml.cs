@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using System.Linq;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Services;
 using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
@@ -24,29 +25,24 @@ namespace Unicord.Universal.Pages.Subpages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Guild = e.Parameter as DiscordGuild;
-            if (DataContext is GuildChannelListViewModel model)
-            {
-                model.Dispose();
-            }
-
             DataContext = new GuildChannelListViewModel(Guild);
         }
 
         private async void channelsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var channel = e.AddedItems.FirstOrDefault() as DiscordChannel;
-            if (channel != null)
+            var viewModel = e.AddedItems.FirstOrDefault() as ChannelListViewModel;
+            if (viewModel != null)
             {
-                if (channel.Type != ChannelType.Text && channel.Type != ChannelType.Announcement)
+                if (viewModel.ChannelType != ChannelType.Text && viewModel.ChannelType != ChannelType.Announcement)
                 {
                     channelsList.SelectedItem = e.RemovedItems.FirstOrDefault();
 
-                    if (channel.Type != ChannelType.Voice)
+                    if (viewModel.ChannelType != ChannelType.Voice)
                         return;
                 }
 
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(channel);
+                await service.NavigateAsync(viewModel.Channel);
             }
         }
 

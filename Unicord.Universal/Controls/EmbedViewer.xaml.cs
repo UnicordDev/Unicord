@@ -13,6 +13,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -73,15 +74,15 @@ namespace Unicord.Universal.Controls
                     TargetHeight = Embed.Video.Height
                 };
 
+                var mediaBorder = new Border();
+                var controls = new CustomMediaTransportControls();
                 _mediaPlayer = new MediaPlayerElement()
                 {
                     AreTransportControlsEnabled = Embed.Type != "gifv",
                     Source = MediaSource.CreateFromUri(Embed.Video.Url),
-                    PosterSource = Embed.Thumbnail != null ? new BitmapImage(Embed.Thumbnail.Url) : null
+                    PosterSource = Embed.Thumbnail != null ? new BitmapImage(Embed.Thumbnail.Url) : null,
+                    TransportControls = controls
                 };
-
-                _mediaPlayer.TransportControls.Style = (Style)App.Current.Resources["MediaTransportControlsStyle"];
-                _mediaPlayer.TransportControls.IsCompact = true;
 
                 if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
                 {
@@ -103,12 +104,32 @@ namespace Unicord.Universal.Controls
                         _mediaPlayer.AutoPlay = false;
                     }
                 }
+                else
+                {
+                    controls.FullWindowRequested += async (o, ev) =>
+                    {
+                        if (_mediaPlayer.IsFullWindow)
+                        {
+                            _mediaPlayer.IsFullWindow = !_mediaPlayer.IsFullWindow;
+                            await FullscreenService.GetForCurrentView()
+                                                   .LeaveFullscreenAsync(_mediaPlayer, mediaBorder);
+                        }
+                        else
+                        {
+                            await FullscreenService.GetForCurrentView()
+                                                   .EnterFullscreenAsync(_mediaPlayer, mediaBorder);
+                            _mediaPlayer.IsFullWindow = !_mediaPlayer.IsFullWindow;
+                        }
+                        
 
+                    };
 
-                scaleContainer.Content = _mediaPlayer;
-                Content = scaleContainer;
+                    mediaBorder.Child = _mediaPlayer;
+                    scaleContainer.Content = mediaBorder;
+                    Content = scaleContainer;
 
-                return;
+                    return;
+                }
             }
 
             bool inline = false;

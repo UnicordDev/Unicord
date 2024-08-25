@@ -7,7 +7,7 @@ using DSharpPlus.Entities;
 using DSharpPlus;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
-using Unicord.Universal.Models;
+using Unicord.Universal.Models.Guild;
 
 namespace Unicord.Universal.Converters
 {

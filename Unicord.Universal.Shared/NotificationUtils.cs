@@ -7,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
 using MomentSharp;
+using Unicord.Universal.Extensions;
 using WamWooWam.Core;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -48,7 +49,7 @@ namespace Unicord.Universal.Shared
                 willNotify = false;
             }
 
-            if (message.Channel.NotificationMuted || !message.Channel.Unread)
+            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()) || !message.Channel.IsUnread())
                 willNotify = false;
 
             return willNotify;
@@ -133,7 +134,7 @@ namespace Unicord.Universal.Shared
                     .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetMessageContent(message), HintStyle = AdaptiveTextStyle.Caption, HintWrap = true })
                     .SetDisplayName(new Moment(message.Timestamp.UtcDateTime).Calendar());
             }
-            else
+            else if (message.Channel is not null)
             {
                 if (!string.IsNullOrWhiteSpace(message.Channel?.Guild.IconUrl))
                     tileContentBuilder.SetPeekImage(new Uri(message.Channel.Guild.IconUrl + "?size=1024"));

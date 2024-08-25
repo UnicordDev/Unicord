@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Channels;
 using WamWooWam.Core;
 using Windows.UI.Xaml.Data;
 
@@ -11,6 +13,9 @@ namespace Unicord.Universal.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if (value is ChannelViewModel vm)
+                value = vm.Channel;
+
             if (value is DiscordDmChannel c)
             {
                 if (c.Type == ChannelType.Private)
@@ -29,7 +34,8 @@ namespace Unicord.Universal.Converters
                 return ch.Name; // shh
             }
 
-            return "I'm sorry what the fuck.";
+            Debug.Assert(false);
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();

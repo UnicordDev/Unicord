@@ -37,6 +37,42 @@ namespace Unicord.Universal.Models.Messaging
             client.RelationshipAdded += OnRelationshipAdded;
             client.RelationshipRemoved += OnRelationshipRemoved;
             client.PresenceUpdated += OnPresenceUpdated;
+            client.ReadStateUpdated += OnReadStateUpdated;
+        }
+
+        public static void Unregister(DiscordClient client)
+        {
+            client.Ready -= OnReady;
+            client.Resumed -= OnResumed;
+            client.UserUpdated -= OnUserUpdated;
+            client.UserSettingsUpdated -= OnUserSettingsUpdated;
+            client.MessageCreated -= OnMessageCreated;
+            client.MessageDeleted -= OnMessageDeleted;
+            client.MessageUpdated -= OnMessageUpdated;
+            client.MessageAcknowledged -= OnMessageAcknowledged;
+            client.MessageReactionAdded -= OnMessageReactionAdded;
+            client.MessageReactionRemoved -= OnMessageReactionRemoved;
+            client.MessageReactionRemovedEmoji -= OnMessageReactionRemovedEmoji;
+            client.MessageReactionsCleared -= OnMessageReactionsCleared;
+            client.ChannelCreated -= OnChannelCreated;
+            client.ChannelDeleted -= OnChannelDeleted;
+            client.ChannelUpdated -= OnChannelUpdated;
+            client.TypingStarted -= OnTypingStarted;
+            client.GuildCreated -= OnGuildCreated;
+            client.GuildDeleted -= OnGuildDeleted;
+            client.GuildUpdated -= OnGuildUpdated;
+            client.GuildMemberUpdated -= OnGuildMemberUpdated;
+            client.DmChannelCreated -= OnDmChannelCreated;
+            client.DmChannelDeleted -= OnDmChannelDeleted;
+            client.RelationshipAdded -= OnRelationshipAdded;
+            client.RelationshipRemoved -= OnRelationshipRemoved;
+            client.PresenceUpdated -= OnPresenceUpdated;
+            client.ReadStateUpdated -= OnReadStateUpdated;
+        }
+
+        private static Task OnUserUpdated(UserUpdateEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
         private static Task OnReady(ReadyEventArgs e)
@@ -155,6 +191,10 @@ namespace Unicord.Universal.Models.Messaging
         }
 
         private static Task OnPresenceUpdated(PresenceUpdateEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+        private static Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }

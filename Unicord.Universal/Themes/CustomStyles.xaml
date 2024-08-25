@@ -71,7 +71,7 @@
         <Setter Property="FontSize" Value="16"/>
     </Style>
 
-    <Style x:Key="MediaTransportControlsStyle" TargetType="MediaTransportControls">
+    <Style TargetType="controls1:CustomMediaTransportControls">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -79,7 +79,7 @@
         <Setter Property="IsCompact" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="MediaTransportControls">
+                <ControlTemplate TargetType="controls1:CustomMediaTransportControls">
                     <Grid x:Name="RootGrid" Background="Transparent">
                         <Grid.Resources>
                             <Style x:Key="MediaSliderStyle" TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}">
@@ -292,7 +292,7 @@
                                             <Button Grid.Column="5" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="CCSelectionButton" Visibility="Collapsed">
                                                 <TextBlock Text="&#xED1F;" Style="{StaticResource SymbolTextBlockStyle}" />
                                             </Button>
-                                            <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="FullWindowButton">
+                                            <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="CustomFullWindowButton">
                                                 <TextBlock x:Name="FullWindowSymbol" Text="&#xE740;" Style="{StaticResource SymbolTextBlockStyle}" />
                                             </Button>
 
@@ -309,7 +309,7 @@
     </Style>
 
 
-    <Style x:Key="AudioMediaTransportControlsStyle" TargetType="MediaTransportControls">
+    <Style x:Key="AudioMediaTransportControlsStyle" TargetType="controls1:CustomMediaTransportControls">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -318,7 +318,7 @@
         <Setter Property="ShowAndHideAutomatically" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="MediaTransportControls">
+                <ControlTemplate TargetType="controls1:CustomMediaTransportControls">
                     <Grid x:Name="RootGrid" Background="Transparent">
                         <Grid.Resources>
                             <Style x:Key="MediaSliderStyle" TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}">

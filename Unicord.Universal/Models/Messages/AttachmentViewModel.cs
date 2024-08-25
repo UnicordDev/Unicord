@@ -44,6 +44,7 @@ namespace Unicord.Universal.Models.Messages
         private MediaPlaybackItem _mediaPlaybackItem;
 
         public AttachmentViewModel(DiscordAttachment attachment)
+            : base(null)
         {
             _syncContext = SynchronizationContext.Current;
             _attachment = attachment;
@@ -83,12 +84,11 @@ namespace Unicord.Universal.Models.Messages
             Type == AttachmentType.Audio;
 
         public ICommand DownloadCommand { get; }
-        public ProgressInfo DownloadProgress { get; set; }
-
         public ICommand ShareCommand { get; }
-        public ProgressInfo ShareProgress { get; set; }
-
         public ICommand CopyCommand { get; set; }
+
+        public ProgressInfo DownloadProgress { get; set; }
+        public ProgressInfo ShareProgress { get; set; }
 
         private object GetOrCreateSource()
         {
@@ -160,11 +160,7 @@ namespace Unicord.Universal.Models.Messages
         {
             // we have a bunch of heuristics available to work out the type of attachment we're dealing with
             // this code only uses a couple
-
-            var fileName = attachment.FileName.ToLowerInvariant();
-            var fileExtension = Path.GetExtension(fileName);
             var mimeType = attachment.ContentType?.ToLowerInvariant(); // this isn't always available on old messages
-
             if (!string.IsNullOrWhiteSpace(mimeType))
             {
                 // these are easy lmao
@@ -172,6 +168,9 @@ namespace Unicord.Universal.Models.Messages
                 if (mimeType.StartsWith("audio")) return AttachmentType.Audio;
                 if (mimeType.StartsWith("image")) return AttachmentType.Image;
             }
+
+            var fileName = attachment.FileName.ToLowerInvariant();
+            var fileExtension = Path.GetExtension(fileName);
 
             // we special case SVG because their sizing logic is whack
             if (fileExtension == ".svg") return AttachmentType.Svg;

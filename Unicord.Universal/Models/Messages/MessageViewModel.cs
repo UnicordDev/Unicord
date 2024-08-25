@@ -13,49 +13,54 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Messages;
+using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Messages
 {
     public class MessageViewModel : ViewModelBase
     {
-        public MessageViewModel(DiscordMessage discordMessage, ChannelViewModel parent = null)
+        public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
+            : base((ViewModelBase)parentMessage ?? parent)
         {
             Message = discordMessage;
             Parent = parent;
 
-            ReactCommand = new ReactCommand(discordMessage);
-            Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
-            Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a)));
-            Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
-            Components = new ObservableCollection<DiscordComponent>(Message.Components);
-            Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
-
             WeakReferenceMessenger.Default.Register<MessageViewModel, MessageUpdateEventArgs>(this, (t, e) => t.OnMessageUpdated(e.Event));
-            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
-            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this, (t, e) => t.OnReactionRemoved(e.Event));
-            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this, (t, e) => t.OnReactionGroupRemoved(e.Event));
-            WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this, (t, e) => t.OnReactionsCleared(e.Event));
 
-            if (parent != null && parent.Channel.Guild != null)
+            // we dont wanna do this for replies
+            if (parentMessage == null)
             {
-                WeakReferenceMessenger.Default.Register<MessageViewModel, DiscordEventMessage<GuildMemberUpdateEventArgs>>(this,
-                    (t, e) => t.OnGuildMemberUpdate(e.Event));
+                ReactCommand = new ReactCommand(discordMessage);
+
+                Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
+                Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a)));
+                Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
+                Components = new ObservableCollection<DiscordComponent>(Message.Components);
+                Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
+
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this, (t, e) => t.OnReactionRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this, (t, e) => t.OnReactionGroupRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this, (t, e) => t.OnReactionsCleared(e.Event));
             }
         }
 
         public DiscordMessage Message { get; }
 
-        public ChannelViewModel Parent { get; }
+        public ChannelPageViewModel Parent { get; }
 
         public ulong Id
             => Message.Id;
-        public DiscordMessage ReferencedMessage
-            => Message.ReferencedMessage;
-        public DiscordChannel Channel
-            => Message.Channel;
-        public DiscordUser Author
-            => Message.Author;
+        public MessageViewModel ReferencedMessage
+            => Message.ReferencedMessage != null ?
+                new MessageViewModel(Message.ReferencedMessage, Parent, this) :
+                null;
+        public ChannelViewModel Channel
+            => new ChannelViewModel(Message.Channel, true, this);
+        public UserViewModel Author
+            => new UserViewModel(Message.Author, this);
         public DateTimeOffset Timestamp
             => Message.Timestamp;
         public string Content
@@ -63,7 +68,10 @@ namespace Unicord.Universal.Models.Messages
         public bool IsEdited
             => Message.IsEdited;
         public bool IsSystemMessage
-            => Message.MessageType != MessageType.Default && Message.MessageType != MessageType.Reply;
+            => Message.MessageType != MessageType.Default &&
+            Message.MessageType != MessageType.Reply &&
+            Message.MessageType != MessageType.ApplicationCommand &&
+            Message.MessageType != MessageType.ContextMenuCommand;
 
         public bool IsMention
         {
@@ -90,7 +98,7 @@ namespace Unicord.Universal.Models.Messages
                         && Message.ReferencedMessage == null)
                     {
                         var timeSpan = (Message.CreationTimestamp - other.Message.CreationTimestamp);
-                        if (other.Author.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
+                        if (other.Author.User.Id == Message.Author.Id && timeSpan <= TimeSpan.FromMinutes(10))
                         {
                             return true;
                         }
@@ -170,20 +178,6 @@ namespace Unicord.Universal.Models.Messages
             }, null);
 
             return;
-        }
-
-        private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
-        {
-            if (e.Member.Id != Author.Id)
-                return;
-
-            if (e.Guild.Id != Channel.GuildId)
-                return;
-
-            if (Author is not DiscordMember member && !e.Guild.GetCachedMember(Author.Id, out member))
-                return;
-
-            InvokePropertyChanged(nameof(Author));
         }
 
         // TODO: would an observable dictionary type be faster here?

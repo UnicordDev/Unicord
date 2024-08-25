@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Unicord.Universal.Extensions;
 using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
@@ -89,7 +90,7 @@ namespace Unicord.Universal.Shared
         private async Task<IReadOnlyList<DiscordMessage>> FetchUnreadMessagesAsync()
         {
             var unreadChannelTasks = _discord.PrivateChannels.Values
-                .Where(c => c.ReadState != null && c.ReadState.Unread && c.ReadState.LastMessageId != 0)
+                .Where(c => c.ReadState != null && c.IsUnread() && c.ReadState.LastMessageId != 0)
                 .Take(5)
                 .Select(c => c.GetMessagesAroundAsync(c.ReadState.LastMessageId, 10)
                               .ContinueWith(t => (messageId: c.ReadState.LastMessageId, messages: t.Result), TaskContinuationOptions.OnlyOnRanToCompletion));

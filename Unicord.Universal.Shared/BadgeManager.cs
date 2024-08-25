@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
@@ -24,9 +25,9 @@ namespace Unicord.Universal.Shared
         {
             try
             {
-                var unread = _discord.Guilds.Values.Any(g => g.Unread);
-                if (!unread)
-                    return;
+                //var unread = _discord.Guilds.Values.Any(g => g.Unread);
+                //if (!unread)
+                //    return;
 
                 //var badgeNumber = _discord.Guilds.Values.Sum(g => Math.Max(g.MentionCount, 0)) + _discord.PrivateChannels.Values.Sum(g => Math.Max(g.ReadState?.MentionCount ?? 0, 0));
                 //if (badgeNumber != 0)
@@ -49,6 +50,12 @@ namespace Unicord.Universal.Shared
                 //{
                 //    _badgeUpdateManager.Clear();
                 //}
+
+                var mentions = 0;
+                foreach (var (key, value) in _discord.ReadStates)
+                {
+                    var channel = _discord.InternalGetCachedChannel(key);
+                }
             }
             catch (Exception)
             {

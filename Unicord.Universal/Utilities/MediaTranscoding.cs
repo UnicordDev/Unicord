@@ -95,13 +95,9 @@ namespace Unicord.Universal.Utilities
 
             if (prep.CanTranscode)
             {
-                var task = prep.TranscodeAsync();
-
-                token.Register(() => task.Cancel());
-                task.Progress = new AsyncActionProgressHandler<double>((a, p) => progress.Report(p));
-                await task;
-
-                return task.Status == AsyncStatus.Completed;
+                await prep.TranscodeAsync()
+                          .AsTask(token, new Progress<double>((d) => progress?.Report(d)));
+                return true;
             }
 
             transcoder = null;
@@ -114,11 +110,11 @@ namespace Unicord.Universal.Utilities
             var width = (double)props.Width;
             var height = (double)props.Height;
 
-            double maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, 854);
-            double maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, 480);
+            double maxWidth = App.RoamingSettings.Read(VIDEO_WIDTH, DEFAULT_VIDEO_WIDTH);
+            double maxHeight = App.RoamingSettings.Read(VIDEO_HEIGHT, DEFAULT_VIDEO_HEIGHT);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
-            var bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, 1_115_000u);
+            var bitrate = App.RoamingSettings.Read(VIDEO_BITRATE, DEFAULT_VIDEO_BITRATE);
 
             if (width == 0)
                 width = maxWidth;
@@ -137,10 +133,10 @@ namespace Unicord.Universal.Utilities
                 },
                 Audio = new AudioEncodingProperties()
                 {
-                    Bitrate = App.RoamingSettings.Read(AUDIO_BITRATE, 192u),
+                    Bitrate = App.RoamingSettings.Read(AUDIO_BITRATE, DEFAULT_AUDIO_BITRATE),
                     BitsPerSample = 16,
                     ChannelCount = 2,
-                    SampleRate = App.RoamingSettings.Read(AUDIO_SAMPLERATE, 44100u),
+                    SampleRate = App.RoamingSettings.Read(AUDIO_SAMPLERATE, DEFAULT_AUDIO_SAMPLERATE),
                     Subtype = MediaEncodingSubtypes.Aac
                 }
             };

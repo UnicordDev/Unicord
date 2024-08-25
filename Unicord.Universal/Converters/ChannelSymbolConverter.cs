@@ -1,6 +1,8 @@
 ﻿using System;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters
@@ -19,28 +21,40 @@ namespace Unicord.Universal.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is DiscordChannel c)
-            {
-                if (c.IsNSFW)
-                {
-                    return NSFWGlyph;
-                }
+            var type = ChannelType.Unknown;
+            var isNSFW = false;
 
-                var type = c.Type;
-                return type switch
-                {
-                    ChannelType.Text => TextGlyph,
-                    ChannelType.Voice => VoiceGlyph,
-                    ChannelType.Announcement => NewsGlyph,
-                    ChannelType.Store => StoreGlyph,
-                    ChannelType.Stage => StageGlyph,
-                    ChannelType.Directory => DirectoryGlyph,
-                    ChannelType.Forum => ForumGlyph,
-                    _ => UnknownGlyph,
-                };
+            switch (value)
+            {
+                case DiscordChannel c:
+                    type = c.Type;
+                    isNSFW = c.IsNSFW;
+                    break;
+                case ChannelListViewModel vm:
+                    type = vm.ChannelType;
+                    isNSFW = vm.Channel.IsNSFW;
+                    break;
+                case ChannelType t:
+                    type = t;
+                    break;
             }
 
-            return "";
+            if (isNSFW)
+            {
+                return NSFWGlyph;
+            }
+
+            return type switch
+            {
+                ChannelType.Text => TextGlyph,
+                ChannelType.Voice => VoiceGlyph,
+                ChannelType.Announcement => NewsGlyph,
+                ChannelType.Store => StoreGlyph,
+                ChannelType.Stage => StageGlyph,
+                ChannelType.GuildDirectory => DirectoryGlyph,
+                ChannelType.GuildForum => ForumGlyph,
+                _ => UnknownGlyph,
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

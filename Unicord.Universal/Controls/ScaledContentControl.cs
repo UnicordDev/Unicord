@@ -35,8 +35,6 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ForceSizeProperty =
             DependencyProperty.Register("ForceSize", typeof(bool), typeof(ScaledContentControl), new PropertyMetadata(false, OnWidthHeightPropertyChanged));
 
-
-
         private static void OnWidthHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (ScaledContentControl)d;

@@ -46,6 +46,8 @@ namespace Unicord.Universal.Controls.Embeds
                 uri = embedBuilder.Uri;
             }
 
+            posterContainer.Visibility = Visibility.Collapsed;
+
             var browser = new UniversalWebView()
             {
                 Source = uri,
@@ -53,9 +55,7 @@ namespace Unicord.Universal.Controls.Embeds
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
-            content.Children.Add(browser);
-
-            posterContainer.Visibility = Visibility.Collapsed;
+            content.Children.Insert(0, browser);
         }
 
         protected override Size MeasureOverride(Size constraint)
