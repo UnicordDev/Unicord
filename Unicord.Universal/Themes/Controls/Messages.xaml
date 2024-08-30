@@ -293,7 +293,7 @@
     <DataTemplate x:Key="AudioAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
         <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentAudioControlStyle}"/>
     </DataTemplate>
-    
+
     <w1809:ScalarTransition x:Key="FadeTransition" Duration="00:00:00.2" />
 
     <DataTemplate x:Key="DefaultAttachmentGenericTemplate" x:DataType="messages:AttachmentViewModel">
@@ -621,6 +621,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
@@ -628,6 +629,7 @@
                                 <Ellipse x:Name="ReplyAvatarContainer"
                                          Width="16"
                                          Height="16"
+                                         Margin="0,0,4,0"
                                          Grid.Column="1">
                                     <Ellipse.Fill>
                                         <ImageBrush>
@@ -640,16 +642,18 @@
                                         </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
-
+                                
+                                <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{Binding ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
 
                                 <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
-                                                       Grid.Column="2"
+                                                       Grid.Column="3"
                                                        FontSize="12"
                                                        InlineOnly="True"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                                        Channel="{Binding Channel.Channel}"
                                                        Text="{Binding ReferencedMessage.Content}" 
                                                        IsTextSelectionEnabled="True"
+                                                       IsEnabled="False"
                                                        VerticalAlignment="Center"
                                                        Margin="6,0" />
 
@@ -681,10 +685,10 @@
                                     <StackPanel x:Name="AuthorContainer" Orientation="Horizontal">
                                         <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
 
-                                        <StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
+                                        <!--<StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
                                             <TextBlock x:Uid="/Controls/ReplyingTo" Margin="4,0"/>
                                             <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14"/>
-                                        </StackPanel>
+                                        </StackPanel>-->
 
                                         <TextBlock Margin="8,1" 
                                                FontSize="11"
@@ -1068,7 +1072,6 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:SystemMessageControl">
-
                     <Grid Margin="0,12,8,0" DataContext="{TemplateBinding MessageViewModel}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -1078,10 +1081,10 @@
                             Margin="24,0,22,0"
                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                             FontSize="20"
-                            Text="{Binding Converter={StaticResource SystemMessageSymbolConverter}}"
+                            Text="{Binding SystemMessageSymbol}"
                             Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
 
-                        <controls:MarkdownTextBlock Grid.Column="1" IsSystemMessage="True" Channel="{Binding Channel}" Text="{Binding Converter={StaticResource SystemMessageTextConverter}}"/>
+                        <controls:MarkdownTextBlock Grid.Column="1" IsSystemMessage="True" Channel="{Binding Channel.Channel}" Text="{Binding SystemMessageText}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

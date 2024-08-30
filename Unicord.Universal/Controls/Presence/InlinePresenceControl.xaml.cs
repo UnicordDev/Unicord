@@ -77,7 +77,7 @@ namespace Unicord.Universal.Controls.Presence
 
             var strings = control._strings;
             var condensedPresence = new CondencedPresence();
-            foreach (var presence in newPresence.Activities.OrderBy(p => p.ActivityType))
+            foreach (var presence in newPresence.Activities.Where(p => p != null).OrderBy(p => p.ActivityType))
             {
                 switch (presence.ActivityType)
                 {

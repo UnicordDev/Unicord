@@ -18,10 +18,31 @@ namespace Unicord.Universal.Services
 {
     internal class FullscreenService : BaseService<FullscreenService>
     {
+        private record CapturedProperties(FrameworkElement Control)
+        {
+            public readonly double Width = Control.Width;
+            public readonly double Height = Control.Height;
+            public readonly double MaxWidth = Control.MaxWidth;
+            public readonly double MaxHeight = Control.MaxHeight;
+            public readonly Transform RenderTransform = Control.RenderTransform;
+            public readonly Point RenderTransformOrigin = Control.RenderTransformOrigin;
+
+            public void Apply(FrameworkElement target)
+            {
+                target.Width = Width;
+                target.Height = Height;
+                target.MaxWidth = MaxWidth;
+                target.MaxHeight = MaxHeight;
+                target.RenderTransform = RenderTransform;
+                target.RenderTransformOrigin = RenderTransformOrigin;
+            }
+        }
+
         private MainPage _page;
         private Canvas _canvas;
         private ApplicationView _view;
 
+        private CapturedProperties _fullscreenProperties;
         private FrameworkElement _fullscreenElement;
         private Border _fullscreenParent;
 
@@ -75,8 +96,16 @@ namespace Unicord.Universal.Services
                 maxHeight = info.ScreenHeightInRawPixels / info.RawPixelsPerViewPixel;
             }
 
+            _fullscreenProperties = new CapturedProperties(element);
+
+            var placeholder = new Border();
+            _fullscreenProperties.Apply(placeholder);
+
             var bounds = parent.TransformToVisual(null)
                                .TransformBounds(new Rect(0, 0, parent.ActualWidth, parent.ActualHeight));
+
+            element.MaxWidth = double.PositiveInfinity;
+            element.MaxHeight = double.PositiveInfinity;
 
             Canvas.SetLeft(element, 0);
             Canvas.SetTop(element, 0);
@@ -95,9 +124,12 @@ namespace Unicord.Universal.Services
             };
 
             VisualTreeHelper.DisconnectChildrenRecursive(parent);
+            VisualTreeHelper.DisconnectChildrenRecursive(_canvas);
+
             _fullscreenElement = element;
             _fullscreenParent = parent;
             _canvas.Children.Add(element);
+            parent.Child = placeholder;
 
             element.RenderTransformOrigin = new Point(0.5, 0.5);
             element.RenderTransform = transformCollection;
@@ -122,14 +154,15 @@ namespace Unicord.Universal.Services
 
         public void LeaveFullscreen()
         {
+            Analytics.TrackEvent("FullscreenService_LeaveFullscreen");
+
             _view.ExitFullScreenMode();
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
             _fullscreenElement = null;
             _fullscreenParent = null;
 
             VisualTreeHelper.DisconnectChildrenRecursive(_canvas);
-
-            _canvas.Children.Clear();
             _canvas.Visibility = Visibility.Collapsed;
 
             FullscreenExited?.Invoke(this, null);
@@ -160,13 +193,27 @@ namespace Unicord.Universal.Services
             storyboard.Begin();
             storyboard.Completed += (o, ev) =>
             {
-                element.RenderTransform = null;
-                element.Width = double.NaN;
-                element.Height = double.NaN;
+                _view.ExitFullScreenMode();
 
-                LeaveFullscreen();
+                _canvas.Children.Clear();
+                _fullscreenParent.Child = null;
+
+                if (_fullscreenElement is not MediaPlayerElement)
+                {
+                    VisualTreeHelper.DisconnectChildrenRecursive(_fullscreenParent);
+                    VisualTreeHelper.DisconnectChildrenRecursive(_canvas);
+                }
+
+                _canvas.Visibility = Visibility.Collapsed;
+                _fullscreenParent.Child = _fullscreenElement;
+                _fullscreenProperties.Apply(_fullscreenElement);
+
+                _fullscreenProperties = null;
+                _fullscreenElement = null;
+                _fullscreenParent = null;
 
                 tcs.SetResult(null);
+                FullscreenExited?.Invoke(this, null);
             };
 
             return tcs.Task;

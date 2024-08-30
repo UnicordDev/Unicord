@@ -345,7 +345,6 @@
     <Compile Include="Converters\MessageTemplateSelector.cs" />
     <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceConverters.cs" />
-    <Compile Include="Converters\SystemMessageConverters.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
@@ -415,6 +414,7 @@
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\Messages\AttachmentViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
+    <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
     <Compile Include="Models\Messages\ReactionViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />

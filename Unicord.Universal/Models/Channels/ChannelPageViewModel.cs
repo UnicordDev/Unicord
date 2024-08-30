@@ -49,7 +49,7 @@ namespace Unicord.Universal.Models
         private bool _replyPing = true;
 
         public ChannelPageViewModel(DiscordChannel channel, WindowHandle window)
-            : base(channel)
+            : base(channel.Id)
         {
             if (!channel.IsText())
                 throw new InvalidOperationException("Unable to create a view model for a non-text channel"); // no op this

@@ -16,14 +16,14 @@ namespace Unicord.Universal.Models.Channels
 {
     public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>, ISnowflake
     {
-        private readonly DiscordChannel _channel;
+        private readonly ulong _channelId;
         private UserViewModel _recipient;
         private ReadStateViewModel _readStateCache;
 
-        internal ChannelViewModel(DiscordChannel channel, bool isTransient = false, ViewModelBase parent = null)
+        internal ChannelViewModel(ulong channelId, bool isTransient = false, ViewModelBase parent = null)
             : base(parent)
         {
-            this._channel = channel;
+            this._channelId = channelId;
 
             // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
             if (!isTransient)
@@ -34,35 +34,36 @@ namespace Unicord.Universal.Models.Channels
         }
 
         public ulong Id
-            => Channel.Id;
+            => _channelId;
 
-        public virtual DiscordChannel Channel => _channel;
+        public virtual DiscordChannel Channel 
+            => discord.InternalGetCachedChannel(Id);
 
-        public virtual ChannelViewModel Parent => Channel.Parent != null ?
-            new ChannelViewModel(Channel.Parent, false, this) :
+        public virtual ChannelViewModel Parent => Channel.ParentId != null ?
+            new ChannelViewModel(Channel.ParentId.Value, false, this) :
             null;
 
-        public virtual GuildViewModel Guild => Channel.Guild != null ?
-            new GuildViewModel(Channel.Guild, this) :
+        public virtual GuildViewModel Guild => Channel.GuildId != 0 ?
+            new GuildViewModel(Channel.GuildId, this) :
             null;
 
         public virtual string Name
-            => _channel.Name;
+            => Channel.Name;
         public virtual ChannelType ChannelType
-            => _channel.Type;
+            => Channel.Type;
         public virtual int Position
-            => _channel.Position;
+            => Channel.Position;
         public virtual string Topic
-            => _channel.Topic;
+            => Channel.Topic;
         public virtual ReadStateViewModel ReadState
-            => _readStateCache ??= new ReadStateViewModel(Channel, this);
+            => _readStateCache ??= new ReadStateViewModel(Id, this);
         public virtual bool Unread
             => !Muted && ReadState.Unread;
         public virtual bool NotificationMuted
             => (Muted || (Parent?.Muted ?? false) || (Guild?.Muted ?? false));
 
         public UserViewModel Recipient
-            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipient, null) : null);
+            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipient, null, null) : null);
 
         public bool Muted
             => Channel.IsMuted();
@@ -80,7 +81,7 @@ namespace Unicord.Universal.Models.Channels
 
         protected virtual Task OnChannelUpdated(ChannelUpdateEventArgs e)
         {
-            if (e.ChannelAfter.Id != _channel.Id)
+            if (e.ChannelAfter.Id != Id)
                 return Task.CompletedTask;
 
             if (e.ChannelAfter.Name != e.ChannelBefore.Name)
@@ -117,7 +118,7 @@ namespace Unicord.Universal.Models.Channels
 
         public override int GetHashCode()
         {
-            return 329305889 + EqualityComparer<DiscordChannel>.Default.GetHashCode(_channel);
+            return 329305889 + EqualityComparer<ulong>.Default.GetHashCode(Id);
         }
     }
 }

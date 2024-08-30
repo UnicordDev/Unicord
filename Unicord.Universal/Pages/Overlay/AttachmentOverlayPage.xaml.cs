@@ -31,6 +31,8 @@ namespace Unicord.Universal.Pages.Overlay
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             contentContainerOverlay.Visibility = Visibility.Visible;
+            overlayProgressRing.Visibility = Visibility.Visible;
+            FailurePanel.Visibility = Visibility.Collapsed;
 
             if (e.Parameter is AttachmentViewModel attachment)
             {
@@ -81,6 +83,17 @@ namespace Unicord.Universal.Pages.Overlay
         private void backButton_Click(object sender, RoutedEventArgs e)
         {
             OverlayService.GetForCurrentView().CloseOverlay();
+        }
+
+        private void AttachmentSource_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            overlayProgressRing.Visibility = Visibility.Collapsed;
+            FailurePanel.Visibility = Visibility.Visible;
+        }
+
+        private void attachmentImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
