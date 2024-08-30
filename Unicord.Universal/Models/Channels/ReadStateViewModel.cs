@@ -13,17 +13,17 @@ namespace Unicord.Universal.Models.Channels
 {
     public class ReadStateViewModel : ViewModelBase
     {
-        protected readonly DiscordChannel channel;
+        protected readonly ulong channelId;
         protected readonly DiscordReadState readState;
         protected readonly ChannelViewModel viewModel;
 
-        public ReadStateViewModel(DiscordChannel channel, ChannelViewModel channelViewModel = null)
+        public ReadStateViewModel(ulong channelId, ChannelViewModel channelViewModel = null)
             : base(channelViewModel)
         {
-            this.channel = channel;
-            this.viewModel = channelViewModel ?? new ChannelViewModel(channel);
+            this.channelId = channelId;
+            this.viewModel = channelViewModel ?? new ChannelViewModel(channelId, true, this);
 
-            if (!App.Discord.ReadStates.TryGetValue(channel.Id, out readState))
+            if (!App.Discord.ReadStates.TryGetValue(channelId, out readState))
                 readState = App.Discord.DefaultReadState;
 
             WeakReferenceMessenger.Default.Register<ReadStateViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
@@ -52,6 +52,10 @@ namespace Unicord.Universal.Models.Channels
 
                 if (discord == null || discord.IsDisposed)
                     return false;
+
+                var channel = discord.InternalGetCachedChannel(channelId);
+                if (channel == null) 
+                    return false; // in theory impossible
 
                 if (channel.Type == ChannelType.Voice || channel.Type == ChannelType.Category || channel.Type == ChannelType.Store)
                     return false;

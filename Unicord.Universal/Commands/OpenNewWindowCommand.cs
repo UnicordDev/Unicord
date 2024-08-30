@@ -26,7 +26,8 @@ namespace Unicord.Universal.Commands
         {
             Analytics.TrackEvent("OpenNewWindowCommand_Invoked");
 
-            if (parameter is DiscordChannel channel && channel.IsText())
+            if (parameter is DiscordChannel channel ||
+                (parameter is ChannelViewModel channelVm && (channel = channelVm.Channel) != null) && channel.IsText())
             {
                 await WindowingService.Current.OpenChannelWindowAsync(channel);
             }

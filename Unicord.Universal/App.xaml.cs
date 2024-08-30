@@ -97,15 +97,6 @@ namespace Unicord.Universal
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            //try
-            //{
-            //    ThemeManager.LoadCurrentTheme(Resources);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex);
-            //}
-
             switch (e)
             {
                 case ContactPanelActivatedEventArgs cont:
@@ -115,7 +106,7 @@ namespace Unicord.Universal
                     OnLaunched(false, toast.Argument);
                     return;
                 case ProtocolActivatedEventArgs protocol:
-                    await OnProtocolActivatedAsync(protocol);
+                    OnProtocolActivatedAsync(protocol);
                     return;
 #if XBOX_GAME_BAR
                 case XboxGameBarWidgetActivatedEventArgs xbox:
@@ -135,20 +126,20 @@ namespace Unicord.Universal
             switch (args.TaskInstance.Task.Name)
             {
                 case TOAST_BACKGROUND_TASK_NAME:
-                    if (args.TaskInstance.TriggerDetails is ToastNotificationActionTriggerDetail details && TryGetToken(out var token))
-                    {
-                        var arguments = ParseArgs(details.Argument);
-                        var userInput = details.UserInput;
+                    if (args.TaskInstance.TriggerDetails is not ToastNotificationActionTriggerDetail details || !TryGetToken(out var token))
+                        break;
 
-                        if (arguments.TryGetValue("channelId", out var cId) && ulong.TryParse(cId, out var channelId))
-                        {
-                            if (userInput.TryGetValue("tbReply", out var t) && t is string text)
-                            {
-                                var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
-                                await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>(), null);
-                            }
-                        }
-                    }
+                    var arguments = ParseArgs(details.Argument);
+                    var userInput = details.UserInput;
+
+                    if (!arguments.TryGetValue("channelId", out var cId) || !ulong.TryParse(cId, out var channelId))
+                        break;
+
+                    if (!userInput.TryGetValue("tbReply", out var t) || t is not string text)
+                        break;
+
+                    var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
+                    await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>(), null);
                     break;
             }
 
@@ -200,7 +191,7 @@ namespace Unicord.Universal
         }
 #endif
 
-        private static async Task OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
+        private void OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
         {
             if (protocol.Uri.IsAbsoluteUri)
                 Analytics.TrackEvent("Unicord_LaunchForProtocol", new Dictionary<string, string>() { ["protocol"] = protocol.Uri.GetLeftPart(UriPartial.Authority) });
@@ -221,8 +212,10 @@ namespace Unicord.Universal
                     return;
                 }
             }
-
-            await Launcher.LaunchUriAsync(protocol.Uri, new LauncherOptions() { IgnoreAppUriHandlers = true });
+            else
+            {
+                OnLaunched(false, "");
+            }
         }
 
         private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
@@ -295,9 +288,7 @@ namespace Unicord.Universal
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (previousState == ApplicationExecutionState.Terminated)
-                {
-                    channelId = LocalSettings.Read("LastViewedChannel", 0ul);
-                }
+                    channelId = LocalSettings.Read("LastViewedChannel", 0ul);                
 
                 WindowingService.Current.SetMainWindow(rootFrame);
                 // Place the frame in the current Window

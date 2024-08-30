@@ -30,8 +30,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
-                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" 
-                                       ControlsResourcesVersion="Version2" />
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
 
                 <ResourceDictionary Source="Themes/Colours.xaml"/>
                 <ResourceDictionary Source="Themes/Generic.xaml"/>
@@ -98,8 +97,6 @@
             <converters:TitleCaseConverter x:Key="TitleCaseConverter"/>
             <converters:UriConverter x:Key="UriConverter"/>
             <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
-            <converters:SystemMessageSymbolConverter x:Key="SystemMessageSymbolConverter"/>
-            <converters:SystemMessageTextConverter x:Key="SystemMessageTextConverter"/>
             <converters:DiscordUriConverter x:Key="DiscordUriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>

@@ -9,63 +9,79 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using Unicord.Universal.Models.Messages;
 using Windows.UI;
 using Unicord.Universal.Extensions;
+using DSharpPlus;
+using System.Diagnostics;
 
 namespace Unicord.Universal.Models.User
 {
     public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>, ISnowflake
     {
-        private readonly DiscordUser _user;
-        private readonly DiscordMember _member;
+        private ulong _userId;
+        private ulong? _guildId;
 
-        internal UserViewModel(DiscordUser user, ViewModelBase parent = null)
+        internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            _user = user;
-            _member = user as DiscordMember;
+            _userId = user.Id;
+
+            if (user is DiscordMember member)
+            {
+                _guildId = member.Guild.Id;
+            }
+            else if (guildId != 0)
+            {
+                _guildId = guildId;
+            }
 
             WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this, (t, e) => t.OnUserUpdate(e.Event));
             WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this, (t, e) => t.OnPresenceUpdate(e.Event));
 
-            if (_member != null)
+            if (_guildId != null)
             {
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMemberUpdateEventArgs>(this,
                     (t, e) => t.OnGuildMemberUpdate(e.Event));
+                // TODO: idk if this should be here?
+                WeakReferenceMessenger.Default.Register<UserViewModel, GuildMembersChunkEventArgs>(this,
+                    (t, e) => t.OnGuildMemberChunk(e.Event));
             }
         }
 
         public ulong Id
-            => _user.Id;
+            => _userId;
 
         public DiscordUser User
-            => _user;
+            => discord.InternalGetCachedUser(Id);
 
         public DiscordMember Member
-            => _member;
+            => _guildId != null ? discord.InternalGetCachedGuild(_guildId)?.Members[_userId] : null;
 
         public string DisplayName
-            => _member?.DisplayName ?? (_user.GlobalName ?? _user.Username);
+            => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?
+            Member.Nickname
+            : (User.GlobalName ?? User.Username);
 
         public string AvatarUrl
-            => (_member as DiscordUser)?.GetAvatarUrl(64) ?? _user.GetAvatarUrl(64);
+            => (Member as DiscordUser)?.GetAvatarUrl(64) ?? User.GetAvatarUrl(64);
 
         public string Mention
-            => _user.Mention;
+            => User.Mention;
 
         public bool IsCurrent
-            => _user.IsCurrent;
+            => User.IsCurrent;
 
         public bool IsBot
-            => _user.IsBot;
+            => User.IsBot;
 
         public DiscordColor Color
-            => _user.Color;
+            => Member?.Color ?? default;
 
         public DiscordPresence Presence
-            => _user.Presence;
+            => User.Presence;
 
         private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {
-            if (_member == null || e.Member.Id != _member.Id || e.Guild.Id != _member.Guild.Id)
+            var member = Member;
+            if (member == null || e.Member.Id != member.Id || e.Guild.Id != member.Guild.Id)
                 return;
 
             InvokePropertyChanged(nameof(DisplayName));
@@ -74,10 +90,24 @@ namespace Unicord.Universal.Models.User
                 InvokePropertyChanged(nameof(Color));
         }
 
+        private void OnGuildMemberChunk(GuildMembersChunkEventArgs e)
+        {
+            if (Member == null || e.Guild.Id != Member.Guild.Id)
+                return;
+
+            if (e.Members.TryGetValue(Member.Id, out var member))
+            {
+                InvokePropertyChanged(nameof(DisplayName));
+                InvokePropertyChanged(nameof(Color));
+            }
+        }
+
         private void OnUserUpdate(UserUpdateEventArgs e)
         {
-            if (_user == null || e.UserAfter.Id != _user.Id)
+            if (User == null || e.UserAfter.Id != User.Id)
                 return;
+
+            //_user = e.UserAfter;
 
             InvokePropertyChanged(nameof(DisplayName));
 
@@ -87,7 +117,7 @@ namespace Unicord.Universal.Models.User
 
         private void OnPresenceUpdate(PresenceUpdateEventArgs e)
         {
-            if (_user == null && e.User.Id != _user.Id)
+            if (User == null && e.User.Id != User.Id)
                 return;
 
             InvokePropertyChanged(nameof(Presence));
@@ -100,7 +130,7 @@ namespace Unicord.Universal.Models.User
 
         public bool Equals(DiscordUser other)
         {
-            return ((IEquatable<DiscordUser>)_user).Equals(other);
+            return ((IEquatable<DiscordUser>)User).Equals(other);
         }
     }
 }

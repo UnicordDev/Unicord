@@ -32,6 +32,7 @@ namespace Unicord.Universal.Models.Messaging
             client.GuildDeleted += OnGuildDeleted;
             client.GuildUpdated += OnGuildUpdated;
             client.GuildMemberUpdated += OnGuildMemberUpdated;
+            client.GuildMembersChunked += OnGuildMembersChunked;
             client.DmChannelCreated += OnDmChannelCreated;
             client.DmChannelDeleted += OnDmChannelDeleted;
             client.RelationshipAdded += OnRelationshipAdded;
@@ -62,6 +63,7 @@ namespace Unicord.Universal.Models.Messaging
             client.GuildDeleted -= OnGuildDeleted;
             client.GuildUpdated -= OnGuildUpdated;
             client.GuildMemberUpdated -= OnGuildMemberUpdated;
+            client.GuildMembersChunked -= OnGuildMembersChunked;
             client.DmChannelCreated -= OnDmChannelCreated;
             client.DmChannelDeleted -= OnDmChannelDeleted;
             client.RelationshipAdded -= OnRelationshipAdded;
@@ -194,7 +196,13 @@ namespace Unicord.Universal.Models.Messaging
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
+
         private static Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+
+        private static Task OnGuildMembersChunked(GuildMembersChunkEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }

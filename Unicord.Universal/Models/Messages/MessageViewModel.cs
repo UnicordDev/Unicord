@@ -16,22 +16,33 @@ using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
+using Windows.ApplicationModel.Resources;
 
 namespace Unicord.Universal.Models.Messages
 {
-    public class MessageViewModel : ViewModelBase, ISnowflake
+    public partial class MessageViewModel : ViewModelBase, ISnowflake
     {
+        // TODO: not surei like getting this for every single message :/
+        private readonly ResourceLoader _strings;
+
+        private ChannelViewModel _channelViewModelCache;
+        private UserViewModel _userViewModelCache;
+
         public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
             : base((ViewModelBase)parentMessage ?? parent)
         {
             Message = discordMessage;
             Parent = parent;
 
+            _channelViewModelCache = parent;
+
             WeakReferenceMessenger.Default.Register<MessageViewModel, MessageUpdateEventArgs>(this, (t, e) => t.OnMessageUpdated(e.Event));
 
             // we dont wanna do this for replies
             if (parentMessage == null)
             {
+                _strings = ResourceLoader.GetForViewIndependentUse("Converters");
+
                 ReactCommand = new ReactCommand(discordMessage);
 
                 Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
@@ -58,9 +69,9 @@ namespace Unicord.Universal.Models.Messages
                 new MessageViewModel(Message.ReferencedMessage, Parent, this) :
                 null;
         public ChannelViewModel Channel
-            => new ChannelViewModel(Message.Channel, true, this);
+            => _channelViewModelCache ??= new ChannelViewModel(Message.ChannelId, true, this);
         public UserViewModel Author
-            => new UserViewModel(Message.Author, this);
+            => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel.GuildId, this);
         public DateTimeOffset Timestamp
             => Message.Timestamp;
         public string Content
@@ -72,6 +83,50 @@ namespace Unicord.Universal.Models.Messages
             Message.MessageType != MessageType.Reply &&
             Message.MessageType != MessageType.ApplicationCommand &&
             Message.MessageType != MessageType.ContextMenuCommand;
+
+        public string SystemMessageText => Message.MessageType switch
+        {
+            MessageType.RecipientAdd => string.Format(_strings.GetString("UserJoinedGroupFormat"), Author.Mention),
+            MessageType.RecipientRemove => string.Format(_strings.GetString("UserLeftGroupFormat"), Author.Mention),
+            MessageType.Call => string.Format(_strings.GetString("UserStartedCallFormat"), Author.Mention),
+            MessageType.ChannelNameChange => string.Format(_strings.GetString("UserChannelNameChangeFormat"), Author.Mention),
+            MessageType.ChannelIconChange => string.Format(_strings.GetString("UserChannelIconChangeFormat"), Author.Mention),
+            MessageType.ChannelPinnedMessage => string.Format(_strings.GetString("UserMessagePinFormat"), Author.Mention),
+            MessageType.GuildMemberJoin => string.Format(WelcomeStrings[(int)(Message.CreationTimestamp.ToUnixTimeMilliseconds() % WelcomeStrings.Length)], Author.Mention),
+            MessageType.UserPremiumGuildSubscription => string.Format(_strings.GetString(
+                                        string.IsNullOrWhiteSpace(Content) ?
+                                        "UserPremiumGuildSubscriptionFormat" :
+                                        "UserPremiumMultiGuildSubscriptionFormat"), Author.Mention, Content),
+            MessageType.TierOneUserPremiumGuildSubscription => string.Format(_strings.GetString(
+                                        string.IsNullOrWhiteSpace(Content) ?
+                                        "UserPremiumGuildSubscriptionTierFormat" :
+                                        "UserPremiumMultiGuildSubscriptionTierFormat"), Author.Mention, Content, 1),
+            MessageType.TierTwoUserPremiumGuildSubscription => string.Format(_strings.GetString(
+                                        string.IsNullOrWhiteSpace(Content) ?
+                                        "UserPremiumGuildSubscriptionTierFormat" :
+                                        "UserPremiumMultiGuildSubscriptionTierFormat"), Author.Mention, Content, 2),
+            MessageType.TierThreeUserPremiumGuildSubscription => string.Format(_strings.GetString(
+                                        string.IsNullOrWhiteSpace(Content) ?
+                                        "UserPremiumGuildSubscriptionTierFormat" :
+                                        "UserPremiumMultiGuildSubscriptionTierFormat"), Author.Mention, Content, 3),
+            _ => $"Unknown system message type {Message.MessageType}! [File an issue!](https://github.com/UnicordDev/Unicord/issues/new)",
+        };
+
+        public string SystemMessageSymbol => Message.MessageType switch
+        {
+            MessageType.RecipientAdd => "\xE72A",
+            MessageType.RecipientRemove => "\xE72B",
+            MessageType.Call => "\xE717",
+            MessageType.ChannelNameChange
+                or MessageType.ChannelIconChange => "\xE70F",
+            MessageType.ChannelPinnedMessage => "\xE840",
+            MessageType.GuildMemberJoin => "\xE72A",
+            MessageType.UserPremiumGuildSubscription
+                or MessageType.TierOneUserPremiumGuildSubscription
+                or MessageType.TierTwoUserPremiumGuildSubscription
+                or MessageType.TierThreeUserPremiumGuildSubscription => "\xECAD",
+            _ => "\xE783",
+        };
 
         public bool IsMention
         {

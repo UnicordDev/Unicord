@@ -17,25 +17,25 @@ namespace Unicord.Universal.Models.Guild
 {
     public class GuildViewModel : ViewModelBase, ISnowflake
     {
-        private readonly DiscordMember _currentMember = null;
-        private ConcurrentDictionary<ulong, ChannelViewModel> _accessibleChannels;
+        private readonly ulong _guildId;
+        private Dictionary<ulong, ChannelViewModel> _accessibleChannels;
 
-        public GuildViewModel(DiscordGuild guild, ViewModelBase parent = null)
+        public GuildViewModel(ulong guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            Guild = guild;
-            _currentMember = guild.CurrentMember;
-            _accessibleChannels = new ConcurrentDictionary<ulong, ChannelViewModel>();
+            _guildId = guildId;
+            //_accessibleChannels = new ConcurrentDictionary<ulong, ChannelViewModel>();
 
-            PopulateAccessibleChannels();
+            //PopulateAccessibleChannels();
 
             WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
         }
 
         public ulong Id
-            => Guild.Id;
+            => _guildId;
 
-        public DiscordGuild Guild { get; set; }
+        public DiscordGuild Guild
+            => discord.InternalGetCachedGuild(Id);
 
         public string Name =>
             Guild.Name;
@@ -50,11 +50,19 @@ namespace Unicord.Universal.Models.Guild
             !Muted && AccessibleChannels.Any(r => !r.NotificationMuted && r.Unread);
 
         internal IEnumerable<ChannelViewModel> AccessibleChannels
-            => _accessibleChannels.Values;
+        {
+            get
+            {
+                if (_accessibleChannels == null)
+                    PopulateAccessibleChannels();
+
+                return _accessibleChannels.Values;
+            }
+        }
 
         private Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
         {
-            if (_accessibleChannels.ContainsKey(e.ReadState.Id))
+            if (Guild.Channels.ContainsKey(e.ReadState.Id))
             {
                 InvokePropertyChanged(nameof(Unread));
                 OnReadStateUpdatedCore(e);
@@ -66,26 +74,26 @@ namespace Unicord.Universal.Models.Guild
         // TODO: update this cache when the user's roles change, and when the guild gets updated, and when a new channel gets created :D
         private void PopulateAccessibleChannels()
         {
-            _accessibleChannels.Clear();
+            _accessibleChannels = new Dictionary<ulong, ChannelViewModel>();
 
-            if ((_currentMember?.IsOwner ?? true))
+            if ((Guild.CurrentMember?.IsOwner ?? true))
             {
                 foreach (var (key, value) in Guild.Channels)
                 {
-                    _accessibleChannels[key] = new ChannelViewModel(value, true, this);
+                    _accessibleChannels[key] = new ChannelViewModel(value.Id, true, this);
                 }
             }
             else
             {
                 foreach (var (key, value) in Guild.Channels)
                 {
-                    if (!value.PermissionsFor(_currentMember).HasFlag(Permissions.AccessChannels)) 
+                    if (!value.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels)) 
                         continue;
 
-                    if (value.Parent != null && !value.Parent.PermissionsFor(_currentMember).HasFlag(Permissions.AccessChannels))
+                    if (value.Parent != null && !value.Parent.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels))
                         continue;
 
-                    _accessibleChannels[key] = new ChannelViewModel(value, true, this);
+                    _accessibleChannels[key] = new ChannelViewModel(value.Id, true, this);
                 }
             }
         }

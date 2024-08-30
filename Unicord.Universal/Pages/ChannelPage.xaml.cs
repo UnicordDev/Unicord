@@ -93,60 +93,61 @@ namespace Unicord.Universal.Pages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is DiscordChannel chan)
+            if (e.Parameter is not DiscordChannel chan)            
+                return;            
+
+            Application.Current.Suspending += OnSuspending;
+            var navigation = SystemNavigationManager.GetForCurrentView();
+            navigation.BackRequested += Navigation_BackRequested;
+
+            if (_viewModel?.IsEditMode == true)
             {
-                Application.Current.Suspending += OnSuspending;
-                var navigation = SystemNavigationManager.GetForCurrentView();
-                navigation.BackRequested += Navigation_BackRequested;
-
-                if (_viewModel?.IsEditMode == true)
-                {
-                    LeaveEditMode();
-                }
-
-                //if (IsPaneOpen)
-                //{
-                //    ClosePane();
-                //}
-
-                var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
-                if (ViewModel != null)
-                {
-                    _channelHistory.Add(ViewModel);
-                }
-
-                var windowHandle = WindowingService.Current.GetHandle(this);
-                if (model != null)
-                {
-                    _channelHistory.Remove(model);
-                }
-                else
-                {
-                    model = new ChannelPageViewModel(chan, windowHandle);
-                }
-
-                var args = this.FindParent<MainPage>()?.Arguments;
-
-                WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
-                model.TruncateMessages();
-
-                ViewModel = model;
-                DataContext = ViewModel;
-
-                if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
-                    MessageTextBox.Focus(FocusState.Keyboard);
-                else if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
-                    WindowingService.Current.HandleTitleBarForControl(TopGrid);
-
-                while (_channelHistory.Count > 10)
-                {
-                    var oldModel = _channelHistory.ElementAt(0);
-                    oldModel.Dispose();
-                    _channelHistory.RemoveAt(0);
-                }
-
-                await Load();
+                LeaveEditMode();
             }
+
+            //if (IsPaneOpen)
+            //{
+            //    ClosePane();
+            //}
+
+            var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
+            if (ViewModel != null)
+            {
+                _channelHistory.Add(ViewModel);
+            }
+
+            var windowHandle = WindowingService.Current.GetHandle(this);
+            if (model != null)
+            {
+                _channelHistory.Remove(model);
+            }
+            else
+            {
+                model = new ChannelPageViewModel(chan, windowHandle);
+            }
+
+            var args = this.FindParent<MainPage>()?.Arguments;
+
+            WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
+            model.TruncateMessages();
+
+            ViewModel = model;
+            DataContext = ViewModel;
+
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
+                MessageTextBox.Focus(FocusState.Keyboard);            
+            
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone" || !WindowingService.Current.IsMainWindow(windowHandle))
+                WindowingService.Current.HandleTitleBarForControl(TopGrid);
+
+            while (_channelHistory.Count > 10)
+            {
+                var oldModel = _channelHistory.ElementAt(0);
+                oldModel.Dispose();
+                _channelHistory.RemoveAt(0);
+            }
+
+            await Load();
         }
 
         internal void FocusTextBox()
@@ -234,6 +235,8 @@ namespace Unicord.Universal.Pages
             {
                 App.RoamingSettings.Save($"GuildPreviousChannels::{ViewModel.Channel.Guild.Id}", ViewModel.Channel.Id);
             }
+
+            App.LocalSettings.Save("LastViewedChannel", ViewModel.Channel.Id);
 
             // await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
 

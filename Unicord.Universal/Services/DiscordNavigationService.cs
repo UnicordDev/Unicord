@@ -98,7 +98,7 @@ namespace Unicord.Universal.Services
 
                 if (channel is DiscordDmChannel dm)
                 {
-                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm);
+                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm.Id);
                     _discordPageModel.IsFriendsSelected = true;
                     _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }

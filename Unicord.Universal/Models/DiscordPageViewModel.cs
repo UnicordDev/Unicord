@@ -74,7 +74,7 @@ namespace Unicord.Universal.Models
             foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0)
                                   .OrderByDescending(d => d.ReadState?.LastMessageId))
             {
-                UnreadDMs.Add(new ChannelViewModel(dm));
+                UnreadDMs.Add(new ChannelViewModel(dm.Id));
             }
 
             WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
@@ -139,7 +139,7 @@ namespace Unicord.Universal.Models
                 {
                     if (dm == null)
                     {
-                        dm = new ChannelViewModel(channel, false, this);
+                        dm = new ChannelViewModel(channel.Id, false, this);
                         UnreadDMs.Insert(0, dm);
                     }
                     else
