@@ -315,7 +315,6 @@ namespace Unicord.Universal.Pages
 
                 if (!guildVM.Guild.IsUnavailable)
                 {
-                    //LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
                     var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
                     if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
                     {
@@ -325,8 +324,10 @@ namespace Unicord.Universal.Pages
                             .FirstOrDefault(c => c.IsAccessible());
                     }
 
-                    await DiscordNavigationService.GetForCurrentView()
-                        .NavigateAsync(channel);
+                    if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
+                        LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    else
+                        await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel);
 
                     Model.IsFriendsSelected = false;
                 }

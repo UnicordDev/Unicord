@@ -12,12 +12,12 @@
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:media1="using:Microsoft.Toolkit.Uwp.UI.Media"
+    xmlns:media="using:Microsoft.UI.Xaml.Media" 
+    xmlns:media1="using:Microsoft.Toolkit.Uwp.UI.Media"
     mc:Ignorable="d" 
     Loaded="Page_Loaded" 
     Unloaded="Page_Unloaded" 
-    NavigationCacheMode="Required"
-    lib:BackdropMaterial.ApplyToRootOrPageBackground="True">
+    NavigationCacheMode="Required">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
 

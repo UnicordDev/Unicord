@@ -57,7 +57,6 @@ namespace Unicord.Universal.Pages
 
         private ChannelPageViewModel _viewModel;
         private bool _scrollHandlerAdded;
-        private DispatcherTimer _titleBarTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -137,8 +136,14 @@ namespace Unicord.Universal.Pages
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
                 MessageTextBox.Focus(FocusState.Keyboard);            
             
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone" || !WindowingService.Current.IsMainWindow(windowHandle))
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
                 WindowingService.Current.HandleTitleBarForControl(TopGrid);
+
+            if (!WindowingService.Current.IsMainWindow(windowHandle))
+            {
+                IconGrid.Visibility = Visibility.Visible;
+                WindowingService.Current.HandleTitleBarForWindowControls(TopGrid, TitleBarDrag, TitleBarControls, MainControls);
+            }
 
             while (_channelHistory.Count > 10)
             {
@@ -179,32 +184,6 @@ namespace Unicord.Universal.Pages
                 ShowSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
 
                 _scrollHandlerAdded = true;
-            }
-
-            var args = this.FindParent<MainPage>()?.Arguments;
-            if (args?.ViewMode == ApplicationViewMode.CompactOverlay)
-            {
-                _titleBarTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
-                _titleBarTimer.Tick += _titleBarTimer_Tick;
-                DefaultControls.Visibility = Visibility.Collapsed;
-                PointerEntered += ChannelPage_PointerEntered;
-                PointerExited += ChannelPage_PointerExited;
-            }
-            else
-            {
-                _titleBarTimer = null;
-                DefaultControls.Visibility = Visibility.Visible;
-                BeginShowTitleBar();
-            }
-        }
-
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (_titleBarTimer != null)
-            {
-                _titleBarTimer.Stop();
-                PointerEntered -= ChannelPage_PointerEntered;
-                PointerExited -= ChannelPage_PointerExited;
             }
         }
 
@@ -407,39 +386,7 @@ namespace Unicord.Universal.Pages
                 // just in case, should realistically never happen
                 Logger.LogError(ex);
             }
-        }
-
-        private void ChannelPage_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            BeginShowTitleBar();
-        }
-
-        private void ChannelPage_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            _titleBarTimer?.Start();
-        }
-
-        private void _titleBarTimer_Tick(object sender, object e)
-        {
-            BeginHideTitleBar();
-        }
-
-        private void BeginShowTitleBar()
-        {
-            TopGrid.Visibility = Visibility.Visible;
-            FooterGrid.Visibility = Visibility.Visible;
-            _titleBarTimer?.Stop();
-
-            HideTitleBar.Stop();
-            ShowTitleBar.Begin();
-        }
-
-        private void BeginHideTitleBar()
-        {
-            ShowTitleBar.Stop();
-            HideTitleBarAnimation.To = -TopGrid.RenderSize.Height;
-            HideTitleBar.Begin();
-        }
+        }              
 
         private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -725,40 +672,6 @@ namespace Unicord.Universal.Pages
             //this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
         }
 
-        private async void NewWindowButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowingService.Current.IsSupported)
-            {
-                var handle = WindowingService.Current.GetHandle(this);
-                var newHandle = await WindowingService.Current.OpenChannelWindowAsync(_viewModel.Channel, handle);
-                if (newHandle != null)
-                {
-                    WindowingService.Current.SetWindowChannel(handle, 0);
-
-                    var service = DiscordNavigationService.GetForCurrentView();
-                    await service.NavigateAsync(null, true);
-
-                    _viewModel.Dispose();
-                    _channelHistory.Remove(_viewModel);
-                }
-            }
-        }
-
-        private async void NewCompactWindowButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (WindowManager.MultipleWindowsSupported)
-            //{
-            //    WindowManager.SetChannelForCurrentWindow(0);
-            //    await WindowManager.OpenChannelWindowAsync(_viewModel.Channel, ApplicationViewMode.CompactOverlay);
-
-            //    var service = DiscordNavigationService.GetForCurrentView();
-            //    await service.NavigateAsync(null, true);
-
-            //    _viewModel.Dispose();
-            //    _channelHistory.Remove(_viewModel);
-            //}
-        }
-
         private void HideTitleBar_Completed(object sender, object e)
         {
             TopGrid.Visibility = Visibility.Collapsed;
@@ -788,11 +701,6 @@ namespace Unicord.Universal.Pages
         private async void MessageTextBox_SendInvoked(object sender, string e)
         {
             await SendAsync();
-        }
-
-        private async void PinToStartItem_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private MessageViewModel _reactionModel;

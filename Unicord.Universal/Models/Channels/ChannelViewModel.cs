@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
@@ -61,14 +63,12 @@ namespace Unicord.Universal.Models.Channels
             => !Muted && ReadState.Unread;
         public virtual bool NotificationMuted
             => (Muted || (Parent?.Muted ?? false) || (Guild?.Muted ?? false));
-
         public UserViewModel Recipient
             => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipient, null, null) : null);
-
         public bool Muted
             => Channel.IsMuted();
-
-        public int? NullableMentionCount => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
+        public int? NullableMentionCount 
+            => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
 
         private void OnReadStateUpdated(ReadStateUpdatedEventArgs e)
         {

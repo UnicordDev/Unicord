@@ -9,6 +9,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.UI.Xaml.Controls;
+using TenMica;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;
@@ -84,7 +86,20 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
+            if (WindowingService.Current.IsMainWindow(WindowingService.Current.GetHandle(this)))
+            {
+                WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
+            }
+
+            //BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
+
+            var brush = new TenMicaBrush();
+            if (WindowingService.Current.IsCompactOverlay(WindowingService.Current.GetHandle(this)))
+            {
+                brush.EnabledInActivatedNotForeground = true;
+            }
+
+            Background = brush;
 
             //var engagementManager = StoreServicesEngagementManager.GetDefault();
             //await engagementManager.RegisterNotificationChannelAsync();

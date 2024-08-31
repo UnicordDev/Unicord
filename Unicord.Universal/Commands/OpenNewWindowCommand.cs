@@ -29,7 +29,7 @@ namespace Unicord.Universal.Commands
             if (parameter is DiscordChannel channel ||
                 (parameter is ChannelViewModel channelVm && (channel = channelVm.Channel) != null) && channel.IsText())
             {
-                await WindowingService.Current.OpenChannelWindowAsync(channel);
+                await WindowingService.Current.OpenChannelWindowAsync(channel, false);
             }
         }
     }

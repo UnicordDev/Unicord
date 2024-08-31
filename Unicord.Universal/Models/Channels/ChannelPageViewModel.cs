@@ -11,7 +11,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml;
+using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages;
@@ -67,7 +69,6 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, TypingStartEventArgs>(this, (t, v) => t.OnTypingStarted(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, (t, v) => t.OnMessageDeleted(v.Event));
-            //WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ChannelUpdateEventArgs>(this, (t, v) => t.OnChannelUpdated(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, (t, v) => t.OnResumed(v.Event));
 
             TypingUsers = new ObservableCollection<DiscordUser>();
@@ -102,6 +103,9 @@ namespace Unicord.Universal.Models
                     _slowModeTimer.Stop();
                 }
             };
+
+            OpenInNewWindowCommand = new OpenInNewWindowCommand(window, false);
+            OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(window, true);
         }
 
         public ObservableCollection<MessageViewModel> Messages
@@ -137,8 +141,6 @@ namespace Unicord.Universal.Models
         }
 
         public Permissions Permissions { get; set; }
-
-        public DiscordUser Recipient => Channel.Type == ChannelType.Private ? (Channel as DiscordDmChannel).Recipients[0] : null;
 
         public ObservableCollection<DiscordUser> TypingUsers { get; set; }
 
@@ -344,11 +346,11 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public bool ShowPopoutButton
-            => WindowingService.Current.IsSupported && WindowingService.Current.IsMainWindow(_windowHandle);
-
         public bool IsPinned =>
             SecondaryTile.Exists($"Channel_{Channel.Id}");
+
+        public ICommand OpenInNewWindowCommand { get; }
+        public ICommand OpenInCompactOverlayWindowCommand { get; }
 
         public bool IsDisposed { get; internal set; }
 

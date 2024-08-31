@@ -22,6 +22,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Unicord.Universal.Parsers.Markdown.Blocks;
 using Unicord.Universal.Parsers.Markdown.Inlines;
 using static Unicord.Constants;
+using UniEmoji = NeoSmart.Unicode.Emoji;
+
 
 namespace Unicord.Universal.Controls
 {
@@ -65,7 +67,7 @@ namespace Unicord.Universal.Controls
                     if (inline.Type == MarkdownInlineType.TextRun)
                     {
                         var text = ((TextRunInline)inline).Text;
-                        if (!string.IsNullOrWhiteSpace(text) && !NeoSmart.Unicode.Emoji.IsEmoji(text))
+                        if (!string.IsNullOrWhiteSpace(text) && (text.Length > 32 || !UniEmoji.IsEmoji(text)))
                             return false;
                     }
                     else if (inline.Type == MarkdownInlineType.Discord)

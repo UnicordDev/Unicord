@@ -54,6 +54,11 @@ namespace Unicord.Universal.Services.Windowing
             throw new InvalidOperationException("Invalid WindowHandle!");
         }
 
+        public override bool IsCompactOverlay(WindowHandle handle)
+        {
+            return ApplicationView.GetForCurrentView().ViewMode == ApplicationViewMode.CompactOverlay;
+        }
+
         public override void SetWindowChannel(WindowHandle handle, ulong id)
         {
             if (handle is ApplicationViewWindowHandle h)
@@ -67,7 +72,7 @@ namespace Unicord.Universal.Services.Windowing
             return _windowChannelDictionary.Any(c => c.Value == id);
         }
 
-        public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
+        public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, bool compactOverlay, WindowHandle currentWindow = null)
         {
             if (!IsSupported)
                 return null;
@@ -79,7 +84,7 @@ namespace Unicord.Universal.Services.Windowing
 
             var viewId = 0;
             var coreView = CoreApplication.CreateNewView();
-            await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await coreView.Dispatcher.AwaitableRunAsync(() =>
             {
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
@@ -110,11 +115,10 @@ namespace Unicord.Universal.Services.Windowing
                 applicationView.Consolidated += OnConsolidated;
             });
 
-            if (await ApplicationViewSwitcher.TryShowAsStandaloneAsync(viewId))
+            if (await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, compactOverlay ? ApplicationViewMode.CompactOverlay : ApplicationViewMode.Default))
                 return GetOrCreateHandleForId(viewId);
 
             return null;
-            //await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewId, mode);
         }
 
         public override async Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)
@@ -155,7 +159,6 @@ namespace Unicord.Universal.Services.Windowing
                     await ApplicationView.GetForCurrentView().TryConsolidateAsync();
                 });
             }
-
         }
 
         private List<FrameworkElement> _handledElements
@@ -247,6 +250,81 @@ namespace Unicord.Universal.Services.Windowing
 
                         if (contentRoot != null)
                             Window.Current.SetTitleBar(titleBar);
+                    }
+                }
+            }
+        }
+
+        public override void HandleTitleBarForWindowControls(FrameworkElement cotainerElement, Grid titleBarElement, params FrameworkElement[] controls)
+        {
+            lock (_handledElements)
+            {
+                //if (_handledElements.Contains(titleBar))
+                //    return;
+
+                var applicationView = ApplicationView.GetForCurrentView();
+                var coreApplicationView = CoreApplication.GetCurrentView();
+
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    return; // TODO: this
+                }
+                else
+                {
+                    var coreTitleBar = coreApplicationView.TitleBar;
+                    coreTitleBar.ExtendViewIntoTitleBar = true;
+
+                    var baseTitlebar = applicationView.TitleBar;
+                    baseTitlebar.ButtonBackgroundColor = Colors.Transparent;
+                    baseTitlebar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                    baseTitlebar.ButtonForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
+                    baseTitlebar.ButtonInactiveForegroundColor = (Color?)Application.Current.Resources["SystemChromeAltLowColor"];
+
+                    if (titleBarElement != null)
+                    {
+                        var originalMargin = titleBarElement.Padding;
+
+                        // this method captures "titleBar" meaning the GC might not be able to collect it. 
+                        void UpdateTitleBarLayout(CoreApplicationViewTitleBar sender, object ev)
+                        {
+                            var overlayLeftInset = sender.IsVisible ? sender.SystemOverlayLeftInset : 0;
+                            var overlayRightInset = sender.IsVisible ? sender.SystemOverlayRightInset : 0;
+
+                            titleBarElement.Padding = new Thickness(
+                                Math.Max(overlayLeftInset, originalMargin.Left),
+                                originalMargin.Top,
+                                Math.Max(overlayRightInset, originalMargin.Right),
+                                originalMargin.Bottom);
+
+                            Logger.Log($"{sender.SystemOverlayLeftInset} {sender.SystemOverlayRightInset}");
+
+                            foreach (var control in controls)
+                            {
+                                control.Margin = new Thickness(
+                                    overlayLeftInset,
+                                    originalMargin.Top,
+                                    overlayRightInset,
+                                    originalMargin.Bottom);
+                            }
+                        }
+
+                        // i *believe* this handles it? not 100% sure
+                        void ElementUnloaded(object sender, RoutedEventArgs e)
+                        {
+                            coreTitleBar.LayoutMetricsChanged -= UpdateTitleBarLayout;
+                            (sender as FrameworkElement).Unloaded -= ElementUnloaded;
+
+                            lock (_handledElements)
+                            {
+                                _handledElements.Remove(sender as FrameworkElement);
+                            }
+                        }
+
+                        UpdateTitleBarLayout(coreTitleBar, null);
+                        coreTitleBar.LayoutMetricsChanged += UpdateTitleBarLayout;
+                        coreTitleBar.IsVisibleChanged += UpdateTitleBarLayout;
+                        titleBarElement.Unloaded += ElementUnloaded;
+                        Window.Current.SetTitleBar(titleBarElement);
                     }
                 }
             }

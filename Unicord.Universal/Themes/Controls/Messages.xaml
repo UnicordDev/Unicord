@@ -642,7 +642,7 @@
                                         </ImageBrush>
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                
+
                                 <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{Binding ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
 
                                 <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
@@ -681,8 +681,13 @@
                                     </Ellipse.Fill>
                                 </Ellipse>
 
-                                <StackPanel x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
-                                    <StackPanel x:Name="AuthorContainer" Orientation="Horizontal">
+                                <Grid x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel x:Name="AuthorContainer" Orientation="Horizontal" Grid.Row="0">
                                         <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
 
                                         <!--<StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
@@ -698,6 +703,7 @@
                                     </StackPanel>
 
                                     <controls:MarkdownTextBlock x:Name="Markdown"
+                                                                Grid.Row="1"
                                                            Channel="{Binding Channel.Channel}"
                                                            Text="{Binding Content}" 
                                                            AllowHugeEmoji="True"
@@ -705,39 +711,45 @@
                                                            WrapCodeBlock="True" 
                                                            Margin="0,0,2,0" />
 
-                                    <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
+                                    <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
 
-                                    <ItemsControl x:Name="Components"
-                                              ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
-                                              ItemsSource="{Binding Components}"
-                                              HorizontalAlignment="Left"/>
+                                    <StackPanel x:Name="AdditionalContent"
+                                                x:Load="True"
+                                                x:Phase="2"
+                                                Grid.Row="2"
+                                                DataContext="{x:Bind MessageViewModel, Mode=OneWay}">
+                                        <ItemsControl x:Name="Components"
+                                                      ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                                      ItemsSource="{Binding Components}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Embeds"
-                                                  ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
-                                                  ItemsSource="{Binding Embeds}"
-                                                  HorizontalAlignment="Left"/>
+                                        <ItemsControl x:Name="Embeds"
+                                                      ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                                      ItemsSource="{Binding Embeds}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Attachments"
-                                              ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                              ItemsSource="{Binding Attachments}"
-                                              HorizontalAlignment="Left"/>
+                                        <ItemsControl x:Name="Attachments"
+                                                      ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
+                                                      ItemsSource="{Binding Attachments}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Stickers"
-                                              ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
-                                              ItemsSource="{Binding Stickers}"
-                                              HorizontalAlignment="Left"/>
+                                        <ItemsControl x:Name="Stickers"
+                                                      ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
+                                                      ItemsSource="{Binding Stickers}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Reactions"
-                                              Margin="0,4,0,0"
-                                              ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                              ItemsSource="{Binding Reactions}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </StackPanel>
+                                        <ItemsControl x:Name="Reactions"
+                                                      Margin="0,4,0,0"
+                                                      ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
+                                                      ItemsSource="{Binding Reactions}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Grid>
 
                             </Grid>
                         </Grid>
