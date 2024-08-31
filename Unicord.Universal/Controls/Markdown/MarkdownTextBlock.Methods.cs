@@ -65,6 +65,7 @@ namespace Unicord.Universal.Controls
                     if (inline.Type == MarkdownInlineType.TextRun)
                     {
                         var text = ((TextRunInline)inline).Text;
+                        // TODO: add a limit to this
                         if (!string.IsNullOrWhiteSpace(text) && !NeoSmart.Unicode.Emoji.IsEmoji(text))
                             return false;
                     }
