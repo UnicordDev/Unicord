@@ -14,6 +14,7 @@
     xmlns:models="using:Unicord.Universal.Models" 
     xmlns:presence="using:Unicord.Universal.Controls.Presence"
     xmlns:users="using:Unicord.Universal.Controls.Users"
+    xmlns:relationships="using:Unicord.Universal.Models.Relationships"
     NavigationCacheMode="Required"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
@@ -31,7 +32,7 @@
         </Style>
 
         <!-- is there a way to simplify this? -->
-        <DataTemplate x:Key="FriendRelationshipTemplate" x:DataType="discord:DiscordRelationship">
+        <DataTemplate x:Key="FriendRelationshipTemplate" x:DataType="relationships:RelationshipViewModel">
             <Grid Padding="8"
                   HorizontalAlignment="Stretch" 
                   CornerRadius="4"

@@ -31,7 +31,7 @@ namespace Unicord.Universal.Models.Channels
             if (!isTransient)
             {
                 WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, (r, m) => r.OnChannelUpdated(m.Event));
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
             }
         }
 
@@ -39,14 +39,14 @@ namespace Unicord.Universal.Models.Channels
             => _channelId;
 
         public virtual DiscordChannel Channel 
-            => discord.InternalGetCachedChannel(Id);
+            => discord.TryGetCachedChannel(Id, out var channel) ? channel :  throw new InvalidOperationException();
 
         public virtual ChannelViewModel Parent => Channel.ParentId != null ?
             new ChannelViewModel(Channel.ParentId.Value, false, this) :
             null;
 
-        public virtual GuildViewModel Guild => Channel.GuildId != 0 ?
-            new GuildViewModel(Channel.GuildId, this) :
+        public virtual GuildViewModel Guild => Channel.GuildId != null && Channel.GuildId != 0 ?
+            new GuildViewModel(Channel.GuildId.Value, this) :
             null;
 
         public virtual string Name
@@ -64,13 +64,13 @@ namespace Unicord.Universal.Models.Channels
         public virtual bool NotificationMuted
             => (Muted || (Parent?.Muted ?? false) || (Guild?.Muted ?? false));
         public UserViewModel Recipient
-            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipient, null, null) : null);
+            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipients[0], null, null) : null);
         public bool Muted
             => Channel.IsMuted();
         public int? NullableMentionCount 
             => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
 
-        private void OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        private void OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {
             if (e.ReadState.Id != Channel.Id)
                 return;

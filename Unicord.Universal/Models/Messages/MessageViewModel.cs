@@ -14,6 +14,7 @@ using System.Windows.Input;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Messages.Components;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
 using Windows.ApplicationModel.Resources;
@@ -22,8 +23,8 @@ namespace Unicord.Universal.Models.Messages
 {
     public partial class MessageViewModel : ViewModelBase, ISnowflake
     {
-        // TODO: not surei like getting this for every single message :/
-        private readonly ResourceLoader _strings;
+        private static readonly ResourceLoader _strings
+            = ResourceLoader.GetForViewIndependentUse("Converters");
 
         private ChannelViewModel _channelViewModelCache;
         private UserViewModel _userViewModelCache;
@@ -41,14 +42,12 @@ namespace Unicord.Universal.Models.Messages
             // we dont wanna do this for replies
             if (parentMessage == null)
             {
-                _strings = ResourceLoader.GetForViewIndependentUse("Converters");
-
                 ReactCommand = new ReactCommand(discordMessage);
 
-                Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
-                Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a)));
-                Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
-                Components = new ObservableCollection<DiscordComponent>(Message.Components);
+                Embeds = new ObservableCollection<EmbedViewModel>(Message.Embeds.Select(s => new EmbedViewModel(s, this)));
+                Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a, this)));
+                Stickers = new ObservableCollection<StickerViewModel>(Message.Stickers.Select(s => new StickerViewModel(s, this)));
+                Components = new ObservableCollection<ComponentViewModelBase>(Message.Components.Select(ComponentViewModelFactory));
                 Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
 
                 WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
@@ -164,12 +163,10 @@ namespace Unicord.Universal.Models.Messages
             }
         }
 
-        public ObservableCollection<DiscordEmbed> Embeds { get; }
+        public ObservableCollection<EmbedViewModel> Embeds { get; }
         public ObservableCollection<AttachmentViewModel> Attachments { get; }
-        public ObservableCollection<DiscordSticker> Stickers { get; }
-        public ObservableCollection<DiscordComponent> Components { get; }
-
-        // TODO: Move the above to individual view models
+        public ObservableCollection<StickerViewModel> Stickers { get; }
+        public ObservableCollection<ComponentViewModelBase> Components { get; }
         public ObservableCollection<ReactionViewModel> Reactions { get; }
 
         public ICommand ReactCommand { get; }
@@ -221,18 +218,20 @@ namespace Unicord.Universal.Models.Messages
             if (e.MessageBefore.IsEdited != e.Message.IsEdited)
                 InvokePropertyChanged(nameof(IsEdited));
 
-            if (Embeds.SequenceEqual(e.Message.Embeds))
-                return;
-
             syncContext.Post((o) =>
             {
                 Embeds.Clear();
                 foreach (var embed in e.Message.Embeds)
-                    Embeds.Add(embed);
+                    Embeds.Add(new EmbedViewModel(embed, this));
 
             }, null);
 
             return;
+        }
+
+        private ComponentViewModelBase ComponentViewModelFactory(DiscordComponent component)
+        {
+            return new UnknownComponentViewModel(component, this);
         }
 
         // TODO: would an observable dictionary type be faster here?
@@ -250,7 +249,7 @@ namespace Unicord.Universal.Models.Messages
 
             foreach (var model in Reactions.ToList())
             {
-                if (!Message.Reactions.Any(r => r.Emoji == model.Emoji))
+                if (!Message.Reactions.Any(r => r.Emoji == model.Emoji.Emoji))
                     Reactions.Remove(model);
             }
         }, null);

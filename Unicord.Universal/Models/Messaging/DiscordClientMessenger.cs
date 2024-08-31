@@ -15,6 +15,9 @@ namespace Unicord.Universal.Models.Messaging
         {
             client.Ready += OnReady;
             client.Resumed += OnResumed;
+            client.SocketOpened += OnSocketOpened;
+            client.SocketErrored += OnSocketErrored;
+            client.SocketClosed += OnSocketClosed;
             client.UserSettingsUpdated += OnUserSettingsUpdated;
             client.MessageCreated += OnMessageCreated;
             client.MessageDeleted += OnMessageDeleted;
@@ -41,7 +44,7 @@ namespace Unicord.Universal.Models.Messaging
             client.PresenceUpdated += OnPresenceUpdated;
             client.ReadStateUpdated += OnReadStateUpdated;
         }
-
+        
         public static void Unregister(DiscordClient client)
         {
             client.Ready -= OnReady;
@@ -74,142 +77,157 @@ namespace Unicord.Universal.Models.Messaging
             client.ReadStateUpdated -= OnReadStateUpdated;
         }
 
-        private static Task OnUserUpdated(UserUpdateEventArgs e)
+        private static Task OnUserUpdated(DiscordClient client, UserUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnReady(ReadyEventArgs e)
+        private static Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnResumed(ResumedEventArgs e)
+        private static Task OnResumed(DiscordClient client, ResumedEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
+        private static Task OnUserSettingsUpdated(DiscordClient client, UserSettingsUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageCreated(MessageCreateEventArgs e)
+        private static Task OnMessageCreated(DiscordClient client, MessageCreateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageDeleted(MessageDeleteEventArgs e)
+        private static Task OnMessageDeleted(DiscordClient client, MessageDeleteEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageUpdated(MessageUpdateEventArgs e)
+        private static Task OnMessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
         
-        private static Task OnMessageAcknowledged(MessageAcknowledgeEventArgs e)
+        private static Task OnMessageAcknowledged(DiscordClient client, MessageAcknowledgeEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageReactionAdded(MessageReactionAddEventArgs e)
+        private static Task OnMessageReactionAdded(DiscordClient client, MessageReactionAddEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
+        private static Task OnMessageReactionRemoved(DiscordClient client, MessageReactionRemoveEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageReactionRemovedEmoji(MessageReactionRemoveEmojiEventArgs e)
+        private static Task OnMessageReactionRemovedEmoji(DiscordClient client, MessageReactionRemoveEmojiEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnMessageReactionsCleared(MessageReactionsClearEventArgs e)
+        private static Task OnMessageReactionsCleared(DiscordClient client, MessageReactionsClearEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnTypingStarted(TypingStartEventArgs e)
+        private static Task OnTypingStarted(DiscordClient client, TypingStartEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnChannelCreated(ChannelCreateEventArgs e)
+        private static Task OnChannelCreated(DiscordClient client, ChannelCreateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnChannelUpdated(ChannelUpdateEventArgs e)
+        private static Task OnChannelUpdated(DiscordClient client, ChannelUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnChannelDeleted(ChannelDeleteEventArgs e)
+        private static Task OnChannelDeleted(DiscordClient client, ChannelDeleteEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnGuildCreated(GuildCreateEventArgs e)
+        private static Task OnGuildCreated(DiscordClient client, GuildCreateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnGuildDeleted(GuildDeleteEventArgs e)
+        private static Task OnGuildDeleted(DiscordClient client, GuildDeleteEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnGuildUpdated(GuildUpdateEventArgs e)
+        private static Task OnGuildUpdated(DiscordClient client, GuildUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnGuildMemberUpdated(GuildMemberUpdateEventArgs e)
+        private static Task OnGuildMemberUpdated(DiscordClient client, GuildMemberUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnDmChannelCreated(DmChannelCreateEventArgs e)
+        private static Task OnDmChannelCreated(DiscordClient client, DmChannelCreateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnDmChannelDeleted(DmChannelDeleteEventArgs e)
+        private static Task OnDmChannelDeleted(DiscordClient client, DmChannelDeleteEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnRelationshipAdded(RelationshipAddedEventArgs e)
+        private static Task OnRelationshipAdded(DiscordClient client, RelationshipAddEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnRelationshipRemoved(RelationshipRemovedEventArgs e)
+        private static Task OnRelationshipRemoved(DiscordClient client, RelationshipRemoveEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnPresenceUpdated(PresenceUpdateEventArgs e)
+        private static Task OnPresenceUpdated(DiscordClient client, PresenceUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        private static Task OnReadStateUpdated(DiscordClient client, ReadStateUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnGuildMembersChunked(GuildMembersChunkEventArgs e)
+        private static Task OnGuildMembersChunked(DiscordClient client, GuildMembersChunkEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }
 
-        private static Task OnChannelUnreadUpdated(ChannelUnreadUpdateEventArgs e)
+        private static Task OnChannelUnreadUpdated(DiscordClient client, ChannelUnreadUpdateEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+
+        private static Task OnSocketOpened(DiscordClient sender, SocketEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+
+        private static Task OnSocketErrored(DiscordClient sender, SocketErrorEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+
+        private static Task OnSocketClosed(DiscordClient sender, SocketCloseEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }

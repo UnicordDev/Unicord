@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging.Messages;

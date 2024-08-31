@@ -21,7 +21,7 @@ namespace Unicord.Universal.Converters
                 switch (channel.ChannelType)
                 {
                     case ChannelType.Text:
-                    case ChannelType.Store:
+                    //case ChannelType.Store:
                     case ChannelType.Announcement:
                     case ChannelType.Unknown:
                         return TextChannelTemplate;

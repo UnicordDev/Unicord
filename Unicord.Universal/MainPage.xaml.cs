@@ -77,7 +77,7 @@ namespace Unicord.Universal
 
             if (_isReady)
             {
-                await OnFirstDiscordReady(null);
+                await OnFirstDiscordReady(null, null);
             }
         }
 
@@ -207,7 +207,7 @@ namespace Unicord.Universal
             showUserOverlay.Begin();
         }
 
-        private async Task OnFirstDiscordReady(ReadyEventArgs e)
+        private async Task OnFirstDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             if (!_isReady)
             {
@@ -249,24 +249,24 @@ namespace Unicord.Universal
             }
         }
 
-        private Task OnLoggedOut()
+        private Task OnLoggedOut(DiscordClient client, LoggedOutEventArgs args)
         {
             _isReady = false;
             RemoveEventHandlers();
             return Task.CompletedTask;
         }
 
-        private async Task OnDiscordReady(ReadyEventArgs e)
+        private async Task OnDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordResumed(ResumedEventArgs e)
+        private async Task OnDiscordResumed(DiscordClient client, ResumedEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
+        private async Task OnDiscordDisconnected(DiscordClient client, SocketCloseEventArgs e)
         {
             Analytics.TrackEvent("Discord_Disconnected");
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))

@@ -50,10 +50,20 @@ namespace Unicord.Universal.Models.User
             => _userId;
 
         public DiscordUser User
-            => discord.InternalGetCachedUser(Id);
+            => discord.TryGetCachedUser(Id, out var user) ? user : throw new InvalidOperationException();
 
         public DiscordMember Member
-            => _guildId != null ? discord.InternalGetCachedGuild(_guildId)?.Members[_userId] : null;
+        {
+            get
+            {
+                if (_guildId == null) return null;
+
+                if (!discord.TryGetCachedGuild(_guildId.Value, out var guild))
+                    throw new InvalidOperationException();
+
+                return guild.Members.TryGetValue(Id, out var member) ? member : null;
+            }
+        }
 
         public string DisplayName
             => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?

@@ -49,9 +49,9 @@ namespace Unicord.Universal.Converters
                 ChannelType.Text => TextGlyph,
                 ChannelType.Voice => VoiceGlyph,
                 ChannelType.Announcement => NewsGlyph,
-                ChannelType.Store => StoreGlyph,
+                //ChannelType.Store => StoreGlyph,
                 ChannelType.Stage => StageGlyph,
-                ChannelType.GuildDirectory => DirectoryGlyph,
+                //ChannelType.GuildDirectory => DirectoryGlyph,
                 ChannelType.GuildForum => ForumGlyph,
                 _ => UnknownGlyph,
             };

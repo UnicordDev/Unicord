@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using Unicord.Universal.Pages.Settings;
 using Windows.ApplicationModel.Resources;
 using static Unicord.Constants;
@@ -41,7 +42,7 @@ namespace Unicord.Universal.Models
                  _openDMCount = client.PrivateChannels.Count;
                  InvokePropertyChanged(nameof(OpenDMCountString));
 
-                 _synchedUserCount = client.UserCache.Count;
+                 _synchedUserCount = client.UserCacheCount;
                  InvokePropertyChanged(nameof(SynchedUserCountString));
 
                  _synchedPresenceCount = client.Presences.Count;

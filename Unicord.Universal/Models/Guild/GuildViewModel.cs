@@ -26,14 +26,14 @@ namespace Unicord.Universal.Models.Guild
             _guildId = guildId;
 
             WeakReferenceMessenger.Default.Register<GuildViewModel, ChannelUnreadUpdateEventArgs>(this, (r, m) => r.OnChannelUnreadUpdate(m.Event));
-            WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+            WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
         }
 
         public ulong Id
             => _guildId;
 
         public DiscordGuild Guild
-            => discord.InternalGetCachedGuild(Id);
+            => discord.TryGetCachedGuild(Id, out var guild) ? guild : throw new InvalidOperationException();
 
         public string Name =>
             Guild.Name;
@@ -58,7 +58,7 @@ namespace Unicord.Universal.Models.Guild
             }
         }
 
-        private Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        private Task OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {
             if (Guild.Channels.ContainsKey(e.ReadState.Id))
             {
@@ -106,6 +106,6 @@ namespace Unicord.Universal.Models.Guild
             }
         }
 
-        protected virtual void OnReadStateUpdatedCore(ReadStateUpdatedEventArgs e) { }
+        protected virtual void OnReadStateUpdatedCore(ReadStateUpdateEventArgs e) { }
     }
 }

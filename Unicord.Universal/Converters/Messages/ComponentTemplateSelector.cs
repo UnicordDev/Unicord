@@ -22,20 +22,20 @@ namespace Unicord.Universal.Converters
             {
                 switch (component.Type)
                 {
-                    case DiscordInteractionType.ActionRow:
+                    case ComponentType.ActionRow:
                         return ActionRowTemplate;
-                    case DiscordInteractionType.Button:
-                        switch (component.ButtonStyle.Value)
+                    case ComponentType.Button:
+                        switch (((DiscordButtonComponent)component).Style)
                         {
-                            case DiscordButtonStyle.Primary:
+                            case ButtonStyle.Primary:
                                 return PrimaryButtonTemplate;
-                            case DiscordButtonStyle.Secondary:
+                            case ButtonStyle.Secondary:
                                 return SecondaryButtonTemplate;
-                            case DiscordButtonStyle.Success:
+                            case ButtonStyle.Success:
                                 return SuccessButtonTemplate;
-                            case DiscordButtonStyle.Danger:
+                            case ButtonStyle.Danger:
                                 return DangerButtonTemplate;
-                            case DiscordButtonStyle.Link:
+                            case ButtonStyle.Link:
                                 return LinkButtonTemplate;
                             default:
                                 break;

@@ -401,6 +401,7 @@
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageViewModel.cs" />
     <Compile Include="Models\DMChannelsViewModel.cs" />
+    <Compile Include="Models\Emoji\EmojiViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsPageViewModel.cs" />
     <Compile Include="Models\GuildChannelListViewModel.cs" />
@@ -411,12 +412,17 @@
     <Compile Include="Models\ISnowflake.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\Messages\AttachmentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ComponentViewModelBase.cs" />
+    <Compile Include="Models\Messages\Components\UnknownComponentViewModel.cs" />
+    <Compile Include="Models\Messages\EmbedViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
     <Compile Include="Models\Messages\ReactionViewModel.cs" />
+    <Compile Include="Models\Messages\StickerViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />
     <Compile Include="Models\PinsPageViewModel.cs" />
+    <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
     <Compile Include="Models\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />
@@ -427,6 +433,8 @@
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
+    <Compile Include="Models\Voice\Transport\VoiceDispatch.cs" />
+    <Compile Include="Models\Voice\Transport\VoiceStateUpdatePayload.cs" />
     <Compile Include="Models\Voice\VoiceConnectionModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
@@ -618,6 +626,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
       <Version>5.0.5</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug">
+      <Version>8.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
@@ -1083,6 +1097,10 @@
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj">
       <Project>{c01b8589-13fe-4a6d-b159-6644977f58de}</Project>
       <Name>DSharpPlus.Rest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Windows\DSharpPlus.Windows.csproj">
+      <Project>{1b172f49-372a-4f15-8353-9bdaba6e2331}</Project>
+      <Name>DSharpPlus.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
       <Project>{0f4b3af7-9320-41ae-82d0-3737949499c7}</Project>

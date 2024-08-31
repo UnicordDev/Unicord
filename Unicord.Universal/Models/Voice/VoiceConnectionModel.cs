@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.VoiceNext.Entities;
 using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json;
 using Unicord.Universal.Voice;
 using Unicord.Universal.Voice.Background;
+using Unicord.Universal.Voice.Transport;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
@@ -348,23 +349,23 @@ namespace Unicord.Universal.Models.Voice
             _appServiceConnected = false;
         }
 
-        private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)
+        private Task OnVoiceStateUpdated(DiscordClient client, VoiceStateUpdateEventArgs e)
         {
             if (e.Channel == Channel && e.User == App.Discord.CurrentUser)
             {
                 _voiceStateUpdateCompletion.SetResult(e);
-                App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
+                client.VoiceStateUpdated -= OnVoiceStateUpdated;
             }
 
             return Task.CompletedTask;
         }
 
-        private Task OnVoiceServerUpdated(VoiceServerUpdateEventArgs e)
+        private Task OnVoiceServerUpdated(DiscordClient client, VoiceServerUpdateEventArgs e)
         {
             if (e.Guild == Channel.Guild)
             {
                 _voiceServerUpdateCompletion.SetResult(e);
-                App.Discord.VoiceServerUpdated -= OnVoiceServerUpdated;
+                client.VoiceServerUpdated -= OnVoiceServerUpdated;
             }
 
             return Task.CompletedTask;

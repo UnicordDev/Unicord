@@ -54,7 +54,7 @@ namespace Unicord.Universal.Models.Guild
             return false;
         }
 
-        protected override void OnReadStateUpdatedCore(ReadStateUpdatedEventArgs e)
+        protected override void OnReadStateUpdatedCore(ReadStateUpdateEventArgs e)
         {
             InvokePropertyChanged(nameof(MentionCount));
         }

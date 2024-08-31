@@ -77,11 +77,9 @@ namespace Unicord.Universal.Background
             {
                 _discord = new DiscordClient(new DiscordConfiguration()
                 {
-                    LogLevel = LogLevel.Debug,
                     TokenType = TokenType.User,
                     Token = _token,
-                    MessageCacheSize = 0,
-                    UseInternalLogHandler = true
+                    MessageCacheSize = 0
                 });
 
                 _badgeManager = new BadgeManager(_discord);
@@ -113,7 +111,7 @@ namespace Unicord.Universal.Background
             }
         }
 
-        private async Task OnReady(ReadyEventArgs e)
+        private async Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();
 
@@ -129,7 +127,7 @@ namespace Unicord.Universal.Background
             GC.Collect(2, GCCollectionMode.Forced, true, true);
         }
 
-        private Task OnDiscordMessage(MessageCreateEventArgs e)
+        private Task OnDiscordMessage(DiscordClient client, MessageCreateEventArgs e)
         {
             _ = Task.Run(async () =>
             {
@@ -158,7 +156,7 @@ namespace Unicord.Universal.Background
             return Task.CompletedTask;
         }
 
-        private async Task OnMessageAcknowledged(MessageAcknowledgeEventArgs e)
+        private async Task OnMessageAcknowledged(DiscordClient client, MessageAcknowledgeEventArgs e)
         {
             try
             {

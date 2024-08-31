@@ -39,7 +39,7 @@ namespace Unicord.Universal.Shared
                 }
             }
 
-            if (message.Author.Id == message.Discord.CurrentUser.Id)
+            if (message.Author.IsCurrent)
             {
                 willNotify = false;
             }
@@ -127,8 +127,7 @@ namespace Unicord.Universal.Shared
                 if (!string.IsNullOrEmpty(dm.IconHash))
                     tileContentBuilder.SetPeekImage(new Uri(dm.IconUrl));
 
-                if (!string.IsNullOrEmpty(dm.Recipient?.AvatarHash))
-                    tileContentBuilder.SetPeekImage(new Uri(dm.Recipient.GetAvatarUrl(ImageFormat.Png)));
+                tileContentBuilder.SetPeekImage(new Uri(message.Author.GetAvatarUrl(ImageFormat.Png)));
 
                 tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetChannelHeaderName(message.Channel), HintStyle = AdaptiveTextStyle.Base })
                     .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetMessageContent(message), HintStyle = AdaptiveTextStyle.Caption, HintWrap = true })
@@ -165,8 +164,8 @@ namespace Unicord.Universal.Shared
                 if (!string.IsNullOrEmpty(dm.IconHash))
                     tileContentBuilder.SetPeekImage(new Uri(dm.IconUrl));
 
-                if (!string.IsNullOrEmpty(dm.Recipient?.AvatarHash))
-                    tileContentBuilder.SetPeekImage(new Uri(dm.Recipient.AvatarUrl));
+                if (dm.Type == ChannelType.Private)
+                    tileContentBuilder.SetPeekImage(new Uri(dm.Recipients[0].AvatarUrl));
 
                 tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetChannelHeaderName(channel), HintStyle = AdaptiveTextStyle.Base });
             }
@@ -231,10 +230,10 @@ namespace Unicord.Universal.Shared
 
             var attach = message.Attachments.FirstOrDefault(a => a.Height != 0);
             var embed = message.Embeds.FirstOrDefault(e => e.Thumbnail != null || e.Image != null || e.Video != null);
-            if (attach != null)
+            if (attach != null && attach.Width != null)
             {
-                width = attach.Width;
-                height = attach.Height;
+                width = attach.Width.Value;
+                height = attach.Height.Value;
                 proxyUrl = attach.ProxyUrl;
                 return true;
             }
@@ -242,7 +241,7 @@ namespace Unicord.Universal.Shared
             {
                 width = embed.Thumbnail?.Width ?? embed.Image?.Width ?? embed.Video.Width;
                 height = embed.Thumbnail?.Height ?? embed.Image?.Height ?? embed.Video.Height;
-                proxyUrl = (embed.Thumbnail?.ProxyUrl ?? embed.Image?.ProxyUrl ?? embed.Video.Url).ToString();
+                proxyUrl = (embed.Thumbnail?.ProxyUrl.ToUri() ?? embed.Image?.ProxyUrl.ToUri() ?? embed.Video.Url).ToString();
                 return true;
             }
 

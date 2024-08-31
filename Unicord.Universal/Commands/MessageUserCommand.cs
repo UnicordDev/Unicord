@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;

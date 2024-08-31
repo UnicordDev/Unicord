@@ -656,11 +656,17 @@ namespace Unicord.Universal.Controls.Markdown.Render
 
                     if (element.DiscordType == DiscordInline.MentionType.User)
                     {
-                        var user = guild?.Members.GetValueOrDefault(element.Id) ?? client.InternalGetCachedUser(element.Id);
+                        var user = (DiscordUser)guild?.Members.GetValueOrDefault(element.Id);
+                        if (user == null)
+                        {
+                            client.TryGetCachedUser(element.Id, out user);
+                        }
+
                         if (user != null)
                         {
                             run.Text = IsSystemMessage ? user.DisplayName : $"@{user.DisplayName}";
-                            run.Foreground = GetDiscordBrush(user.Color);
+                            if (user is DiscordMember member)
+                                run.Foreground = GetDiscordBrush(member.Color);
                         }
                         else
                         {

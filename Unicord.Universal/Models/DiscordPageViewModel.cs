@@ -131,7 +131,7 @@ namespace Unicord.Universal.Models
 
         private void UpdateReadState(DiscordDmChannel channel)
         {
-            var shouldShow = channel.ReadState.MentionCount > 0;
+            var shouldShow = (channel.ReadState?.MentionCount ?? 0) > 0;
             var dm = UnreadDMs.FirstOrDefault(d => channel.Id == d.Channel.Id);
             syncContext.Post((o) =>
             {

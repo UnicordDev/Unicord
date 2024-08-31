@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Services;
@@ -66,7 +67,7 @@ namespace Unicord.Universal.Pages
 
         private async Task TryLoginAsync(string token)
         {
-            async Task OnReady(ReadyEventArgs e)
+            async Task OnReady(DiscordClient client, ReadyEventArgs e)
             {
                 var vault = new PasswordVault();
                 vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, "Default", token));

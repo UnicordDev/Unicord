@@ -44,8 +44,8 @@ namespace Unicord.Universal.Models.Messages
         private MediaSource _mediaSource;
         private MediaPlaybackItem _mediaPlaybackItem;
 
-        public AttachmentViewModel(DiscordAttachment attachment)
-            : base(null)
+        public AttachmentViewModel(DiscordAttachment attachment, ViewModelBase parent)
+            : base(parent)
         {
             _attachment = attachment;
             _type = GetAttachmentType(attachment);
@@ -79,9 +79,9 @@ namespace Unicord.Universal.Models.Messages
         public bool IsSpoiler =>
             _attachment.FileName.StartsWith("SPOILER_");
         public double NaturalWidth =>
-            _attachment.Width != 0 ? _attachment.Width : _naturalSize?.Width ?? double.NaN;
+            _attachment.Width != null ? _attachment.Width.Value : _naturalSize?.Width ?? double.NaN;
         public double NaturalHeight =>
-            _attachment.Height != 0 ? _attachment.Height : _naturalSize?.Height ?? double.NaN;
+            _attachment.Height != null ? _attachment.Height.Value : _naturalSize?.Height ?? double.NaN;
         public AttachmentType Type { get => _type; private set => OnPropertySet(ref _type, value); }
 
         public object Source =>
@@ -170,7 +170,7 @@ namespace Unicord.Universal.Models.Messages
         {
             // we have a bunch of heuristics available to work out the type of attachment we're dealing with
             // this code only uses a couple
-            var mimeType = attachment.ContentType?.ToLowerInvariant(); // this isn't always available on old messages
+            var mimeType = attachment.MediaType?.ToLowerInvariant(); // this isn't always available on old messages
             if (!string.IsNullOrWhiteSpace(mimeType))
             {
                 // these are easy lmao

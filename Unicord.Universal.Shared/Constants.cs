@@ -7,13 +7,13 @@ namespace Unicord
     {
         public const string MAIN_URL = "https://wamwoowam.co.uk/unicord/";
 
-        public const string TOKEN_IDENTIFIER = "Unicord_Token";
+        public const string TOKEN_IDENTIFIER = "Unicord_Token_New";
         public const string APP_USER_MODEL_ID = "com.wankerr.Unicord";
 
         public const string ENABLE_ANALYTICS = "EnableAnalytics";
         public const string SYNC_CONTACTS = "SyncContacts";
         public const string ENABLE_SPOILERS = "EnableSpoilers";
-        public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia";
+        public const string AUTO_TRANSCODE_MEDIA = "AutoTranscodeMedia_1";
         public const string WARN_UNSAFE_LINKS = "WarnUnsafeLinks";
 
         public const string VIDEO_BITRATE = "VideoBitrate";
@@ -31,7 +31,7 @@ namespace Unicord
         public const string AUDIO_SAMPLERATE = "AudioSampleRate";
         public const uint DEFAULT_AUDIO_SAMPLERATE = 48000u;
 
-        public const string VIDEO_PROCESSING = "VideoProcessingAlgorithm";
+        public const string VIDEO_PROCESSING = "VideoProcessingAlgorithm_1";
 
         public const string SAVE_PHOTOS = "SavePhotos";
         public const bool DEFAULT_SAVE_PHOTOS = true;
@@ -46,7 +46,7 @@ namespace Unicord
 
         public const string GIF_AUTOPLAY = "AutoPlayGifs";
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
-        public const string TIMESTAMP_STYLE = "TimestampStyle";
+        public const string TIMESTAMP_STYLE = "TimestampStyle1";
 
         public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
 

@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Windows;
 using Humanizer;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -119,7 +120,7 @@ namespace Unicord.Universal.Models
             get => _messageText;
             set => OnPropertySet(ref _messageText, value);
         }
-      
+
         public DiscordUser CurrentUser
         {
             get => _currentUser;
@@ -311,7 +312,7 @@ namespace Unicord.Universal.Models
 
         public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
 
-        public bool HasNitro => Channel.Discord.CurrentUser.HasNitro();
+        public bool HasNitro => App.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
             => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
@@ -322,7 +323,7 @@ namespace Unicord.Universal.Models
         public string SlowModeText
             => string.Format(_strings.GetString(ImmuneToSlowMode ? "ImmuneSlowModeFormat" : "SlowModeFormat"), TimeSpan.FromSeconds(Channel.PerUserRateLimit ?? 0).ToNaturalString());
 
-        private bool ImmuneToSlowMode 
+        private bool ImmuneToSlowMode
             => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
         public bool ShowTypingUsers
@@ -614,7 +615,7 @@ namespace Unicord.Universal.Models
                         files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-                    await Tools.SendFilesWithProgressAsync(Channel, txt, mentions, replyTo, files, progress)
+                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo, files, progress)
                                .ConfigureAwait(false);
 
                     foreach (var item in files)
@@ -634,7 +635,9 @@ namespace Unicord.Universal.Models
                 }
                 else
                 {
-                    await Channel.SendMessageAsync(txt, mentions: mentions, replyTo: replyTo).ConfigureAwait(false);
+                    await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                        .WithReply(replyTo.Id)
+                        .WithAllowedMentions(mentions)).ConfigureAwait(false);
                 }
 
 

@@ -474,7 +474,7 @@ namespace Unicord.Universal.Controls
                 _emoji = Tools.GetEmoji(Channel);
             }
 
-            sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.GetSearchName(), text, CompareOptions.IgnoreCase)))
+            sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.SearchName, text, CompareOptions.IgnoreCase)))
                                        .Where(x => x.index != -1)
                                        .OrderBy(x => x.index)
                                        .Select(x => x.emoji);

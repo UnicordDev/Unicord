@@ -20,14 +20,14 @@ namespace Unicord.Universal.Controls.Messages
     {
         private bool _templateApplied = false;
 
-        public DiscordSticker Sticker
+        public DiscordMessageSticker Sticker
         {
-            get => (DiscordSticker)GetValue(StickerProperty);
+            get => (DiscordMessageSticker)GetValue(StickerProperty);
             set => SetValue(StickerProperty, value);
         }
 
         public static readonly DependencyProperty StickerProperty =
-            DependencyProperty.Register("Sticker", typeof(DiscordSticker), typeof(StickerControl), new PropertyMetadata(null, OnStickerChanged));
+            DependencyProperty.Register("Sticker", typeof(DiscordMessageSticker), typeof(StickerControl), new PropertyMetadata(null, OnStickerChanged));
 
         public StickerControl()
         {
@@ -42,25 +42,25 @@ namespace Unicord.Universal.Controls.Messages
 
         private static void OnStickerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is DiscordSticker s && d is StickerControl c)
+            if (e.NewValue is DiscordMessageSticker s && d is StickerControl c)
             {
                 c.UpdateSticker(s);
             }
         }
 
-        private void UpdateSticker(DiscordSticker s)
+        private void UpdateSticker(DiscordMessageSticker s)
         {
             if (!_templateApplied)
                 _templateApplied = this.ApplyTemplate();
 
             var root = (Border)this.GetTemplateChild("Root");
-            switch (s.StickerType)
+            switch (s.FormatType)
             {
-                case DiscordStickerType.PNG:
-                case DiscordStickerType.APNG:
-                    root.Child = new ImageElement() { ImageUri = new Uri(s.GetAssetUrl()), ImageWidth = 150, ImageHeight = 150, IsSpoiler = false };
+                case StickerFormat.PNG:
+                case StickerFormat.APNG:
+                    root.Child = new ImageElement() { ImageUri = new Uri(s.StickerUrl), ImageWidth = 150, ImageHeight = 150, IsSpoiler = false };
                     break;
-                case DiscordStickerType.Lottie:
+                case StickerFormat.LOTTIE:
                     {
                         var player = new AnimatedVisualPlayer
                         {
@@ -70,7 +70,7 @@ namespace Unicord.Universal.Controls.Messages
                         };
 
                         var source = new LottieVisualSource();
-                        source.UriSource = new Uri(s.GetAssetUrl());
+                        source.UriSource = new Uri(s.StickerUrl);
                         player.Source = source;
                         root.Child = player;
                     }
