@@ -24,10 +24,8 @@ namespace Unicord.Universal.Models.Guild
             : base(parent)
         {
             _guildId = guildId;
-            //_accessibleChannels = new ConcurrentDictionary<ulong, ChannelViewModel>();
 
-            //PopulateAccessibleChannels();
-
+            WeakReferenceMessenger.Default.Register<GuildViewModel, ChannelUnreadUpdateEventArgs>(this, (r, m) => r.OnChannelUnreadUpdate(m.Event));
             WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
         }
 
@@ -71,6 +69,16 @@ namespace Unicord.Universal.Models.Guild
             return Task.CompletedTask;
         }
 
+        private Task OnChannelUnreadUpdate(ChannelUnreadUpdateEventArgs e)
+        {
+            if (e.GuildId == Id)
+            {
+                InvokePropertyChanged(nameof(Unread));
+            }
+
+            return Task.CompletedTask;
+        }
+
         // TODO: update this cache when the user's roles change, and when the guild gets updated, and when a new channel gets created :D
         private void PopulateAccessibleChannels()
         {
@@ -87,7 +95,7 @@ namespace Unicord.Universal.Models.Guild
             {
                 foreach (var (key, value) in Guild.Channels)
                 {
-                    if (!value.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels)) 
+                    if (!value.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels))
                         continue;
 
                     if (value.Parent != null && !value.Parent.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels))

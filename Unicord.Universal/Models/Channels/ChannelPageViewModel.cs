@@ -322,7 +322,8 @@ namespace Unicord.Universal.Models
         public string SlowModeText
             => string.Format(_strings.GetString(ImmuneToSlowMode ? "ImmuneSlowModeFormat" : "SlowModeFormat"), TimeSpan.FromSeconds(Channel.PerUserRateLimit ?? 0).ToNaturalString());
 
-        private bool ImmuneToSlowMode => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
+        private bool ImmuneToSlowMode 
+            => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
         public bool ShowTypingUsers
             => TypingUsers?.Any() == true;
