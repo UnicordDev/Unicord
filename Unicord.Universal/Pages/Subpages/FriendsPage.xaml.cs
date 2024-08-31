@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using Unicord.Universal.Behaviours;
@@ -20,13 +21,10 @@ namespace Unicord.Universal.Pages.Subpages
             ListViewBehaviour.SetMinItemWidth(PendingView, 300);
             ListViewBehaviour.SetMinItemWidth(BlockedView, 300);
 
-            if (ReorderGridAnimation.IsSupported)
-            {
-                ReorderGridAnimation.SetDuration(AllView, 250);
-                ReorderGridAnimation.SetDuration(OnlineView, 250);
-                ReorderGridAnimation.SetDuration(PendingView, 250);
-                ReorderGridAnimation.SetDuration(BlockedView, 250);
-            }
+            ItemsReorderAnimation.SetDuration(AllView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(OnlineView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(PendingView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(BlockedView, TimeSpan.FromMilliseconds(250));
 #endif
         }
 

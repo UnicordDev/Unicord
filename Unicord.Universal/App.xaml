@@ -37,9 +37,7 @@
                 <ResourceDictionary Source="Themes/CustomStyles.xaml"/>
 
                 <ResourceDictionary Source="Themes/RS2.xaml"/>
-                <!--<ResourceDictionary Source="Themes/RS4.xaml"/>
-                <ResourceDictionary Source="Themes/RS5.xaml"/>-->
-
+                
                 <!-- Resource dictionaries with code behinds must be instantated like this for InitializeComponent to be called -->
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
             </ResourceDictionary.MergedDictionaries>
@@ -119,11 +117,11 @@
             <commands:PinChannelCommand x:Key="PinChannelCommand" />
 
             <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
-            <x:Double x:Key="ContentControlFontSize">14</x:Double>                        
+            <x:Double x:Key="ContentControlFontSize">14</x:Double>
 
-            <FontFamily x:Key="SegoeMDL2Assets">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
             <FontFamily x:Key="FluentSystemIcons">/Assets/FluentSystemIcons-Regular.ttf#FluentSystemIcons-Regular</FontFamily>
             <FontFamily x:Key="SymbolThemeFontFamily">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
+            <StaticResource x:Key="SegoeMDL2Assets" ResourceKey="SymbolThemeFontFamily"/>
             
             <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                 <Setter Property="Background" Value="Transparent"/>

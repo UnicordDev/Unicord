@@ -5,7 +5,6 @@
 using System;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Parsers.Markdown.Render;
-using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -138,7 +137,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                 return;
             }
 
-            var rootViewer = VisualTree.FindAscendant<ScrollViewer>(RootElement);
+            var rootViewer = RootElement.FindParent<ScrollViewer>();
             if (rootViewer != null)
             {
                 pointerWheelChanged?.Invoke(rootViewer, new object[] { e });

@@ -164,9 +164,6 @@
     <Compile Include="Commands\ReplyCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Commands\ShowUserOverlayCommand.cs" />
-    <Compile Include="Controls\AttachmentViewer.xaml.cs">
-      <DependentUpon>AttachmentViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Channels\ChannelIconControl.cs" />
     <Compile Include="Controls\Channels\ChannelListControl.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
@@ -614,13 +611,13 @@
       <Version>2.8.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>5.0.2</Version>
+      <Version>5.0.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>5.0.2</Version>
+      <Version>5.0.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>5.0.2</Version>
+      <Version>5.0.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
@@ -632,16 +629,16 @@
       <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>6.1.1</Version>
+      <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
-      <Version>6.1.0</Version>
+      <Version>7.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
-      <Version>6.1.1</Version>
+      <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.2651.64</Version>
+      <Version>1.0.2739.15</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
@@ -673,10 +670,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\AttachmentViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

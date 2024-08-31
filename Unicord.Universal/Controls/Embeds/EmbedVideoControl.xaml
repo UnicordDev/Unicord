@@ -5,21 +5,24 @@
     xmlns:local="using:Unicord.Universal.Controls.Embeds"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
     mc:Ignorable="d" 
     d:DesignHeight="300"
     d:DesignWidth="400">
-    
+    <UserControl.Resources>
+        <ui:AttachedDropShadow x:Key="PlayButtonShadow" CastTo="{x:Bind posterImage}" BlurRadius="16" Opacity="1" Color="Black"/>
+    </UserControl.Resources>
+
     <Grid x:Name="content">
         <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
             <controls:ImageEx x:Name="posterImage" IsCacheEnabled="True" Source="{Binding Thumbnail.ProxyUrl}" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-            <Grid x:Name="posterOverlay" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-                <controls:DropShadowPanel HorizontalAlignment="Center" VerticalAlignment="Center" BlurRadius="16" ShadowOpacity="1" Color="Black">
-                    <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="White" FontSize="64">
-                        &#xE768;
-                    </TextBlock>
-                </controls:DropShadowPanel>
-            </Grid>
+            <TextBlock 
+                ui:Effects.Shadow="{StaticResource PlayButtonShadow}" 
+                FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                Foreground="White" 
+                FontSize="64"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">&#xE768;</TextBlock>
         </Grid>
     </Grid>
 </UserControl>

@@ -17,7 +17,6 @@
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
-    SizeChanged="Self_SizeChanged"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:DiscordPageViewModel/>
@@ -190,8 +189,7 @@
                                     x:Name="createServerItem"
                                     MinWidth="0"
                                     Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    Tapped="CreateServerItem_Tapped">
+                                    HorizontalContentAlignment="Stretch">
                                 <SymbolIcon
                                         Width="36"
                                         Height="36"
@@ -201,8 +199,7 @@
                                     x:Name="findServerIcon"
                                     MinWidth="0"
                                     Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    Tapped="FindServerIcon_Tapped">
+                                    HorizontalContentAlignment="Stretch">
                                 <SymbolIcon
                                         Width="36"
                                         Height="36"

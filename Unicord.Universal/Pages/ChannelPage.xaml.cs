@@ -125,8 +125,6 @@ namespace Unicord.Universal.Pages
                 model = new ChannelPageViewModel(chan, windowHandle);
             }
 
-            var args = this.FindParent<MainPage>()?.Arguments;
-
             WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
             model.TruncateMessages();
 

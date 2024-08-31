@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Toolkit.Parsers.Markdown;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Resources;
 using Windows.System;

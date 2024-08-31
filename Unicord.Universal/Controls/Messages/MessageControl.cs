@@ -57,7 +57,7 @@ namespace Unicord.Universal.Controls.Messages
 
         protected override void OnApplyTemplate()
         {
-            this.UpdateCollapsedState();
+            //this.UpdateCollapsedState();
         }
 
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
@@ -80,7 +80,7 @@ namespace Unicord.Universal.Controls.Messages
         {
             if (_imageBrush == null)
             {
-                var container = this.FindChild<Ellipse>("ImageContainer");
+                var container = (Ellipse)this.GetTemplateChild("ImageContainer");
                 if (container == null || container.Fill == null)
                     return;
 

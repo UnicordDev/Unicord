@@ -251,15 +251,6 @@ namespace Unicord.Universal.Pages
             await service.NavigateAsync(null);
         }
 
-        private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
-        {
-            //var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
-            //if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
-            //{
-            //    await App.Discord.UpdateUserSettingsAsync(enumerable);
-            //}
-        }
-
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var service = SettingsService.GetForCurrentView();
@@ -269,36 +260,6 @@ namespace Unicord.Universal.Pages
         private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseSplitPane();
-        }
-
-        private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            return;
-
-            var element = sender as FrameworkElement;
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
-            {
-                FlyoutBase.GetAttachedFlyout(element).ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
-            }
-            else
-            {
-                FlyoutBase.GetAttachedFlyout(element).ShowAt(element);
-            }
-        }
-
-        private void FindServerIcon_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-
-        }
-
-        private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // _helper.IsEnabled = e.NewSize.Width <= 768;
-        }
-
-        private void ClydeLogo_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
 
         private async void TreeView_ItemInvoked(MUXC.TreeView sender, MUXC.TreeViewItemInvokedEventArgs args)

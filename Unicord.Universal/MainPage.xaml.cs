@@ -39,9 +39,6 @@ namespace Unicord.Universal
         public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
-        private RoutedEventHandler _openHandler;
-        private RoutedEventHandler _saveHandler;
-        private RoutedEventHandler _shareHandler;
         private bool _isReady;
 
         public MainPage()

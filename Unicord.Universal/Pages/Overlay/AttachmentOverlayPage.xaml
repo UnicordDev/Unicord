@@ -6,18 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:controls="using:Unicord.Universal.Controls" xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Unicord.Universal.Controls" xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
     mc:Ignorable="d">
+    <Page.Resources>
+        <ui:AttachedDropShadow x:Key="ErrorShadow" CastTo="{x:Bind background}" BlurRadius="16" Opacity="1" Color="Black"/>
+    </Page.Resources>
 
-    <Grid x:Name="contentContainer">        
-        <Border Tapped="contentContainer_Tapped"
-                Background="Transparent"
-                RenderTransformOrigin="0.5,0.5">
-            <Border.RenderTransform>
-                <ScaleTransform ScaleX="2"
-                                ScaleY="2"/>
-            </Border.RenderTransform>
-        </Border>
+    <Grid x:Name="contentContainer">
+        <Border x:Name="background"
+                Tapped="contentContainer_Tapped"
+                Background="Transparent"/>
 
         <Grid>
             <ScrollViewer MinZoomFactor="1" 
@@ -51,11 +49,16 @@
                   Grid.RowSpan="2" 
                   Visibility="Visible">
                 <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" IsIndeterminate="False"/>
-                <controls1:DropShadowPanel x:Name="FailurePanel" HorizontalAlignment="Center" VerticalAlignment="Center" BlurRadius="16" ShadowOpacity="1" Color="Black">
-                    <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="White" FontSize="64">
+
+                <TextBlock x:Name="FailurePanel"
+                           ui:Effects.Shadow="{StaticResource ErrorShadow}" 
+                           FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                           Foreground="White"
+                           FontSize="64" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center">
                         &#xE783;
-                    </TextBlock>
-                </controls1:DropShadowPanel>
+                </TextBlock>
             </Grid>
         </Grid>
 

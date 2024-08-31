@@ -62,7 +62,7 @@ namespace Unicord.Universal.Controls
                 return base.MeasureOverride(constraint);
 
             var maxWidth = Math.Min(root.Bounds.Width, MaxWidth);
-            var maxHeight = Math.Min(root.Bounds.Height, MaxHeight);
+            var maxHeight = Math.Min(root.Bounds.Height - 32, MaxHeight);
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             Drawing.ScaleProportions(ref width, ref height, Math.Min(constraint.Width, maxWidth), Math.Min(constraint.Height, maxHeight));

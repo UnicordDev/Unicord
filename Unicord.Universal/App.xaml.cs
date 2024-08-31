@@ -57,35 +57,30 @@ namespace Unicord.Universal
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
-        internal static LocalObjectStorageHelper LocalSettings { get; } = new LocalObjectStorageHelper();
-        internal static RoamingObjectStorageHelper RoamingSettings { get; } = new RoamingObjectStorageHelper();
+        internal static ApplicationDataStorageHelper LocalSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
+        internal static ApplicationDataStorageHelper RoamingSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
 
         public App()
         {
             InitializeComponent();
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
-            var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
-            switch (theme)
-            {
-                case ElementTheme.Light:
-                    RequestedTheme = ApplicationTheme.Light;
-                    break;
-                case ElementTheme.Dark:
-                    RequestedTheme = ApplicationTheme.Dark;
-                    break;
-            }
+            //var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
+            //switch (theme)
+            //{
+            //    case ElementTheme.Light:
+            //        RequestedTheme = ApplicationTheme.Light;
+            //        break;
+            //    case ElementTheme.Dark:
+            //        RequestedTheme = ApplicationTheme.Dark;
+            //        break;
+            //}
 
             Suspending += OnSuspending;
             UnhandledException += OnUnhandledException;
 
             Debug.WriteLine("Welcome to Unicord!");
             Debug.WriteLine(provider.GetVersionString());
-
-            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
-            {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Analytics), typeof(Crashes));
-            }
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -269,19 +264,7 @@ namespace Unicord.Universal
             // just ensure that the window is active
             if (!(Window.Current.Content is Frame rootFrame))
             {
-                UpgradeSettings();
-
                 Analytics.TrackEvent("Unicord_Launch");
-
-                try
-                {
-                    //ThemeManager.LoadCurrentTheme(Resources);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                    themeLoadException = ex;
-                }
 
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
@@ -291,7 +274,6 @@ namespace Unicord.Universal
                     channelId = LocalSettings.Read("LastViewedChannel", 0ul);                
 
                 WindowingService.Current.SetMainWindow(rootFrame);
-                // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
 
@@ -335,29 +317,6 @@ namespace Unicord.Universal
             return false;
         }
 
-        /// <summary>
-        /// This method migrates settings from previous versions of Unicord.
-        /// </summary>
-        private void UpgradeSettings()
-        {
-            // migrates the old theme store 
-#pragma warning disable CS0618 // Type or member is obsolete
-            var theme = LocalSettings.Read<string>(SELECTED_THEME_NAME, null);
-            if (!string.IsNullOrWhiteSpace(theme))
-            {
-                LocalSettings.Save(SELECTED_THEME_NAME, (string)null);
-                LocalSettings.Save(SELECTED_THEME_NAMES, new List<string>() { theme });
-            }
-
-            var themes = LocalSettings.Read<List<string>>(SELECTED_THEME_NAMES);
-            if (themes != null)
-            {
-                themes.RemoveAll(t => string.IsNullOrWhiteSpace(t));
-                LocalSettings.Save(SELECTED_THEME_NAMES, themes);
-            }
-#pragma warning restore CS0618 // Type or member is obsolete
-        }
-
         private static ApplicationView SetupCurrentView()
         {
             var view = ApplicationView.GetForCurrentView();
@@ -373,7 +332,6 @@ namespace Unicord.Universal
         {
             if (!(Window.Current.Content is Frame rootFrame))
             {
-                UpgradeSettings();
                 Analytics.TrackEvent("Unicord_LaunchForShare");
 
                 // Create a Frame to act as the navigation context and navigate to the first page
