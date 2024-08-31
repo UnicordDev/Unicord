@@ -27,6 +27,7 @@ namespace Unicord.Universal.Models.Messaging
             client.ChannelCreated += OnChannelCreated;
             client.ChannelDeleted += OnChannelDeleted;
             client.ChannelUpdated += OnChannelUpdated;
+            client.ChannelUnreadUpdated += OnChannelUnreadUpdated;
             client.TypingStarted += OnTypingStarted;
             client.GuildCreated += OnGuildCreated;
             client.GuildDeleted += OnGuildDeleted;
@@ -58,6 +59,7 @@ namespace Unicord.Universal.Models.Messaging
             client.ChannelCreated -= OnChannelCreated;
             client.ChannelDeleted -= OnChannelDeleted;
             client.ChannelUpdated -= OnChannelUpdated;
+            client.ChannelUnreadUpdated -= OnChannelUnreadUpdated;
             client.TypingStarted -= OnTypingStarted;
             client.GuildCreated -= OnGuildCreated;
             client.GuildDeleted -= OnGuildDeleted;
@@ -203,6 +205,11 @@ namespace Unicord.Universal.Models.Messaging
         }
 
         private static Task OnGuildMembersChunked(GuildMembersChunkEventArgs e)
+        {
+            return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
+        }
+
+        private static Task OnChannelUnreadUpdated(ChannelUnreadUpdateEventArgs e)
         {
             return Task.WhenAll(WeakReferenceMessenger.Default.Send(e));
         }

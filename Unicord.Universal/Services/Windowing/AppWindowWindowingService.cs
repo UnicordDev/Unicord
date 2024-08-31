@@ -102,6 +102,7 @@ namespace Unicord.Universal.Services.Windowing
             var handle = (AppWindowHandle)CreateOrUpdateHandle(window);
 
             var frame = new Frame();
+            //frame.Background = 
             frame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel.Id, FullFrame = true });
 
             ElementCompositionPreview.SetAppWindowContent(window, frame);

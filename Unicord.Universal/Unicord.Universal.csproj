@@ -1075,7 +1075,9 @@
     <PRIResource Include="Resources\en-GB\DMChannelsPage.resw" />
     <PRIResource Include="Resources\en-GB\Dialogs.resw" />
     <PRIResource Include="Resources\en-GB\Converters.resw" />
-    <PRIResource Include="Resources\en-GB\Controls.resw" />
+    <PRIResource Include="Resources\en-GB\Controls.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Resources\en-GB\ChannelPage.resw" />
     <PRIResource Include="Resources\en-GB\AgeGatePage.resw" />
     <PRIResource Include="Resources\en-GB\AccountsSettingsPage.resw" />
