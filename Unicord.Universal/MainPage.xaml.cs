@@ -412,7 +412,8 @@ namespace Unicord.Universal
 
         public void HideCustomOverlay()
         {
-            HideOverlayStoryboard.Begin();
+            if (CustomOverlayGrid.Visibility != Visibility.Collapsed)
+                HideOverlayStoryboard.Begin();
         }
     }
 }

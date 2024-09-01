@@ -8,13 +8,7 @@ using DSharpPlus;
 using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
-
-
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
@@ -31,15 +25,11 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.Graphics.Imaging;
 using Windows.Security.Credentials;
 using Windows.Storage;
-using Windows.System;
 using Windows.System.Profile;
-using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -70,16 +60,16 @@ namespace Unicord.Universal
             InitializeComponent();
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
-            //var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
-            //switch (theme)
-            //{
-            //    case ElementTheme.Light:
-            //        RequestedTheme = ApplicationTheme.Light;
-            //        break;
-            //    case ElementTheme.Dark:
-            //        RequestedTheme = ApplicationTheme.Dark;
-            //        break;
-            //}
+            var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
+            switch (theme)
+            {
+                case ElementTheme.Light:
+                    RequestedTheme = ApplicationTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    RequestedTheme = ApplicationTheme.Dark;
+                    break;
+            }
 
             Suspending += OnSuspending;
             UnhandledException += OnUnhandledException;

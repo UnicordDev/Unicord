@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages.Components;
@@ -42,7 +43,13 @@ namespace Unicord.Universal.Models.Messages
             // we dont wanna do this for replies
             if (parentMessage == null)
             {
-                ReactCommand = new ReactCommand(discordMessage);
+                ReplyCommand = new ReplyCommand(this);
+                CopyMessageCommand = new CopyMessageCommand(this);
+                CopyUrlCommand = new CopyUrlCommand(this);
+                CopyIdCommand = new CopyIdCommand(this);
+                PinCommand = new PinMessageCommand(this);
+                DeleteCommand = new DeleteMessageCommand(this);
+                ReactCommand = new ReactCommand(this);
 
                 Embeds = new ObservableCollection<EmbedViewModel>(Message.Embeds.Select(s => new EmbedViewModel(s, this)));
                 Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a, this)));
@@ -82,6 +89,9 @@ namespace Unicord.Universal.Models.Messages
             Message.MessageType != MessageType.Reply &&
             Message.MessageType != MessageType.ApplicationCommand &&
             Message.MessageType != MessageType.ContextMenuCommand;
+
+        public MessageType Type
+            => Message.MessageType ?? MessageType.Default;
 
         public string SystemMessageText => Message.MessageType switch
         {
@@ -169,6 +179,12 @@ namespace Unicord.Universal.Models.Messages
         public ObservableCollection<ComponentViewModelBase> Components { get; }
         public ObservableCollection<ReactionViewModel> Reactions { get; }
 
+        public ICommand ReplyCommand { get; }
+        public ICommand CopyMessageCommand { get; }
+        public ICommand CopyUrlCommand { get; }
+        public ICommand CopyIdCommand { get; }
+        public ICommand PinCommand { get; }
+        public ICommand DeleteCommand { get; }
         public ICommand ReactCommand { get; }
 
         private Task OnReactionAdded(MessageReactionAddEventArgs e)

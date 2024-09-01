@@ -14,10 +14,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Controls.Flyouts
 {
-    public sealed partial class MessageContextFlyout : Microsoft.UI.Xaml.Controls.CommandBarFlyout
+    public sealed partial class MessageContextFlyout : MUXC.CommandBarFlyout
     {
         public MessageControl Parent
         {

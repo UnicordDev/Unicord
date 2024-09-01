@@ -76,23 +76,8 @@
             <converters:UriConverter x:Key="UriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
-            <commands:MuteCommand x:Key="MuteCommand"/>
-            <commands:MessageUserCommand x:Key="MessageUserCommand"/>
-            <commands:CopyIdCommand x:Key="CopyIdCommand"/>
-            <commands:CopyUrlCommand x:Key="CopyUrlCommand"/>
-            <commands:CopyMessageCommand x:Key="CopyMessageCommand"/>
-            <commands:AcknowledgeCommand x:Key="AcknowledgeCommand"/>
-            <commands:ChangeNicknameCommand x:Key="ChangeNicknameCommand"/>
-            <commands:OpenNewWindowCommand x:Key="OpenNewWindowCommand"/>
-            <commands:DeleteMessageCommand x:Key="DeleteMessageCommand" />
-            <commands:PinMessageCommand x:Key="PinMessageCommand" />
-            <commands:ShowUserOverlayCommand x:Key="OpenUserOverlayCommand" />
-            <commands:KickCommand x:Key="KickCommand" />
-            <commands:BanCommand x:Key="BanCommand" />
             <commands:EditModeCommand x:Key="EditModeCommand" />
-            <commands:ReplyCommand x:Key="ReplyCommand" />
             <commands:SettingsCommand x:Key="SettingsCommand" />
-            <commands:PinChannelCommand x:Key="PinChannelCommand" />
 
             <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
             <x:Double x:Key="ContentControlFontSize">14</x:Double>

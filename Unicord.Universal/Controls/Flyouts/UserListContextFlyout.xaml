@@ -16,31 +16,27 @@
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem x:Uid="/Flyouts/Profile" Icon="OtherUser" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem x:Uid="/Flyouts/Message" Icon="Message" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Profile" Icon="OtherUser" Command="{Binding OpenUserOverlayCommand}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/Message" Icon="Message" Command="{Binding MessageCommand}"/>
     
-    <MenuFlyoutSeparator x:Name="managementSeparator" 
-                         Visibility="{Binding ShowManagementSeparator, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}" />
+    <MenuFlyoutSeparator x:Name="managementSeparator" />
 
-    <MenuFlyoutItem x:Uid="/Flyouts/Kick"
+    <MenuFlyoutItem x:Uid="/Flyouts/Kick" 
+                    Visibility="{Binding KickVisibility}"
                     Foreground="{ThemeResource ErrorTextForegroundBrush}" 
-                    Command="{StaticResource KickCommand}"
-                    CommandParameter="{Binding}"
-                    Icon="LeaveChat" 
-                    Visibility="{Binding CanKick, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}"  />
+                    Command="{Binding KickCommand}"
+                    Icon="LeaveChat"  />
 
-    <MenuFlyoutItem x:Name="ban"
+    <MenuFlyoutItem x:Name="Ban"
                     x:Uid="/Flyouts/Ban"
+                    Visibility="{Binding BanVisibility}"
                     Foreground="{ThemeResource ErrorTextForegroundBrush}"
-                    Command="{StaticResource BanCommand}"
-                    CommandParameter="{Binding}"
-                    Icon="Remove"
-                    Visibility="{Binding CanBan, Converter={StaticResource BoolVisibilityConverter}, ElementName=self}"  />
+                    Command="{Binding BanCommand}"
+                    Icon="Remove"  />
     
     <MenuFlyoutItem x:Name="changeNickname"
                     x:Uid="/Flyouts/ChangeNickname"
-                    Command="{StaticResource ChangeNicknameCommand}"
-                    CommandParameter="{Binding}"
+                    Command="{Binding ChangeNicknameCommand}"
                     Icon="Rename"/>
 
 </MenuFlyout>

@@ -23,14 +23,14 @@ namespace Unicord.Universal.Controls
         public CollectionViewSource Source { get; } = new CollectionViewSource() { IsSourceGrouped = true };
         public event EventHandler<DiscordEmoji> EmojiPicked;
 
-        public ChannelViewModel Channel
+        public DiscordChannel Channel
         {
-            get => (ChannelViewModel)GetValue(ChannelProperty);
+            get => (DiscordChannel)GetValue(ChannelProperty);
             set => SetValue(ChannelProperty, value);
         }
 
         public static readonly DependencyProperty ChannelProperty =
-            DependencyProperty.Register("Channel", typeof(ChannelViewModel), typeof(EmotePicker), new PropertyMetadata(null));
+            DependencyProperty.Register("Channel", typeof(DiscordChannel), typeof(EmotePicker), new PropertyMetadata(null));
 
         public EmotePicker()
         {
@@ -43,7 +43,7 @@ namespace Unicord.Universal.Controls
             {
                 if (Channel?.Id != _prevChannelId)
                 {
-                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel.Channel);
+                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel);
                     _prevChannelId = Channel.Id;
                 }
             }

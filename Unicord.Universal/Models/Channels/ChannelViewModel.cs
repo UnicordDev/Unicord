@@ -10,7 +10,9 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
+using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
@@ -31,6 +33,15 @@ namespace Unicord.Universal.Models.Channels
             // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
             if (!isTransient)
             {
+                AcknowledgeCommand = new AcknowledgeChannelCommand(this);
+                EditCommand = new EditChannelCommand();
+                ToggleMuteCommand = new MuteChannelCommand(this);
+                PinToStartCommand = new PinChannelToStartCommand(this);
+                CopyIdCommand = new CopyIdCommand(this);
+                CopyUrlCommand = new CopyUrlCommand(this);
+                OpenInNewWindowCommand = new OpenInNewWindowCommand(this, false);
+                OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(this, true);
+
                 WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, (r, m) => r.OnChannelUpdated(m.Event));
                 WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
             }
@@ -40,7 +51,9 @@ namespace Unicord.Universal.Models.Channels
             => _channelId;
 
         public virtual DiscordChannel Channel
-            => discord.TryGetCachedChannel(Id, out var channel) ? channel : throw new InvalidOperationException();
+            => discord.TryGetCachedChannel(Id, out var channel) ? channel :
+               discord.TryGetCachedThread(Id, out var thread) ? thread :
+            throw new InvalidOperationException();
 
         public virtual ChannelViewModel Parent => Channel.ParentId != null ?
             new ChannelViewModel(Channel.ParentId.Value, false, this) :
@@ -138,12 +151,22 @@ namespace Unicord.Universal.Models.Channels
             }
         }
 
+        public ICommand AcknowledgeCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand ToggleMuteCommand { get; }
+        public ICommand PinToStartCommand { get; }
+        public ICommand CopyIdCommand { get; }
+        public ICommand CopyUrlCommand { get; }
+        public ICommand OpenInNewWindowCommand { get; }
+        public ICommand OpenInCompactOverlayWindowCommand { get; }
+
         private void OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {
             if (e.ReadState.Id != Channel.Id)
                 return;
 
             InvokePropertyChanged(nameof(Unread));
+            InvokePropertyChanged(nameof(ShouldShowNotificaitonIndicator));
             InvokePropertyChanged(nameof(NullableMentionCount));
         }
 
@@ -154,8 +177,13 @@ namespace Unicord.Universal.Models.Channels
 
             if (e.ChannelAfter.Name != e.ChannelBefore.Name)
                 InvokePropertyChanged(nameof(Name));
+            
             if (e.ChannelAfter.Topic != e.ChannelBefore.Topic)
+            {
                 InvokePropertyChanged(nameof(Topic));
+                InvokePropertyChanged(nameof(HasTopic));
+            }
+
             if (e.ChannelAfter.Position != e.ChannelBefore.Position)
                 InvokePropertyChanged(nameof(Position));
             if (e.ChannelAfter.Type != e.ChannelBefore.Type)

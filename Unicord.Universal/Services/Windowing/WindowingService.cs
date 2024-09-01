@@ -28,6 +28,8 @@ namespace Unicord.Universal.Services
 
         public abstract WindowHandle GetHandle(UIElement reference);
 
+        public abstract WindowHandle CurrentWindow { get; }
+
         public abstract bool IsMainWindow(WindowHandle handle);
         public abstract bool IsCompactOverlay(WindowHandle handle);
 

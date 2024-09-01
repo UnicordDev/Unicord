@@ -59,7 +59,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{StaticResource MessageUserCommand}" CommandParameter="{x:Bind _user}" />
+                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{Binding MessageCommand}" />
                             <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
                         </Grid>
                     </Grid>

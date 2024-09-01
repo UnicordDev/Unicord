@@ -15,27 +15,27 @@
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
+    <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{Binding AcknowledgeCommand}" >
         <MenuFlyoutItem.Icon>
             <FontIcon Glyph="&#xE930;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
-    <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/Unmute" Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Icon="Mute" Command="{Binding ToggleMuteCommand}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Unmute" Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Icon="Volume" Command="{Binding ToggleMuteCommand}" />
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem x:Uid="/Flyouts/ChangeNickname" Icon="Rename" Command="{StaticResource ChangeNicknameCommand}" CommandParameter="{Binding CurrentMember}"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/Edit" Icon="Edit" Command="{StaticResource EditChannelCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/ChangeNickname" Icon="Rename" Command="{Binding CurrentMember.ChangeNicknameCommand}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Edit" Icon="Edit" Command="{Binding EditGuildCommand}"/>
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem x:Uid="/Flyouts/LeaveServer" Icon="LeaveChat" Foreground="{ThemeResource ErrorTextForegroundBrush}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/LeaveServer" Icon="LeaveChat" Foreground="{ThemeResource ErrorTextForegroundBrush}" Command="{Binding LeaveServerCommand}"/>
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
+    <!--<MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow"/>-->
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{Binding CopyUrlCommand}"  />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{Binding CopyIdCommand}"  />
 
 </MenuFlyout>

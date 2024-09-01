@@ -1,20 +1,15 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
-using Unicord.Universal.Commands;
+using DSharpPlus.Entities;
+using Unicord.Universal.Commands.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models.Messages

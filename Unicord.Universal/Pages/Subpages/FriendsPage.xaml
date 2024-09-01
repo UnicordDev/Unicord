@@ -73,7 +73,7 @@
                         <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding User}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{Binding User.MessageCommand}" BorderThickness="0" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>

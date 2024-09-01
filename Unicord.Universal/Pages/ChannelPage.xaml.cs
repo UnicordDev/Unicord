@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
@@ -92,8 +93,8 @@ namespace Unicord.Universal.Pages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is not DiscordChannel chan)            
-                return;            
+            if (e.Parameter is not DiscordChannel chan)
+                return;
 
             Application.Current.Suspending += OnSuspending;
             var navigation = SystemNavigationManager.GetForCurrentView();
@@ -132,8 +133,8 @@ namespace Unicord.Universal.Pages
             DataContext = ViewModel;
 
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
-                MessageTextBox.Focus(FocusState.Keyboard);            
-            
+                MessageTextBox.Focus(FocusState.Keyboard);
+
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
                 WindowingService.Current.HandleTitleBarForControl(TopGrid);
 
@@ -384,7 +385,7 @@ namespace Unicord.Universal.Pages
                 // just in case, should realistically never happen
                 Logger.LogError(ex);
             }
-        }              
+        }
 
         private void UploadItems_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -627,11 +628,9 @@ namespace Unicord.Universal.Pages
 
         private void MessageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var command = new DeleteMessageCommand();
-
-            foreach (var item in e.AddedItems.OfType<DiscordMessage>())
+            foreach (var item in e.AddedItems.OfType<MessageViewModel>())
             {
-                if (!command.CanExecute(item))
+                if (!new DeleteMessageCommand(item).CanExecute(item))
                 {
                     MessageList.SelectedItems.Remove(item);
                 }

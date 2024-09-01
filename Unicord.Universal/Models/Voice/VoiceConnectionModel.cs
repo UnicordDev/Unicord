@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Net.Abstractions;
 using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json;
 using Unicord.Universal.Voice;
@@ -287,20 +288,17 @@ namespace Unicord.Universal.Models.Voice
         {
             try
             {
-                var vsd = new VoiceDispatch
+                var payload = new VoiceStateUpdatePayload
                 {
-                    OpCode = 4,
-                    Payload = new VoiceStateUpdatePayload
-                    {
-                        GuildId = Channel.Guild.Id,
-                        ChannelId = channel_id,
-                        Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
-                        Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
-                    }
+                    GuildId = Channel.Guild.Id,
+                    ChannelId = channel_id,
+                    Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
+                    Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
                 };
 
-                var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-                await App.Discord.SendSocketMessageAsync(vsj);
+#pragma warning disable CS0618 // Type or member is obsolete
+                await App.Discord.SendPayloadAsync(GatewayOpCode.VoiceStateUpdate, payload);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
             catch (Exception ex)
             {

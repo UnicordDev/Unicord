@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Input;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Members;
+using Unicord.Universal.Commands.Users;
 using Unicord.Universal.Extensions;
+using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Models.User
 {
@@ -14,24 +19,25 @@ namespace Unicord.Universal.Models.User
 
         private PresenceViewModel _presenceVmCache;
 
+
         internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
+            : this(user.Id, (user as DiscordMember)?.Guild.Id, parent)
+        {
+
+        }
+
+        internal UserViewModel(ulong user, ulong? guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            id = user.Id;
-
-            if (user is DiscordMember member)
-            {
-                this.guildId = member.Guild.Id;
-            }
-            else if (guildId != 0)
-            {
-                this.guildId = guildId;
-            }
-
+            id = user;
+            this.guildId = guildId;
             WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this,
                 (t, e) => t.OnUserUpdate(e.Event));
             WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this,
                 (t, e) => t.OnPresenceUpdate(e.Event));
+
+            OpenOverlayCommand = new ShowUserOverlayCommand(this);
+            MessageCommand = new SendMessageCommand(this);
 
             if (this.guildId != null)
             {
@@ -40,6 +46,10 @@ namespace Unicord.Universal.Models.User
                     (t, e) => t.OnGuildMemberUpdate(e.Event));
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMembersChunkEventArgs>(this,
                     (t, e) => t.OnGuildMemberChunk(e.Event));
+
+                KickCommand = new KickCommand(this);
+                BanCommand = new BanCommand(this);
+                ChangeNicknameCommand = new ChangeNicknameCommand(this);
             }
         }
 
@@ -74,7 +84,7 @@ namespace Unicord.Universal.Models.User
             => User.Mention;
 
         public bool IsCurrent
-            => User.IsCurrent;
+            => User.Id == discord.CurrentUser.Id;
 
         public bool IsBot
             => User.IsBot;
@@ -84,6 +94,17 @@ namespace Unicord.Universal.Models.User
 
         public PresenceViewModel Presence
             => _presenceVmCache ??= new(User, this);
+
+        public ICommand KickCommand { get; }
+        public ICommand BanCommand { get; }
+        public ICommand ChangeNicknameCommand { get; }
+        public ICommand MessageCommand { get; }
+        public ICommand OpenOverlayCommand { get; }
+
+        public Visibility KickVisibility
+            => KickCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility BanVisibility
+            => BanCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
 
         private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {

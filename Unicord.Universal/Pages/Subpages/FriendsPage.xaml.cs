@@ -3,6 +3,7 @@ using System.Linq;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using Unicord.Universal.Behaviours;
+using Unicord.Universal.Models.Relationships;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -30,9 +31,9 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void OnItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is DiscordRelationship rel)
+            if (e.ClickedItem is RelationshipViewModel rel)
             {
-                this.FindParent<MainPage>().ShowUserOverlay(rel.User, true);
+                this.FindParent<MainPage>().ShowUserOverlay(rel.User.User, true);
             }
         }
 

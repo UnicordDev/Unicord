@@ -4,6 +4,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Windows;
 using Humanizer;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Concurrent;
@@ -49,7 +50,7 @@ namespace Unicord.Universal.Models
         private string _messageText;
         private bool _isTranscoding;
         private ObservableCollection<MessageViewModel> _messages;
-        private DiscordMessage _replyTo;
+        private MessageViewModel _replyTo;
         private bool _replyPing = true;
 
         public ChannelPageViewModel(DiscordChannel channel, WindowHandle window)
@@ -106,8 +107,7 @@ namespace Unicord.Universal.Models
                 }
             };
 
-            OpenInNewWindowCommand = new OpenInNewWindowCommand(window, false);
-            OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(window, true);
+            ClearReplyCommand = new RelayCommand(() => this.ReplyTo = null);
         }
 
         public ObservableCollection<MessageViewModel> Messages
@@ -148,9 +148,19 @@ namespace Unicord.Universal.Models
 
         public ObservableCollection<FileUploadModel> FileUploads { get; set; }
 
-        public DiscordMessage ReplyTo { get => _replyTo; set => OnPropertySet(ref _replyTo, value); }
+        public MessageViewModel ReplyTo
+        {
+            get => _replyTo; set
+            {
+                OnPropertySet(ref _replyTo, value);
+                InvokePropertyChanged(nameof(ShowReply));
+            }
+        }
 
         public bool ReplyPing { get => _replyPing; set => OnPropertySet(ref _replyPing, value); }
+
+        public bool ShowReply =>
+            ReplyTo != null;
 
         public override string Topic
             => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r\n", "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
@@ -352,8 +362,7 @@ namespace Unicord.Universal.Models
         public bool IsPinned =>
             SecondaryTile.Exists($"Channel_{Channel.Id}");
 
-        public ICommand OpenInNewWindowCommand { get; }
-        public ICommand OpenInCompactOverlayWindowCommand { get; }
+        public ICommand ClearReplyCommand { get; }
 
         public bool IsDisposed { get; internal set; }
 
@@ -616,7 +625,7 @@ namespace Unicord.Universal.Models
                         files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo, files, progress)
+                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo.Message, files, progress)
                                .ConfigureAwait(false);
 
                     foreach (var item in files)

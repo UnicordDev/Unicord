@@ -41,17 +41,27 @@ namespace Unicord.Universal.Services
             base.Initialise();
 
             _mainPage = Window.Current.Content.FindChild<MainPage>();
-            _discordPage = Window.Current.Content.FindChild<DiscordPage>();
-            _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
+            if (!_mainPage.Arguments.FullFrame)
+            {
+                _discordPage = Window.Current.Content.FindChild<DiscordPage>();
+                _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
 
-            _navigationStack = new Stack<NavigationEvent>();
-            _navigation = SystemNavigationManager.GetForCurrentView();
-            _navigation.BackRequested += OnBackRequested;
+                _navigationStack = new Stack<NavigationEvent>();
+                _navigation = SystemNavigationManager.GetForCurrentView();
+                _navigation.BackRequested += OnBackRequested;
+            }
         }
 
         // TODO: this is kinda bad and should really be more in DiscordPageModel
         internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
+            // TODO: handle this navigation in the main window
+            if (_discordPage == null)
+                return;
+
+            _mainPage.HideUserOverlay();
+            _mainPage.HideCustomOverlay();
+
             var page = _discordPage.MainFrame.Content as ChannelPage;
             if (channel == null)
             {

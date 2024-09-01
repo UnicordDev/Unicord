@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
@@ -57,14 +58,12 @@ namespace Unicord.Universal.Models.Emoji
         public readonly double Opacity
             => this.IsAvailable ? 1.0 : 0.5;
 
+        public readonly DiscordEmoji? DiscordEmoji =>
+            _emoji ?? DiscordEmoji.FromUnicode(Unicode);
+
         public override bool Equals(object obj)
         {
-            return obj is EmojiViewModel model &&
-                   Name == model.Name &&
-                   Unicode == model.Unicode &&
-                   Url == model.Url &&
-                   IsAvailable == model.IsAvailable &&
-                   Opacity == model.Opacity;
+            return obj is EmojiViewModel model && model == this;
         }
 
         public override int GetHashCode()
@@ -76,6 +75,20 @@ namespace Unicord.Universal.Models.Emoji
             hashCode = hashCode * -1521134295 + IsAvailable.GetHashCode();
             hashCode = hashCode * -1521134295 + Opacity.GetHashCode();
             return hashCode;
+        }
+
+        public static bool operator ==(EmojiViewModel lhs, EmojiViewModel rhs)
+        {
+            return lhs.Name == rhs.Name &&
+                   lhs.Unicode == rhs.Unicode &&
+                   lhs.Url == rhs.Url &&
+                   lhs.IsAvailable == rhs.IsAvailable &&
+                   lhs.Opacity == rhs.Opacity;
+        }
+
+        public static bool operator !=(EmojiViewModel lhs, EmojiViewModel rhs)
+        {
+            return !(lhs == rhs);
         }
 
         public static bool operator ==(EmojiViewModel lhs, DiscordEmoji rhs)

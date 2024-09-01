@@ -40,7 +40,7 @@
                                   Height="300" 
                                   HorizontalAlignment="Stretch" 
                                   VerticalAlignment="Stretch" 
-                                  Channel="{x:Bind ViewModel, Mode=OneWay}" 
+                                  Channel="{x:Bind ViewModel.Channel, Mode=OneWay}" 
                                   EmojiPicked="EmotePicker_EmojiPicked"/>
         </Flyout>
 
@@ -354,8 +354,7 @@
                                                                 x:Uid="/ChannelPage/PinToStart"
                                                                 Icon="Pin"
                                                                 Visibility="{Binding IsPinned, Converter={StaticResource InverseBoolVisibilityConverter}}"
-                                                                Command="{StaticResource PinChannelCommand}"
-                                                                CommandParameter="{x:Bind ViewModel.Channel}"/>
+                                                                Command="{x:Bind ViewModel.PinToStartCommand}"/>
 
                                                 <MenuFlyoutItem x:Uid="/ChannelPage/UnpinFromStart"
                                                                 Icon="Unpin"
@@ -364,16 +363,14 @@
                                                 <MenuFlyoutSeparator />
 
                                                 <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal"
-                                                                Command="{Binding OpenInNewWindowCommand}"
-                                                                CommandParameter="{Binding}">
+                                                                Command="{x:Bind ViewModel.OpenInNewWindowCommand}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                                                     </MenuFlyoutItem.Icon>
                                                 </MenuFlyoutItem>
 
                                                 <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" 
-                                                                Command="{Binding OpenInCompactOverlayWindowCommand}"
-                                                                CommandParameter="{Binding}">
+                                                                Command="{x:Bind ViewModel.OpenInCompactOverlayWindowCommand}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon Glyph="&#xE78B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                                                     </MenuFlyoutItem.Icon>
@@ -611,9 +608,9 @@
                                          w1809:CornerRadius="4,4,0,0"/>
 
                             <Grid x:Name="ReplyingToGrid"
+                                  x:Load="{x:Bind ViewModel.ShowReply, Mode=OneWay}"
                                   Padding="4,4,4,0"
-                                  Grid.Row="3"
-                                  Visibility="{x:Bind ViewModel.ReplyTo, Converter={StaticResource HideOnNullConverter}, Mode=OneWay}">
+                                  Grid.Row="3">
 
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -645,7 +642,7 @@
                                                        FontSize="12"
                                                        InlineOnly="True"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                                       Channel="{Binding Channel}"
+                                                       Channel="{Binding Channel.Channel}"
                                                        Text="{Binding Content}" 
                                                        IsTextSelectionEnabled="False"
                                                        VerticalAlignment="Center"
@@ -665,8 +662,7 @@
                                         Grid.Column="2"
                                         Content="&#xE711;"
                                         Margin="4,0,0,0"
-                                        Command="{StaticResource ReplyCommand}"
-                                        CommandParameter="{x:Null}"
+                                        Command="{x:Bind ViewModel.ClearReplyCommand}"
                                         Style="{ThemeResource IconButtonStyle}"/>
                             </Grid>
 

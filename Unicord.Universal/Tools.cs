@@ -325,6 +325,7 @@ namespace Unicord.Universal
             return ~lo < 0 ? lo : ~lo;
         }
 
+        // TODO: all of this is fundamentally broken and bad
         public static List<DiscordEmoji> GetEmoji(DiscordChannel channel)
         {
             var guildEmoji = GetAllowedGuildEmoji(channel).Cast<DiscordEmoji>().ToList();
