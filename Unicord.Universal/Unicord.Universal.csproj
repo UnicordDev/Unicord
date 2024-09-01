@@ -163,6 +163,7 @@
     <Compile Include="Commands\Messages\PinMessageCommand.cs" />
     <Compile Include="Commands\Messages\ReactCommand.cs" />
     <Compile Include="Commands\Messages\ReplyCommand.cs" />
+    <Compile Include="Commands\NullCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Commands\Users\SendMessageCommand.cs" />
     <Compile Include="Commands\Users\ShowUserOverlayCommand.cs" />

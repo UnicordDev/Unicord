@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Unicord.Universal.Commands
             var tile = new SecondaryTile(
                 $"Channel_{channel.Id}",
                 NotificationUtils.GetChannelHeaderName(channel),
-                $"-channelId={channel.Id}",
+                $"-channelId={channel.Id.ToString(CultureInfo.InvariantCulture)}",
                 new Uri("ms-appx:///Assets/Store/Square150x150Logo.png"),
                 TileSize.Square150x150);
 

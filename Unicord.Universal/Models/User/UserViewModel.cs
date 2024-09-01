@@ -51,6 +51,12 @@ namespace Unicord.Universal.Models.User
                 BanCommand = new BanCommand(this);
                 ChangeNicknameCommand = new ChangeNicknameCommand(this);
             }
+            else
+            {
+                KickCommand = NullCommand.Instance;
+                BanCommand = NullCommand.Instance;
+                ChangeNicknameCommand = NullCommand.Instance;
+            }
         }
 
         public ulong Id
