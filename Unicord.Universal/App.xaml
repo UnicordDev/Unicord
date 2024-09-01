@@ -49,23 +49,6 @@
             <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />            
             <SolidColorBrush x:Key="SystemControlBackgroundChromeLowBrush" Color="{ThemeResource SystemChromeLowColor}"/>
 
-            <converters:PresenceColourConverter x:Key="PresenceColourConverter" 
-                                                Offline="{StaticResource OfflinePresenceColour}"
-                                                Online="{StaticResource OnlinePresenceColour}"
-                                                Idle="{StaticResource IdlePresenceColour}"
-                                                DoNotDisturb="{StaticResource DoNotDisturbPresenceColour}"
-                                                StreamingTwitch="{StaticResource StreamingTwitchPresenceColour}"
-                                                StreamingYouTube="{StaticResource StreamingYouTubePresenceColour}"
-                                                Fallback="{StaticResource FallbackPresenceColour}"/>
-
-            <converters:PresenceGeometryConverter x:Key="PresenceGeometryConverter" 
-                                                  Offline="{StaticResource OfflinePresenceGeometry}"
-                                                  Online="{StaticResource OnlinePresenceGeometry}"
-                                                  Idle="{StaticResource IdlePresenceGeometry}"
-                                                  DoNotDisturb="{StaticResource DoNotDisturbPresenceGeometry}"
-                                                  Streaming="{StaticResource StreamingPresenceGeometry}"
-                                                  Fallback="{StaticResource OnlinePresenceGeometry}"/>
-
             <converters:ColourBrushConverter x:Key="ColourBrushConverter" 
                                              DefaultBackgroundColour="{ThemeResource BackgroundTertiaryColour}"/>
             
@@ -88,14 +71,9 @@
             <converters:TruncateConverter x:Key="TruncateConverter"/>
             <converters:BoolConverter x:Key="BoolConverter"/>
             <converters:ThumbnailImageConverter x:Key="ThumbnailImageConverter"/>
-            <converters:DMNameConverter x:Key="DMNameConverter"/>
-            <converters:DMIconConverter x:Key="DMIconConverter"/>
             <converters:FileSizeConverter x:Key="FileSizeConverter"/>
-            <converters:MutedConverter x:Key="MutedConverter"/>
             <converters:TitleCaseConverter x:Key="TitleCaseConverter"/>
             <converters:UriConverter x:Key="UriConverter"/>
-            <converters:MemberOnlyConverter x:Key="MemberOnlyConverter"/>
-            <converters:DiscordUriConverter x:Key="DiscordUriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
             <commands:MuteCommand x:Key="MuteCommand"/>

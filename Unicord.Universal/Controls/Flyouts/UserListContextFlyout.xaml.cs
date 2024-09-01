@@ -39,11 +39,11 @@ namespace Unicord.Universal.Controls.Flyouts
                     var perms = member.PermissionsIn(null);
                     if (member.Id == App.Discord.CurrentUser.Id)
                     {
-                        return perms.HasPermission(DSharpPlus.Permissions.ChangeNickname);
+                        return perms.HasPermission(Permissions.ChangeNickname);
                     }
                     else
                     {
-                        return perms.HasPermission(DSharpPlus.Permissions.ManageNicknames);
+                        return perms.HasPermission(Permissions.ManageNicknames);
                     }
                 }
 

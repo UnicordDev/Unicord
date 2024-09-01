@@ -19,6 +19,7 @@ using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -72,7 +73,7 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, (t, v) => t.OnMessageDeleted(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, (t, v) => t.OnResumed(v.Event));
 
-            TypingUsers = new ObservableCollection<DiscordUser>();
+            TypingUsers = new ObservableCollection<UserViewModel>();
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
             {
@@ -143,7 +144,7 @@ namespace Unicord.Universal.Models
 
         public Permissions Permissions { get; set; }
 
-        public ObservableCollection<DiscordUser> TypingUsers { get; set; }
+        public ObservableCollection<UserViewModel> TypingUsers { get; set; }
 
         public ObservableCollection<FileUploadModel> FileUploads { get; set; }
 
@@ -636,7 +637,8 @@ namespace Unicord.Universal.Models
                 else
                 {
                     await Channel.SendMessageAsync(new DiscordMessageBuilder()
-                        .WithReply(replyTo.Id)
+                        .WithContent(txt)
+                        .WithReply(replyTo?.Id)
                         .WithAllowedMentions(mentions)).ConfigureAwait(false);
                 }
 
@@ -686,7 +688,7 @@ namespace Unicord.Universal.Models
 
                 syncContext.Post(o =>
                 {
-                    TypingUsers.Add(Channel.Guild != null && Channel.Guild.Members.TryGetValue(e.User.Id, out var member) ? member : e.User);
+                    TypingUsers.Add(new UserViewModel(e.User, Channel.GuildId, this));
                     InvokePropertyChanged(nameof(ShowTypingUsers));
                     InvokePropertyChanged(nameof(ShowTypingContainer));
                     InvokePropertyChanged(nameof(HideTypingContainer));
@@ -703,7 +705,8 @@ namespace Unicord.Universal.Models
             var source = new CancellationTokenSource(10_000);
             source.Token.Register(() => syncContext.Post(o =>
             {
-                TypingUsers.Remove(e.User);
+                foreach (var user in TypingUsers.Where(u => u.Id == e.User.Id).ToArray())
+                    TypingUsers.Remove(user);
                 InvokePropertyChanged(nameof(ShowTypingUsers));
                 InvokePropertyChanged(nameof(ShowTypingContainer));
                 InvokePropertyChanged(nameof(HideTypingContainer));

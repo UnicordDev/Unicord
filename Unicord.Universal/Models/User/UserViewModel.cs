@@ -1,53 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using Unicord.Universal.Models.Messages;
-using Windows.UI;
 using Unicord.Universal.Extensions;
-using DSharpPlus;
-using System.Diagnostics;
 
 namespace Unicord.Universal.Models.User
 {
     public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>, ISnowflake
     {
-        private ulong _userId;
-        private ulong? _guildId;
+        protected ulong id;
+        protected ulong? guildId;
+
+        private PresenceViewModel _presenceVmCache;
 
         internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            _userId = user.Id;
+            id = user.Id;
 
             if (user is DiscordMember member)
             {
-                _guildId = member.Guild.Id;
+                this.guildId = member.Guild.Id;
             }
             else if (guildId != 0)
             {
-                _guildId = guildId;
+                this.guildId = guildId;
             }
 
-            WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this, (t, e) => t.OnUserUpdate(e.Event));
-            WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this, (t, e) => t.OnPresenceUpdate(e.Event));
+            WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this,
+                (t, e) => t.OnUserUpdate(e.Event));
+            WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this,
+                (t, e) => t.OnPresenceUpdate(e.Event));
 
-            if (_guildId != null)
+            if (this.guildId != null)
             {
+                // TODO: idk if this should be here?
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMemberUpdateEventArgs>(this,
                     (t, e) => t.OnGuildMemberUpdate(e.Event));
-                // TODO: idk if this should be here?
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMembersChunkEventArgs>(this,
                     (t, e) => t.OnGuildMemberChunk(e.Event));
             }
         }
 
         public ulong Id
-            => _userId;
+            => id;
 
         public DiscordUser User
             => discord.TryGetCachedUser(Id, out var user) ? user : throw new InvalidOperationException();
@@ -56,9 +53,9 @@ namespace Unicord.Universal.Models.User
         {
             get
             {
-                if (_guildId == null) return null;
+                if (guildId == null) return null;
 
-                if (!discord.TryGetCachedGuild(_guildId.Value, out var guild))
+                if (!discord.TryGetCachedGuild(guildId.Value, out var guild))
                     throw new InvalidOperationException();
 
                 return guild.Members.TryGetValue(Id, out var member) ? member : null;
@@ -85,8 +82,8 @@ namespace Unicord.Universal.Models.User
         public DiscordColor Color
             => Member?.Color ?? default;
 
-        public DiscordPresence Presence
-            => User.Presence;
+        public PresenceViewModel Presence
+            => _presenceVmCache ??= new(User, this);
 
         private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {
@@ -117,8 +114,6 @@ namespace Unicord.Universal.Models.User
             if (User == null || e.UserAfter.Id != User.Id)
                 return;
 
-            //_user = e.UserAfter;
-
             InvokePropertyChanged(nameof(DisplayName));
 
             if (e.UserAfter.AvatarHash != e.UserBefore.AvatarHash)
@@ -127,9 +122,10 @@ namespace Unicord.Universal.Models.User
 
         private void OnPresenceUpdate(PresenceUpdateEventArgs e)
         {
-            if (User == null && e.User.Id != User.Id)
+            if (User == null || e.User.Id != User.Id)
                 return;
 
+            _presenceVmCache?.OnPresenceUpdated();
             InvokePropertyChanged(nameof(Presence));
         }
 

@@ -42,7 +42,7 @@
                                    TextTrimming="CharacterEllipsis" 
                                    TextWrapping="NoWrap"
                                    FontFamily="Segoe UI Variable Display">                    
-                            <Run Text="{x:Bind User.Username}"/><Run FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">#</Run><Run Text="{x:Bind User.Discriminator}" FontSize="28" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                            <Run Text="{x:Bind User.DisplayName}"/>
                             </TextBlock>
                             <TextBlock x:Name="nicknameTextBlock"
                                    Margin="0,0,4,0" 

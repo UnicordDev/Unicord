@@ -40,7 +40,7 @@
                                   Height="300" 
                                   HorizontalAlignment="Stretch" 
                                   VerticalAlignment="Stretch" 
-                                  Channel="{x:Bind ViewModel.Channel, Mode=OneTime}" 
+                                  Channel="{x:Bind ViewModel, Mode=OneWay}" 
                                   EmojiPicked="EmotePicker_EmojiPicked"/>
         </Flyout>
 

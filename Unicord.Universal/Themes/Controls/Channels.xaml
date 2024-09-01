@@ -44,13 +44,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
                     <Grid DataContext="{TemplateBinding Channel}"
-                      ContextFlyout="{StaticResource ChannelContextFlyout}"
-                      VerticalAlignment="Stretch" 
-                      Background="Transparent" 
-                      Padding="0,8">
-                        <Grid Margin="0,0,8,0" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                          ContextFlyout="{StaticResource ChannelContextFlyout}"
+                          VerticalAlignment="Stretch" 
+                          Background="Transparent" 
+                          Padding="0,8">
+                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
                             <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding Topic, Converter={StaticResource BoolConverter}}">
+                                <ToolTip IsEnabled="{Binding HasTopic}">
                                     <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
                                 </ToolTip>
                             </ToolTipService.ToolTip>
@@ -65,7 +65,7 @@
                                  Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
                                  Width="32" 
                                  Height="32"
-                                 Source="{Binding Converter={StaticResource DMIconConverter}}" 
+                                 Source="{Binding IconUrl}" 
                                  Presence="{Binding Recipient.Presence}" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
@@ -74,7 +74,7 @@
                             </StackPanel>
 
                             <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding NullableMentionCount, Mode=OneWay, Converter={StaticResource HideOnNullConverter}}"
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
                                    Grid.Column="2" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"
@@ -98,9 +98,9 @@
                           VerticalAlignment="Stretch" 
                           Background="Transparent" 
                           Padding="0,8">
-                        <Grid Margin="0,0,16,0" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                        <Grid Margin="0,0,16,0" Opacity="{Binding MutedOpacity}">
                             <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding Topic, Converter={StaticResource BoolConverter}}">
+                                <ToolTip IsEnabled="{Binding HasTopic}">
                                     <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
                                 </ToolTip>
                             </ToolTipService.ToolTip>
@@ -117,7 +117,7 @@
                             <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
 
                             <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding Unread, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
                                    Grid.Column="2" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"

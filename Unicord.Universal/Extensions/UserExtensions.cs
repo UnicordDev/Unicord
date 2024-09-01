@@ -61,7 +61,7 @@ namespace Unicord.Universal.Extensions
             else
             {
                 string type;
-                if (user.Discriminator == "0")
+                if (user.Discriminator == null)
                 {
                     type = ((user.Id >> 22) % 6).ToString(CultureInfo.InvariantCulture);
                 }

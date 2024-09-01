@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Relationships
@@ -21,12 +22,18 @@ namespace Unicord.Universal.Models.Relationships
         public ulong Id 
             => rel.Id;
 
+        public DiscordRelationshipType Type
+            => rel.RelationshipType;
+
         public UserViewModel User
             => new UserViewModel(rel.User, null, this);
 
         public int CompareTo(RelationshipViewModel other)
         {
-            throw new NotImplementedException();
+            var name1 = User?.DisplayName;
+            var name2 = other?.User?.DisplayName;
+
+            return name1?.CompareTo(name2 ?? "") ?? 0;
         }
 
         public bool Equals(RelationshipViewModel other)

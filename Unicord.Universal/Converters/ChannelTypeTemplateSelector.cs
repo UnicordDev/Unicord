@@ -16,7 +16,7 @@ namespace Unicord.Universal.Converters
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is ChannelListViewModel channel)
+            if (item is ChannelViewModel channel)
             {
                 switch (channel.ChannelType)
                 {

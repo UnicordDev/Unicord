@@ -7,9 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     
-    <MenuFlyoutItem IsEnabled="False" Text="{Binding Converter={StaticResource DMNameConverter}}">
+    <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
         <MenuFlyoutItem.Icon>
-            <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding Converter={StaticResource DMIconConverter}}"/>
+            <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding IconUrl}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 

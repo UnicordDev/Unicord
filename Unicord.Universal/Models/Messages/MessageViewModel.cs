@@ -249,7 +249,7 @@ namespace Unicord.Universal.Models.Messages
 
             foreach (var model in Reactions.ToList())
             {
-                if (!Message.Reactions.Any(r => r.Emoji == model.Emoji.Emoji))
+                if (!Message.Reactions.Any(r => model.Emoji == r.Emoji))
                     Reactions.Remove(model);
             }
         }, null);

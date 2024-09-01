@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using TenMica;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -200,7 +201,7 @@ namespace Unicord.Universal
 
         internal void ShowUserOverlay(DiscordUser user, bool animate)
         {
-            userInfoOverlay.User = user;
+            userInfoOverlay.User = new UserViewModel(user, null);
             userInfoOverlay.Visibility = Visibility.Visible;
             userInfoPopup.Visibility = Visibility.Visible;
 

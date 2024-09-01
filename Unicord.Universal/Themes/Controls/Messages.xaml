@@ -417,7 +417,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultEmbedTemplate">
-        <controls:EmbedViewer Embed="{Binding}" />
+        <!--<controls:EmbedViewer Embed="{Binding}" />-->
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultAttachmentTemplate">

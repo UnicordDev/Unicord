@@ -8,6 +8,7 @@ using System.Xml;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Humanizer;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Extensions;
@@ -19,7 +20,7 @@ namespace Unicord.Universal.Models.Channels
     public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>, ISnowflake
     {
         private readonly ulong _channelId;
-        private UserViewModel _recipient;
+        private UserViewModel _recipientCache;
         private ReadStateViewModel _readStateCache;
 
         internal ChannelViewModel(ulong channelId, bool isTransient = false, ViewModelBase parent = null)
@@ -38,8 +39,8 @@ namespace Unicord.Universal.Models.Channels
         public ulong Id
             => _channelId;
 
-        public virtual DiscordChannel Channel 
-            => discord.TryGetCachedChannel(Id, out var channel) ? channel :  throw new InvalidOperationException();
+        public virtual DiscordChannel Channel
+            => discord.TryGetCachedChannel(Id, out var channel) ? channel : throw new InvalidOperationException();
 
         public virtual ChannelViewModel Parent => Channel.ParentId != null ?
             new ChannelViewModel(Channel.ParentId.Value, false, this) :
@@ -50,7 +51,25 @@ namespace Unicord.Universal.Models.Channels
             null;
 
         public virtual string Name
-            => Channel.Name;
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
+                    {
+                        return dm.Recipients[0].DisplayName;
+                    }
+
+                    if (dm.Type == ChannelType.Group)
+                    {
+                        return dm.Name ?? dm.Recipients.Select(r => r.DisplayName).Humanize();
+                    }
+                }
+
+                return Channel.Name;
+            }
+        }
         public virtual ChannelType ChannelType
             => Channel.Type;
         public virtual int Position
@@ -64,11 +83,60 @@ namespace Unicord.Universal.Models.Channels
         public virtual bool NotificationMuted
             => (Muted || (Parent?.Muted ?? false) || (Guild?.Muted ?? false));
         public UserViewModel Recipient
-            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipients[0], null, null) : null);
+        {
+            get
+            {
+                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private) 
+                    return null;
+
+                return _recipientCache ??= new UserViewModel(dm.Recipients[0], null, this);
+            }
+        }
+
         public bool Muted
             => Channel.IsMuted();
-        public int? NullableMentionCount 
+        public int? NullableMentionCount
             => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
+
+        public double MutedOpacity
+            => Muted ? 0.5 : 1.0;
+        public bool HasTopic
+            => !string.IsNullOrWhiteSpace(Topic);
+
+        public string IconUrl
+        {
+            get
+            {
+                if (Channel is not DiscordDmChannel dm)
+                    return "";
+
+                if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
+                {
+                    return dm.Recipients[0].GetAvatarUrl(64);
+                }
+
+                if (dm.Type == ChannelType.Group)
+                {
+                    if (dm.IconUrl != null) return dm.IconUrl + "?size=64";
+                    // TODO: default icons?
+                }
+
+                return "";
+            }
+        }
+
+        public bool ShouldShowNotificaitonIndicator
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    return NullableMentionCount != null;
+                }
+
+                return Unread;
+            }
+        }
 
         private void OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {

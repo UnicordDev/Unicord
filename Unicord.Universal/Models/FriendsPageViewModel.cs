@@ -30,7 +30,7 @@ namespace Unicord.Universal.Models
                 {
                     case DiscordRelationshipType.Friend:
                         All.Add(vm);
-                        if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
+                        if (vm.User.Presence != null && vm.User.Presence.Status != UserStatus.Offline)
                             Online.Add(vm);
                         break;
                     case DiscordRelationshipType.Blocked:
@@ -61,7 +61,7 @@ namespace Unicord.Universal.Models
             RemoveRelationship(rel, skipAll);
 
             var viewModel = new RelationshipViewModel(rel, this);
-            switch (rel.RelationshipType)
+            switch (viewModel.Type)
             {
                 case DiscordRelationshipType.Friend:
                     if (!skipAll)
@@ -77,7 +77,7 @@ namespace Unicord.Universal.Models
                         }, null);
                     }
 
-                    if (rel.User.Presence != null && rel.User.Presence.Status != UserStatus.Offline)
+                    if (viewModel.User.Presence != null && viewModel.User.Presence.Status != UserStatus.Offline)
                     {
                         syncContext.Post(a =>
                         {

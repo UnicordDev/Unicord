@@ -6,6 +6,7 @@ using System.Net.Mail;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Embeds;
+using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages.Overlay;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -31,14 +32,14 @@ namespace Unicord.Universal.Controls
         private bool _mediaPlayerPlaying = false;
         private MediaPlayerElement _mediaPlayer;
 
-        public DiscordEmbed Embed
+        public EmbedViewModel Embed
         {
-            get => (DiscordEmbed)GetValue(EmbedProperty);
+            get => (EmbedViewModel)GetValue(EmbedProperty);
             set => SetValue(EmbedProperty, value);
         }
 
         public static readonly DependencyProperty EmbedProperty =
-            DependencyProperty.Register("Embed", typeof(DiscordEmbed), typeof(EmbedViewer), new PropertyMetadata(null));
+            DependencyProperty.Register("Embed", typeof(EmbedViewModel), typeof(EmbedViewer), new PropertyMetadata(null));
 
         public EmbedViewer()
         {
@@ -47,6 +48,8 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            return;
+
             if (Embed.Type == "video")
                 Logger.Log(Embed.Video.Url);
 

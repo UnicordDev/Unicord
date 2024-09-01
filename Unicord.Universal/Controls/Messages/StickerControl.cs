@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Lottie;
 using Microsoft.UI.Xaml.Controls;
+using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -20,14 +21,14 @@ namespace Unicord.Universal.Controls.Messages
     {
         private bool _templateApplied = false;
 
-        public DiscordMessageSticker Sticker
+        public StickerViewModel Sticker
         {
-            get => (DiscordMessageSticker)GetValue(StickerProperty);
+            get => (StickerViewModel)GetValue(StickerProperty);
             set => SetValue(StickerProperty, value);
         }
 
         public static readonly DependencyProperty StickerProperty =
-            DependencyProperty.Register("Sticker", typeof(DiscordMessageSticker), typeof(StickerControl), new PropertyMetadata(null, OnStickerChanged));
+            DependencyProperty.Register("Sticker", typeof(StickerViewModel), typeof(StickerControl), new PropertyMetadata(null, OnStickerChanged));
 
         public StickerControl()
         {
@@ -42,19 +43,19 @@ namespace Unicord.Universal.Controls.Messages
 
         private static void OnStickerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is DiscordMessageSticker s && d is StickerControl c)
+            if (e.NewValue is StickerViewModel s && d is StickerControl c)
             {
                 c.UpdateSticker(s);
             }
         }
 
-        private void UpdateSticker(DiscordMessageSticker s)
+        private void UpdateSticker(StickerViewModel s)
         {
             if (!_templateApplied)
                 _templateApplied = this.ApplyTemplate();
 
             var root = (Border)this.GetTemplateChild("Root");
-            switch (s.FormatType)
+            switch (s.Format)
             {
                 case StickerFormat.PNG:
                 case StickerFormat.APNG:

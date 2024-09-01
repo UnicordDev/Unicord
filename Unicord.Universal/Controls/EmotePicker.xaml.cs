@@ -7,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Unicord.Universal.Misc;
+using Unicord.Universal.Models.Channels;
 using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -22,14 +23,14 @@ namespace Unicord.Universal.Controls
         public CollectionViewSource Source { get; } = new CollectionViewSource() { IsSourceGrouped = true };
         public event EventHandler<DiscordEmoji> EmojiPicked;
 
-        public DiscordChannel Channel
+        public ChannelViewModel Channel
         {
-            get => (DiscordChannel)GetValue(ChannelProperty);
+            get => (ChannelViewModel)GetValue(ChannelProperty);
             set => SetValue(ChannelProperty, value);
         }
 
         public static readonly DependencyProperty ChannelProperty =
-            DependencyProperty.Register("Channel", typeof(DiscordChannel), typeof(EmotePicker), new PropertyMetadata(null));
+            DependencyProperty.Register("Channel", typeof(ChannelViewModel), typeof(EmotePicker), new PropertyMetadata(null));
 
         public EmotePicker()
         {
@@ -40,9 +41,9 @@ namespace Unicord.Universal.Controls
         {
             try
             {
-                if (Channel.Id != _prevChannelId)
+                if (Channel?.Id != _prevChannelId)
                 {
-                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel);
+                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel.Channel);
                     _prevChannelId = Channel.Id;
                 }
             }

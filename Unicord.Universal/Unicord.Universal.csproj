@@ -178,9 +178,6 @@
     <Compile Include="Controls\Embeds\EmbedVideoControl.xaml.cs">
       <DependentUpon>EmbedVideoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\EmbedViewer.xaml.cs">
-      <DependentUpon>EmbedViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
     <Compile Include="Controls\EmotePicker.xaml.cs">
       <DependentUpon>EmotePicker.xaml</DependentUpon>
@@ -330,25 +327,18 @@
     <Compile Include="Converters\ChannelTypeTemplateSelector.cs" />
     <Compile Include="Converters\ColourBrushConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
-    <Compile Include="Converters\DiscordUriConverter.cs" />
-    <Compile Include="Converters\DMIconConverter.cs" />
-    <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\GuildListTemplateSelector.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
-    <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\Messages\AttachmentTemplateSelector.cs" />
     <Compile Include="Converters\Messages\AttachmentTypeConverter.cs" />
     <Compile Include="Converters\Messages\ComponentTemplateSelector.cs" />
     <Compile Include="Converters\MessageTemplateSelector.cs" />
-    <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceConverters.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
-    <Compile Include="Converters\VoicePingConverter.cs" />
-    <Compile Include="Converters\VoicePingGlyphConverter.cs" />
     <Compile Include="Dialogs\BanDialog.xaml.cs">
       <DependentUpon>BanDialog.xaml</DependentUpon>
     </Compile>
@@ -431,6 +421,7 @@
     <Compile Include="Models\Settings\ThemesSettingsModel.cs" />
     <Compile Include="Models\Settings\RootSettingsModel.cs" />
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
+    <Compile Include="Models\User\PresenceViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Models\Voice\Transport\VoiceDispatch.cs" />
@@ -514,6 +505,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Themes\Controls\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Themes\Controls\Presences.xaml.cs">
+      <DependentUpon>Presences.xaml</DependentUpon>
     </Compile>
     <Compile Include="Themes\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
@@ -658,7 +652,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="ObservableCollections">
-      <Version>1.1.3</Version>
+      <Version>2.2.2</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
@@ -689,10 +683,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\EmbedViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

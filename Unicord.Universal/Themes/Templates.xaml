@@ -17,11 +17,11 @@
     xmlns:media1="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:channels="using:Unicord.Universal.Controls.Channels"
     xmlns:channelVms="using:Unicord.Universal.Models.Channels"
-    xmlns:guildVMs="using:Unicord.Universal.Models.Guild"
+    xmlns:guildVMs="using:Unicord.Universal.Models.Guild" xmlns:user="using:Unicord.Universal.Models.User"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Controls/Presences.xaml"/>
+        <Presences xmlns="using:Unicord.Universal.Resources.Controls"/>
         <Messages xmlns="using:Unicord.Universal.Resources.Controls"/>
         <ResourceDictionary Source="Controls/Emoji.xaml"/>
         <ResourceDictionary Source="Controls/Users.xaml"/>
@@ -227,7 +227,7 @@
                 VerticalAlignment="Stretch" 
                 Background="Transparent" 
                 Margin="10,8,8,2"
-                Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                Opacity="{Binding MutedOpacity}">
             <TextBlock FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontWeight="SemiBold" Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" TextWrapping="NoWrap" />
         </Border>
     </DataTemplate>
@@ -241,7 +241,7 @@
             <Grid Name="grid" 
                   Margin="16,0"
                   IsHitTestVisible="True"
-                  Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                  Opacity="{Binding MutedOpacity}">
                 <ToolTipService.ToolTip>
                     <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
                 </ToolTipService.ToolTip>
@@ -282,7 +282,7 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="TypingUserTemplate" x:DataType="entities:DiscordUser">
+    <DataTemplate x:Key="TypingUserTemplate" x:DataType="user:UserViewModel">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -292,7 +292,7 @@
                 <Ellipse.Fill>
                     <ImageBrush>
                         <ImageBrush.ImageSource>
-                            <BitmapImage UriSource="{Binding NonAnimatedAvatarUrl}" DecodePixelWidth="16" DecodePixelHeight="16"/>
+                            <BitmapImage UriSource="{x:Bind AvatarUrl}" DecodePixelWidth="16" DecodePixelHeight="16"/>
                         </ImageBrush.ImageSource>
                     </ImageBrush>
                 </Ellipse.Fill>
@@ -451,7 +451,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
-        <Grid Margin="0,0,4,0" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+        <Grid Margin="0,0,4,0" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -462,26 +462,14 @@
                                  Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
                                  Width="32" 
                                  Height="32"
-                                 Source="{Binding Converter={StaticResource DMIconConverter}}" 
-                                 Presence="{Binding Recipient.Presence}" />
+                                 Source="{x:Bind IconUrl}" 
+                                 Presence="{x:Bind Recipient.Presence}" />
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
-                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
-                <presence:InlinePresenceControl Presence="{Binding Recipient.Presence, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind Name}"/>
+                <presence:InlinePresenceControl Presence="{x:Bind Recipient.Presence, Mode=OneWay}" />
             </StackPanel>
-
-            <!--<Grid x:Name="unreadIndicator" 
-                  Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"                   
-                  MinWidth="3" 
-                  MinHeight="10"
-                  Margin="-8,0" 
-                  CornerRadius="2" 
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Background="{ThemeResource AccentFillColorDefaultBrush}">
-                <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" FontSize="12" VerticalAlignment="Center"/>
-            </Grid>-->
-
+            
             <lib:InfoBadge x:Name="unreadIndicator" 
                            x:Load="{x:Bind Unread, Mode=OneWay}" 
                            Grid.Column="2" 
@@ -495,21 +483,21 @@
     </DataTemplate>
 
     <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
-        <Grid Padding="0,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+        <Grid Padding="0,4" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="16" Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <lib:PersonPicture Width="32" Height="32" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
+            <lib:PersonPicture Width="32" Height="32" DisplayName="{x:Bind Name}">
                 <lib:PersonPicture.ProfilePicture>
-                    <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="32" DecodePixelType="Logical" />
+                    <BitmapImage UriSource="{x:Bind IconUrl}" DecodePixelWidth="32" DecodePixelType="Logical" />
                 </lib:PersonPicture.ProfilePicture>
             </lib:PersonPicture>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
-                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+                <TextBlock Text="{x:Bind Name}"/>
             </StackPanel>
 
 

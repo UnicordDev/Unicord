@@ -482,8 +482,7 @@
             <emoji:EmojiControl Emoji="{Binding}"
                                 Size="24"/>
 
-            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding DiscordName}" VerticalAlignment="Center"/>
-
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
         </Grid>
     </DataTemplate>
 
@@ -629,8 +628,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Name}" ProfilePicture="{Binding IconUrl}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Name}"/>
         </Grid>
     </DataTemplate>
 

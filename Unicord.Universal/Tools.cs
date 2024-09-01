@@ -327,7 +327,7 @@ namespace Unicord.Universal
 
         public static List<DiscordEmoji> GetEmoji(DiscordChannel channel)
         {
-            var guildEmoji = GetAllowedGuildEmoji(channel).ToList();
+            var guildEmoji = GetAllowedGuildEmoji(channel).Cast<DiscordEmoji>().ToList();
             guildEmoji.AddRange(DiscordEmoji.UnicodeEmojis.Select(e => DiscordEmoji.FromName(App.Discord, e.Key)));
 
             return guildEmoji;
@@ -342,38 +342,37 @@ namespace Unicord.Universal
             var emojiEnum = Emoji.All
                     .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
                     .GroupBy(e => e.Group)
-                    .Select(g => new EmojiGroup(g.Key, g))
-                    .ToList();
+                    .Select(g => new EmojiGroup(g.Key, g));
 
-            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
-                .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
-                // todo: fix
-                .OrderBy(g => App.Discord.UserSettings.GuildPositions?.IndexOf(g.Key.Id) ?? 0)
+            var list = guildEmoji.Where(e => n ? cult.IndexOf(e.GetDiscordName(), text, CompareOptions.IgnoreCase) >= 0 : true)
+                .GroupBy(e => e.Guild)
                 .Select(g => new EmojiGroup(g.Key, g))
-                .ToList() : new List<EmojiGroup>();
+                .ToList();
 
             list.AddRange(emojiEnum);
 
             return list;
         }
 
-        private static IEnumerable<DiscordEmoji> GetAllowedGuildEmoji(DiscordChannel channel)
+        private static IEnumerable<DiscordGuildEmoji> GetAllowedGuildEmoji(DiscordChannel channel)
         {
-            IEnumerable<DiscordEmoji> enumerable = null;
+            IEnumerable<DiscordGuildEmoji> enumerable = null;
             var hasNitro = App.Discord.CurrentUser.HasNitro();
             if ((channel.IsPrivate || channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)) && hasNitro)
             {
                 enumerable = App.Discord.Guilds.Values
                     .SelectMany(g => g.Emojis.Values)
                     .OrderBy(g => g.Name)
-                    .OrderByDescending(g => g.IsAvailable);
+                    .ThenByDescending(g => g.IsAvailable)
+                    .Cast<DiscordGuildEmoji>();
             }
             else
             {
-                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name).Where(e => e.IsAnimated ? hasNitro : true);
+                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name).Where(e => e.IsAnimated ? hasNitro : true)
+                    .Cast<DiscordGuildEmoji>();
             }
 
-            return enumerable ?? Enumerable.Empty<DiscordEmoji>();
+            return enumerable ?? Enumerable.Empty<DiscordGuildEmoji>();
         }
 
         public static bool HasNitro(this DiscordUser user) => user.PremiumType != 0;
