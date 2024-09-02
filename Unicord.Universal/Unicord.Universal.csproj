@@ -420,6 +420,11 @@
     <Compile Include="Models\Messages\Components\ButtonComponentViewModel.cs" />
     <Compile Include="Models\Messages\Components\ComponentViewModelBase.cs" />
     <Compile Include="Models\Messages\Components\UnknownComponentViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedAuthorViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedFieldViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedFooterViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedImageViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedVideoViewModel.cs" />
     <Compile Include="Models\Messages\EmbedViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
