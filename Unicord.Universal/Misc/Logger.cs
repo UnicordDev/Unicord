@@ -14,7 +14,11 @@ namespace Unicord.Universal
 {
     internal static class Logger
     {
-        public static ILoggerFactory LoggerFactory = new LoggerFactory(new[] { new DebugLoggerProvider() });
+        public static ILoggerFactory LoggerFactory = new LoggerFactory(new[] {
+#if DEBUG
+            new DebugLoggerProvider()
+#endif
+        }, new LoggerFilterOptions() { MinLevel = LogLevel.Debug });
 
         private static ILogger InternalLogger = LoggerFactory.CreateLogger("Unicord");
 

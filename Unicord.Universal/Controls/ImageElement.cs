@@ -84,7 +84,8 @@ namespace Unicord.Universal.Controls
 
             var thumbUrl = new UriBuilder(element.ImageUri);
             var query = HttpUtility.ParseQueryString(thumbUrl.Query);
-            query["format"] = Tools.ShouldUseWebP ? "webp" : "jpeg";
+            if (Tools.ShouldUseWebP)
+                query["format"] = "webp";
             query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
             query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);
             thumbUrl.Query = query.ToString();

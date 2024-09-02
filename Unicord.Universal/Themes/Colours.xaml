@@ -58,9 +58,9 @@
     <SolidColorBrush x:Key="BackgroundTertiaryBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
 
-    <Color x:Key="SuccessDark1Colour">#FF23923C</Color>
+    <Color x:Key="SuccessDark1Colour">#FF15bc3c</Color>
     <Color x:Key="SuccessColour">#FF28A745</Color>
-    <Color x:Key="SuccessLight1Colour">#FF07E039</Color>
+    <Color x:Key="SuccessLight1Colour">#FF53d571</Color>
     <Color x:Key="SuccessForegroundColor">#FFFFFFFF</Color>
     
     <Color x:Key="DangerDark1Colour">#FFD22435</Color>

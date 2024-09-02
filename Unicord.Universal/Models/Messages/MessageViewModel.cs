@@ -280,6 +280,15 @@ namespace Unicord.Universal.Models.Messages
 
         private ComponentViewModelBase ComponentViewModelFactory(DiscordComponent component)
         {
+            if (component is DiscordActionRowComponent actionRow)
+                return new ActionRowComponentViewModel(actionRow, ComponentViewModelFactory, this);
+
+            if (component is DiscordButtonComponent button)
+                return new ButtonComponentViewModel(button, this);
+
+            if (component is DiscordLinkButtonComponent link)
+                return new ButtonComponentViewModel(link, this);
+
             return new UnknownComponentViewModel(component, this);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Messages.Components;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -18,35 +19,29 @@ namespace Unicord.Universal.Converters
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is DiscordComponent component)
+            switch (item)
             {
-                switch (component.Type)
-                {
-                    case ComponentType.ActionRow:
-                        return ActionRowTemplate;
-                    case ComponentType.Button:
-                        switch (((DiscordButtonComponent)component).Style)
-                        {
-                            case ButtonStyle.Primary:
-                                return PrimaryButtonTemplate;
-                            case ButtonStyle.Secondary:
-                                return SecondaryButtonTemplate;
-                            case ButtonStyle.Success:
-                                return SuccessButtonTemplate;
-                            case ButtonStyle.Danger:
-                                return DangerButtonTemplate;
-                            case ButtonStyle.Link:
-                                return LinkButtonTemplate;
-                            default:
-                                break;
-                        }
-                        break;
-                    default:
-                        return UnknownTemplate;
-                }
+                case ActionRowComponentViewModel _: 
+                    return ActionRowTemplate;
+                case ButtonComponentViewModel button:
+                    switch (button.Style)
+                    {
+                        case ButtonStyle.Primary:
+                            return PrimaryButtonTemplate;
+                        case ButtonStyle.Secondary:
+                            return SecondaryButtonTemplate;
+                        case ButtonStyle.Success:
+                            return SuccessButtonTemplate;
+                        case ButtonStyle.Danger:
+                            return DangerButtonTemplate;
+                        case ButtonStyle.Link:
+                            return LinkButtonTemplate;
+                        default:
+                            break;
+                    }
+                    break;
             }
-
-            throw new InvalidOperationException();
+            return UnknownTemplate;
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)

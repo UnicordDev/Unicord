@@ -13,6 +13,36 @@ namespace Unicord.Universal.Models.Emoji
     public readonly struct EmojiViewModel
     {
         private readonly DiscordEmoji _emoji;
+
+        public EmojiViewModel(DiscordComponentEmoji emoji) : this()
+        {
+            if (emoji != null)
+            {
+                if (emoji.Id != 0)
+                {
+                    if (DiscordEmoji.TryFromGuildEmote(App.Discord, emoji.Id, out var discordEmoji))
+                    {
+                        _emoji = discordEmoji;
+                        Name = discordEmoji.Name;
+                        Url = discordEmoji.Url;
+                        IsValid = true;
+                    }
+                    else
+                    {
+                        Name = emoji.Name;
+                        Url = $"https://cdn.discordapp.com/emojis/{emoji.Id.ToString(CultureInfo.InvariantCulture)}.png";
+                    }
+                }
+                else
+                {
+                    Name = emoji.Name;
+                    Unicode = emoji.Name;
+                }
+
+                IsValid = true;
+            }
+        }
+
         public EmojiViewModel(DiscordEmoji emoji)
         {
             //Emoji = emoji;

@@ -416,6 +416,8 @@
     <Compile Include="Models\ISnowflake.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\Messages\AttachmentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ActionRowComponentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ButtonComponentViewModel.cs" />
     <Compile Include="Models\Messages\Components\ComponentViewModelBase.cs" />
     <Compile Include="Models\Messages\Components\UnknownComponentViewModel.cs" />
     <Compile Include="Models\Messages\EmbedViewModel.cs" />
