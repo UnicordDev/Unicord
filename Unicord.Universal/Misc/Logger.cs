@@ -14,7 +14,7 @@ namespace Unicord.Universal
 {
     internal static class Logger
     {
-        public static ILoggerFactory LoggerFactory = new LoggerFactory(new[] {
+        public static ILoggerFactory LoggerFactory = new LoggerFactory(new ILoggerProvider[] {
 #if DEBUG
             new DebugLoggerProvider()
 #endif
