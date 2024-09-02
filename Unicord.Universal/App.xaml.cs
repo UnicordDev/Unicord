@@ -60,7 +60,7 @@ namespace Unicord.Universal
             InitializeComponent();
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
-            var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
+            var theme = (ElementTheme)LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
             switch (theme)
             {
                 case ElementTheme.Light:

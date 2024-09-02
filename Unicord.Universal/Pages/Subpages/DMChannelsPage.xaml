@@ -18,7 +18,7 @@
     <Page.Resources>
         <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector"
                                                 DMChannelTemplate="{StaticResource DMChannelListTemplate}"
-                                                GroupChannelTemplate="{StaticResource DMChannelListTemplate}" />
+                                                GroupChannelTemplate="{StaticResource GroupChannelListTemplate}" />
     </Page.Resources>
 
     <Page.DataContext>

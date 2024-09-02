@@ -39,7 +39,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DirectMessageChannelListStyle" TargetType="local:ChannelListControl">
+    <Style x:Key="GroupChannelListStyle" TargetType="local:ChannelListControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
@@ -55,6 +55,48 @@
                                 </ToolTip>
                             </ToolTipService.ToolTip>
 
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" MinWidth="16"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <lib:PersonPicture Margin="2,0,0,0" 
+                                               Width="32" 
+                                               Height="32" 
+                                               DisplayName="{Binding Name}"
+                                               ProfilePicture="{Binding IconUrl}"/>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
+                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+
+                            <lib:InfoBadge x:Name="unreadIndicator" 
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
+                                   Grid.Column="2" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   MinWidth="8"
+                                   MinHeight="8"
+                                   Margin="0"
+                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DirectMessageChannelListStyle" TargetType="local:ChannelListControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ChannelListControl">
+                    <Grid DataContext="{TemplateBinding Channel}"
+                          ContextFlyout="{StaticResource ChannelContextFlyout}"
+                          VerticalAlignment="Stretch" 
+                          Background="Transparent" 
+                          Padding="0,8">
+                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>

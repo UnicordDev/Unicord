@@ -223,6 +223,11 @@
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource DirectMessageChannelListStyle}"/>
     </DataTemplate>
 
+    <DataTemplate x:Key="GroupChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource GroupChannelListStyle}"/>
+    </DataTemplate>
+
+
     <DataTemplate x:Key="ChannelListCategoryTemplate">
         <Border ContextFlyout="{StaticResource ChannelContextFlyout}"
                 VerticalAlignment="Stretch" 
