@@ -25,7 +25,7 @@
                             VerticalAlignment="Top" 
                             Margin="0,2,4,0" />
         
-        <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{x:Bind TextWrapping}">
+        <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{x:Bind TextWrapping}" MaxLines="2">
             <Run Text="{x:Bind Presence.CondensedTitle, Mode=OneWay}" /> <Run Text="{x:Bind Presence.CondensedText, Mode=OneWay}" FontWeight="SemiBold" />
         </TextBlock>
     </Grid>

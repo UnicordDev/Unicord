@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.QueryStringDotNET;
+using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models.Messages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,6 +35,39 @@ namespace Unicord.Universal.Controls.Messages
         public VideoEmbedControl()
         {
             this.InitializeComponent();
+            this.Unloaded += OnUnloaded;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            var mediaPlayerElement = this.FindChild<MediaPlayerElement>();
+            if (mediaPlayerElement != null)
+            {
+                var mediaPlayer = mediaPlayerElement.MediaPlayer;
+                var source = mediaPlayerElement.Source;
+
+                if (mediaPlayer.PlaybackSession.CanPause)
+                {
+                    mediaPlayer.Pause();
+                }
+
+                mediaPlayerElement.Source = null;
+                mediaPlayerElement.SetMediaPlayer(null);
+
+                if (source is MediaSource mediaSource)
+                {
+                    mediaSource.Dispose();
+                }
+                mediaPlayer.Dispose();
+            }
+
+            var webView = this.FindChild<WebView2>();
+            if (webView != null && webView.CoreWebView2 != null) 
+            {
+                webView.CoreWebView2.Stop();
+                webView.CoreWebView2.IsMuted = true;
+                _ = webView.CoreWebView2.TrySuspendAsync();
+            }
         }
 
         // TODO: handle situations where we should be using MediaPlayerElement (including giphy)
@@ -49,21 +85,21 @@ namespace Unicord.Universal.Controls.Messages
 
                 var mediaPlayerElement = new MediaPlayerElement()
                 {
-                    AreTransportControlsEnabled = false,
+                    TransportControls = new CustomMediaTransportControls(),
+                    AreTransportControlsEnabled = ViewModel.Type != "gifv",
                     Source = MediaSource.CreateFromUri(uri),
                     AutoPlay = true,
-                    CornerRadius = new CornerRadius(4)
                 };
 
                 mediaPlayerElement.MediaPlayer.IsMuted = true;
-                content.Children.Insert(0, mediaPlayerElement);
+                content.Children.Add(mediaPlayerElement);
             }
             else
             {
                 if (provider == "youtube")
                 {
                     var embedBuilder = new UriBuilder(uri);
-                    var query = QueryString.Parse(System.Net.WebUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
+                    var query = QueryString.Parse(WebUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
                     query.Add("autoplay", "1");
                     embedBuilder.Query = query.ToString();
 

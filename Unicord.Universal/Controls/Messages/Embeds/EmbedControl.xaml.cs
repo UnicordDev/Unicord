@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Controls.Messages
 {
+
     public sealed partial class EmbedControl : UserControl
     {
         public EmbedViewModel ViewModel

@@ -33,6 +33,7 @@
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <PackageCertificateThumbprint>5304CCE7E0FB38D53B4F3741DDD135917556ACB4</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+    <IlcParameters>/ExtraNutcArguments:"/d2threads8"</IlcParameters>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -172,12 +173,17 @@
     <Compile Include="Controls\Messages\Embeds\EmbedControl.xaml.cs">
       <DependentUpon>EmbedControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Messages\Embeds\EmbedFieldsView.cs" />
     <Compile Include="Controls\Messages\Embeds\ImageEmbedControl.xaml.cs">
       <DependentUpon>ImageEmbedControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Messages\Embeds\VideoEmbedControl.xaml.cs">
       <DependentUpon>VideoEmbedControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UniformGrid\TakenSpotsReferenceHolder.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
     <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
@@ -186,12 +192,6 @@
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
-    <Compile Include="Controls\Embeds\EmbedFieldControl.xaml.cs">
-      <DependentUpon>EmbedFieldControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Embeds\EmbedVideoControl.xaml.cs">
-      <DependentUpon>EmbedVideoControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
     <Compile Include="Controls\EmotePicker.xaml.cs">
       <DependentUpon>EmotePicker.xaml</DependentUpon>
@@ -692,14 +692,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\EmotePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

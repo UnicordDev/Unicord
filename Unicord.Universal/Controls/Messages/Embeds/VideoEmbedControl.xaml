@@ -14,22 +14,27 @@
     <UserControl.Resources>
         <ui:AttachedDropShadow x:Key="PlayButtonShadow" CastTo="{x:Bind posterImage}" BlurRadius="16" Opacity="1" Color="Black"/>
     </UserControl.Resources>
-
-    <Grid x:Name="content">
-        <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
-            <controls:ImageEx x:Name="posterImage" 
+    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            BorderThickness="1"
+            CornerRadius="2">
+        <Grid x:Name="content">
+            <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
+                <controls:ImageEx x:Name="posterImage" 
                               IsCacheEnabled="True" 
                               Source="{x:Bind ViewModel.Thumbnail.Source}" 
                               Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
                               CornerRadius="4" 
-                              VerticalAlignment="Center"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Center"
                               Stretch="UniformToFill"/>
-            <TextBlock ui:Effects.Shadow="{StaticResource PlayButtonShadow}" 
+                <TextBlock ui:Effects.Shadow="{StaticResource PlayButtonShadow}" 
                        FontFamily="{StaticResource SymbolThemeFontFamily}" 
                        Foreground="White" 
                        FontSize="64"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">&#xE768;</TextBlock>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </UserControl>

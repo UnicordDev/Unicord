@@ -14,10 +14,10 @@
     <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
             BorderThickness="1"
-            CornerRadius="8">
+            CornerRadius="4">
         <Grid>
             <Border Background="{x:Bind ViewModel.Color}" 
-                    CornerRadius="7.6666666666">
+                    CornerRadius="3">
                 <Border.Clip>
                     <RectangleGeometry Rect="0,0,4,9999" />
                 </Border.Clip>
@@ -90,16 +90,15 @@
                                                Text="{x:Bind ViewModel.Description}"/>                     
                     </StackPanel>
 
-                    <ItemsControl x:Name="FieldsList"
-                                      x:Load="{x:Bind ViewModel.HasFields}"
-                        Grid.Row="1"
-                                      ItemsSource="{x:Bind ViewModel.Fields}"
-                                      HorizontalAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"
-                                      >
+                    <local:EmbedFieldsView x:Name="FieldsList"
+                                           x:Load="{x:Bind ViewModel.HasFields}"
+                                           Grid.Row="1"
+                                           ItemsSource="{x:Bind ViewModel.Fields}"
+                                           HorizontalAlignment="Stretch"
+                                           HorizontalContentAlignment="Stretch">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <VariableSizedWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="3" ItemWidth="160"/>
+                                <wam:UniformGrid Columns="3" HorizontalAlignment="Stretch" RowSpacing="2" ColumnSpacing="4" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -110,7 +109,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    </local:EmbedFieldsView>
 
                     <local:ImageEmbedControl 
                             x:Name="PART_LargeThumbnail"

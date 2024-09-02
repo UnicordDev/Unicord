@@ -10,12 +10,17 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <controls:ScaledContentControl TargetWidth="{x:Bind ViewModel.NaturalWidth}" TargetHeight="{x:Bind ViewModel.NaturalHeight}">
-        <controls:ImageElement x:Name="Image"
-                               Tapped="Image_Tapped"
-                               CornerRadius="4" 
-                               ImageWidth="{x:Bind ViewModel.NaturalWidth}" 
-                               ImageHeight="{x:Bind ViewModel.NaturalHeight}" 
-                               ImageUri="{x:Bind ViewModel.Source}" />
-    </controls:ScaledContentControl>
+    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            BorderThickness="1"
+            CornerRadius="2">
+        <controls:ScaledContentControl TargetWidth="{x:Bind ViewModel.NaturalWidth}" TargetHeight="{x:Bind ViewModel.NaturalHeight}">
+            <controls:ImageElement x:Name="Image"
+                                   Tapped="Image_Tapped"
+                                   CornerRadius="2" 
+                                   ImageWidth="{x:Bind ViewModel.NaturalWidth}" 
+                                   ImageHeight="{x:Bind ViewModel.NaturalHeight}" 
+                                   ImageUri="{x:Bind ViewModel.Source}" />
+        </controls:ScaledContentControl>
+    </Border>
 </UserControl>

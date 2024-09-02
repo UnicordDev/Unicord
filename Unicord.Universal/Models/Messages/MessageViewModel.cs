@@ -51,10 +51,8 @@ namespace Unicord.Universal.Models.Messages
                 DeleteCommand = new DeleteMessageCommand(this);
                 ReactCommand = new ReactCommand(this);
 
-                var embedGroups = Message.Embeds
-                    .GroupBy(g => g.Url);
-
-                Embeds = new ObservableCollection<EmbedViewModel>(embedGroups.Select(group => new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this)));
+                var embedModels = GetGroupedEmbeds(Message);
+                Embeds = new ObservableCollection<EmbedViewModel>(embedModels);
                 Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a, this)));
                 Stickers = new ObservableCollection<StickerViewModel>(Message.Stickers.Select(s => new StickerViewModel(s, this)));
                 Components = new ObservableCollection<ComponentViewModelBase>(Message.Components.Select(ComponentViewModelFactory));
@@ -69,6 +67,23 @@ namespace Unicord.Universal.Models.Messages
                 WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this,
                     (t, e) => t.OnReactionsCleared(e.Event));
             }
+        }
+
+        private List<EmbedViewModel> GetGroupedEmbeds(DiscordMessage message)
+        {
+            var embedGroups = message.Embeds
+                .GroupBy(g => g.Url);
+
+            var embedModels = new List<EmbedViewModel>();
+            foreach (var group in embedGroups)
+            {
+                if (group.Key == null)
+                    embedModels.AddRange(group.Select(s => new EmbedViewModel(s, [], this)));
+                else
+                    embedModels.Add(new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this));
+            }
+
+            return embedModels;
         }
 
         public DiscordMessage Message { get; }
@@ -238,18 +253,25 @@ namespace Unicord.Universal.Models.Messages
             if (e.MessageBefore?.IsEdited != e.Message.IsEdited)
                 InvokePropertyChanged(nameof(IsEdited));
 
+            if (e.Message.Attachments.Count != Attachments.Count)
+                syncContext.Post(o =>
+                {
+                    Attachments.Clear();
+                    foreach (var attachment in e.Message.Attachments)
+                    {
+                        Attachments.Add(new AttachmentViewModel(attachment, this));
+                    }
+                }, null);
+
             var embedGroups = Message.Embeds
                     .GroupBy(g => g.Url);
 
             syncContext.Post((o) =>
             {
-                foreach (var group in embedGroups)
+                Embeds.Clear();
+                foreach (var model in GetGroupedEmbeds(e.Message))
                 {
-                    var viewModel = Embeds.FirstOrDefault(v => v.Url == group.Key);
-                    if (viewModel != null)
-                        viewModel.Update(group.First(), group.Skip(1));
-                    else
-                        Embeds.Add(new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this));
+                    Embeds.Add(model);
                 }
             }, null);
 
