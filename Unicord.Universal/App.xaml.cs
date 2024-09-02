@@ -5,11 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
@@ -26,15 +25,11 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.Graphics.Imaging;
 using Windows.Security.Credentials;
 using Windows.Storage;
-using Windows.System;
 using Windows.System.Profile;
-using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -65,16 +60,16 @@ namespace Unicord.Universal
             InitializeComponent();
 
             var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
-            //var theme = LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
-            //switch (theme)
-            //{
-            //    case ElementTheme.Light:
-            //        RequestedTheme = ApplicationTheme.Light;
-            //        break;
-            //    case ElementTheme.Dark:
-            //        RequestedTheme = ApplicationTheme.Dark;
-            //        break;
-            //}
+            var theme = (ElementTheme)LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
+            switch (theme)
+            {
+                case ElementTheme.Light:
+                    RequestedTheme = ApplicationTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    RequestedTheme = ApplicationTheme.Dark;
+                    break;
+            }
 
             Suspending += OnSuspending;
             UnhandledException += OnUnhandledException;
@@ -132,9 +127,9 @@ namespace Unicord.Universal
 
                     if (!userInput.TryGetValue("tbReply", out var t) || t is not string text)
                         break;
-
+                    // channelId, text, false, null, Enumerable.Empty<IMention>(), null
                     var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
-                    await client.CreateMessageAsync(channelId, text, false, null, Enumerable.Empty<IMention>(), null);
+                    await client.CreateMessageAsync(channelId, new DiscordMessageBuilder().WithContent(text));
                     break;
             }
 
@@ -369,7 +364,7 @@ namespace Unicord.Universal
             deferral.Complete();
         }
 
-        internal static async Task LoginAsync(string token, AsyncEventHandler<ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
+        internal static async Task LoginAsync(string token, AsyncEventHandler<DiscordClient, ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
         {
             Exception taskEx = null;
 
@@ -384,25 +379,25 @@ namespace Unicord.Universal
                     {
                         try
                         {
-                            async Task ReadyHandler(ReadyEventArgs e)
+                            async Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
                             {
                                 LocalSettings.Save("Token", token);
 
-                                e.Client.Ready -= ReadyHandler;
-                                e.Client.SocketErrored -= SocketErrored;
-                                e.Client.ClientErrored -= ClientErrored;
+                                sender.Ready -= ReadyHandler;
+                                sender.SocketErrored -= SocketErrored;
+                                sender.ClientErrored -= ClientErrored;
                                 _readySource.TrySetResult(e);
                                 if (onReady != null)
                                 {
-                                    await onReady(e);
+                                    await onReady(sender, e);
                                 }
                             }
 
-                            Task SocketErrored(SocketErrorEventArgs e)
+                            Task SocketErrored(DiscordClient sender, SocketErrorEventArgs e)
                             {
-                                e.Client.Ready -= ReadyHandler;
-                                e.Client.SocketErrored -= SocketErrored;
-                                e.Client.ClientErrored -= ClientErrored;
+                                sender.Ready -= ReadyHandler;
+                                sender.SocketErrored -= SocketErrored;
+                                sender.ClientErrored -= ClientErrored;
 
                                 Logger.LogError(e.Exception);
 
@@ -410,11 +405,11 @@ namespace Unicord.Universal
                                 return Task.CompletedTask;
                             }
 
-                            Task ClientErrored(ClientErrorEventArgs e)
+                            Task ClientErrored(DiscordClient sender, ClientErrorEventArgs e)
                             {
-                                e.Client.Ready -= ReadyHandler;
-                                e.Client.SocketErrored -= SocketErrored;
-                                e.Client.ClientErrored -= ClientErrored;
+                                sender.Ready -= ReadyHandler;
+                                sender.SocketErrored -= SocketErrored;
+                                sender.ClientErrored -= ClientErrored;
 
                                 Logger.LogError(e.Exception);
 
@@ -426,10 +421,9 @@ namespace Unicord.Universal
                             {
                                 Token = token,
                                 TokenType = TokenType.User,
-                                LogLevel = DSharpPlus.LogLevel.Debug,
+                                LoggerFactory = Logger.LoggerFactory
                             });
 
-                            Discord.DebugLogger.LogMessageReceived += (o, ee) => Logger.Log(ee.Message, ee.Application);
                             Discord.Ready += ReadyHandler;
                             Discord.SocketErrored += SocketErrored;
                             Discord.ClientErrored += ClientErrored;
@@ -456,7 +450,7 @@ namespace Unicord.Universal
                     try
                     {
                         var res = await _readySource.Task;
-                        await onReady(res);
+                        await onReady(App.Discord, res);
                     }
                     catch
                     {

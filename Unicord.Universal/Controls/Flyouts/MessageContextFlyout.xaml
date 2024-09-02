@@ -19,8 +19,7 @@
     </AppBarButton>
 
     <AppBarButton ToolTipService.ToolTip="View Profile"
-                  Command="{StaticResource OpenUserOverlayCommand}"
-                  CommandParameter="{Binding Author}"
+                  Command="{Binding Author.OpenOverlayCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7ee;" />
@@ -28,8 +27,7 @@
     </AppBarButton>
 
     <AppBarButton ToolTipService.ToolTip="Reply"
-                  Command="{StaticResource ReplyCommand}"
-                  CommandParameter="{Binding Message}"
+                  Command="{Binding ReplyCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
@@ -37,8 +35,7 @@
     </AppBarButton>
     
     <AppBarButton ToolTipService.ToolTip="Copy Message"
-                  Command="{StaticResource CopyMessageCommand}" 
-                  CommandParameter="{Binding Message}"
+                  Command="{Binding CopyMessageCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe8c8;" />
@@ -46,8 +43,7 @@
     </AppBarButton>
 
     <AppBarButton ToolTipService.ToolTip="Copy Link"
-                  Command="{StaticResource CopyUrlCommand}"
-                  CommandParameter="{Binding Message}"
+                  Command="{Binding CopyUrlCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe71b;" />
@@ -57,8 +53,7 @@
     <lib:CommandBarFlyout.SecondaryCommands>
 
         <AppBarButton Label="Change Nickname"
-                      Command="{StaticResource ChangeNicknameCommand}"
-                      CommandParameter="{Binding Author}">
+                      Command="{Binding Author.ChangeNicknameCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe8ac;" />
             </AppBarButton.Icon>
@@ -66,10 +61,8 @@
 
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
 
-
         <AppBarButton Label="Pin"
-                      Command="{StaticResource PinMessageCommand}"
-                      CommandParameter="{Binding Message}">
+                      Command="{Binding PinCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE718;" />
             </AppBarButton.Icon>
@@ -84,8 +77,7 @@
         </AppBarButton>
 
         <AppBarButton Label="Delete"
-                      Command="{StaticResource DeleteMessageCommand}"
-                      CommandParameter="{Binding Message}">
+                      Command="{Binding DeleteCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe74d;" />
             </AppBarButton.Icon>
@@ -95,8 +87,7 @@
 
         <AppBarButton Label="Kick"
                       Foreground="{ThemeResource SystemFillColorCautionBrush}"
-                      Command="{StaticResource KickCommand}"
-                      CommandParameter="{Binding Author}">
+                      Command="{Binding Author.KickCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe89b;" />
             </AppBarButton.Icon>
@@ -104,8 +95,7 @@
 
         <AppBarButton Label="Ban"
                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"                      
-                      Command="{StaticResource BanCommand}"
-                      CommandParameter="{Binding Author}" >
+                      Command="{Binding Author.BanCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe738;" />
             </AppBarButton.Icon>
@@ -114,8 +104,7 @@
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
 
         <AppBarButton Label="Copy ID"
-                      Command="{StaticResource CopyIdCommand}" 
-                      CommandParameter="{Binding Message}" >
+                      Command="{Binding CopyIdCommand}" >
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xec7a;" />
             </AppBarButton.Icon>

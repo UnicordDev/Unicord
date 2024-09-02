@@ -33,6 +33,14 @@ namespace Unicord.Universal.Services.Windowing
 
         public override bool IsSupported => true; // todo: work this out
 
+        public override WindowHandle CurrentWindow
+        {
+            get
+            {
+                return GetOrCreateHandleForId(ApplicationView.GetForCurrentView().Id);
+            }
+        }
+
         public override void SetMainWindow(UIElement reference)
         {
             _mainWindowId = ApplicationView.GetForCurrentView().Id;

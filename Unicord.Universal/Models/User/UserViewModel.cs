@@ -1,64 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using Unicord.Universal.Models.Messages;
-using Windows.UI;
+using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Members;
+using Unicord.Universal.Commands.Users;
 using Unicord.Universal.Extensions;
-using DSharpPlus;
-using System.Diagnostics;
+using Unicord.Universal.Models.Guild;
+using Unicord.Universal.Utilities;
+using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Models.User
 {
     public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>, ISnowflake
     {
-        private ulong _userId;
-        private ulong? _guildId;
+        protected ulong id;
+        protected ulong? guildId;
+
+        private PresenceViewModel _presenceVmCache;
+        private List<GuildViewModel> _mutualGuilds;
+        private List<RoleViewModel> _rolesCache;
 
         internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
+            : this(user.Id, (user as DiscordMember)?.Guild.Id, parent)
+        {
+
+        }
+
+        internal UserViewModel(ulong user, ulong? guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            _userId = user.Id;
+            id = user;
+            this.guildId = guildId;
+            WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this,
+                (t, e) => t.OnUserUpdate(e.Event));
+            WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this,
+                (t, e) => t.OnPresenceUpdate(e.Event));
 
-            if (user is DiscordMember member)
-            {
-                _guildId = member.Guild.Id;
-            }
-            else if (guildId != 0)
-            {
-                _guildId = guildId;
-            }
+            OpenOverlayCommand = new ShowUserOverlayCommand(this);
+            MessageCommand = new SendMessageCommand(this);
 
-            WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this, (t, e) => t.OnUserUpdate(e.Event));
-            WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this, (t, e) => t.OnPresenceUpdate(e.Event));
-
-            if (_guildId != null)
+            if (this.guildId != null)
             {
+                // TODO: idk if this should be here?
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMemberUpdateEventArgs>(this,
                     (t, e) => t.OnGuildMemberUpdate(e.Event));
-                // TODO: idk if this should be here?
                 WeakReferenceMessenger.Default.Register<UserViewModel, GuildMembersChunkEventArgs>(this,
                     (t, e) => t.OnGuildMemberChunk(e.Event));
+
+                KickCommand = new KickCommand(this);
+                BanCommand = new BanCommand(this);
+                ChangeNicknameCommand = new ChangeNicknameCommand(this);
+            }
+            else
+            {
+                KickCommand = NullCommand.Instance;
+                BanCommand = NullCommand.Instance;
+                ChangeNicknameCommand = NullCommand.Instance;
             }
         }
 
         public ulong Id
-            => _userId;
+            => id;
 
         public DiscordUser User
-            => discord.InternalGetCachedUser(Id);
+            => discord.TryGetCachedUser(Id, out var user) ? user : throw new InvalidOperationException();
 
         public DiscordMember Member
-            => _guildId != null ? discord.InternalGetCachedGuild(_guildId)?.Members[_userId] : null;
+        {
+            get
+            {
+                if (guildId == null) return null;
+
+                if (!discord.TryGetCachedGuild(guildId.Value, out var guild))
+                    throw new InvalidOperationException();
+
+                return guild.Members.TryGetValue(Id, out var member) ? member : null;
+            }
+        }
+
+        public GuildViewModel Guild
+            => guildId != null ? new GuildViewModel(guildId.Value, this) : null;
+
+        public bool IsMember
+            => Member != null;
 
         public string DisplayName
             => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?
             Member.Nickname
             : (User.GlobalName ?? User.Username);
+
+        public string Nickname
+            => Member?.Nickname;
+        public string GlobalName
+            => User.GlobalName;
+        public string Username
+            => User.Username;
 
         public string AvatarUrl
             => (Member as DiscordUser)?.GetAvatarUrl(64) ?? User.GetAvatarUrl(64);
@@ -67,7 +107,7 @@ namespace Unicord.Universal.Models.User
             => User.Mention;
 
         public bool IsCurrent
-            => User.IsCurrent;
+            => User.Id == discord.CurrentUser.Id;
 
         public bool IsBot
             => User.IsBot;
@@ -75,8 +115,43 @@ namespace Unicord.Universal.Models.User
         public DiscordColor Color
             => Member?.Color ?? default;
 
-        public DiscordPresence Presence
-            => User.Presence;
+        public PresenceViewModel Presence
+            => _presenceVmCache ??= new(User, this);
+
+        public ICommand KickCommand { get; }
+        public ICommand BanCommand { get; }
+        public ICommand ChangeNicknameCommand { get; }
+        public ICommand MessageCommand { get; }
+        public ICommand OpenOverlayCommand { get; }
+
+        public Visibility KickVisibility
+            => KickCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility BanVisibility
+            => BanCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
+
+        public DateTimeOffset JoinedAt
+            => Member?.JoinedAt ?? default;
+
+        public List<GuildViewModel> MutualGuilds
+        {
+            get
+            {
+                if (this._mutualGuilds != null)
+                    return this._mutualGuilds;
+
+                var orderedGuilds = EmojiUtilities.GetOrderedGuildsList();
+                _mutualGuilds ??= discord.Guilds.Values.Where(g => g.Members.ContainsKey(this.id))
+                    .OrderBy(g => orderedGuilds.IndexOf(g.Id))
+                    .Select(g => new GuildViewModel(g.Id, this))
+                    .ToList();
+
+                return _mutualGuilds;
+            }
+        }
+
+        public List<RoleViewModel> Roles
+            => Member != null ?
+                _rolesCache ??= Member.Roles.Select(r => new RoleViewModel(r, this)).ToList() : null;
 
         private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {
@@ -107,8 +182,6 @@ namespace Unicord.Universal.Models.User
             if (User == null || e.UserAfter.Id != User.Id)
                 return;
 
-            //_user = e.UserAfter;
-
             InvokePropertyChanged(nameof(DisplayName));
 
             if (e.UserAfter.AvatarHash != e.UserBefore.AvatarHash)
@@ -117,9 +190,10 @@ namespace Unicord.Universal.Models.User
 
         private void OnPresenceUpdate(PresenceUpdateEventArgs e)
         {
-            if (User == null && e.User.Id != User.Id)
+            if (User == null || e.User.Id != User.Id)
                 return;
 
+            _presenceVmCache?.OnPresenceUpdated();
             InvokePropertyChanged(nameof(Presence));
         }
 

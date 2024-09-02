@@ -12,6 +12,7 @@ using Unicord;
 using Unicord.Universal;
 using Unicord.Universal.Controls.Emoji;
 using Unicord.Universal.Converters;
+using Unicord.Universal.Models.Emoji;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Parsers.Markdown.Inlines;
 using Unicord.Universal.Parsers.Markdown.Render;
@@ -656,11 +657,17 @@ namespace Unicord.Universal.Controls.Markdown.Render
 
                     if (element.DiscordType == DiscordInline.MentionType.User)
                     {
-                        var user = guild?.Members.GetValueOrDefault(element.Id) ?? client.InternalGetCachedUser(element.Id);
+                        var user = (DiscordUser)guild?.Members.GetValueOrDefault(element.Id);
+                        if (user == null)
+                        {
+                            client.TryGetCachedUser(element.Id, out user);
+                        }
+
                         if (user != null)
                         {
                             run.Text = IsSystemMessage ? user.DisplayName : $"@{user.DisplayName}";
-                            run.Foreground = GetDiscordBrush(user.Color);
+                            if (user is DiscordMember member)
+                                run.Foreground = GetDiscordBrush(member.Color);
                         }
                         else
                         {
@@ -702,7 +709,7 @@ namespace Unicord.Universal.Controls.Markdown.Render
                     var size = IsHuge ? 48 : 24;
                     var image = new EmojiControl()
                     {
-                        Emoji = DiscordEmoji.FromGuildEmote(App.Discord, element.Id, element.Text),
+                        Emoji = new EmojiViewModel(element.Id, element.Text, element.IsAnimated),
                         Size = size,
                         MaxWidth = size * 3,
                         Margin = IsHuge ? default : new Thickness(0, 0, 0, -8)

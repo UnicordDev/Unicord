@@ -142,6 +142,15 @@ namespace Unicord.Universal.Controls
 
             //await _webView2.EnsureCoreWebView2Async();
         }
+
+        internal void Close()
+        {
+            _root.Child = null;
+#if HAS_WEBVIEW_2
+            _webView2 = null;
+#endif
+            _webView = null;
+        }
 #endif
     }
 }

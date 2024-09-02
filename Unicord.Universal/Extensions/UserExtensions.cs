@@ -61,13 +61,14 @@ namespace Unicord.Universal.Extensions
             else
             {
                 string type;
-                if (user.DiscriminatorInt == 0)
+                if (string.IsNullOrWhiteSpace(user.Discriminator) || user.Discriminator == "0")
                 {
                     type = ((user.Id >> 22) % 6).ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
-                    type = (user.DiscriminatorInt % 5).ToString(CultureInfo.InvariantCulture);
+                    type = (int.Parse(user.Discriminator, CultureInfo.InvariantCulture) % 5)
+                        .ToString(CultureInfo.InvariantCulture);
                 }
                 return $"https://cdn.discordapp.com/embed/avatars/{type}.{sfmt}?size={ssize}";
             }

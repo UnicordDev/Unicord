@@ -5,37 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Emoji;
+using Unicord.Universal.Models.Messages;
 
 namespace Unicord.Universal.Commands.Messages
 {
-    internal class ReactCommand : ICommand
+    internal class ReactCommand : DiscordCommand<MessageViewModel>
     {
-        private DiscordMessage _message;
-
-        public ReactCommand(DiscordMessage message)
+        public ReactCommand(MessageViewModel message)
+            : base(message)
         {
-            _message = message;
         }
 
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            return parameter is DiscordEmoji;
+            return parameter is EmojiViewModel;
         }
 
-        public async void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
-            if (parameter is not DiscordEmoji emoji)
+            if (parameter is not EmojiViewModel emoji || emoji.DiscordEmoji == null)
                 return;
 
-            if (_message.Reactions.Any(r => r.IsMe && r.Emoji == emoji))
+            if (viewModel.Reactions.Any(r => r.IsMe && r.Emoji == emoji))
             {
-                await _message.DeleteOwnReactionAsync(emoji);
+                await viewModel.Message.DeleteOwnReactionAsync(emoji.DiscordEmoji);
             }
             else
             {
-                await _message.CreateReactionAsync(emoji);
+                await viewModel.Message.CreateReactionAsync(emoji.DiscordEmoji);
             }
         }
     }

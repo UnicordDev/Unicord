@@ -5,11 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models
 {
-    public class DMChannelsViewModel : ViewModelBase, IDisposable
+    public class DMChannelsViewModel : ViewModelBase
     {
         private int _selectedItem = -1;
 
@@ -20,22 +21,15 @@ namespace Unicord.Universal.Models
                 .Select(s => new DmChannelListViewModel(s))
                 .OrderByDescending(r => r.ReadState?.LastMessageId));
 
-            App.Discord.DmChannelCreated += OnDmCreated;
-            App.Discord.DmChannelDeleted += OnDmDeleted;
-            App.Discord.MessageCreated += OnMessageCreated;
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e));
         }
 
         public ObservableCollection<DmChannelListViewModel> DMChannels { get; set; }
 
         public int SelectedIndex { get => _selectedItem; set => OnPropertySet(ref _selectedItem, value); }
         public bool UpdatingIndex { get; set; }
-
-        public void Dispose()
-        {
-            App.Discord.DmChannelCreated -= OnDmCreated;
-            App.Discord.DmChannelDeleted -= OnDmDeleted;
-            App.Discord.MessageCreated -= OnMessageCreated;
-        }
 
         private Task OnDmCreated(DmChannelCreateEventArgs e)
         {

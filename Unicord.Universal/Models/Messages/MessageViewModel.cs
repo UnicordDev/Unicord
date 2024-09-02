@@ -12,8 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Messages.Components;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
 using Windows.ApplicationModel.Resources;
@@ -22,8 +24,8 @@ namespace Unicord.Universal.Models.Messages
 {
     public partial class MessageViewModel : ViewModelBase, ISnowflake
     {
-        // TODO: not surei like getting this for every single message :/
-        private readonly ResourceLoader _strings;
+        private static readonly ResourceLoader _strings
+            = ResourceLoader.GetForViewIndependentUse("Converters");
 
         private ChannelViewModel _channelViewModelCache;
         private UserViewModel _userViewModelCache;
@@ -41,21 +43,47 @@ namespace Unicord.Universal.Models.Messages
             // we dont wanna do this for replies
             if (parentMessage == null)
             {
-                _strings = ResourceLoader.GetForViewIndependentUse("Converters");
+                ReplyCommand = new ReplyCommand(this);
+                CopyMessageCommand = new CopyMessageCommand(this);
+                CopyUrlCommand = new CopyUrlCommand(this);
+                CopyIdCommand = new CopyIdCommand(this);
+                PinCommand = new PinMessageCommand(this);
+                DeleteCommand = new DeleteMessageCommand(this);
+                ReactCommand = new ReactCommand(this);
 
-                ReactCommand = new ReactCommand(discordMessage);
-
-                Embeds = new ObservableCollection<DiscordEmbed>(Message.Embeds);
-                Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a)));
-                Stickers = new ObservableCollection<DiscordSticker>(Message.Stickers);
-                Components = new ObservableCollection<DiscordComponent>(Message.Components);
+                var embedModels = GetGroupedEmbeds(Message);
+                Embeds = new ObservableCollection<EmbedViewModel>(embedModels);
+                Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a, this)));
+                Stickers = new ObservableCollection<StickerViewModel>(Message.Stickers.Select(s => new StickerViewModel(s, this)));
+                Components = new ObservableCollection<ComponentViewModelBase>(Message.Components.Select(ComponentViewModelFactory));
                 Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
 
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this, (t, e) => t.OnReactionRemoved(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this, (t, e) => t.OnReactionGroupRemoved(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this, (t, e) => t.OnReactionsCleared(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this,
+                    (t, e) => t.OnReactionAdded(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this,
+                    (t, e) => t.OnReactionRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this,
+                    (t, e) => t.OnReactionGroupRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this,
+                    (t, e) => t.OnReactionsCleared(e.Event));
             }
+        }
+
+        private List<EmbedViewModel> GetGroupedEmbeds(DiscordMessage message)
+        {
+            var embedGroups = message.Embeds
+                .GroupBy(g => g.Url);
+
+            var embedModels = new List<EmbedViewModel>();
+            foreach (var group in embedGroups)
+            {
+                if (group.Key == null)
+                    embedModels.AddRange(group.Select(s => new EmbedViewModel(s, [], this)));
+                else
+                    embedModels.Add(new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this));
+            }
+
+            return embedModels;
         }
 
         public DiscordMessage Message { get; }
@@ -79,10 +107,10 @@ namespace Unicord.Universal.Models.Messages
         public bool IsEdited
             => Message.IsEdited;
         public bool IsSystemMessage
-            => Message.MessageType != MessageType.Default &&
-            Message.MessageType != MessageType.Reply &&
-            Message.MessageType != MessageType.ApplicationCommand &&
-            Message.MessageType != MessageType.ContextMenuCommand;
+            => Message.MessageType is not (MessageType.Default or MessageType.Reply or
+                MessageType.ApplicationCommand or MessageType.ContextMenuCommand);
+        public MessageType Type
+            => Message.MessageType ?? MessageType.Default;
 
         public string SystemMessageText => Message.MessageType switch
         {
@@ -164,14 +192,18 @@ namespace Unicord.Universal.Models.Messages
             }
         }
 
-        public ObservableCollection<DiscordEmbed> Embeds { get; }
+        public ObservableCollection<EmbedViewModel> Embeds { get; }
         public ObservableCollection<AttachmentViewModel> Attachments { get; }
-        public ObservableCollection<DiscordSticker> Stickers { get; }
-        public ObservableCollection<DiscordComponent> Components { get; }
-
-        // TODO: Move the above to individual view models
+        public ObservableCollection<StickerViewModel> Stickers { get; }
+        public ObservableCollection<ComponentViewModelBase> Components { get; }
         public ObservableCollection<ReactionViewModel> Reactions { get; }
 
+        public ICommand ReplyCommand { get; }
+        public ICommand CopyMessageCommand { get; }
+        public ICommand CopyUrlCommand { get; }
+        public ICommand CopyIdCommand { get; }
+        public ICommand PinCommand { get; }
+        public ICommand DeleteCommand { get; }
         public ICommand ReactCommand { get; }
 
         private Task OnReactionAdded(MessageReactionAddEventArgs e)
@@ -215,24 +247,49 @@ namespace Unicord.Universal.Models.Messages
             if (e.Message.Id != Message.Id)
                 return;
 
-            if (e.MessageBefore.Content != e.Message.Content)
+            if (e.MessageBefore?.Content != e.Message.Content)
                 InvokePropertyChanged(nameof(Content));
 
-            if (e.MessageBefore.IsEdited != e.Message.IsEdited)
+            if (e.MessageBefore?.IsEdited != e.Message.IsEdited)
                 InvokePropertyChanged(nameof(IsEdited));
 
-            if (Embeds.SequenceEqual(e.Message.Embeds))
-                return;
+            if (e.Message.Attachments.Count != Attachments.Count)
+                syncContext.Post(o =>
+                {
+                    Attachments.Clear();
+                    foreach (var attachment in e.Message.Attachments)
+                    {
+                        Attachments.Add(new AttachmentViewModel(attachment, this));
+                    }
+                }, null);
+
+            var embedGroups = Message.Embeds
+                    .GroupBy(g => g.Url);
 
             syncContext.Post((o) =>
             {
                 Embeds.Clear();
-                foreach (var embed in e.Message.Embeds)
-                    Embeds.Add(embed);
-
+                foreach (var model in GetGroupedEmbeds(e.Message))
+                {
+                    Embeds.Add(model);
+                }
             }, null);
 
             return;
+        }
+
+        private ComponentViewModelBase ComponentViewModelFactory(DiscordComponent component)
+        {
+            if (component is DiscordActionRowComponent actionRow)
+                return new ActionRowComponentViewModel(actionRow, ComponentViewModelFactory, this);
+
+            if (component is DiscordButtonComponent button)
+                return new ButtonComponentViewModel(button, this);
+
+            if (component is DiscordLinkButtonComponent link)
+                return new ButtonComponentViewModel(link, this);
+
+            return new UnknownComponentViewModel(component, this);
         }
 
         // TODO: would an observable dictionary type be faster here?
@@ -250,7 +307,7 @@ namespace Unicord.Universal.Models.Messages
 
             foreach (var model in Reactions.ToList())
             {
-                if (!Message.Reactions.Any(r => r.Emoji == model.Emoji))
+                if (!Message.Reactions.Any(r => model.Emoji == r.Emoji))
                     Reactions.Remove(model);
             }
         }, null);

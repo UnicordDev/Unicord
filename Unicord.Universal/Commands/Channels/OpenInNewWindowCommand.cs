@@ -9,12 +9,12 @@ namespace Unicord.Universal.Commands.Channels
 {
     internal class OpenInNewWindowCommand : ICommand
     {
-        private readonly WindowHandle windowHandle;
+        private readonly ChannelViewModel channelViewModel;
         private readonly bool compactOverlay;
 
-        public OpenInNewWindowCommand(WindowHandle windowHandle, bool compactOverlay)
+        public OpenInNewWindowCommand(ChannelViewModel channelViewModel, bool compactOverlay)
         {
-            this.windowHandle = windowHandle;
+            this.channelViewModel = channelViewModel;
             this.compactOverlay = compactOverlay;
         }
 
@@ -23,21 +23,19 @@ namespace Unicord.Universal.Commands.Channels
         public bool CanExecute(object parameter)
         {
             return WindowingService.Current.IsSupported &&
-                   WindowingService.Current.IsMainWindow(windowHandle) &&
-                   (parameter is DiscordChannel channel || (parameter is ChannelViewModel channelVm && (channel = channelVm.Channel) != null)) &&
-                   channel.IsText();
+                   WindowingService.Current.IsMainWindow(WindowingService.Current.CurrentWindow) &&
+                   channelViewModel.Channel.IsText();
         }
 
         public async void Execute(object parameter)
         {
-            if (parameter is not DiscordChannel channel &&
-                (parameter is not ChannelViewModel channelVm || (channel = channelVm.Channel) == null) || !channel.IsText())
+            if (!channelViewModel.Channel.IsText())
                 return;
 
-            var newHandle = await WindowingService.Current.OpenChannelWindowAsync(channel, compactOverlay, windowHandle);
+            var newHandle = await WindowingService.Current.OpenChannelWindowAsync(channelViewModel.Channel, compactOverlay, WindowingService.Current.CurrentWindow);
             if (newHandle != null)
             {
-                WindowingService.Current.SetWindowChannel(windowHandle, 0);
+                WindowingService.Current.SetWindowChannel(WindowingService.Current.CurrentWindow, 0);
                 var service = DiscordNavigationService.GetForCurrentView();
                 await service.NavigateAsync(null, true);
             }

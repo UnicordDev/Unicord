@@ -9,6 +9,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
         public MentionType DiscordType { get; set; }
         public string Text { get; set; }
         public ulong Id { get; set; }
+        public bool IsAnimated { get; private set; }
 
         public DiscordInline() : base(MarkdownInlineType.Discord)
         {
@@ -82,7 +83,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
                     // animated emote
                     index += 2;
                     type = MentionType.Emote;
-                    return HandleEmote(text, builder, index, innerStart, innerEnd);
+                    return HandleEmote(text, builder, index, innerStart, innerEnd, true);
                 case ':':
                     // normal emote
                     index++;
@@ -119,7 +120,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
             }
         }
 
-        private static InlineParseResult HandleEmote(string text, StringBuilder builder, int index, int innerStart, int innerEnd)
+        private static InlineParseResult HandleEmote(string text, StringBuilder builder, int index, int innerStart, int innerEnd, bool isAnimated = false)
         {
             var nextIndex = text.IndexOf(':', index);
             if (nextIndex == -1)
@@ -133,7 +134,7 @@ namespace Unicord.Universal.Parsers.Markdown.Inlines
             ReadDigits(text, builder, ref nextIndex);
             if (ulong.TryParse(builder.ToString(), out var id))
             {
-                return new InlineParseResult(new DiscordInline() { Id = id, DiscordType = MentionType.Emote, Text = emoteName }, innerStart - 1, innerEnd + 1);
+                return new InlineParseResult(new DiscordInline() { Id = id, DiscordType = MentionType.Emote, Text = emoteName, IsAnimated = isAnimated }, innerStart - 1, innerEnd + 1);
             }
 
             return null;

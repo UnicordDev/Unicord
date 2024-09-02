@@ -13,8 +13,9 @@ namespace Unicord.Universal.Models.Channels
     public class ReadStateViewModel : ViewModelBase
     {
         protected readonly ulong channelId;
-        protected readonly DiscordReadState readState;
         protected readonly ChannelViewModel viewModel;
+
+        protected DiscordReadState readState;
 
         public ReadStateViewModel(ulong channelId, ChannelViewModel channelViewModel = null)
             : base(channelViewModel)
@@ -23,27 +24,29 @@ namespace Unicord.Universal.Models.Channels
             this.viewModel = channelViewModel ?? new ChannelViewModel(channelId, true, this);
 
             if (!App.Discord.ReadStates.TryGetValue(channelId, out readState))
-                readState = App.Discord.DefaultReadState;
+                readState = null;
 
             WeakReferenceMessenger.Default.Register<ReadStateViewModel, ChannelUnreadUpdateEventArgs>(this, (r, m) => r.OnChannelUnreadUpdate(m.Event));
-            WeakReferenceMessenger.Default.Register<ReadStateViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+            WeakReferenceMessenger.Default.Register<ReadStateViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
         }
 
         private void OnChannelUnreadUpdate(ChannelUnreadUpdateEventArgs e)
         {
-            if (!e.ReadStates.ContainsKey(channelId))
+            if (!e.ReadStates.TryGetValue(channelId, out var newReadState))
                 return;
 
+            readState = newReadState;
             InvokePropertyChanged(nameof(Unread));
             InvokePropertyChanged(nameof(MentionCount));
             InvokePropertyChanged(nameof(LastMessageId));
         }
 
-        private void OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        private void OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {
-            if (e.ReadState.Id != readState.Id)
+            if (e.ReadState.Id != channelId)
                 return;
 
+            readState = e.ReadState;
             InvokePropertyChanged(nameof(Unread));
             InvokePropertyChanged(nameof(MentionCount));
             InvokePropertyChanged(nameof(LastMessageId));
@@ -57,17 +60,16 @@ namespace Unicord.Universal.Models.Channels
             get
             {
                 // this shit should never happen but apparently it does sometimes, don't question it
-                if (readState.Id == 0)
+                if (readState == null || readState.Id == 0)
                     return false;
 
-                if (discord == null || discord.IsDisposed)
+                if (discord == null)
                     return false;
 
-                var channel = discord.InternalGetCachedChannel(channelId);
-                if (channel == null) 
+                if (!discord.TryGetCachedChannel(channelId, out var channel)) 
                     return false; // in theory impossible
 
-                if (channel.Type == ChannelType.Voice || channel.Type == ChannelType.Category || channel.Type == ChannelType.Store)
+                if (channel.Type == ChannelType.Voice || channel.Type == ChannelType.Category)
                     return false;
 
                 if (channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)
@@ -80,8 +82,8 @@ namespace Unicord.Universal.Models.Channels
         }
 
         public int MentionCount
-            => readState.MentionCount;
+            => readState?.MentionCount ?? 0;
         public ulong LastMessageId
-            => readState.LastMessageId;
+            => readState?.LastMessageId ?? 0;
     }
 }

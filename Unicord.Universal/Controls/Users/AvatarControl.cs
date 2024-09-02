@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unicord.Universal.Models.User;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,14 +27,14 @@ namespace Unicord.Universal.Controls.Users
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(Uri), typeof(AvatarControl), new PropertyMetadata(null));
 
-        public DiscordPresence Presence
+        public PresenceViewModel Presence
         {
-            get { return (DiscordPresence)GetValue(PresenceProperty); }
+            get { return (PresenceViewModel)GetValue(PresenceProperty); }
             set { SetValue(PresenceProperty, value); }
         }
 
         public static readonly DependencyProperty PresenceProperty =
-            DependencyProperty.Register("Presence", typeof(DiscordPresence), typeof(AvatarControl), new PropertyMetadata(null));
+            DependencyProperty.Register("Presence", typeof(PresenceViewModel), typeof(AvatarControl), new PropertyMetadata(null));
 
         public AvatarControl()
         {

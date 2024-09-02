@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands.Messages;
+using Unicord.Universal.Models.Emoji;
 
 namespace Unicord.Universal.Models.Messages
 {
@@ -21,8 +22,8 @@ namespace Unicord.Universal.Models.Messages
             ReactCommand = reactCommand;
         }
 
-        public DiscordEmoji Emoji => 
-            _reaction.Emoji;
+        public EmojiViewModel Emoji => 
+            new EmojiViewModel(_reaction.Emoji);
         public int Count =>
             _reaction.Count;
         public bool IsMe =>

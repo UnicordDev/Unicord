@@ -6,6 +6,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Extensions;
@@ -63,6 +64,8 @@ namespace Unicord.Universal.Pages
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
 
+            WeakReferenceMessenger.Default.Register<DiscordPage, MessageCreateEventArgs>(this, (r, e) => r.Notification_MessageCreated(e.Event));
+
             //GuildsView.RegisterPropertyChangedCallback(MUXC.TreeView.SelectedItemProperty, )
             //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
         }
@@ -119,8 +122,6 @@ namespace Unicord.Universal.Pages
 
             try
             {
-                App.Discord.MessageCreated += Notification_MessageCreated;
-
                 UpdateTitleBar();
 
                 _loaded = true;
@@ -165,11 +166,6 @@ namespace Unicord.Universal.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             Analytics.TrackEvent("DiscordPage_Unloaded");
-
-            if (App.Discord != null)
-            {
-                App.Discord.MessageCreated -= Notification_MessageCreated;
-            }
         }
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)

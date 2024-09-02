@@ -1,5 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
+using System.Globalization;
+using System.Net.Mail;
+using System.Web;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.UI.Xaml;
@@ -77,9 +80,17 @@ namespace Unicord.Universal.Controls
 
             double width = element.ImageWidth;
             double height = element.ImageHeight;
-            Drawing.ScaleProportions(ref width, ref height, 640, 480);
+            Drawing.ScaleProportions(ref width, ref height, 480, 480);
 
-            element._img = new BitmapImage(new Uri(element.ImageUri.ToString() + $"&width={(int)width}&height={(int)height}"))
+            var thumbUrl = new UriBuilder(element.ImageUri);
+            var query = HttpUtility.ParseQueryString(thumbUrl.Query);
+            if (Tools.ShouldUseWebP)
+                query["format"] = "webp";
+            query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
+            query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);
+            thumbUrl.Query = query.ToString();
+
+            element._img = new BitmapImage(thumbUrl.Uri)
             {
                 DecodePixelWidth = (int)width,
                 DecodePixelHeight = (int)height

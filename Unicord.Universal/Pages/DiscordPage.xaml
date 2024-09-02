@@ -152,8 +152,8 @@
                                             <lib:PersonPicture Width="42" 
                                                                    Height="42"
                                                                    Margin="0,4"
-                                                                   DisplayName="{Binding Converter={StaticResource DMNameConverter}}"
-                                                                   ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}" />
+                                                                   DisplayName="{Binding Name}"
+                                                                   ProfilePicture="{Binding IconUrl}" />
 
                                             <lib:InfoBadge VerticalAlignment="Top"
                                                                HorizontalAlignment="Right"

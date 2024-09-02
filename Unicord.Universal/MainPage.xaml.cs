@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using TenMica;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -77,7 +78,7 @@ namespace Unicord.Universal
 
             if (_isReady)
             {
-                await OnFirstDiscordReady(null);
+                await OnFirstDiscordReady(null, null);
             }
         }
 
@@ -198,7 +199,7 @@ namespace Unicord.Universal
             }
         }
 
-        internal void ShowUserOverlay(DiscordUser user, bool animate)
+        internal void ShowUserOverlay(UserViewModel user, bool animate)
         {
             userInfoOverlay.User = user;
             userInfoOverlay.Visibility = Visibility.Visible;
@@ -207,7 +208,7 @@ namespace Unicord.Universal
             showUserOverlay.Begin();
         }
 
-        private async Task OnFirstDiscordReady(ReadyEventArgs e)
+        private async Task OnFirstDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             if (!_isReady)
             {
@@ -249,24 +250,24 @@ namespace Unicord.Universal
             }
         }
 
-        private Task OnLoggedOut()
+        private Task OnLoggedOut(DiscordClient client, LoggedOutEventArgs args)
         {
             _isReady = false;
             RemoveEventHandlers();
             return Task.CompletedTask;
         }
 
-        private async Task OnDiscordReady(ReadyEventArgs e)
+        private async Task OnDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordResumed(ResumedEventArgs e)
+        private async Task OnDiscordResumed(DiscordClient client, ResumedEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
+        private async Task OnDiscordDisconnected(DiscordClient client, SocketCloseEventArgs e)
         {
             Analytics.TrackEvent("Discord_Disconnected");
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -411,7 +412,8 @@ namespace Unicord.Universal
 
         public void HideCustomOverlay()
         {
-            HideOverlayStoryboard.Begin();
+            if (CustomOverlayGrid.Visibility != Visibility.Collapsed)
+                HideOverlayStoryboard.Begin();
         }
     }
 }

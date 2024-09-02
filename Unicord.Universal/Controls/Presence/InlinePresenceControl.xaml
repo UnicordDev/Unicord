@@ -11,15 +11,22 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid x:Name="Root" DataContext="{Binding ElementName=Self}" Visibility="{Binding CondencedPresence.Empty, Converter={StaticResource InverseBoolVisibilityConverter}, FallbackValue=Collapsed}">        
+    <Grid x:Name="Root" x:Load="{x:Bind Presence.HasActivity, Mode=OneWay}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <emoji:EmojiControl Emoji="{Binding CondencedPresence.Emoji}" Animate="False" Size="14" VerticalAlignment="Top" Margin="0,2,4,0" Visibility="{Binding CondencedPresence.Emoji, Converter={StaticResource HideOnNullConverter}}" />
-        <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{Binding TextWrapping}">
-            <Run Text="{Binding CondencedPresence.StatusText, Mode=OneWay}" /> <Run Text="{Binding CondencedPresence.StatusName, Mode=OneWay}" FontWeight="SemiBold" />
+        <emoji:EmojiControl x:Name="Emoji"
+                            x:Load="{x:Bind Presence.Emoji.IsValid, Mode=OneWay}" 
+                            Emoji="{x:Bind Presence.Emoji, Mode=OneWay}" 
+                            Animate="False" 
+                            Size="14" 
+                            VerticalAlignment="Top" 
+                            Margin="0,2,4,0" />
+        
+        <TextBlock Grid.Column="1" FontSize="12" TextWrapping="{x:Bind TextWrapping}" MaxLines="2">
+            <Run Text="{x:Bind Presence.CondensedTitle, Mode=OneWay}" /> <Run Text="{x:Bind Presence.CondensedText, Mode=OneWay}" FontWeight="SemiBold" />
         </TextBlock>
     </Grid>
 </UserControl>

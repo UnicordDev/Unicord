@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
@@ -42,7 +43,8 @@ namespace Unicord.Universal.Pages.Subpages
             }
         }
 
-        private async Task Discord_MessageUpdated(MessageUpdateEventArgs e)
+        // TODO: this is awful
+        private async Task Discord_MessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
         {
             if (_pinsCache.TryGetValue(e.Channel.Id, out var pins))
             {

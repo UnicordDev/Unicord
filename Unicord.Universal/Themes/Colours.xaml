@@ -58,28 +58,16 @@
     <SolidColorBrush x:Key="BackgroundTertiaryBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
 
-    <Color x:Key="OfflinePresenceColour">#FF808080</Color>
-    <Color x:Key="OnlinePresenceColour">#FF33CC87</Color>
-    <Color x:Key="IdlePresenceColour">#FFFFA500</Color>
-    <Color x:Key="DoNotDisturbPresenceColour">#FFEE4447</Color>
-    <Color x:Key="FallbackPresenceColour">#FF000000</Color>
-
-    <Color x:Key="SuccessDark1Colour">#FF23923C</Color>
+    <Color x:Key="SuccessDark1Colour">#FF15bc3c</Color>
     <Color x:Key="SuccessColour">#FF28A745</Color>
-    <Color x:Key="SuccessLight1Colour">#FF07E039</Color>
+    <Color x:Key="SuccessLight1Colour">#FF53d571</Color>
     <Color x:Key="SuccessForegroundColor">#FFFFFFFF</Color>
     
     <Color x:Key="DangerDark1Colour">#FFD22435</Color>
     <Color x:Key="DangerColour">#FFDC3545</Color>
     <Color x:Key="DangerLight1Colour">#FFD45562</Color>
     <Color x:Key="DangerForegroundColor">#FFFFFFFF</Color>
-
-    <!-- src: https://www.youtube.com/about/brand-resources/ -->
-    <Color x:Key="StreamingYouTubePresenceColour">#FFFF0000</Color>
-
-    <!-- src: https://brand.twitch.tv/ -->
-    <Color x:Key="StreamingTwitchPresenceColour">#FF9146FF</Color>
-
+    
     <!-- src: https://discordapp.com/branding -->
     <Color x:Key="DiscordBlurpleColour">#FF7289DA</Color>
     <Color x:Key="DiscordBlurpleLight1Colour">#FF8699DF</Color>

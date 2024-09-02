@@ -16,12 +16,12 @@ namespace Unicord.Universal.Converters
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is ChannelListViewModel channel)
+            if (item is ChannelViewModel channel)
             {
                 switch (channel.ChannelType)
                 {
                     case ChannelType.Text:
-                    case ChannelType.Store:
+                    //case ChannelType.Store:
                     case ChannelType.Announcement:
                     case ChannelType.Unknown:
                         return TextChannelTemplate;

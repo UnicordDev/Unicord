@@ -12,7 +12,7 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
     xmlns:messages="using:Unicord.Universal.Models.Messages" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)" xmlns:components="using:Unicord.Universal.Models.Messages.Components"
     x:DefaultBindMode="OneWay">
 
     <converters:AttachmentTemplateSelector x:Key="AttachmentTemplateSelector"
@@ -20,6 +20,11 @@
                                            VideoTemplate="{StaticResource VideoAttachmentMediaTemplate}"
                                            AudioTemplate="{StaticResource AudioAttachmentMediaTemplate}"
                                            GenericTemplate="{StaticResource DefaultAttachmentGenericTemplate}"/>
+
+    <converters:EmbedTemplateSelector x:Key="EmbedTemplateSelector"
+                                      ImageTemplate="{StaticResource ImageEmbedTemplate}"
+                                      VideoTemplate="{StaticResource VideoEmbedTemplate}"
+                                      RichTemplate="{StaticResource RichEmbedTemplate}"/>
 
     <converters:AttachmentTypeConverter x:Key="AttachmentTypeConverter"/>
 
@@ -57,7 +62,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style TargetType="local:AttachmentMediaControl">
         <Setter Property="Template">
@@ -416,11 +420,19 @@
         </ToggleButton>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultEmbedTemplate">
-        <controls:EmbedViewer Embed="{Binding}" />
+    <DataTemplate x:Key="RichEmbedTemplate">
+        <local:EmbedControl ViewModel="{Binding}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultAttachmentTemplate">
+    <DataTemplate x:Key="ImageEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:ImageEmbedControl ViewModel="{Binding Thumbnail}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VideoEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:VideoEmbedControl ViewModel="{Binding Video}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DefaultAttachmentTemplate" x:DataType="messages:EmbedViewModel">
         <local:AttachmentControl ViewModel="{Binding}" />
     </DataTemplate>
 
@@ -448,39 +460,43 @@
         </ItemsControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="ButtonComponentContentTemplate">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+    <DataTemplate x:Key="ButtonComponentContentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
+        <StackPanel Orientation="Horizontal">
+            <emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
 
-            <emoji:EmojiControl Grid.Column="0" Emoji="{Binding Emoji}" Size="16" Visibility="{Binding Emoji, Converter={StaticResource HideOnNullConverter}}" />
+            <TextBlock x:Name="PART_ButtonLabel" x:Load="{x:Bind HasLabel}" VerticalAlignment="Center" Text="{x:Bind Label}" Padding="12,0"/>
 
-            <TextBlock Grid.Column="1" Text="{Binding Label}" Padding="12,0" Visibility="{Binding Label, Converter={StaticResource BoolVisibilityConverter}}"/>
-
-            <TextBlock Grid.Column="2" 
-                       FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+            <TextBlock x:Name="PART_ButtonExternalLink"
+                       x:Load="{x:Bind ShowExternalLinkIcon}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
                        FontSize="16" 
-                       VerticalAlignment="Center"
-                       Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}">&#xE8A7;</TextBlock>
-        </Grid>
+                       VerticalAlignment="Center">&#xE8A7;</TextBlock>
+        </StackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="PrimaryButtonComponentTemplate">
+    <DataTemplate x:Key="PrimaryButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
                 Style="{ThemeResource AccentButtonStyle}"
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="SecondaryButtonComponentTemplate">
+    <DataTemplate x:Key="SecondaryButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="SuccessButtonComponentTemplate">
+    <DataTemplate x:Key="SuccessButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
             <Button.Resources>
                 <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
@@ -498,8 +514,11 @@
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="DangerButtonComponentTemplate">
+    <DataTemplate x:Key="DangerButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
             <Button.Resources>
                 <SolidColorBrush x:Key="ButtonForeground" Color="{ThemeResource DangerForegroundColor}"/>
@@ -518,8 +537,11 @@
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="LinkButtonComponentTemplate">
+    <DataTemplate x:Key="LinkButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8"
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
@@ -724,7 +746,7 @@
                                                       HorizontalAlignment="Left"/>
 
                                         <ItemsControl x:Name="Embeds"
-                                                      ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                                      ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                                       ItemsSource="{Binding Embeds}"
                                                       HorizontalAlignment="Left"/>
 
@@ -886,7 +908,7 @@
 
                                 <ItemsControl x:Name="Embeds"                                               
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -1004,7 +1026,7 @@
 
                                 <ItemsControl x:Name="Embeds" 
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -1102,6 +1124,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    
 
 
 </ResourceDictionary>

@@ -18,7 +18,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <LangVersion>9</LangVersion>
+    <LangVersion>12</LangVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
@@ -31,8 +31,9 @@
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>0C606AB2406E4DC3ED98B463C970D98865ED9735</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>5304CCE7E0FB38D53B4F3741DDD135917556ACB4</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+    <IlcParameters>/ExtraNutcArguments:"/d2threads8"</IlcParameters>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -142,45 +143,55 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\AcknowledgeCommand.cs" />
-    <Compile Include="Commands\BanCommand.cs" />
-    <Compile Include="Commands\ChangeNicknameCommand.cs" />
+    <Compile Include="Commands\Channels\AcknowledgeChannelCommand.cs" />
+    <Compile Include="Commands\Channels\MuteChannelCommand.cs" />
+    <Compile Include="Commands\Guild\AcknowledgeGuildCommand.cs" />
+    <Compile Include="Commands\Guild\MuteGuildCommand.cs" />
+    <Compile Include="Commands\Member\ChangeNicknameCommand.cs" />
     <Compile Include="Commands\Channels\OpenInNewWindowCommand.cs" />
-    <Compile Include="Commands\CopyIdCommand.cs" />
-    <Compile Include="Commands\CopyMessageCommand.cs" />
-    <Compile Include="Commands\CopyUrlCommand.cs" />
-    <Compile Include="Commands\DeleteMessageCommand.cs" />
+    <Compile Include="Commands\Generic\CopyIdCommand.cs" />
+    <Compile Include="Commands\Messages\CopyMessageCommand.cs" />
+    <Compile Include="Commands\Generic\CopyUrlCommand.cs" />
+    <Compile Include="Commands\Messages\DeleteMessageCommand.cs" />
+    <Compile Include="Commands\DiscordCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
     <Compile Include="Commands\EditModeCommand.cs" />
     <Compile Include="Commands\Generic\DownloadCommand.cs" />
     <Compile Include="Commands\Generic\ShareCommand.cs" />
-    <Compile Include="Commands\KickCommand.cs" />
-    <Compile Include="Commands\MessageUserCommand.cs" />
-    <Compile Include="Commands\MuteCommand.cs" />
-    <Compile Include="Commands\OpenNewWindowCommand.cs" />
-    <Compile Include="Commands\PinChannelCommand.cs" />
-    <Compile Include="Commands\PinMessageCommand.cs" />
+    <Compile Include="Commands\Member\KickCommand.cs" />
+    <Compile Include="Commands\Member\BanCommand.cs" />
+    <Compile Include="Commands\Channels\PinChannelToStartCommand.cs" />
+    <Compile Include="Commands\Messages\PinMessageCommand.cs" />
     <Compile Include="Commands\Messages\ReactCommand.cs" />
-    <Compile Include="Commands\ReplyCommand.cs" />
+    <Compile Include="Commands\Messages\ReplyCommand.cs" />
+    <Compile Include="Commands\NullCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="Commands\ShowUserOverlayCommand.cs" />
+    <Compile Include="Commands\Users\SendMessageCommand.cs" />
+    <Compile Include="Commands\Users\ShowUserOverlayCommand.cs" />
     <Compile Include="Controls\Channels\ChannelIconControl.cs" />
     <Compile Include="Controls\Channels\ChannelListControl.cs" />
+    <Compile Include="Controls\Messages\Embeds\EmbedControl.xaml.cs">
+      <DependentUpon>EmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Embeds\EmbedFieldsView.cs" />
+    <Compile Include="Controls\Messages\Embeds\ImageEmbedControl.xaml.cs">
+      <DependentUpon>ImageEmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Embeds\VideoEmbedControl.xaml.cs">
+      <DependentUpon>VideoEmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UniformGrid\TakenSpotsReferenceHolder.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
+    <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
+    <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
+    <Compile Include="Extensions\DiscordColorExtensions.cs" />
     <Compile Include="Extensions\GuildExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
-    <Compile Include="Controls\Embeds\EmbedFieldControl.xaml.cs">
-      <DependentUpon>EmbedFieldControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Embeds\EmbedVideoControl.xaml.cs">
-      <DependentUpon>EmbedVideoControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EmbedViewer.xaml.cs">
-      <DependentUpon>EmbedViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
     <Compile Include="Controls\EmotePicker.xaml.cs">
       <DependentUpon>EmotePicker.xaml</DependentUpon>
@@ -330,25 +341,18 @@
     <Compile Include="Converters\ChannelTypeTemplateSelector.cs" />
     <Compile Include="Converters\ColourBrushConverter.cs" />
     <Compile Include="Converters\DateTimeConverter.cs" />
-    <Compile Include="Converters\DiscordUriConverter.cs" />
-    <Compile Include="Converters\DMIconConverter.cs" />
-    <Compile Include="Converters\DMNameConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\GuildListTemplateSelector.cs" />
     <Compile Include="Converters\HideOnNullConverter.cs" />
-    <Compile Include="Converters\MemberOnlyConverter.cs" />
     <Compile Include="Converters\Messages\AttachmentTemplateSelector.cs" />
     <Compile Include="Converters\Messages\AttachmentTypeConverter.cs" />
     <Compile Include="Converters\Messages\ComponentTemplateSelector.cs" />
     <Compile Include="Converters\MessageTemplateSelector.cs" />
-    <Compile Include="Converters\MutedConverter.cs" />
     <Compile Include="Converters\PresenceConverters.cs" />
     <Compile Include="Converters\ThumbnailImageConverter.cs" />
     <Compile Include="Converters\TitleCaseConverter.cs" />
     <Compile Include="Converters\TruncateConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
-    <Compile Include="Converters\VoicePingConverter.cs" />
-    <Compile Include="Converters\VoicePingGlyphConverter.cs" />
     <Compile Include="Dialogs\BanDialog.xaml.cs">
       <DependentUpon>BanDialog.xaml</DependentUpon>
     </Compile>
@@ -401,6 +405,7 @@
     <Compile Include="Models\CreateServerModel.cs" />
     <Compile Include="Models\DiscordPageViewModel.cs" />
     <Compile Include="Models\DMChannelsViewModel.cs" />
+    <Compile Include="Models\Emoji\EmojiViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsPageViewModel.cs" />
     <Compile Include="Models\GuildChannelListViewModel.cs" />
@@ -411,12 +416,24 @@
     <Compile Include="Models\ISnowflake.cs" />
     <Compile Include="Models\MainPageArgs.cs" />
     <Compile Include="Models\Messages\AttachmentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ActionRowComponentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ButtonComponentViewModel.cs" />
+    <Compile Include="Models\Messages\Components\ComponentViewModelBase.cs" />
+    <Compile Include="Models\Messages\Components\UnknownComponentViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedAuthorViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedFieldViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedFooterViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedImageViewModel.cs" />
+    <Compile Include="Models\Messages\Embeds\EmbedVideoViewModel.cs" />
+    <Compile Include="Models\Messages\EmbedViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
     <Compile Include="Models\Messages\ReactionViewModel.cs" />
+    <Compile Include="Models\Messages\StickerViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />
     <Compile Include="Models\PinsPageViewModel.cs" />
+    <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
     <Compile Include="Models\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />
@@ -425,8 +442,12 @@
     <Compile Include="Models\Settings\ThemesSettingsModel.cs" />
     <Compile Include="Models\Settings\RootSettingsModel.cs" />
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
+    <Compile Include="Models\User\PresenceViewModel.cs" />
+    <Compile Include="Models\User\RoleViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
+    <Compile Include="Models\Voice\Transport\VoiceDispatch.cs" />
+    <Compile Include="Models\Voice\Transport\VoiceStateUpdatePayload.cs" />
     <Compile Include="Models\Voice\VoiceConnectionModel.cs" />
     <Compile Include="Pages\ChannelPage.xaml.cs">
       <DependentUpon>ChannelPage.xaml</DependentUpon>
@@ -507,6 +528,9 @@
     <Compile Include="Themes\Controls\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Themes\Controls\Presences.xaml.cs">
+      <DependentUpon>Presences.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Themes\Templates.xaml.cs">
       <DependentUpon>Templates.xaml</DependentUpon>
     </Compile>
@@ -521,6 +545,7 @@
     <Compile Include="Services\Windowing\WindowingService.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
+    <Compile Include="Utilities\EmojiUtilities.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />
@@ -619,6 +644,12 @@
     <PackageReference Include="Microsoft.AppCenter.Crashes">
       <Version>5.0.5</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug">
+      <Version>8.0.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
@@ -644,7 +675,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="ObservableCollections">
-      <Version>1.1.3</Version>
+      <Version>2.2.2</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
@@ -670,18 +701,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\Embeds\EmbedFieldControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Embeds\EmbedVideoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\EmbedViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\EmotePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -713,6 +732,18 @@
     <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\EmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\ImageEmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\VideoEmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Presence\InlinePresenceControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1083,6 +1114,10 @@
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj">
       <Project>{c01b8589-13fe-4a6d-b159-6644977f58de}</Project>
       <Name>DSharpPlus.Rest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus.Windows\DSharpPlus.Windows.csproj">
+      <Project>{1b172f49-372a-4f15-8353-9bdaba6e2331}</Project>
+      <Name>DSharpPlus.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj">
       <Project>{0f4b3af7-9320-41ae-82d0-3737949499c7}</Project>

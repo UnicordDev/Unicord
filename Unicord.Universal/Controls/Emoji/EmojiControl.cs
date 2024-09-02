@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Emoji;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -14,14 +15,14 @@ namespace Unicord.Universal.Controls.Emoji
 {
     public sealed class EmojiControl : Control
     {
-        public DiscordEmoji Emoji
+        public EmojiViewModel Emoji
         {
-            get => (DiscordEmoji)GetValue(EmojiProperty);
+            get => (EmojiViewModel)GetValue(EmojiProperty);
             set => SetValue(EmojiProperty, value);
         }
 
         public static readonly DependencyProperty EmojiProperty =
-            DependencyProperty.Register("Emoji", typeof(DiscordEmoji), typeof(EmojiControl), new PropertyMetadata(null));
+            DependencyProperty.Register("Emoji", typeof(EmojiViewModel), typeof(EmojiControl), new PropertyMetadata(default(EmojiViewModel)));
 
         public double Size
         {

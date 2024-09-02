@@ -15,7 +15,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml.Input;
 using Windows.Web.Http;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.Commands.Generic
 {
     public class ProgressInfo : ViewModelBase
     {
@@ -62,8 +62,8 @@ namespace Unicord.Universal.Commands
 
     public class DownloadCommand : ICommand
     {
-        private ProgressInfo _info;
-        private string _url;
+        private readonly ProgressInfo _info;
+        private readonly string _url;
         private bool _canExecute;
 
         public DownloadCommand(string url, ProgressInfo info)

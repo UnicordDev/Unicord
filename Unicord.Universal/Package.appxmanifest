@@ -9,7 +9,7 @@
   IgnorableNamespaces="uap uap4 uap5 mp">
 
 	<Identity Name="24101WamWooWamRD.UnicordCanary"
-			  Publisher="CN=Thomas"
+			  Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B"
 			  Version="2.0.0.0" />
 
 	<mp:PhoneIdentity PhoneProductId="e8adef53-9a75-41ce-88eb-b971a1ee9d57"

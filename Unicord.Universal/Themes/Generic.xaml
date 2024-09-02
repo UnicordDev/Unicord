@@ -116,19 +116,21 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
         <Setter Property="IsCacheEnabled" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:ImageEx">
                     <Grid Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                         <Image Name="PlaceholderImage"
-                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                Opacity="1.0"
                                Source="{TemplateBinding PlaceholderSource}"
                                Stretch="{TemplateBinding PlaceholderStretch}" />
                         <Image Name="Image"
-                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                NineGrid="{TemplateBinding NineGrid}"
                                Opacity="0.0"
                                Stretch="{TemplateBinding Stretch}" />
@@ -221,7 +223,12 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageElement">
                     <local:ScaledContentControl TargetWidth="{TemplateBinding ImageWidth}" TargetHeight="{TemplateBinding ImageHeight}">
-                        <controls:ImageEx x:Name="image" IsCacheEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"/>
+                    <controls:ImageEx x:Name="image"
+                                      CornerRadius="{TemplateBinding CornerRadius}" 
+                                      MaxWidth="{TemplateBinding ImageWidth}" 
+                                      MaxHeight="{TemplateBinding ImageHeight}" 
+                                      IsCacheEnabled="True"
+                                      Stretch="Uniform"/>
                     </local:ScaledContentControl>
                 </ControlTemplate>
             </Setter.Value>
@@ -482,8 +489,7 @@
             <emoji:EmojiControl Emoji="{Binding}"
                                 Size="24"/>
 
-            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding DiscordName}" VerticalAlignment="Center"/>
-
+            <TextBlock Margin="8,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
         </Grid>
     </DataTemplate>
 
@@ -629,8 +635,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Converter={StaticResource DMNameConverter}}" ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}"/>
-            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+            <lib:PersonPicture Width="28" Height="28" DisplayName="{Binding Name}" ProfilePicture="{Binding IconUrl}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Name}"/>
         </Grid>
     </DataTemplate>
 
@@ -805,6 +811,4 @@
         <Setter Property="AutomationProperties.LiveSetting" Value="Assertive" />
         <Setter Property="Template" Value="{StaticResource CustomNotificationTemplate}" />
     </Style>
-
-   
 </ResourceDictionary>

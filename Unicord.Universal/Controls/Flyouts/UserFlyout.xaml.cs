@@ -13,12 +13,6 @@ namespace Unicord.Universal.Controls.Flyouts
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Window.Current.Content.FindChild<MainPage>()
-                .ShowUserOverlay(DataContext as DiscordUser, true);
-        }
-
         // i dislike this
         private void IconLabelButton_Tapped(object sender, TappedRoutedEventArgs e)
         {

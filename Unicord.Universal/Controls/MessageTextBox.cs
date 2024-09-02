@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.Emoji;
 using WamWooWam.Core;
 using Windows.System;
 using Windows.UI.Core;
@@ -312,9 +313,9 @@ namespace Unicord.Universal.Controls
             Focus();
         }
 
-        private void OnEmotePicked(object sender, DiscordEmoji e)
+        private void OnEmotePicked(object sender, EmojiViewModel e)
         {
-            if (e != null)
+            if (e.IsValid)
             {
                 AppendText(e.ToString());
             }
@@ -469,15 +470,15 @@ namespace Unicord.Universal.Controls
 
         private void UpdateSourceForEmojiMentions(AutoSuggestBox sender, string text, CompareInfo cult)
         {
-            if (_emoji == null)
-            {
-                _emoji = Tools.GetEmoji(Channel);
-            }
+            //if (_emoji == null)
+            //{
+            //    _emoji = Tools.GetEmoji(Channel);
+            //}
 
-            sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.GetSearchName(), text, CompareOptions.IgnoreCase)))
-                                       .Where(x => x.index != -1)
-                                       .OrderBy(x => x.index)
-                                       .Select(x => x.emoji);
+            //sender.ItemsSource = _emoji.Select(e => (emoji: e, index: cult.IndexOf(e.SearchName, text, CompareOptions.IgnoreCase)))
+            //                           .Where(x => x.index != -1)
+            //                           .OrderBy(x => x.index)
+            //                           .Select(x => x.emoji);
         }
 
         private string AppendText(string target, string text)

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Extensions;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
@@ -54,7 +55,8 @@ namespace Unicord.Universal.Shared
                 var mentions = 0;
                 foreach (var (key, value) in _discord.ReadStates)
                 {
-                    var channel = _discord.InternalGetCachedChannel(key);
+                    if (_discord.TryGetCachedChannel(key, out var channel) && channel.IsUnread())
+                        mentions += value.MentionCount;
                 }
             }
             catch (Exception)

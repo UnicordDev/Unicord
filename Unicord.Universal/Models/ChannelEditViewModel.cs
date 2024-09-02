@@ -21,8 +21,8 @@ namespace Unicord.Universal.Models
             Name = channel.Name;
             Topic = channel.Topic;
             NSFW = channel.IsNSFW;
-            Userlimit = channel.UserLimit;
-            Bitrate = channel.Bitrate / 1000;
+            Userlimit = channel.UserLimit.GetValueOrDefault();
+            Bitrate = channel.Bitrate.GetValueOrDefault() / 1000;
 
             // this is awful and horrible and bad
             PermissionOverwrites = new ObservableCollection<NavigationViewItem>();
@@ -35,7 +35,7 @@ namespace Unicord.Universal.Models
                 if (overwrite.Type == OverwriteType.Member)
                 {
                     icon.Symbol = Symbol.Contact;
-                    content = channel.Guild.GetCachedMember(overwrite.Id, out var member)
+                    content = channel.Guild.Members.TryGetValue(overwrite.Id, out var member)
                         ? $"@{member.Username}#{member.Discriminator}"
                         : $"Unknown Member {overwrite.Id}";
                 }

@@ -1,8 +1,10 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Windows;
 using Humanizer;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Concurrent;
@@ -18,6 +20,7 @@ using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -47,7 +50,7 @@ namespace Unicord.Universal.Models
         private string _messageText;
         private bool _isTranscoding;
         private ObservableCollection<MessageViewModel> _messages;
-        private DiscordMessage _replyTo;
+        private MessageViewModel _replyTo;
         private bool _replyPing = true;
 
         public ChannelPageViewModel(DiscordChannel channel, WindowHandle window)
@@ -71,7 +74,7 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, (t, v) => t.OnMessageDeleted(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, (t, v) => t.OnResumed(v.Event));
 
-            TypingUsers = new ObservableCollection<DiscordUser>();
+            TypingUsers = new ObservableCollection<UserViewModel>();
             FileUploads = new ObservableCollection<FileUploadModel>();
             FileUploads.CollectionChanged += (o, e) =>
             {
@@ -104,8 +107,7 @@ namespace Unicord.Universal.Models
                 }
             };
 
-            OpenInNewWindowCommand = new OpenInNewWindowCommand(window, false);
-            OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(window, true);
+            ClearReplyCommand = new RelayCommand(() => this.ReplyTo = null);
         }
 
         public ObservableCollection<MessageViewModel> Messages
@@ -119,7 +121,7 @@ namespace Unicord.Universal.Models
             get => _messageText;
             set => OnPropertySet(ref _messageText, value);
         }
-      
+
         public DiscordUser CurrentUser
         {
             get => _currentUser;
@@ -142,13 +144,23 @@ namespace Unicord.Universal.Models
 
         public Permissions Permissions { get; set; }
 
-        public ObservableCollection<DiscordUser> TypingUsers { get; set; }
+        public ObservableCollection<UserViewModel> TypingUsers { get; set; }
 
         public ObservableCollection<FileUploadModel> FileUploads { get; set; }
 
-        public DiscordMessage ReplyTo { get => _replyTo; set => OnPropertySet(ref _replyTo, value); }
+        public MessageViewModel ReplyTo
+        {
+            get => _replyTo; set
+            {
+                OnPropertySet(ref _replyTo, value);
+                InvokePropertyChanged(nameof(ShowReply));
+            }
+        }
 
         public bool ReplyPing { get => _replyPing; set => OnPropertySet(ref _replyPing, value); }
+
+        public bool ShowReply =>
+            ReplyTo != null;
 
         public override string Topic
             => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r\n", "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
@@ -311,7 +323,7 @@ namespace Unicord.Universal.Models
 
         public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
 
-        public bool HasNitro => Channel.Discord.CurrentUser.HasNitro();
+        public bool HasNitro => App.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
             => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
@@ -322,7 +334,7 @@ namespace Unicord.Universal.Models
         public string SlowModeText
             => string.Format(_strings.GetString(ImmuneToSlowMode ? "ImmuneSlowModeFormat" : "SlowModeFormat"), TimeSpan.FromSeconds(Channel.PerUserRateLimit ?? 0).ToNaturalString());
 
-        private bool ImmuneToSlowMode 
+        private bool ImmuneToSlowMode
             => Permissions.HasPermission(Permissions.ManageMessages) && Permissions.HasPermission(Permissions.ManageChannels);
 
         public bool ShowTypingUsers
@@ -350,8 +362,7 @@ namespace Unicord.Universal.Models
         public bool IsPinned =>
             SecondaryTile.Exists($"Channel_{Channel.Id}");
 
-        public ICommand OpenInNewWindowCommand { get; }
-        public ICommand OpenInCompactOverlayWindowCommand { get; }
+        public ICommand ClearReplyCommand { get; }
 
         public bool IsDisposed { get; internal set; }
 
@@ -614,7 +625,7 @@ namespace Unicord.Universal.Models
                         files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-                    await Tools.SendFilesWithProgressAsync(Channel, txt, mentions, replyTo, files, progress)
+                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
                                .ConfigureAwait(false);
 
                     foreach (var item in files)
@@ -634,7 +645,10 @@ namespace Unicord.Universal.Models
                 }
                 else
                 {
-                    await Channel.SendMessageAsync(txt, mentions: mentions, replyTo: replyTo).ConfigureAwait(false);
+                    await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                        .WithContent(txt)
+                        .WithReply(replyTo?.Id)
+                        .WithAllowedMentions(mentions)).ConfigureAwait(false);
                 }
 
 
@@ -683,7 +697,7 @@ namespace Unicord.Universal.Models
 
                 syncContext.Post(o =>
                 {
-                    TypingUsers.Add(Channel.Guild != null && Channel.Guild.Members.TryGetValue(e.User.Id, out var member) ? member : e.User);
+                    TypingUsers.Add(new UserViewModel(e.User, Channel.GuildId, this));
                     InvokePropertyChanged(nameof(ShowTypingUsers));
                     InvokePropertyChanged(nameof(ShowTypingContainer));
                     InvokePropertyChanged(nameof(HideTypingContainer));
@@ -700,7 +714,8 @@ namespace Unicord.Universal.Models
             var source = new CancellationTokenSource(10_000);
             source.Token.Register(() => syncContext.Post(o =>
             {
-                TypingUsers.Remove(e.User);
+                foreach (var user in TypingUsers.Where(u => u.Id == e.User.Id).ToArray())
+                    TypingUsers.Remove(user);
                 InvokePropertyChanged(nameof(ShowTypingUsers));
                 InvokePropertyChanged(nameof(ShowTypingContainer));
                 InvokePropertyChanged(nameof(HideTypingContainer));
