@@ -87,7 +87,8 @@ namespace Unicord.Universal.Models.User
                             CondensedTitle = custom.Name;
                         }
 
-                        Emoji = new EmojiViewModel(custom.Emoji);
+                        if (custom.Emoji != null)
+                            Emoji = new EmojiViewModel(custom.Emoji);
                         break;
                     }
                 default:

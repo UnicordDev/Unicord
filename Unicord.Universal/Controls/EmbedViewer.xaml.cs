@@ -48,8 +48,6 @@ namespace Unicord.Universal.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            return;
-
             if (Embed.Type == "video")
                 Logger.Log(Embed.Video.Url);
 

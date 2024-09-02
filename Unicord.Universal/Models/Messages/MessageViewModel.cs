@@ -51,16 +51,23 @@ namespace Unicord.Universal.Models.Messages
                 DeleteCommand = new DeleteMessageCommand(this);
                 ReactCommand = new ReactCommand(this);
 
-                Embeds = new ObservableCollection<EmbedViewModel>(Message.Embeds.Select(s => new EmbedViewModel(s, this)));
+                var embedGroups = Message.Embeds
+                    .GroupBy(g => g.Url);
+
+                Embeds = new ObservableCollection<EmbedViewModel>(embedGroups.Select(group => new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this)));
                 Attachments = new ObservableCollection<AttachmentViewModel>(Message.Attachments.Select(a => new AttachmentViewModel(a, this)));
                 Stickers = new ObservableCollection<StickerViewModel>(Message.Stickers.Select(s => new StickerViewModel(s, this)));
                 Components = new ObservableCollection<ComponentViewModelBase>(Message.Components.Select(ComponentViewModelFactory));
                 Reactions = new ObservableCollection<ReactionViewModel>(Message.Reactions.Select(r => new ReactionViewModel(r, ReactCommand)));
 
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this, (t, e) => t.OnReactionAdded(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this, (t, e) => t.OnReactionRemoved(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this, (t, e) => t.OnReactionGroupRemoved(e.Event));
-                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this, (t, e) => t.OnReactionsCleared(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionAddEventArgs>(this,
+                    (t, e) => t.OnReactionAdded(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEventArgs>(this,
+                    (t, e) => t.OnReactionRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionRemoveEmojiEventArgs>(this,
+                    (t, e) => t.OnReactionGroupRemoved(e.Event));
+                WeakReferenceMessenger.Default.Register<MessageViewModel, MessageReactionsClearEventArgs>(this,
+                    (t, e) => t.OnReactionsCleared(e.Event));
             }
         }
 
@@ -85,11 +92,8 @@ namespace Unicord.Universal.Models.Messages
         public bool IsEdited
             => Message.IsEdited;
         public bool IsSystemMessage
-            => Message.MessageType != MessageType.Default &&
-            Message.MessageType != MessageType.Reply &&
-            Message.MessageType != MessageType.ApplicationCommand &&
-            Message.MessageType != MessageType.ContextMenuCommand;
-
+            => Message.MessageType is not (MessageType.Default or MessageType.Reply or
+                MessageType.ApplicationCommand or MessageType.ContextMenuCommand);
         public MessageType Type
             => Message.MessageType ?? MessageType.Default;
 
@@ -228,18 +232,25 @@ namespace Unicord.Universal.Models.Messages
             if (e.Message.Id != Message.Id)
                 return;
 
-            if (e.MessageBefore.Content != e.Message.Content)
+            if (e.MessageBefore?.Content != e.Message.Content)
                 InvokePropertyChanged(nameof(Content));
 
-            if (e.MessageBefore.IsEdited != e.Message.IsEdited)
+            if (e.MessageBefore?.IsEdited != e.Message.IsEdited)
                 InvokePropertyChanged(nameof(IsEdited));
+
+            var embedGroups = Message.Embeds
+                    .GroupBy(g => g.Url);
 
             syncContext.Post((o) =>
             {
-                Embeds.Clear();
-                foreach (var embed in e.Message.Embeds)
-                    Embeds.Add(new EmbedViewModel(embed, this));
-
+                foreach (var group in embedGroups)
+                {
+                    var viewModel = Embeds.FirstOrDefault(v => v.Url == group.Key);
+                    if (viewModel != null)
+                        viewModel.Update(group.First(), group.Skip(1));
+                    else
+                        Embeds.Add(new EmbedViewModel(group.First(), group.Skip(1).ToArray(), this));
+                }
             }, null);
 
             return;

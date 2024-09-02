@@ -23,6 +23,8 @@ namespace Unicord.Universal.Services
             public readonly double Height = Control.Height;
             public readonly double MaxWidth = Control.MaxWidth;
             public readonly double MaxHeight = Control.MaxHeight;
+            public readonly HorizontalAlignment HorizontalAlignment = Control.HorizontalAlignment;
+            public readonly VerticalAlignment VerticalAlignment = Control.VerticalAlignment;
             public readonly Transform RenderTransform = Control.RenderTransform;
             public readonly Point RenderTransformOrigin = Control.RenderTransformOrigin;
 
@@ -34,6 +36,8 @@ namespace Unicord.Universal.Services
                 target.MaxHeight = MaxHeight;
                 target.RenderTransform = RenderTransform;
                 target.RenderTransformOrigin = RenderTransformOrigin;
+                target.HorizontalAlignment = HorizontalAlignment;
+                target.VerticalAlignment = VerticalAlignment;
             }
         }
 
@@ -105,11 +109,11 @@ namespace Unicord.Universal.Services
 
             element.MaxWidth = double.PositiveInfinity;
             element.MaxHeight = double.PositiveInfinity;
-
-            Canvas.SetLeft(element, 0);
-            Canvas.SetTop(element, 0);
             element.Width = maxWidth;
             element.Height = maxHeight;
+
+            element.HorizontalAlignment = HorizontalAlignment.Stretch;
+            element.VerticalAlignment = VerticalAlignment.Stretch;
 
             var ratioX = (double)maxWidth / bounds.Width;
             var ratioY = (double)maxHeight / bounds.Height;

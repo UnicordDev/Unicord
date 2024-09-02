@@ -18,7 +18,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <LangVersion>9</LangVersion>
+    <LangVersion>12</LangVersion>
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
@@ -31,7 +31,7 @@
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>0C606AB2406E4DC3ED98B463C970D98865ED9735</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>5304CCE7E0FB38D53B4F3741DDD135917556ACB4</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -169,7 +169,18 @@
     <Compile Include="Commands\Users\ShowUserOverlayCommand.cs" />
     <Compile Include="Controls\Channels\ChannelIconControl.cs" />
     <Compile Include="Controls\Channels\ChannelListControl.cs" />
+    <Compile Include="Controls\Messages\Embeds\EmbedControl.xaml.cs">
+      <DependentUpon>EmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Embeds\ImageEmbedControl.xaml.cs">
+      <DependentUpon>ImageEmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Messages\Embeds\VideoEmbedControl.xaml.cs">
+      <DependentUpon>VideoEmbedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
+    <Compile Include="Extensions\DiscordColorExtensions.cs" />
     <Compile Include="Extensions\GuildExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
@@ -720,6 +731,18 @@
     <Page Include="Controls\Flyouts\UserListContextFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\EmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\ImageEmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Messages\Embeds\VideoEmbedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Presence\InlinePresenceControl.xaml">
       <Generator>MSBuild:Compile</Generator>

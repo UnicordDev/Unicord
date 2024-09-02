@@ -221,7 +221,12 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageElement">
                     <local:ScaledContentControl TargetWidth="{TemplateBinding ImageWidth}" TargetHeight="{TemplateBinding ImageHeight}">
-                        <controls:ImageEx x:Name="image" IsCacheEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"/>
+                    <controls:ImageEx x:Name="image"
+                                      CornerRadius="{TemplateBinding CornerRadius}" 
+                                      MaxWidth="{TemplateBinding ImageWidth}" 
+                                      MaxHeight="{TemplateBinding ImageHeight}" 
+                                      IsCacheEnabled="True"
+                                      Stretch="Uniform"/>
                     </local:ScaledContentControl>
                 </ControlTemplate>
             </Setter.Value>
@@ -804,6 +809,4 @@
         <Setter Property="AutomationProperties.LiveSetting" Value="Assertive" />
         <Setter Property="Template" Value="{StaticResource CustomNotificationTemplate}" />
     </Style>
-
-   
 </ResourceDictionary>

@@ -21,6 +21,11 @@
                                            AudioTemplate="{StaticResource AudioAttachmentMediaTemplate}"
                                            GenericTemplate="{StaticResource DefaultAttachmentGenericTemplate}"/>
 
+    <converters:EmbedTemplateSelector x:Key="EmbedTemplateSelector"
+                                      ImageTemplate="{StaticResource ImageEmbedTemplate}"
+                                      VideoTemplate="{StaticResource VideoEmbedTemplate}"
+                                      RichTemplate="{StaticResource RichEmbedTemplate}"/>
+
     <converters:AttachmentTypeConverter x:Key="AttachmentTypeConverter"/>
 
     <media:BackdropBlurBrush x:Key="SpoilerBrush" Amount="64" />
@@ -57,7 +62,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style TargetType="local:AttachmentMediaControl">
         <Setter Property="Template">
@@ -416,11 +420,19 @@
         </ToggleButton>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultEmbedTemplate">
-        <!--<controls:EmbedViewer Embed="{Binding}" />-->
+    <DataTemplate x:Key="RichEmbedTemplate">
+        <local:EmbedControl ViewModel="{Binding}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultAttachmentTemplate">
+    <DataTemplate x:Key="ImageEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:ImageEmbedControl ViewModel="{Binding Thumbnail}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VideoEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:VideoEmbedControl ViewModel="{Binding Video}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DefaultAttachmentTemplate" x:DataType="messages:EmbedViewModel">
         <local:AttachmentControl ViewModel="{Binding}" />
     </DataTemplate>
 
@@ -724,7 +736,7 @@
                                                       HorizontalAlignment="Left"/>
 
                                         <ItemsControl x:Name="Embeds"
-                                                      ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                                      ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                                       ItemsSource="{Binding Embeds}"
                                                       HorizontalAlignment="Left"/>
 
@@ -886,7 +898,7 @@
 
                                 <ItemsControl x:Name="Embeds"                                               
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -1004,7 +1016,7 @@
 
                                 <ItemsControl x:Name="Embeds" 
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -1102,6 +1114,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    
 
 
 </ResourceDictionary>
