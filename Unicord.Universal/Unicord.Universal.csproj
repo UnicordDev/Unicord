@@ -438,6 +438,7 @@
     <Compile Include="Models\Settings\RootSettingsModel.cs" />
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
     <Compile Include="Models\User\PresenceViewModel.cs" />
+    <Compile Include="Models\User\RoleViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Models\Voice\Transport\VoiceDispatch.cs" />
@@ -539,6 +540,7 @@
     <Compile Include="Services\Windowing\WindowingService.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
+    <Compile Include="Utilities\EmojiUtilities.cs" />
     <Compile Include="Utilities\MediaTranscoding.cs" />
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />

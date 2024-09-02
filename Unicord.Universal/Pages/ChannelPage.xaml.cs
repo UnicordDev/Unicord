@@ -14,6 +14,7 @@ using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Emoji;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -703,14 +704,14 @@ namespace Unicord.Universal.Pages
         private MessageViewModel _reactionModel;
         internal void ShowReactionPicker(MessageViewModel model)
         {
-            var control = MessageList.ContainerFromItem(model.Message);
+            var control = MessageList.ContainerFromItem(model);
             if (control is not FrameworkElement element) return;
 
             _reactionModel = model;
             EmoteFlyout.ShowAt(element);
         }
 
-        private void EmotePicker_EmojiPicked(object sender, DiscordEmoji e)
+        private void EmotePicker_EmojiPicked(object sender, EmojiViewModel e)
         {
             if (_reactionModel != null)
             {

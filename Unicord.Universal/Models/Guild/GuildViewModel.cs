@@ -13,6 +13,8 @@ using Unicord.Universal.Commands.Guild;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.User;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models.Guild
 {
@@ -50,6 +52,9 @@ namespace Unicord.Universal.Models.Guild
 
         public string IconUrl =>
             Guild.GetIconUrl(64);
+
+        public ImageSource Icon
+            => IconUrl != null ? new BitmapImage(new Uri(IconUrl)) : null;
 
         public bool Muted
             => Guild.IsMuted();

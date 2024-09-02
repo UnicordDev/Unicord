@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using DSharpPlus.Entities;
@@ -8,6 +9,8 @@ using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Members;
 using Unicord.Universal.Commands.Users;
 using Unicord.Universal.Extensions;
+using Unicord.Universal.Models.Guild;
+using Unicord.Universal.Utilities;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Models.User
@@ -18,7 +21,8 @@ namespace Unicord.Universal.Models.User
         protected ulong? guildId;
 
         private PresenceViewModel _presenceVmCache;
-
+        private List<GuildViewModel> _mutualGuilds;
+        private List<RoleViewModel> _rolesCache;
 
         internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
             : this(user.Id, (user as DiscordMember)?.Guild.Id, parent)
@@ -78,10 +82,23 @@ namespace Unicord.Universal.Models.User
             }
         }
 
+        public GuildViewModel Guild
+            => guildId != null ? new GuildViewModel(guildId.Value, this) : null;
+
+        public bool IsMember
+            => Member != null;
+
         public string DisplayName
             => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?
             Member.Nickname
             : (User.GlobalName ?? User.Username);
+
+        public string Nickname
+            => Member?.Nickname;
+        public string GlobalName
+            => User.GlobalName;
+        public string Username
+            => User.Username;
 
         public string AvatarUrl
             => (Member as DiscordUser)?.GetAvatarUrl(64) ?? User.GetAvatarUrl(64);
@@ -111,6 +128,30 @@ namespace Unicord.Universal.Models.User
             => KickCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
         public Visibility BanVisibility
             => BanCommand?.CanExecute(null) == true ? Visibility.Visible : Visibility.Collapsed;
+
+        public DateTimeOffset JoinedAt
+            => Member?.JoinedAt ?? default;
+
+        public List<GuildViewModel> MutualGuilds
+        {
+            get
+            {
+                if (this._mutualGuilds != null)
+                    return this._mutualGuilds;
+
+                var orderedGuilds = EmojiUtilities.GetOrderedGuildsList();
+                _mutualGuilds ??= discord.Guilds.Values.Where(g => g.Members.ContainsKey(this.id))
+                    .OrderBy(g => orderedGuilds.IndexOf(g.Id))
+                    .Select(g => new GuildViewModel(g.Id, this))
+                    .ToList();
+
+                return _mutualGuilds;
+            }
+        }
+
+        public List<RoleViewModel> Roles
+            => Member != null ?
+                _rolesCache ??= Member.Roles.Select(r => new RoleViewModel(r, this)).ToList() : null;
 
         private void OnGuildMemberUpdate(GuildMemberUpdateEventArgs e)
         {

@@ -625,7 +625,7 @@ namespace Unicord.Universal.Models
                         files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo.Message, files, progress)
+                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
                                .ConfigureAwait(false);
 
                     foreach (var item in files)

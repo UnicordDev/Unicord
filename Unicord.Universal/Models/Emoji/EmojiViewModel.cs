@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using NeoSmart.Unicode;
 
@@ -90,6 +91,11 @@ namespace Unicord.Universal.Models.Emoji
 
         public readonly DiscordEmoji? DiscordEmoji =>
             _emoji ?? DiscordEmoji.FromUnicode(Unicode);
+
+        public override string ToString()
+        {
+            return _emoji != null ? Formatter.Emoji(_emoji) : Unicode;
+        }
 
         public override bool Equals(object obj)
         {

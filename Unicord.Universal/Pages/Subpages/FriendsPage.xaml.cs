@@ -33,7 +33,7 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (e.ClickedItem is RelationshipViewModel rel)
             {
-                this.FindParent<MainPage>().ShowUserOverlay(rel.User.User, true);
+                this.FindParent<MainPage>().ShowUserOverlay(rel.User, true);
             }
         }
 

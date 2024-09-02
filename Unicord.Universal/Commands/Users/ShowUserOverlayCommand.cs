@@ -24,7 +24,7 @@ namespace Unicord.Universal.Commands.Users
             if (page != null)
             {
                 Analytics.TrackEvent("ShowUserOverlayCommand_Invoked");
-                page.ShowUserOverlay(viewModel.User, true);
+                page.ShowUserOverlay(viewModel, true);
             }
         }
     }

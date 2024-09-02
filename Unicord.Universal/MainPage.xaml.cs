@@ -199,9 +199,9 @@ namespace Unicord.Universal
             }
         }
 
-        internal void ShowUserOverlay(DiscordUser user, bool animate)
+        internal void ShowUserOverlay(UserViewModel user, bool animate)
         {
-            userInfoOverlay.User = new UserViewModel(user, null);
+            userInfoOverlay.User = user;
             userInfoOverlay.Visibility = Visibility.Visible;
             userInfoPopup.Visibility = Visibility.Visible;
 

@@ -8,6 +8,8 @@ using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Emoji;
+using Unicord.Universal.Utilities;
 using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -21,7 +23,7 @@ namespace Unicord.Universal.Controls
         private ulong _prevChannelId;
 
         public CollectionViewSource Source { get; } = new CollectionViewSource() { IsSourceGrouped = true };
-        public event EventHandler<DiscordEmoji> EmojiPicked;
+        public event EventHandler<EmojiViewModel> EmojiPicked;
 
         public DiscordChannel Channel
         {
@@ -43,7 +45,7 @@ namespace Unicord.Universal.Controls
             {
                 if (Channel?.Id != _prevChannelId)
                 {
-                    Source.Source = Tools.GetGroupedEmoji(searchBox.Text.ToLowerInvariant(), Channel);
+                    Source.Source = EmojiUtilities.GetEmoji(new ChannelViewModel(Channel.Id, true), searchBox.Text);
                     _prevChannelId = Channel.Id;
                 }
             }
@@ -57,7 +59,7 @@ namespace Unicord.Universal.Controls
 
         private void EmojiView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            EmojiPicked?.Invoke(this, e.ClickedItem as DiscordEmoji);
+            EmojiPicked?.Invoke(this, (EmojiViewModel)e.ClickedItem);
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

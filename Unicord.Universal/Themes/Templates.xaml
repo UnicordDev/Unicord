@@ -16,8 +16,9 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
     xmlns:media1="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:channels="using:Unicord.Universal.Controls.Channels"
-    xmlns:channelVms="using:Unicord.Universal.Models.Channels"
-    xmlns:guildVMs="using:Unicord.Universal.Models.Guild" xmlns:user="using:Unicord.Universal.Models.User"
+    xmlns:channelVMs="using:Unicord.Universal.Models.Channels"
+    xmlns:guildVMs="using:Unicord.Universal.Models.Guild" 
+    xmlns:userVMs="using:Unicord.Universal.Models.User"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
@@ -214,11 +215,11 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+    <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+    <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource DirectMessageChannelListStyle}"/>
     </DataTemplate>
 
@@ -232,7 +233,7 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVms:ChannelListViewModel">
+    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <!--<Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -271,18 +272,18 @@
         <channels:ChannelListControl Channel="{Binding}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
+    <DataTemplate x:Key="RoleTemplate" x:DataType="userVMs:RoleViewModel">
         <Border BorderThickness="1"
-                BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" 
+                BorderBrush="{x:Bind Color}" 
                 Padding="4,4,4,4"
                 CornerRadius="2"
                 MinWidth="24">
-            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" 
-                       FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center"/>
+            <TextBlock Foreground="{x:Bind Color}" 
+                       FontSize="12" Text="{x:Bind Name}" VerticalAlignment="Center" TextAlignment="Center"/>
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="TypingUserTemplate" x:DataType="user:UserViewModel">
+    <DataTemplate x:Key="TypingUserTemplate" x:DataType="userVMs:UserViewModel">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -450,7 +451,7 @@
         </lib:TreeViewItem>
     </DataTemplate>
 
-    <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
+    <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVMs:DmChannelListViewModel">
         <Grid Margin="0,0,4,0" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -482,7 +483,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
+    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVMs:DmChannelListViewModel">
         <Grid Padding="0,4" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

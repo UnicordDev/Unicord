@@ -24,7 +24,9 @@ namespace Unicord.Universal.Misc
         public EmojiGroup(DiscordGuild guild, IEnumerable<DiscordEmoji> emojis)
         {
             Key = new EmojiHeader() { Name = guild.Name, IconUrl = guild.GetIconUrl(32) };
-            _emojis = emojis.Select(e => new EmojiViewModel(e)).ToList();
+            _emojis = emojis.Select(e => new EmojiViewModel(e))
+                   .OrderBy(e => e.Name)
+                   .ToList();
         }
 
         public EmojiGroup(string category, IEnumerable<SingleEmoji> emojis)
