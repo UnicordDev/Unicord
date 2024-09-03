@@ -303,7 +303,10 @@ namespace Unicord.Universal
                 {
                     if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
                     {
-                        await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
+                        //await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
+
+                        await DiscordNavigationService.GetForCurrentView()
+                            .NavigateAsync(channel);
                     }
                 }
                 else if (args.UserId != 0)
@@ -316,7 +319,8 @@ namespace Unicord.Universal
                         // dm = await App.Discord.CreateDmChannelAsync(args.UserId);
                     }
 
-                    await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), dm));
+                    await DiscordNavigationService.GetForCurrentView()
+                        .NavigateAsync(dm);
                 }
             }
             catch (Exception ex)

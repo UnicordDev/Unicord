@@ -97,7 +97,9 @@ namespace Unicord.Universal.Models.Messages
                 new MessageViewModel(Message.ReferencedMessage, Parent, this) :
                 null;
         public ChannelViewModel Channel
-            => _channelViewModelCache ??= new ChannelViewModel(Message.ChannelId, true, this);
+            => _channelViewModelCache ??=
+                (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this));
+
         public UserViewModel Author
             => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel.GuildId, this);
         public DateTimeOffset Timestamp

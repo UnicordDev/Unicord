@@ -17,6 +17,8 @@ namespace Unicord.Universal.Models.User
 {
     public class UserViewModel : ViewModelBase, IEquatable<UserViewModel>, IEquatable<DiscordUser>, ISnowflake
     {
+        private DiscordUser _userCache;
+
         protected ulong id;
         protected ulong? guildId;
 
@@ -27,7 +29,7 @@ namespace Unicord.Universal.Models.User
         internal UserViewModel(DiscordUser user, ulong? guildId, ViewModelBase parent = null)
             : this(user.Id, (user as DiscordMember)?.Guild.Id, parent)
         {
-
+            _userCache = user;
         }
 
         internal UserViewModel(ulong user, ulong? guildId, ViewModelBase parent = null)
@@ -67,7 +69,7 @@ namespace Unicord.Universal.Models.User
             => id;
 
         public DiscordUser User
-            => discord.TryGetCachedUser(Id, out var user) ? user : throw new InvalidOperationException();
+            => discord.TryGetCachedUser(Id, out var user) ? user : _userCache;
 
         public DiscordMember Member
         {
@@ -78,7 +80,7 @@ namespace Unicord.Universal.Models.User
                 if (!discord.TryGetCachedGuild(guildId.Value, out var guild))
                     throw new InvalidOperationException();
 
-                return guild.Members.TryGetValue(Id, out var member) ? member : null;
+                return guild.Members.TryGetValue(Id, out var member) ? member : (_userCache as DiscordMember);
             }
         }
 

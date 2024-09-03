@@ -218,6 +218,10 @@
     <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" />
     </DataTemplate>
+    
+    <DataTemplate x:Key="ChannelListThreadTemplate" x:DataType="channelVMs:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource ThreadChannelListStyle}" />
+    </DataTemplate>
 
     <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource DirectMessageChannelListStyle}"/>
@@ -239,41 +243,6 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVMs:ChannelListViewModel">
-        <!--<Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid Name="grid" 
-                  Margin="16,0"
-                  IsHitTestVisible="True"
-                  Opacity="{Binding MutedOpacity}">
-                <ToolTipService.ToolTip>
-                    <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
-                </ToolTipService.ToolTip>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" FontFamily="{StaticResource FluentSystemIcons}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-
-                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" VerticalAlignment="Center" Grid.Column="2" Visibility="{Binding UserLimit, Converter={StaticResource BoolVisibilityConverter}}">
-                    <Run Text="{Binding UserCount}"/>/<Run Text="{Binding UserLimit}"/>
-                </TextBlock>
-            </Grid>
-
-            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding ConnectedUsers, Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Grid>-->
-
         <channels:ChannelListControl Channel="{Binding}"/>
     </DataTemplate>
 

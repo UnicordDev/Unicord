@@ -52,7 +52,7 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         VerticalContentAlignment="Top"
-                                        MaxWidth="640"
+                                        MaxWidth="480"
                                         MaxHeight="480"/>
 
                             <!--<Border x:Name="PART_SpoilerOverlay" Background="{ThemeResource SpoilerBrush}" />-->

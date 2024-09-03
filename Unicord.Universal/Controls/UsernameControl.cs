@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using DSharpPlus.Entities;
+using Unicord.Universal.Models.User;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -14,14 +15,14 @@ namespace Unicord.Universal.Controls
 {
     public sealed class UsernameControl : Control
     {
-        public DiscordUser User
+        public UserViewModel User
         {
-            get => (DiscordUser)GetValue(UserProperty);
+            get => (UserViewModel)GetValue(UserProperty);
             set => SetValue(UserProperty, value);
         }
 
         public static readonly DependencyProperty UserProperty =
-            DependencyProperty.Register("User", typeof(DiscordUser), typeof(UsernameControl), new PropertyMetadata(null));
+            DependencyProperty.Register("User", typeof(UserViewModel), typeof(UsernameControl), new PropertyMetadata(null));
 
         public double IconSize
         {

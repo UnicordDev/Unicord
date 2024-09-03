@@ -76,7 +76,7 @@ namespace Unicord.Universal.Controls
         private static void LoadImage(ImageElement element)
         {
             var image = element.GetTemplateChild("image") as ImageEx;
-            if (image == null) return;
+            if (image == null || element.ImageUri == null) return;
 
             double width = element.ImageWidth;
             double height = element.ImageHeight;

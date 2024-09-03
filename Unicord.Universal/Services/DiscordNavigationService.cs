@@ -41,7 +41,7 @@ namespace Unicord.Universal.Services
             base.Initialise();
 
             _mainPage = Window.Current.Content.FindChild<MainPage>();
-            if (!_mainPage.Arguments.FullFrame)
+            if (!(_mainPage.Arguments?.FullFrame ?? false))
             {
                 _discordPage = Window.Current.Content.FindChild<DiscordPage>();
                 _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
@@ -120,9 +120,14 @@ namespace Unicord.Universal.Services
                     if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
 
-                    if(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
+                    if (_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
                     {
                         g.SetSelectedChannel(channel);
+                    }
+
+                    if (!channel.Guild.IsSynced)
+                    {
+                        await channel.Guild.SyncAsync();
                     }
                 }
 
@@ -143,7 +148,14 @@ namespace Unicord.Universal.Services
                 }
                 else
                 {
-                    _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                    if (channel is DiscordForumChannel forum)
+                    {
+                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                    }
+                    else
+                    {
+                        _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                    }
                 }
 
                 _discordPageModel.Navigating = false;
