@@ -18,7 +18,14 @@ namespace Unicord.Universal
 #if DEBUG
             new DebugLoggerProvider()
 #endif
-        }, new LoggerFilterOptions() { MinLevel = LogLevel.Trace});
+        }, new LoggerFilterOptions()
+        {
+#if DEBUG
+            MinLevel = LogLevel.Trace
+#else
+            MinLevel = LogLevel.Information
+#endif
+        });
 
         private static ILogger InternalLogger = LoggerFactory.CreateLogger("Unicord");
 
