@@ -462,6 +462,13 @@ namespace Unicord.Universal.Models
             await _loadSemaphore.WaitAsync().ConfigureAwait(false);
             Analytics.TrackEvent("ChannelViewModel_LoadMessages");
 
+            if (Channel.Guild != null)
+            {
+                App.RoamingSettings.Save($"GuildPreviousChannels::{Channel.Guild.Id}", Channel.Id);
+            }
+
+            App.LocalSettings.Save("LastViewedChannel", Channel.Id);
+
             try
             {
                 if (!Messages.Any())

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -10,6 +13,7 @@ using MomentSharp;
 using Unicord.Universal.Extensions;
 using WamWooWam.Core;
 using Windows.Data.Xml.Dom;
+using Windows.Networking.Sockets;
 using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
@@ -203,13 +207,24 @@ namespace Unicord.Universal.Shared
                 .AddInputTextBox("tbReply", replyString)
                 .AddButton("tbReply", "Reply", ToastActivationType.Background, $"-channelId={message.ChannelId}")
                 .AddToastActivationInfo($"-channelId={message.ChannelId} -messageId={message.Id}", ToastActivationType.Foreground)
-                .AddCustomTimeStamp(message.Timestamp.DateTime);
+                .AddAttributionText("from Discord")
+                .AddCustomTimeStamp(message.Timestamp.DateTime)
+                .AddAudio(new Uri("ms-winsoundevent:Notification.IM"));
 
             if (GetToastThumbnail(message, out var width, out var height, out var proxyUrl))
             {
-                Drawing.ScaleProportions(ref width, ref height, 640, 360);
-                builder.AddHeroImage(new Uri(proxyUrl + $"?format=jpeg&width={(int)width}&height={(int)height}"));
+                Drawing.ScaleProportions(ref width, ref height, 728, 360);
+
+                var uri = new UriBuilder(proxyUrl);
+                var query = HttpUtility.ParseQueryString(uri.Query);
+                query["format"] = "jpeg";
+                query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
+                query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);
+                uri.Query = query.ToString();
+
+                builder.AddHeroImage(uri.Uri);
             }
+
 
             var toastContent = builder.GetToastContent();
             var doc = new XmlDocument();

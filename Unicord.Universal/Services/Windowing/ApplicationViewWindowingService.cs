@@ -31,6 +31,9 @@ namespace Unicord.Universal.Services.Windowing
         private ConcurrentDictionary<int, ulong> _windowChannelDictionary
              = new ConcurrentDictionary<int, ulong>();
 
+        private ConcurrentDictionary<int, bool> ActivatedStates
+            = new ConcurrentDictionary<int, bool>();
+
         public override bool IsSupported => true; // todo: work this out
 
         public override WindowHandle CurrentWindow
@@ -44,6 +47,8 @@ namespace Unicord.Universal.Services.Windowing
         public override void SetMainWindow(UIElement reference)
         {
             _mainWindowId = ApplicationView.GetForCurrentView().Id;
+
+            CoreWindow.GetForCurrentThread().Activated += this.OnWindowActivationChanged;
         }
 
         public override WindowHandle GetHandle(UIElement reference)
@@ -80,6 +85,11 @@ namespace Unicord.Universal.Services.Windowing
             return _windowChannelDictionary.Any(c => c.Value == id);
         }
 
+        public override bool IsActive(WindowHandle handle)
+        {
+            return ActivatedStates[((ApplicationViewWindowHandle)handle).Id];
+        }
+
         public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, bool compactOverlay, WindowHandle currentWindow = null)
         {
             if (!IsSupported)
@@ -92,10 +102,12 @@ namespace Unicord.Universal.Services.Windowing
 
             var viewId = 0;
             var coreView = CoreApplication.CreateNewView();
-            await coreView.Dispatcher.AwaitableRunAsync(() =>
+            await coreView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 var coreWindow = coreView.CoreWindow;
                 var window = Window.Current;
+
+                coreWindow.Activated += OnWindowActivationChanged;
 
                 var frame = new Frame();
                 window.Content = frame;
@@ -127,6 +139,12 @@ namespace Unicord.Universal.Services.Windowing
                 return GetOrCreateHandleForId(viewId);
 
             return null;
+        }
+
+        private void OnWindowActivationChanged(CoreWindow sender, WindowActivatedEventArgs args)
+        {
+            var id = ApplicationView.GetApplicationViewIdForWindow(sender);
+            ActivatedStates[id] = args.WindowActivationState != CoreWindowActivationState.Deactivated;
         }
 
         public override async Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null)

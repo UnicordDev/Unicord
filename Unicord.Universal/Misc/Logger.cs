@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Foundation.Diagnostics;
 using Windows.Storage;
 
 namespace Unicord.Universal
@@ -16,7 +17,7 @@ namespace Unicord.Universal
     {
         public static ILoggerFactory LoggerFactory = new LoggerFactory(new ILoggerProvider[] {
 #if DEBUG
-            new DebugLoggerProvider()
+            new DebugLoggerProvider(),
 #endif
         }, new LoggerFilterOptions()
         {
