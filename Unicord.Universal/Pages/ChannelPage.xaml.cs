@@ -210,8 +210,6 @@ namespace Unicord.Universal.Pages
         private async Task Load()
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
-            // await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
-
             try
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -250,12 +248,6 @@ namespace Unicord.Universal.Pages
                     }
                 }
             });
-
-            //if (IsPaneOpen)
-            //{
-            //    await Dispatcher.AwaitableRunAsync(() =>
-            //        SidebarFrame.Navigate(SidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
-            //}
 
             await JumpListManager.AddToListAsync(_viewModel.Channel);
         }

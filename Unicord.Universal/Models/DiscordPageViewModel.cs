@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,10 +10,12 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Channel;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
+using Windows.ApplicationModel;
 
 namespace Unicord.Universal.Models
 {
@@ -97,6 +100,23 @@ namespace Unicord.Universal.Models
         public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
         public bool IsRightPaneOpen { get => _isRightPaneOpen; set => OnPropertySet(ref _isRightPaneOpen, value); }
         public ChannelViewModel PreviousDM { get; set; }
+
+        public string DisplayVersion
+        {
+            get
+            {
+                var gitSha = "";
+                var versionedAssembly = typeof(VersionHelper).Assembly;
+                var attribute = versionedAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                var idx = -1;
+                if (attribute != null && (idx = attribute.InformationalVersion.IndexOf('+')) != -1)
+                {
+                    gitSha = "-" + attribute.InformationalVersion.Substring(idx + 1, 7);
+                }
+
+                return $"{Package.Current.Id.Version.ToFormattedString(3)}{gitSha}";
+            }
+        }
 
         public GuildListViewModel ViewModelFromGuild(DiscordGuild guild)
         {
