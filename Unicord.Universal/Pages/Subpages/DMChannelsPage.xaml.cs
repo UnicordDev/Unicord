@@ -64,7 +64,7 @@ namespace Unicord.Universal.Pages.Subpages
             if (dataContext.UpdatingIndex)
                 return;
 
-            var channel = e.AddedItems.FirstOrDefault() as ChannelListViewModel;
+            var channel = e.AddedItems.FirstOrDefault() as ChannelViewModel;
             if (channel != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();

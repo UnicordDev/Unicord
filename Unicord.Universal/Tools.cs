@@ -139,7 +139,8 @@ namespace Unicord.Universal
             messenger.Register<TRecipient, DiscordEventMessage<TMessage>>(recipient, handler);
         }
 
-        public delegate Task AsyncMessageHandler<in TRecipient, in TMessage>(TRecipient recipient, TMessage message) where TRecipient : class where TMessage : class;
+        public delegate Task AsyncMessageHandler<in TRecipient, in TMessage>(TRecipient recipient, TMessage message) 
+            where TRecipient : class where TMessage : class;
 
         /// <summary>
         /// Registers a recipient for a given type of message.
