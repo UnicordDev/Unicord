@@ -10,12 +10,12 @@ using Humanizer;
 
 namespace Unicord.Universal.Models.Channels
 {
-    public class DmChannelListViewModel : ChannelListViewModel
+    public class DmChannelListViewModel : ChannelViewModel
     {
         private string _name;
         private string _avatarUrl;
 
-        public DmChannelListViewModel(DiscordDmChannel channel) : base(channel, null)
+        public DmChannelListViewModel(DiscordDmChannel channel) : base(channel, false, null)
         {
             _name = DmChannel.Name ?? DmChannel.Recipients.Select(s => s.DisplayName).Humanize();
             if (channel.Type == ChannelType.Private)

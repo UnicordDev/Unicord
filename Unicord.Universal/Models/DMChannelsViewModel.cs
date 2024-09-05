@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models
@@ -21,9 +22,9 @@ namespace Unicord.Universal.Models
                 .Select(s => new DmChannelListViewModel(s))
                 .OrderByDescending(r => r.ReadState?.LastMessageId));
 
-            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e));
-            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e));
-            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e.Event));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e.Event));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e.Event));
         }
 
         public ObservableCollection<DmChannelListViewModel> DMChannels { get; set; }
@@ -48,7 +49,10 @@ namespace Unicord.Universal.Models
             if (e.Channel is DiscordDmChannel dm)
             {
                 var current = DMChannels.ElementAtOrDefault(SelectedIndex);
-                var index = DMChannels.IndexOf(DMChannels.FirstOrDefault(s => s.Channel == dm));
+                var index = DMChannels.FindIndex(s => s.Channel == dm);
+                if (index == 0)
+                    return Task.CompletedTask;
+
                 syncContext.Post(o =>
                 {
                     // BUGBUG: this is very bad

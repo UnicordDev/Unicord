@@ -186,6 +186,7 @@
     <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
     <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
     <Compile Include="Extensions\GuildExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
