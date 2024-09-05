@@ -25,13 +25,13 @@ namespace Unicord.Universal.Models.Emoji
                     {
                         _emoji = discordEmoji;
                         Name = discordEmoji.Name;
-                        Url = discordEmoji.Url;
+                        Url = discordEmoji.Url + "?size=32";
                         IsValid = true;
                     }
                     else
                     {
                         Name = emoji.Name;
-                        Url = $"https://cdn.discordapp.com/emojis/{emoji.Id.ToString(CultureInfo.InvariantCulture)}.png";
+                        Url = $"https://cdn.discordapp.com/emojis/{emoji.Id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
                     }
                 }
                 else
@@ -51,7 +51,7 @@ namespace Unicord.Universal.Models.Emoji
             Name = emoji.Id != 0 ? emoji.Name : emoji.GetDiscordName();
             Unicode = emoji.Id == 0 ? emoji.Name : null;
             IsAvailable = emoji.IsAvailable;
-            Url = emoji.Id != 0 ? emoji.Url : null;
+            Url = emoji.Id != 0 ? emoji.Url + "?size=32" : null;
             IsValid = true;
         }
 
@@ -75,8 +75,8 @@ namespace Unicord.Universal.Models.Emoji
             Name = text;
             Unicode = "";
             Url = isAnimated
-                    ? $"https://cdn.discordapp.com/emojis/{id.ToString(CultureInfo.InvariantCulture)}.gif"
-                    : $"https://cdn.discordapp.com/emojis/{id.ToString(CultureInfo.InvariantCulture)}.png";
+                    ? $"https://cdn.discordapp.com/emojis/{id.ToString(CultureInfo.InvariantCulture)}.gif?size=32"
+                    : $"https://cdn.discordapp.com/emojis/{id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
             IsAvailable = true;
             IsValid = true;
         }

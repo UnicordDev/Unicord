@@ -43,11 +43,7 @@ namespace Unicord.Universal.Controls
         {
             try
             {
-                if (Channel?.Id != _prevChannelId)
-                {
-                    Source.Source = EmojiUtilities.GetEmoji(new ChannelViewModel(Channel.Id, true), searchBox.Text);
-                    _prevChannelId = Channel.Id;
-                }
+                Source.Source = EmojiUtilities.GetEmoji(new ChannelViewModel(Channel.Id, true), searchBox.Text);
             }
             catch { }
         }

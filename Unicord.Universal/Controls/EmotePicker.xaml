@@ -46,8 +46,6 @@
     <SemanticZoom>
         <SemanticZoom.ZoomedInView>
             <GridView x:Name="EmojiView" 
-                      b:ListViewBehaviour.FillBeforeWrap="True"
-                      b:ListViewBehaviour.MinItemWidth="48"
                       SelectionMode="None"
                       IsItemClickEnabled="True"
                       ShowsScrollingPlaceholders="True"

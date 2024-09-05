@@ -86,7 +86,7 @@
                                                Channel="{x:Bind ViewModel.Channel}"
                                                Margin="0,4,0,0"
                                                TextWrapping="WrapWholeWords"
-                                               InlineOnly="True"
+                                               InlineOnly="False"
                                                Text="{x:Bind ViewModel.Description}"/>                     
                     </StackPanel>
 
