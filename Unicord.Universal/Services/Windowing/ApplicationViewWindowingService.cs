@@ -87,7 +87,7 @@ namespace Unicord.Universal.Services.Windowing
 
         public override bool IsActive(WindowHandle handle)
         {
-            return ActivatedStates[((ApplicationViewWindowHandle)handle).Id];
+            return ActivatedStates.TryGetValue(((ApplicationViewWindowHandle)handle).Id, out var active) && active;
         }
 
         public override async Task<WindowHandle> OpenChannelWindowAsync(DiscordChannel channel, bool compactOverlay, WindowHandle currentWindow = null)
@@ -99,6 +99,9 @@ namespace Unicord.Universal.Services.Windowing
                 return null;
 
             Analytics.TrackEvent("ApplicationViewWindowingService_OpenChannelWindowAsync");
+
+            if (currentWindow is ApplicationViewWindowHandle handle)
+                _windowChannelDictionary.TryRemove(handle.Id, out _);
 
             var viewId = 0;
             var coreView = CoreApplication.CreateNewView();
