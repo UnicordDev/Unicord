@@ -28,6 +28,7 @@ namespace Unicord.Universal.Utilities
 
             emoteList.AddRange(Emoji.All.Where(FilterEmoji)
                 .GroupBy(e => e.Group)
+                .Where(g => g.Any())
                 .Select(g => new EmojiGroup(g.Key, g)));
 
             return emoteList;
@@ -51,15 +52,17 @@ namespace Unicord.Universal.Utilities
 
                 return App.Discord.Guilds.Values
                     .OrderBy(g => guildOrder.IndexOf(g.Id))
-                    .Select(g => new EmojiGroup(g, g.Emojis.Values.Where(FilterEmoji)));
+                    .Select(g => new EmojiGroup(g, g.Emojis.Values.Where(FilterEmoji)))
+                    .Where(g => g.Any());
             }
             else
             {
                 // just this server's emoji
                 if (channel.Guild == null)
                     return [];
+                var group = new EmojiGroup(channel.Guild.Guild, channel.Guild.Guild.Emojis.Values.Where(FilterEmoji));
 
-                return [new EmojiGroup(channel.Guild.Guild, channel.Guild.Guild.Emojis.Values.Where(FilterEmoji))];
+                return group.Count > 0 ? [group] : [];
             }
         }
 

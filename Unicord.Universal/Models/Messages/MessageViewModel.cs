@@ -304,7 +304,7 @@ namespace Unicord.Universal.Models.Messages
                 if ((model = Reactions.FirstOrDefault(r => r.Equals(reaction))) == null)
                     Reactions.Add(new ReactionViewModel(reaction, ReactCommand));
                 else
-                    model.InvokePropertyChanged("");
+                    model.Update(reaction);
             }
 
             foreach (var model in Reactions.ToList())

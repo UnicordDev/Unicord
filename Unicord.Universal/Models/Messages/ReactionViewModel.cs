@@ -21,6 +21,12 @@ namespace Unicord.Universal.Models.Messages
             _reaction = reaction;
             ReactCommand = reactCommand;
         }
+        public void Update(DiscordReaction reaction)
+        {
+            _reaction = reaction;
+            InvokePropertyChanged(nameof(Count));
+            InvokePropertyChanged(nameof(IsMe));
+        }
 
         public EmojiViewModel Emoji => 
             new EmojiViewModel(_reaction.Emoji);
@@ -33,7 +39,7 @@ namespace Unicord.Universal.Models.Messages
 
         public bool Equals(DiscordReaction other)
         {
-            return _reaction == other;
+            return _reaction.Emoji == other.Emoji;
         }
     }
 }
