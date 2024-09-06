@@ -106,13 +106,13 @@ namespace Unicord.Universal.Services
         {
             try
             {
-                if (NotificationUtils.WillShowToast(e.Message))
+                if (NotificationUtils.WillShowToast(App.Discord, e.Message))
                 {
                     _badgeManager.Update();
                     await _tileManager.HandleMessageAsync(e.Message);
                 }
 
-                await _secondaryTileManager.HandleMessageAsync(e.Message);
+                await _secondaryTileManager.HandleMessageAsync(App.Discord, e.Message);
             }
             catch (Exception ex)
             {

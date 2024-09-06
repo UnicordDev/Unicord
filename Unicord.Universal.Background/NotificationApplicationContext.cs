@@ -114,6 +114,7 @@ namespace Unicord.Universal.Background
         private async Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();
+            _badgeManager.Update();
 
             var timer = new Timer();
             timer.Interval = 1000;
@@ -131,12 +132,9 @@ namespace Unicord.Universal.Background
         {
             try
             {
-                if (NotificationUtils.WillShowToast(e.Message))
+                if (NotificationUtils.WillShowToast(client, e.Message))
                 {
-                    if (UnicordFinder.IsUnicordVisible())
-                        return;
-
-                    _toastManager?.HandleMessage(e.Message);
+                    _toastManager?.HandleMessage(client, e.Message, UnicordFinder.IsUnicordVisible());
                     _badgeManager?.Update();
 
                     if (_tileManager != null)
@@ -144,7 +142,7 @@ namespace Unicord.Universal.Background
                 }
 
                 if (_secondaryTileManager != null)
-                    await _secondaryTileManager.HandleMessageAsync(e.Message);
+                    await _secondaryTileManager.HandleMessageAsync(client, e.Message);
             }
             catch (Exception)
             {

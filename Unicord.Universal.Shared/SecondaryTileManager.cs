@@ -47,12 +47,12 @@ namespace Unicord.Universal.Shared
             }
         }
 
-        public Task HandleMessageAsync(DiscordMessage message)
+        public Task HandleMessageAsync(DiscordClient client, DiscordMessage message)
         {
             if (_tileStorage.TryGetValue(message.Channel.Id, out var tile))
             {
                 var updater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tile.TileId);
-                var tileNotification = NotificationUtils.CreateTileNotificationForMessage(message);
+                var tileNotification = NotificationUtils.CreateTileNotificationForMessage(client, message);
                 updater.EnableNotificationQueue(true);
                 updater.Update(tileNotification);
             }
