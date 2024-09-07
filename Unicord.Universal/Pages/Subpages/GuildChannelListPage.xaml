@@ -13,9 +13,10 @@
     mc:Ignorable="d">
     <Page.Resources>
         <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector" 
-                                            CategoryTemplate="{StaticResource ChannelListCategoryTemplate}" 
-                                            TextChannelTemplate="{StaticResource ChannelListTemplate}" 
-                                            VoiceChannelTemplate="{StaticResource ChannelListVoiceTemplate}"/>
+                                                CategoryTemplate="{StaticResource ChannelListCategoryTemplate}" 
+                                                TextChannelTemplate="{StaticResource ChannelListTemplate}" 
+                                                ThreadTemplate="{StaticResource ChannelListThreadTemplate}"
+                                                VoiceChannelTemplate="{StaticResource ChannelListVoiceTemplate}"/>
     </Page.Resources>
     <Grid>
         <!--<controls:SidebarSearchBox Grid.Row="1" />-->

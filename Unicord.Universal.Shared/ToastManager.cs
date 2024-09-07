@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Windows.UI.Notifications;
 
@@ -17,9 +18,9 @@ namespace Unicord.Universal.Shared
             _toastHistory = ToastNotificationManager.History;
         }
 
-        public void HandleMessage(DiscordMessage message)
+        public void HandleMessage(DiscordClient client, DiscordMessage message, bool isSuppressed)
         {
-            var notification = NotificationUtils.CreateToastNotificationForMessage(message);
+            var notification = NotificationUtils.CreateToastNotificationForMessage(client, message, isSuppressed);
             _toastNotifier.Show(notification);
         }
 

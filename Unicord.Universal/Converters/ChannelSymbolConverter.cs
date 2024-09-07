@@ -46,9 +46,9 @@ namespace Unicord.Universal.Converters
 
             return type switch
             {
-                ChannelType.Text => TextGlyph,
+                ChannelType.Text or ChannelType.PublicThread or ChannelType.PrivateThread => TextGlyph,
                 ChannelType.Voice => VoiceGlyph,
-                ChannelType.Announcement => NewsGlyph,
+                ChannelType.Announcement or ChannelType.AnnouncementThread => NewsGlyph,
                 //ChannelType.Store => StoreGlyph,
                 ChannelType.Stage => StageGlyph,
                 //ChannelType.GuildDirectory => DirectoryGlyph,

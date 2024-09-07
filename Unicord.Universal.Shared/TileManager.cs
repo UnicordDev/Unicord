@@ -82,7 +82,7 @@ namespace Unicord.Universal.Shared
 
             foreach (var message in _currentUnreads.Take(5))
             {
-                var tileContent = NotificationUtils.CreateTileNotificationForMessage(message);
+                var tileContent = NotificationUtils.CreateTileNotificationForMessage(_discord, message);
                 _tileUpdater.Update(tileContent);
             }
         }

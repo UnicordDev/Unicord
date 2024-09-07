@@ -36,6 +36,7 @@ namespace Unicord.Universal.Services
         public abstract void SetWindowChannel(WindowHandle handle, ulong id);
 
         public abstract bool IsChannelVisible(ulong id);
+        public abstract bool IsActive(WindowHandle window);
 
         public abstract Task<bool> ActivateOtherWindowAsync(DiscordChannel channel, WindowHandle currentWindow = null);
 

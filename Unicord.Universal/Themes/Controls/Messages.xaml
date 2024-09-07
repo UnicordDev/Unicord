@@ -52,7 +52,7 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         VerticalContentAlignment="Top"
-                                        MaxWidth="640"
+                                        MaxWidth="480"
                                         MaxHeight="480"/>
 
                             <!--<Border x:Name="PART_SpoilerOverlay" Background="{ThemeResource SpoilerBrush}" />-->
@@ -740,11 +740,6 @@
                                                 x:Phase="2"
                                                 Grid.Row="2"
                                                 DataContext="{x:Bind MessageViewModel, Mode=OneWay}">
-                                        <ItemsControl x:Name="Components"
-                                                      ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
-                                                      ItemsSource="{Binding Components}"
-                                                      HorizontalAlignment="Left"/>
-
                                         <ItemsControl x:Name="Embeds"
                                                       ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                                       ItemsSource="{Binding Embeds}"
@@ -770,6 +765,11 @@
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                         </ItemsControl>
+                                        
+                                        <ItemsControl x:Name="Components"
+                                                      ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                                      ItemsSource="{Binding Components}"
+                                                      HorizontalAlignment="Left"/>
                                     </StackPanel>
                                 </Grid>
 

@@ -11,7 +11,7 @@
     <AssemblyName>Unicord.Universal</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -191,6 +191,7 @@
     <Compile Include="Extensions\GuildExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
+    <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
@@ -506,6 +507,9 @@
     </Compile>
     <Compile Include="Pages\Subpages\DMChannelsPage.xaml.cs">
       <DependentUpon>DMChannelsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Subpages\ForumChannelPage.xaml.cs">
+      <DependentUpon>ForumChannelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Subpages\FriendsPage.xaml.cs">
       <DependentUpon>FriendsPage.xaml</DependentUpon>
@@ -902,6 +906,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Subpages\ForumChannelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Subpages\FriendsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1142,10 +1150,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.19041.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.22000.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
