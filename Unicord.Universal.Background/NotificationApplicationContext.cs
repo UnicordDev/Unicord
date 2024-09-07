@@ -121,29 +121,19 @@ namespace Unicord.Universal.Background
             await _tileManager.InitialiseAsync();
             _badgeManager.Update();
 
-            count = 0;
-            var timer = new Timer();
-            timer.Interval = 10000;
-            timer.Tick += OnGCTimer;
-            timer.Start();
+            _ = Task.Run(GCTask);
         }
 
         private Task OnResumed(DiscordClient sender, ResumedEventArgs args)
         {
-            count = 0;
-            var timer = new Timer();
-            timer.Interval = 10000;
-            timer.Tick += OnGCTimer;
-            timer.Start();
-
+            _ = Task.Run(GCTask);
             return Task.CompletedTask;
         }
 
-        private void OnGCTimer(object sender, EventArgs e)
+        private async Task GCTask()
         {
-            if (++count > 3)
-                (sender as Timer).Stop();
-            GC.Collect(1, GCCollectionMode.Default, true, true);
+            await Task.Delay(5000);
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
         }
 
         private async Task OnDiscordMessage(DiscordClient client, MessageCreateEventArgs e)
