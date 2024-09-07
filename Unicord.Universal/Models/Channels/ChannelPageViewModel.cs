@@ -54,7 +54,7 @@ namespace Unicord.Universal.Models
         private bool _replyPing = true;
 
         public ChannelPageViewModel(DiscordChannel channel, WindowHandle window)
-            : base(channel.Id)
+            : base(channel)
         {
             if (!channel.IsText())
                 throw new InvalidOperationException("Unable to create a view model for a non-text channel"); // no op this
@@ -169,7 +169,7 @@ namespace Unicord.Universal.Models
         /// The channel's symbol. (i.e. #, @ etc.)
         /// </summary>
         public string ChannelPrefix =>
-            Channel.Guild != null ? "#"
+            Channel.Guild != null && !Channel.IsThread ? "#"
             : Channel.Type == ChannelType.Private ? "@"
             : string.Empty;
 
@@ -461,6 +461,13 @@ namespace Unicord.Universal.Models
         {
             await _loadSemaphore.WaitAsync().ConfigureAwait(false);
             Analytics.TrackEvent("ChannelViewModel_LoadMessages");
+
+            if (Channel.Guild != null)
+            {
+                App.RoamingSettings.Save($"GuildPreviousChannels::{Channel.Guild.Id}", Channel.Id);
+            }
+
+            App.LocalSettings.Save("LastViewedChannel", Channel.Id);
 
             try
             {

@@ -58,27 +58,36 @@ namespace Unicord.Universal.Models
 
             var channels = Guild.Channels.Values;
 
+            static bool FilterChannels(DiscordChannel channel, DiscordMember currentMember)
+            {
+                if (currentMember.IsOwner)
+                    return true;
+
+                return channel.IsCategory ?
+                    channel.Children.Any(x => x.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)) :
+                    channel.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels);
+            }
+
+            static bool FilterThreads(DiscordThreadChannel channel)
+            {
+                return (channel.CurrentMember != null || 
+                        channel.CreatorId == App.Discord.CurrentUser.Id ||
+                        (channel.MemberIdsPreview != null && channel.MemberIdsPreview.Contains(App.Discord.CurrentUser.Id))) 
+                    && !(channel.ThreadMetadata?.IsArchived ?? true);
+            }
+
             // Use new discord channel category behaviour (new as of 2017 KEKW)
             var orderedChannels = channels.Where(c => c.Type != ChannelType.Category)
-                .Where(c => ShouldShowChannel(c, currentMember))
+                .Where(c => FilterChannels(c, currentMember))
                 .OrderBy(c => c.Type == ChannelType.Voice)
                 .ThenBy(c => c.Position)
                 .GroupBy(g => g.Parent)
                 .OrderBy(g => g.Key?.Position)
                 .SelectMany(g => g.Key != null ? g.Prepend(g.Key) : g)
+                .SelectMany<DiscordChannel, DiscordChannel>(c => [c, .. c.Threads.Where(FilterThreads).Cast<DiscordChannel>()])
                 .Select(c => new ChannelListViewModel(c, this));
 
             Channels = new ObservableCollection<ChannelListViewModel>(orderedChannels);
-        }
-
-        private static bool ShouldShowChannel(DiscordChannel channel, DiscordMember currentMember)
-        {
-            if (currentMember.IsOwner)
-                return true;
-
-            return channel.IsCategory ?
-                channel.Children.Any(x => x.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels)) :
-                channel.PermissionsFor(currentMember).HasPermission(Permissions.AccessChannels);
         }
     }
 }

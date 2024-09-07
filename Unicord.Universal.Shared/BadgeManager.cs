@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,38 +27,37 @@ namespace Unicord.Universal.Shared
         {
             try
             {
-                //var unread = _discord.Guilds.Values.Any(g => g.Unread);
-                //if (!unread)
-                //    return;
-
-                //var badgeNumber = _discord.Guilds.Values.Sum(g => Math.Max(g.MentionCount, 0)) + _discord.PrivateChannels.Values.Sum(g => Math.Max(g.ReadState?.MentionCount ?? 0, 0));
-                //if (badgeNumber != 0)
-                //{
-                //    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeNumber);
-                //    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
-
-                //    badgeElement.SetAttribute("value", badgeNumber.ToString());
-                //    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                //}
-                ////else if (unread)
-                ////{
-                ////    var badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
-                ////    var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
-
-                ////    badgeElement.SetAttribute("value", "available");
-                ////    _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
-                ////}
-                //else
-                //{
-                //    _badgeUpdateManager.Clear();
-                //}
-
                 var mentions = 0;
+                var unread = false;
                 foreach (var (key, value) in _discord.ReadStates)
                 {
-                    if (_discord.TryGetCachedChannel(key, out var channel) && channel.IsUnread())
+                    if (_discord.TryGetCachedChannel(key, out var channel) && !channel.IsMuted())
+                    {
+                        unread |= channel.IsUnread();
                         mentions += value.MentionCount;
+                    }
                 }
+
+                if (!unread)
+                {
+                    _badgeUpdateManager.Clear();
+                    return;
+                }
+
+                var badgeXml = BadgeUpdateManager.GetTemplateContent(
+                    mentions == 0 ? BadgeTemplateType.BadgeGlyph : BadgeTemplateType.BadgeNumber);
+                var badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
+
+                if (mentions != 0)
+                {
+                    badgeElement.SetAttribute("value", mentions.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    badgeElement.SetAttribute("value", "available");
+                }
+
+                _badgeUpdateManager.Update(new BadgeNotification(badgeXml));
             }
             catch (Exception)
             {

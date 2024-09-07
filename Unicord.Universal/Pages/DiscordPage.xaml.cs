@@ -170,7 +170,7 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(App.Discord, e.Message) && IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }

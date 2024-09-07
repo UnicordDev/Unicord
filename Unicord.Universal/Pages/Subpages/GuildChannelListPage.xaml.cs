@@ -35,7 +35,7 @@ namespace Unicord.Universal.Pages.Subpages
             var viewModel = e.AddedItems.FirstOrDefault() as ChannelListViewModel;
             if (viewModel != null && !_suspend)
             {
-                if (viewModel.ChannelType != ChannelType.Text && viewModel.ChannelType != ChannelType.Announcement)
+                if (viewModel.ChannelType is not (ChannelType.Text or ChannelType.Announcement or ChannelType.AnnouncementThread or ChannelType.GuildForum or ChannelType.PublicThread or ChannelType.PrivateThread))
                 {
                     channelsList.SelectedItem = e.RemovedItems.FirstOrDefault();
 

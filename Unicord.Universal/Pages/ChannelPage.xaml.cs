@@ -210,18 +210,9 @@ namespace Unicord.Universal.Pages
         private async Task Load()
         {
             ViewModel.LastAccessed = DateTimeOffset.Now;
-            if (ViewModel.Channel.Guild != null)
-            {
-                App.RoamingSettings.Save($"GuildPreviousChannels::{ViewModel.Channel.Guild.Id}", ViewModel.Channel.Id);
-            }
-
-            App.LocalSettings.Save("LastViewedChannel", ViewModel.Channel.Id);
-
-            // await BackgroundNotificationService.GetForCurrentView().SetActiveChannelAsync(ViewModel.Channel.Id);
-
             try
             {
-                await Dispatcher.AwaitableRunAsync(() =>
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     LoadingProgress.Visibility = Visibility.Visible;
                     LoadingProgress.IsIndeterminate = true;
@@ -242,7 +233,7 @@ namespace Unicord.Universal.Pages
                 Logger.LogError(ex);
             }
 
-            await Dispatcher.AwaitableRunAsync(() =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 LoadingProgress.Visibility = Visibility.Collapsed;
                 LoadingProgress.IsIndeterminate = false;
@@ -256,13 +247,7 @@ namespace Unicord.Universal.Pages
                         MessageList.ScrollIntoView(message, ScrollIntoViewAlignment.Leading);
                     }
                 }
-            }).ConfigureAwait(false);
-
-            //if (IsPaneOpen)
-            //{
-            //    await Dispatcher.AwaitableRunAsync(() =>
-            //        SidebarFrame.Navigate(SidebarFrame.CurrentSourcePageType, ViewModel.Channel)).ConfigureAwait(false);
-            //}
+            });
 
             await JumpListManager.AddToListAsync(_viewModel.Channel);
         }
@@ -270,7 +255,9 @@ namespace Unicord.Universal.Pages
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var scroll = sender as ScrollViewer;
-            if (!(this.FindParent<DiscordPage>()?.IsWindowVisible ?? false))
+
+            var window = WindowingService.Current.GetHandle(this);
+            if (!WindowingService.Current.IsActive(window))
                 return;
 
             if (!e.IsIntermediate)
@@ -379,7 +366,7 @@ namespace Unicord.Universal.Pages
                     await ViewModel.SendMessageAsync().ConfigureAwait(false);
                 }
 
-                await Dispatcher.AwaitableRunAsync(() => UploadProgress.Visibility = Visibility.Collapsed);
+                await Dispatcher.RunIdleAsync((i) => UploadProgress.Visibility = Visibility.Collapsed);
             }
             catch (Exception ex)
             {

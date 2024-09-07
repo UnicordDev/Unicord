@@ -22,6 +22,8 @@ namespace Unicord.Universal.Models.Channels
     public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>, ISnowflake
     {
         private readonly ulong _channelId;
+        private readonly DiscordChannel _channelCache;
+
         private UserViewModel _recipientCache;
         private ReadStateViewModel _readStateCache;
 
@@ -47,13 +49,25 @@ namespace Unicord.Universal.Models.Channels
             }
         }
 
+        //
+        // So as a rule, we're trying to stick to the cache for channels because we want a single
+        // "source of truth" for everything on screen, however sometimes we have to fetch entities
+        // via REST, which may not be in the cache, so this constructor accomodates that, but it should
+        // be used sparingly.
+        //
+        internal ChannelViewModel(DiscordChannel channel, bool isTransient = false, ViewModelBase parent = null)
+            : this(channel.Id, isTransient, parent)
+        {
+            this._channelCache = channel;
+        }
+
         public ulong Id
             => _channelId;
 
         public virtual DiscordChannel Channel
-            => discord.TryGetCachedChannel(Id, out var channel) ? channel :
-               discord.TryGetCachedThread(Id, out var thread) ? thread :
-            throw new InvalidOperationException();
+            => (discord.TryGetCachedChannel(Id, out var channel) ? channel :
+                 discord.TryGetCachedThread(Id, out var thread) ? thread : _channelCache)
+            ?? throw new InvalidOperationException("Unable to find this channel, probably a thread that you've not joined.");
 
         public virtual ChannelViewModel Parent => Channel.ParentId != null ?
             new ChannelViewModel(Channel.ParentId.Value, false, this) :
@@ -99,7 +113,7 @@ namespace Unicord.Universal.Models.Channels
         {
             get
             {
-                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private) 
+                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private)
                     return null;
 
                 return _recipientCache ??= new UserViewModel(dm.Recipients[0], null, this);
@@ -115,6 +129,12 @@ namespace Unicord.Universal.Models.Channels
             => Muted ? 0.5 : 1.0;
         public bool HasTopic
             => !string.IsNullOrWhiteSpace(Topic);
+
+        public bool IsDM
+            => Channel.Type is ChannelType.Private;
+
+        public bool IsNotDM
+            => !IsDM;
 
         public string IconUrl
         {
@@ -177,7 +197,7 @@ namespace Unicord.Universal.Models.Channels
 
             if (e.ChannelAfter.Name != e.ChannelBefore.Name)
                 InvokePropertyChanged(nameof(Name));
-            
+
             if (e.ChannelAfter.Topic != e.ChannelBefore.Topic)
             {
                 InvokePropertyChanged(nameof(Topic));

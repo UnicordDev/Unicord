@@ -77,12 +77,12 @@
             <TextBlock x:Name="CaptionTextBlock"
                        Grid.Column="1" 
                        VerticalAlignment="Center"
-                       Text="Unicord"
                        Margin="0,2,0,0"
                        Style="{ThemeResource CaptionTextBlockStyle}">
                 <TextBlock.RenderTransform>
                     <TranslateTransform x:Name="CaptionTransform" />
                 </TextBlock.RenderTransform>
+                <Run Text="Unicord"/>&#xA0;&#xA0;&#xA0;<Run x:Name="VersionText" FontSize="10" Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" Text="{Binding DisplayVersion}"/>
             </TextBlock>
         </Grid>
 
