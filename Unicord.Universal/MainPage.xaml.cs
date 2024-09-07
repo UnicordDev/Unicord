@@ -11,6 +11,7 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using TenMica;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.User;
@@ -45,20 +46,6 @@ namespace Unicord.Universal
         public MainPage()
         {
             InitializeComponent();
-
-#if DEBUG
-            this.AddAccelerator(Windows.System.VirtualKey.C, Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Shift, (_, _) =>
-            {
-                if (IsOverlayShown)
-                {
-                    HideConnectingOverlay();
-                }
-                else
-                {
-                    ShowConnectingOverlay();
-                }
-            });
-#endif
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

@@ -185,6 +185,9 @@
     <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
     <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
     <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
+    <Compile Include="Dialogs\CaptchaRequestDialog.xaml.cs">
+      <DependentUpon>CaptchaRequestDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
@@ -566,6 +569,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Captcha\hCaptcha.html" />
     <Content Include="Assets\DiscordClyde.Dark.svg" />
     <Content Include="Assets\DiscordClyde.Light.svg" />
     <Content Include="Assets\DiscordLogo.Dark.svg" />
@@ -789,6 +793,10 @@
     <Page Include="Dialogs\BanDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CaptchaRequestDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\ChangeNicknameDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

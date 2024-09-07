@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -15,6 +16,7 @@ using Unicord.Universal.Pages.GameBar;
 #endif
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
@@ -25,11 +27,12 @@ using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Security.Credentials;
-using Windows.Storage;
 using Windows.System.Profile;
+using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -266,7 +269,7 @@ namespace Unicord.Universal
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (previousState == ApplicationExecutionState.Terminated)
-                    channelId = LocalSettings.Read("LastViewedChannel", 0ul);                
+                    channelId = LocalSettings.Read("LastViewedChannel", 0ul);
 
                 WindowingService.Current.SetMainWindow(rootFrame);
                 Window.Current.Content = rootFrame;
@@ -302,11 +305,16 @@ namespace Unicord.Universal
 
         private bool TryGetToken(out string token)
         {
-            if (ApplicationData.Current.LocalSettings.Values.TryGetValue("Token", out var s))
+            try
             {
-                token = (string)s;
+                var passwordVault = new PasswordVault();
+                var credential = passwordVault.Retrieve(TOKEN_IDENTIFIER, "Default");
+                credential.RetrievePassword();
+
+                token = credential.Password;
                 return true;
             }
+            catch { }
 
             token = null;
             return false;
@@ -373,79 +381,7 @@ namespace Unicord.Universal
             {
                 var loader = ResourceLoader.GetForViewIndependentUse();
 
-                if (Discord == null)
-                {
-                    if (background || await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
-                    {
-                        try
-                        {
-                            async Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
-                            {
-                                LocalSettings.Save("Token", token);
-
-                                sender.Ready -= ReadyHandler;
-                                sender.SocketErrored -= SocketErrored;
-                                sender.ClientErrored -= ClientErrored;
-                                _readySource.TrySetResult(e);
-                                if (onReady != null)
-                                {
-                                    await onReady(sender, e);
-                                }
-                            }
-
-                            Task SocketErrored(DiscordClient sender, SocketErrorEventArgs e)
-                            {
-                                sender.Ready -= ReadyHandler;
-                                sender.SocketErrored -= SocketErrored;
-                                sender.ClientErrored -= ClientErrored;
-
-                                Logger.LogError(e.Exception);
-
-                                _readySource.SetException(e.Exception);
-                                return Task.CompletedTask;
-                            }
-
-                            Task ClientErrored(DiscordClient sender, ClientErrorEventArgs e)
-                            {
-                                sender.Ready -= ReadyHandler;
-                                sender.SocketErrored -= SocketErrored;
-                                sender.ClientErrored -= ClientErrored;
-
-                                Logger.LogError(e.Exception);
-
-                                _readySource.SetException(e.Exception);
-                                return Task.CompletedTask;
-                            }
-
-                            Discord = new DiscordClient(new DiscordConfiguration()
-                            {
-                                Token = token,
-                                TokenType = TokenType.User,
-                                LoggerFactory = Logger.LoggerFactory
-                            });
-
-                            Discord.Ready += ReadyHandler;
-                            Discord.SocketErrored += SocketErrored;
-                            Discord.ClientErrored += ClientErrored;
-
-                            DiscordClientMessenger.Register(Discord);
-
-                            await Discord.ConnectAsync(status: status, idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? (DateTimeOffset?)null : DateTimeOffset.Now);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(ex);
-                            Tools.ResetPasswordVault();
-                            _readySource.TrySetException(ex);
-                            await onError(ex);
-                        }
-                    }
-                    else
-                    {
-                        await onError(null);
-                    }
-                }
-                else
+                if (Discord != null)
                 {
                     try
                     {
@@ -456,12 +392,119 @@ namespace Unicord.Universal
                     {
                         await onError(taskEx);
                     }
+
+                    return;
+                }
+
+                if (!background && !await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
+                {
+                    await onError(null);
+                    return;
+                }
+
+                try
+                {
+                    async Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
+                    {
+                        // TODO: find a way to save this more securely, the background process can't retrieve from the credential locker?
+                        LocalSettings.Save("Token", token);
+                        sender.Ready -= ReadyHandler;
+                        sender.SocketErrored -= SocketErrored;
+                        sender.ClientErrored -= ClientErrored;
+                        _readySource.TrySetResult(e);
+                        if (onReady != null)
+                        {
+                            await onReady(sender, e);
+                        }
+                    }
+
+                    Task SocketErrored(DiscordClient sender, SocketErrorEventArgs e)
+                    {
+                        sender.Ready -= ReadyHandler;
+                        sender.SocketErrored -= SocketErrored;
+                        sender.ClientErrored -= ClientErrored;
+
+                        Logger.LogError(e.Exception);
+
+                        _readySource.SetException(e.Exception);
+                        return Task.CompletedTask;
+                    }
+
+                    Task ClientErrored(DiscordClient sender, ClientErrorEventArgs e)
+                    {
+                        sender.Ready -= ReadyHandler;
+                        sender.SocketErrored -= SocketErrored;
+                        sender.ClientErrored -= ClientErrored;
+
+                        Logger.LogError(e.Exception);
+
+                        _readySource.SetException(e.Exception);
+                        return Task.CompletedTask;
+                    }
+
+                    Discord = new DiscordClient(new DiscordConfiguration()
+                    {
+                        Token = token,
+                        TokenType = TokenType.User,
+                        LoggerFactory = Logger.LoggerFactory
+                    });
+
+                    Discord.Ready += ReadyHandler;
+                    Discord.SocketErrored += SocketErrored;
+                    Discord.ClientErrored += ClientErrored;
+                    Discord.CaptchaRequested += OnDiscordCaptchaRequested;
+                    Discord.AuthTokenUpdate += OnDiscordTokenUpdated;
+
+                    DiscordClientMessenger.Register(Discord);
+
+                    await Discord.ConnectAsync(status: status, 
+                        idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? null : DateTimeOffset.Now);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                    Tools.ResetPasswordVault();
+                    _readySource.TrySetException(ex);
+                    await onError(ex);
                 }
             }
             finally
             {
                 _connectSemaphore.Release();
             }
+        }
+
+        private static Task OnDiscordTokenUpdated(DiscordClient sender, AuthTokenUpdatedEventArgs args)
+        {
+            var vault = new PasswordVault();
+            try
+            {
+                foreach (var c in vault.FindAllByResource(TOKEN_IDENTIFIER))
+                    vault.Remove(c);
+            }
+            catch { }
+
+            var newToken = new PasswordCredential(TOKEN_IDENTIFIER, "Default", args.Token);
+            vault.Add(newToken);
+
+            // ditto above about the background process
+            LocalSettings.Save("Token", args.Token);
+
+            return Task.CompletedTask;
+        }
+
+        private static async Task OnDiscordCaptchaRequested(BaseDiscordClient sender, CaptchaRequestEventArgs args)
+        {
+            var tcs = new TaskCompletionSource<DiscordCaptchaResponse>();
+
+            await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
+            {
+                var dialog = new CaptchaRequestDialog(args.Request);
+                await dialog.ShowAsync();
+                tcs.SetResult(dialog.CaptchaResponse);
+            });
+
+            args.SetResponse(await tcs.Task);
         }
 
         internal static async Task LogoutAsync()
@@ -482,6 +525,9 @@ namespace Unicord.Universal
                 }
             }
             catch { }
+
+            // ditto above about the background process
+            LocalSettings.TryDelete("Token");
 
             DiscordNavigationService.Reset();
             FullscreenService.Reset();

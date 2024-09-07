@@ -11,6 +11,7 @@ using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
@@ -152,7 +153,7 @@ namespace Unicord.Universal.Pages
                 _channelHistory.RemoveAt(0);
             }
 
-            await Load();
+            await Load().ConfigureAwait(false);
         }
 
         internal void FocusTextBox()
