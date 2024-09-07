@@ -89,6 +89,7 @@ namespace Unicord.Universal.Background
                 _toastManager = new ToastManager();
 
                 _discord.Ready += OnReady;
+                _discord.Resumed += OnResumed;
                 _discord.MessageCreated += OnDiscordMessage;
                 _discord.MessageUpdated += OnMessageUpdated;
                 _discord.MessageAcknowledged += OnMessageAcknowledged;
@@ -119,9 +120,19 @@ namespace Unicord.Universal.Background
             _badgeManager.Update();
 
             var timer = new Timer();
-            timer.Interval = 1000;
+            timer.Interval = 5000;
             timer.Tick += OnGCTimer;
             timer.Start();
+
+        }
+        private Task OnResumed(DiscordClient sender, ResumedEventArgs args)
+        {
+            var timer = new Timer();
+            timer.Interval = 5000;
+            timer.Tick += OnGCTimer;
+            timer.Start();
+
+            return Task.CompletedTask;
         }
 
         private void OnGCTimer(object sender, EventArgs e)
