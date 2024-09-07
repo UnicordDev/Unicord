@@ -437,6 +437,7 @@
     <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
     <Compile Include="Models\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
+    <Compile Include="Models\Settings\NotificationsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />
     <Compile Include="Models\Settings\MessagingSettingsModel.cs" />
     <Compile Include="Models\Settings\SecuritySettingsModel.cs" />
@@ -485,6 +486,9 @@
     </Compile>
     <Compile Include="Pages\Settings\MessagingSettingsPage.xaml.cs">
       <DependentUpon>MessagingSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\NotificationsSettingsPage.xaml.cs">
+      <DependentUpon>NotificationsSettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SecuritySettingsPage.xaml.cs">
       <DependentUpon>SecuritySettingsPage.xaml</DependentUpon>
@@ -874,6 +878,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Settings\NotificationsSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings\SecuritySettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1028,6 +1036,7 @@
     <PRIResource Include="Resources\ru-RU\MessagingSettingsPage.resw" />
     <PRIResource Include="Resources\ru-RU\Permissions.resw" />
     <PRIResource Include="Resources\ru-RU\PinsPage.resw" />
+    <PRIResource Include="Resources\en-GB\NotificationsSettingsPage.resw" />
     <None Include="Resources\ru-RU\Readme" />
     <PRIResource Include="Resources\ru-RU\Resources.resw" />
     <PRIResource Include="Resources\ru-RU\SearchPage.resw" />

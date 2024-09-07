@@ -214,11 +214,14 @@ namespace Unicord.Universal.Shared
             var toastContent = builder.GetToastContent();
             var doc = new XmlDocument();
             doc.LoadXml(toastContent.GetContent());
+
             return new ToastNotification(doc)
             {
                 NotificationMirroring = NotificationMirroring.Allowed,
-                Group = message.Channel.Id.ToString(),
-                RemoteId = message.Id.ToString(),
+                Tag = message.Id.ToString(),
+                Group = message.Channel.Id.ToString(CultureInfo.InvariantCulture),
+                RemoteId = message.Id.ToString(CultureInfo.InvariantCulture),
+                SuppressPopup = isSuppressed
             };
         }
 

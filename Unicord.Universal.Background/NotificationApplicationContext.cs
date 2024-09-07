@@ -7,6 +7,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Shared;
 using Windows.ApplicationModel.AppService;
+using Windows.Media.Protection.PlayReady;
 using Windows.Storage;
 
 namespace Unicord.Universal.Background
@@ -89,6 +90,7 @@ namespace Unicord.Universal.Background
 
                 _discord.Ready += OnReady;
                 _discord.MessageCreated += OnDiscordMessage;
+                _discord.MessageUpdated += OnMessageUpdated;
                 _discord.MessageAcknowledged += OnMessageAcknowledged;
 
                 await _discord.ConnectAsync(status: UserStatus.Invisible, idlesince: DateTimeOffset.Now);
@@ -152,6 +154,23 @@ namespace Unicord.Universal.Background
                     // TODO: log
                 }
             });
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnMessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
+        {
+            try
+            {
+                if (NotificationUtils.WillShowToast(client, e.Message))
+                {
+                    _toastManager?.HandleMessageUpdated(client, e.Message);
+                }
+            }
+            catch (Exception)
+            {
+                // TODO: log
+            }
 
             return Task.CompletedTask;
         }

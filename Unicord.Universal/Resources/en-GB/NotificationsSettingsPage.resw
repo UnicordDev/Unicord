@@ -117,28 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutItem.Content" xml:space="preserve">
-    <value>About</value>
+  <data name="DesktopNotificationsUnavailable.Text" xml:space="preserve">
+    <value>Notifications are not supported on this platform.</value>
   </data>
-  <data name="AccountsItem.Content" xml:space="preserve">
-    <value>Accounts</value>
+  <data name="EnableBadgeCount.Description" xml:space="preserve">
+    <value>Show the number of unread Mentions in the Taskbar</value>
   </data>
-  <data name="MediaItem.Content" xml:space="preserve">
-    <value>Audio and Video</value>
+  <data name="EnableBadgeCount.Title" xml:space="preserve">
+    <value>Enable Mentions Badge</value>
   </data>
-  <data name="MessagingItem.Content" xml:space="preserve">
-    <value>Text and Images</value>
+  <data name="EnableBadgeUnread.Description" xml:space="preserve">
+    <value>Show an icon in the Taskbar to indicate unread messages</value>
   </data>
-  <data name="NotificationsItem.Content" xml:space="preserve">
-    <value>Notifications</value>
+  <data name="EnableBadgeUnread.Title" xml:space="preserve">
+    <value>Enable Unread Badge</value>
   </data>
-  <data name="SecurityItem.Content" xml:space="preserve">
-    <value>Security and Privacy</value>
+  <data name="EnableDesktopNotifications.Description" xml:space="preserve">
+    <value>Show notifications for Mentions and Direct Messages in on the Desktop, and in Action Centre</value>
   </data>
-  <data name="ThemesItem.Content" xml:space="preserve">
-    <value>Appearence and Themes</value>
+  <data name="EnableDesktopNotifications.Title" xml:space="preserve">
+    <value>Enable Desktop Notifications</value>
   </data>
-  <data name="VoiceItem.Content" xml:space="preserve">
-    <value>Voice Calls</value>
+  <data name="EnableLiveTiles.Description" xml:space="preserve">
+    <value>Show Discord messages on Tiles pinned to Start</value>
+  </data>
+  <data name="EnableLiveTiles.Title" xml:space="preserve">
+    <value>Enable Live Tiles</value>
+  </data>
+  <data name="EnableNotifications.Description" xml:space="preserve">
+    <value>Show notifications for Discord messages in Start, Action Centre and the Taskbar</value>
+  </data>
+  <data name="EnableNotifications.Title" xml:space="preserve">
+    <value>Enable Notifications</value>
   </data>
 </root>

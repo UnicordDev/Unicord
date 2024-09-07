@@ -33,8 +33,8 @@ namespace Unicord.Universal.Shared
             await _semaphore.WaitAsync();
             try
             {
-                var unreads = await FetchUnreadMessagesAsync();
-                _currentUnreads.AddRange(unreads);
+                await foreach (var msg in this.FetchUnreadMessages())
+                    _currentUnreads.Add(msg);
 
                 Update();
             }
@@ -80,25 +80,33 @@ namespace Unicord.Universal.Shared
             _tileUpdater.EnableNotificationQueue(true);
             _tileUpdater.Clear();
 
-            foreach (var message in _currentUnreads.Take(5))
+            foreach (var message in _currentUnreads.OrderByDescending(d => d.CreationTimestamp).Take(5))
             {
                 var tileContent = NotificationUtils.CreateTileNotificationForMessage(message);
                 _tileUpdater.Update(tileContent);
             }
         }
 
-        private async Task<IReadOnlyList<DiscordMessage>> FetchUnreadMessagesAsync()
+        private async IAsyncEnumerable<DiscordMessage> FetchUnreadMessages()
         {
-            var unreadChannelTasks = _discord.PrivateChannels.Values
-                .Where(c => c.ReadState != null && c.IsUnread() && c.ReadState.LastMessageId != 0)
-                .Take(5)
-                .Select(c => c.GetMessagesAroundAsync(c.ReadState.LastMessageId, 10)
-                              .ContinueWith(t => (messageId: c.ReadState.LastMessageId, messages: t.Result), TaskContinuationOptions.OnlyOnRanToCompletion));
-            var channelMessages = await Task.WhenAll(unreadChannelTasks);
-            return channelMessages.Select(x => x.messages.FirstOrDefault(m => m.Id > x.messageId)).Where(m => m != null)
-                            .Concat(await _discord.GetMentionsAsync(5))
-                            .OrderByDescending(m => m.Id)
-                            .ToList();
+            var count = 0;
+            foreach (var item in _discord.PrivateChannels.Values)
+            {
+                if (!item.IsUnread())
+                    continue;
+
+                count++;
+                if (count > 5)
+                    break;
+
+                var messages = await item.GetMessagesAroundAsync(item.ReadState.LastMessageId, 5);
+                foreach (var msg in messages)
+                    yield return msg;
+            }
+
+            var mentions = await _discord.GetMentionsAsync(5);
+            foreach (var mention in mentions)
+                yield return mention;
         }
     }
 }

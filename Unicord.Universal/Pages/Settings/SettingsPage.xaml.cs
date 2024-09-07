@@ -22,6 +22,7 @@ namespace Unicord.Universal.Pages.Settings
             {
                 [SettingsPageType.Accounts] = typeof(AccountsSettingsPage),
                 [SettingsPageType.Messaging] = typeof(MessagingSettingsPage),
+                [SettingsPageType.Notifications] = typeof(NotificationsSettingsPage),
                 [SettingsPageType.Themes] = typeof(ThemesSettingsPage),
                 [SettingsPageType.Media] = typeof(MediaSettingsPage),
                 [SettingsPageType.Voice] = typeof(VoiceSettingsPage),
@@ -85,19 +86,18 @@ namespace Unicord.Universal.Pages.Settings
 
         private void NavView_SelectionChanged(Lib.NavigationView sender, Lib.NavigationViewSelectionChangedEventArgs args)
         {
-            if (args.SelectedItemContainer.Tag is string str && Enum.TryParse<SettingsPageType>(str, out var page))
+            if (args.SelectedItemContainer.Tag is not string str || 
+                !Enum.TryParse<SettingsPageType>(str, out var page) || 
+                !_pages.TryGetValue(page, out var type))
+                return;
+            
+            var transitionInfo = args.RecommendedNavigationTransitionInfo;
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
             {
-                if (_pages.TryGetValue(page, out var type))
-                {
-                    var transitionInfo = args.RecommendedNavigationTransitionInfo;
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom };
-                    }
-
-                    MainFrame.Navigate(type, transitionInfo);
-                }
+                transitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom };
             }
+
+            MainFrame.Navigate(type, transitionInfo);
         }
     }
 }

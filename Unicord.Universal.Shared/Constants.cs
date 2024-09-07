@@ -78,6 +78,21 @@ namespace Unicord
 
         public const string ENABLE_WEBP = "EnableWebp";
         public const bool   ENABLE_WEBP_DEFAULT = true;
+
+        public const string ENABLE_NOTIFICATIONS = "EnableNotifications";
+        public const bool   ENABLE_NOTIFICATIONS_DEFAULT = true;
+
+        public const string ENABLE_DESKTOP_NOTIFICAITONS = "EnableDesktopNotifications";
+        public const bool   ENABLE_DESKTOP_NOTIFICAITONS_DEFAULT = true;
+
+        public const string ENABLE_BADGE_COUNT = "EnableBadgeCount";
+        public const bool   ENABLE_BADGE_COUNT_DEFAULT = true;
+
+        public const string ENABLE_BADGE_UNREAD = "EnableBadgeUnread";
+        public const bool   ENABLE_BADGE_UNREAD_DEFAULT = true;
+
+        public const string ENABLE_LIVE_TILES = "EnableLiveTiles";
+        public const bool   ENABLE_LIVE_TILES_DEFAULT = true;
     }
 
     public enum MediaTranscodeOptions
