@@ -96,7 +96,7 @@
           </uap:FileTypeAssociation>
         </uap:Extension>
         <desktop:Extension Category="windows.fullTrustProcess" Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe">
-          <desktop:FullTrustProcess/>
+          <desktop:FullTrustProcess />
         </desktop:Extension>
         <uap:Extension Category="windows.appService">
           <uap:AppService Name="com.wankerr.Unicord.Notifications" />

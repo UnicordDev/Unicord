@@ -114,21 +114,25 @@ namespace Unicord.Universal.Background
             }
         }
 
+
+        int count = 0;
         private async Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();
             _badgeManager.Update();
 
+            count = 0;
             var timer = new Timer();
-            timer.Interval = 5000;
+            timer.Interval = 10000;
             timer.Tick += OnGCTimer;
             timer.Start();
-
         }
+
         private Task OnResumed(DiscordClient sender, ResumedEventArgs args)
         {
+            count = 0;
             var timer = new Timer();
-            timer.Interval = 5000;
+            timer.Interval = 10000;
             timer.Tick += OnGCTimer;
             timer.Start();
 
@@ -137,8 +141,9 @@ namespace Unicord.Universal.Background
 
         private void OnGCTimer(object sender, EventArgs e)
         {
-            (sender as Timer).Stop();
-            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            if (++count > 3)
+                (sender as Timer).Stop();
+            GC.Collect(1, GCCollectionMode.Default, true, true);
         }
 
         private async Task OnDiscordMessage(DiscordClient client, MessageCreateEventArgs e)
