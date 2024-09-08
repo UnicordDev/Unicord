@@ -114,8 +114,6 @@ namespace Unicord.Universal.Background
             }
         }
 
-
-        int count = 0;
         private async Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();

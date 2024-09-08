@@ -130,7 +130,7 @@ namespace Unicord.Universal
 
                     if (!userInput.TryGetValue("tbReply", out var t) || t is not string text)
                         break;
-                    // channelId, text, false, null, Enumerable.Empty<IMention>(), null
+
                     var client = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
                     await client.CreateMessageAsync(channelId, new DiscordMessageBuilder().WithContent(text));
                     break;
