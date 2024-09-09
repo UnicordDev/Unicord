@@ -129,6 +129,8 @@ namespace Unicord.Universal.Shared
                     return match.Value;
                 });
             }
+            if (messageText.Length > 128)
+                messageText = messageText.Substring(0, 125) + "...";
 
             return messageText;
         }

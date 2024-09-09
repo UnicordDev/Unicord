@@ -12,7 +12,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -22,6 +22,8 @@
     <!-- While we technically target 1709, I want to manually target 1703 for Windows Phone support -->
     <AppxOSMinVersionReplaceManifestVersion>false</AppxOSMinVersionReplaceManifestVersion>
     <AppxOSMaxVersionTestedReplaceManifestVersion>false</AppxOSMaxVersionTestedReplaceManifestVersion>
+    <!-- lol, lmao -->
+    <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
@@ -644,6 +646,9 @@
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ColorCode.UWP">
+      <Version>2.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Humanizer">
       <Version>2.8.2</Version>
     </PackageReference>
@@ -665,22 +670,10 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Mvvm">
-      <Version>7.1.2</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>7.1.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>7.1.3</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
       <Version>7.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
-      <Version>7.1.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Web.WebView2">
+    <PackageReference Include="Microsoft.Web.WebView2" Condition="'$(Platform)' != 'ARM'">
       <Version>1.0.2739.15</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
@@ -693,7 +686,7 @@
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.6</Version>
+      <Version>2.8.2-prerelease.220830001</Version>
     </PackageReference>
     <PackageReference Include="Shim.System.Numerics">
       <Version>6.0.0</Version>
@@ -1159,6 +1152,58 @@
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj">
       <Project>{6e8e3c2c-a7d2-4971-a97d-fa831e3ecf15}</Project>
       <Name>WamWooWam.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Mvvm\Microsoft.Toolkit.Mvvm.csproj">
+      <Name>Microsoft.Toolkit.Mvvm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.Notifications\Microsoft.Toolkit.Uwp.Notifications.csproj">
+      <Name>Microsoft.Toolkit.Uwp.Notifications</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Animations\Microsoft.Toolkit.Uwp.UI.Animations.csproj">
+      <Project>{70274a56-341b-490d-8ceb-5bf6e9b819ab}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Animations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Behaviors\Microsoft.Toolkit.Uwp.UI.Behaviors.csproj">
+      <Project>{d4ff799d-0df2-495a-adc9-3bbc4aef8971}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Behaviors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Core\Microsoft.Toolkit.Uwp.UI.Controls.Core.csproj">
+      <Project>{e9faabfb-d726-42c1-83c1-cb46a29fea81}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Input\Microsoft.Toolkit.Uwp.UI.Controls.Input.csproj">
+      <Project>{af1be4e9-e2e1-4729-b076-b3725d8e21ee}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Layout\Microsoft.Toolkit.Uwp.UI.Controls.Layout.csproj">
+      <Project>{a26cbe8e-c713-4e2b-96dd-721e7eb7839f}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls.Layout</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Media\Microsoft.Toolkit.Uwp.UI.Controls.Media.csproj">
+      <Project>{43bd2a36-9e12-4788-80ae-2377e41e6d05}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls.Media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Primitives\Microsoft.Toolkit.Uwp.UI.Controls.Primitives.csproj">
+      <Project>{84ab7dc5-95c9-4cf8-a370-d077e9e9ef1a}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls.Primitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls\Microsoft.Toolkit.Uwp.UI.Controls.csproj">
+      <Name>Microsoft.Toolkit.Uwp.UI.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Media\Microsoft.Toolkit.Uwp.UI.Media.csproj">
+      <Name>Microsoft.Toolkit.Uwp.UI.Media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI\Microsoft.Toolkit.Uwp.UI.csproj">
+      <Project>{bcef3a53-5965-49ec-9c7d-e700ebfb93b6}</Project>
+      <Name>Microsoft.Toolkit.Uwp.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp\Microsoft.Toolkit.Uwp.csproj">
+      <Project>{805f80df-75c6-4c2f-8fd9-b47f6d0df5a3}</Project>
+      <Name>Microsoft.Toolkit.Uwp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit\Microsoft.Toolkit.csproj">
+      <Project>{58278e92-f06d-4585-a94a-ed3f98480e26}</Project>
+      <Name>Microsoft.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Unicord\Unicord.csproj">
       <Project>{31e5688d-ae40-4b4b-8d99-132805a1082b}</Project>
