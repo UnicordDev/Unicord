@@ -203,6 +203,8 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid>
+                        <Grid x:Name="TitleBarDrag" Background="Transparent"/>
+                        
                         <Grid x:Name="TitleBarContent" Padding="0,0,220,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -277,8 +279,6 @@
                                                             TextWrapping="NoWrap" />
                             </StackPanel>
                         </Grid>
-
-                        <Grid x:Name="TitleBarDrag" Background="Transparent"/>
 
                         <Grid x:Name="TitleBarControls">
                             <StackPanel x:Name="DefaultControls"
