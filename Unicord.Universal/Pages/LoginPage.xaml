@@ -6,26 +6,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d" SizeChanged="Page_SizeChanged"
+    mc:Ignorable="d"
     Loaded="Page_Loaded">
     <Grid>
         <StackPanel MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">           
             <Image Source="{ThemeResource DiscordWordMark}" Margin="0,12" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
 
-                <Button x:Name="TokenLoginButton"
-                        x:Uid="/LoginPage/LoginWithTokenButton"
-                        Content="Login with Token"
-                        Click="TokenLoginButton_Click"
-                        BorderThickness="0"
-                        HorizontalAlignment="Stretch">
-                </Button>
-            </Grid>
-            
+            <Button x:Name="TokenLoginButton"
+                    x:Uid="/LoginPage/LoginWithTokenButton"
+                    Content="Login with Token"
+                    Click="TokenLoginButton_Click"
+                    BorderThickness="0"
+                    HorizontalAlignment="Stretch"
+                    Style="{ThemeResource AccentButtonStyle}">
+            </Button>
         </StackPanel>
      </Grid>
 </Page>

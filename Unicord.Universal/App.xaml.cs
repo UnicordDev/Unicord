@@ -62,7 +62,6 @@ namespace Unicord.Universal
         {
             InitializeComponent();
 
-            var provider = VersionHelper.RegisterVersionProvider<UnicordVersionProvider>();
             var theme = (ElementTheme)LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
             switch (theme)
             {
@@ -78,7 +77,6 @@ namespace Unicord.Universal
             UnhandledException += OnUnhandledException;
 
             Debug.WriteLine("Welcome to Unicord!");
-            Debug.WriteLine(provider.GetVersionString());
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
