@@ -401,7 +401,6 @@
     <Compile Include="Misc\Emoji.cs" />
     <Compile Include="Misc\ListViewBehaviour.cs" />
     <Compile Include="Misc\Logger.cs" />
-    <Compile Include="Misc\UnicordVersionProvider.cs" />
     <Compile Include="Models\ChannelEditViewModel.cs" />
     <Compile Include="Models\ChannelPermissionEditViewModel.cs" />
     <Compile Include="Models\Channels\ChannelListViewModel.cs" />
