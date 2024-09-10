@@ -10,6 +10,8 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- General -->
+    
+    <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="Transparent"/>
 
     <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
     <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Semibold</FontWeight>

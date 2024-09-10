@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Toolkit.Extensions;
 using Microsoft.Toolkit.Uwp.Helpers;
 
 namespace Unicord.Universal.Services
 {
     public enum AppTheme
     {
-        OLED,
-        Fluent,
         Performance,
-        SunValley
+        Fluent,
+        SunValley,
+        OLED
     }
 
     internal class ThemeService : BaseService<ThemeService>
     {
         public AppTheme GetTheme()
         {
-#if true
-            return AppTheme.Fluent;
-            return GetDefaultAppTheme();
-#else
+            if (App.LocalSettings.TryRead<int>("AppThemeSet", out var value))
+            {
+                App.LocalSettings.Save("AppTheme", value);
+                App.LocalSettings.Delete("AppThemeSet");
+            }
+
             if (App.LocalSettings.TryRead<int>("AppTheme", out var theme))
                 return (AppTheme)theme;
 
@@ -30,7 +33,24 @@ namespace Unicord.Universal.Services
             App.LocalSettings.Save("AppTheme", (int)defaultTheme);
 
             return defaultTheme;
-#endif
+        }
+
+        public AppTheme GetSettingsTheme()
+        {
+            if (App.LocalSettings.TryRead<int>("AppThemeSet", out var value))
+            {
+                return (AppTheme)value;
+            }
+
+            if (App.LocalSettings.TryRead<int>("AppTheme", out var theme))
+                return (AppTheme)theme;
+
+            return GetDefaultAppTheme();
+        }
+
+        public void SetThemeOnRelaunch(AppTheme theme)
+        {
+            App.LocalSettings.Save("AppThemeSet", (int)theme);
         }
 
         public AppTheme GetDefaultAppTheme()

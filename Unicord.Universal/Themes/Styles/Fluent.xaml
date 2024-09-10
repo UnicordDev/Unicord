@@ -7,6 +7,10 @@
     xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)">
     <!-- Windows 10 circa 1703 Styling -->
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary>
+            <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">0,0,0,0</CornerRadius>
+        </ResourceDictionary>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"
                                ControlsResourcesVersion="Version1"/>
     </ResourceDictionary.MergedDictionaries>
@@ -24,8 +28,8 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <!-- General -->
-    <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>
-    <CornerRadius x:Key="OverlayCornerRadius">0,0,0,0</CornerRadius>
+
+    <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
 
     <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
         <Setter Property="Background" Value="Transparent"/>

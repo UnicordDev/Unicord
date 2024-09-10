@@ -59,8 +59,8 @@ namespace Unicord.Universal.Models
 
         public int TimestampStyle
         {
-            get => (int)App.RoamingSettings.Read(TIMESTAMP_STYLE, Unicord.TimestampStyle.Absolute);
-            set => App.RoamingSettings.Save(TIMESTAMP_STYLE, (TimestampStyle)value);
+            get => (int)App.RoamingSettings.Read(TIMESTAMP_STYLE, (int)Unicord.TimestampStyle.Absolute);
+            set => App.RoamingSettings.Save(TIMESTAMP_STYLE, (int)value);
         }
 
         public TimestampStyleModel[] TimestampStyles { get; } = new[]

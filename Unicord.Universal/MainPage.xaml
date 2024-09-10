@@ -16,7 +16,8 @@
       mc:Ignorable="d" 
       Loaded="Page_Loaded" 
       Unloaded="Page_Unloaded" 
-      NavigationCacheMode="Required">
+      NavigationCacheMode="Required"
+      Background="{ThemeResource General_Page_BackgroundBrush}">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
 
@@ -125,7 +126,8 @@
             </ObjectAnimationUsingKeyFrames>
 
         </Storyboard>
-        <Storyboard x:Name="HideOverlayStoryboard" x:Key="HideOverlayStoryboard">
+        <Storyboard x:Name="HideOverlayStoryboard" x:Key="HideOverlayStoryboard"
+                    Completed="HideOverlayStoryboard_Completed">
             <DoubleAnimation From="1" To="0"
                              Storyboard.TargetName="CustomOverlayGrid"
                              Storyboard.TargetProperty="Opacity"

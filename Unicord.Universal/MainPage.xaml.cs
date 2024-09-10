@@ -358,5 +358,10 @@ namespace Unicord.Universal
             OverlayService.GetForCurrentView()
                 .CloseOverlay();
         }
+
+        private void HideOverlayStoryboard_Completed(object sender, object e)
+        {
+            CustomOverlayFrame.Navigate(typeof(Page));
+        }
     }
 }

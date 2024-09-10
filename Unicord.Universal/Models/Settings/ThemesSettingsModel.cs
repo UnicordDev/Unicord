@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Newtonsoft.Json;
+using Unicord.Universal.Services;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using static Unicord.Constants;
@@ -17,26 +19,49 @@ namespace Unicord.Universal.Models
     public class ThemesSettingsModel : NotifyPropertyChangeImpl
     {
         private bool _isDirty;
+        private int _appTheme;
+
+        private int _initialColour;
+        private int _initialTheme;
 
         public ThemesSettingsModel()
         {
+            _appTheme = (int)ThemeService.GetForCurrentView().GetSettingsTheme();
+            _initialColour = App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
+            _initialTheme = _appTheme;
         }
 
+
+        public bool SunValleyThemeSupported
+            => SystemInformation.Instance.OperatingSystemVersion.Build >= 17763;
 
         public bool IsLoading { get; internal set; }
         public ElementTheme PreviewRequestedTheme { get; private set; }
 
         public int ColourScheme
         {
-            get => (int)App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
+            get => (int)App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
             set
             {
-                IsDirty = true;
-                App.LocalSettings.Save(REQUESTED_COLOUR_SCHEME, (ElementTheme)value);
+                App.LocalSettings.Save(REQUESTED_COLOUR_SCHEME, value);
                 InvokePropertyChanged(nameof(ColourScheme));
+                InvokePropertyChanged(nameof(IsDirty));
             }
         }
 
-        public bool IsDirty { get => _isDirty; internal set => OnPropertySet(ref _isDirty, value); }
+        public int ApplicationTheme
+        {
+            get => _appTheme;
+            set
+            {
+                OnPropertySet(ref _appTheme, value);
+                ThemeService.GetForCurrentView()
+                    .SetThemeOnRelaunch((AppTheme)value);
+                InvokePropertyChanged(nameof(IsDirty));
+            }
+        }
+
+        public bool IsDirty
+            => ApplicationTheme != _initialTheme || ColourScheme != _initialColour;
     }
 }
