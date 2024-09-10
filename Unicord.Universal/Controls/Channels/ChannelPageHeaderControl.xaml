@@ -1,0 +1,342 @@
+﻿<UserControl
+    x:Class="Unicord.Universal.Controls.Channels.ChannelPageHeaderControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Unicord.Universal.Controls.Channels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:users="using:Unicord.Universal.Controls.Users" 
+    xmlns:presence="using:Unicord.Universal.Controls.Presence"
+    xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{x:Bind ViewModel}"
+    Loaded="OnLoaded" x:DefaultBindMode="OneWay">
+
+    <UserControl.Resources>
+        <ExponentialEase x:Key="EaseEnter" EasingMode="EaseOut" Exponent="7" />
+        <ExponentialEase x:Key="EaseExit" EasingMode="EaseIn" Exponent="4.5" />
+        <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
+    </UserControl.Resources>
+
+    <Grid x:Name="TopGrid"
+          VerticalAlignment="Top"
+          BorderThickness="0,0,0,1"
+          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid x:Name="TitleBarDrag" Background="Transparent"/>
+
+            <Grid x:Name="TitleBarContent" Padding="0,0,220,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="IconGrid"
+                      Width="64"
+                      Visibility="Collapsed">
+                    <Image Width="18"
+                           Height="18"
+                           Source="{StaticResource DiscordClyde}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                    </Image>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" x:Name="MainControls" Grid.Column="1">
+
+                    <!--  because VisualStateManager is wank  -->
+                    <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
+                        <Button x:Name="ShowSidebarButton"
+                                    Click="ShowSidebarButton_Click"
+                                    Content="&#xE700;"
+                                    Style="{ThemeResource IconButtonStyle}" />
+                    </Grid>
+
+                    <users:AvatarControl x:Name="UserImage"
+                                        x:Load="{x:Bind ViewModel.IsDM}"
+                                        Source="{Binding ChannelIconUrl}"
+                                        Grid.Column="1"
+                                        Width="24"
+                                        Height="24"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center"/>
+
+                    <TextBlock x:Name="Icon"
+                           x:Load="{x:Bind ViewModel.IsNotDM}"
+                           Grid.Column="1"
+                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                           Text="{x:Bind ViewModel.Channel, Converter={StaticResource ChannelSymbolConverter}}" 
+                           FontFamily="{StaticResource FluentSystemIcons}"
+                           VerticalAlignment="Center"
+                           Margin="16,0,8,0"
+                           FontSize="20"/>
+
+                    <TextBlock x:Name="Header"
+                           Grid.Column="2"
+                           Margin="8,0,8,0"
+                           VerticalAlignment="Center"
+                           FontSize="15"
+                           FontWeight="Bold"
+                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                           TextTrimming="Clip"
+                           TextWrapping="NoWrap"
+                           Text="{x:Bind ViewModel.DisplayName}"/>
+
+                    <presence:StatusIndicator x:Name="RecipientStatusIndicator" 
+                                          x:Load="{x:Bind ViewModel.IsDM}"
+                                          Grid.Column="3" 
+                                          Width="10" 
+                                          Height="10" 
+                                          Margin="-4,0,8,0"
+                                          Presence="{x:Bind ViewModel.Recipient.Presence}"/>
+
+                    <controls:MarkdownTextBlock x:Name="TopicText"
+                                            Grid.Column="4"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            Channel="{x:Bind ViewModel.Channel}"
+                                            Text="{x:Bind ViewModel.Topic}"
+                                            TextWrapping="NoWrap" />
+                </StackPanel>
+            </Grid>
+
+            <Grid x:Name="TitleBarControls">
+                <StackPanel x:Name="DefaultControls"
+                            HorizontalAlignment="Right"
+                            Opacity="1"
+                            Padding="2,0"
+                            Orientation="Horizontal">
+
+                    <StackPanel.RenderTransform>
+                        <TranslateTransform x:Name="DefaultTranslate" X="0" />
+                    </StackPanel.RenderTransform>
+
+                    <ToggleButton x:Name="MuteButton"
+                                  x:Uid="/ChannelPage/MuteButton"
+                                  Content="&#xE74F;"
+                                  Margin="2,4"
+                                  IsChecked="{x:Bind ViewModel.Muted, Mode=OneWay}"
+                                  Style="{ThemeResource IconToggleButtonStyle}">
+                        <w1709:ToggleButton.KeyboardAccelerators>
+                            <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
+                        </w1709:ToggleButton.KeyboardAccelerators>
+                    </ToggleButton>
+                    <Button x:Name="SearchButton"
+                            x:Uid="/ChannelPage/SearchButton"
+                            Content="&#xE721;"
+                            Margin="2,4"
+                            Style="{ThemeResource IconButtonStyle}">
+                        <w1709:Button.KeyboardAccelerators>
+                            <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
+                        </w1709:Button.KeyboardAccelerators>
+                    </Button>
+                    <Button x:Name="PinsButton"
+                            x:Uid="/ChannelPage/PinsButton"
+                            x:Load="{x:Bind ViewModel.ShowPinsButton}"
+                            Content="&#xE718;"
+                            Margin="2,4"
+                            Style="{ThemeResource IconButtonStyle}">
+                        <w1709:Button.KeyboardAccelerators>
+                            <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
+                        </w1709:Button.KeyboardAccelerators>
+                    </Button>
+                    <Button x:Name="UserListButton"
+                            x:Uid="/ChannelPage/UserListButton"
+                            x:Load="{x:Bind ViewModel.ShowUserlistButton}"
+                            Content="&#xE716;"
+                            Margin="4"
+                            Style="{ThemeResource IconButtonStyle}">
+                        <w1709:Button.KeyboardAccelerators>
+                            <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
+                        </w1709:Button.KeyboardAccelerators>
+                    </Button>
+
+                    <lib:DropDownButton
+                        x:Name="MoreOptionsButton"
+                        x:Uid="/ChannelPage/MoreOptionsButton"
+                        x:Load="{x:Bind ViewModel.ShowExtendedItems}"
+                        Content="&#xE712;"
+                        Margin="2,4"
+                        Style="{ThemeResource IconButtonStyle}">
+                        <lib:DropDownButton.Flyout>
+                            <lib:MenuBarItemFlyout>
+                                <MenuFlyoutItem x:Name="PinToStartItem"
+                                                x:Uid="/ChannelPage/PinToStart"
+                                                Icon="Pin"
+                                                Visibility="{x:Bind ViewModel.IsPinned, Converter={StaticResource InverseBoolVisibilityConverter}}"
+                                                Command="{x:Bind ViewModel.PinToStartCommand}"/>
+
+                                <MenuFlyoutItem x:Uid="/ChannelPage/UnpinFromStart"
+                                                Icon="Unpin"
+                                                Visibility="{x:Bind ViewModel.IsPinned, Converter={StaticResource BoolVisibilityConverter}}"/>
+                                <MenuFlyoutSeparator />
+
+                                <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal"
+                                                Command="{x:Bind ViewModel.OpenInNewWindowCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+
+                                <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" 
+                                                Command="{x:Bind ViewModel.OpenInCompactOverlayWindowCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE78B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </lib:MenuBarItemFlyout>
+                        </lib:DropDownButton.Flyout>
+                    </lib:DropDownButton>
+                </StackPanel>
+
+                <StackPanel x:Name="EditingControls"
+                            HorizontalAlignment="Right"
+                            w1709:Spacing="2"
+                            Opacity="0"
+                            Orientation="Horizontal">
+
+                    <StackPanel.RenderTransform>
+                        <TranslateTransform x:Name="EditingTranslate" X="168" />
+                    </StackPanel.RenderTransform>
+
+                    <Button x:Name="DeleteAllButton"
+                            x:Uid="/ChannelPage/DeleteAllButton"
+                            Command="{Binding MassDeleteCommand}"
+                            Content="&#xE74D;"
+                            Margin="2,4"
+                            Style="{ThemeResource IconButtonStyle}"/>
+                    <Button x:Name="CloseEditButton"
+                            x:Uid="/ChannelPage/CloseEditButton"
+                            Command="{Binding ExitEditModeCommand}"
+                            Content="&#xE711;"
+                            Margin="2,4"
+                            Style="{ThemeResource IconButtonStyle}"/>
+                </StackPanel>
+
+                <Border Margin="0,8,-24,8" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,1,0" />
+            </Grid>
+        </Grid>
+
+        <lib:ProgressBar x:Name="LoadingProgress" 
+                         x:Load="{x:Bind ViewModel.IsLoading}"
+                         IsIndeterminate="True"
+                         VerticalAlignment="Bottom" />
+        <lib:ProgressBar x:Name="UploadProgress"
+                         x:Load="{x:Bind ViewModel.IsUploading}"
+                         IsIndeterminate="{x:Bind ViewModel.IsUploadIndeterminate}"
+                         Value="{x:Bind ViewModel.UploadProgress}"
+                         Maximum="1"
+                         VerticalAlignment="Bottom" />
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="VeryWideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1025" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="768" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="EditModeGroup">
+                <VisualState x:Name="EditMode">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="ShowEditControls" >
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="220"
+                                        Duration="00:00:00.50" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseExit}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseEnter}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                    <VisualState.Setters>
+                        <Setter Target="EditingControls.Visibility" Value="Visible"/>
+                        <Setter Target="DefaultControls.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NormalMode">
+                    <VisualState.Storyboard>
+                        <Storyboard x:Name="HideEditControls">
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="DefaultTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="0"
+                                        Duration="00:00:00.50" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseMovement}"
+                                        Storyboard.TargetName="EditingTranslate"
+                                        Storyboard.TargetProperty="X"
+                                        To="220"
+                                        Duration="00:00:00.50" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseEnter}"
+                                        Storyboard.TargetName="DefaultControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="00:00:00.33" />
+                            <DoubleAnimation
+                                        EasingFunction="{StaticResource EaseExit}"
+                                        Storyboard.TargetName="EditingControls"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="00:00:00.33" />
+                        </Storyboard>
+                    </VisualState.Storyboard>
+                    <VisualState.Setters>
+                        <Setter Target="DefaultControls.Visibility" Value="Visible"/>
+                        <Setter Target="EditingControls.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

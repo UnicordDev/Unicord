@@ -126,7 +126,6 @@ namespace Unicord.Universal.Models.Channels
 
     public class ForumChannelViewModel : ChannelViewModel
     {
-        private bool isLoading;
         internal ForumChannelViewModel(ulong channelId, ViewModelBase parent = null)
             : base(channelId, false, parent)
         {
@@ -144,8 +143,6 @@ namespace Unicord.Universal.Models.Channels
             => (DiscordForumChannel)Channel;
 
         public ForumThreadsCollection ForumThreads { get; }
-
-        public bool IsLoading { get => isLoading; set => OnPropertySet(ref isLoading, value); }
 
         public async Task LoadPostData()
         {

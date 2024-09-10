@@ -10,12 +10,14 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
+using Windows.UI.StartScreen;
 
 namespace Unicord.Universal.Models.Channels
 {
@@ -26,6 +28,11 @@ namespace Unicord.Universal.Models.Channels
 
         private UserViewModel _recipientCache;
         private ReadStateViewModel _readStateCache;
+
+        private bool isLoading;
+        private bool isUploading;
+        private bool isUploadIndeterminate;
+        private double uploadProgress;
 
         internal ChannelViewModel(ulong channelId, bool isTransient = false, ViewModelBase parent = null)
             : base(parent)
@@ -158,6 +165,27 @@ namespace Unicord.Universal.Models.Channels
             }
         }
 
+        /// <summary>
+        /// The actual channel name. (i.e. general, WamWooWam, etc.)
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Channel.Name))
+                {
+                    return Channel.Name;
+                }
+
+                if (Channel is DiscordDmChannel dm)
+                {
+                    return dm.Recipients.Select(r => r.DisplayName).Humanize();
+                }
+
+                return string.Empty;
+            }
+        }
+
         public bool ShouldShowNotificaitonIndicator
         {
             get
@@ -170,6 +198,43 @@ namespace Unicord.Universal.Models.Channels
                 return Unread;
             }
         }
+
+        /// <summary>
+        /// The icon to show in the top left of a channel
+        /// </summary>
+        public string ChannelIconUrl
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    if (dm.Type == ChannelType.Private && dm.Recipients[0] != null)
+                        return dm.Recipients[0].AvatarUrl;
+
+                    if (dm.Type == ChannelType.Group && dm.IconUrl != null)
+                        return dm.IconUrl;
+                }
+
+                return null;
+            }
+        }
+
+        public bool ShowUserlistButton
+            => Channel.Type == ChannelType.Group || Channel.Guild != null;
+
+        public bool IsPinned =>
+            SecondaryTile.Exists($"Channel_{Channel.Id}");
+
+        public bool IsLoading { get => isLoading; set => OnPropertySet(ref isLoading, value); }
+        public bool IsUploading { get => isUploading; set => OnPropertySet(ref isUploading, value); }
+        public bool IsUploadIndeterminate { get => isUploadIndeterminate; set => OnPropertySet(ref isUploadIndeterminate, value); }
+        public double UploadProgress { get => uploadProgress; set => OnPropertySet(ref uploadProgress, value); }
+
+        public bool ShowPinsButton
+            => Channel.IsText();
+
+        public bool ShowExtendedItems
+            => Channel.IsText();
 
         public ICommand AcknowledgeCommand { get; }
         public ICommand EditCommand { get; }

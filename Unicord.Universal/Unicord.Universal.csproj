@@ -172,6 +172,9 @@
     <Compile Include="Commands\Users\ShowUserOverlayCommand.cs" />
     <Compile Include="Controls\Channels\ChannelIconControl.cs" />
     <Compile Include="Controls\Channels\ChannelListControl.cs" />
+    <Compile Include="Controls\Channels\ChannelPageHeaderControl.xaml.cs">
+      <DependentUpon>ChannelPageHeaderControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Messages\Embeds\EmbedControl.xaml.cs">
       <DependentUpon>EmbedControl.xaml</DependentUpon>
     </Compile>
@@ -706,6 +709,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\Channels\ChannelPageHeaderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\EmotePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

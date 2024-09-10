@@ -5,12 +5,13 @@
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:channels="using:Unicord.Universal.Models.Channels" 
-    xmlns:messages="using:Unicord.Universal.Controls.Messages" 
+    xmlns:channelsVM="using:Unicord.Universal.Models.Channels" 
     xmlns:controls="using:Unicord.Universal.Controls" 
+    xmlns:messages="using:Unicord.Universal.Controls.Messages" 
+    xmlns:channels="using:Unicord.Universal.Controls.Channels"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)" xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)" 
     x:DefaultBindMode="OneWay"
     mc:Ignorable="d"
     DataContext="{x:Bind ViewModel}">
@@ -21,120 +22,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="TopGrid"
-              VerticalAlignment="Top"
-              BorderThickness="0,0,0,1"
-              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid>
-                <Grid x:Name="TitleBarContent" Padding="0,0,220,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid x:Name="IconGrid"
-                                      Width="64"
-                                      Visibility="Collapsed">
-                        <Image Width="18"
-                               Height="18"
-                               Source="{StaticResource DiscordClyde}"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center">
-                        </Image>
-                    </Grid>
-
-                    <StackPanel Orientation="Horizontal" x:Name="MainControls" Grid.Column="1">
-                        <!--  because VisualStateManager is wank  -->
-                        <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0" Visibility="Collapsed">
-                            <Button x:Name="ShowSidebarButton"
-                                    Content="&#xE700;"
-                                    Style="{ThemeResource IconButtonStyle}" />
-                        </Grid>
-
-                        <TextBlock x:Name="Icon"
-                                   Grid.Column="1"
-                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                   Text="{x:Bind ViewModel.Channel, Converter={StaticResource ChannelSymbolConverter}}" 
-                                   FontFamily="{StaticResource FluentSystemIcons}"
-                                   VerticalAlignment="Center"
-                                   Margin="16,0,8,0"
-                                   FontSize="20"/>
-
-                        <TextBlock x:Name="Header"
-                                   Grid.Column="2"
-                                   Margin="8,0,8,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="15"
-                                   FontWeight="Bold"
-                                   Text="{x:Bind ViewModel.Name}"
-                                   Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                   TextTrimming="Clip"
-                                   TextWrapping="NoWrap">
-
-                        </TextBlock>
-
-                        <controls:MarkdownTextBlock x:Name="TopicText"
-                                                    Grid.Column="3"
-                                                    HorizontalAlignment="Stretch"
-                                                    VerticalAlignment="Center"
-                                                    Channel="{x:Bind ViewModel.Channel}"
-                                                    Text="{x:Bind ViewModel.Topic}"
-                                                    TextWrapping="NoWrap" />
-                    </StackPanel>
-                </Grid>
-
-                <Grid x:Name="TitleBarDrag" Background="Transparent"/>
-
-                <Grid x:Name="TitleBarControls">
-                    <StackPanel x:Name="DefaultControls"
-                                HorizontalAlignment="Right"
-                                Opacity="1"
-                                Padding="2,0"
-                                Orientation="Horizontal">
-
-                        <ToggleButton x:Name="MuteButton"
-                                      x:Uid="/ChannelPage/MuteButton"
-                                      Content="&#xE74F;"
-                                      Margin="2,4"
-                                      IsChecked="{x:Bind ViewModel.Muted, Mode=OneWay}"
-                                      Style="{ThemeResource IconToggleButtonStyle}">
-                            <w1709:ToggleButton.KeyboardAccelerators>
-                                <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
-                            </w1709:ToggleButton.KeyboardAccelerators>
-                        </ToggleButton>
-                        <Button x:Name="SearchButton"
-                                x:Uid="/ChannelPage/SearchButton"
-                                Content="&#xE721;"
-                                Margin="2,4"
-                                Style="{ThemeResource IconButtonStyle}">
-                            <w1709:Button.KeyboardAccelerators>
-                                <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
-                            </w1709:Button.KeyboardAccelerators>
-                        </Button>
-                        <Button x:Name="UserListButton"
-                                x:Uid="/ChannelPage/UserListButton"
-                                Content="&#xE716;"
-                                Margin="4"
-                                Style="{ThemeResource IconButtonStyle}">
-                            <w1709:Button.KeyboardAccelerators>
-                                <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
-                            </w1709:Button.KeyboardAccelerators>
-                        </Button>
-                    </StackPanel>
-
-                    <Border Margin="0,8,-24,8" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,1,0" />
-                </Grid>
-            </Grid>
-
-            <lib:ProgressBar x:Name="LoadingProgress"
-                             VerticalAlignment="Bottom"
-                             Visibility="{x:Bind ViewModel.IsLoading, Converter={StaticResource BoolVisibilityConverter}}"
-                             IsIndeterminate="{x:Bind ViewModel.IsLoading}"/>
-        </Grid>
-
+        <channels:ChannelPageHeaderControl x:Name="Header"
+                                           ViewModel="{x:Bind ViewModel}"/>
 
         <GridView x:Name="ChannelsGrid"
                   Grid.Row="1"
@@ -154,7 +43,7 @@
                 </Style>
             </GridView.ItemContainerStyle>
             <GridView.ItemTemplate>
-                <DataTemplate x:DataType="channels:ForumThreadViewModel">
+                <DataTemplate x:DataType="channelsVM:ForumThreadViewModel">
                     <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             HorizontalAlignment="Stretch"

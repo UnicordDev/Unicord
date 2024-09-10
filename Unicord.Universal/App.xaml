@@ -77,7 +77,6 @@
             <converters:UriConverter x:Key="UriConverter"/>
 
             <commands:EditChannelCommand x:Key="EditChannelCommand"/>
-            <commands:EditModeCommand x:Key="EditModeCommand" />
             <commands:SettingsCommand x:Key="SettingsCommand" />
 
             <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>

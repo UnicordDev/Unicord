@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Messages;
@@ -80,6 +81,7 @@ namespace Unicord.Universal.Pages
             MessageList.AddHandler(TappedEvent, new TappedEventHandler(MessageList_Tapped), true);
 
             VisualStateManager.GoToState(this, "NormalMode", false);
+            VisualStateManager.GoToState(Header, "NormalMode", true);
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -102,15 +104,13 @@ namespace Unicord.Universal.Pages
             var navigation = SystemNavigationManager.GetForCurrentView();
             navigation.BackRequested += Navigation_BackRequested;
 
+            var enterEditMode = new RelayCommand<MessageViewModel>(EnterEditMode);
+            var exitEditMode = new RelayCommand(LeaveEditMode);
+
             if (_viewModel?.IsEditMode == true)
             {
                 LeaveEditMode();
             }
-
-            //if (IsPaneOpen)
-            //{
-            //    ClosePane();
-            //}
 
             var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
             if (ViewModel != null)
@@ -125,7 +125,7 @@ namespace Unicord.Universal.Pages
             }
             else
             {
-                model = new ChannelPageViewModel(chan, windowHandle);
+                model = new ChannelPageViewModel(chan, windowHandle, enterEditMode, exitEditMode);
             }
 
             WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
@@ -136,15 +136,6 @@ namespace Unicord.Universal.Pages
 
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
                 MessageTextBox.Focus(FocusState.Keyboard);
-
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
-                WindowingService.Current.HandleTitleBarForControl(TopGrid);
-
-            if (!WindowingService.Current.IsMainWindow(windowHandle))
-            {
-                IconGrid.Visibility = Visibility.Visible;
-                WindowingService.Current.HandleTitleBarForWindowControls(TopGrid, TitleBarDrag, TitleBarControls, MainControls);
-            }
 
             while (_channelHistory.Count > 10)
             {
@@ -182,8 +173,6 @@ namespace Unicord.Universal.Pages
                 swipeService.AddAdditionalElement(MessageList);
                 swipeService.AddAdditionalElement(scrollViewer);
 
-                ShowSidebarButtonContainer.Visibility = this.FindParent<DiscordPage>() == null ? Visibility.Collapsed : Visibility.Visible;
-
                 _scrollHandlerAdded = true;
             }
         }
@@ -213,14 +202,6 @@ namespace Unicord.Universal.Pages
             ViewModel.LastAccessed = DateTimeOffset.Now;
             try
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    LoadingProgress.Visibility = Visibility.Visible;
-                    LoadingProgress.IsIndeterminate = true;
-
-                    NoMessages.Visibility = Visibility.Collapsed;
-                });
-
                 if (ViewModel.Channel.Guild?.IsSynced == false)
                 {
                     await ViewModel.Channel.Guild.SyncAsync().ConfigureAwait(false);
@@ -236,9 +217,6 @@ namespace Unicord.Universal.Pages
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                LoadingProgress.Visibility = Visibility.Collapsed;
-                LoadingProgress.IsIndeterminate = false;
-
                 if (ViewModel.ReadState.Unread == true)
                 {
                     var id = ViewModel.ReadState.LastMessageId;
@@ -345,29 +323,7 @@ namespace Unicord.Universal.Pages
         {
             try
             {
-                if (ViewModel.FileUploads.Any())
-                {
-                    UploadProgress.Visibility = Visibility.Visible;
-                    var progress = new Progress<double?>(d =>
-                    {
-                        if (d == null && !UploadProgress.IsIndeterminate)
-                        {
-                            UploadProgress.IsIndeterminate = true;
-                        }
-                        else
-                        {
-                            UploadProgress.Value = d.Value;
-                        }
-                    });
-
-                    await ViewModel.SendMessageAsync(progress).ConfigureAwait(false);
-                }
-                else
-                {
-                    await ViewModel.SendMessageAsync().ConfigureAwait(false);
-                }
-
-                await Dispatcher.RunIdleAsync((i) => UploadProgress.Visibility = Visibility.Collapsed);
+                await ViewModel.SendMessageAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -542,46 +498,18 @@ namespace Unicord.Universal.Pages
             catch { }
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            HidePhotoPicker.Begin();
-        }
-
-        private void RemoveItemButton_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.FileUploads.Remove((sender as FrameworkElement).DataContext as FileUploadModel);
-        }
-
-        private void pinsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // TogglePane(typeof(PinsPage), ViewModel.Channel);
-        }
-
-        private void UserListButton_Click(object sender, RoutedEventArgs e)
-        {
-            // TogglePane(typeof(UserListPage), ViewModel.Channel);
-        }
-
-        private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
-        {
-            var page = this.FindParent<DiscordPage>();
-            if (page != null)
-            {
-                page.ToggleSplitPane();
-            }
-        }
-
-        public void EnterEditMode(DiscordMessage message = null)
+        private void EnterEditMode(MessageViewModel message)
         {
             Analytics.TrackEvent("ChannelPage_EnterEditMode");
 
             _viewModel.IsEditMode = true;
             VisualStateManager.GoToState(this, "EditMode", true);
+            VisualStateManager.GoToState(Header, "EditMode", true);
 
-            //if (message != null)
-            //{
-            //    MessageList.SelectedItems.Add(message);
-            //}
+            if (message != null)
+            {
+                MessageList.SelectedItems.Add(message);
+            }
         }
 
         private void LeaveEditMode()
@@ -590,45 +518,18 @@ namespace Unicord.Universal.Pages
 
             _viewModel.IsEditMode = false;
             VisualStateManager.GoToState(this, "NormalMode", true);
-        }
-
-        private void CloseEditButton_Click(object sender, RoutedEventArgs e)
-        {
-            LeaveEditMode();
-        }
-
-        private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
-        {
-            var loader = ResourceLoader.GetForCurrentView("ChannelPage");
-            if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("MassDeleteTitle"), loader.GetString("MassDeleteMessage"), "\xE74D"))
-            {
-                Analytics.TrackEvent("ChannelPage_MassDeleteMessage");
-                var items = MessageList.SelectedItems.OfType<DiscordMessage>().ToArray();
-
-                LeaveEditMode();
-
-                foreach (var item in items)
-                {
-                    await item.DeleteAsync();
-                    await Task.Delay(500);
-                }
-            }
+            VisualStateManager.GoToState(Header, "NormalMode", true);
         }
 
         private void MessageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach (var item in e.AddedItems.OfType<MessageViewModel>())
             {
-                if (!new DeleteMessageCommand(item).CanExecute(item))
+                if (!item.DeleteCommand.CanExecute(null))
                 {
                     MessageList.SelectedItems.Remove(item);
                 }
             }
-        }
-
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            // TogglePane(typeof(SearchPage), ViewModel.Channel);
         }
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
@@ -641,7 +542,7 @@ namespace Unicord.Universal.Pages
 
             if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
             {
-                EnterEditMode();
+                _viewModel.EnterEditModeCommand?.Execute(null);
             }
         }
 
@@ -649,19 +550,8 @@ namespace Unicord.Universal.Pages
         {
             if (!_viewModel.IsEditMode)
             {
-                EnterEditMode();
+                _viewModel.EnterEditModeCommand?.Execute(null);
             }
-        }
-
-        private void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            //this.FindParent<DiscordPage>().OpenCustomPane(typeof(ChannelEditPage), _viewModel.Channel);
-        }
-
-        private void HideTitleBar_Completed(object sender, object e)
-        {
-            TopGrid.Visibility = Visibility.Collapsed;
-            FooterGrid.Visibility = Visibility.Collapsed;
         }
 
         private async void MessageTextBox_ShouldSendTyping(object sender, EventArgs e)
