@@ -736,10 +736,7 @@
                                     <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
 
                                     <StackPanel x:Name="AdditionalContent"
-                                                x:Load="True"
-                                                x:Phase="2"
-                                                Grid.Row="2"
-                                                DataContext="{x:Bind MessageViewModel, Mode=OneWay}">
+                                                Grid.Row="2">
                                         <ItemsControl x:Name="Embeds"
                                                       ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                                       ItemsSource="{Binding Embeds}"
