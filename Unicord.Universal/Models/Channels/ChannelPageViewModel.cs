@@ -606,7 +606,6 @@ namespace Unicord.Universal.Models
                     ReplyPing = true;
                     MessageText = "";
                     FileUploads.Clear();
-                    IsUploading = true;
 
                     var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
                     if (replyPing && replyTo != null)
@@ -614,6 +613,7 @@ namespace Unicord.Universal.Models
 
                     if (models.Any())
                     {
+                        IsUploading = true;
                         var files = new Dictionary<string, IInputStream>();
                         foreach (var item in models)
                         {

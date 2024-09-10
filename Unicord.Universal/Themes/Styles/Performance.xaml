@@ -5,7 +5,7 @@
     xmlns:toolkit_media="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
     xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)">
-    <!-- Windows 10 circa 1709 Styling -->
+    <!-- Windows 10 circa 1703 Styling -->
     <ResourceDictionary.MergedDictionaries>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"
                                ControlsResourcesVersion="Version1"/>
@@ -159,6 +159,8 @@
     <Style x:Key="DiscordPage_SidebarSecondaryStyle" TargetType="Grid"/>
     <Style x:Key="DiscordPage_RightSplitPaneStyle" TargetType="Grid"/>
 
+    <!-- FriendsPage -->
+    
     <SolidColorBrush x:Key="FriendsPage_RelationshipItem_Background" Color="Transparent"/>
     <SolidColorBrush x:Key="FriendsPage_RelationshipItem_BorderBrush" Color="Transparent"/>
     <CornerRadius x:Key="FriendsPage_RelationshipItem_CornerRadius">0</CornerRadius>

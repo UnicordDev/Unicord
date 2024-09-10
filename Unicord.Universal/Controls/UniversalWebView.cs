@@ -1,7 +1,4 @@
-﻿
-#if true
-#define HAS_WEBVIEW_2
-#endif
+﻿#define HAS_WEBVIEW_2
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +11,9 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation.Metadata;
 using Unicord.Universal.Services;
 
+
 #if HAS_WEBVIEW_2
+using KWebView2;
 using Microsoft.Web.WebView2.Core;
 using Windows.System;
 #endif

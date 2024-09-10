@@ -20,6 +20,7 @@ namespace Unicord.Universal.Services
         public AppTheme GetTheme()
         {
 #if true
+            return AppTheme.Fluent;
             return GetDefaultAppTheme();
 #else
             if (App.LocalSettings.TryRead<int>("AppTheme", out var theme))

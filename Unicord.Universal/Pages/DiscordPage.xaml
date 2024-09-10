@@ -13,7 +13,6 @@
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:converters="using:Unicord.Universal.Converters"
     xmlns:voice="using:Unicord.Universal.Controls.Voice"
-    xmlns:triggers="using:WindowsStateTriggers" 
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
     NavigationCacheMode="Required"
