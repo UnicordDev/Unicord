@@ -278,11 +278,11 @@
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="guildVMs:GuildListViewModel">
-        <lib:TreeViewItem IsSelected="{x:Bind IsSelected}" 
-                          ContextFlyout="{StaticResource GuildContextFlyout}"
-                          ToolTipService.ToolTip="{x:Bind Name}"
-                          ToolTipService.Placement="Left">
-            <Grid>
+        <!--<lib:TreeViewItem IsSelected="{x:Bind IsSelected}" >-->
+        <Grid Background="Transparent"
+              ContextFlyout="{StaticResource GuildContextFlyout}"
+              ToolTipService.ToolTip="{x:Bind Name}"
+              ToolTipService.Placement="Left">
                 <lib:PersonPicture Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
                 <lib:InfoBadge VerticalAlignment="Top"
                            HorizontalAlignment="Right"
@@ -292,15 +292,15 @@
                            Value="{x:Bind MentionCount}"
                            Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"/>
             </Grid>
-        </lib:TreeViewItem>
+        <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
     <DataTemplate x:Key="GuildsListFolderTemplate" x:DataType="guildVMs:GuildListFolderViewModel">
-        <lib:TreeViewItem ItemsSource="{x:Bind Children}" 
-                          IsExpanded="{Binding IsExpanded}" 
-                          ToolTipService.ToolTip="{x:Bind Name}"
-                          ToolTipService.Placement="Left">
-            <Grid>
+        <!--<lib:TreeViewItem ItemsSource="{x:Bind Children}" 
+                          IsExpanded="{Binding IsExpanded}" >-->
+        <Grid ToolTipService.ToolTip="{x:Bind Name}"
+              ToolTipService.Placement="Left"
+              Loaded="OnGuildsListFolderLoaded">
                 <Ellipse Margin="0,4" 
                          Width="42" 
                          Height="42"
@@ -422,7 +422,7 @@
                     </core:DataTriggerBehavior>
                 </i:Interaction.Behaviors>
             </Grid>
-        </lib:TreeViewItem>
+        <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
     <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVMs:DmChannelListViewModel">

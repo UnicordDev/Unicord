@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -17,7 +18,6 @@
         <controls:ScaledContentControl TargetWidth="{x:Bind ViewModel.NaturalWidth}" TargetHeight="{x:Bind ViewModel.NaturalHeight}">
             <controls:ImageElement x:Name="Image"
                                    Tapped="Image_Tapped"
-                                   CornerRadius="2" 
                                    ImageWidth="{x:Bind ViewModel.NaturalWidth}" 
                                    ImageHeight="{x:Bind ViewModel.NaturalHeight}" 
                                    ImageUri="{x:Bind ViewModel.Source}" />

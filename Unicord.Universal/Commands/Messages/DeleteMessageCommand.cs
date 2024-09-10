@@ -16,7 +16,7 @@ namespace Unicord.Universal.Commands.Messages
         public override bool CanExecute(object parameter)
         {
             var message = viewModel.Message;
-            if (message.Author.Id == App.Discord.CurrentUser.Id)
+            if (message.Author.IsCurrent)
             {
                 return true;
             }

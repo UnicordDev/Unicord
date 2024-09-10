@@ -15,6 +15,7 @@
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:presence="using:Unicord.Universal.Controls.Presence" 
     xmlns:users="using:Unicord.Universal.Controls.Users"
+    xmlns:channels="using:Unicord.Universal.Controls.Channels"
     xmlns:messages1="using:Unicord.Universal.Models.Messages"
     Loaded="Page_Loaded"
     AllowDrop="True"
@@ -34,6 +35,8 @@
             EasingMode="EaseIn"
             Exponent="4.5" />
 
+        <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
+
         <Flyout x:Key="EmoteFlyout" x:Name="EmoteFlyout" w1903:ShouldConstrainToRootBounds="False">
             <controls:EmotePicker x:Name="EmotePicker" 
                                   Channel="{x:Bind ViewModel.Channel, Mode=OneWay}" 
@@ -43,8 +46,6 @@
                                   VerticalAlignment="Stretch" 
                                   EmojiPicked="EmotePicker_EmojiPicked"/>
         </Flyout>
-
-        <CircleEase x:Key="EaseMovement" EasingMode="EaseInOut" />
 
         <Storyboard x:Name="ShowPhotoPicker">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PhotoPicker" 
@@ -195,236 +196,19 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid x:Name="TopGrid"
-                          VerticalAlignment="Top"
-                          BorderThickness="0,0,0,1"
-                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid x:Name="TitleBarContent" Padding="0,0,220,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Grid x:Name="IconGrid"
-                                      Width="64"
-                                      Visibility="Collapsed">
-                                <Image Width="18"
-                                           Height="18"
-                                           Source="{StaticResource DiscordClyde}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center">
-                                </Image>
-                            </Grid>
-
-                            <StackPanel Orientation="Horizontal" x:Name="MainControls" Grid.Column="1">
-
-                                <!--  because VisualStateManager is wank  -->
-                                <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
-                                    <Button x:Name="ShowSidebarButton"
-                                                    Click="ShowSidebarButton_Click"
-                                                    Content="&#xE700;"
-                                                    Style="{ThemeResource IconButtonStyle}" />
-                                </Grid>
-
-                                <users:AvatarControl x:Name="UserImage"
-                                                        x:Load="{x:Bind ViewModel.IsDM}"
-                                                        Source="{Binding UserImageUrl}"
-                                                        Grid.Column="1"
-                                                        Width="24"
-                                                        Height="24"
-                                                        Margin="12,0,0,0"
-                                                        VerticalAlignment="Center"/>
-
-                                <TextBlock x:Name="Icon"
-                                           x:Load="{x:Bind ViewModel.IsNotDM}"
-                                           Grid.Column="1"
-                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                           Text="{x:Bind ViewModel.Channel, Converter={StaticResource ChannelSymbolConverter}}" 
-                                           FontFamily="{StaticResource FluentSystemIcons}"
-                                           VerticalAlignment="Center"
-                                           Margin="16,0,8,0"
-                                           FontSize="20"/>
-
-                                <TextBlock x:Name="Header"
-                                           Grid.Column="2"
-                                           Margin="8,0,8,0"
-                                           VerticalAlignment="Center"
-                                           FontSize="15"
-                                           FontWeight="Bold"
-                                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                           TextTrimming="Clip"
-                                           TextWrapping="NoWrap"
-                                           Text="{Binding ChannelName}"/>
-
-                                <presence:StatusIndicator x:Name="RecipientStatusIndicator" 
-                                                          x:Load="{x:Bind ViewModel.IsDM}"
-                                                          Grid.Column="3" 
-                                                          Width="10" 
-                                                          Height="10" 
-                                                          Margin="-4,0,8,0"
-                                                          Presence="{x:Bind ViewModel.Recipient.Presence}"/>
-
-                                <controls:MarkdownTextBlock x:Name="TopicText"
-                                                            Grid.Column="4"
-                                                            HorizontalAlignment="Stretch"
-                                                            VerticalAlignment="Center"
-                                                            Channel="{x:Bind ViewModel.Channel}"
-                                                            Text="{x:Bind ViewModel.Topic}"
-                                                            TextWrapping="NoWrap" />
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid x:Name="TitleBarDrag" Background="Transparent"/>
-
-                        <Grid x:Name="TitleBarControls">
-                            <StackPanel x:Name="DefaultControls"
-                                            HorizontalAlignment="Right"
-                                            Opacity="1"
-                                            Padding="2,0"
-                                            Orientation="Horizontal">
-
-                                <StackPanel.RenderTransform>
-                                    <TranslateTransform x:Name="DefaultTranslate" X="0" />
-                                </StackPanel.RenderTransform>
-
-                                <!--<Button
-                                            x:Name="editButton"
-                                            Click="EditButton_Click"
-                                            Content="&#xE70F;"
-                                            Visibility="{Binding ShowEditButton}"
-                                            Style="{ThemeResource IconButtonStyle}"
-                                            ToolTipService.ToolTip="Edit Channel" />-->
-
-                                <ToggleButton x:Name="MuteButton"
-                                                  x:Uid="/ChannelPage/MuteButton"
-                                                  Content="&#xE74F;"
-                                                  Margin="2,4"
-                                                  IsChecked="{x:Bind ViewModel.Muted, Mode=OneWay}"
-                                                  Style="{ThemeResource IconToggleButtonStyle}">
-                                    <w1709:ToggleButton.KeyboardAccelerators>
-                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
-                                    </w1709:ToggleButton.KeyboardAccelerators>
-                                </ToggleButton>
-                                <Button x:Name="SearchButton"
-                                            x:Uid="/ChannelPage/SearchButton"
-                                            Content="&#xE721;"
-                                            Margin="2,4"
-                                            Click="SearchButton_Click"
-                                            Style="{ThemeResource IconButtonStyle}">
-                                    <w1709:Button.KeyboardAccelerators>
-                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
-                                    </w1709:Button.KeyboardAccelerators>
-                                </Button>
-                                <Button x:Name="PinsButton"
-                                            x:Uid="/ChannelPage/PinsButton"
-                                            Click="pinsButton_Click"
-                                            Content="&#xE718;"
-                                            Margin="2,4"
-                                            Style="{ThemeResource IconButtonStyle}">
-                                    <w1709:Button.KeyboardAccelerators>
-                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
-                                    </w1709:Button.KeyboardAccelerators>
-                                </Button>
-                                <Button x:Name="UserListButton"
-                                            x:Uid="/ChannelPage/UserListButton"
-                                            x:Load="{x:Bind ViewModel.ShowUserlistButton}"
-                                            Click="UserListButton_Click"
-                                            Content="&#xE716;"
-                                            Margin="4"
-                                            Style="{ThemeResource IconButtonStyle}">
-                                    <w1709:Button.KeyboardAccelerators>
-                                        <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
-                                    </w1709:Button.KeyboardAccelerators>
-                                </Button>
-
-                                <lib:DropDownButton
-                                        x:Name="MoreOptionsButton"
-                                        x:Uid="/ChannelPage/MoreOptionsButton"
-                                        Content="&#xE712;"
-                                        Margin="2,4"
-                                        Style="{ThemeResource IconButtonStyle}">
-                                    <lib:DropDownButton.Flyout>
-                                        <lib:MenuBarItemFlyout>
-                                            <MenuFlyoutItem x:Name="PinToStartItem"
-                                                                x:Uid="/ChannelPage/PinToStart"
-                                                                Icon="Pin"
-                                                                Visibility="{Binding IsPinned, Converter={StaticResource InverseBoolVisibilityConverter}}"
-                                                                Command="{x:Bind ViewModel.PinToStartCommand}"/>
-
-                                            <MenuFlyoutItem x:Uid="/ChannelPage/UnpinFromStart"
-                                                                Icon="Unpin"
-                                                                Visibility="{Binding IsPinned, Converter={StaticResource BoolVisibilityConverter}}"/>
-
-                                            <MenuFlyoutSeparator />
-
-                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowNormal"
-                                                                Command="{x:Bind ViewModel.OpenInNewWindowCommand}">
-                                                <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-                                                </MenuFlyoutItem.Icon>
-                                            </MenuFlyoutItem>
-
-                                            <MenuFlyoutItem x:Uid="/ChannelPage/NewWindowOverlay" 
-                                                                Command="{x:Bind ViewModel.OpenInCompactOverlayWindowCommand}">
-                                                <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xE78B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-                                                </MenuFlyoutItem.Icon>
-                                            </MenuFlyoutItem>
-                                        </lib:MenuBarItemFlyout>
-                                    </lib:DropDownButton.Flyout>
-                                </lib:DropDownButton>
-                            </StackPanel>
-
-                            <StackPanel x:Name="EditingControls"
-                                            HorizontalAlignment="Right"
-                                            w1709:Spacing="2"
-                                            Opacity="0"
-                                            Orientation="Horizontal">
-
-                                <StackPanel.RenderTransform>
-                                    <TranslateTransform x:Name="EditingTranslate" X="168" />
-                                </StackPanel.RenderTransform>
-
-                                <Button x:Name="DeleteAllButton"
-                                            x:Uid="/ChannelPage/DeleteAllButton"
-                                            Click="DeleteAllButton_Click"
-                                            Content="&#xE74D;"
-                                            Style="{ThemeResource IconButtonStyle}"/>
-                                <Button x:Name="CloseEditButton"
-                                            x:Uid="/ChannelPage/CloseEditButton"
-                                            Click="CloseEditButton_Click"
-                                            Content="&#xE711;"
-                                            Style="{ThemeResource IconButtonStyle}"/>
-                            </StackPanel>
-
-                            <Border Margin="0,8,-24,8" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,1,0" />
-                        </Grid>
-                    </Grid>
-
-                    <lib:ProgressBar
-                            x:Name="LoadingProgress"
-                            VerticalAlignment="Bottom"
-                            Visibility="Collapsed" />
-                    <lib:ProgressBar
-                            x:Name="UploadProgress"
-                            VerticalAlignment="Bottom"
-                            Visibility="Collapsed" />
-                </Grid>
+                <channels:ChannelPageHeaderControl x:Name="Header" 
+                                                   ViewModel="{x:Bind ViewModel}"/>
 
                 <Grid Grid.Row="1">
                     <ListView x:Name="MessageList"
-                                  ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
-                                  ItemsSource="{x:Bind ViewModel.Messages}"
-                                  ReorderMode="Disabled"
-                                  SelectionChanged="MessageList_SelectionChanged"
-                                  ShowsScrollingPlaceholders="False"
-                                  SingleSelectionFollowsFocus="False"
-                                  SelectionMode="None"
-                                  Padding="0,0,0,12">
+                              ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
+                              ItemsSource="{x:Bind ViewModel.Messages}"
+                              ReorderMode="Disabled"
+                              SelectionChanged="MessageList_SelectionChanged"
+                              ShowsScrollingPlaceholders="False"
+                              SingleSelectionFollowsFocus="False"
+                              SelectionMode="None"
+                              Padding="0,0,0,12">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <ItemsStackPanel
@@ -441,6 +225,7 @@
                                 <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>
@@ -711,41 +496,6 @@
         </Grid>
 
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="VeryWideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1025" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
-                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="1" />-->
-                        <Setter Target="ContentTransform.X" Value="0" />
-                    </VisualState.Setters>
-                </VisualState>
-
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="768" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="ShowSidebarButton.Visibility" Value="Collapsed" />
-                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="0" />-->
-                    </VisualState.Setters>
-                </VisualState>
-
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-
-                    <VisualState.Setters>
-                        <Setter Target="ShowSidebarButton.Visibility" Value="Visible" />
-                        <!--<Setter Target="SidebarGrid.(Grid.Column)" Value="0" />-->
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
             <VisualStateGroup x:Name="TypingGroup">
                 <VisualState x:Name="IsTyping">
                     <VisualState.StateTriggers>
@@ -768,75 +518,15 @@
             </VisualStateGroup>
             <VisualStateGroup x:Name="EditModeGroup">
                 <VisualState x:Name="EditMode">
-                    <VisualState.Storyboard>
-                        <Storyboard x:Name="ShowEditControls" >
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseMovement}"
-                                        Storyboard.TargetName="DefaultTranslate"
-                                        Storyboard.TargetProperty="X"
-                                        To="220"
-                                        Duration="00:00:00.50" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseMovement}"
-                                        Storyboard.TargetName="EditingTranslate"
-                                        Storyboard.TargetProperty="X"
-                                        To="0"
-                                        Duration="00:00:00.50" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseOut}"
-                                        Storyboard.TargetName="DefaultControls"
-                                        Storyboard.TargetProperty="Opacity"
-                                        To="0"
-                                        Duration="00:00:00.33" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseIn}"
-                                        Storyboard.TargetName="EditingControls"
-                                        Storyboard.TargetProperty="Opacity"
-                                        To="1"
-                                        Duration="00:00:00.33" />
-                        </Storyboard>
-                    </VisualState.Storyboard>
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="Multiple"/>
                         <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource EditingMessageTemplateSelector}"/>
-                        <Setter Target="EditingControls.Visibility" Value="Visible"/>
-                        <Setter Target="DefaultControls.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NormalMode">
-                    <VisualState.Storyboard>
-                        <Storyboard x:Name="HideEditControls">
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseMovement}"
-                                        Storyboard.TargetName="DefaultTranslate"
-                                        Storyboard.TargetProperty="X"
-                                        To="0"
-                                        Duration="00:00:00.50" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseMovement}"
-                                        Storyboard.TargetName="EditingTranslate"
-                                        Storyboard.TargetProperty="X"
-                                        To="220"
-                                        Duration="00:00:00.50" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseIn}"
-                                        Storyboard.TargetName="DefaultControls"
-                                        Storyboard.TargetProperty="Opacity"
-                                        To="1"
-                                        Duration="00:00:00.33" />
-                            <DoubleAnimation
-                                        EasingFunction="{StaticResource EaseOut}"
-                                        Storyboard.TargetName="EditingControls"
-                                        Storyboard.TargetProperty="Opacity"
-                                        To="0"
-                                        Duration="00:00:00.33" />
-                        </Storyboard>
-                    </VisualState.Storyboard>
                     <VisualState.Setters>
                         <Setter Target="MessageList.SelectionMode" Value="None"/>
                         <Setter Target="MessageList.ItemTemplateSelector" Value="{StaticResource MessageTemplateSelector}"/>
-                        <Setter Target="DefaultControls.Visibility" Value="Visible"/>
-                        <Setter Target="EditingControls.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

@@ -10,7 +10,7 @@ namespace Unicord.Universal.Models.Messages
     public partial class MessageViewModel
     {
         private static readonly ImmutableArray<string> WelcomeStrings =
-            ImmutableArray.Create(
+            [
                 "{0} just joined the server - glhf!",
                 "{0} just joined. Everyone, look busy!",
                 "{0} just joined. Can I get a heal?",
@@ -18,7 +18,7 @@ namespace Unicord.Universal.Models.Messages
                 "{0} joined. You must construct additional pylons.",
                 "Ermagherd. {0} is here.",
                 "Welcome, {0}. Stay awhile and listen.",
-                "Welcome, {0}. We were expecting you ( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)", 
+                "Welcome, {0}. We were expecting you ( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)",
                 "Welcome, {0}. We hope you brought pizza.",
                 "Welcome {0}. Leave your weapons by the door.",
                 "A wild {0} appeared.",
@@ -49,6 +49,7 @@ namespace Unicord.Universal.Models.Messages
                 "{0} is here to kick gum and chew ass. And {0} is all out of ass.",
                 "Hello. Is it {0} you're looking for?",
                 "{0} has joined. Stay a while and listen!",
-                "Roses are red, violets are blue, {0} joined this server with you");
+                "Roses are red, violets are blue, {0} joined this server with you",
+            ];
     }
 }

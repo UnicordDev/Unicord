@@ -37,23 +37,27 @@ namespace Unicord.Universal.Models
     {
         private const int INITIAL_LOAD_LIMIT = 50;
 
-        private DiscordChannel _channel;
+        private readonly DiscordChannel _channel;
+        private readonly ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation;
+        private readonly WindowHandle _windowHandle;
+        private readonly ResourceLoader _strings;
+        private readonly SemaphoreSlim _loadSemaphore;
+        private readonly DispatcherTimer _slowModeTimer;
+
         private DiscordUser _currentUser;
         private double _slowModeTimeout;
-        private ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation;
         private DateTimeOffset _typingLastSent;
         private DateTimeOffset _messageLastSent;
-        private WindowHandle _windowHandle;
-        private ResourceLoader _strings;
-        private SemaphoreSlim _loadSemaphore;
-        private DispatcherTimer _slowModeTimer;
         private string _messageText;
         private bool _isTranscoding;
         private ObservableCollection<MessageViewModel> _messages;
         private MessageViewModel _replyTo;
         private bool _replyPing = true;
 
-        public ChannelPageViewModel(DiscordChannel channel, WindowHandle window)
+        public ChannelPageViewModel(DiscordChannel channel,
+                                    WindowHandle window,
+                                    ICommand enterEditMode = null,
+                                    ICommand exitEditMode = null)
             : base(channel)
         {
             if (!channel.IsText())
@@ -107,7 +111,27 @@ namespace Unicord.Universal.Models
                 }
             };
 
+            EnterEditModeCommand = enterEditMode;
+            ExitEditModeCommand = exitEditMode;
             ClearReplyCommand = new RelayCommand(() => this.ReplyTo = null);
+            MassDeleteCommand = new AsyncRelayCommand(async () =>
+            {
+                var loader = ResourceLoader.GetForCurrentView("ChannelPage");
+                if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("MassDeleteTitle"), loader.GetString("MassDeleteMessage"), "\xE74D"))
+                {
+                    Analytics.TrackEvent("ChannelPage_MassDeleteMessage");
+                    var items = Messages.Where(m => m.IsSelected)
+                                        .ToArray();
+
+                    ExitEditModeCommand?.Execute(null);
+
+                    foreach (var item in items)
+                    {
+                        await item.Message.DeleteAsync();
+                        await Task.Delay(500);
+                    }
+                }
+            });
         }
 
         public ObservableCollection<MessageViewModel> Messages
@@ -173,26 +197,6 @@ namespace Unicord.Universal.Models
             : Channel.Type == ChannelType.Private ? "@"
             : string.Empty;
 
-        /// <summary>
-        /// The actual channel name. (i.e. general, WamWooWam, etc.)
-        /// </summary>
-        public string ChannelName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Channel.Name))
-                {
-                    return Channel.Name;
-                }
-
-                if (Channel is DiscordDmChannel dm)
-                {
-                    return dm.Recipients.Select(r => r.DisplayName).Humanize();
-                }
-
-                return string.Empty;
-            }
-        }
 
         /// <summary>
         /// The suffix of the channel's display name. (i.e. #6402)
@@ -204,14 +208,14 @@ namespace Unicord.Universal.Models
         /// The full channel name (i.e. @WamWooWam#6402, #general, etc.)
         /// </summary>
         public string FullChannelName =>
-            $"{ChannelPrefix}{ChannelName}{ChannelSuffix}";
+            $"{ChannelPrefix}{DisplayName}{ChannelSuffix}";
 
         /// <summary>
         /// The current placeholder to display in the message text box
         /// </summary>
         public string ChannelPlaceholder =>
            CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ?
-            string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, ChannelName) :
+            string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, DisplayName) :
             _strings.GetString("ChannelReadonlyText");
 
         public bool CanType => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
@@ -221,25 +225,6 @@ namespace Unicord.Universal.Models
         /// </summary>
         public string TitleText => Channel.Guild != null ? $"{FullChannelName} - {Channel.Guild.Name}" : FullChannelName;
 
-        /// <summary>
-        /// The icon to show in the top left of a channel
-        /// </summary>
-        public string UserImageUrl
-        {
-            get
-            {
-                if (Channel is DiscordDmChannel dm)
-                {
-                    if (dm.Type == ChannelType.Private && dm.Recipients[0] != null)
-                        return dm.Recipients[0].AvatarUrl;
-
-                    if (dm.Type == ChannelType.Group && dm.IconUrl != null)
-                        return dm.IconUrl;
-                }
-
-                return null;
-            }
-        }
 
         public bool CanSend
         {
@@ -321,8 +306,6 @@ namespace Unicord.Universal.Models
 
         public bool ShowUploads => FileUploads.Any() || IsTranscoding;
 
-        public bool ShowUserlistButton => Channel.Type == ChannelType.Group || Channel.Guild != null;
-
         public bool HasNitro => App.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
@@ -359,9 +342,9 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public bool IsPinned =>
-            SecondaryTile.Exists($"Channel_{Channel.Id}");
-
+        public ICommand EnterEditModeCommand { get; }
+        public ICommand ExitEditModeCommand { get; }
+        public ICommand MassDeleteCommand { get; }
         public ICommand ClearReplyCommand { get; }
 
         public bool IsDisposed { get; internal set; }
@@ -471,6 +454,8 @@ namespace Unicord.Universal.Models
 
             try
             {
+                IsLoading = true;
+
                 if (!Messages.Any())
                 {
                     await UnsafeLoadMessages().ConfigureAwait(false);
@@ -492,6 +477,7 @@ namespace Unicord.Universal.Models
             }
             finally
             {
+                IsLoading = false;
                 _loadSemaphore.Release();
             }
         }
@@ -597,75 +583,95 @@ namespace Unicord.Universal.Models
         /// Abstracts sending a message.
         /// </summary>
         /// <returns></returns>
-        public async Task SendMessageAsync(IProgress<double?> progress = null)
+        public async Task SendMessageAsync()
         {
             if (Channel.Type == ChannelType.Voice)
             {
                 return;
             }
-
-            Analytics.TrackEvent("ChannelViewModel_SendMessage");
-
-            if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
+            try
             {
-                var txt = MessageText ?? "";
-                txt = txt.Replace('\r', '\n'); // this is incredibly stupid
+                Analytics.TrackEvent("ChannelViewModel_SendMessage");
 
-                var replyTo = ReplyTo;
-                var replyPing = ReplyPing;
-                var models = FileUploads.ToArray();
-
-                ReplyTo = null;
-                ReplyPing = true;
-                MessageText = "";
-                FileUploads.Clear();
-
-                var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
-                if (replyPing && replyTo != null)
-                    mentions.Add(RepliedUserMention.All);
-
-                if (models.Any())
+                if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
                 {
-                    var files = new Dictionary<string, IInputStream>();
-                    foreach (var item in models)
-                    {
-                        files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
-                    }
+                    var txt = MessageText ?? "";
+                    txt = txt.Replace('\r', '\n'); // this is incredibly stupid
 
-                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
-                               .ConfigureAwait(false);
+                    var replyTo = ReplyTo;
+                    var replyPing = ReplyPing;
+                    var models = FileUploads.ToArray();
 
-                    foreach (var item in files)
-                    {
-                        item.Value.Dispose();
-                    }
+                    ReplyTo = null;
+                    ReplyPing = true;
+                    MessageText = "";
+                    FileUploads.Clear();
+                    IsUploading = true;
 
-                    foreach (var item in models)
+                    var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
+                    if (replyPing && replyTo != null)
+                        mentions.Add(RepliedUserMention.All);
+
+                    if (models.Any())
                     {
-                        if (item.IsTemporary && item.StorageFile != null)
+                        var files = new Dictionary<string, IInputStream>();
+                        foreach (var item in models)
                         {
-                            await item.StorageFile.DeleteAsync();
+                            files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                         }
 
-                        item.Dispose();
+                        var progress = new Progress<double?>((p) =>
+                        {
+                            if (p == null && !IsUploadIndeterminate)
+                            {
+                                IsUploadIndeterminate = true;
+                            }
+                            else
+                            {
+                                IsUploadIndeterminate = false;
+                                UploadProgress = p.Value;
+                            }
+                        });
+
+                        await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
+                                   .ConfigureAwait(false);
+
+                        foreach (var item in files)
+                        {
+                            item.Value.Dispose();
+                        }
+
+                        foreach (var item in models)
+                        {
+                            if (item.IsTemporary && item.StorageFile != null)
+                            {
+                                await item.StorageFile.DeleteAsync();
+                            }
+
+                            item.Dispose();
+                        }
+                    }
+                    else
+                    {
+                        await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                            .WithContent(txt)
+                            .WithReply(replyTo?.Id)
+                            .WithAllowedMentions(mentions)).ConfigureAwait(false);
+                    }
+
+
+                    if (!ImmuneToSlowMode)
+                    {
+                        _messageLastSent = DateTimeOffset.Now;
+                        SlowModeTimeout = PerUserRateLimit;
+                        InvokePropertyChanged(nameof(CanSend));
+                        syncContext.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
                     }
                 }
-                else
-                {
-                    await Channel.SendMessageAsync(new DiscordMessageBuilder()
-                        .WithContent(txt)
-                        .WithReply(replyTo?.Id)
-                        .WithAllowedMentions(mentions)).ConfigureAwait(false);
-                }
-
-
-                if (!ImmuneToSlowMode)
-                {
-                    _messageLastSent = DateTimeOffset.Now;
-                    SlowModeTimeout = PerUserRateLimit;
-                    InvokePropertyChanged(nameof(CanSend));
-                    syncContext.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
-                }
+            }
+            finally
+            {
+                IsUploading = false;
             }
         }
 

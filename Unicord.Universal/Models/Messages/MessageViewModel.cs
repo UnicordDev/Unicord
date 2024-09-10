@@ -29,6 +29,7 @@ namespace Unicord.Universal.Models.Messages
 
         private ChannelViewModel _channelViewModelCache;
         private UserViewModel _userViewModelCache;
+        private bool _isSelected;
 
         public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
             : base((ViewModelBase)parentMessage ?? parent)
@@ -193,6 +194,8 @@ namespace Unicord.Universal.Models.Messages
                 return false;
             }
         }
+
+        public bool IsSelected { get => _isSelected; set => OnPropertySet(ref _isSelected, value); }
 
         public ObservableCollection<EmbedViewModel> Embeds { get; }
         public ObservableCollection<AttachmentViewModel> Attachments { get; }

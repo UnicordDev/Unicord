@@ -6,7 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:controls="using:Unicord.Universal.Controls" xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    xmlns:controls="using:Unicord.Universal.Controls" 
+    xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     mc:Ignorable="d">
     <Page.Resources>
         <ui:AttachedDropShadow x:Key="ErrorShadow" CastTo="{x:Bind background}" BlurRadius="16" Opacity="1" Color="Black"/>
@@ -48,6 +52,7 @@
             <Grid x:Name="contentContainerOverlay" 
                   Grid.RowSpan="2" 
                   Visibility="Visible">
+                
                 <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" IsIndeterminate="False"/>
 
                 <TextBlock x:Name="FailurePanel"
@@ -64,9 +69,9 @@
 
         <Grid Margin="8" VerticalAlignment="Top">
             <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click">
-                <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Escape"/>
-                </Button.KeyboardAccelerators>
+                <w1709:Button.KeyboardAccelerators>
+                    <w1709:KeyboardAccelerator Key="Escape"/>
+                </w1709:Button.KeyboardAccelerators>
             </Button>
         </Grid>
     </Grid>

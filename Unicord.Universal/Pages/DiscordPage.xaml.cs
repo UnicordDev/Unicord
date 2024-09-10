@@ -276,9 +276,10 @@ namespace Unicord.Universal.Pages
                     if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
                     {
                         channel = guildVM.Guild.Channels.Values
+                            .Where(c => c.IsAccessible())
                             .Where(c => c.IsText())
                             .OrderBy(c => c.Position)
-                            .FirstOrDefault(c => c.IsAccessible());
+                            .FirstOrDefault();
                     }
 
                     if (await WindowingService.Current.ActivateOtherWindowAsync(channel))

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AppCenter;
+using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
 using Unicord.Universal.Parsers.Markdown;
 using Windows.Foundation;
@@ -49,7 +50,7 @@ namespace Unicord.Universal.Pages.Settings
             await AppCenter.SetEnabledAsync((sender as ToggleSwitch).IsOn);
         }
 
-        private async void unavailableText_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        private async void unavailableText_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri(e.Link));
         }
