@@ -55,8 +55,10 @@ namespace Unicord.Universal
         private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static DiscordClient Discord { get; set; }
-        internal static ApplicationDataStorageHelper LocalSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
-        internal static ApplicationDataStorageHelper RoamingSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
+        internal static ApplicationDataStorageHelper LocalSettings { get; } 
+            = ApplicationDataStorageHelper.GetCurrent();
+        internal static ApplicationDataStorageHelper RoamingSettings { get; } 
+            = ApplicationDataStorageHelper.GetCurrent();
 
         public App()
         {

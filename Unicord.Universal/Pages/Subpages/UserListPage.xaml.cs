@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Misc;
+using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -38,22 +40,24 @@ namespace Unicord.Universal.Pages.Subpages
                 progress.IsActive = true;
                 viewSource.Source = null;
 
-                if (e.Parameter is DiscordChannel channel)
+                if (e.Parameter is ChannelViewModel channel)
                 {
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        if (channel is DiscordDmChannel dm)
+                        if (channel.Channel is DiscordDmChannel dm)
                         {
                             viewSource.IsSourceGrouped = false;
-                            viewSource.Source = dm.Recipients.OrderBy(r => r.Username);
+                            viewSource.Source = dm.Recipients.OrderBy(r => r.DisplayName)
+                               .Select(s => new UserViewModel(s, channel.Guild.Id));
                         }
                         else
                         {
                             viewSource.IsSourceGrouped = true;
-                            viewSource.Source = channel.Users
+                            viewSource.Source = channel.Channel.Users
                                .Distinct()
                                .OrderBy(g => g.DisplayName)
-                               .GroupBy(g => g.Roles.OrderByDescending(r => r.Position).FirstOrDefault(r => r.IsHoisted))
+                               .Select(s => new UserViewModel(s, channel.Guild.Id))
+                               .GroupBy(g => g.Member.Roles.OrderByDescending(r => r.Position).FirstOrDefault(r => r.IsHoisted))
                                .OrderByDescending(g => g.Key?.Position);
                         }
 

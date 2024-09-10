@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Models.User;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -43,7 +44,8 @@ namespace Unicord.Universal.Dialogs
         {
             if (e.Key == VirtualKey.Escape)
             {
-                this.FindParent<MainPage>().HideUserOverlay();
+                OverlayService.GetForCurrentView()
+                    .CloseOverlay();
             }
         }
     }

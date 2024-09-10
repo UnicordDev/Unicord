@@ -1,23 +1,22 @@
-﻿<Page
-    x:Class="Unicord.Universal.MainPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:p="using:Unicord.Universal.Pages"    
-    xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
-    xmlns:not1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:dialogs="using:Unicord.Universal.Dialogs"
-    xmlns:controls1="using:Unicord.Universal.Controls"
-    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:media="using:Microsoft.UI.Xaml.Media" 
-    xmlns:media1="using:Microsoft.Toolkit.Uwp.UI.Media"
-    mc:Ignorable="d" 
-    Loaded="Page_Loaded" 
-    Unloaded="Page_Unloaded" 
-    NavigationCacheMode="Required">
+﻿<Page x:Class="Unicord.Universal.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Unicord.Universal"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:p="using:Unicord.Universal.Pages"    
+      xmlns:fc="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+      xmlns:not1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+      xmlns:dialogs="using:Unicord.Universal.Dialogs"
+      xmlns:controls1="using:Unicord.Universal.Controls"
+      xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+      xmlns:media="using:Microsoft.UI.Xaml.Media" 
+      xmlns:media1="using:Microsoft.Toolkit.Uwp.UI.Media"
+      mc:Ignorable="d" 
+      Loaded="Page_Loaded" 
+      Unloaded="Page_Unloaded" 
+      NavigationCacheMode="Required">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
 
@@ -98,45 +97,7 @@
                              EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
 
-        <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay">
-
-            <DoubleAnimation From="0" To="1"
-                             Storyboard.TargetName="userInfoPopup"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-
-            <DoubleAnimation From="0.85" To="1" 
-                             Storyboard.TargetName="userInfoScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-            <DoubleAnimation From="0.85" To="1" 
-                             Storyboard.TargetName="userInfoScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.30"
-                             EasingFunction="{StaticResource EaseEnter}"/>
-
-        </Storyboard>
-        <Storyboard x:Name="hideUserOverlay" x:Key="hideUserOverlay"
-                    Completed="hideUserOverlay_Completed">
-            <DoubleAnimation From="1" To="0"
-                             Storyboard.TargetName="userInfoPopup"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-
-            <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="userInfoScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-            <DoubleAnimation From="1" To="0.85" 
-                             Storyboard.TargetName="userInfoScale"
-                             Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
-                             Duration="0:0:0.15"
-                             EasingFunction="{StaticResource EaseExit}"/>
-        </Storyboard>
+  
 
         <Storyboard x:Name="ShowOverlayStoryboard" x:Key="ShowOverlayStoryboard">
 
@@ -201,23 +162,15 @@
                 <Grid x:Name="overlayGrid"/>
             </Grid>
 
-            <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
-                <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource SmokeFillColorDefaultBrush}"/>
-                <Grid RenderTransformOrigin="0.5, 0.5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Grid.RenderTransform>
-                        <ScaleTransform x:Name="userInfoScale" ScaleX="1" ScaleY="1"/>
-                    </Grid.RenderTransform>
-
-                    <dialogs:ProfileOverlay x:Name="userInfoOverlay" Visibility="Visible"/>
-                </Grid>
-            </Grid>
-
             <Grid x:Name="CustomOverlayGrid"
                   Opacity="0"
                   Visibility="Collapsed">
-                <Grid.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.66"/>
-                </Grid.Background>
+                <Grid x:Name="OverlayBackdrop"
+                      Tapped="OverlayBackdrop_Tapped">
+                    <Grid.Background>
+                        <SolidColorBrush Color="Black" Opacity="0.66"/>
+                    </Grid.Background>
+                </Grid>
                 <Grid x:Name="CustomContainer"
                       RenderTransformOrigin="0.5,0.5"
                       CornerRadius="8">

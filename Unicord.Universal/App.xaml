@@ -30,14 +30,11 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>
-                <!-- TODO: V1/V2 resources globally -->
-                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" ControlsResourcesVersion="Version2"/>
+                <ThemeResources xmlns="using:Unicord.Universal.Themes"/>
 
                 <ResourceDictionary Source="Themes/Colours.xaml"/>
                 <ResourceDictionary Source="Themes/Generic.xaml"/>
                 <ResourceDictionary Source="Themes/CustomStyles.xaml"/>
-
-                <ResourceDictionary Source="Themes/RS2.xaml"/>
                 
                 <!-- Resource dictionaries with code behinds must be instantated like this for InitializeComponent to be called -->
                 <Templates xmlns="using:Unicord.Universal.Resources"/>
@@ -84,37 +81,7 @@
 
             <FontFamily x:Key="FluentSystemIcons">/Assets/FluentSystemIcons-Regular.ttf#FluentSystemIcons-Regular</FontFamily>
             <FontFamily x:Key="SymbolThemeFontFamily">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
-            <StaticResource x:Key="SegoeMDL2Assets" ResourceKey="SymbolThemeFontFamily"/>
-            
-            <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-                <Setter Property="Background" Value="Transparent"/>
-            </Style>
-
-            <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
-                <Setter Property="FontSize" Value="16"/>
-            </Style>
-
-            <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">
-                <!--<Setter Property="MinWidth" Value="32"/>
-                <Setter Property="Height" Value="32"/>-->
-                <Setter Property="Padding" Value="8" />
-            </Style>
-
-            <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource DefaultToggleButtonStyle}">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="UseLayoutRounding" Value="True"/>
-                <Setter Property="BorderBrush" Value="Transparent" />
-            </Style>
-
-            <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource StretchyIconToggleButtonStyle}">
-                <Setter Property="Padding" Value="8" />
-            </Style>
-            
+            <StaticResource x:Key="SegoeMDL2Assets" ResourceKey="SymbolThemeFontFamily"/>                        
         </ResourceDictionary>
     </Application.Resources>
 </Application>

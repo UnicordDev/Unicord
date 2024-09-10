@@ -71,30 +71,22 @@ namespace Unicord.Universal
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (WindowingService.Current.IsMainWindow(WindowingService.Current.GetHandle(this)))
-            {
+            var handle = WindowingService.Current.GetHandle(this);
+            if (WindowingService.Current.IsMainWindow(handle))
                 WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
-            }
 
-            //BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
-
-            var brush = new TenMicaBrush();
-            if (WindowingService.Current.IsCompactOverlay(WindowingService.Current.GetHandle(this)))
+            if (ThemeService.GetForCurrentView().GetTheme() == AppTheme.SunValley)
             {
-                brush.EnabledInActivatedNotForeground = true;
+                var brush = new TenMicaBrush();
+                if (WindowingService.Current.IsCompactOverlay(handle))
+                    brush.EnabledInActivatedNotForeground = true;
+
+                Background = brush;
             }
-
-            Background = brush;
-
-            //var engagementManager = StoreServicesEngagementManager.GetDefault();
-            //await engagementManager.RegisterNotificationChannelAsync();
 
             var pane = InputPane.GetForCurrentView();
             pane.Showing += Pane_Showing;
             pane.Hiding += Pane_Hiding;
-
-            var navigation = SystemNavigationManager.GetForCurrentView();
-            navigation.BackRequested += Navigation_BackRequested;
 
             if (Arguments?.SplashScreen != null)
             {
@@ -105,7 +97,8 @@ namespace Unicord.Universal
             try
             {
                 var vault = new PasswordVault();
-                var result = vault.FindAllByResource(Constants.TOKEN_IDENTIFIER).FirstOrDefault(t => t.UserName == "Default");
+                var result = vault.FindAllByResource(Constants.TOKEN_IDENTIFIER)
+                    .FirstOrDefault(t => t.UserName == "Default");
 
                 if (result != null)
                 {
@@ -161,9 +154,6 @@ namespace Unicord.Universal
             var pane = InputPane.GetForCurrentView();
             pane.Showing -= Pane_Showing;
             pane.Hiding -= Pane_Hiding;
-
-            var navigation = SystemNavigationManager.GetForCurrentView();
-            navigation.BackRequested -= Navigation_BackRequested;
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -184,15 +174,6 @@ namespace Unicord.Universal
             {
                 await ContactListManager.ClearContactsAsync();
             }
-        }
-
-        internal void ShowUserOverlay(UserViewModel user, bool animate)
-        {
-            userInfoOverlay.User = user;
-            userInfoOverlay.Visibility = Visibility.Visible;
-            userInfoPopup.Visibility = Visibility.Visible;
-
-            showUserOverlay.Begin();
         }
 
         private async Task OnFirstDiscordReady(DiscordClient client, ReadyEventArgs e)
@@ -290,8 +271,6 @@ namespace Unicord.Universal
                 {
                     if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
                     {
-                        //await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
-
                         await DiscordNavigationService.GetForCurrentView()
                             .NavigateAsync(channel);
                     }
@@ -300,11 +279,6 @@ namespace Unicord.Universal
                 {
                     var dm = App.Discord.PrivateChannels.Values
                         .FirstOrDefault(c => c.Type == ChannelType.Private && c.Recipients.Count == 1 && c.Recipients[0].Id == args.UserId);
-
-                    if (dm == null && args.UserId != 0)
-                    {
-                        // dm = await App.Discord.CreateDmChannelAsync(args.UserId);
-                    }
 
                     await DiscordNavigationService.GetForCurrentView()
                         .NavigateAsync(dm);
@@ -355,25 +329,6 @@ namespace Unicord.Universal
             rootFrame.Navigate(type);
         }
 
-        public void HideUserOverlay()
-        {
-            if (userInfoOverlay.Visibility == Visibility.Visible)
-            {
-                hideUserOverlay.Begin();
-            }
-        }
-
-        private void hideUserOverlay_Completed(object sender, object e)
-        {
-            userInfoOverlay.Visibility = Visibility.Collapsed;
-            userInfoPopup.Visibility = Visibility.Collapsed;
-        }
-
-        private void userInfoPopup_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            hideUserOverlay.Begin();
-        }
-
         private void Pane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {
             Everything.Margin = new Thickness(0, 0, 0, args.OccludedRect.Height);
@@ -386,15 +341,6 @@ namespace Unicord.Universal
             args.EnsuredFocusedElementInView = true;
         }
 
-        private void Navigation_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if (userInfoOverlay.Visibility == Visibility.Visible)
-            {
-                e.Handled = true;
-                hideUserOverlay.Begin();
-            }
-        }
-
         public void ShowCustomOverlay()
         {
             WindowingService.Current.HandleTitleBarForControl(CustomOverlayGrid);
@@ -405,6 +351,12 @@ namespace Unicord.Universal
         {
             if (CustomOverlayGrid.Visibility != Visibility.Collapsed)
                 HideOverlayStoryboard.Begin();
+        }
+
+        private void OverlayBackdrop_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            OverlayService.GetForCurrentView()
+                .CloseOverlay();
         }
     }
 }

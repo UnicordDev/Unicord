@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -42,6 +43,8 @@ namespace Unicord.Universal.Pages
     {
         public Frame MainFrame => mainFrame;
         public Frame LeftSidebarFrame => leftSidebarFrame;
+        public Frame RightSidebarFrame => rightSidebarFrame;
+
 
         private MainPageArgs _args;
         private bool _loaded;
@@ -49,25 +52,15 @@ namespace Unicord.Universal.Pages
         internal DiscordPageViewModel Model { get; }
         internal bool IsWindowVisible { get; private set; }
 
-        internal SwipeOpenHelper _helper;
-
-        private bool _isPaneOpen => MainGridTransform.X != 0;
-
         public DiscordPage()
         {
             InitializeComponent();
             Model = DataContext as DiscordPageViewModel;
 
-            _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
-            _helper.IsEnabled = false;
-
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
 
             WeakReferenceMessenger.Default.Register<DiscordPage, MessageCreateEventArgs>(this, (r, e) => r.Notification_MessageCreated(e.Event));
-
-            //GuildsView.RegisterPropertyChangedCallback(MUXC.TreeView.SelectedItemProperty, )
-            //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -126,7 +119,11 @@ namespace Unicord.Universal.Pages
 
                 _loaded = true;
 
-                this.FindParent<MainPage>().HideConnectingOverlay();
+                SplitPaneService.GetForCurrentView()
+                    .ToggleLeftPane();
+
+                this.FindParent<MainPage>()
+                    .HideConnectingOverlay();
 
                 var service = DiscordNavigationService.GetForCurrentView();
                 if (_args != null && _args.ChannelId != 0 && App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
@@ -141,9 +138,6 @@ namespace Unicord.Universal.Pages
                     LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
-
-                //var helper = SwipeOpenService.GetForCurrentView();
-                //helper.AddAdditionalElement(SwipeHelper);
 
                 var notificationService = BackgroundNotificationService.GetForCurrentView();
                 await notificationService.StartupAsync();
@@ -179,36 +173,6 @@ namespace Unicord.Universal.Pages
         private void ShowNotification(DiscordMessage message)
         {
             notification.Show(new MessageControl() { MessageViewModel = new MessageViewModel(message) }, 7_000);
-        }
-
-        public void ToggleSplitPane()
-        {
-            if (_isPaneOpen)
-            {
-                CloseSplitPane();
-            }
-            else
-            {
-                OpenSplitPane();
-            }
-        }
-
-        public void OpenSplitPane()
-        {
-            if (ActualWidth <= 768)
-            {
-                _helper.Cancel();
-                OpenPaneMobileStoryboard.Begin();
-            }
-        }
-
-        public void CloseSplitPane()
-        {
-            if (ActualWidth <= 768 || MainGridTransform.X < 0)
-            {
-                _helper.Cancel();
-                ClosePaneMobileStoryboard.Begin();
-            }
         }
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
@@ -253,11 +217,6 @@ namespace Unicord.Universal.Pages
             await service.OpenAsync();
         }
 
-        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            CloseSplitPane();
-        }
-
         private async void TreeView_ItemInvoked(MUXC.TreeView sender, MUXC.TreeViewItemInvokedEventArgs args)
         {
             if (args.InvokedItem is GuildListFolderViewModel viewModel)
@@ -296,6 +255,18 @@ namespace Unicord.Universal.Pages
             }
 
             sender.SelectedItem = null;
+        }
+
+        internal void SetViewMode(ViewMode viewMode)
+        {
+            Debug.WriteLine(viewMode);
+            VisualStateManager.GoToState(this, viewMode.ToString(), true);
+        }
+
+        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            SplitPaneService.GetForCurrentView()
+                .ToggleLeftPane();
         }
     }
 }

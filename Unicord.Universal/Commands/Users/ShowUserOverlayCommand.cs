@@ -7,6 +7,8 @@ using System.Windows.Input;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models.User;
+using Unicord.Universal.Pages.Overlay;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal.Commands.Users
@@ -17,15 +19,11 @@ namespace Unicord.Universal.Commands.Users
         {
         }
 
-        public override void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
             // TODO: will probably be reworked
-            var page = Window.Current.Content.FindChild<MainPage>();
-            if (page != null)
-            {
-                Analytics.TrackEvent("ShowUserOverlayCommand_Invoked");
-                page.ShowUserOverlay(viewModel, true);
-            }
+            await OverlayService.GetForCurrentView()
+                .ShowOverlayAsync<UserInfoOverlayPage>(viewModel);
         }
     }
 }

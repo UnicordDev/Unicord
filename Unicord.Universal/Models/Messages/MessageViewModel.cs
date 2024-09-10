@@ -72,6 +72,8 @@ namespace Unicord.Universal.Models.Messages
 
         private List<EmbedViewModel> GetGroupedEmbeds(DiscordMessage message)
         {
+            if (message.Embeds == null) return [];
+
             var embedGroups = message.Embeds
                 .GroupBy(g => g.Url);
 

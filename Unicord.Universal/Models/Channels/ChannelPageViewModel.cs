@@ -33,7 +33,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Models
 {
-    public class ChannelPageViewModel : ChannelViewModel, IDisposable
+    public class ChannelPageViewModel : ChannelPageViewModelBase, IDisposable
     {
         private const int INITIAL_LOAD_LIMIT = 50;
 

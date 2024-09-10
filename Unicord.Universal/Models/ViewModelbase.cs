@@ -31,6 +31,7 @@ namespace Unicord.Universal.Models
 
         // Holy hell is the C# Discord great.
         // Y'all should join https://aka.ms/csharp-discord
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void OnPropertySet<T>(ref T oldValue, T newValue, [CallerMemberName] string property = null)
         {
             if (oldValue == null || newValue == null || !newValue.Equals(oldValue))
@@ -39,7 +40,25 @@ namespace Unicord.Universal.Models
                 InvokePropertyChanged(property);
             }
         }
-        
+
+        // overload might avoid boxing?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void OnPropertySet<T>(ref T oldValue, T newValue, params string[] additionalProperties)
+        {
+            if (oldValue == null || newValue == null || !newValue.Equals(oldValue))
+            {
+                oldValue = newValue;
+                syncContext.Post((o) =>
+                {
+                    foreach (var str in additionalProperties)
+                    {
+                        var args = new PropertyChangedEventArgs(str);
+                        PropertyChanged?.Invoke(this, args);
+                    }
+                }, null);
+            }
+        }
+
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);

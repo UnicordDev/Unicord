@@ -534,11 +534,11 @@ namespace Unicord.Universal.Pages
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var page = this.FindParent<DiscordPage>();
-            if (page != null)
-            {
-                page.CloseSplitPane();
-            }
+            //var page = this.FindParent<DiscordPage>();
+            //if (page != null)
+            //{
+            //    page.CloseSplitPane();
+            //}
 
             if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
             {

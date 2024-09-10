@@ -157,7 +157,6 @@
     <Compile Include="Commands\Messages\DeleteMessageCommand.cs" />
     <Compile Include="Commands\DiscordCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
-    <Compile Include="Commands\EditModeCommand.cs" />
     <Compile Include="Commands\Generic\DownloadCommand.cs" />
     <Compile Include="Commands\Generic\ShareCommand.cs" />
     <Compile Include="Commands\Member\KickCommand.cs" />
@@ -198,6 +197,7 @@
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
     <Compile Include="Extensions\GuildExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
+    <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
@@ -480,6 +480,9 @@
     <Compile Include="Pages\Overlay\AttachmentOverlayPage.xaml.cs">
       <DependentUpon>AttachmentOverlayPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Overlay\UserInfoOverlayPage.xaml.cs">
+      <DependentUpon>UserInfoOverlayPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\AboutSettingsPage.xaml.cs">
       <DependentUpon>AboutSettingsPage.xaml</DependentUpon>
     </Compile>
@@ -541,6 +544,8 @@
       <DependentUpon>VideoEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SplitPaneService.cs" />
+    <Compile Include="Services\ThemeService.cs" />
     <Compile Include="Themes\Controls\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>
@@ -559,6 +564,7 @@
     <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="Services\Windowing\ApplicationViewWindowingService.cs" />
     <Compile Include="Services\Windowing\WindowingService.cs" />
+    <Compile Include="Themes\ThemeResources.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
     <Compile Include="Utilities\EmojiUtilities.cs" />
@@ -869,6 +875,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Overlay\UserInfoOverlayPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings\AboutSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -989,17 +999,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\RS2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\RS2\ContentDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Controls\Flyouts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Styles\Fluent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\Performance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\SunValley.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Templates.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -112,8 +112,7 @@
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="MainBorder.Margin" Value="32" />
-                        <Setter Target="MainBorder.CornerRadius" Value="8" />
+                        <Setter Target="MainBorder.CornerRadius" Value="8,8,0,0" />
                     </VisualState.Setters>
                 </VisualState>
 
