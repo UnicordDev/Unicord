@@ -1,13 +1,14 @@
 ﻿<utilities:AdaptiveFlyout
-    xmlns:utilities="using:Unicord.Universal.Utilities"
     x:Class="Unicord.Universal.Controls.Flyouts.UserFlyout"
+    xmlns:utilities="using:Unicord.Universal.Utilities"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:controls1="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:controls="using:Unicord.Universal.Controls" xmlns:user="using:Unicord.Universal.Controls.Users"
+    xmlns:controls="using:Unicord.Universal.Controls" 
+    xmlns:user="using:Unicord.Universal.Controls.Users"
     mc:Ignorable="d">
 
     <Grid x:Name="Root" Width="256" Margin="-12">
@@ -39,9 +40,9 @@
             </StackPanel>
         </Grid>
         
-        <Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
+        <!--<Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
             <controls:RichPresenceControl DataContext="{Binding Presence.Activity}" Margin="8" />
-        </Grid>
+        </Grid>-->
         
         <Grid Grid.Row="2" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
             <StackPanel Margin="12,8,12,12" Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
@@ -57,10 +58,10 @@
         </Grid>
 
         <StackPanel HorizontalAlignment="Stretch" Grid.Row="3" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
-            <controls:IconLabelButton Icon="&#xE7EE;" Tapped="IconLabelButton_Tapped" Command="{StaticResource OpenUserOverlayCommand}" CommandParameter="{Binding}">
+            <controls:IconLabelButton Icon="&#xE7EE;" Tapped="IconLabelButton_Tapped" Command="{Binding OpenOverlayCommand}">
                 <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/ShowFullProfile"/>
             </controls:IconLabelButton>
-            <controls:IconLabelButton Icon="&#xE724;" Command="{StaticResource MessageUserCommand}" CommandParameter="{Binding}">
+            <controls:IconLabelButton Icon="&#xE724;" Command="{Binding SendMessageCommand}">
                 <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/SendMessage"/>
             </controls:IconLabelButton>
         </StackPanel>

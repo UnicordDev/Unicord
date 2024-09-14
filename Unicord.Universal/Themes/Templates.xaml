@@ -16,12 +16,13 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
     xmlns:media1="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:channels="using:Unicord.Universal.Controls.Channels"
-    xmlns:channelVms="using:Unicord.Universal.Models.Channels"
-    xmlns:guildVMs="using:Unicord.Universal.Models.Guild"
+    xmlns:channelVMs="using:Unicord.Universal.Models.Channels"
+    xmlns:guildVMs="using:Unicord.Universal.Models.Guild" 
+    xmlns:userVMs="using:Unicord.Universal.Models.User"
     x:DefaultBindMode="OneWay">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Controls/Presences.xaml"/>
+        <Presences xmlns="using:Unicord.Universal.Resources.Controls"/>
         <Messages xmlns="using:Unicord.Universal.Resources.Controls"/>
         <ResourceDictionary Source="Controls/Emoji.xaml"/>
         <ResourceDictionary Source="Controls/Users.xaml"/>
@@ -214,75 +215,49 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+    <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" />
     </DataTemplate>
+    
+    <DataTemplate x:Key="ChannelListThreadTemplate" x:DataType="channelVMs:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource ThreadChannelListStyle}" />
+    </DataTemplate>
 
-    <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVms:ChannelListViewModel">
+    <DataTemplate x:Key="DMChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource DirectMessageChannelListStyle}"/>
     </DataTemplate>
+
+    <DataTemplate x:Key="GroupChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
+        <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource GroupChannelListStyle}"/>
+    </DataTemplate>
+
 
     <DataTemplate x:Key="ChannelListCategoryTemplate">
         <Border ContextFlyout="{StaticResource ChannelContextFlyout}"
                 VerticalAlignment="Stretch" 
                 Background="Transparent" 
                 Margin="10,8,8,2"
-                Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                Opacity="{Binding MutedOpacity}">
             <TextBlock FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontWeight="SemiBold" Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" TextWrapping="NoWrap" />
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVms:ChannelListViewModel">
-        <!--<Grid ContextFlyout="{StaticResource ChannelContextFlyout}" VerticalAlignment="Stretch" Background="Transparent" Padding="0,8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid Name="grid" 
-                  Margin="16,0"
-                  IsHitTestVisible="True"
-                  Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
-                <ToolTipService.ToolTip>
-                    <wam:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding}" />
-                </ToolTipService.ToolTip>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" FontFamily="{StaticResource FluentSystemIcons}" Text="{x:Bind Converter={StaticResource ChannelSymbolConverter}}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-
-                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" VerticalAlignment="Center" Grid.Column="2" Visibility="{Binding UserLimit, Converter={StaticResource BoolVisibilityConverter}}">
-                    <Run Text="{Binding UserCount}"/>/<Run Text="{Binding UserLimit}"/>
-                </TextBlock>
-            </Grid>
-
-            <ItemsControl Margin="42,4,0,0" Grid.Row="1" ItemTemplate="{StaticResource VoiceMemberListTemplate}" Visibility="{Binding ConnectedUsers, Converter={StaticResource BoolVisibilityConverter}}" ItemsSource="{Binding ConnectedUsers}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Grid>-->
-
+    <DataTemplate x:Key="ChannelListVoiceTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="RoleTemplate" x:DataType="entities:DiscordRole">
+    <DataTemplate x:Key="RoleTemplate" x:DataType="userVMs:RoleViewModel">
         <Border BorderThickness="1"
-                BorderBrush="{Binding Color, Converter={StaticResource ColourBrushConverter}, TargetNullValue={ThemeResource DefaultTextForegroundThemeBrush}}" 
+                BorderBrush="{x:Bind Color}" 
                 Padding="4,4,4,4"
                 CornerRadius="2"
                 MinWidth="24">
-            <TextBlock Foreground="{Binding Color, Converter={StaticResource ColourBrushConverter}}" 
-                       FontSize="12" Text="{Binding Name}" VerticalAlignment="Center" TextAlignment="Center"/>
+            <TextBlock Foreground="{x:Bind Color}" 
+                       FontSize="12" Text="{x:Bind Name}" VerticalAlignment="Center" TextAlignment="Center"/>
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="TypingUserTemplate" x:DataType="entities:DiscordUser">
+    <DataTemplate x:Key="TypingUserTemplate" x:DataType="userVMs:UserViewModel">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -292,7 +267,7 @@
                 <Ellipse.Fill>
                     <ImageBrush>
                         <ImageBrush.ImageSource>
-                            <BitmapImage UriSource="{Binding NonAnimatedAvatarUrl}" DecodePixelWidth="16" DecodePixelHeight="16"/>
+                            <BitmapImage UriSource="{x:Bind AvatarUrl}" DecodePixelWidth="16" DecodePixelHeight="16"/>
                         </ImageBrush.ImageSource>
                     </ImageBrush>
                 </Ellipse.Fill>
@@ -303,11 +278,11 @@
 
 
     <DataTemplate x:Key="GuildsListTemplate" x:DataType="guildVMs:GuildListViewModel">
-        <lib:TreeViewItem IsSelected="{x:Bind IsSelected}" 
-                          ContextFlyout="{StaticResource GuildContextFlyout}"
-                          ToolTipService.ToolTip="{x:Bind Name}"
-                          ToolTipService.Placement="Left">
-            <Grid>
+        <!--<lib:TreeViewItem IsSelected="{x:Bind IsSelected}" >-->
+        <Grid Background="Transparent"
+              ContextFlyout="{StaticResource GuildContextFlyout}"
+              ToolTipService.ToolTip="{x:Bind Name}"
+              ToolTipService.Placement="Left">
                 <lib:PersonPicture Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
                 <lib:InfoBadge VerticalAlignment="Top"
                            HorizontalAlignment="Right"
@@ -317,15 +292,15 @@
                            Value="{x:Bind MentionCount}"
                            Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"/>
             </Grid>
-        </lib:TreeViewItem>
+        <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
     <DataTemplate x:Key="GuildsListFolderTemplate" x:DataType="guildVMs:GuildListFolderViewModel">
-        <lib:TreeViewItem ItemsSource="{x:Bind Children}" 
-                          IsExpanded="{Binding IsExpanded}" 
-                          ToolTipService.ToolTip="{x:Bind Name}"
-                          ToolTipService.Placement="Left">
-            <Grid>
+        <!--<lib:TreeViewItem ItemsSource="{x:Bind Children}" 
+                          IsExpanded="{Binding IsExpanded}" >-->
+        <Grid ToolTipService.ToolTip="{x:Bind Name}"
+              ToolTipService.Placement="Left"
+              Loaded="OnGuildsListFolderLoaded">
                 <Ellipse Margin="0,4" 
                          Width="42" 
                          Height="42"
@@ -447,11 +422,11 @@
                     </core:DataTriggerBehavior>
                 </i:Interaction.Behaviors>
             </Grid>
-        </lib:TreeViewItem>
+        <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
-    <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
-        <Grid Margin="0,0,4,0" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+    <DataTemplate x:Key="DMChannelTemplate" x:DataType="channelVMs:DmChannelListViewModel">
+        <Grid Margin="0,0,4,0" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -462,26 +437,14 @@
                                  Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
                                  Width="32" 
                                  Height="32"
-                                 Source="{Binding Converter={StaticResource DMIconConverter}}" 
-                                 Presence="{Binding Recipient.Presence}" />
+                                 Source="{x:Bind IconUrl}" 
+                                 Presence="{x:Bind Recipient.Presence}" />
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
-                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
-                <presence:InlinePresenceControl Presence="{Binding Recipient.Presence, Mode=OneWay}" />
+                <TextBlock Text="{x:Bind Name}"/>
+                <presence:InlinePresenceControl Presence="{x:Bind Recipient.Presence, Mode=OneWay}" />
             </StackPanel>
-
-            <!--<Grid x:Name="unreadIndicator" 
-                  Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"                   
-                  MinWidth="3" 
-                  MinHeight="10"
-                  Margin="-8,0" 
-                  CornerRadius="2" 
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Background="{ThemeResource AccentFillColorDefaultBrush}">
-                <TextBlock Text="{Binding ReadState.MentionCount}" Margin="2,0" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" FontSize="12" VerticalAlignment="Center"/>
-            </Grid>-->
-
+            
             <lib:InfoBadge x:Name="unreadIndicator" 
                            x:Load="{x:Bind Unread, Mode=OneWay}" 
                            Grid.Column="2" 
@@ -494,22 +457,22 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVms:DmChannelListViewModel">
-        <Grid Padding="0,4" Opacity="{x:Bind Muted, Converter={StaticResource MutedConverter}}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
+    <DataTemplate x:Key="GroupChannelTemplate" x:DataType="channelVMs:DmChannelListViewModel">
+        <Grid Padding="0,4" Opacity="{x:Bind MutedOpacity}" ContextFlyout="{StaticResource DirectMessageContextFlyout}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="16" Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <lib:PersonPicture Width="32" Height="32" DisplayName="{Binding Converter={StaticResource DMNameConverter}}">
+            <lib:PersonPicture Width="32" Height="32" DisplayName="{x:Bind Name}">
                 <lib:PersonPicture.ProfilePicture>
-                    <BitmapImage UriSource="{Binding Converter={StaticResource DMIconConverter}}" DecodePixelWidth="32" DecodePixelType="Logical" />
+                    <BitmapImage UriSource="{x:Bind IconUrl}" DecodePixelWidth="32" DecodePixelType="Logical" />
                 </lib:PersonPicture.ProfilePicture>
             </lib:PersonPicture>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
-                <TextBlock Text="{Binding Converter={StaticResource DMNameConverter}}"/>
+                <TextBlock Text="{x:Bind Name}"/>
             </StackPanel>
 
 

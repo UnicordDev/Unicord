@@ -12,14 +12,14 @@ namespace Unicord.Universal.Models
 
         public int AutoTranscodeMedia
         {
-            get => (int)App.RoamingSettings.Read(AUTO_TRANSCODE_MEDIA, MediaTranscodeOptions.WhenNeeded);
-            set => App.RoamingSettings.Save(AUTO_TRANSCODE_MEDIA, (MediaTranscodeOptions)value);
+            get => (int)App.RoamingSettings.Read(AUTO_TRANSCODE_MEDIA, (int)MediaTranscodeOptions.WhenNeeded);
+            set => App.RoamingSettings.Save(AUTO_TRANSCODE_MEDIA, (int)value);
         }
 
         public int ProcessingAlgorithm
         {
-            get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default);
-            set => App.RoamingSettings.Save(VIDEO_PROCESSING, (MediaTranscodeOptions)value);
+            get => (int)App.RoamingSettings.Read(VIDEO_PROCESSING, (int)MediaVideoProcessingAlgorithm.Default);
+            set => App.RoamingSettings.Save(VIDEO_PROCESSING, (int)value);
         }
 
         public int VideoBitrate

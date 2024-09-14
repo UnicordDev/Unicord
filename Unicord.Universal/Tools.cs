@@ -1,22 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
-using DSharpPlus.Net.Abstractions;
-using DSharpPlus.Net.Serialization;
-using Humanizer;
 using Humanizer.Bytes;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using NeoSmart.Unicode;
-using Newtonsoft.Json;
-using Unicord.Universal.Misc;
 using Unicord.Universal.Models.Messaging;
 using WamWooWam.Core;
-using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -25,7 +17,6 @@ using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -40,8 +31,8 @@ namespace Unicord.Universal
     {
         private const int NITRO_UPLOAD_LIMIT = 104_857_600;
         private const int NITRO_CLASSIC_UPLOAD_LIMIT = 52_428_800;
-        private const int NITRO_BASIC_UPLOAD_LIMIT = 20_971_520;
-        private const int UPLOAD_LIMIT = 8_388_608;
+        private const int NITRO_BASIC_UPLOAD_LIMIT = 52_428_800;
+        private const int UPLOAD_LIMIT = 26_214_400;
 
         public static HttpClient HttpClient => _httpClient.Value;
 
@@ -138,7 +129,8 @@ namespace Unicord.Universal
             messenger.Register<TRecipient, DiscordEventMessage<TMessage>>(recipient, handler);
         }
 
-        public delegate Task AsyncMessageHandler<in TRecipient, in TMessage>(TRecipient recipient, TMessage message) where TRecipient : class where TMessage : class;
+        public delegate Task AsyncMessageHandler<in TRecipient, in TMessage>(TRecipient recipient, TMessage message) 
+            where TRecipient : class where TMessage : class;
 
         /// <summary>
         /// Registers a recipient for a given type of message.
@@ -223,42 +215,6 @@ namespace Unicord.Universal
             return file;
         }
 
-        public static async Task SendFilesWithProgressAsync(DiscordChannel channel, string message, IEnumerable<IMention> mentions, DiscordMessage replyTo, Dictionary<string, IInputStream> files, IProgress<double?> progress)
-        {
-            var progress2 = new Progress<HttpProgress>(e =>
-            {
-                if (e.TotalBytesToSend != null)
-                    progress.Report((e.BytesSent / (double)e.TotalBytesToSend) * 100);
-            });
-
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri($"https://discordapp.com/api/v8/channels/{channel.Id}/messages"));
-            httpRequestMessage.Headers.Add("Authorization", DSharpPlus.Utilities.GetFormattedToken(channel.Discord));
-
-            var cont = new HttpMultipartFormDataContent();
-            var pld = new RestChannelMessageCreatePayload
-            {
-                HasContent = !string.IsNullOrWhiteSpace(message),
-                Content = message
-            };
-
-            if (mentions != null)
-                pld.Mentions = new DiscordMentions(mentions);
-
-            if (replyTo != null)
-                pld.MessageReference = new InternalDiscordMessageReference() { messageId = replyTo.Id };
-
-            cont.Add(new HttpStringContent(DiscordJson.SerializeObject(pld)), "payload_json");
-
-            for (var i = 0; i < files.Count; i++)
-            {
-                var file = files.ElementAt(i);
-                cont.Add(new HttpStreamContent(file.Value), $"file{i}", file.Key);
-            }
-
-            httpRequestMessage.Content = cont;
-
-            await _httpClient.Value.SendRequestAsync(httpRequestMessage).AsTask(progress2);
-        }
 
         internal static string GetItemTypeFromExtension(string extension, string fallback = null)
         {
@@ -360,58 +316,7 @@ namespace Unicord.Universal
             return ~lo < 0 ? lo : ~lo;
         }
 
-        public static List<DiscordEmoji> GetEmoji(DiscordChannel channel)
-        {
-            var guildEmoji = GetAllowedGuildEmoji(channel).ToList();
-            guildEmoji.AddRange(DiscordEmoji.UnicodeEmojis.Select(e => DiscordEmoji.FromName(App.Discord, e.Key)));
-
-            return guildEmoji;
-        }
-
-        public static List<EmojiGroup> GetGroupedEmoji(string text, DiscordChannel channel)
-        {
-            var guildEmoji = GetAllowedGuildEmoji(channel);
-            var cult = CultureInfo.InvariantCulture.CompareInfo;
-            var n = !string.IsNullOrWhiteSpace(text);
-
-            var emojiEnum = Emoji.All
-                    .Where(e => n ? cult.IndexOf(e.Name, text, CompareOptions.IgnoreCase) >= 0 : true)
-                    .GroupBy(e => e.Group)
-                    .Select(g => new EmojiGroup(g.Key, g))
-                    .ToList();
-
-            var list = guildEmoji != null ? guildEmoji.Where(e => n ? cult.IndexOf(e.DiscordName, text, CompareOptions.IgnoreCase) >= 0 : true)
-                .GroupBy(e => App.Discord.Guilds.Values.FirstOrDefault(g => g.Emojis.ContainsKey(e.Id)))
-                // todo: fix
-                //.OrderBy(g => App.Discord.UserSettings.GuildPositions.IndexOf(g.Key.Id))
-                .Select(g => new EmojiGroup(g.Key, g))
-                .ToList() : new List<EmojiGroup>();
-
-            list.AddRange(emojiEnum);
-
-            return list;
-        }
-
-        private static IEnumerable<DiscordEmoji> GetAllowedGuildEmoji(DiscordChannel channel)
-        {
-            IEnumerable<DiscordEmoji> enumerable = null;
-            var hasNitro = App.Discord.CurrentUser.HasNitro();
-            if ((channel.IsPrivate || channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)) && hasNitro)
-            {
-                enumerable = App.Discord.Guilds.Values
-                    .SelectMany(g => g.Emojis.Values)
-                    .OrderBy(g => g.Name)
-                    .OrderByDescending(g => g.IsAvailable);
-            }
-            else
-            {
-                enumerable = channel.Guild?.Emojis.Values.OrderBy(g => g.Name).Where(e => e.IsAnimated ? hasNitro : true);
-            }
-
-            return enumerable ?? Enumerable.Empty<DiscordEmoji>();
-        }
-
-        public static bool HasNitro(this DiscordUser user) => user.PremiumType == PremiumType.Nitro || user.PremiumType == PremiumType.NitroClassic;
+        public static bool HasNitro(this DiscordUser user) => user.PremiumType != 0;
         public static int UploadLimit(this DiscordUser user) => user.PremiumType switch
         {
             PremiumType.NitroClassic => NITRO_CLASSIC_UPLOAD_LIMIT,
@@ -439,7 +344,7 @@ namespace Unicord.Universal
         public static bool HasWebPSupport()
             => hasWebPSupport.Value;
 
-        public static bool ShouldUseWebP()
+        public static bool ShouldUseWebP
             => HasWebPSupport() && App.LocalSettings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
     }
 

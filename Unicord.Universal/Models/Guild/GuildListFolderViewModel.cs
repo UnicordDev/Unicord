@@ -14,10 +14,7 @@ namespace Unicord.Universal.Models.Guild
             : base(null)
         {
             _folder = folder;
-            Children = new ObservableCollection<GuildListViewModel>();
-
-            foreach (var guild in guilds)
-                Children.Add(new GuildListViewModel(guild, this));
+            Children = new ObservableCollection<GuildListViewModel>(guilds.Select(g => new GuildListViewModel(g, this)));
         }
 
         public string Name => _folder.Name;

@@ -9,7 +9,7 @@
   IgnorableNamespaces="uap uap4 uap5 mp">
 
 	<Identity Name="24101WamWooWamRD.UnicordCanary"
-			  Publisher="CN=Thomas"
+			  Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B"
 			  Version="2.0.0.0" />
 
 	<mp:PhoneIdentity PhoneProductId="e8adef53-9a75-41ce-88eb-b971a1ee9d57"
@@ -22,7 +22,7 @@
 	</Properties>
 
 	<Dependencies>
-		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22000.0" />
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.22000.0" />
 		<PackageDependency Name="Microsoft.VCLibs.140.00" MinVersion="14.0.30035.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
 	</Dependencies>
 
@@ -69,6 +69,10 @@
 						<uap:DisplayName>Unicord</uap:DisplayName>
 					</uap:Protocol>
 				</uap:Extension>
+              
+              <uap:Extension Category="windows.appService">
+                <uap:AppService Name="com.wankerr.Unicord.IPC" />
+              </uap:Extension>
 
 				<!-- voice background tasks -->
 				<uap:Extension Category="windows.voipCall"/>

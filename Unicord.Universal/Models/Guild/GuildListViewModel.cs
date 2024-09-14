@@ -15,15 +15,13 @@ namespace Unicord.Universal.Models.Guild
 {
     internal class GuildListViewModel : GuildViewModel, IGuildListViewModel
     {
-        private DiscordMember _currentMember;
         private GuildListFolderViewModel _parent;
         private bool _isSelected;
 
         public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null) :
-            base(guild)
+            base(guild.Id)
         {
             _parent = parent;
-            _currentMember = guild.CurrentMember;
         }
 
         public bool IsSelected
@@ -56,7 +54,7 @@ namespace Unicord.Universal.Models.Guild
             return false;
         }
 
-        protected override void OnReadStateUpdatedCore(ReadStateUpdatedEventArgs e)
+        protected override void OnReadStateUpdatedCore(ReadStateUpdateEventArgs e)
         {
             InvokePropertyChanged(nameof(MentionCount));
         }

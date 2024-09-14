@@ -59,6 +59,12 @@
                     </lib:NavigationViewItem.Icon>
                 </lib:NavigationViewItem>
 
+                <lib:NavigationViewItem Tag="Notifications" x:Uid="/SettingsPage/NotificationsItem">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE91C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+
                 <lib:NavigationViewItem Tag="Themes" x:Uid="/SettingsPage/ThemesItem">
                     <lib:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE771;" FontFamily="{StaticResource SymbolThemeFontFamily}" />

@@ -31,6 +31,8 @@ namespace Unicord.Universal.Pages.Overlay
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             contentContainerOverlay.Visibility = Visibility.Visible;
+            overlayProgressRing.Visibility = Visibility.Visible;
+            FailurePanel.Visibility = Visibility.Collapsed;
 
             if (e.Parameter is AttachmentViewModel attachment)
             {
@@ -42,24 +44,14 @@ namespace Unicord.Universal.Pages.Overlay
                 AttachmentSource.UriSource = new Uri(attachment.ProxyUrl);
             }
 
-            if (e.Parameter is DiscordEmbedThumbnail thumbnail)
+            if (e.Parameter is EmbedImageViewModel thumbnail)
             {
-                scaledControl.TargetWidth = thumbnail.Width;
-                scaledControl.TargetHeight = thumbnail.Height;
-                attachmentImage.MaxWidth = thumbnail.Width;
-                attachmentImage.MaxHeight = thumbnail.Height;
+                scaledControl.TargetWidth = thumbnail.NaturalWidth;
+                scaledControl.TargetHeight = thumbnail.NaturalHeight;
+                attachmentImage.MaxWidth = thumbnail.NaturalWidth;
+                attachmentImage.MaxHeight = thumbnail.NaturalHeight;
 
-                AttachmentSource.UriSource = thumbnail.ProxyUrl.ToUri();
-            }
-
-            if (e.Parameter is DiscordEmbedImage image)
-            {
-                scaledControl.TargetWidth = image.Width;
-                scaledControl.TargetHeight = image.Height;
-                attachmentImage.MaxWidth = image.Width;
-                attachmentImage.MaxHeight = image.Height;
-
-                AttachmentSource.UriSource = image.ProxyUrl.ToUri();
+                AttachmentSource.UriSource = new Uri(thumbnail.Url);
             }
         }
 
@@ -81,6 +73,17 @@ namespace Unicord.Universal.Pages.Overlay
         private void backButton_Click(object sender, RoutedEventArgs e)
         {
             OverlayService.GetForCurrentView().CloseOverlay();
+        }
+
+        private void AttachmentSource_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            overlayProgressRing.Visibility = Visibility.Collapsed;
+            FailurePanel.Visibility = Visibility.Visible;
+        }
+
+        private void attachmentImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

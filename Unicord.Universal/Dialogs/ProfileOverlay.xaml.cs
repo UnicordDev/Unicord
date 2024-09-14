@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands;
+using Unicord.Universal.Models.User;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -18,23 +19,18 @@ namespace Unicord.Universal.Dialogs
 {
     public sealed partial class ProfileOverlay : UserControl
     {
-        private DiscordUser _user;
-        private DiscordMember _member;
-
-        private bool _isMember => _member != null;
-
-        public DiscordUser User { get => GetValue(UserProperty) as DiscordUser; set => SetValue(UserProperty, value); }
-
+        public UserViewModel User
+        {
+            get => (UserViewModel)GetValue(UserProperty);
+            set => SetValue(UserProperty, value);
+        }
 
         public static readonly DependencyProperty UserProperty =
-            DependencyProperty.Register("User", typeof(DiscordUser), typeof(ProfileOverlay), new PropertyMetadata(null, OnUserChanged));
+            DependencyProperty.Register("User", typeof(UserViewModel), typeof(ProfileOverlay), new PropertyMetadata(null, OnUserChanged));
 
         private static void OnUserChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var overlay = (ProfileOverlay)d;
-            overlay._user = e.NewValue as DiscordUser;
-            overlay._member = e.NewValue as DiscordMember;
-            overlay.mutualServers.ItemsSource = App.Discord.Guilds.Values.Where(g => g.Members.ContainsKey(overlay._user.Id));
             overlay.Bindings.Update();
         }
 

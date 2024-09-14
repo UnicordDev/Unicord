@@ -96,7 +96,7 @@
                             <TextBlock
                                 FontSize="14"
                                 FontWeight="Bold"
-                                Text="{Binding Key.Channel, Converter={StaticResource DMNameConverter}}"
+                                Text="{Binding Key.Channel.Name}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap" />
                         </DataTemplate>

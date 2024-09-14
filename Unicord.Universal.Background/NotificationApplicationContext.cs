@@ -6,8 +6,9 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Shared;
+using Windows.ApplicationModel.AppService;
+using Windows.Media.Protection.PlayReady;
 using Windows.Storage;
-using NotificationUtils = Unicord.Universal.Shared.NotificationUtils;
 
 namespace Unicord.Universal.Background
 {
@@ -19,10 +20,11 @@ namespace Unicord.Universal.Background
         private SecondaryTileManager _secondaryTileManager;
         private ToastManager _toastManager = null;
 
-        private NotifyIcon _notifyIcon;
-        private ContextMenuStrip _contextMenu;
-        private ToolStripMenuItem _openMenuItem;
-        private ToolStripMenuItem _closeMenuItem;
+        private readonly NotifyIcon _notifyIcon;
+        private readonly ContextMenuStrip _contextMenu;
+        private readonly ToolStripMenuItem _openMenuItem;
+        private readonly ToolStripMenuItem _closeMenuItem;
+        private readonly AppServiceConnection _connection;
 
         private Task _connectTask;
         private string _token = null;
@@ -76,11 +78,9 @@ namespace Unicord.Universal.Background
             {
                 _discord = new DiscordClient(new DiscordConfiguration()
                 {
-                    LogLevel = LogLevel.Debug,
                     TokenType = TokenType.User,
                     Token = _token,
-                    MessageCacheSize = 0,
-                    UseInternalLogHandler = true
+                    MessageCacheSize = 0
                 });
 
                 _badgeManager = new BadgeManager(_discord);
@@ -89,7 +89,9 @@ namespace Unicord.Universal.Background
                 _toastManager = new ToastManager();
 
                 _discord.Ready += OnReady;
+                _discord.Resumed += OnResumed;
                 _discord.MessageCreated += OnDiscordMessage;
+                _discord.MessageUpdated += OnMessageUpdated;
                 _discord.MessageAcknowledged += OnMessageAcknowledged;
 
                 await _discord.ConnectAsync(status: UserStatus.Invisible, idlesince: DateTimeOffset.Now);
@@ -112,41 +114,66 @@ namespace Unicord.Universal.Background
             }
         }
 
-        private async Task OnReady(ReadyEventArgs e)
+        private async Task OnReady(DiscordClient client, ReadyEventArgs e)
         {
             await _tileManager.InitialiseAsync();
+            _badgeManager.Update();
+
+            _ = Task.Run(GCTask);
         }
 
-        private Task OnDiscordMessage(MessageCreateEventArgs e)
+        private Task OnResumed(DiscordClient sender, ResumedEventArgs args)
         {
-            _ = Task.Run(async () =>
+            _ = Task.Run(GCTask);
+            return Task.CompletedTask;
+        }
+
+        private async Task GCTask()
+        {
+            await Task.Delay(5000);
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+        }
+
+        private async Task OnDiscordMessage(DiscordClient client, MessageCreateEventArgs e)
+        {
+            try
             {
-                try
+                if (NotificationUtils.WillShowToast(client, e.Message))
                 {
-                    await Task.Delay(1000);
+                    _toastManager?.HandleMessage(client, e.Message, UnicordFinder.IsUnicordVisible());
+                    _badgeManager?.Update();
 
-                    if (NotificationUtils.WillShowToast(e.Message))
-                    {
-                        _toastManager?.HandleMessage(e.Message);
-                        _badgeManager?.Update();
-
-                        if (_tileManager != null)
-                            await _tileManager.HandleMessageAsync(e.Message);
-                    }
-
-                    if (_secondaryTileManager != null)
-                        await _secondaryTileManager.HandleMessageAsync(e.Message);
+                    if (_tileManager != null)
+                        await _tileManager.HandleMessageAsync(e.Message);
                 }
-                catch (Exception)
+
+                if (_secondaryTileManager != null)
+                    await _secondaryTileManager.HandleMessageAsync(client, e.Message);
+            }
+            catch (Exception)
+            {
+                // TODO: log
+            }
+        }
+
+        private Task OnMessageUpdated(DiscordClient client, MessageUpdateEventArgs e)
+        {
+            try
+            {
+                if (NotificationUtils.WillShowToast(client, e.Message))
                 {
-                    // TODO: log
+                    _toastManager?.HandleMessageUpdated(client, e.Message);
                 }
-            });
+            }
+            catch (Exception)
+            {
+                // TODO: log
+            }
 
             return Task.CompletedTask;
         }
 
-        private async Task OnMessageAcknowledged(MessageAcknowledgeEventArgs e)
+        private async Task OnMessageAcknowledged(DiscordClient client, MessageAcknowledgeEventArgs e)
         {
             try
             {

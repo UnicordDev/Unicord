@@ -13,13 +13,13 @@ using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.Web.Http;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.Commands.Generic
 {
     public class ShareCommand : ICommand
     {
-        private string url;
-        private string fileName;
-        private ProgressInfo shareProgress;
+        private readonly string url;
+        private readonly string fileName;
+        private readonly ProgressInfo shareProgress;
 
         public ShareCommand(string url, string fileName, ProgressInfo shareProgress)
         {

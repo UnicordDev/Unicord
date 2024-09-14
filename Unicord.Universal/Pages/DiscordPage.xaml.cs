@@ -6,8 +6,10 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
@@ -61,6 +63,8 @@ namespace Unicord.Universal.Pages
 
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
+
+            WeakReferenceMessenger.Default.Register<DiscordPage, MessageCreateEventArgs>(this, (r, e) => r.Notification_MessageCreated(e.Event));
 
             //GuildsView.RegisterPropertyChangedCallback(MUXC.TreeView.SelectedItemProperty, )
             //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
@@ -118,8 +122,6 @@ namespace Unicord.Universal.Pages
 
             try
             {
-                App.Discord.MessageCreated += Notification_MessageCreated;
-
                 UpdateTitleBar();
 
                 _loaded = true;
@@ -164,16 +166,11 @@ namespace Unicord.Universal.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             Analytics.TrackEvent("DiscordPage_Unloaded");
-
-            if (App.Discord != null)
-            {
-                App.Discord.MessageCreated -= Notification_MessageCreated;
-            }
         }
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(e.Message) && IsWindowVisible)
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(App.Discord, e.Message) && IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }
@@ -250,15 +247,6 @@ namespace Unicord.Universal.Pages
             await service.NavigateAsync(null);
         }
 
-        private async void guildsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
-        {
-            //var enumerable = ((DiscordPageModel)DataContext).Guilds.Select(g => g.Id).ToArray();
-            //if (!enumerable.SequenceEqual(App.Discord.UserSettings.GuildPositions))
-            //{
-            //    await App.Discord.UpdateUserSettingsAsync(enumerable);
-            //}
-        }
-
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var service = SettingsService.GetForCurrentView();
@@ -268,36 +256,6 @@ namespace Unicord.Universal.Pages
         private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseSplitPane();
-        }
-
-        private void CreateServerItem_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            return;
-
-            var element = sender as FrameworkElement;
-            if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions"))
-            {
-                FlyoutBase.GetAttachedFlyout(element).ShowAt(element, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.Right });
-            }
-            else
-            {
-                FlyoutBase.GetAttachedFlyout(element).ShowAt(element);
-            }
-        }
-
-        private void FindServerIcon_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-
-        }
-
-        private void Self_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // _helper.IsEnabled = e.NewSize.Width <= 768;
-        }
-
-        private void ClydeLogo_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
 
         private async void TreeView_ItemInvoked(MUXC.TreeView sender, MUXC.TreeViewItemInvokedEventArgs args)
@@ -314,7 +272,21 @@ namespace Unicord.Universal.Pages
 
                 if (!guildVM.Guild.IsUnavailable)
                 {
-                    LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
+                    if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
+                    {
+                        channel = guildVM.Guild.Channels.Values
+                            .Where(c => c.IsAccessible())
+                            .Where(c => c.IsText())
+                            .OrderBy(c => c.Position)
+                            .FirstOrDefault();
+                    }
+
+                    if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
+                        LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    else
+                        await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel);
+
                     Model.IsFriendsSelected = false;
                 }
                 else

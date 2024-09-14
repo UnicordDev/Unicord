@@ -9,8 +9,12 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.UI.Xaml.Controls;
+using TenMica;
+using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -37,28 +41,11 @@ namespace Unicord.Universal
         public Frame CustomFrame => CustomOverlayFrame;
 
         private ShareOperation _shareOperation;
-        private RoutedEventHandler _openHandler;
-        private RoutedEventHandler _saveHandler;
-        private RoutedEventHandler _shareHandler;
         private bool _isReady;
 
         public MainPage()
         {
             InitializeComponent();
-
-#if DEBUG
-            this.AddAccelerator(Windows.System.VirtualKey.C, Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Shift, (_, _) =>
-            {
-                if (IsOverlayShown)
-                {
-                    HideConnectingOverlay();
-                }
-                else
-                {
-                    ShowConnectingOverlay();
-                }
-            });
-#endif
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -78,13 +65,26 @@ namespace Unicord.Universal
 
             if (_isReady)
             {
-                await OnFirstDiscordReady(null);
+                await OnFirstDiscordReady(null, null);
             }
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
+            if (WindowingService.Current.IsMainWindow(WindowingService.Current.GetHandle(this)))
+            {
+                WindowingService.Current.HandleTitleBarForWindow(TitleBar, this);
+            }
+
+            //BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
+
+            var brush = new TenMicaBrush();
+            if (WindowingService.Current.IsCompactOverlay(WindowingService.Current.GetHandle(this)))
+            {
+                brush.EnabledInActivatedNotForeground = true;
+            }
+
+            Background = brush;
 
             //var engagementManager = StoreServicesEngagementManager.GetDefault();
             //await engagementManager.RegisterNotificationChannelAsync();
@@ -186,7 +186,7 @@ namespace Unicord.Universal
             }
         }
 
-        internal void ShowUserOverlay(DiscordUser user, bool animate)
+        internal void ShowUserOverlay(UserViewModel user, bool animate)
         {
             userInfoOverlay.User = user;
             userInfoOverlay.Visibility = Visibility.Visible;
@@ -195,7 +195,7 @@ namespace Unicord.Universal
             showUserOverlay.Begin();
         }
 
-        private async Task OnFirstDiscordReady(ReadyEventArgs e)
+        private async Task OnFirstDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             if (!_isReady)
             {
@@ -237,24 +237,24 @@ namespace Unicord.Universal
             }
         }
 
-        private Task OnLoggedOut()
+        private Task OnLoggedOut(DiscordClient client, LoggedOutEventArgs args)
         {
             _isReady = false;
             RemoveEventHandlers();
             return Task.CompletedTask;
         }
 
-        private async Task OnDiscordReady(ReadyEventArgs e)
+        private async Task OnDiscordReady(DiscordClient client, ReadyEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordResumed(ResumedEventArgs e)
+        private async Task OnDiscordResumed(DiscordClient client, ResumedEventArgs e)
         {
             await HideDisconnectingMessage();
         }
 
-        private async Task OnDiscordDisconnected(SocketCloseEventArgs e)
+        private async Task OnDiscordDisconnected(DiscordClient client, SocketCloseEventArgs e)
         {
             Analytics.TrackEvent("Discord_Disconnected");
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -290,7 +290,10 @@ namespace Unicord.Universal
                 {
                     if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
                     {
-                        await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
+                        //await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), channel));
+
+                        await DiscordNavigationService.GetForCurrentView()
+                            .NavigateAsync(channel);
                     }
                 }
                 else if (args.UserId != 0)
@@ -303,7 +306,8 @@ namespace Unicord.Universal
                         // dm = await App.Discord.CreateDmChannelAsync(args.UserId);
                     }
 
-                    await Dispatcher.AwaitableRunAsync(() => rootFrame.Navigate(typeof(ChannelPage), dm));
+                    await DiscordNavigationService.GetForCurrentView()
+                        .NavigateAsync(dm);
                 }
             }
             catch (Exception ex)
@@ -399,7 +403,8 @@ namespace Unicord.Universal
 
         public void HideCustomOverlay()
         {
-            HideOverlayStoryboard.Begin();
+            if (CustomOverlayGrid.Visibility != Visibility.Collapsed)
+                HideOverlayStoryboard.Begin();
         }
     }
 }

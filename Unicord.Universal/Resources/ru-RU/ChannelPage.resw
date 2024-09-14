@@ -176,7 +176,7 @@
     <value>Отменить</value>
   </data>
   <data name="ReplyingTo.Text" xml:space="preserve">
-    <value>Ответить</value>
+    <value>Ответить на</value>
     <comment>Replying to {Member}</comment>
   </data>
   <data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">

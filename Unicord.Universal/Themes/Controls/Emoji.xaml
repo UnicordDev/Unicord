@@ -37,6 +37,7 @@
                                    MaxHeight="{TemplateBinding Size}">
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" 
+                                                 AutoPlay="{TemplateBinding Animate}"
                                                  DecodePixelType="Logical"
                                                  DecodePixelHeight="{TemplateBinding Size}" />
                                 </Image.Source>

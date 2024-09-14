@@ -12,14 +12,19 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
     xmlns:messages="using:Unicord.Universal.Models.Messages" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)" xmlns:components="using:Unicord.Universal.Models.Messages.Components"
     x:DefaultBindMode="OneWay">
 
     <converters:AttachmentTemplateSelector x:Key="AttachmentTemplateSelector"
                                            ImageTemplate="{StaticResource DefaultAttachmentImageTemplate}"
-                                           VideoTemplate="{StaticResource DefaultAttachmentMediaTemplate}"
-                                           AudioTemplate="{StaticResource DefaultAttachmentMediaTemplate}"
+                                           VideoTemplate="{StaticResource VideoAttachmentMediaTemplate}"
+                                           AudioTemplate="{StaticResource AudioAttachmentMediaTemplate}"
                                            GenericTemplate="{StaticResource DefaultAttachmentGenericTemplate}"/>
+
+    <converters:EmbedTemplateSelector x:Key="EmbedTemplateSelector"
+                                      ImageTemplate="{StaticResource ImageEmbedTemplate}"
+                                      VideoTemplate="{StaticResource VideoEmbedTemplate}"
+                                      RichTemplate="{StaticResource RichEmbedTemplate}"/>
 
     <converters:AttachmentTypeConverter x:Key="AttachmentTypeConverter"/>
 
@@ -47,7 +52,7 @@
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Top"
                                         VerticalContentAlignment="Top"
-                                        MaxWidth="640"
+                                        MaxWidth="480"
                                         MaxHeight="480"/>
 
                             <!--<Border x:Name="PART_SpoilerOverlay" Background="{ThemeResource SpoilerBrush}" />-->
@@ -57,7 +62,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style TargetType="local:AttachmentMediaControl">
         <Setter Property="Template">
@@ -175,6 +179,108 @@
         </Setter>
     </Style>
 
+    <Style x:Key="AttachmentAudioControlStyle" TargetType="local:AttachmentMediaControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AttachmentMediaControl">
+                    <Grid x:Name="Root" Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid x:Name="AudioInfo" Margin="4,2,4,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="32"
+                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                           Text="&#xe8d6;"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding FileName}" Style="{ThemeResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                                <TextBlock Text="{Binding FileSize}" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="4,0,0,0">
+                                <Button x:Name="DownloadButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding DownloadCommand}">
+                                    <Grid DataContext="{Binding DownloadProgress, Mode=OneWay}">
+                                        <muxc:ProgressRing Width="16" Height="16" 
+                                                                   Opacity="{Binding ProgressOpacity, Mode=OneWay}"
+                                                                   IsIndeterminate="{Binding IsIndeterminate, Mode=OneWay}"
+                                                                   Value="{Binding Progress, Mode=OneWay}"
+                                                                   Maximum="1" />
+                                        <TextBlock Text="&#xe896;" 
+                                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                           FontSize="16"
+                                                           Opacity="{Binding IconOpacity, Mode=OneWay}"/>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="CopyLinkButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Content="&#xe71b;"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding CopyCommand}"/>
+
+                                <Button x:Name="ShareButton"
+                                                Style="{ThemeResource IconButtonStyle}"
+                                                Margin="4,0,0,0"
+                                                Command="{Binding ShareCommand}">
+                                    <Grid DataContext="{Binding ShareProgress}">
+                                        <muxc:ProgressRing Width="16" Height="16" 
+                                                               Opacity="{Binding ProgressOpacity}"
+                                                               IsIndeterminate="{Binding IsIndeterminate}"
+                                                               Value="{Binding Progress}"
+                                                               Maximum="1" />
+                                        <TextBlock Text="&#xe72d;" 
+                                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                       FontSize="16"
+                                                       Opacity="{Binding IconOpacity}"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                            <MediaPlayerElement x:Name="MediaPlayer" MaxHeight="46" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
+                                <MediaPlayerElement.TransportControls>
+                                    <controls:CustomMediaTransportControls Style="{StaticResource AudioMediaTransportControlsStyle}"/>
+                                </MediaPlayerElement.TransportControls>
+                            </MediaPlayerElement>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AttachmentVideoControlStyle" TargetType="local:AttachmentMediaControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AttachmentMediaControl">
+                    <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                        <controls:ScaledContentControl x:Name="MediaPlayerContainer" ForceSize="True" TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
+                            <MediaPlayerElement x:Name="MediaPlayer" MaxHeight="480" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
+                                <MediaPlayerElement.TransportControls>
+                                    <controls:CustomMediaTransportControls/>
+                                </MediaPlayerElement.TransportControls>
+                            </MediaPlayerElement>
+                        </controls:ScaledContentControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <DataTemplate x:Key="DefaultAttachmentImageTemplate">
         <controls:ScaledContentControl TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
             <controls:ImageElement ImageWidth="{Binding NaturalWidth}" ImageHeight="{Binding NaturalHeight}" ImageUri="{Binding Source}" />
@@ -183,6 +289,13 @@
 
     <DataTemplate x:Key="DefaultAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
         <local:AttachmentMediaControl ViewModel="{Binding}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VideoAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
+        <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentVideoControlStyle}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="AudioAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
+        <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentAudioControlStyle}"/>
     </DataTemplate>
 
     <w1809:ScalarTransition x:Key="FadeTransition" Duration="00:00:00.2" />
@@ -307,11 +420,19 @@
         </ToggleButton>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultEmbedTemplate">
-        <controls:EmbedViewer Embed="{Binding}" />
+    <DataTemplate x:Key="RichEmbedTemplate">
+        <local:EmbedControl ViewModel="{Binding}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultAttachmentTemplate">
+    <DataTemplate x:Key="ImageEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:ImageEmbedControl ViewModel="{Binding Thumbnail}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="VideoEmbedTemplate" x:DataType="messages:EmbedViewModel">
+        <local:VideoEmbedControl ViewModel="{Binding Video}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DefaultAttachmentTemplate" x:DataType="messages:EmbedViewModel">
         <local:AttachmentControl ViewModel="{Binding}" />
     </DataTemplate>
 
@@ -339,39 +460,43 @@
         </ItemsControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="ButtonComponentContentTemplate">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+    <DataTemplate x:Key="ButtonComponentContentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
+        <StackPanel Orientation="Horizontal">
+            <emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
 
-            <emoji:EmojiControl Grid.Column="0" Emoji="{Binding Emoji}" Size="16" Visibility="{Binding Emoji, Converter={StaticResource HideOnNullConverter}}" />
+            <TextBlock x:Name="PART_ButtonLabel" x:Load="{x:Bind HasLabel}" VerticalAlignment="Center" Text="{x:Bind Label}" Padding="12,0"/>
 
-            <TextBlock Grid.Column="1" Text="{Binding Label}" Padding="12,0" Visibility="{Binding Label, Converter={StaticResource BoolVisibilityConverter}}"/>
-
-            <TextBlock Grid.Column="2" 
-                       FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+            <TextBlock x:Name="PART_ButtonExternalLink"
+                       x:Load="{x:Bind ShowExternalLinkIcon}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
                        FontSize="16" 
-                       VerticalAlignment="Center"
-                       Visibility="{Binding Url, Converter={StaticResource BoolVisibilityConverter}}">&#xE8A7;</TextBlock>
-        </Grid>
+                       VerticalAlignment="Center">&#xE8A7;</TextBlock>
+        </StackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="PrimaryButtonComponentTemplate">
+    <DataTemplate x:Key="PrimaryButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
                 Style="{ThemeResource AccentButtonStyle}"
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="SecondaryButtonComponentTemplate">
+    <DataTemplate x:Key="SecondaryButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
-    <DataTemplate x:Key="SuccessButtonComponentTemplate">
+    <DataTemplate x:Key="SuccessButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
             <Button.Resources>
                 <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Black"/>
@@ -389,8 +514,11 @@
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="DangerButtonComponentTemplate">
+    <DataTemplate x:Key="DangerButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8" 
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}">
             <Button.Resources>
                 <SolidColorBrush x:Key="ButtonForeground" Color="{ThemeResource DangerForegroundColor}"/>
@@ -409,8 +537,11 @@
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="LinkButtonComponentTemplate">
+    <DataTemplate x:Key="LinkButtonComponentTemplate"
+                  x:DataType="components:ButtonComponentViewModel">
         <Button MinWidth="68" BorderThickness="0" Padding="12,8"
+                Command="{x:Bind Execute}"
+                Content="{x:Bind}"
                 ContentTemplate="{StaticResource ButtonComponentContentTemplate}"/>
     </DataTemplate>
 
@@ -512,6 +643,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
@@ -519,6 +651,7 @@
                                 <Ellipse x:Name="ReplyAvatarContainer"
                                          Width="16"
                                          Height="16"
+                                         Margin="0,0,4,0"
                                          Grid.Column="1">
                                     <Ellipse.Fill>
                                         <ImageBrush>
@@ -532,15 +665,17 @@
                                     </Ellipse.Fill>
                                 </Ellipse>
 
+                                <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{Binding ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
 
                                 <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
-                                                       Grid.Column="2"
+                                                       Grid.Column="3"
                                                        FontSize="12"
                                                        InlineOnly="True"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                                        Channel="{Binding Channel.Channel}"
                                                        Text="{Binding ReferencedMessage.Content}" 
                                                        IsTextSelectionEnabled="True"
+                                                       IsEnabled="False"
                                                        VerticalAlignment="Center"
                                                        Margin="6,0" />
 
@@ -568,14 +703,19 @@
                                     </Ellipse.Fill>
                                 </Ellipse>
 
-                                <StackPanel x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
-                                    <StackPanel x:Name="AuthorContainer" Orientation="Horizontal">
+                                <Grid x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel x:Name="AuthorContainer" Orientation="Horizontal" Grid.Row="0">
                                         <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
 
-                                        <StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
+                                        <!--<StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
                                             <TextBlock x:Uid="/Controls/ReplyingTo" Margin="4,0"/>
                                             <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14"/>
-                                        </StackPanel>
+                                        </StackPanel>-->
 
                                         <TextBlock Margin="8,1" 
                                                FontSize="11"
@@ -585,6 +725,7 @@
                                     </StackPanel>
 
                                     <controls:MarkdownTextBlock x:Name="Markdown"
+                                                                Grid.Row="1"
                                                            Channel="{Binding Channel.Channel}"
                                                            Text="{Binding Content}" 
                                                            AllowHugeEmoji="True"
@@ -592,39 +733,42 @@
                                                            WrapCodeBlock="True" 
                                                            Margin="0,0,2,0" />
 
-                                    <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
+                                    <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
 
-                                    <ItemsControl x:Name="Components"
-                                              ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
-                                              ItemsSource="{Binding Components}"
-                                              HorizontalAlignment="Left"/>
+                                    <StackPanel x:Name="AdditionalContent"
+                                                Grid.Row="2">
+                                        <ItemsControl x:Name="Embeds"
+                                                      ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
+                                                      ItemsSource="{Binding Embeds}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Embeds"
-                                                  ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
-                                                  ItemsSource="{Binding Embeds}"
-                                                  HorizontalAlignment="Left"/>
+                                        <ItemsControl x:Name="Attachments"
+                                                      ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
+                                                      ItemsSource="{Binding Attachments}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Attachments"
-                                              ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                              ItemsSource="{Binding Attachments}"
-                                              HorizontalAlignment="Left"/>
+                                        <ItemsControl x:Name="Stickers"
+                                                      ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
+                                                      ItemsSource="{Binding Stickers}"
+                                                      HorizontalAlignment="Left"/>
 
-                                    <ItemsControl x:Name="Stickers"
-                                              ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
-                                              ItemsSource="{Binding Stickers}"
-                                              HorizontalAlignment="Left"/>
-
-                                    <ItemsControl x:Name="Reactions"
-                                              Margin="0,4,0,0"
-                                              ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                              ItemsSource="{Binding Reactions}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </StackPanel>
+                                        <ItemsControl x:Name="Reactions"
+                                                      Margin="0,4,0,0"
+                                                      ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
+                                                      ItemsSource="{Binding Reactions}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                        
+                                        <ItemsControl x:Name="Components"
+                                                      ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                                      ItemsSource="{Binding Components}"
+                                                      HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                </Grid>
 
                             </Grid>
                         </Grid>
@@ -761,7 +905,7 @@
 
                                 <ItemsControl x:Name="Embeds"                                               
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -879,7 +1023,7 @@
 
                                 <ItemsControl x:Name="Embeds" 
                                               Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultEmbedTemplate}" 
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
                                               ItemsSource="{Binding Embeds}"/>
 
                                 <ItemsControl x:Name="Attachments"
@@ -959,7 +1103,6 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:SystemMessageControl">
-
                     <Grid Margin="0,12,8,0" DataContext="{TemplateBinding MessageViewModel}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -969,15 +1112,18 @@
                             Margin="24,0,22,0"
                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                             FontSize="20"
-                            Text="{Binding Converter={StaticResource SystemMessageSymbolConverter}}"
+                            Text="{Binding SystemMessageSymbol}"
                             Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
 
-                        <controls:MarkdownTextBlock Grid.Column="1" IsSystemMessage="True" Channel="{Binding Channel}" Text="{Binding Converter={StaticResource SystemMessageTextConverter}}"/>
+                        <controls:MarkdownTextBlock Grid.Column="1" IsSystemMessage="True" Channel="{Binding Channel.Channel}" Text="{Binding SystemMessageText}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    
 
 
 </ResourceDictionary>

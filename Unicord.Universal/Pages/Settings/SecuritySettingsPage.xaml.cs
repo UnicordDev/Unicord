@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AppCenter;
-using Microsoft.Toolkit.Parsers.Markdown;
+using Unicord.Universal.Controls;
 using Unicord.Universal.Models;
+using Unicord.Universal.Parsers.Markdown;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Credentials.UI;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,6 +48,11 @@ namespace Unicord.Universal.Pages.Settings
         private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             await AppCenter.SetEnabledAsync((sender as ToggleSwitch).IsOn);
+        }
+
+        private async void unavailableText_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri(e.Link));
         }
     }
 }

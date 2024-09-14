@@ -5,11 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models
 {
-    public class DMChannelsViewModel : ViewModelBase, IDisposable
+    public class DMChannelsViewModel : ViewModelBase
     {
         private int _selectedItem = -1;
 
@@ -20,22 +22,15 @@ namespace Unicord.Universal.Models
                 .Select(s => new DmChannelListViewModel(s))
                 .OrderByDescending(r => r.ReadState?.LastMessageId));
 
-            App.Discord.DmChannelCreated += OnDmCreated;
-            App.Discord.DmChannelDeleted += OnDmDeleted;
-            App.Discord.MessageCreated += OnMessageCreated;
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e.Event));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e.Event));
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e.Event));
         }
 
         public ObservableCollection<DmChannelListViewModel> DMChannels { get; set; }
 
         public int SelectedIndex { get => _selectedItem; set => OnPropertySet(ref _selectedItem, value); }
         public bool UpdatingIndex { get; set; }
-
-        public void Dispose()
-        {
-            App.Discord.DmChannelCreated -= OnDmCreated;
-            App.Discord.DmChannelDeleted -= OnDmDeleted;
-            App.Discord.MessageCreated -= OnMessageCreated;
-        }
 
         private Task OnDmCreated(DmChannelCreateEventArgs e)
         {
@@ -54,7 +49,10 @@ namespace Unicord.Universal.Models
             if (e.Channel is DiscordDmChannel dm)
             {
                 var current = DMChannels.ElementAtOrDefault(SelectedIndex);
-                var index = DMChannels.IndexOf(DMChannels.FirstOrDefault(s => s.Channel == dm));
+                var index = DMChannels.FindIndex(s => s.Channel == dm);
+                if (index == 0)
+                    return Task.CompletedTask;
+
                 syncContext.Post(o =>
                 {
                     // BUGBUG: this is very bad

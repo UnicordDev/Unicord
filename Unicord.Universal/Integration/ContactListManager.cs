@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation.Metadata;

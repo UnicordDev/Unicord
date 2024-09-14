@@ -285,7 +285,7 @@ namespace Unicord.Universal.Pages
 
             await SaveComposition();
 
-            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = App.RoamingSettings.Read(Constants.VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default) };
+            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = (MediaVideoProcessingAlgorithm)App.RoamingSettings.Read(Constants.VIDEO_PROCESSING, (int)MediaVideoProcessingAlgorithm.Default) };
             var props = await (_model.StorageFile as StorageFile).Properties.GetVideoPropertiesAsync();
             var profile = MediaTranscoding.CreateVideoEncodingProfileFromProps(props);
             var source = _model.Composition.GenerateMediaStreamSource();

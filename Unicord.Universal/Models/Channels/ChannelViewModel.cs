@@ -3,90 +3,272 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Humanizer;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Channels;
+using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
+using Windows.UI.StartScreen;
 
 namespace Unicord.Universal.Models.Channels
 {
-    public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>
+    public class ChannelViewModel : ViewModelBase, IEquatable<ChannelViewModel>, IEquatable<DiscordChannel>, ISnowflake
     {
-        private readonly DiscordChannel _channel;
-        private UserViewModel _recipient;
+        private readonly ulong _channelId;
+        private readonly DiscordChannel _channelCache;
+
+        private UserViewModel _recipientCache;
         private ReadStateViewModel _readStateCache;
 
-        internal ChannelViewModel(DiscordChannel channel, bool isTransient = false, ViewModelBase parent = null)
+        private bool isLoading;
+        private bool isUploading;
+        private bool isUploadIndeterminate;
+        private double uploadProgress;
+
+        internal ChannelViewModel(ulong channelId, bool isTransient = false, ViewModelBase parent = null)
             : base(parent)
         {
-            this._channel = channel;
+            this._channelId = channelId;
 
             // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
             if (!isTransient)
             {
+                AcknowledgeCommand = new AcknowledgeChannelCommand(this);
+                EditCommand = new EditChannelCommand();
+                ToggleMuteCommand = new MuteChannelCommand(this);
+                PinToStartCommand = new PinChannelToStartCommand(this);
+                CopyIdCommand = new CopyIdCommand(this);
+                CopyUrlCommand = new CopyUrlCommand(this);
+                OpenInNewWindowCommand = new OpenInNewWindowCommand(this, false);
+                OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(this, true);
+
                 WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, (r, m) => r.OnChannelUpdated(m.Event));
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
             }
         }
 
+        //
+        // So as a rule, we're trying to stick to the cache for channels because we want a single
+        // "source of truth" for everything on screen, however sometimes we have to fetch entities
+        // via REST, which may not be in the cache, so this constructor accomodates that, but it should
+        // be used sparingly.
+        //
+        internal ChannelViewModel(DiscordChannel channel, bool isTransient = false, ViewModelBase parent = null)
+            : this(channel.Id, isTransient, parent)
+        {
+            this._channelCache = channel;
+        }
+
         public ulong Id
-            => Channel.Id;
+            => _channelId;
 
-        public virtual DiscordChannel Channel => _channel;
+        public virtual DiscordChannel Channel
+            => (discord.TryGetCachedChannel(Id, out var channel) ? channel :
+                 discord.TryGetCachedThread(Id, out var thread) ? thread : _channelCache)
+            ?? throw new InvalidOperationException("Unable to find this channel, probably a thread that you've not joined.");
 
-        public virtual ChannelViewModel Parent => Channel.Parent != null ?
-            new ChannelViewModel(Channel.Parent, false, this) :
+        public virtual ChannelViewModel Parent => Channel.ParentId != null ?
+            new ChannelViewModel(Channel.ParentId.Value, false, this) :
             null;
 
-        public virtual GuildViewModel Guild => Channel.Guild != null ?
-            new GuildViewModel(Channel.Guild, this) :
+        public virtual GuildViewModel Guild => Channel.GuildId != null && Channel.GuildId != 0 ?
+            new GuildViewModel(Channel.GuildId.Value, this) :
             null;
 
         public virtual string Name
-            => _channel.Name;
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
+                    {
+                        return dm.Recipients[0].DisplayName;
+                    }
+
+                    if (dm.Type == ChannelType.Group)
+                    {
+                        return dm.Name ?? dm.Recipients.Select(r => r.DisplayName).Humanize();
+                    }
+                }
+
+                return Channel.Name;
+            }
+        }
         public virtual ChannelType ChannelType
-            => _channel.Type;
+            => Channel.Type;
         public virtual int Position
-            => _channel.Position;
+            => Channel.Position;
         public virtual string Topic
-            => _channel.Topic;
+            => Channel.Topic;
         public virtual ReadStateViewModel ReadState
-            => _readStateCache ??= new ReadStateViewModel(Channel, this);
+            => _readStateCache ??= new ReadStateViewModel(Id, this);
         public virtual bool Unread
             => !Muted && ReadState.Unread;
         public virtual bool NotificationMuted
             => (Muted || (Parent?.Muted ?? false) || (Guild?.Muted ?? false));
-
         public UserViewModel Recipient
-            => _recipient ??= (ChannelType == ChannelType.Private && Channel is DiscordDmChannel DM ? new UserViewModel(DM.Recipient, null) : null);
+        {
+            get
+            {
+                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private)
+                    return null;
+
+                return _recipientCache ??= new UserViewModel(dm.Recipients[0], null, this);
+            }
+        }
 
         public bool Muted
             => Channel.IsMuted();
+        public int? NullableMentionCount
+            => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
 
-        public int? NullableMentionCount => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
+        public double MutedOpacity
+            => Muted ? 0.5 : 1.0;
+        public bool HasTopic
+            => !string.IsNullOrWhiteSpace(Topic);
 
-        private void OnReadStateUpdated(ReadStateUpdatedEventArgs e)
+        public bool IsDM
+            => Channel.Type is ChannelType.Private;
+
+        public bool IsNotDM
+            => !IsDM;
+
+        public string IconUrl
+        {
+            get
+            {
+                if (Channel is not DiscordDmChannel dm)
+                    return "";
+
+                if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
+                {
+                    return dm.Recipients[0].GetAvatarUrl(64);
+                }
+
+                if (dm.Type == ChannelType.Group)
+                {
+                    if (dm.IconUrl != null) return dm.IconUrl + "?size=64";
+                    // TODO: default icons?
+                }
+
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// The actual channel name. (i.e. general, WamWooWam, etc.)
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Channel.Name))
+                {
+                    return Channel.Name;
+                }
+
+                if (Channel is DiscordDmChannel dm)
+                {
+                    return dm.Recipients.Select(r => r.DisplayName).Humanize();
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public bool ShouldShowNotificaitonIndicator
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    return NullableMentionCount != null;
+                }
+
+                return Unread;
+            }
+        }
+
+        /// <summary>
+        /// The icon to show in the top left of a channel
+        /// </summary>
+        public string ChannelIconUrl
+        {
+            get
+            {
+                if (Channel is DiscordDmChannel dm)
+                {
+                    if (dm.Type == ChannelType.Private && dm.Recipients[0] != null)
+                        return dm.Recipients[0].AvatarUrl;
+
+                    if (dm.Type == ChannelType.Group && dm.IconUrl != null)
+                        return dm.IconUrl;
+                }
+
+                return null;
+            }
+        }
+
+        public bool ShowUserlistButton
+            => Channel.Type == ChannelType.Group || Channel.Guild != null;
+
+        public bool IsPinned =>
+            SecondaryTile.Exists($"Channel_{Channel.Id}");
+
+        public bool IsLoading { get => isLoading; set => OnPropertySet(ref isLoading, value); }
+        public bool IsUploading { get => isUploading; set => OnPropertySet(ref isUploading, value); }
+        public bool IsUploadIndeterminate { get => isUploadIndeterminate; set => OnPropertySet(ref isUploadIndeterminate, value); }
+        public double UploadProgress { get => uploadProgress; set => OnPropertySet(ref uploadProgress, value); }
+
+        public bool ShowPinsButton
+            => Channel.IsText();
+
+        public bool ShowExtendedItems
+            => Channel.IsText();
+
+        public ICommand AcknowledgeCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand ToggleMuteCommand { get; }
+        public ICommand PinToStartCommand { get; }
+        public ICommand CopyIdCommand { get; }
+        public ICommand CopyUrlCommand { get; }
+        public ICommand OpenInNewWindowCommand { get; }
+        public ICommand OpenInCompactOverlayWindowCommand { get; }
+
+        private void OnReadStateUpdated(ReadStateUpdateEventArgs e)
         {
             if (e.ReadState.Id != Channel.Id)
                 return;
 
             InvokePropertyChanged(nameof(Unread));
+            InvokePropertyChanged(nameof(ShouldShowNotificaitonIndicator));
             InvokePropertyChanged(nameof(NullableMentionCount));
         }
 
         protected virtual Task OnChannelUpdated(ChannelUpdateEventArgs e)
         {
-            if (e.ChannelAfter.Id != _channel.Id)
+            if (e.ChannelAfter.Id != Id)
                 return Task.CompletedTask;
 
             if (e.ChannelAfter.Name != e.ChannelBefore.Name)
                 InvokePropertyChanged(nameof(Name));
+
             if (e.ChannelAfter.Topic != e.ChannelBefore.Topic)
+            {
                 InvokePropertyChanged(nameof(Topic));
+                InvokePropertyChanged(nameof(HasTopic));
+            }
+
             if (e.ChannelAfter.Position != e.ChannelBefore.Position)
                 InvokePropertyChanged(nameof(Position));
             if (e.ChannelAfter.Type != e.ChannelBefore.Type)
@@ -117,7 +299,7 @@ namespace Unicord.Universal.Models.Channels
 
         public override int GetHashCode()
         {
-            return 329305889 + EqualityComparer<DiscordChannel>.Default.GetHashCode(_channel);
+            return 329305889 + EqualityComparer<ulong>.Default.GetHashCode(Id);
         }
     }
 }

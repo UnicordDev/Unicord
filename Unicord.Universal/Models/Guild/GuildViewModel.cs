@@ -1,47 +1,60 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter.Channel;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Unicord.Universal.Commands;
+using Unicord.Universal.Commands.Generic;
+using Unicord.Universal.Commands.Guild;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
-using Windows.System;
+using Unicord.Universal.Models.User;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models.Guild
 {
-    public class GuildViewModel : ViewModelBase
+    public class GuildViewModel : ViewModelBase, ISnowflake
     {
-        private readonly DiscordMember _currentMember = null;
-        private ConcurrentDictionary<ulong, ChannelViewModel> _accessibleChannels;
+        private readonly ulong _guildId;
+        private Dictionary<ulong, ChannelViewModel> _accessibleChannels;
 
-        public GuildViewModel(DiscordGuild guild, ViewModelBase parent = null)
+        public GuildViewModel(ulong guildId, ViewModelBase parent = null)
             : base(parent)
         {
-            Guild = guild;
-            _currentMember = guild.CurrentMember;
-            _accessibleChannels = new ConcurrentDictionary<ulong, ChannelViewModel>();
+            _guildId = guildId;
 
-            PopulateAccessibleChannels();
+            CurrentMember = new UserViewModel(discord.CurrentUser.Id, guildId, this);
 
-            WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdatedEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+            WeakReferenceMessenger.Default.Register<GuildViewModel, ChannelUnreadUpdateEventArgs>(this, (r, m) => r.OnChannelUnreadUpdate(m.Event));
+            WeakReferenceMessenger.Default.Register<GuildViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+
+            AcknowledgeCommand = new AcknowledgeGuildCommand(this);
+            ToggleMuteCommand = new MuteGuildCommand(this);
+            CopyUrlCommand = new CopyUrlCommand(this);
+            CopyIdCommand = new CopyIdCommand(this);
         }
 
         public ulong Id
-            => Guild.Id;
+            => _guildId;
 
-        public DiscordGuild Guild { get; set; }
+        public DiscordGuild Guild
+            => discord.TryGetCachedGuild(Id, out var guild) ? guild : throw new InvalidOperationException();
+
+        public UserViewModel CurrentMember { get; }
 
         public string Name =>
             Guild.Name;
 
         public string IconUrl =>
-            Guild.IconUrl;
+            Guild.GetIconUrl(64);
+
+        public ImageSource Icon
+            => IconUrl != null ? new BitmapImage(new Uri(IconUrl)) : null;
 
         public bool Muted
             => Guild.IsMuted();
@@ -50,11 +63,26 @@ namespace Unicord.Universal.Models.Guild
             !Muted && AccessibleChannels.Any(r => !r.NotificationMuted && r.Unread);
 
         internal IEnumerable<ChannelViewModel> AccessibleChannels
-            => _accessibleChannels.Values;
-
-        private Task OnReadStateUpdated(ReadStateUpdatedEventArgs e)
         {
-            if (_accessibleChannels.ContainsKey(e.ReadState.Id))
+            get
+            {
+                if (_accessibleChannels == null)
+                    PopulateAccessibleChannels();
+
+                return _accessibleChannels.Values;
+            }
+        }
+
+        public ICommand AcknowledgeCommand { get; }
+        public ICommand ToggleMuteCommand { get; }
+        public ICommand EditGuildCommand { get; }
+        public ICommand LeaveServerCommand { get; }
+        public ICommand CopyUrlCommand { get; }
+        public ICommand CopyIdCommand { get; }
+
+        private Task OnReadStateUpdated(ReadStateUpdateEventArgs e)
+        {
+            if (Guild.Channels.ContainsKey(e.ReadState.Id))
             {
                 InvokePropertyChanged(nameof(Unread));
                 OnReadStateUpdatedCore(e);
@@ -63,33 +91,43 @@ namespace Unicord.Universal.Models.Guild
             return Task.CompletedTask;
         }
 
+        private Task OnChannelUnreadUpdate(ChannelUnreadUpdateEventArgs e)
+        {
+            if (e.GuildId == Id)
+            {
+                InvokePropertyChanged(nameof(Unread));
+            }
+
+            return Task.CompletedTask;
+        }
+
         // TODO: update this cache when the user's roles change, and when the guild gets updated, and when a new channel gets created :D
         private void PopulateAccessibleChannels()
         {
-            _accessibleChannels.Clear();
+            _accessibleChannels = new Dictionary<ulong, ChannelViewModel>();
 
-            if ((_currentMember?.IsOwner ?? true))
+            if ((Guild.CurrentMember?.IsOwner ?? true))
             {
                 foreach (var (key, value) in Guild.Channels)
                 {
-                    _accessibleChannels[key] = new ChannelViewModel(value, true, this);
+                    _accessibleChannels[key] = new ChannelViewModel(value.Id, true, this);
                 }
             }
             else
             {
                 foreach (var (key, value) in Guild.Channels)
                 {
-                    if (!value.PermissionsFor(_currentMember).HasFlag(Permissions.AccessChannels)) 
+                    if (!value.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels))
                         continue;
 
-                    if (value.Parent != null && !value.Parent.PermissionsFor(_currentMember).HasFlag(Permissions.AccessChannels))
+                    if (value.Parent != null && !value.Parent.PermissionsFor(Guild.CurrentMember).HasFlag(Permissions.AccessChannels))
                         continue;
 
-                    _accessibleChannels[key] = new ChannelViewModel(value, true, this);
+                    _accessibleChannels[key] = new ChannelViewModel(value.Id, true, this);
                 }
             }
         }
 
-        protected virtual void OnReadStateUpdatedCore(ReadStateUpdatedEventArgs e) { }
+        protected virtual void OnReadStateUpdatedCore(ReadStateUpdateEventArgs e) { }
     }
 }

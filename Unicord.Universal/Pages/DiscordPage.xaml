@@ -17,7 +17,6 @@
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
-    SizeChanged="Self_SizeChanged"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:DiscordPageViewModel/>
@@ -78,12 +77,12 @@
             <TextBlock x:Name="CaptionTextBlock"
                        Grid.Column="1" 
                        VerticalAlignment="Center"
-                       Text="Unicord"
                        Margin="0,2,0,0"
                        Style="{ThemeResource CaptionTextBlockStyle}">
                 <TextBlock.RenderTransform>
                     <TranslateTransform x:Name="CaptionTransform" />
                 </TextBlock.RenderTransform>
+                <Run Text="Unicord"/>&#xA0;&#xA0;&#xA0;<Run x:Name="VersionText" FontSize="10" Foreground="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" Text="{Binding DisplayVersion}"/>
             </TextBlock>
         </Grid>
 
@@ -153,8 +152,8 @@
                                             <lib:PersonPicture Width="42" 
                                                                    Height="42"
                                                                    Margin="0,4"
-                                                                   DisplayName="{Binding Converter={StaticResource DMNameConverter}}"
-                                                                   ProfilePicture="{Binding Converter={StaticResource DMIconConverter}}" />
+                                                                   DisplayName="{Binding Name}"
+                                                                   ProfilePicture="{Binding IconUrl}" />
 
                                             <lib:InfoBadge VerticalAlignment="Top"
                                                                HorizontalAlignment="Right"
@@ -190,8 +189,7 @@
                                     x:Name="createServerItem"
                                     MinWidth="0"
                                     Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    Tapped="CreateServerItem_Tapped">
+                                    HorizontalContentAlignment="Stretch">
                                 <SymbolIcon
                                         Width="36"
                                         Height="36"
@@ -201,8 +199,7 @@
                                     x:Name="findServerIcon"
                                     MinWidth="0"
                                     Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    Tapped="FindServerIcon_Tapped">
+                                    HorizontalContentAlignment="Stretch">
                                 <SymbolIcon
                                         Width="36"
                                         Height="36"

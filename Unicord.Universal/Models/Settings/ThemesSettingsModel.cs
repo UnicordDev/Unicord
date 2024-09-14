@@ -20,21 +20,11 @@ namespace Unicord.Universal.Models
 
         public ThemesSettingsModel()
         {
-            AvailableThemes = new ObservableCollection<Theme>();
-            SelectedThemes = new ObservableCollection<Theme>();
-            AvailableThemes.CollectionChanged += OnAvailableThemesUpdated;
         }
 
-        private void OnAvailableThemesUpdated(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            App.LocalSettings.Save(AVAILABLE_THEME_NAMES, AvailableThemes.ToList().Select(t => t.NormalisedName));
-        }
 
         public bool IsLoading { get; internal set; }
-        public bool ShowThemesPlaceholder => !AvailableThemes.Any();
         public ElementTheme PreviewRequestedTheme { get; private set; }
-        public ObservableCollection<Theme> AvailableThemes { get; private set; }
-        public ObservableCollection<Theme> SelectedThemes { get; private set; }
 
         public int ColourScheme
         {

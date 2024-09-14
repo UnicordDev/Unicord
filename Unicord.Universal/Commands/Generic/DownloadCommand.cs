@@ -15,7 +15,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml.Input;
 using Windows.Web.Http;
 
-namespace Unicord.Universal.Commands
+namespace Unicord.Universal.Commands.Generic
 {
     public class ProgressInfo : ViewModelBase
     {
@@ -62,8 +62,8 @@ namespace Unicord.Universal.Commands
 
     public class DownloadCommand : ICommand
     {
-        private ProgressInfo _info;
-        private string _url;
+        private readonly ProgressInfo _info;
+        private readonly string _url;
         private bool _canExecute;
 
         public DownloadCommand(string url, ProgressInfo info)
@@ -86,17 +86,17 @@ namespace Unicord.Universal.Commands
             _canExecute = false;
             _info.GoToProgress();
 
-            var url = _url;
+            var url = new Uri(_url);
             var strings = ResourceLoader.GetForCurrentView("Controls");
 
             try
             {
-                var extension = Path.GetExtension(url);
+                var extension = Path.GetExtension(url.AbsolutePath);
                 var extensionString = Tools.GetItemTypeFromExtension(extension, strings.GetString("AttachmentExtensionPlaceholder"));
                 var picker = new FileSavePicker()
                 {
                     SuggestedStartLocation = PickerLocationId.Downloads,
-                    SuggestedFileName = Path.GetFileNameWithoutExtension(url),
+                    SuggestedFileName = Path.GetFileNameWithoutExtension(url.AbsolutePath),
                     DefaultFileExtension = extension
                 };
 
@@ -105,7 +105,7 @@ namespace Unicord.Universal.Commands
                 var file = await picker.PickSaveFileAsync();
                 if (file != null)
                 {
-                    await Tools.DownloadToFileAsync(new Uri(url), file, _info.GetProgress());
+                    await Tools.DownloadToFileAsync(url, file, _info.GetProgress());
                 }
             }
             catch (Exception ex)

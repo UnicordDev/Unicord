@@ -44,7 +44,7 @@ namespace Unicord.Universal.Controls
                 var model = DataContext as ChannelPageViewModel;
                 var type = file.ContentType;
                 var progress = new Progress<double?>(UpdateProgressBar);
-                var setting = App.RoamingSettings.Read(Constants.AUTO_TRANSCODE_MEDIA, MediaTranscodeOptions.WhenNeeded);
+                var setting = (MediaTranscodeOptions)App.RoamingSettings.Read(Constants.AUTO_TRANSCODE_MEDIA, (int)MediaTranscodeOptions.WhenNeeded);
                 var props = await file.GetBasicPropertiesAsync();
                 _cancellationToken = new CancellationTokenSource();
 

@@ -15,7 +15,7 @@ namespace Unicord.Universal.Extensions
             if (!(channel.Discord is DiscordClient client))
                 return false;
 
-            if (!client.UserGuildSettings.TryGetValue(channel.GuildId, out var settings))
+            if (!client.UserGuildSettings.TryGetValue(channel.GuildId ?? 0, out var settings))
                 return false;
 
             var channelOverride = settings.ChannelOverrides?.FirstOrDefault(o => o?.ChannelId == channel.Id);
@@ -56,13 +56,13 @@ namespace Unicord.Universal.Extensions
             var readState = channel.ReadState;
 
             // this shit should never happen but apparently it does sometimes, don't question it
-            if (readState.Id == 0)
+            if (readState == null || readState.Id == 0)
                 return false;
 
-            if (discord == null || discord.IsDisposed)
+            if (discord == null)
                 return false;
 
-            if (channel.Type == ChannelType.Voice || channel.Type == ChannelType.Category || channel.Type == ChannelType.Store)
+            if (channel.Type == ChannelType.Voice || channel.Type == ChannelType.Category)
                 return false;
 
             if (channel.Type == ChannelType.Private || channel.Type == ChannelType.Group)

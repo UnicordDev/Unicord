@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.0.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.21.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -17,7 +17,7 @@
     <Logo>Assets\Store\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22000.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.15063.0" MaxVersionTested="10.0.22000.0" />
   </Dependencies>
   <Resources>
     <Resource Language="x-generate"/>
@@ -33,7 +33,7 @@
             <uap:ShowOn Tile="square310x310Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\Store\SplashScreen.png" BackgroundColor="transparent" />
+        <uap:SplashScreen Image="Assets\Store\SplashScreen.png" BackgroundColor="transparent" uap5:Optional="true" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="portrait" />
           <uap:Rotation Preference="landscape"/>
@@ -96,18 +96,18 @@
           </uap:FileTypeAssociation>
         </uap:Extension>
         <desktop:Extension Category="windows.fullTrustProcess" Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe">
-          <desktop:FullTrustProcess/>
+          <desktop:FullTrustProcess />
         </desktop:Extension>
         <uap:Extension Category="windows.appService">
           <uap:AppService Name="com.wankerr.Unicord.Notifications" />
         </uap:Extension>
         <uap5:Extension Category="windows.startupTask"
-												Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe"
-												EntryPoint="Windows.FullTrustApplication">
+						Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe"
+						EntryPoint="Windows.FullTrustApplication">
           <uap5:StartupTask
             TaskId="UnicordBackgroundTask"
             Enabled="false"
-            DisplayName="Unicord Background Task" />
+            DisplayName="Unicord Notifications Task" />
         </uap5:Extension>
       </Extensions>
       <uap:ApplicationContentUriRules>

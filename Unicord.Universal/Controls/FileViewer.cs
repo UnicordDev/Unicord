@@ -53,7 +53,7 @@ namespace Unicord.Universal.Controls
             {
                 if (e.NewValue is StorageFile f && GetTemplateChild("image") is Image image)
                 {
-                    if (!(image.Source is BitmapImage source))
+                    if (image.Source is not BitmapImage source)
                     {
                         source = new BitmapImage();
                         image.Source = source;

@@ -18,7 +18,7 @@
     <Page.Resources>
         <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector"
                                                 DMChannelTemplate="{StaticResource DMChannelListTemplate}"
-                                                GroupChannelTemplate="{StaticResource DMChannelListTemplate}" />
+                                                GroupChannelTemplate="{StaticResource GroupChannelListTemplate}" />
     </Page.Resources>
 
     <Page.DataContext>
@@ -53,10 +53,10 @@
             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
             SelectionChanged="dmsList_SelectionChanged"
             SingleSelectionFollowsFocus="False"
-            ShowsScrollingPlaceholders="False">
+            ShowsScrollingPlaceholders="True">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepScrollOffset" />
+                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepItemsInView" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>

@@ -90,7 +90,7 @@ namespace Unicord.Universal.Utilities
 
         public static async Task<bool> TryTranscodeMediaAsync(IStorageFile input, IStorageFile output, MediaEncodingProfile profile, IProgress<double?> progress, CancellationToken token = default)
         {
-            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = App.RoamingSettings.Read(VIDEO_PROCESSING, MediaVideoProcessingAlgorithm.Default) };
+            var transcoder = new MediaTranscoder() { VideoProcessingAlgorithm = (MediaVideoProcessingAlgorithm)App.RoamingSettings.Read(VIDEO_PROCESSING, (int)MediaVideoProcessingAlgorithm.Default) };
             var prep = await transcoder.PrepareFileTranscodeAsync(input, output, profile);
 
             if (prep.CanTranscode)

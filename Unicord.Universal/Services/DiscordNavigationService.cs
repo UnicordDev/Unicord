@@ -41,17 +41,67 @@ namespace Unicord.Universal.Services
             base.Initialise();
 
             _mainPage = Window.Current.Content.FindChild<MainPage>();
-            _discordPage = Window.Current.Content.FindChild<DiscordPage>();
-            _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
+            if (!(_mainPage.Arguments?.FullFrame ?? false))
+            {
+                _discordPage = Window.Current.Content.FindChild<DiscordPage>();
+                _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
 
-            _navigationStack = new Stack<NavigationEvent>();
-            _navigation = SystemNavigationManager.GetForCurrentView();
-            _navigation.BackRequested += OnBackRequested;
+                _navigationStack = new Stack<NavigationEvent>();
+                _navigation = SystemNavigationManager.GetForCurrentView();
+                _navigation.BackRequested += OnBackRequested;
+            }
         }
 
         // TODO: this is kinda bad and should really be more in DiscordPageModel
         internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
         {
+            // TODO: handle this navigation in the main window
+            var window = WindowingService.Current.GetHandle(_mainPage);
+            if (_discordPage == null)
+            {
+                if (_mainPage.Arguments?.FullFrame != true)
+                    return;
+
+                if (channel.Type == ChannelType.Voice)
+                    throw new InvalidOperationException();
+
+                Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
+
+                if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
+                    return;
+
+                if (channel.Guild != null)
+                    await channel.Guild.SyncAsync();
+
+                if (channel.IsNSFW)
+                {
+                    var loader = ResourceLoader.GetForViewIndependentUse();
+                    if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, loader.GetString("VerifyNSFWDisplayReason")))
+                    {
+                        if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
+                            _mainPage.RootFrame.Navigate(typeof(AgeGatePage), channel);
+                        else
+                            _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
+                    }
+                }
+                else
+                {
+                    if (channel is DiscordForumChannel forum)
+                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), channel);
+                    else
+                        _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
+                }
+
+                _mainPage.HideUserOverlay();
+                _mainPage.HideCustomOverlay();
+                _mainPage.HideConnectingOverlay();
+
+                return;
+            }
+
+            _mainPage.HideUserOverlay();
+            _mainPage.HideCustomOverlay();
+
             var page = _discordPage.MainFrame.Content as ChannelPage;
             if (channel == null)
             {
@@ -93,12 +143,12 @@ namespace Unicord.Universal.Services
                 _discordPageModel.SelectedDM = null;
                 _discordPageModel.IsFriendsSelected = false;
 
-                if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
+                if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
                     return;
 
                 if (channel is DiscordDmChannel dm)
                 {
-                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm);
+                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm.Id);
                     _discordPageModel.IsFriendsSelected = true;
                     _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
@@ -109,6 +159,16 @@ namespace Unicord.Universal.Services
 
                     if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
+
+                    if (_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
+                    {
+                        g.SetSelectedChannel(channel);
+                    }
+
+                    if (!channel.Guild.IsSynced)
+                    {
+                        await channel.Guild.SyncAsync();
+                    }
                 }
 
                 if (channel.IsNSFW)
@@ -118,17 +178,24 @@ namespace Unicord.Universal.Services
                     {
                         if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
                         {
-                            _discordPage.MainFrame.Navigate(typeof(AgeGatePage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                            _discordPage.MainFrame.Navigate(typeof(AgeGatePage), channel);
                         }
                         else
                         {
-                            _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                            _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel);
                         }
                     }
                 }
                 else
                 {
-                    _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel/*, info ?? new SlideNavigationTransitionInfo()*/);
+                    if (channel is DiscordForumChannel forum)
+                    {
+                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), channel);
+                    }
+                    else
+                    {
+                        _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel);
+                    }
                 }
 
                 _discordPageModel.Navigating = false;

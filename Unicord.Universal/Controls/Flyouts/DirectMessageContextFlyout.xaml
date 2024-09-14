@@ -7,27 +7,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     
-    <MenuFlyoutItem IsEnabled="False" Text="{Binding Converter={StaticResource DMNameConverter}}">
+    <MenuFlyoutItem IsEnabled="False" Text="{Binding Name}">
         <MenuFlyoutItem.Icon>
-            <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding Converter={StaticResource DMIconConverter}}"/>
+            <BitmapIcon ShowAsMonochrome="False" UriSource="{Binding IconUrl}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{StaticResource AcknowledgeCommand}" CommandParameter="{Binding}">
+    <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{Binding AcknowledgeCommand}">
         <MenuFlyoutItem.Icon>
             <FontIcon Glyph="&#xE930;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
-    <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Icon="Mute" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/Unmute" Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Icon="Volume" Command="{StaticResource MuteCommand}" CommandParameter="{Binding}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Mute" Visibility="{Binding Muted, Converter={StaticResource InverseBoolVisibilityConverter}}" Icon="Mute" Command="{Binding ToggleMuteCommand}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/Unmute" Visibility="{Binding Muted, Converter={StaticResource BoolVisibilityConverter}}" Icon="Volume" Command="{Binding ToggleMuteCommand}"/>
 
     <MenuFlyoutSeparator />
 
-    <MenuFlyoutItem x:Uid="/Flyouts/PinToStart" Icon="Pin" Command="{StaticResource PinChannelCommand}" CommandParameter="{Binding}"/>
-    <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow" Command="{StaticResource OpenNewWindowCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{StaticResource CopyUrlCommand}" CommandParameter="{Binding}" />
-    <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{StaticResource CopyIdCommand}" CommandParameter="{Binding}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/PinToStart" Icon="Pin" Command="{Binding PinToStartCommand}"/>
+    <MenuFlyoutItem x:Uid="/Flyouts/NewWindow" Icon="NewWindow" Command="{Binding OpenInNewWindowCommand}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyLink" Icon="Link" Command="{Binding CopyUrlCommand}" />
+    <MenuFlyoutItem x:Uid="/Flyouts/CopyID" Icon="Copy" Command="{Binding CopyIdCommand}" />
 
 </MenuFlyout>

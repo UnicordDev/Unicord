@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using Unicord.Universal.Behaviours;
+using Unicord.Universal.Models.Relationships;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -20,19 +22,16 @@ namespace Unicord.Universal.Pages.Subpages
             ListViewBehaviour.SetMinItemWidth(PendingView, 300);
             ListViewBehaviour.SetMinItemWidth(BlockedView, 300);
 
-            if (ReorderGridAnimation.IsSupported)
-            {
-                ReorderGridAnimation.SetDuration(AllView, 250);
-                ReorderGridAnimation.SetDuration(OnlineView, 250);
-                ReorderGridAnimation.SetDuration(PendingView, 250);
-                ReorderGridAnimation.SetDuration(BlockedView, 250);
-            }
+            ItemsReorderAnimation.SetDuration(AllView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(OnlineView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(PendingView, TimeSpan.FromMilliseconds(250));
+            ItemsReorderAnimation.SetDuration(BlockedView, TimeSpan.FromMilliseconds(250));
 #endif
         }
 
         private void OnItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is DiscordRelationship rel)
+            if (e.ClickedItem is RelationshipViewModel rel)
             {
                 this.FindParent<MainPage>().ShowUserOverlay(rel.User, true);
             }

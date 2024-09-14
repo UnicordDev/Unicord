@@ -13,5 +13,7 @@ namespace Unicord.Universal.Resources.Controls
         {
             InitializeComponent();
         }
+
+        public Uri ToUri(object obj) => (Uri)obj;
     }
 }

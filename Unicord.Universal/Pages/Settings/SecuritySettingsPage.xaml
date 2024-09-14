@@ -2,12 +2,12 @@
     x:Class="Unicord.Universal.Pages.Settings.SecuritySettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Unicord.Universal.Models"
-    xmlns:settings="using:SettingsControl"
+    xmlns:settings="using:SettingsControl" 
+    xmlns:controls="using:Unicord.Universal.Controls"
     x:DefaultBindMode="TwoWay"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
@@ -32,7 +32,8 @@
             FontSize="12"
             Background="Transparent"
             Foreground="{StaticResource ErrorTextForegroundBrush}"
-            TextWrapping="Wrap"/>
+            TextWrapping="Wrap"
+            LinkClicked="unavailableText_LinkClicked"/>
 
         <StackPanel Margin="4,16">
             <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"

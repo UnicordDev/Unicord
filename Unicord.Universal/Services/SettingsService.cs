@@ -14,7 +14,8 @@ namespace Unicord.Universal.Services
     internal enum SettingsPageType
     {
         Accounts,
-        Messaging,
+        Messaging, 
+        Notifications,
         Themes,
         Media,
         Voice,

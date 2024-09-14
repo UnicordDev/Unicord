@@ -13,7 +13,7 @@ namespace Unicord.Universal.Models.Channels
         private readonly GuildChannelListViewModel _guildChannelList;
 
         public ChannelListViewModel(DiscordChannel channel, GuildChannelListViewModel guildChannelList = null) 
-            : base(channel)
+            : base(channel.Id)
         {
             _guildChannelList = guildChannelList;
         }

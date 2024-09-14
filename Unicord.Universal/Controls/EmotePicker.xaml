@@ -9,7 +9,7 @@
     xmlns:b="using:Unicord.Universal.Behaviours"
     xmlns:entities="using:DSharpPlus.Entities"
     xmlns:misc="using:Unicord.Universal.Misc" 
-    xmlns:emoji="using:Unicord.Universal.Controls.Emoji"
+    xmlns:emoji="using:Unicord.Universal.Controls.Emoji" xmlns:emoji1="using:Unicord.Universal.Models.Emoji"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -46,8 +46,6 @@
     <SemanticZoom>
         <SemanticZoom.ZoomedInView>
             <GridView x:Name="EmojiView" 
-                      b:ListViewBehaviour.FillBeforeWrap="True"
-                      b:ListViewBehaviour.MinItemWidth="48"
                       SelectionMode="None"
                       IsItemClickEnabled="True"
                       ShowsScrollingPlaceholders="True"
@@ -73,8 +71,8 @@
                     </Grid>
                 </GridView.Header>
                 <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="entities:DiscordEmoji">
-                        <emoji:EmojiControl Emoji="{x:Bind}" IsEnabled="{x:Bind IsAvailable}" Opacity="{Binding IsAvailable, Converter={StaticResource BoolOpacityConverter}}"/>
+                    <DataTemplate x:DataType="emoji1:EmojiViewModel">
+                        <emoji:EmojiControl Emoji="{x:Bind}" IsEnabled="{x:Bind IsAvailable}" Opacity="{x:Bind Opacity}"/>
                     </DataTemplate>
                 </GridView.ItemTemplate>
                 <GridView.GroupStyle>

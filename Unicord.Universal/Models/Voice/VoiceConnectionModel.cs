@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.VoiceNext.Entities;
+using DSharpPlus.Net.Abstractions;
 using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json;
 using Unicord.Universal.Voice;
 using Unicord.Universal.Voice.Background;
+using Unicord.Universal.Voice.Transport;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
@@ -286,20 +288,17 @@ namespace Unicord.Universal.Models.Voice
         {
             try
             {
-                var vsd = new VoiceDispatch
+                var payload = new VoiceStateUpdatePayload
                 {
-                    OpCode = 4,
-                    Payload = new VoiceStateUpdatePayload
-                    {
-                        GuildId = Channel.Guild.Id,
-                        ChannelId = channel_id,
-                        Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
-                        Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
-                    }
+                    GuildId = Channel.Guild.Id,
+                    ChannelId = channel_id,
+                    Deafened = channel_id != null ? (bool?)state.HasFlag(VoiceState.Deafened) : null,
+                    Muted = channel_id != null ? (bool?)(state != VoiceState.None) : null
                 };
 
-                var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-                await App.Discord.SendSocketMessageAsync(vsj);
+#pragma warning disable CS0618 // Type or member is obsolete
+                await App.Discord.SendPayloadAsync(GatewayOpCode.VoiceStateUpdate, payload);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
             catch (Exception ex)
             {
@@ -348,23 +347,23 @@ namespace Unicord.Universal.Models.Voice
             _appServiceConnected = false;
         }
 
-        private Task OnVoiceStateUpdated(VoiceStateUpdateEventArgs e)
+        private Task OnVoiceStateUpdated(DiscordClient client, VoiceStateUpdateEventArgs e)
         {
             if (e.Channel == Channel && e.User == App.Discord.CurrentUser)
             {
                 _voiceStateUpdateCompletion.SetResult(e);
-                App.Discord.VoiceStateUpdated -= OnVoiceStateUpdated;
+                client.VoiceStateUpdated -= OnVoiceStateUpdated;
             }
 
             return Task.CompletedTask;
         }
 
-        private Task OnVoiceServerUpdated(VoiceServerUpdateEventArgs e)
+        private Task OnVoiceServerUpdated(DiscordClient client, VoiceServerUpdateEventArgs e)
         {
             if (e.Guild == Channel.Guild)
             {
                 _voiceServerUpdateCompletion.SetResult(e);
-                App.Discord.VoiceServerUpdated -= OnVoiceServerUpdated;
+                client.VoiceServerUpdated -= OnVoiceServerUpdated;
             }
 
             return Task.CompletedTask;

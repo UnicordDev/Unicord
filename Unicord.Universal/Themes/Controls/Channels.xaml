@@ -39,22 +39,64 @@
         </Setter>
     </Style>
 
+    <Style x:Key="GroupChannelListStyle" TargetType="local:ChannelListControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ChannelListControl">
+                    <Grid DataContext="{TemplateBinding Channel}"
+                          ContextFlyout="{StaticResource ChannelContextFlyout}"
+                          VerticalAlignment="Stretch" 
+                          Background="Transparent" 
+                          Padding="0,8">
+                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
+                            <ToolTipService.ToolTip>
+                                <ToolTip IsEnabled="{Binding HasTopic}">
+                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" MinWidth="16"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <lib:PersonPicture Margin="2,0,0,0" 
+                                               Width="32" 
+                                               Height="32" 
+                                               DisplayName="{Binding Name}"
+                                               ProfilePicture="{Binding IconUrl}"/>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
+                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+
+                            <lib:InfoBadge x:Name="unreadIndicator" 
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
+                                   Grid.Column="2" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   MinWidth="8"
+                                   MinHeight="8"
+                                   Margin="0"
+                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="DirectMessageChannelListStyle" TargetType="local:ChannelListControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
                     <Grid DataContext="{TemplateBinding Channel}"
-                      ContextFlyout="{StaticResource ChannelContextFlyout}"
-                      VerticalAlignment="Stretch" 
-                      Background="Transparent" 
-                      Padding="0,8">
-                        <Grid Margin="0,0,8,0" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
-                            <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding Topic, Converter={StaticResource BoolConverter}}">
-                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
-                                </ToolTip>
-                            </ToolTipService.ToolTip>
-
+                          ContextFlyout="{StaticResource ChannelContextFlyout}"
+                          VerticalAlignment="Stretch" 
+                          Background="Transparent" 
+                          Padding="0,8">
+                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -65,7 +107,7 @@
                                  Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
                                  Width="32" 
                                  Height="32"
-                                 Source="{Binding Converter={StaticResource DMIconConverter}}" 
+                                 Source="{Binding IconUrl}" 
                                  Presence="{Binding Recipient.Presence}" />
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
@@ -74,7 +116,7 @@
                             </StackPanel>
 
                             <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding NullableMentionCount, Mode=OneWay, Converter={StaticResource HideOnNullConverter}}"
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
                                    Grid.Column="2" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"
@@ -82,6 +124,53 @@
                                    MinHeight="8"
                                    Margin="0"
                                    Value="{Binding NullableMentionCount, Mode=OneWay}" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ThreadChannelListStyle" TargetType="local:ChannelListControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ChannelListControl">
+                    <Grid DataContext="{TemplateBinding Channel}"
+                        ContextFlyout="{StaticResource ChannelContextFlyout}"
+                        VerticalAlignment="Stretch" 
+                        Background="Transparent" 
+                        Padding="0,4">
+                        <Grid Margin="4,0,16,0" Opacity="{Binding MutedOpacity}">
+                            <ToolTipService.ToolTip>
+                                <ToolTip IsEnabled="{Binding HasTopic}">
+                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" MinWidth="16"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="16" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" Margin="16,0,4,0" FontFamily="{StaticResource FluentSystemIcons}" Text="&#xF176;">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="180"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+
+                            <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
+
+                            <lib:InfoBadge x:Name="unreadIndicator" 
+                                 Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
+                                 Grid.Column="2" 
+                                 HorizontalAlignment="Center" 
+                                 VerticalAlignment="Center"
+                                 MinWidth="8"
+                                 MinHeight="8"
+                                 Margin="0"
+                                 Value="{Binding NullableMentionCount, Mode=OneWay}" />
                         </Grid>
                     </Grid>
                 </ControlTemplate>
@@ -98,9 +187,9 @@
                           VerticalAlignment="Stretch" 
                           Background="Transparent" 
                           Padding="0,8">
-                        <Grid Margin="0,0,16,0" Opacity="{Binding Muted, Converter={StaticResource MutedConverter}}">
+                        <Grid Margin="0,0,16,0" Opacity="{Binding MutedOpacity}">
                             <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding Topic, Converter={StaticResource BoolConverter}}">
+                                <ToolTip IsEnabled="{Binding HasTopic}">
                                     <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
                                 </ToolTip>
                             </ToolTipService.ToolTip>
@@ -117,14 +206,14 @@
                             <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
 
                             <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding Unread, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
+                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
                                    Grid.Column="2" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"
                                    MinWidth="8"
                                    MinHeight="8"
                                    Margin="0"
-                                   Value="{Binding MentionCount, Mode=OneWay}" />
+                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
                         </Grid>
                     </Grid>
                 </ControlTemplate>

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppDisplayDescription" xml:space="preserve">
-    <value>高速で効率的、そしてネイティブアプリのような使い心地を提供する無料でオープンソースな、Windows 10&Windows 10 Mobileで動くDiscordクライアント</value>
+    <value>高速で効率的、そしてネイティブアプリのような使い心地を提供する無料でオープンソースな、Windows 10&amp;Windows 10 Mobileで動くDiscordクライアント</value>
   </data>
   <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
     <value>Universal Windows Platform上に構築されたDiscordクライアント</value>

@@ -11,17 +11,17 @@ namespace Unicord.Universal.Converters
         public DataTemplate TextChannelTemplate { get; set; }
         public DataTemplate VoiceChannelTemplate { get; set; }
         public DataTemplate CategoryTemplate { get; set; }
+        public DataTemplate ThreadTemplate { get; set; }
         public DataTemplate DMChannelTemplate { get; set; }
         public DataTemplate GroupChannelTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is ChannelListViewModel channel)
+            if (item is ChannelViewModel channel)
             {
                 switch (channel.ChannelType)
                 {
                     case ChannelType.Text:
-                    case ChannelType.Store:
                     case ChannelType.Announcement:
                     case ChannelType.Unknown:
                         return TextChannelTemplate;
@@ -33,6 +33,10 @@ namespace Unicord.Universal.Converters
                         return GroupChannelTemplate ?? DMChannelTemplate;
                     case ChannelType.Category:
                         return CategoryTemplate;
+                    case ChannelType.AnnouncementThread:
+                    case ChannelType.PublicThread:
+                    case ChannelType.PrivateThread:
+                        return ThreadTemplate;
                 }
             }
 

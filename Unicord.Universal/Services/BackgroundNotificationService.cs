@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Unicord.Universal.Shared;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.AppService;
@@ -94,21 +95,24 @@ namespace Unicord.Universal.Services
             await _tileManager.InitialiseAsync();
             await _secondaryTileManager.InitialiseAsync();
 
-            App.Discord.MessageAcknowledged += OnMessageAcknowledged;
-            App.Discord.MessageCreated += OnMessageCreated;
+            //App.Discord.MessageAcknowledged += OnMessageAcknowledged;
+            //App.Discord.MessageCreated += OnMessageCreated;
+
+            WeakReferenceMessenger.Default.Register<BackgroundNotificationService, MessageAcknowledgeEventArgs>(this, (r, e) => r.OnMessageAcknowledged(e.Event));
+            WeakReferenceMessenger.Default.Register<BackgroundNotificationService, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e.Event));
         }
 
         private async Task OnMessageCreated(MessageCreateEventArgs e)
         {
             try
             {
-                if (NotificationUtils.WillShowToast(e.Message))
+                if (NotificationUtils.WillShowToast(App.Discord, e.Message))
                 {
                     _badgeManager.Update();
                     await _tileManager.HandleMessageAsync(e.Message);
                 }
 
-                await _secondaryTileManager.HandleMessageAsync(e.Message);
+                await _secondaryTileManager.HandleMessageAsync(App.Discord, e.Message);
             }
             catch (Exception ex)
             {

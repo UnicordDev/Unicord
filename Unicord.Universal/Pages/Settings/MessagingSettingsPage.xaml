@@ -74,6 +74,7 @@
             <Grid>
                 <Button Content="Get from the Microsoft Store"
                         Command="{Binding OpenWebPStoreLinkCommand}"
+                        Style="{ThemeResource AccentButtonStyle}"
                         Visibility="{Binding CanUseWebP, Converter={StaticResource InverseBoolVisibilityConverter}}"/>
                 <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" 
                               IsOn="{Binding EnableWebP, Mode=TwoWay}"

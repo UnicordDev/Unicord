@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Image HorizontalAlignment="Left"
@@ -24,8 +25,13 @@
                    TextWrapping="WrapWholeWords"                    
                    Style="{ThemeResource TitleTextBlockStyle}"
                    FontFamily="Segoe UI Variable Display" />
+        <TextBlock Text="{Binding DisplayVersion}"
+                   Grid.Row="3" 
+                   TextWrapping="WrapWholeWords"                    
+                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                   FontFamily="Segoe UI Variable Display"/>
 
-        <StackPanel Grid.Row="3" Margin="0,8,0,0">
+        <StackPanel Grid.Row="4" Margin="0,8,0,0">
             <TextBlock x:Uid="/AboutSettingsPage/AcknowledgementsText" Grid.Row="1" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,5" />
             <RichTextBlock>
                 <Paragraph>

@@ -12,11 +12,12 @@
     xmlns:dialogs="using:Unicord.Universal.Dialogs"
     xmlns:controls1="using:Unicord.Universal.Controls"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media" 
+    xmlns:media1="using:Microsoft.Toolkit.Uwp.UI.Media"
     mc:Ignorable="d" 
     Loaded="Page_Loaded" 
     Unloaded="Page_Unloaded" 
-    NavigationCacheMode="Required"
-    lib:BackdropMaterial.ApplyToRootOrPageBackground="True">
+    NavigationCacheMode="Required">
     <Page.Resources>
         <CircleEase x:Key="CircleEase" EasingMode="EaseInOut"/>
 
@@ -38,7 +39,7 @@
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
                              EasingFunction="{StaticResource CircleEase}"/>
-            
+
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
@@ -84,7 +85,7 @@
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
-            
+
             <DoubleAnimation To="1.15" 
                              Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
@@ -96,7 +97,7 @@
                              Duration="0:0:0.15"
                              EasingFunction="{StaticResource EaseExit}"/>
         </Storyboard>
-        
+
         <Storyboard x:Name="showUserOverlay" x:Key="showUserOverlay">
 
             <DoubleAnimation From="0" To="1"
@@ -194,11 +195,11 @@
             <Grid.RenderTransform>
                 <ScaleTransform x:Name="MainScale" ScaleX="1" ScaleY="1"/>
             </Grid.RenderTransform>
-            
+
             <Grid x:Name="mainContent">
                 <Frame x:Name="rootFrame" />
                 <Grid x:Name="overlayGrid"/>
-            </Grid>            
+            </Grid>
 
             <Grid x:Name="userInfoPopup" Visibility="Collapsed" Opacity="0">
                 <Canvas Tapped="userInfoPopup_Tapped" Background="{ThemeResource SmokeFillColorDefaultBrush}"/>
@@ -213,8 +214,10 @@
 
             <Grid x:Name="CustomOverlayGrid"
                   Opacity="0"
-                  Visibility="Collapsed"
-                  Background="{ThemeResource SmokeFillColorDefaultBrush}">
+                  Visibility="Collapsed">
+                <Grid.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.66"/>
+                </Grid.Background>
                 <Grid x:Name="CustomContainer"
                       RenderTransformOrigin="0.5,0.5"
                       CornerRadius="8">
@@ -245,14 +248,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
+
                 <Image x:Name="ExtendedSplashImage"
                        Grid.RowSpan="3"
                        Source="{ThemeResource DiscordSplashScreen}"
                        VerticalAlignment="Center"
                        Stretch="Uniform"
                        MaxWidth="620"/>
-                
+
                 <lib:ProgressRing x:Name="ConnectingProgress" 
                                   Grid.Row="2"
                                   VerticalAlignment="Top"
@@ -270,6 +273,6 @@
             </Grid>
         </Grid>
 
-        <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>        
+        <Grid x:Name="TitleBar" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,0,0,0" Background="Transparent"/>
     </Grid>
 </Page>

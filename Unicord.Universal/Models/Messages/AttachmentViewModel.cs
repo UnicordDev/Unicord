@@ -1,19 +1,15 @@
-﻿using DSharpPlus.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Input;
-using Unicord.Universal.Commands;
+using DSharpPlus.Entities;
+using Unicord.Universal.Commands.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models.Messages
@@ -33,20 +29,19 @@ namespace Unicord.Universal.Models.Messages
         private static readonly HashSet<string> _mediaExtensions =
               new HashSet<string> { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg" };
 
-        private SynchronizationContext _syncContext;
         private DiscordAttachment _attachment;
         private AttachmentType _type;
         private Size? _naturalSize;
         private object _source;
         private bool _sourceInvalidated;
+        private string _posterSource = "";
 
         private MediaSource _mediaSource;
         private MediaPlaybackItem _mediaPlaybackItem;
 
-        public AttachmentViewModel(DiscordAttachment attachment)
-            : base(null)
+        public AttachmentViewModel(DiscordAttachment attachment, ViewModelBase parent)
+            : base(parent)
         {
-            _syncContext = SynchronizationContext.Current;
             _attachment = attachment;
             _type = GetAttachmentType(attachment);
             _sourceInvalidated = false;
@@ -56,6 +51,16 @@ namespace Unicord.Universal.Models.Messages
 
             ShareProgress = new ProgressInfo();
             ShareCommand = new ShareCommand(attachment.Url, attachment.FileName, ShareProgress);
+
+            if (_attachment.Width != 0)
+            {
+                var thumbUrl = new UriBuilder(_attachment.ProxyUrl);
+                var query = HttpUtility.ParseQueryString(thumbUrl.Query);
+                query["format"] = Tools.ShouldUseWebP ? "webp" : "jpeg";
+                thumbUrl.Query = query.ToString();
+
+                _posterSource = thumbUrl.Uri.ToString();
+            }
         }
 
         public string FileName =>
@@ -69,14 +74,14 @@ namespace Unicord.Universal.Models.Messages
         public bool IsSpoiler =>
             _attachment.FileName.StartsWith("SPOILER_");
         public double NaturalWidth =>
-            _attachment.Width != 0 ? _attachment.Width : _naturalSize?.Width ?? double.NaN;
+            _attachment.Width != null ? _attachment.Width.Value : _naturalSize?.Width ?? double.NaN;
         public double NaturalHeight =>
-            _attachment.Height != 0 ? _attachment.Height : _naturalSize?.Height ?? double.NaN;
+            _attachment.Height != null ? _attachment.Height.Value : _naturalSize?.Height ?? double.NaN;
         public AttachmentType Type { get => _type; private set => OnPropertySet(ref _type, value); }
+
         public object Source =>
             GetOrCreateSource();
-        public string PosterSource =>
-             _attachment.Width != 0 ? _attachment.ProxyUrl + "?format=jpeg" : null;
+        public string PosterSource { get => _posterSource; private set => OnPropertySet(ref _posterSource, value); }
 
         public bool IsVideo =>
             Type == AttachmentType.Video;
@@ -140,7 +145,7 @@ namespace Unicord.Universal.Models.Messages
 
                 _naturalSize = new Size(props.Width, props.Height);
                 _type = AttachmentType.Video;
-                _syncContext.Post((_) =>
+                syncContext.Post((_) =>
                 {
                     InvokePropertyChanged(nameof(NaturalWidth));
                     InvokePropertyChanged(nameof(NaturalHeight));
@@ -160,7 +165,7 @@ namespace Unicord.Universal.Models.Messages
         {
             // we have a bunch of heuristics available to work out the type of attachment we're dealing with
             // this code only uses a couple
-            var mimeType = attachment.ContentType?.ToLowerInvariant(); // this isn't always available on old messages
+            var mimeType = attachment.MediaType?.ToLowerInvariant(); // this isn't always available on old messages
             if (!string.IsNullOrWhiteSpace(mimeType))
             {
                 // these are easy lmao

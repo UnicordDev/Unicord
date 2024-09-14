@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands.Messages;
+using Unicord.Universal.Models.Emoji;
 
 namespace Unicord.Universal.Models.Messages
 {
@@ -20,9 +21,15 @@ namespace Unicord.Universal.Models.Messages
             _reaction = reaction;
             ReactCommand = reactCommand;
         }
+        public void Update(DiscordReaction reaction)
+        {
+            _reaction = reaction;
+            InvokePropertyChanged(nameof(Count));
+            InvokePropertyChanged(nameof(IsMe));
+        }
 
-        public DiscordEmoji Emoji => 
-            _reaction.Emoji;
+        public EmojiViewModel Emoji => 
+            new EmojiViewModel(_reaction.Emoji);
         public int Count =>
             _reaction.Count;
         public bool IsMe =>
@@ -32,7 +39,7 @@ namespace Unicord.Universal.Models.Messages
 
         public bool Equals(DiscordReaction other)
         {
-            return _reaction == other;
+            return _reaction.Emoji == other.Emoji;
         }
     }
 }

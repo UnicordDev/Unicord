@@ -11,10 +11,6 @@
     mc:Ignorable="d" x:DefaultBindMode="TwoWay"
     d:DesignHeight="300"
     d:DesignWidth="220">
-    <UserControl.Resources>
-        <converters:VoicePingGlyphConverter x:Name="VoicePingGlyphConverter"/>
-        <converters:VoicePingConverter x:Name="VoicePingConverter"/>
-    </UserControl.Resources>
 
     <Grid Margin="0,4,0,0">
         <Grid.RowDefinitions>
@@ -27,7 +23,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingConverter}, Mode=OneWay}" FontFamily="{StaticResource SymbolThemeFontFamily}" Margin="16,8,8,8" VerticalAlignment="Center" FontSize="16" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}, Mode=OneWay}"/>
+            <!--<TextBlock ToolTipService.ToolTip="{x:Bind ConnectionModel.UdpPing, Mode=OneWay}" FontFamily="{StaticResource SymbolThemeFontFamily}" Margin="16,8,8,8" VerticalAlignment="Center" FontSize="16" Text="{x:Bind ConnectionModel.UdpPing, Converter={StaticResource VoicePingGlyphConverter}, Mode=OneWay}"/>-->
             <TextBlock Margin="0,8,8,8" Grid.Column="1" Text="{x:Bind ConnectionModel.ConnectionStatus, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="1">

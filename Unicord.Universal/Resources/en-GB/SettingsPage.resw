@@ -129,6 +129,9 @@
   <data name="MessagingItem.Content" xml:space="preserve">
     <value>Text and Images</value>
   </data>
+  <data name="NotificationsItem.Content" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
   <data name="SecurityItem.Content" xml:space="preserve">
     <value>Security and Privacy</value>
   </data>
