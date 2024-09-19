@@ -106,7 +106,7 @@ namespace Unicord.Universal.Models
             get
             {
                 var gitSha = "";
-                var versionedAssembly = typeof(VersionHelper).Assembly;
+                var versionedAssembly = typeof(DiscordPageViewModel).Assembly;
                 var attribute = versionedAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
                 var idx = -1;
                 if (attribute != null && (idx = attribute.InformationalVersion.IndexOf('+')) != -1)

@@ -25,7 +25,7 @@ namespace Unicord.Universal.Models
             get
             {
                 var gitSha = "";
-                var versionedAssembly = typeof(VersionHelper).Assembly;
+                var versionedAssembly = typeof(RootSettingsModel).Assembly;
                 var attribute = versionedAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
                 var idx = -1;
                 if (attribute != null && (idx = attribute.InformationalVersion.IndexOf('+')) != -1)
@@ -33,7 +33,7 @@ namespace Unicord.Universal.Models
                     gitSha = "-" + attribute.InformationalVersion.Substring(idx + 1, 7);
                 }
 
-                return $"v{Package.Current.Id.Version.ToFormattedString()}{gitSha}";
+                return $"v{Package.Current.Id.Version.ToFormattedString(3)}{gitSha}";
             }
         }
     }

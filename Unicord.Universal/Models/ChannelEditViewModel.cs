@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Unicord.Universal.Models
 {
-    public class ChannelEditViewModel : NotifyPropertyChangeImpl
+    public class ChannelEditViewModel : ViewModelBase
     {
         public ChannelEditViewModel(DiscordChannel channel)
         {

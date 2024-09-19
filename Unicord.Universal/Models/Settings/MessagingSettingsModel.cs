@@ -36,7 +36,7 @@ namespace Unicord.Universal.Models
         public DateTime Timestamp { get; set; }
     }
 
-    class MessagingSettingsModel : NotifyPropertyChangeImpl
+    class MessagingSettingsModel : ViewModelBase
     {
         private bool _canUseWebp = false;
 

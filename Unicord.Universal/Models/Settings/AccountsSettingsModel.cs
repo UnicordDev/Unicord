@@ -12,7 +12,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    public class AccountsSettingsModel : NotifyPropertyChangeImpl
+    public class AccountsSettingsModel : ViewModelBase
     {
         public AccountsSettingsModel()
         {

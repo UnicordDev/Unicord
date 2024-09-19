@@ -26,7 +26,6 @@
     <ProjectReference Include="..\libraries\DSharpPlus\DSharpPlus\DSharpPlus.csproj" />
     <ProjectReference Include="..\Libraries\MomentSharp\MomentSharp\MomentSharp.csproj" />
     <ProjectReference Include="..\Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj" />
-    <ProjectReference Include="..\Unicord\Unicord.csproj" />
   </ItemGroup>
 
   <ItemGroup>

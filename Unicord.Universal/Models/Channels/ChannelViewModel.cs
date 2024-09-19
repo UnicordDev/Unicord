@@ -51,8 +51,8 @@ namespace Unicord.Universal.Models.Channels
                 OpenInNewWindowCommand = new OpenInNewWindowCommand(this, false);
                 OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(this, true);
 
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, (r, m) => r.OnChannelUpdated(m.Event));
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, static (r, m) => r.OnChannelUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, static (r, m) => r.OnReadStateUpdated(m.Event));
             }
         }
 
@@ -131,7 +131,6 @@ namespace Unicord.Universal.Models.Channels
             => Channel.IsMuted();
         public int? NullableMentionCount
             => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
-
         public double MutedOpacity
             => Muted ? 0.5 : 1.0;
         public bool HasTopic

@@ -27,7 +27,14 @@ namespace Unicord.Universal.Models.Guild
         {
             get
             {
-                var v = Children.Sum(r => r.AccessibleChannels.Sum(r => r.ReadState.MentionCount));
+                var v = 0;
+                foreach (var child in Children)
+                {
+                    var count = child.MentionCount;
+                    if (count != -1)
+                        v += count;
+                }
+
                 return v == 0 ? -1 : v;
             }
         }

@@ -36,8 +36,6 @@ namespace Unicord.Universal.Pages.Overlay
 
             if (e.Parameter is AttachmentViewModel attachment)
             {
-                scaledControl.TargetWidth = attachment.NaturalWidth;
-                scaledControl.TargetHeight = attachment.NaturalHeight;
                 attachmentImage.MaxWidth = attachment.NaturalWidth;
                 attachmentImage.MaxHeight = attachment.NaturalHeight;
 
@@ -46,8 +44,6 @@ namespace Unicord.Universal.Pages.Overlay
 
             if (e.Parameter is EmbedImageViewModel thumbnail)
             {
-                scaledControl.TargetWidth = thumbnail.NaturalWidth;
-                scaledControl.TargetHeight = thumbnail.NaturalHeight;
                 attachmentImage.MaxWidth = thumbnail.NaturalWidth;
                 attachmentImage.MaxHeight = thumbnail.NaturalHeight;
 

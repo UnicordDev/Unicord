@@ -16,7 +16,7 @@ using static Unicord.Constants;
 namespace Unicord.Universal.Models
 {
     // not super useful considering most things here can't nicely be MMVMed
-    public class ThemesSettingsModel : NotifyPropertyChangeImpl
+    public class ThemesSettingsModel : ViewModelBase
     {
         private bool _isDirty;
         private int _appTheme;

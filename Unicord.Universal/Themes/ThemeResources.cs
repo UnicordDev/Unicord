@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Services;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Unicord.Universal.Themes
 {
@@ -15,22 +17,16 @@ namespace Unicord.Universal.Themes
             var theme = ThemeService.GetForCurrentView()
                 .GetTheme();
 
-            switch (theme)
+            Uri uri = theme switch
             {
-                case AppTheme.OLED:
-                    this.Source = new Uri("ms-appx:///Themes/Styles/OLED.xaml");
-                    break;
-                case AppTheme.Fluent:
-                    this.Source = new Uri("ms-appx:///Themes/Styles/Fluent.xaml");
-                    break;
-                case AppTheme.Performance:
-                    this.Source = new Uri("ms-appx:///Themes/Styles/Performance.xaml");
-                    break;
-                case AppTheme.SunValley:
-                    this.Source = new Uri("ms-appx:///Themes/Styles/SunValley.xaml");
-                    break;
-            }
+                AppTheme.OLED => new Uri("ms-appx:///Themes/Styles/OLED.xaml"),
+                AppTheme.Fluent => new Uri("ms-appx:///Themes/Styles/Fluent.xaml"),
+                AppTheme.Performance => new Uri("ms-appx:///Themes/Styles/Performance.xaml"),
+                AppTheme.SunValley => new Uri("ms-appx:///Themes/Styles/SunValley.xaml"),
+                _ => throw new InvalidOperationException("Unknown theme"),
+            };
 
+            Application.LoadComponent(this, uri, ComponentResourceLocation.Application);
         }
     }
 }

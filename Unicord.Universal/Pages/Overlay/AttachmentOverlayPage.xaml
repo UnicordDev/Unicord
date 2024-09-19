@@ -22,37 +22,26 @@
                 Background="Transparent"/>
 
         <Grid>
-            <ScrollViewer MinZoomFactor="1" 
-                          IsVerticalRailEnabled="False"
-                          VerticalScrollBarVisibility="Auto"
-                          VerticalScrollMode="Enabled"
-                          IsHorizontalRailEnabled="False"
-                          HorizontalScrollBarVisibility="Auto"
-                          HorizontalScrollMode="Enabled" 
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          HorizontalContentAlignment="Stretch"
-                          VerticalContentAlignment="Stretch"
-                          ZoomMode="Enabled"
-                          Tapped="contentContainer_Tapped">
-
-                <controls:ScaledContentControl x:Name="scaledControl" MaxWidth="Infinity" MaxHeight="Infinity">
-                    <Image x:Name="attachmentImage"
-                           Tapped="attachmentImage_Tapped">
-                        <Image.Source>
-                            <BitmapImage x:Name="AttachmentSource" 
+            <lib:ScrollView ContentOrientation="None"
+                            ZoomMode="Enabled"
+                            MinZoomFactor="1.0"
+                            Tapped="contentContainer_Tapped">
+                <Image x:Name="attachmentImage"
+                       Stretch="Uniform" 
+                       Tapped="attachmentImage_Tapped">
+                    <Image.Source>
+                        <BitmapImage x:Name="AttachmentSource" 
                                          DownloadProgress="AttachmentSource_DownloadProgress" 
                                          ImageOpened="AttachmentSource_ImageOpened"
                                          ImageFailed="AttachmentSource_ImageFailed"/>
-                        </Image.Source>
-                    </Image>
-                </controls:ScaledContentControl>
-            </ScrollViewer>
+                    </Image.Source>
+                </Image>
+            </lib:ScrollView>
 
             <Grid x:Name="contentContainerOverlay" 
                   Grid.RowSpan="2" 
                   Visibility="Visible">
-                
+
                 <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" IsIndeterminate="False"/>
 
                 <TextBlock x:Name="FailurePanel"

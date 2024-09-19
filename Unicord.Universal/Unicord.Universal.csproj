@@ -692,7 +692,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.7.3</Version>
+      <Version>2.7.3-prerelease.220816001</Version>
     </PackageReference>
     <PackageReference Include="Shim.System.Numerics">
       <Version>6.0.0</Version>
@@ -1219,10 +1219,6 @@
     <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit\Microsoft.Toolkit.csproj">
       <Project>{58278e92-f06d-4585-a94a-ed3f98480e26}</Project>
       <Name>Microsoft.Toolkit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Unicord\Unicord.csproj">
-      <Project>{31e5688d-ae40-4b4b-8d99-132805a1082b}</Project>
-      <Name>Unicord</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

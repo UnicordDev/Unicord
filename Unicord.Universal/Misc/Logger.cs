@@ -22,7 +22,7 @@ namespace Unicord.Universal
         }, new LoggerFilterOptions()
         {
 #if DEBUG
-            MinLevel = LogLevel.Trace
+            MinLevel = LogLevel.Debug
 #else
             MinLevel = LogLevel.Information
 #endif

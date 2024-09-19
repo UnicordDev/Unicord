@@ -19,7 +19,7 @@ using Windows.Foundation.Metadata;
 
 namespace Unicord.Universal.Models.Voice
 {
-    public class VoiceConnectionModel : NotifyPropertyChangeImpl
+    public class VoiceConnectionModel : ViewModelBase
     {
         private AppServiceConnection _appServiceConnection;
         private VoipCallCoordinator _voipCallCoordinator;
