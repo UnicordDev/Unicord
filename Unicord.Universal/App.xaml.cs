@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using DSharpPlus;
 using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
@@ -143,6 +144,25 @@ namespace Unicord.Universal
             if (protocol.Uri.IsAbsoluteUri)
                 Analytics.TrackEvent("Unicord_LaunchForProtocol", new Dictionary<string, string>() { ["protocol"] = protocol.Uri.GetLeftPart(UriPartial.Authority) });
 
+            if (protocol.Uri.Scheme == "ms-ipmessaging")
+            {
+                var queryString = HttpUtility.ParseQueryString(protocol.Uri.Query);
+                var ids = queryString.GetValues("ContactRemoteIds").FirstOrDefault();
+                if (ids != null)
+                {
+                    var id = ulong.Parse(ids.Split(',')[0].Split('_')[1]);
+                    if (!(Window.Current.Content is Frame rootFrame))
+                    {
+                        rootFrame = new Frame();
+                        Window.Current.Content = rootFrame;
+                    }
+
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, IsUriActivation = true });
+                    Window.Current.Activate();
+                    return;
+                }
+            }
+
             if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
             {
                 var path = protocol.Uri.AbsolutePath.Split('/').Skip(1).ToArray();
@@ -154,15 +174,13 @@ namespace Unicord.Universal
                         Window.Current.Content = rootFrame;
                     }
 
-                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, IsUriActivation = true });
                     Window.Current.Activate();
                     return;
                 }
             }
-            else
-            {
-                OnLaunched(false, "");
-            }
+
+            OnLaunched(false, "");
         }
 
         private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
