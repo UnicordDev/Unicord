@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 
@@ -18,9 +18,9 @@ namespace Unicord.Universal.Models
         public DMChannelsViewModel() : base(null)
         {
             DMChannels = new ObservableCollection<DmChannelListViewModel>(
-                App.Discord.PrivateChannels.Values
-                .Select(s => new DmChannelListViewModel(s))
-                .OrderByDescending(r => r.ReadState?.LastMessageId));
+                discord.PrivateChannels
+                .OrderByDescending(r => r.Value.LastMessageId ?? 0)
+                .Select(s => new DmChannelListViewModel(s.Value)));
 
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e.Event));
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e.Event));

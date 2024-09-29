@@ -8,7 +8,7 @@ using DSharpPlus.Entities;
 
 namespace Unicord.Universal.Extensions
 {
-    public static class MutedExtensions
+    internal static class MutedExtensions
     {
         public static bool IsMuted(this DiscordChannel channel)
         {

@@ -30,6 +30,8 @@ namespace Unicord.Universal.Models.Guild
                 var v = 0;
                 foreach (var child in Children)
                 {
+                    if (child.Muted) continue;
+
                     var count = child.MentionCount;
                     if (count != -1)
                         v += count;

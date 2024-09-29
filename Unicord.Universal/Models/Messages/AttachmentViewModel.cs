@@ -27,7 +27,7 @@ namespace Unicord.Universal.Models.Messages
     {
         // a set of known media file extensions for use as a heuristic
         private static readonly HashSet<string> _mediaExtensions =
-              new HashSet<string> { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg" };
+              [".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg"];
 
         private DiscordAttachment _attachment;
         private AttachmentType _type;

@@ -80,7 +80,8 @@ namespace Unicord.Universal.Background
                 {
                     TokenType = TokenType.User,
                     Token = _token,
-                    MessageCacheSize = 0
+                    MessageCacheSize = 0,
+                    ReconnectIndefinitely = true
                 });
 
                 _badgeManager = new BadgeManager(_discord);
@@ -96,8 +97,9 @@ namespace Unicord.Universal.Background
 
                 await _discord.ConnectAsync(status: UserStatus.Invisible, idlesince: DateTimeOffset.Now);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex);
                 this.ExitThread();
             }
         }
@@ -150,9 +152,9 @@ namespace Unicord.Universal.Background
                 if (_secondaryTileManager != null)
                     await _secondaryTileManager.HandleMessageAsync(client, e.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO: log
+                Debug.WriteLine(ex);
             }
         }
 
@@ -165,9 +167,9 @@ namespace Unicord.Universal.Background
                     _toastManager?.HandleMessageUpdated(client, e.Message);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO: log
+                Debug.WriteLine(ex);
             }
 
             return Task.CompletedTask;
@@ -186,9 +188,10 @@ namespace Unicord.Universal.Background
                 if (_secondaryTileManager != null)
                     await _secondaryTileManager.HandleAcknowledgeAsync(e.Channel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // TODO: log
+                Debug.WriteLine(ex);
             }
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 

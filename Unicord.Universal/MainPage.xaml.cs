@@ -18,6 +18,7 @@ using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
+using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
@@ -117,7 +118,7 @@ namespace Unicord.Universal
 
                     result.RetrievePassword();
 
-                    await App.LoginAsync(result.Password, OnFirstDiscordReady, App.LoginError, false);
+                    await DiscordManager.LoginAsync(result.Password, OnFirstDiscordReady, App.LoginError, false);
                 }
                 else
                 {
@@ -127,6 +128,7 @@ namespace Unicord.Universal
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 rootFrame.Navigate(typeof(LoginPage));
                 await ClearJumpListAsync();
             }
@@ -137,7 +139,7 @@ namespace Unicord.Universal
             PositionSplash(Arguments.SplashScreen);
         }
 
-        private void PositionSplash(Windows.ApplicationModel.Activation.SplashScreen splash)
+        private void PositionSplash(SplashScreen splash)
         {
             var imageRect = splash.ImageLocation;
             ExtendedSplashImage.SetValue(Canvas.LeftProperty, imageRect.X);
@@ -180,13 +182,13 @@ namespace Unicord.Universal
         {
             if (!_isReady)
             {
-                App.Discord.Ready += OnDiscordReady;
-                App.Discord.Resumed += OnDiscordResumed;
-                App.Discord.SocketClosed += OnDiscordDisconnected;
-                App.Discord.LoggedOut += OnLoggedOut;
+                DiscordManager.Discord.Ready += OnDiscordReady;
+                DiscordManager.Discord.Resumed += OnDiscordResumed;
+                DiscordManager.Discord.SocketClosed += OnDiscordDisconnected;
+                DiscordManager.Discord.LoggedOut += OnLoggedOut;
             }
 
-            App.Discord.Ready -= OnFirstDiscordReady;
+            DiscordManager.Discord.Ready -= OnFirstDiscordReady;
             Analytics.TrackEvent("Discord_OnFirstReady");
 
             _isReady = true;
@@ -269,7 +271,7 @@ namespace Unicord.Universal
             {
                 if (args.ChannelId != 0)
                 {
-                    if (App.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
+                    if (DiscordManager.Discord.TryGetCachedChannel(args.ChannelId, out var channel) && channel.IsAccessible())
                     {
                         await DiscordNavigationService.GetForCurrentView()
                             .NavigateAsync(channel);
@@ -277,7 +279,7 @@ namespace Unicord.Universal
                 }
                 else if (args.UserId != 0)
                 {
-                    var dm = App.Discord.PrivateChannels.Values
+                    var dm = DiscordManager.Discord.PrivateChannels.Values
                         .FirstOrDefault(c => c.Type == ChannelType.Private && c.Recipients.Count == 1 && c.Recipients[0].Id == args.UserId);
 
                     await DiscordNavigationService.GetForCurrentView()

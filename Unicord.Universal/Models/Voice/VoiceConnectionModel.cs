@@ -7,6 +7,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Net.Abstractions;
 using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json;
+using Unicord.Universal.Services;
 using Unicord.Universal.Voice;
 using Unicord.Universal.Voice.Background;
 using Unicord.Universal.Voice.Transport;
@@ -91,7 +92,7 @@ namespace Unicord.Universal.Models.Voice
             var muted = (bool)info.Message["muted"];
             var deafened = (bool)info.Message["deafened"];
 
-            var channel = App.Discord.Guilds[guild_id].Channels[channel_id];
+            var channel = DiscordManager.Discord.Guilds[guild_id].Channels[channel_id];
             var vstate = VoiceState.None;
             if (muted)
                 vstate = vstate & VoiceState.Muted;
@@ -194,8 +195,8 @@ namespace Unicord.Universal.Models.Voice
 
             ConnectionStatus = _strings.GetString("ConnectionState3");
 
-            App.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
-            App.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
+            DiscordManager.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
+            DiscordManager.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
             await SendVoiceStateUpdateAsync(_state, Channel.Id);
 
             var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
@@ -210,7 +211,7 @@ namespace Unicord.Universal.Models.Voice
                 ["req"] = (uint)VoiceServiceRequest.GuildConnectRequest,
                 ["channel_id"] = Channel.Id,
                 ["guild_id"] = Channel.Guild.Id,
-                ["user_id"] = App.Discord.CurrentUser.Id,
+                ["user_id"] = DiscordManager.Discord.CurrentUser.Id,
                 ["endpoint"] = vsru.Endpoint,
                 ["token"] = vsru.VoiceToken,
                 ["session_id"] = vstu.SessionId,
@@ -297,7 +298,7 @@ namespace Unicord.Universal.Models.Voice
                 };
 
 #pragma warning disable CS0618 // Type or member is obsolete
-                await App.Discord.SendPayloadAsync(GatewayOpCode.VoiceStateUpdate, payload);
+                await DiscordManager.Discord.SendPayloadAsync(GatewayOpCode.VoiceStateUpdate, payload);
 #pragma warning restore CS0618 // Type or member is obsolete
             }
             catch (Exception ex)
@@ -349,7 +350,7 @@ namespace Unicord.Universal.Models.Voice
 
         private Task OnVoiceStateUpdated(DiscordClient client, VoiceStateUpdateEventArgs e)
         {
-            if (e.Channel == Channel && e.User == App.Discord.CurrentUser)
+            if (e.Channel == Channel && e.User == DiscordManager.Discord.CurrentUser)
             {
                 _voiceStateUpdateCompletion.SetResult(e);
                 client.VoiceStateUpdated -= OnVoiceStateUpdated;

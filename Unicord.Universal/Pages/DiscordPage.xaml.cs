@@ -7,7 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Extensions;
@@ -80,7 +80,7 @@ namespace Unicord.Universal.Pages
 
                 if (_loaded && _args.ChannelId != 0)
                 {
-                    if (App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
+                    if (DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                     {
                         var service = DiscordNavigationService.GetForCurrentView();
                         await service.NavigateAsync(channel);
@@ -108,7 +108,7 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (App.Discord == null)
+            if (DiscordManager.Discord == null)
                 return; // im not 100% sure why this gets called on logout but it does so
 
             Analytics.TrackEvent("DiscordPage_Loaded");
@@ -126,7 +126,7 @@ namespace Unicord.Universal.Pages
                     .HideConnectingOverlay();
 
                 var service = DiscordNavigationService.GetForCurrentView();
-                if (_args != null && _args.ChannelId != 0 && App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
+                if (_args != null && _args.ChannelId != 0 && DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToSpecifiedChannel");
                     await service.NavigateAsync(channel);
@@ -139,16 +139,16 @@ namespace Unicord.Universal.Pages
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
 
-                var notificationService = BackgroundNotificationService.GetForCurrentView();
-                await notificationService.StartupAsync();
-
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
                 {
                     (DataContext as DiscordPageViewModel).VoiceModel = possibleConnection;
                 }
 
-                await ContactListManager.UpdateContactsListAsync();
+                var notificationService = BackgroundNotificationService.GetForCurrentView();
+                await notificationService.StartupAsync();
+
+                _ = Task.Run(ContactListManager.UpdateContactsListAsync);
             }
             catch (Exception ex)
             {
@@ -164,7 +164,9 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(App.Discord, e.Message) && IsWindowVisible)
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && 
+                NotificationUtils.WillShowToast(DiscordManager.Discord, e.Message) && 
+                IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }
@@ -172,7 +174,7 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            notification.Show(new MessageControl() { MessageViewModel = new MessageViewModel(message) }, 7_000);
+            notification.Show(new MessageViewModel(message), 7_000);
         }
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)

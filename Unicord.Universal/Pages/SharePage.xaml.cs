@@ -5,6 +5,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Windows;
 using Unicord.Universal.Integration;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -44,7 +45,7 @@ namespace Unicord.Universal.Pages
             {
                 // BUGBUG: this is messy
                 var items = new List<object> { new { Name = "Direct Messages" } };
-                items.AddRange(App.Discord.Guilds.Values.OrderBy(g => g.Name));
+                items.AddRange(DiscordManager.Discord.Guilds.Values.OrderBy(g => g.Name));
                 guildBox.ItemsSource = items;
 
                 channelsBox.ItemTemplateSelector = new ChannelTemplateSelector()
@@ -52,23 +53,6 @@ namespace Unicord.Universal.Pages
                     ServerChannelTemplate = (DataTemplate)App.Current.Resources["NoIndicatorChannelListTemplate"],
                     DirectMessageTemplate = (DataTemplate)App.Current.Resources["NoIndicatorDMChannelTemplate"]
                 };
-
-                //if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
-                //{
-                //    var contact = _shareOperation.Contacts.FirstOrDefault();
-                //    if (contact != null)
-                //    {
-                //        var id = await ContactListManager.TryGetChannelIdAsync(contact);
-                //        if (id != 0)
-                //        {
-                //            guildBox.SelectedIndex = 0;
-                //            channelsBox.SelectedItem = await App.Discord.CreateDmChannelAsync(id);
-
-                //            target.Text = contact.DisplayName;
-                //            destinationGrid.Visibility = Visibility.Collapsed;
-                //        }
-                //    }
-                //}
 
                 _shareOperation.ReportStarted();
 
@@ -120,7 +104,7 @@ namespace Unicord.Universal.Pages
 
                 if (_file != null)
                 {
-                    var maxSize = (ulong)(App.Discord.CurrentUser.UploadLimit());
+                    var maxSize = (ulong)(DiscordManager.Discord.CurrentUser.UploadLimit());
                     var props = await _file.GetBasicPropertiesAsync();
                     if (props.Size >= maxSize)
                     {
@@ -136,8 +120,8 @@ namespace Unicord.Universal.Pages
             if (guildBox.SelectedIndex == 0)
             {
                 channelsListSource.IsSourceGrouped = false;
-                channelsListSource.Source = App.Discord.PrivateChannels.Values
-                    .OrderBy(c => c.Name ?? c.Recipients[0]?.Username)
+                channelsListSource.Source = DiscordManager.Discord.PrivateChannels.Values
+                    .OrderBy(c => c.Name ?? c.Recipients.FirstOrDefault()?.Username)
                     .OrderByDescending(m => m.ReadState?.LastMessageId ?? 0);
             }
             else

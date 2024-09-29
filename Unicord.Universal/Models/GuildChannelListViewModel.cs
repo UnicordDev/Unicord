@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Models
@@ -70,9 +71,10 @@ namespace Unicord.Universal.Models
 
             static bool FilterThreads(DiscordThreadChannel channel)
             {
+                var currentUserId = DiscordManager.Discord.CurrentUser.Id;
                 return (channel.CurrentMember != null || 
-                        channel.CreatorId == App.Discord.CurrentUser.Id ||
-                        (channel.MemberIdsPreview != null && channel.MemberIdsPreview.Contains(App.Discord.CurrentUser.Id))) 
+                        channel.CreatorId == currentUserId ||
+                        (channel.MemberIdsPreview != null && channel.MemberIdsPreview.Contains(currentUserId))) 
                     && !(channel.ThreadMetadata?.IsArchived ?? true);
             }
 

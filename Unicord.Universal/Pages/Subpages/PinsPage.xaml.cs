@@ -12,6 +12,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Models.Messages;
+using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -39,7 +40,7 @@ namespace Unicord.Universal.Pages.Subpages
             if (!_hasHandler)
             {
                 _hasHandler = true;
-                App.Discord.MessageUpdated += Discord_MessageUpdated;
+                DiscordManager.Discord.MessageUpdated += Discord_MessageUpdated;
             }
         }
 

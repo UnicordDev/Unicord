@@ -1,6 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,19 +24,19 @@ namespace Unicord.Universal.Models
         public DiscordMessage ExampleMessage { get; set; }
     }
 
-    public class TimestampStyleModel
+    internal class TimestampStyleModel
     {
-        public TimestampStyleModel(TimestampStyle style, DateTime timestamp)
+        internal TimestampStyleModel(TimestampStyle style, DateTime timestamp)
         {
             Style = style;
             Timestamp = timestamp;
         }
 
-        public TimestampStyle Style { get; set; }
-        public DateTime Timestamp { get; set; }
+        internal TimestampStyle Style { get; set; }
+        internal DateTime Timestamp { get; set; }
     }
 
-    class MessagingSettingsModel : ViewModelBase
+    internal class MessagingSettingsModel : ViewModelBase
     {
         private bool _canUseWebp = false;
 

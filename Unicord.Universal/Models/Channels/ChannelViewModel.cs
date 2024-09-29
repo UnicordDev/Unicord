@@ -9,8 +9,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
-using Microsoft.Toolkit.Mvvm.Messaging;
-using Microsoft.Toolkit.Uwp.UI.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Commands.Generic;
@@ -120,7 +119,7 @@ namespace Unicord.Universal.Models.Channels
         {
             get
             {
-                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private)
+                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private || dm.Recipients.Count == 0)
                     return null;
 
                 return _recipientCache ??= new UserViewModel(dm.Recipients[0], null, this);

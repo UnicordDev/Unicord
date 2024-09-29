@@ -15,10 +15,19 @@ using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
 {
-    public class NotificationUtils
+    internal class NotificationUtils
     {
-        public static bool WillShowToast(DiscordClient client, DiscordMessage message)
+        public static bool WillShowToast(BaseDiscordClient client, DiscordMessage message)
         {
+            if (message.Author.IsCurrent)
+                return false;
+
+            if (client is DiscordClient discord && discord.UserSettings?.Status == "dnd")
+                return false;
+
+            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()) || !message.Channel.IsUnread())
+                return false;
+
             bool willNotify = false;
 
             if (message.MentionedUsers.Any(m => m?.Id == message.Discord.CurrentUser.Id))
@@ -40,22 +49,8 @@ namespace Unicord.Universal.Shared
                 }
             }
 
-            if (message.Author.IsCurrent)
-            {
-                willNotify = false;
-            }
-
-            if (client.UserSettings?.Status == "dnd")
-            {
-                willNotify = false;
-            }
-
-            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()) || !message.Channel.IsUnread())
-                willNotify = false;
-
             return willNotify;
         }
-
 
         private static readonly Regex UserRegex = new Regex(@"<@!?(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
         private static readonly Regex RoleRegex = new Regex(@"<@&(\d+)>", RegexOptions.ECMAScript | RegexOptions.Compiled);
@@ -68,7 +63,7 @@ namespace Unicord.Universal.Shared
                              $"{message.Author.DisplayName} in {message.Channel.Guild.Name}" :
                              $"{message.Author.DisplayName}";
 
-        public static string GetMessageContent(DiscordClient client, DiscordMessage message)
+        public static string GetMessageContent(BaseDiscordClient client, DiscordMessage message)
         {
             string messageText = message.Content;
 
@@ -81,7 +76,7 @@ namespace Unicord.Universal.Shared
                     if (message.Channel.Guild?.Members.TryGetValue(id, out var member) == true)
                         return $"@{member.DisplayName}";
 
-                    if (client.TryGetCachedUser(id, out var user))
+                    if (client is DiscordClient discord && discord.TryGetCachedUser(id, out var user))
                         return $"@{user.DisplayName}";
 
                     return "@unknown-user";
@@ -97,7 +92,7 @@ namespace Unicord.Universal.Shared
                     if (message.Channel.Guild?.Channels.TryGetValue(id, out var channel) == true)
                         return $"#{channel.Name}";
 
-                    if (client.TryGetCachedChannel(id, out channel))
+                    if (client is DiscordClient discord && discord.TryGetCachedChannel(id, out channel))
                         return $"#{channel.Name}";
 
                     return "#unknown-channel";
@@ -141,6 +136,9 @@ namespace Unicord.Universal.Shared
             {
                 if (dmChannel.Type == ChannelType.Private)
                 {
+                    if (dmChannel.Recipients.Count == 0)
+                        return "Invalid DM channel";
+
                     return $"@{dmChannel.Recipients[0].DisplayName}";
                 }
 
@@ -156,7 +154,7 @@ namespace Unicord.Universal.Shared
             return $"#{channel.Name}";
         }
 
-        public static TileNotification CreateTileNotificationForMessage(DiscordClient client, DiscordMessage message)
+        public static TileNotification CreateTileNotificationForMessage(BaseDiscordClient client, DiscordMessage message)
         {
             var tileContentBuilder = new TileContentBuilder()
                 .SetBranding(TileBranding.NameAndLogo)
@@ -178,7 +176,7 @@ namespace Unicord.Universal.Shared
             else if (message.Channel is not null)
             {
                 if (!string.IsNullOrWhiteSpace(message.Channel?.Guild.IconUrl))
-                    tileContentBuilder.SetPeekImage(new Uri(message.Channel.Guild.IconUrl + "?size=1024"));
+                    tileContentBuilder.SetPeekImage(new Uri(message.Channel.Guild.IconUrl + "?size=512"));
 
                 tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = $"#{message.Channel.Name}", HintStyle = AdaptiveTextStyle.Base })
                     .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = message.Channel.Guild.Name, HintStyle = AdaptiveTextStyle.Body })
@@ -206,15 +204,19 @@ namespace Unicord.Universal.Shared
                 if (!string.IsNullOrEmpty(dm.IconHash))
                     tileContentBuilder.SetPeekImage(new Uri(dm.IconUrl));
 
-                if (dm.Type == ChannelType.Private)
+                if (dm.Type == ChannelType.Private && dm.Recipients.Count > 0)
                     tileContentBuilder.SetPeekImage(new Uri(dm.Recipients[0].AvatarUrl));
 
-                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = GetChannelHeaderName(channel), HintStyle = AdaptiveTextStyle.Base });
+                tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText()
+                {
+                    Text = GetChannelHeaderName(channel),
+                    HintStyle = AdaptiveTextStyle.Base
+                });
             }
             else
             {
                 if (!string.IsNullOrWhiteSpace(channel.Guild.IconUrl))
-                    tileContentBuilder.SetPeekImage(new Uri(channel.Guild.IconUrl + "?size=1024"));
+                    tileContentBuilder.SetPeekImage(new Uri(channel.Guild.IconUrl + "?size=512"));
 
                 tileContentBuilder.AddAdaptiveTileVisualChild(new AdaptiveText() { Text = $"#{channel.Name}", HintStyle = AdaptiveTextStyle.Base })
                     .AddAdaptiveTileVisualChild(new AdaptiveText() { Text = channel.Guild.Name, HintStyle = AdaptiveTextStyle.Body });
@@ -227,14 +229,14 @@ namespace Unicord.Universal.Shared
             return new TileNotification(doc);
         }
 
-        public static ToastNotification CreateToastNotificationForMessage(DiscordClient client, DiscordMessage message, bool isSuppressed = false)
+        public static ToastNotification CreateToastNotificationForMessage(BaseDiscordClient client, DiscordMessage message, bool isSuppressed = false)
         {
             var title = GetMessageTitle(message);
             var text = GetMessageContent(client, message);
             var channelName = GetChannelHeaderName(message.Channel);
 
             var avatarUrl = message.Author.GetAvatarUrl(ImageFormat.Png, 128);
-            var replyString = message.Channel is DiscordDmChannel ? $"Reply to @{message.Author.Username}..." : $"Message #{message.Channel.Name}...";
+            var replyString = message.Channel is DiscordDmChannel ? $"Reply to @{message.Author.DisplayName}..." : $"Message #{message.Channel.Name}...";
 
             var builder = new ToastContentBuilder()
                 .AddHeader(message.ChannelId.ToString(), channelName, $"-channelId={message.ChannelId}")
@@ -248,21 +250,19 @@ namespace Unicord.Universal.Shared
                 .AddCustomTimeStamp(message.Timestamp.DateTime)
                 .AddAudio(new Uri("ms-winsoundevent:Notification.IM"));
 
-            if (GetToastThumbnail(message, out var width, out var height, out var proxyUrl))
+            if (GetToastThumbnail(message, out var width, out var height, out var proxyUrl) &&
+                !Path.GetFileName(proxyUrl).StartsWith("SPOILER_", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!Path.GetFileName(proxyUrl).StartsWith("SPOILER_", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    Drawing.ScaleProportions(ref width, ref height, 728, 360);
+                Drawing.ScaleProportions(ref width, ref height, 728, 360);
 
-                    var uri = new UriBuilder(proxyUrl);
-                    var query = HttpUtility.ParseQueryString(uri.Query);
-                    query["format"] = "jpeg";
-                    query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
-                    query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);
-                    uri.Query = query.ToString();
+                var uri = new UriBuilder(proxyUrl);
+                var query = HttpUtility.ParseQueryString(uri.Query);
+                query["format"] = "jpeg";
+                query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
+                query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);
+                uri.Query = query.ToString();
 
-                    builder.AddHeroImage(uri.Uri);
-                }
+                builder.AddHeroImage(uri.Uri);
             }
 
             var toastContent = builder.GetToastContent();

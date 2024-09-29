@@ -82,9 +82,9 @@ namespace Unicord.Universal.Models
             {
                 DiscordSearchResult result = null;
                 if (_channel.Guild != null)
-                    result = await App.Discord.SearchAsync(_channel.Guild.Guild, content, offset: (CurrentPage - 1) * 25);
+                    result = await discord.SearchAsync(_channel.Guild.Guild, content, offset: (CurrentPage - 1) * 25);
                 else
-                    result = await App.Discord.SearchAsync(_channel.Channel, content, offset: (CurrentPage - 1) * 25);
+                    result = await discord.SearchAsync(_channel.Channel, content, offset: (CurrentPage - 1) * 25);
 
                 if (!result.IsIndexed)
                 {

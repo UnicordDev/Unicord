@@ -13,7 +13,7 @@ using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
 {
-    public class TileManager
+    internal class TileManager
     {
         private readonly DiscordClient _discord = null;
         private readonly TileUpdater _tileUpdater = null;
@@ -31,6 +31,7 @@ namespace Unicord.Universal.Shared
         public async Task InitialiseAsync()
         {
             await _semaphore.WaitAsync();
+
             try
             {
                 await foreach (var msg in this.FetchUnreadMessages())
@@ -47,6 +48,7 @@ namespace Unicord.Universal.Shared
         public async Task HandleMessageAsync(DiscordMessage message)
         {
             await _semaphore.WaitAsync();
+
             try
             {
                 _currentUnreads.RemoveAll(m => m.Channel == message.Channel);
@@ -63,6 +65,7 @@ namespace Unicord.Universal.Shared
         public async Task HandleAcknowledgeAsync(DiscordChannel channel)
         {
             await _semaphore.WaitAsync();
+
             try
             {
                 _currentUnreads.RemoveAll(m => m.Channel == channel);
@@ -77,7 +80,7 @@ namespace Unicord.Universal.Shared
 
         private void Update()
         {
-            _tileUpdater.EnableNotificationQueue(true);
+            //_tileUpdater.EnableNotificationQueue(true);
             _tileUpdater.Clear();
 
             foreach (var message in _currentUnreads.OrderByDescending(d => d.CreationTimestamp).Take(5))
@@ -90,7 +93,7 @@ namespace Unicord.Universal.Shared
         private async IAsyncEnumerable<DiscordMessage> FetchUnreadMessages()
         {
             var count = 0;
-            foreach (var item in _discord.PrivateChannels.Values)
+            foreach (var (_, item) in _discord.PrivateChannels)
             {
                 if (!item.IsUnread())
                     continue;

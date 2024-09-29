@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DSharpPlus.Entities;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -46,7 +47,7 @@ namespace Unicord.Universal.Dialogs
         public GuildDialog()
         {
             InitializeComponent();
-            regionsBox.ItemsSource = App.Discord.VoiceRegions.Values;
+            regionsBox.ItemsSource = DiscordManager.Discord.VoiceRegions.Values;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

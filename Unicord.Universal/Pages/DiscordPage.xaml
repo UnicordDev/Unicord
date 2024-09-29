@@ -14,7 +14,8 @@
     xmlns:converters="using:Unicord.Universal.Converters"
     xmlns:voice="using:Unicord.Universal.Controls.Voice"
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
-    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
+    xmlns:messagesVMs="using:Unicord.Universal.Models.Messages"
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
@@ -153,11 +154,11 @@
                             </ListViewItem>
 
                             <ListView ItemsSource="{Binding UnreadDMs}"
-                                          SelectedItem="{Binding SelectedDM}"
-                                          Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"
-                                          ScrollViewer.VerticalScrollMode="Disabled"
-                                          SingleSelectionFollowsFocus="False"
-                                          SelectionChanged="UnreadDms_SelectionChanged">
+                                      SelectedItem="{Binding SelectedDM}"
+                                      Visibility="{Binding UnreadDMs.Count, Converter={StaticResource BoolVisibilityConverter}}"
+                                      ScrollViewer.VerticalScrollMode="Disabled"
+                                      SingleSelectionFollowsFocus="False"
+                                      SelectionChanged="UnreadDms_SelectionChanged">
                                 <ListView.HeaderTemplate>
                                     <DataTemplate>
                                         <lib:NavigationViewItemSeparator Margin="16,0" />
@@ -194,7 +195,8 @@
 
                             <lib:TreeView x:Name="GuildsView"
                                           ItemsSource="{Binding Guilds}"
-                                          ItemInvoked="TreeView_ItemInvoked">
+                                          ItemInvoked="TreeView_ItemInvoked"
+                                          ScrollViewer.IsVerticalScrollChainingEnabled="True">
                                 <lib:TreeView.ItemTemplateSelector>
                                     <converters:GuildListTemplateSelector GuildTemplate="{StaticResource GuildsListTemplate}" 
                                                                           GuildFolderTemplate="{StaticResource GuildsListFolderTemplate}"/>
@@ -329,7 +331,13 @@
                                                Tapped="Notification_Tapped"
                                                VerticalOffset="-120"
                                                MaxHeight="200"
-                                               Style="{ThemeResource CustomInAppNotificationsStyle}"/>
+                                               Style="{ThemeResource CustomInAppNotificationsStyle}">
+                        <toolkit:InAppNotification.ContentTemplate>
+                            <DataTemplate x:DataType="messagesVMs:MessageViewModel">
+                                <messages:MessageControl MessageViewModel="{x:Bind}"/>
+                            </DataTemplate>
+                        </toolkit:InAppNotification.ContentTemplate>
+                    </toolkit:InAppNotification>
                 </Grid>
             </Grid>
 

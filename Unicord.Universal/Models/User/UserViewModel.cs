@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Members;
 using Unicord.Universal.Commands.Users;

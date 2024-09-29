@@ -17,7 +17,7 @@ namespace Unicord.Universal.Commands.Users
         public override bool CanExecute(object parameter)
         {
             var channel = discord.PrivateChannels.Values
-                .Where(c => c.IsPrivate)
+                .Where(c => c.IsPrivate && c.Recipients.Count > 0)
                 .FirstOrDefault(c => c.Recipients[0].Id == viewModel.Id);
 
             return channel != null;
@@ -26,7 +26,7 @@ namespace Unicord.Universal.Commands.Users
         public override async void Execute(object parameter)
         {
             var channel = discord.PrivateChannels.Values
-                .Where(c => c.IsPrivate)
+                .Where(c => c.IsPrivate && c.Recipients.Count > 0)
                 .FirstOrDefault(c => c.Recipients[0].Id == viewModel.Id);
 
             var service = DiscordNavigationService.GetForCurrentView();

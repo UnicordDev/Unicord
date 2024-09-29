@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Unicord.Universal.Services;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -90,12 +91,12 @@ namespace Unicord.Universal.Dialogs
                     {
                         using (var stream = await model.IconFile.OpenStreamForReadAsync())
                         {
-                            await App.Discord.CreateGuildAsync(model.Name, model.Region.Id, stream);
+                            await DiscordManager.Discord.CreateGuildAsync(model.Name, model.Region.Id, stream);
                         }
                     }
                     else
                     {
-                        await App.Discord.CreateGuildAsync(model.Name, model.Region.Id);
+                        await DiscordManager.Discord.CreateGuildAsync(model.Name, model.Region.Id);
                     }
                 }
                 catch (Exception ex)

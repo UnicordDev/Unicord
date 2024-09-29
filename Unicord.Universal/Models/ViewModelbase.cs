@@ -8,12 +8,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Models
 {
-    /// <summary>
-    /// A non thread-safe version of <see cref="DSharpPlus.Entities.PropertyChangedBase"/> for view models and internal classes.
-    /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         protected DiscordClient discord;
@@ -21,7 +19,7 @@ namespace Unicord.Universal.Models
 
         public ViewModelBase(ViewModelBase parent = null)
         {
-            discord = App.Discord; // capture the discord client
+            discord = DiscordManager.Discord; // capture the discord client
             syncContext = parent?.syncContext ?? SynchronizationContext.Current;
             Debug.Assert(discord != null);
             Debug.Assert(syncContext != null);

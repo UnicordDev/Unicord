@@ -463,7 +463,7 @@
     <DataTemplate x:Key="ButtonComponentContentTemplate"
                   x:DataType="components:ButtonComponentViewModel">
         <StackPanel Orientation="Horizontal">
-            <emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
+            <!--<emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
 
             <TextBlock x:Name="PART_ButtonLabel" x:Load="{x:Bind HasLabel}" VerticalAlignment="Center" Text="{x:Bind Label}" Padding="12,0"/>
 
@@ -471,7 +471,7 @@
                        x:Load="{x:Bind ShowExternalLinkIcon}"
                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                        FontSize="16" 
-                       VerticalAlignment="Center">&#xE8A7;</TextBlock>
+                       VerticalAlignment="Center">&#xE8A7;</TextBlock>-->
         </StackPanel>
     </DataTemplate>
 

@@ -19,7 +19,7 @@
         <models:RootSettingsModel/>
     </Page.DataContext>
     <Border x:Name="MainBorder"
-            Background="{ThemeResource AcrylicInAppFillColorBaseBrush}">
+            Background="{ThemeResource SettingsPage_MainBorder_Background}">
         <lib:NavigationView x:Name="NavView"
                             Header="{Binding SelectedItem.Content, ElementName=NavView}"
                             IsSettingsVisible="False"
@@ -27,7 +27,6 @@
                             BackRequested="NavView_BackRequested"
                             SelectionChanged="NavView_SelectionChanged">
             <lib:NavigationView.Resources>
-                <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,8</CornerRadius>
                 <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorAltBrush" />
             </lib:NavigationView.Resources>
 

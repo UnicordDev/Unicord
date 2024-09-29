@@ -12,13 +12,13 @@ namespace Unicord.Universal.Models
     public class RootSettingsModel : ViewModelBase
     {
         public DiscordUser CurrentUser =>
-            App.Discord.CurrentUser;
+            discord.CurrentUser;
 
         public string AccountItemImage =>
-            App.Discord.CurrentUser.GetAvatarUrl(256);
+            discord.CurrentUser.GetAvatarUrl(256);
 
         public string AccountDisplayName =>
-            App.Discord.CurrentUser.Username;
+            discord.CurrentUser.Username;
 
         public string DisplayVersion
         {

@@ -55,6 +55,8 @@
 						<uap:DataFormat>WebLink</uap:DataFormat>
 					</uap:ShareTarget>
 				</uap:Extension>
+        
+        <uap4:Extension Category="windows.contactPanel" />
 
 				<uap:Extension Category="windows.protocol">
 					<uap:Protocol Name="ms-contact-profile">
@@ -70,9 +72,9 @@
 					</uap:Protocol>
 				</uap:Extension>
               
-              <uap:Extension Category="windows.appService">
-                <uap:AppService Name="com.wankerr.Unicord.IPC" />
-              </uap:Extension>
+        <uap:Extension Category="windows.appService">
+          <uap:AppService Name="com.wankerr.Unicord.IPC" />
+        </uap:Extension>
 
 				<!-- voice background tasks -->
 				<uap:Extension Category="windows.voipCall"/>

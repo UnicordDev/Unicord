@@ -10,12 +10,13 @@ using Windows.ApplicationModel.Contacts;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Integration
 {
     internal static class ContactListManager
     {
-#if STORE
+#if RELEASE
         private const string REMOTE_ID_PREFIX = "Unicord_";
         private const string REMOTE_ID_FORMAT = "Unicord_{0}";
         private const string CONTACT_LIST_NAME = "Unicord";
@@ -32,6 +33,7 @@ namespace Unicord.Universal.Integration
             var contacts = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
             var manager = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
             contact = await contacts.GetContactAsync(contact.Id);
+
             var annotations = await manager.FindAnnotationsForContactAsync(contact);
             var annotation = annotations.FirstOrDefault();
 
@@ -60,7 +62,7 @@ namespace Unicord.Universal.Integration
                     var allContacts = await store.FindContactsAsync();
 
                     // remove all contacts no longer in the user's friends list
-                    var removed = allContacts.Where(c => c.RemoteId.StartsWith(REMOTE_ID_PREFIX) && !App.Discord.Relationships.ContainsKey(ulong.TryParse(c.RemoteId.Split('_').Last(), out var id) ? id : 0));
+                    var removed = allContacts.Where(c => c.RemoteId.StartsWith(REMOTE_ID_PREFIX) && !DiscordManager.Discord.Relationships.ContainsKey(ulong.TryParse(c.RemoteId.Split('_').Last(), out var id) ? id : 0));
                     foreach (var cont in removed)
                     {
                         try
@@ -71,7 +73,7 @@ namespace Unicord.Universal.Integration
                     }
 
                     // update all contacts
-                    var relationships = App.Discord.Relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend);
+                    var relationships = DiscordManager.Discord.Relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend);
                     foreach (var relationship in relationships)
                     {
                         await AddOrUpdateContactAsync(relationship, list, annotationList, folder);
@@ -112,10 +114,10 @@ namespace Unicord.Universal.Integration
                 contact = new Contact { RemoteId = string.Format(REMOTE_ID_FORMAT, relationship.User.Id) };
             }
 
-            if (contact.Name != relationship.User.Username)
+            if (contact.Name != relationship.User.DisplayName)
             {
-                Logger.Log($"Updating contact username for {relationship.User}");
-                contact.Name = relationship.User.Username;
+                Logger.Log($"Updating contact username for {relationship.User} ({contact.Name} => {relationship.User.DisplayName})");
+                contact.Name = relationship.User.DisplayName;
             }
 
             var currentHash = App.LocalSettings.Read<string>("ContactAvatarHashes", relationship.User.Id.ToString(), null);

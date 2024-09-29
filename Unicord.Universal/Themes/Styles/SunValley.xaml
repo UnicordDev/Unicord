@@ -110,6 +110,8 @@
                     <CornerRadius x:Key="ChannelPage_MessageInput_CornerRadius">4</CornerRadius>
                     <Thickness x:Key="ChannelPage_MessageInput_Margin">12,0,12,12</Thickness>
 
+                    <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
+
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>

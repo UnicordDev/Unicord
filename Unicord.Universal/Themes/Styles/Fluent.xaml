@@ -13,9 +13,9 @@
                     <!-- Windows 10 circa 1703 Styling -->
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Light">
-                            <Color x:Key="BackgroundPrimaryColour">#FFF5F5F5</Color>
+                            <Color x:Key="BackgroundTertiaryColour">#FFF5F5F5</Color>
                             <Color x:Key="BackgroundSecondaryColour">#FFF0F0F0</Color>
-                            <Color x:Key="BackgroundTertiaryColour">#FFEEEEEE</Color>
+                            <Color x:Key="BackgroundPrimaryColour">#FFEEEEEE</Color>
                         </ResourceDictionary>
                         <ResourceDictionary x:Key="Dark">
                             <Color x:Key="BackgroundPrimaryColour">#FF0F0F0F</Color>
@@ -184,6 +184,8 @@
                     <Thickness x:Key="ChannelPage_MessageInput_BorderThickness">0</Thickness>
                     <CornerRadius x:Key="ChannelPage_MessageInput_CornerRadius">0</CornerRadius>
                     <Thickness x:Key="ChannelPage_MessageInput_Margin">0</Thickness>
+
+                    <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="General_Page_BackgroundBrush"/>
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>
