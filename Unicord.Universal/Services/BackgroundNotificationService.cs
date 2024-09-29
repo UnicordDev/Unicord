@@ -59,7 +59,7 @@ namespace Unicord.Universal.Services
             if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
                 return false;
 
-            if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).Name, 5))
+            if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5))
                 return false; // disable this prior to FCU because it seems to just crash, and inbuilt notifications work better
 
             if (!await RegisterBackgroundTaskAsync())
