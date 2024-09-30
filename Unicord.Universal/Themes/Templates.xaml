@@ -29,7 +29,7 @@
         <ResourceDictionary Source="Controls/Permissions.xaml"/>
         <ResourceDictionary Source="Controls/UniversalWebView.xaml"/>
         <ResourceDictionary Source="Controls/Flyouts.xaml"/>
-        <ResourceDictionary Source="Controls/Channels.xaml"/>
+        <Channels xmlns="using:Unicord.Universal.Resources.Controls"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ChannelNameTextBoxStyle" TargetType="TextBox">
@@ -218,7 +218,7 @@
     <DataTemplate x:Key="ChannelListTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" />
     </DataTemplate>
-    
+
     <DataTemplate x:Key="ChannelListThreadTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource ThreadChannelListStyle}" />
     </DataTemplate>
@@ -231,14 +231,17 @@
         <channels:ChannelListControl Channel="{Binding}" Style="{StaticResource GroupChannelListStyle}"/>
     </DataTemplate>
 
-
-    <DataTemplate x:Key="ChannelListCategoryTemplate">
+    <DataTemplate x:Key="ChannelListCategoryTemplate" x:DataType="channelVMs:ChannelListViewModel">
         <Border ContextFlyout="{StaticResource ChannelContextFlyout}"
                 VerticalAlignment="Stretch" 
                 Background="Transparent" 
                 Margin="10,8,8,2"
-                Opacity="{Binding MutedOpacity}">
-            <TextBlock FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" FontWeight="SemiBold" Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" TextWrapping="NoWrap" />
+                Opacity="{x:Bind MutedOpacity}">
+            <TextBlock FontSize="12"
+                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                       FontWeight="SemiBold"
+                       Text="{x:Bind Name, Converter={StaticResource TitleCaseConverter}}" 
+                       TextWrapping="NoWrap" />
         </Border>
     </DataTemplate>
 
@@ -283,15 +286,15 @@
               ContextFlyout="{StaticResource GuildContextFlyout}"
               ToolTipService.ToolTip="{x:Bind Name}"
               ToolTipService.Placement="Left">
-                <lib:PersonPicture Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
-                <lib:InfoBadge VerticalAlignment="Top"
+            <lib:PersonPicture x:Phase="1" Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
+            <lib:InfoBadge x:Phase="2" VerticalAlignment="Top"
                            HorizontalAlignment="Right"
                            Margin="8,4"
                            MinWidth="8"
                            MinHeight="8"
                            Value="{x:Bind MentionCount}"
                            Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"/>
-            </Grid>
+        </Grid>
         <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
@@ -301,127 +304,129 @@
         <Grid ToolTipService.ToolTip="{x:Bind Name}"
               ToolTipService.Placement="Left"
               Loaded="OnGuildsListFolderLoaded">
-                <Ellipse Margin="0,4" 
+            <Ellipse Margin="0,4" 
                          Width="42" 
                          Height="42"
                          Opacity="0.3"
                          Fill="{Binding Color, Converter={StaticResource ColourBrushConverter}}"/>
 
-                <FontIcon x:Name="ExpandedGlyph" 
+            <FontIcon x:Name="ExpandedGlyph" 
                             FontFamily="{StaticResource SymbolThemeFontFamily}" 
                             Glyph="&#xE70D;" 
                             RenderTransformOrigin="0.5,0.5"
                             Opacity="0">
-                    <FontIcon.RenderTransform>
-                        <RotateTransform x:Name="ExpandedGlyphTransform" />
-                    </FontIcon.RenderTransform>
-                </FontIcon>
+                <FontIcon.RenderTransform>
+                    <RotateTransform x:Name="ExpandedGlyphTransform" />
+                </FontIcon.RenderTransform>
+            </FontIcon>
 
-                <Grid Margin="0,4" Width="36" Height="36">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <Grid Margin="0,4" Width="36" Height="36">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <Ellipse x:Name="Ellipse1" Grid.Column="0" Grid.Row="0" Margin="1">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform x:Name="EllipseTransform1" />
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Icon1}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <Ellipse x:Name="Ellipse2" Grid.Column="0" Grid.Row="1" Margin="1">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform x:Name="EllipseTransform2" />
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Icon2}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <Ellipse x:Name="Ellipse3" Grid.Column="1" Grid.Row="0" Margin="1">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform x:Name="EllipseTransform3" />
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Icon3}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <Ellipse x:Name="Ellipse4" Grid.Column="1" Grid.Row="1" Margin="1">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform x:Name="EllipseTransform4" />
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Icon4}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Grid>
+                <Ellipse x:Name="Ellipse1" Grid.Column="0" Grid.Row="0" Margin="1">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="EllipseTransform1" />
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Icon1}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse x:Name="Ellipse2" Grid.Column="0" Grid.Row="1" Margin="1">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="EllipseTransform2" />
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Icon2}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse x:Name="Ellipse3" Grid.Column="1" Grid.Row="0" Margin="1">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="EllipseTransform3" />
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Icon3}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse x:Name="Ellipse4" Grid.Column="1" Grid.Row="1" Margin="1">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="EllipseTransform4" />
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Icon4}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
 
-                <lib:InfoBadge Grid.ColumnSpan="2"
-                               Grid.RowSpan="2"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Right"
-                               Margin="8,4"
-                               MinWidth="8"
-                               MinHeight="8"
-                               Value="{Binding MentionCount}"
-                               Visibility="{Binding Unread, Converter={StaticResource BoolVisibilityConverter}}"/>
+            <lib:InfoBadge x:Name="UnreadIndicator"
+                           x:Load="{x:Bind Unread}" 
+                           x:Phase="2"
+                           Grid.ColumnSpan="2"
+                           Grid.RowSpan="2"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right"
+                           Margin="8,4"
+                           MinWidth="8"
+                           MinHeight="8"
+                           Value="{x:Bind MentionCount}"/>
 
-                <i:Interaction.Behaviors>
-                    <core:DataTriggerBehavior Binding="{Binding IsExpanded}"
+            <i:Interaction.Behaviors>
+                <core:DataTriggerBehavior Binding="{x:Bind IsExpanded}"
                                               ComparisonCondition="Equal"
                                               Value="True">
-                        <media1:ControlStoryboardAction>
-                            <media1:ControlStoryboardAction.Storyboard>
-                                <Storyboard>
-                                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="ExpandedGlyph" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25"/>
-                                    <DoubleAnimation From="359" To="0" Storyboard.TargetName="ExpandedGlyphTransform" Storyboard.TargetProperty="Angle" Duration="0:0:0.5" EasingFunction="{StaticResource EaseEnter}"/>
+                    <media1:ControlStoryboardAction>
+                        <media1:ControlStoryboardAction.Storyboard>
+                            <Storyboard>
+                                <DoubleAnimation From="0" To="1" Storyboard.TargetName="ExpandedGlyph" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25"/>
+                                <DoubleAnimation From="359" To="0" Storyboard.TargetName="ExpandedGlyphTransform" Storyboard.TargetProperty="Angle" Duration="0:0:0.5" EasingFunction="{StaticResource EaseEnter}"/>
 
-                                    <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform1" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.15" EasingFunction="{StaticResource EaseExit}"/>
-                                    <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse1" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.15"/>
+                                <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform1" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.15" EasingFunction="{StaticResource EaseExit}"/>
+                                <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse1" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.15"/>
 
-                                    <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform2" Storyboard.TargetProperty="Y" Duration="0:0:0.2"  BeginTime="0:0:0.1" EasingFunction="{StaticResource EaseExit}"/>
-                                    <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse2" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.1"/>
+                                <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform2" Storyboard.TargetProperty="Y" Duration="0:0:0.2"  BeginTime="0:0:0.1" EasingFunction="{StaticResource EaseExit}"/>
+                                <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse2" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.1"/>
 
-                                    <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform3" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.05" EasingFunction="{StaticResource EaseExit}"/>
-                                    <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse3" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.05"/>
+                                <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform3" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.05" EasingFunction="{StaticResource EaseExit}"/>
+                                <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse3" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.05"/>
 
-                                    <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform4" Storyboard.TargetProperty="Y" Duration="0:0:0.2" EasingFunction="{StaticResource EaseExit}"/>
-                                    <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse4" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2"/>
-                                </Storyboard>
-                            </media1:ControlStoryboardAction.Storyboard>
-                        </media1:ControlStoryboardAction>
-                    </core:DataTriggerBehavior>
-                    <core:DataTriggerBehavior Binding="{Binding IsExpanded}"
+                                <DoubleAnimation From="0" To="200" Storyboard.TargetName="EllipseTransform4" Storyboard.TargetProperty="Y" Duration="0:0:0.2" EasingFunction="{StaticResource EaseExit}"/>
+                                <DoubleAnimation From="1" To="0" Storyboard.TargetName="Ellipse4" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </media1:ControlStoryboardAction.Storyboard>
+                    </media1:ControlStoryboardAction>
+                </core:DataTriggerBehavior>
+                <core:DataTriggerBehavior Binding="{x:Bind IsExpanded}"
                                               ComparisonCondition="Equal"
                                               Value="False">
-                        <media1:ControlStoryboardAction>
-                            <media1:ControlStoryboardAction.Storyboard>
-                                <Storyboard>
-                                    <DoubleAnimation From="1" To="0" Storyboard.TargetName="ExpandedGlyph" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25"/>
-                                    <DoubleAnimation From="0" To="270" Storyboard.TargetName="ExpandedGlyphTransform" Storyboard.TargetProperty="Angle" Duration="0:0:0.25" EasingFunction="{StaticResource EaseExit}"/>
+                    <media1:ControlStoryboardAction>
+                        <media1:ControlStoryboardAction.Storyboard>
+                            <Storyboard>
+                                <DoubleAnimation From="1" To="0" Storyboard.TargetName="ExpandedGlyph" Storyboard.TargetProperty="Opacity" Duration="0:0:0.25"/>
+                                <DoubleAnimation From="0" To="270" Storyboard.TargetName="ExpandedGlyphTransform" Storyboard.TargetProperty="Angle" Duration="0:0:0.25" EasingFunction="{StaticResource EaseExit}"/>
 
-                                    <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform4" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.15" EasingFunction="{StaticResource EaseEnter}"/>
-                                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse4" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.15"/>
+                                <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform4" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.15" EasingFunction="{StaticResource EaseEnter}"/>
+                                <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse4" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.15"/>
 
-                                    <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform3" Storyboard.TargetProperty="Y" Duration="0:0:0.2"  BeginTime="0:0:0.1" EasingFunction="{StaticResource EaseEnter}"/>
-                                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse3" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.1"/>
+                                <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform3" Storyboard.TargetProperty="Y" Duration="0:0:0.2"  BeginTime="0:0:0.1" EasingFunction="{StaticResource EaseEnter}"/>
+                                <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse3" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.1"/>
 
-                                    <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform2" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.05" EasingFunction="{StaticResource EaseEnter}"/>
-                                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse2" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.05"/>
+                                <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform2" Storyboard.TargetProperty="Y" Duration="0:0:0.2" BeginTime="0:0:0.05" EasingFunction="{StaticResource EaseEnter}"/>
+                                <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse2" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2" BeginTime="0:0:0.05"/>
 
-                                    <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform1" Storyboard.TargetProperty="Y" Duration="0:0:0.2" EasingFunction="{StaticResource EaseEnter}"/>
-                                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse1" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2"/>
-                                </Storyboard>
-                            </media1:ControlStoryboardAction.Storyboard>
-                        </media1:ControlStoryboardAction>
-                    </core:DataTriggerBehavior>
-                </i:Interaction.Behaviors>
-            </Grid>
+                                <DoubleAnimation From="200" To="0" Storyboard.TargetName="EllipseTransform1" Storyboard.TargetProperty="Y" Duration="0:0:0.2" EasingFunction="{StaticResource EaseEnter}"/>
+                                <DoubleAnimation From="0" To="1" Storyboard.TargetName="Ellipse1" Storyboard.TargetProperty="Opacity" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </media1:ControlStoryboardAction.Storyboard>
+                    </media1:ControlStoryboardAction>
+                </core:DataTriggerBehavior>
+            </i:Interaction.Behaviors>
+        </Grid>
         <!--</lib:TreeViewItem>-->
     </DataTemplate>
 
@@ -444,7 +449,7 @@
                 <TextBlock Text="{x:Bind Name}"/>
                 <presence:InlinePresenceControl Presence="{x:Bind Recipient.Presence, Mode=OneWay}" />
             </StackPanel>
-            
+
             <lib:InfoBadge x:Name="unreadIndicator" 
                            x:Load="{x:Bind Unread, Mode=OneWay}" 
                            Grid.Column="2" 

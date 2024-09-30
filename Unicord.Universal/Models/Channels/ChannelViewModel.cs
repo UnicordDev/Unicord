@@ -17,6 +17,7 @@ using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
 using Windows.UI.StartScreen;
+using Windows.Networking.Sockets;
 
 namespace Unicord.Universal.Models.Channels
 {
@@ -129,7 +130,7 @@ namespace Unicord.Universal.Models.Channels
         public bool Muted
             => Channel.IsMuted();
         public int? NullableMentionCount
-            => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
+            => ReadState.MentionCount == 0 ? -1 : ReadState.MentionCount;
         public double MutedOpacity
             => Muted ? 0.5 : 1.0;
         public bool HasTopic
@@ -141,25 +142,25 @@ namespace Unicord.Universal.Models.Channels
         public bool IsNotDM
             => !IsDM;
 
-        public string IconUrl
+        public Uri IconUrl
         {
             get
             {
                 if (Channel is not DiscordDmChannel dm)
-                    return "";
+                    return null;
 
                 if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
                 {
-                    return dm.Recipients[0].GetAvatarUrl(64);
+                    return new Uri(dm.Recipients[0].GetAvatarUrl(64));
                 }
 
                 if (dm.Type == ChannelType.Group)
                 {
-                    if (dm.IconUrl != null) return dm.IconUrl + "?size=64";
+                    if (dm.IconUrl != null) return new Uri(dm.IconUrl + "?size=64");
                     // TODO: default icons?
                 }
 
-                return "";
+                return null;
             }
         }
 
@@ -190,7 +191,7 @@ namespace Unicord.Universal.Models.Channels
             {
                 if (Channel is DiscordDmChannel dm)
                 {
-                    return NullableMentionCount != null;
+                    return NullableMentionCount != -1;
                 }
 
                 return Unread;

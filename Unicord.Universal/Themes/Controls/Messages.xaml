@@ -616,484 +616,249 @@
         <GradientStop Color="#00000000" Offset="0.75"/>
     </LinearGradientBrush>-->
 
-    <Style TargetType="local:MessageControl">
-        <!--<Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>-->
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:MessageControl">
-                    <Border x:Name="MainBorder"
-                            ContextFlyout="{StaticResource MessageContextFlyout}"
-                            Padding="{TemplateBinding Padding}"
-                            Background="Transparent"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="4,0,0,0">
+    <DataTemplate x:Key="MessageContentTemplate" x:DataType="messages:MessageViewModel">
+        <UserControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                     VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Grid x:Name="MainBorder"
+                     ContextFlyout="{StaticResource MessageContextFlyout}"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     BorderThickness="4,0,0,0">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="Mentions">
+                        <VisualState x:Name="NoMention">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="NoMentionStateTrigger" IsActive="{x:Bind converters:Static.Not(IsMention), Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="MainBorder.Background" Value="Transparent"/>
+                                <Setter Target="MainBorder.BorderBrush" Value="Transparent"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Mention">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="MentionStateTrigger" IsActive="{x:Bind IsMention, Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="MainBorder.BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                                <Setter Target="MainBorder.Background" Value="{ThemeResource MentionedMessageBackgroundBrush}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="Edit">
+                        <VisualState x:Name="NotEditing">
+                            <VisualState.StateTriggers>
+                                <StateTrigger IsActive="{x:Bind converters:Static.Not(IsEditing)}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="Markdown.Visibility" Value="Visible"/>
+                                <Setter Target="MessageEditTools.Visibility" Value="Collapsed"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Editing">
+                            <VisualState.StateTriggers>
+                                <StateTrigger IsActive="{x:Bind IsEditing}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="Markdown.Visibility" Value="Collapsed"/>
+                                <Setter Target="MessageEditTools.Visibility" Value="Visible"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="Size">
+                        <VisualState x:Name="Normal">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="NormalSizeTrigger" IsActive="{x:Bind converters:Static.Not(IsCollapsed), Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
+                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Collapsed">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="CollapsedSizeTrigger" IsActive="{x:Bind IsCollapsed, Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
+                                <Setter Target="MainBorder.Padding" Value="8,2,16,0"/>
+                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <!--<VisualState x:Name="EditMode">
+                            <VisualState.Setters>
+                                <Setter Target="AdditionalContent.Visibility" Value="Collapsed"/>
+                                <Setter Target="MainBorder.Padding" Value="4,8,8,8"/>
+                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                            </VisualState.Setters>
+                        </VisualState>-->
+                        <!--<VisualState x:Name="None">
+        <VisualState.Setters>
+            <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
+            <Setter Target="MainBorder.Padding" Value="0,0,0,0"/>
+            <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+        </VisualState.Setters>
+    </VisualState>-->
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
 
-                        <!--<Border.ContextFlyout>
-                            <flyouts:MessageContextFlyout />
-                        </Border.ContextFlyout>-->
+                <Grid x:Name="RootGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>                    
 
-                        <Grid>
+                    <Grid x:Name="ReferencedMessageContainer"
+                          x:Load="{x:Bind converters:Static.NotNull(ReferencedMessage)}"
+                          x:Phase="5"
+                          Margin="56,-8,0,4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+
+                        <Ellipse x:Name="ReplyAvatarContainer"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,4,0"
+                                        Grid.Column="1">
+                            <Ellipse.Fill>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage DecodePixelWidth="16"
+                                                 DecodePixelHeight="16"
+                                                 DecodePixelType="Logical" 
+                                                 UriSource="{x:Bind ReferencedMessage.Author.AvatarUrl}" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{x:Bind ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
+
+                        <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
+                                                Grid.Column="3"
+                                                FontSize="12"
+                                                InlineOnly="True"
+                                                Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                                Channel="{x:Bind Channel.Channel}"
+                                                Text="{x:Bind ReferencedMessage.Content}" 
+                                                IsTextSelectionEnabled="True"
+                                                IsEnabled="False"
+                                                VerticalAlignment="Center"
+                                                Margin="6,0" />
+
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse x:Name="ImageContainer"
+                             x:Load="{x:Bind converters:Static.Not(IsCollapsed)}"   
+                             Width="36"
+                             Height="36"
+                             VerticalAlignment="Top">
+                            <Ellipse.Fill>
+                                <ImageBrush x:Name="ProfileImageBrush">
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage DecodePixelWidth="36"
+                                                        DecodePixelHeight="36"
+                                                        DecodePixelType="Logical" 
+                                                        UriSource="{x:Bind Author.AvatarUrl}" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <Grid x:Name="MessageContent" Grid.Column="1" Margin="8,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <StackPanel x:Name="AuthorContainer" 
+                                    x:Load="{x:Bind converters:Static.Not(IsCollapsed)}"     
+                                    Orientation="Horizontal" Grid.Row="0">
+                                <controls:UsernameControl FontWeight="Bold" User="{x:Bind Author}" FontSize="14" IconSize="14" />
 
-                            <Grid Margin="56,-8,0,4" Visibility="{Binding ReferencedMessage, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="&#xE97A;" Margin="0,0,4,0" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-
-                                <Ellipse x:Name="ReplyAvatarContainer"
-                                         Width="16"
-                                         Height="16"
-                                         Margin="0,0,4,0"
-                                         Grid.Column="1">
-                                    <Ellipse.Fill>
-                                        <ImageBrush>
-                                            <ImageBrush.ImageSource>
-                                                <BitmapImage DecodePixelWidth="16"
-                                                         DecodePixelHeight="16"
-                                                         DecodePixelType="Logical" 
-                                                         UriSource="{Binding ReferencedMessage.Author.AvatarUrl}" />
-                                            </ImageBrush.ImageSource>
-                                        </ImageBrush>
-                                    </Ellipse.Fill>
-                                </Ellipse>
-
-                                <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{Binding ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
-
-                                <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
-                                                       Grid.Column="3"
-                                                       FontSize="12"
-                                                       InlineOnly="True"
-                                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                                       Channel="{Binding Channel.Channel}"
-                                                       Text="{Binding ReferencedMessage.Content}" 
-                                                       IsTextSelectionEnabled="True"
-                                                       IsEnabled="False"
-                                                       VerticalAlignment="Center"
-                                                       Margin="6,0" />
-
-                            </Grid>
-
-                            <Grid Grid.Row="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Ellipse x:Name="ImageContainer"
-                                     Width="36"
-                                     Height="36"
-                                     VerticalAlignment="Top">
-                                    <Ellipse.Fill>
-                                        <ImageBrush x:Name="ProfileImageBrush">
-                                            <ImageBrush.ImageSource>
-                                                <BitmapImage DecodePixelWidth="36"
-                                                         DecodePixelHeight="36"
-                                                         DecodePixelType="Logical" 
-                                                         UriSource="{Binding Author.AvatarUrl}" />
-                                            </ImageBrush.ImageSource>
-                                        </ImageBrush>
-                                    </Ellipse.Fill>
-                                </Ellipse>
-
-                                <Grid x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <StackPanel x:Name="AuthorContainer" Orientation="Horizontal" Grid.Row="0">
-                                        <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
-
-                                        <!--<StackPanel DataContext="{Binding ReferencedMessage}" Visibility="{Binding Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Orientation="Horizontal">
-                                            <TextBlock x:Uid="/Controls/ReplyingTo" Margin="4,0"/>
-                                            <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14"/>
-                                        </StackPanel>-->
-
-                                        <TextBlock Margin="8,1" 
-                                               FontSize="11"
-                                               VerticalAlignment="Bottom" 
-                                               Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, Mode=OneWay}" 
-                                               Opacity="0.4"/>
-                                    </StackPanel>
-
-                                    <controls:MarkdownTextBlock x:Name="Markdown"
-                                                                Grid.Row="1"
-                                                           Channel="{Binding Channel.Channel}"
-                                                           Text="{Binding Content}" 
-                                                           AllowHugeEmoji="True"
-                                                           IsTextSelectionEnabled="True" 
-                                                           WrapCodeBlock="True" 
-                                                           Margin="0,0,2,0" />
-
-                                    <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
-
-                                    <StackPanel x:Name="AdditionalContent"
-                                                Grid.Row="2">
-                                        <ItemsControl x:Name="Embeds"
-                                                      ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
-                                                      ItemsSource="{Binding Embeds}"
-                                                      HorizontalAlignment="Left"/>
-
-                                        <ItemsControl x:Name="Attachments"
-                                                      ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                                      ItemsSource="{Binding Attachments}"
-                                                      HorizontalAlignment="Left"/>
-
-                                        <ItemsControl x:Name="Stickers"
-                                                      ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
-                                                      ItemsSource="{Binding Stickers}"
-                                                      HorizontalAlignment="Left"/>
-
-                                        <ItemsControl x:Name="Reactions"
-                                                      Margin="0,4,0,0"
-                                                      ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                                      ItemsSource="{Binding Reactions}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                        </ItemsControl>
-                                        
-                                        <ItemsControl x:Name="Components"
-                                                      ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
-                                                      ItemsSource="{Binding Components}"
-                                                      HorizontalAlignment="Left"/>
-                                    </StackPanel>
-                                </Grid>
-
-                            </Grid>
-                        </Grid>
-
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="Mentions">
-                                <VisualState x:Name="NoMention">
-                                    <VisualState.Setters>
-                                        <Setter Target="MainBorder.Background" Value="Transparent"/>
-                                        <Setter Target="MainBorder.BorderBrush" Value="Transparent"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Mention">
-                                    <VisualState.Setters>
-                                        <Setter Target="MainBorder.BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                        <Setter Target="MainBorder.Background" Value="{ThemeResource MentionedMessageBackgroundBrush}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="Edit">
-                                <VisualState x:Name="NotEditing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Visible"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Editing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Visible"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="Size">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="ImageContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Collapsed">
-                                    <VisualState.Setters>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="ImageContainer.Visibility" Value="Collapsed"/>
-                                        <Setter Target="AuthorContainer.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="8,2,16,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="EditMode">
-                                    <VisualState.Setters>
-                                        <Setter Target="ImageContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="Embeds.Visibility" Value="Collapsed"/>
-                                        <Setter Target="Attachments.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,8,8,8"/>
-                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="None">
-                                    <VisualState.Setters>
-                                        <Setter Target="ImageContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="AuthorContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="0,0,0,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
-    <Style x:Key="CompactWithAvatarsMessageControl" TargetType="local:MessageControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:MessageControl">
-                    <Border x:Name="MainBorder"
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0,1,0,0">
-
-                        <!--<Border.ContextFlyout>
-                            <flyouts:MessageContextFlyout />
-                        </Border.ContextFlyout>-->
-
-                        <Grid DataContext="{TemplateBinding MessageViewModel}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition x:Name="AutoColumn" Width="90" />
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel x:Name="AuthorContainer" Width="{Binding ActualWidth, ElementName=AutoColumn}" Orientation="Horizontal" VerticalAlignment="Top">
-                                <Ellipse Name="ImageContainer"
-                                     Width="24"
-                                     Height="24">
-                                    <Ellipse.Fill>
-                                        <ImageBrush x:Name="ProfileImageBrush">
-                                            <ImageBrush.ImageSource>
-                                                <BitmapImage DecodePixelWidth="24"
-                                                         DecodePixelHeight="24"
-                                                         DecodePixelType="Logical" 
-                                                         UriSource="{Binding Author.AvatarUrl}" />
-                                            </ImageBrush.ImageSource>
-                                        </ImageBrush>
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                <TextBlock Margin="8,1" 
+                                           x:Phase="4"                               
+                                           FontSize="11"
+                                           VerticalAlignment="Bottom" 
+                                           Text="{x:Bind Timestamp, Converter={StaticResource DateTimeConverter}, Mode=OneWay}" 
+                                           Opacity="0.4"/>
                             </StackPanel>
 
-                            <StackPanel x:Name="Content" VerticalAlignment="Center" Grid.Column="1" Margin="8,0,0,0">
+                            <controls:MarkdownTextBlock x:Name="Markdown"
+                                                    Grid.Row="1"
+                                                    Channel="{x:Bind Channel.Channel}"
+                                                    Text="{x:Bind Content}" 
+                                                    AllowHugeEmoji="True"
+                                                    IsTextSelectionEnabled="True" 
+                                                    WrapCodeBlock="True" 
+                                                    Margin="0,0,2,0" />
 
-                                <controls:MarkdownTextBlock x:Name="Markdown"
-                                                           Channel="{Binding Channel}"
-                                                           Text="{Binding Content}" 
-                                                           AllowHugeEmoji="True"
-                                                           IsTextSelectionEnabled="False" 
-                                                           WrapCodeBlock="True" 
-                                                           Margin="0,0,2,0" />
+                            <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
 
+                            <StackPanel x:Name="AdditionalContent"
+                                    Grid.Row="2">
+                                <ItemsControl x:Name="EmbedsContainer"
+                                          x:Phase="3"
+                                          ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
+                                          ItemsSource="{x:Bind Embeds}"
+                                          HorizontalAlignment="Left"/>
 
-                                <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
+                                <ItemsControl x:Name="AttachmentsContainer"
+                                          x:Phase="3"
+                                          ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
+                                          ItemsSource="{x:Bind Attachments}"
+                                          HorizontalAlignment="Left"/>
 
-                                <ItemsControl x:Name="Embeds"                                               
-                                              Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
-                                              ItemsSource="{Binding Embeds}"/>
+                                <ItemsControl x:Name="StickersContainer"
+                                          x:Phase="4"
+                                          ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
+                                          ItemsSource="{x:Bind Stickers}"
+                                          HorizontalAlignment="Left"/>
 
-                                <ItemsControl x:Name="Attachments"
-                                              Visibility="{Binding Attachments, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                              ItemsSource="{Binding Attachments}"/>
+                                <ItemsControl x:Name="ComponentsContainer"
+                                          x:Phase="4"
+                                          ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                          ItemsSource="{x:Bind Components}"
+                                          HorizontalAlignment="Left"/>
 
-                                <ItemsControl x:Name="Reactions"
-                                              Margin="0,4,0,0"
-                                              Visibility="{Binding Reactions, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                              ItemsSource="{Binding Reactions}">
+                                <ItemsControl x:Name="ReactionsContainer"
+                                          x:Phase="3"
+                                          Margin="0,4,0,0"
+                                          ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
+                                          ItemsSource="{x:Bind Reactions}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4" />
+                                            <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </StackPanel>
-
                         </Grid>
+                    </Grid>
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="Edit">
-                                <VisualState x:Name="NotEditing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Visible"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Editing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Visible"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="Size">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="1"/>
-                                        <Setter Target="ImageContainer.Visibility" Value="Visible"/>
-                                        <Setter Target="Content.Margin" Value="8,0,0,0"/>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,8,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="8,8,8,0"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0,1,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Collapsed">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="0"/>
-                                        <Setter Target="ImageContainer.Visibility" Value="Collapsed"/>
-                                        <Setter Target="Content.Margin" Value="32,0,0,0"/>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,2,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="8,0,8,0"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="EditMode">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="1"/>
-                                        <Setter Target="Embeds.Visibility" Value="Collapsed"/>
-                                        <Setter Target="Attachments.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="8"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                </Grid>
+            </Grid>
+        </UserControl>
+    </DataTemplate>
 
-    <Style x:Key="CompactMessageControl" TargetType="local:MessageControl">
+    <Style TargetType="local:MessageControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MessageControl">
-                    <Border x:Name="MainBorder"
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0,1,0,0">
-
-                        <!--<Border.ContextFlyout>
-                            <flyouts:MessageContextFlyout />
-                        </Border.ContextFlyout>-->
-
-                        <Grid DataContext="{TemplateBinding MessageViewModel}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="90" />
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel x:Name="AuthorContainer" Orientation="Horizontal" VerticalAlignment="Top">
-                                <controls:UsernameControl FontWeight="Bold" User="{Binding Author}" FontSize="14" IconSize="14" />
-                            </StackPanel>
-
-                            <StackPanel x:Name="Content" Grid.Column="1" Margin="8,0,0,0">
-
-                                <controls:MarkdownTextBlock x:Name="Markdown"
-                                                           Channel="{Binding Channel}"
-                                                           Text="{Binding Content}" 
-                                                           AllowHugeEmoji="True"
-                                                           IsTextSelectionEnabled="False" 
-                                                           WrapCodeBlock="True" 
-                                                           Margin="0,0,2,0" />
-
-                                <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Visibility="Collapsed"/>
-
-                                <ItemsControl x:Name="Embeds" 
-                                              Visibility="{Binding Embeds, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
-                                              ItemsSource="{Binding Embeds}"/>
-
-                                <ItemsControl x:Name="Attachments"
-                                              Visibility="{Binding Attachments, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                              ItemsSource="{Binding Attachments}"/>
-
-                                <ItemsControl x:Name="Reactions"
-                                              Margin="0,4,0,0"
-                                              Visibility="{Binding Reactions, Converter={StaticResource BoolVisibilityConverter}}" 
-                                              ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                              ItemsSource="{Binding Reactions}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                            </StackPanel>
-
-                        </Grid>
-
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="Edit">
-                                <VisualState x:Name="NotEditing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Visible"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Editing">
-                                    <VisualState.Setters>
-                                        <Setter Target="Markdown.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MessageEditTools.Visibility" Value="Visible"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="Size">
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="1"/>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,4,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="8,8,8,0"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0,1,0,0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Collapsed">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="0"/>
-                                        <Setter Target="Embeds.Visibility" Value="Visible"/>
-                                        <Setter Target="Attachments.Visibility" Value="Visible"/>
-                                        <Setter Target="MainBorder.Padding" Value="4,2,8,0"/>
-                                        <Setter Target="MainBorder.Margin" Value="8,0,8,0"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="EditMode">
-                                    <VisualState.Setters>
-                                        <Setter Target="AuthorContainer.Opacity" Value="1"/>
-                                        <Setter Target="Embeds.Visibility" Value="Collapsed"/>
-                                        <Setter Target="Attachments.Visibility" Value="Collapsed"/>
-                                        <Setter Target="MainBorder.Padding" Value="8"/>
-                                        <Setter Target="MainBorder.BorderThickness" Value="0"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Border>
+                    <ContentPresenter Content="{TemplateBinding MessageViewModel}" Padding="{TemplateBinding Padding}" ContentTemplate="{StaticResource MessageContentTemplate}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -1121,9 +886,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
-    
-
 
 </ResourceDictionary>

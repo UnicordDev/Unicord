@@ -64,13 +64,13 @@ namespace Unicord.Universal.Controls.Messages
         {
             if (e.NewValue is MessageViewModel message)
             {
-                this.DataContext = message;
+                //this.DataContext = message;
                 this.UpdateProfileImage(message);
                 this.UpdateCollapsedState();
             }
             else
             {
-                this.DataContext = null;
+                //this.DataContext = null;
                 this.ClearProfileImage();
                 // reset
             }

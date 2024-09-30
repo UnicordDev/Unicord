@@ -1,4 +1,5 @@
 ﻿<ResourceDictionary
+    x:Class="Unicord.Universal.Resources.Controls.Channels"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Controls.Channels" 
@@ -6,8 +7,9 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
     xmlns:users="using:Unicord.Universal.Controls.Users"
     xmlns:presence="using:Unicord.Universal.Controls.Presence"
-    xmlns:emoji="using:Unicord.Universal.Controls.Emoji">
-
+    xmlns:emoji="using:Unicord.Universal.Controls.Emoji" 
+    xmlns:channels="using:Unicord.Universal.Models.Channels" 
+    xmlns:converters="using:Unicord.Universal.Converters">
 
     <Style TargetType="local:ChannelIconControl" >
         <Setter Property="Template">
@@ -39,49 +41,200 @@
         </Setter>
     </Style>
 
+    <DataTemplate x:Name="GroupChannelListContentTemplate" x:DataType="channels:DmChannelListViewModel">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}"
+              VerticalAlignment="Stretch" 
+              Background="Transparent" 
+              Padding="0,8">
+            <Grid Margin="0,0,8,0" Opacity="{x:Bind MutedOpacity}">
+                <ToolTipService.ToolTip>
+                    <ToolTip IsEnabled="{x:Bind HasTopic}">
+                        <controls:MarkdownTextBlock Text="{x:Bind Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{x:Bind Channel}" />
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" MinWidth="16"/>
+                </Grid.ColumnDefinitions>
+
+                <lib:PersonPicture x:Name="Avatar"
+                                   x:Phase="1"
+                                   x:Load="True" 
+                                   Margin="2,0,0,0" 
+                                   Width="32" 
+                                   Height="32" 
+                                   DisplayName="{x:Bind Name}">
+                    <lib:PersonPicture.ProfilePicture>
+                        <BitmapImage UriSource="{x:Bind IconUrl}" DecodePixelWidth="32" DecodePixelHeight="32" DecodePixelType="Logical"/>
+                    </lib:PersonPicture.ProfilePicture>
+                </lib:PersonPicture>
+
+                <TextBlock Text="{x:Bind Name}" Grid.Column="1" VerticalAlignment="Center" Margin="8,0" TextTrimming="CharacterEllipsis"/>
+
+                <lib:InfoBadge x:Name="unreadIndicator" 
+                               x:Load="{x:Bind ShouldShowNotificaitonIndicator, Mode=OneWay}"
+                               x:Phase="2"
+                               Grid.Column="2" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               MinWidth="8"
+                               MinHeight="8"
+                               Margin="0"
+                               Value="{x:Bind NullableMentionCount.Value, Mode=OneWay}" />
+            </Grid>
+        </Grid>
+    </DataTemplate>
+    
+    <DataTemplate x:Name="DirectMessageChannelListContentTemplate" x:DataType="channels:DmChannelListViewModel">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}"
+              VerticalAlignment="Stretch" 
+              Background="Transparent" 
+              Padding="0,8">
+            <Grid Margin="0,0,8,0" Opacity="{x:Bind MutedOpacity}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" MinWidth="16"/>
+                </Grid.ColumnDefinitions>
+
+                <users:AvatarControl x:Name="Avatar"
+                                  x:Phase="1"
+                                  x:Load="True"
+                                  Margin="2,0,0,0"
+                                  Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
+                                  Width="32" 
+                                  Height="32"
+                                  Source="{x:Bind IconUrl}" 
+                                  Presence="{x:Bind Recipient.Presence}" />
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
+                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                    <presence:InlinePresenceControl x:Name="InlinePresence" x:Load="{x:Bind converters:Static.NotNull(Recipient.Presence)}" x:Phase="3" Presence="{Binding Recipient.Presence, Mode=OneWay}" />
+                </StackPanel>
+
+                <lib:InfoBadge x:Name="unreadIndicator" 
+                            x:Load="{x:Bind ShouldShowNotificaitonIndicator, Mode=OneWay}"
+                            x:Phase="3"
+                            Grid.Column="2" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            MinWidth="8"
+                            MinHeight="8"
+                            Margin="0"
+                            Value="{x:Bind NullableMentionCount.Value, Mode=OneWay}" />
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ThreadChannelListContentTemplate" x:DataType="channels:ChannelListViewModel">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}"
+              VerticalAlignment="Stretch" 
+              Background="Transparent" 
+              Padding="0,4">
+            <Grid Margin="4,0,16,0" Opacity="{x:Bind MutedOpacity}">
+                <ToolTipService.ToolTip>
+                    <ToolTip IsEnabled="{x:Bind HasTopic}">
+                        <controls:MarkdownTextBlock Text="{x:Bind Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{x:Bind Channel}" />
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" MinWidth="16"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="Icon"
+                           FontSize="16"
+                           RenderTransformOrigin="0.5,0.5"
+                           VerticalAlignment="Center" 
+                           Margin="16,0,4,0" 
+                           FontFamily="{StaticResource FluentSystemIcons}"
+                           Text="&#xF176;">
+                    <TextBlock.RenderTransform>
+                        <RotateTransform Angle="180"/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+
+                <TextBlock Text="{x:Bind Name}"
+                           Grid.Column="1" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Stretch" 
+                           TextWrapping="NoWrap" 
+                           Margin="0,0,4,0" />
+
+                <lib:InfoBadge x:Name="unreadIndicator" 
+                               x:Load="{x:Bind ShouldShowNotificaitonIndicator, Mode=OneWay}"
+                               Grid.Column="2" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               MinWidth="8"
+                               MinHeight="8"
+                               Margin="0"
+                               Value="{x:Bind NullableMentionCount.Value, Mode=OneWay}" />
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ChannelListContentTemplate" x:DataType="channels:ChannelListViewModel">
+        <Grid ContextFlyout="{StaticResource ChannelContextFlyout}"
+              VerticalAlignment="Stretch" 
+              Background="Transparent" 
+              Padding="0,8">
+            <Grid Margin="0,0,16,0" Opacity="{x:Bind MutedOpacity}">
+                <ToolTipService.ToolTip>
+                    <ToolTip IsEnabled="{x:Bind HasTopic}">
+                        <controls:MarkdownTextBlock Text="{x:Bind Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{x:Bind Channel}" />
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" MinWidth="16"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="Icon"
+                           FontSize="16"
+                           VerticalAlignment="Center" 
+                           Margin="16,0,8,0"
+                           FontFamily="{StaticResource FluentSystemIcons}" 
+                           Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
+
+                <TextBlock Text="{x:Bind Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
+
+                <lib:InfoBadge x:Name="unreadIndicator" 
+                               x:Load="{x:Bind ShouldShowNotificaitonIndicator, Mode=OneWay}"
+                               x:Phase="3"
+                               Grid.Column="2" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"
+                               MinWidth="8"
+                               MinHeight="8"
+                               Margin="0"
+                               Value="{x:Bind NullableMentionCount.Value, Mode=OneWay}" />
+            </Grid>
+        </Grid>
+    </DataTemplate>
+
+    <Style TargetType="local:ChannelListControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ChannelListControl">
+                    <ContentControl Content="{TemplateBinding Channel}" ContentTemplate="{StaticResource ChannelListContentTemplate}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
     <Style x:Key="GroupChannelListStyle" TargetType="local:ChannelListControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
-                    <Grid DataContext="{TemplateBinding Channel}"
-                          ContextFlyout="{StaticResource ChannelContextFlyout}"
-                          VerticalAlignment="Stretch" 
-                          Background="Transparent" 
-                          Padding="0,8">
-                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
-                            <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding HasTopic}">
-                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
-                                </ToolTip>
-                            </ToolTipService.ToolTip>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto" MinWidth="16"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <lib:PersonPicture Margin="2,0,0,0" 
-                                               Width="32" 
-                                               Height="32" 
-                                               DisplayName="{Binding Name}"
-                                               ProfilePicture="{Binding IconUrl}"/>
-
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
-                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-
-                            <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
-                                   Grid.Column="2" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center"
-                                   MinWidth="8"
-                                   MinHeight="8"
-                                   Margin="0"
-                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
-                        </Grid>
-                    </Grid>
+                    <ContentControl Content="{TemplateBinding Channel}" ContentTemplate="{StaticResource GroupChannelListContentTemplate}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -91,41 +244,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
-                    <Grid DataContext="{TemplateBinding Channel}"
-                          ContextFlyout="{StaticResource ChannelContextFlyout}"
-                          VerticalAlignment="Stretch" 
-                          Background="Transparent" 
-                          Padding="0,8">
-                        <Grid Margin="0,0,8,0" Opacity="{Binding MutedOpacity}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto" MinWidth="16"/>
-                            </Grid.ColumnDefinitions>
-
-                            <users:AvatarControl Margin="2,0,0,0"
-                                 Style="{ThemeResource SmallAvatarWithPresenceStyle}" 
-                                 Width="32" 
-                                 Height="32"
-                                 Source="{Binding IconUrl}" 
-                                 Presence="{Binding Recipient.Presence}" />
-
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
-                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
-                                <presence:InlinePresenceControl Presence="{Binding Recipient.Presence, Mode=OneWay}" />
-                            </StackPanel>
-
-                            <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
-                                   Grid.Column="2" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center"
-                                   MinWidth="8"
-                                   MinHeight="8"
-                                   Margin="0"
-                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
-                        </Grid>
-                    </Grid>
+                    <ContentControl Content="{TemplateBinding Channel}" ContentTemplate="{StaticResource DirectMessageChannelListContentTemplate}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -135,87 +254,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChannelListControl">
-                    <Grid DataContext="{TemplateBinding Channel}"
-                        ContextFlyout="{StaticResource ChannelContextFlyout}"
-                        VerticalAlignment="Stretch" 
-                        Background="Transparent" 
-                        Padding="0,4">
-                        <Grid Margin="4,0,16,0" Opacity="{Binding MutedOpacity}">
-                            <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding HasTopic}">
-                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
-                                </ToolTip>
-                            </ToolTipService.ToolTip>
-
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto" MinWidth="16"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock FontSize="16" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" Margin="16,0,4,0" FontFamily="{StaticResource FluentSystemIcons}" Text="&#xF176;">
-                                <TextBlock.RenderTransform>
-                                    <RotateTransform Angle="180"/>
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
-
-                            <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
-
-                            <lib:InfoBadge x:Name="unreadIndicator" 
-                                 Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
-                                 Grid.Column="2" 
-                                 HorizontalAlignment="Center" 
-                                 VerticalAlignment="Center"
-                                 MinWidth="8"
-                                 MinHeight="8"
-                                 Margin="0"
-                                 Value="{Binding NullableMentionCount, Mode=OneWay}" />
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="local:ChannelListControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:ChannelListControl">
-                    <Grid DataContext="{TemplateBinding Channel}"
-                          ContextFlyout="{StaticResource ChannelContextFlyout}"
-                          VerticalAlignment="Stretch" 
-                          Background="Transparent" 
-                          Padding="0,8">
-                        <Grid Margin="0,0,16,0" Opacity="{Binding MutedOpacity}">
-                            <ToolTipService.ToolTip>
-                                <ToolTip IsEnabled="{Binding HasTopic}">
-                                    <controls:MarkdownTextBlock Text="{Binding Topic}" FontSize="{ThemeResource ToolTipContentThemeFontSize}" Channel="{Binding Channel}" />
-                                </ToolTip>
-                            </ToolTipService.ToolTip>
-
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto" MinWidth="16"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0" FontFamily="{StaticResource FluentSystemIcons}" Text="{Binding Converter={StaticResource ChannelSymbolConverter}}"/>
-                            
-                            <TextBlock Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Margin="0,0,4,0" />
-
-                            <lib:InfoBadge x:Name="unreadIndicator" 
-                                   Visibility="{Binding ShouldShowNotificaitonIndicator, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"
-                                   Grid.Column="2" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center"
-                                   MinWidth="8"
-                                   MinHeight="8"
-                                   Margin="0"
-                                   Value="{Binding NullableMentionCount, Mode=OneWay}" />
-                        </Grid>
-                    </Grid>
+                    <ContentControl Content="{TemplateBinding Channel}" ContentTemplate="{StaticResource ThreadChannelListContentTemplate}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

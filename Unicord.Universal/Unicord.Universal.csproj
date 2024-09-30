@@ -191,14 +191,14 @@
     <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
     <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
     <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
+    <Compile Include="Converters\Static.cs" />
     <Compile Include="Dialogs\CaptchaRequestDialog.xaml.cs">
       <DependentUpon>CaptchaRequestDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
-    <Compile Include="Extensions\GuildExtensions.cs" />
-    <Compile Include="Extensions\UserExtensions.cs" />
+    <Compile Include="Extensions\AvatarExtensions.cs" />
     <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
@@ -551,6 +551,9 @@
     <Compile Include="Services\DiscordManager.cs" />
     <Compile Include="Services\SplitPaneService.cs" />
     <Compile Include="Services\ThemeService.cs" />
+    <Compile Include="Themes\Controls\Channels.xaml.cs">
+      <DependentUpon>Channels.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Themes\Controls\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>

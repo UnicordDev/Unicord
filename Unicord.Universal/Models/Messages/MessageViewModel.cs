@@ -31,6 +31,9 @@ namespace Unicord.Universal.Models.Messages
         private ChannelViewModel _channelViewModelCache;
         private UserViewModel _userViewModelCache;
         private bool _isSelected;
+        private bool _isEditing;
+
+        private MessageViewModel _referencedMessage;
 
         public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
             : base((ViewModelBase)parentMessage ?? parent)
@@ -39,6 +42,9 @@ namespace Unicord.Universal.Models.Messages
             Parent = parent;
 
             _channelViewModelCache = parent;
+
+            if (discordMessage.ReferencedMessage != null)
+                _referencedMessage = new MessageViewModel(discordMessage.ReferencedMessage, null, this);
 
             WeakReferenceMessenger.Default.Register<MessageViewModel, MessageUpdateEventArgs>(this, (t, e) => t.OnMessageUpdated(e.Event));
 
@@ -97,9 +103,7 @@ namespace Unicord.Universal.Models.Messages
         public ulong Id
             => Message.Id;
         public MessageViewModel ReferencedMessage
-            => Message.ReferencedMessage != null ?
-                new MessageViewModel(Message.ReferencedMessage, Parent, this) :
-                null;
+            => _referencedMessage;
         public ChannelViewModel Channel
             => _channelViewModelCache ??=
                 (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this));
@@ -200,6 +204,8 @@ namespace Unicord.Universal.Models.Messages
         }
 
         public bool IsSelected { get => _isSelected; set => OnPropertySet(ref _isSelected, value); }
+        
+        public bool IsEditing { get => _isEditing; set => OnPropertySet(ref _isEditing, value); }
 
         public ObservableCollection<EmbedViewModel> Embeds { get; }
         public ObservableCollection<AttachmentViewModel> Attachments { get; }
