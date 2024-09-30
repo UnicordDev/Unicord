@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus;
 using Unicord.Universal.Models;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Commands
 {
@@ -19,7 +20,7 @@ namespace Unicord.Universal.Commands
         public DiscordCommand(T viewModel)
         {
             this.viewModel = viewModel;
-            this.discord = App.Discord;
+            this.discord = DiscordManager.Discord;
         }
 
         public virtual bool CanExecute(object parameter)

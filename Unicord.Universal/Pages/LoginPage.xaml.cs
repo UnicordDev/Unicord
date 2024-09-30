@@ -65,7 +65,7 @@ namespace Unicord.Universal.Pages
                     throw new ArgumentException("Your token cannot be empty! If you were logging in via the browser, try using your token.");
 
                 mainPage.ShowConnectingOverlay();
-                await App.LoginAsync(token, OnReady, App.LoginError, false);
+                await DiscordManager.LoginAsync(token, OnReady, App.LoginError, false);
             }
             catch (Exception ex)
             {

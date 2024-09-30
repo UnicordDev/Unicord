@@ -8,7 +8,7 @@ using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
 {
-    public class ToastManager
+    internal class ToastManager
     {
         private ToastNotifier _toastNotifier = null;
         private ToastNotificationHistory _toastHistory;

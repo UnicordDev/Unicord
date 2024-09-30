@@ -9,22 +9,14 @@ using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Relationships
 {
-    public class RelationshipViewModel : ViewModelBase, IEquatable<RelationshipViewModel>, IComparable<RelationshipViewModel>
+    public class RelationshipViewModel(DiscordRelationship rel, ViewModelBase owner) : ViewModelBase(owner), IEquatable<RelationshipViewModel>, IComparable<RelationshipViewModel>
     {
-        private DiscordRelationship rel;
+        private DiscordRelationship rel = rel;
 
-        public RelationshipViewModel(DiscordRelationship rel, ViewModelBase owner)
-            : base(owner)
-        {
-            this.rel = rel;
-        }
-
-        public ulong Id 
+        public ulong Id
             => rel.Id;
-
         public DiscordRelationshipType Type
             => rel.RelationshipType;
-
         public UserViewModel User
             => new UserViewModel(rel.User, null, this);
 

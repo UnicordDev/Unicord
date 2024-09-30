@@ -12,7 +12,7 @@ using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Shared
 {
-    public class BadgeManager
+    internal class BadgeManager
     {
         private BadgeUpdater _badgeUpdateManager;
         private DiscordClient _discord;
@@ -31,7 +31,8 @@ namespace Unicord.Universal.Shared
                 var unread = false;
                 foreach (var (key, value) in _discord.ReadStates)
                 {
-                    if (_discord.TryGetCachedChannel(key, out var channel) && !channel.IsMuted())
+                    if (_discord.TryGetCachedChannel(key, out var channel) && !channel.IsMuted() 
+                        && (channel.Guild == null || !channel.Guild.IsMuted()))
                     {
                         unread |= channel.IsUnread();
                         mentions += value.MentionCount;

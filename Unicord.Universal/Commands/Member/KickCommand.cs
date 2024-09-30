@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Services;
 using Unicord.Universal.Models.User;
 using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Controls;
@@ -22,7 +23,7 @@ namespace Unicord.Universal.Commands.Members
             if (member == null)
                 return false;
 
-            if (member.Id == App.Discord.CurrentUser.Id)
+            if (member.Id == DiscordManager.Discord.CurrentUser.Id)
                 return false;
 
             if (!Tools.CheckRoleHierarchy(member.Guild.CurrentMember, member))

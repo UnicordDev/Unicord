@@ -1,7 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +18,7 @@ using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages.Components;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
+using Unicord.Universal.Services;
 using Windows.ApplicationModel.Resources;
 
 namespace Unicord.Universal.Models.Messages
@@ -72,6 +73,8 @@ namespace Unicord.Universal.Models.Messages
 
         private List<EmbedViewModel> GetGroupedEmbeds(DiscordMessage message)
         {
+            if (message.Embeds == null) return [];
+
             var embedGroups = message.Embeds
                 .GroupBy(g => g.Url);
 
@@ -164,7 +167,8 @@ namespace Unicord.Universal.Models.Messages
             get
             {
                 var currentMember = Message.Channel.Guild?.CurrentMember;
-                return Message.MentionEveryone || Message.MentionedUsers.Any(u => u?.Id == App.Discord.CurrentUser.Id) ||
+                var currentUserId = DiscordManager.Discord.CurrentUser.Id;
+                return Message.MentionEveryone || Message.MentionedUsers.Any(u => u?.Id == currentUserId) ||
                     (currentMember != null && Message.MentionedRoleIds.Any(r => currentMember.RoleIds.Contains(r)));
             }
         }

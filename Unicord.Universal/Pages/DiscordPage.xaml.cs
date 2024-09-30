@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Extensions;
@@ -42,6 +43,8 @@ namespace Unicord.Universal.Pages
     {
         public Frame MainFrame => mainFrame;
         public Frame LeftSidebarFrame => leftSidebarFrame;
+        public Frame RightSidebarFrame => rightSidebarFrame;
+
 
         private MainPageArgs _args;
         private bool _loaded;
@@ -49,25 +52,15 @@ namespace Unicord.Universal.Pages
         internal DiscordPageViewModel Model { get; }
         internal bool IsWindowVisible { get; private set; }
 
-        internal SwipeOpenHelper _helper;
-
-        private bool _isPaneOpen => MainGridTransform.X != 0;
-
         public DiscordPage()
         {
             InitializeComponent();
             Model = DataContext as DiscordPageViewModel;
 
-            _helper = new SwipeOpenHelper(Content, this, OpenPaneMobileStoryboard, ClosePaneMobileStoryboard);
-            _helper.IsEnabled = false;
-
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
 
             WeakReferenceMessenger.Default.Register<DiscordPage, MessageCreateEventArgs>(this, (r, e) => r.Notification_MessageCreated(e.Event));
-
-            //GuildsView.RegisterPropertyChangedCallback(MUXC.TreeView.SelectedItemProperty, )
-            //this.AddAccelerator(Windows.System.VirtualKey.O, Windows.System.VirtualKeyModifiers.Control, (_, _) => Model.IsRightPaneOpen = !Model.IsRightPaneOpen);
         }
 
         private void Current_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
@@ -87,7 +80,7 @@ namespace Unicord.Universal.Pages
 
                 if (_loaded && _args.ChannelId != 0)
                 {
-                    if (App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
+                    if (DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                     {
                         var service = DiscordNavigationService.GetForCurrentView();
                         await service.NavigateAsync(channel);
@@ -115,7 +108,7 @@ namespace Unicord.Universal.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (App.Discord == null)
+            if (DiscordManager.Discord == null)
                 return; // im not 100% sure why this gets called on logout but it does so
 
             Analytics.TrackEvent("DiscordPage_Loaded");
@@ -126,10 +119,14 @@ namespace Unicord.Universal.Pages
 
                 _loaded = true;
 
-                this.FindParent<MainPage>().HideConnectingOverlay();
+                SplitPaneService.GetForCurrentView()
+                    .ToggleLeftPane();
+
+                this.FindParent<MainPage>()
+                    .HideConnectingOverlay();
 
                 var service = DiscordNavigationService.GetForCurrentView();
-                if (_args != null && _args.ChannelId != 0 && App.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
+                if (_args != null && _args.ChannelId != 0 && DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToSpecifiedChannel");
                     await service.NavigateAsync(channel);
@@ -142,19 +139,16 @@ namespace Unicord.Universal.Pages
                     MainFrame.Navigate(typeof(FriendsPage));
                 }
 
-                //var helper = SwipeOpenService.GetForCurrentView();
-                //helper.AddAdditionalElement(SwipeHelper);
-
-                var notificationService = BackgroundNotificationService.GetForCurrentView();
-                await notificationService.StartupAsync();
-
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
                 if (possibleConnection != null)
                 {
                     (DataContext as DiscordPageViewModel).VoiceModel = possibleConnection;
                 }
 
-                await ContactListManager.UpdateContactsListAsync();
+                var notificationService = BackgroundNotificationService.GetForCurrentView();
+                await notificationService.StartupAsync();
+
+                _ = Task.Run(ContactListManager.UpdateContactsListAsync);
             }
             catch (Exception ex)
             {
@@ -170,7 +164,9 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && NotificationUtils.WillShowToast(App.Discord, e.Message) && IsWindowVisible)
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && 
+                NotificationUtils.WillShowToast(DiscordManager.Discord, e.Message) && 
+                IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
             }
@@ -178,37 +174,7 @@ namespace Unicord.Universal.Pages
 
         private void ShowNotification(DiscordMessage message)
         {
-            notification.Show(new MessageControl() { MessageViewModel = new MessageViewModel(message) }, 7_000);
-        }
-
-        public void ToggleSplitPane()
-        {
-            if (_isPaneOpen)
-            {
-                CloseSplitPane();
-            }
-            else
-            {
-                OpenSplitPane();
-            }
-        }
-
-        public void OpenSplitPane()
-        {
-            if (ActualWidth <= 768)
-            {
-                _helper.Cancel();
-                OpenPaneMobileStoryboard.Begin();
-            }
-        }
-
-        public void CloseSplitPane()
-        {
-            if (ActualWidth <= 768 || MainGridTransform.X < 0)
-            {
-                _helper.Cancel();
-                ClosePaneMobileStoryboard.Begin();
-            }
+            notification.Show(new MessageViewModel(message), 7_000);
         }
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
@@ -253,11 +219,6 @@ namespace Unicord.Universal.Pages
             await service.OpenAsync();
         }
 
-        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            CloseSplitPane();
-        }
-
         private async void TreeView_ItemInvoked(MUXC.TreeView sender, MUXC.TreeViewItemInvokedEventArgs args)
         {
             if (args.InvokedItem is GuildListFolderViewModel viewModel)
@@ -296,6 +257,18 @@ namespace Unicord.Universal.Pages
             }
 
             sender.SelectedItem = null;
+        }
+
+        internal void SetViewMode(ViewMode viewMode)
+        {
+            Debug.WriteLine(viewMode);
+            VisualStateManager.GoToState(this, viewMode.ToString(), true);
+        }
+
+        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            SplitPaneService.GetForCurrentView()
+                .ToggleLeftPane();
         }
     }
 }

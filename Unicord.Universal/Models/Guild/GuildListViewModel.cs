@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models.Guild
@@ -34,11 +34,20 @@ namespace Unicord.Universal.Models.Guild
         {
             get
             {
-                if (Muted) 
+                if (Muted)
                     return -1;
 
-                var v = AccessibleChannels.Sum(r => r.ReadState.MentionCount);
-                return v == 0 ? -1 : v;
+                var count = 0;
+                foreach (var channel in AccessibleChannels)
+                {
+                    if (channel.Muted)
+                        continue;
+
+                    if (discord.ReadStates.TryGetValue(channel.Id, out var rs))
+                        count += rs.MentionCount;
+                }
+
+                return count == 0 ? -1 : count;
             }
         }
 

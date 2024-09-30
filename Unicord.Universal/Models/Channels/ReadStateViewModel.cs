@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace Unicord.Universal.Models.Channels
 {
@@ -23,7 +23,7 @@ namespace Unicord.Universal.Models.Channels
             this.channelId = channelId;
             this.viewModel = channelViewModel ?? new ChannelViewModel(channelId, true, this);
 
-            if (!App.Discord.ReadStates.TryGetValue(channelId, out readState))
+            if (!discord.ReadStates.TryGetValue(channelId, out readState))
                 readState = null;
 
             WeakReferenceMessenger.Default.Register<ReadStateViewModel, ChannelUnreadUpdateEventArgs>(this, (r, m) => r.OnChannelUnreadUpdate(m.Event));

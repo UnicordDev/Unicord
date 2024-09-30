@@ -2,7 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.Enums;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +23,7 @@ namespace Unicord.Universal.Models
             Blocked = new ObservableCollection<RelationshipViewModel>();
             Pending = new ObservableCollection<RelationshipViewModel>();
 
-            foreach (var rel in App.Discord.Relationships.Values.OrderBy(r => r.User?.DisplayName))
+            foreach (var rel in discord.Relationships.Values.OrderBy(r => r.User?.DisplayName))
             {
                 var vm = new RelationshipViewModel(rel, this);
                 switch (rel.RelationshipType)
@@ -50,7 +50,7 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
         }
 
-        public DiscordUser CurrentUser => App.Discord.CurrentUser;
+        public DiscordUser CurrentUser => discord.CurrentUser;
         public ObservableCollection<RelationshipViewModel> All { get; set; }
         public ObservableCollection<RelationshipViewModel> Online { get; set; }
         public ObservableCollection<RelationshipViewModel> Blocked { get; set; }
@@ -125,7 +125,7 @@ namespace Unicord.Universal.Models
         {
             if (e.User != null && e.PresenceBefore?.Status != e.Status)
             {
-                if (App.Discord.Relationships.TryGetValue(e.User.Id, out var rel) &&
+                if (discord.Relationships.TryGetValue(e.User.Id, out var rel) &&
                     rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
                     SortRelationship(rel, true);

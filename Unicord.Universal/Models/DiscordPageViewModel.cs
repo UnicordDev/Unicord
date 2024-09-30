@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Channel;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
@@ -34,10 +34,10 @@ namespace Unicord.Universal.Models
         {
             Guilds = new ObservableCollection<IGuildListViewModel>();
             UnreadDMs = new ObservableCollection<ChannelViewModel>();
-            CurrentUser = App.Discord.CurrentUser;
+            CurrentUser = discord.CurrentUser;
 
-            var guilds = App.Discord.Guilds;
-            var folders = App.Discord.UserSettings?.GuildFolders;
+            var guilds = discord.Guilds;
+            var folders = discord.UserSettings?.GuildFolders;
             var ids = new HashSet<ulong>();
             if (folders != null)
             {
@@ -67,15 +67,15 @@ namespace Unicord.Universal.Models
                 }
             }
 
-            foreach (var guild in App.Discord.Guilds.Values)
+            foreach (var guild in discord.Guilds.Values)
             {
                 if (!ids.Contains(guild.Id))
                     Guilds.Insert(0, new GuildListViewModel(guild));
             }
 
-            var dms = App.Discord.PrivateChannels.Values;
+            var dms = discord.PrivateChannels.Values;
             foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0)
-                                  .OrderByDescending(d => d.ReadState?.LastMessageId))
+                                  .OrderByDescending(d => d.LastMessageId))
             {
                 UnreadDMs.Add(new ChannelViewModel(dm.Id));
             }
@@ -106,7 +106,7 @@ namespace Unicord.Universal.Models
             get
             {
                 var gitSha = "";
-                var versionedAssembly = typeof(VersionHelper).Assembly;
+                var versionedAssembly = typeof(DiscordPageViewModel).Assembly;
                 var attribute = versionedAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
                 var idx = -1;
                 if (attribute != null && (idx = attribute.InformationalVersion.IndexOf('+')) != -1)
@@ -202,7 +202,7 @@ namespace Unicord.Universal.Models
 
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
-            //var guildPositions = App.Discord.UserSettings?.GuildPositions;
+            //var guildPositions = DiscordManager.Discord.UserSettings?.GuildPositions;
             //if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
             //    return Task.CompletedTask;
 

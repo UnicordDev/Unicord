@@ -70,7 +70,7 @@ namespace Unicord.Universal.Models.Channels
         }
     }
 
-    public class ForumThreadViewModel : ChannelViewModel
+    public class ForumThreadViewModel : ChannelPageViewModelBase
     {
         private MessageViewModel firstMessage;
         private UserViewModel creator;
@@ -124,7 +124,7 @@ namespace Unicord.Universal.Models.Channels
             => FirstMessage?.Attachments.FirstOrDefault(a => !double.IsNaN(a.NaturalWidth));
     }
 
-    public class ForumChannelViewModel : ChannelViewModel
+    public class ForumChannelViewModel : ChannelPageViewModelBase
     {
         internal ForumChannelViewModel(ulong channelId, ViewModelBase parent = null)
             : base(channelId, false, parent)

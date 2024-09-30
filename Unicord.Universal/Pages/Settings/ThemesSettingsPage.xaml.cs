@@ -29,45 +29,46 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Pages.Settings
 {
-    public sealed partial class ThemesSettingsPage : Page
+    public sealed partial class ThemesSettingsPage : Page, INotifyOnExit
     {
         private string _initialTheme;
         private int _initialColour;
         private bool _loaded;
         private bool _dragging;
 
-        public ThemesSettingsModel Model { get; }
-
         public ThemesSettingsPage()
         {
-            Model = new ThemesSettingsModel();
-            Model.PropertyChanged += ThemesSettingsPage_PropertyChanged;
-
             InitializeComponent();
-            DataContext = Model;
-
-            _initialColour = (int)App.LocalSettings.Read(REQUESTED_COLOUR_SCHEME, ElementTheme.Default);
         }
 
-        private void ThemesSettingsPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (sender is ThemesSettingsModel model)
+            OnClosing();
+        }
+
+        private void ColorSchemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((ThemesSettingsModel)DataContext).ColourScheme = ((ComboBox)sender).SelectedIndex;
+        }
+
+        private void ApplicationThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((ThemesSettingsModel)DataContext).ApplicationTheme = ((ComboBox)sender).SelectedIndex;
+        }
+
+        public async void OnClosing()
+        {
+            if (!((ThemesSettingsModel)DataContext).IsDirty)
+                return;
+
+            if (ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.CoreApplication", "RequestRestartAsync"))
             {
-                if (model.ColourScheme != _initialColour)
+                var resources = ResourceLoader.GetForCurrentView("ThemesSettingsPage");
+                if (await UIUtilities.ShowYesNoDialogAsync(resources.GetString("ThemeChangedTitle"), resources.GetString("ThemeChangedMessage")))
                 {
-                    model.IsDirty = true;
+                    await CoreApplication.RequestRestartAsync("");
                 }
             }
         }
-
-        protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            if (!Model.IsDirty)
-                return;
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-        }       
     }
 }

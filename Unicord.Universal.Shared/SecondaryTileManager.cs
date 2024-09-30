@@ -13,7 +13,7 @@ using Windows.UI.StartScreen;
 
 namespace Unicord.Universal.Shared
 {
-    public class SecondaryTileManager
+    internal class SecondaryTileManager
     {
         private readonly DiscordClient _discord = null;
         private readonly ConcurrentDictionary<ulong, SecondaryTile> _tileStorage;

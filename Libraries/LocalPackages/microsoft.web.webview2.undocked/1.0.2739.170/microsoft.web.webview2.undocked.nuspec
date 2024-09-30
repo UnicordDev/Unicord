@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Web.WebView2.Undocked</id>
+    <version>1.0.2739.170</version>
+    <title>Undocked WebView2 Library</title>
+    <authors>Microsoft, Kimbra</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <projectUrl>https://github.com/microsoft/microsoft-ui-xaml</projectUrl>
+    <iconUrl>https://aka.ms/winui_icon</iconUrl>
+    <description>This package provides the WebView2 control, undocked from WinUI 2.8.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>Windows WinUI UWP XAML Fluent Controls Downlevel Compatibility TreeView ColorPicker NavigationView MenuBar</tags>
+    <dependencies>
+      <group targetFramework="UAP10.0">
+        <dependency id="Microsoft.Web.WebView2" version="1.0.2739.15" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

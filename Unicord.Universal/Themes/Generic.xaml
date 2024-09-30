@@ -788,7 +788,7 @@
 
 
     <Style x:Key="CustomInAppNotificationsStyle" TargetType="controls:InAppNotification">
-        <Setter Property="Background" Value="{ThemeResource FlyoutPresenterBackground}" />
+        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
         <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
         <Setter Property="BorderBrush" Value="{ThemeResource SystemControlTransientBorderBrush}" />
         <Setter Property="Visibility" Value="Collapsed" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using Unicord.Universal.Models.Emoji;
 using Windows.System;
 

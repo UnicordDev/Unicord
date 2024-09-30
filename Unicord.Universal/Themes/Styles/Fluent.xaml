@@ -1,0 +1,194 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:toolkit_media="using:Microsoft.Toolkit.Uwp.UI.Media"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
+    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)">
+    <ResourceDictionary.MergedDictionaries>
+        <lib:XamlControlsResources lib:ControlsResourcesVersion="Version1">
+            <lib:XamlControlsResources.MergedDictionaries>
+                <ResourceDictionary>
+                    <!-- Windows 10 circa 1703 Styling -->
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <Color x:Key="BackgroundTertiaryColour">#FFF5F5F5</Color>
+                            <Color x:Key="BackgroundSecondaryColour">#FFF0F0F0</Color>
+                            <Color x:Key="BackgroundPrimaryColour">#FFEEEEEE</Color>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Dark">
+                            <Color x:Key="BackgroundPrimaryColour">#FF0F0F0F</Color>
+                            <Color x:Key="BackgroundSecondaryColour">#FF181818</Color>
+                            <Color x:Key="BackgroundTertiaryColour">#FF1C1C1C</Color>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+
+                    <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="OverlayCornerRadius">0,0,0,0</CornerRadius>
+
+                    <!-- General -->
+
+                    <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
+
+                    <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+                        <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
+                        <Setter Property="BorderThickness" Value="{ThemeResource ButtonRevealBorderThemeThickness}" />
+                        <Setter Property="w1803:Control.CornerRadius" Value="0"/>
+                    </Style>
+
+                    <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
+                        <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
+                        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                    </Style>
+
+                    <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">
+                        <Setter Property="MinWidth" Value="40"/>
+                        <Setter Property="MinHeight" Value="40"/>
+                        <Setter Property="Padding" Value="8" />
+                    </Style>
+
+                    <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="UseLayoutRounding" Value="True"/>
+                        <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+                        <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
+                        <Setter Property="BorderThickness" Value="{ThemeResource ButtonRevealBorderThemeThickness}" />
+                        <Setter Property="w1803:Control.CornerRadius" Value="0"/>
+                    </Style>
+
+                    <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource StretchyIconToggleButtonStyle}">
+                        <Setter Property="MinWidth" Value="40"/>
+                        <Setter Property="MinHeight" Value="40"/>
+                        <Setter Property="Padding" Value="8" />
+                    </Style>
+
+                    <media:AcrylicBrush x:Key="SidebarPrimaryAcrylicElementBrush" 
+                  BackgroundSource="Backdrop" 
+                  TintOpacity="0.60" 
+                  FallbackColor="{ThemeResource BackgroundPrimaryColour}" 
+                  TintColor="{ThemeResource BackgroundPrimaryColour}" />
+
+
+                    <media:AcrylicBrush x:Key="SidebarSecondaryAcrylicElementBrush" 
+                  BackgroundSource="Backdrop" 
+                  TintOpacity="0.80" 
+                  FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
+                  TintColor="{ThemeResource BackgroundSecondaryColour}" />
+
+                    <StaticResource x:Key="DefaultGridViewItemStyle" ResourceKey="GridViewItemRevealStyle"/>
+                    <StaticResource x:Key="DefaultListViewItemStyle" ResourceKey="ListViewItemRevealStyle"/>
+
+
+                    <SolidColorBrush x:Key="BackgroundPrimaryBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
+                    <SolidColorBrush x:Key="BackgroundSecondaryBrush" Color="{ThemeResource BackgroundSecondaryColour}"/>
+                    <SolidColorBrush x:Key="BackgroundTertiaryBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
+                    <SolidColorBrush x:Key="MainBackgroundBrush" Color="{ThemeResource BackgroundTertiaryColour}"/>
+
+                    <CornerRadius x:Key="ZeroCornerRadius">0</CornerRadius>
+                    <Thickness x:Key="ZeroThickness">0</Thickness>
+
+                    <!-- DiscordPage -->
+
+                    <Thickness x:Key="DiscordPage_SecondaryGridMargin">0,0,0,0</Thickness>
+
+                    <SolidColorBrush x:Key="DiscordPage_SecondaryGrid_BorderBrush" Color="Transparent"/>
+
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_BorderThickness">0</Thickness>
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_BottomItem_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_BottomItem_CornerRadius">0</CornerRadius>
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0</Thickness>
+
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness">0,0,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneLeft">0,0,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneRight">0,0,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_ThreePane">0,0,0,0</Thickness>
+
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius">0,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneLeft">0,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneRight">0,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_ThreePane">0,0,0,0</CornerRadius>
+
+                    <SolidColorBrush x:Key="DiscordPage_MainContent_Background" Color="{ThemeResource BackgroundTertiaryColour}"/>
+                    <SolidColorBrush x:Key="DiscordPage_MainContent_BorderBrush" Color="Transparent"/>
+
+                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_Margin">0</Thickness>
+                    <SolidColorBrush x:Key="DiscordPage_RightSplitPaneGrid_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="DiscordPage_RightSplitPaneGrid_CornerRadius">0</CornerRadius>
+
+                    <media:AcrylicBrush x:Key="DiscordPage_PrimarySidebar_BackgroundBrush" 
+                  BackgroundSource="HostBackdrop" 
+                  TintOpacity="0.60" 
+                  FallbackColor="{ThemeResource BackgroundPrimaryColour}" 
+                  TintColor="{ThemeResource BackgroundPrimaryColour}" />
+
+                    <media:AcrylicBrush x:Key="DiscordPage_SecondaryGrid_Background" 
+                  BackgroundSource="HostBackdrop" 
+                  TintOpacity="0.80" 
+                  FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
+                  TintColor="{ThemeResource BackgroundSecondaryColour}" />
+
+                    <media:AcrylicBrush x:Key="DiscordPage_RightSplitPaneGrid_Background" 
+                  BackgroundSource="HostBackdrop" 
+                  TintOpacity="0.80" 
+                  FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
+                  TintColor="{ThemeResource BackgroundSecondaryColour}" />
+
+                    <toolkit_media:AttachedCardShadow x:Key="DiscordPage_SidebarSecondaryShadow" 
+                        Color="{ThemeResource SystemChromeBlackMediumLowColor}" 
+                        BlurRadius="8"
+                        CornerRadius="0"/>
+
+                    <Style x:Key="DiscordPage_RightMainGridStyle" TargetType="Grid">
+                        <Setter Property="ui:Effects.Shadow" Value="{StaticResource DiscordPage_SidebarSecondaryShadow}"/>
+                    </Style>
+
+                    <Style x:Key="DiscordPage_SidebarSecondaryStyle" TargetType="Grid">
+                        <Setter Property="ui:Effects.Shadow" Value="{StaticResource DiscordPage_SidebarSecondaryShadow}"/>
+                    </Style>
+
+                    <Style x:Key="DiscordPage_RightSplitPaneStyle" TargetType="Grid">
+                        <Setter Property="ui:Effects.Shadow" Value="{StaticResource DiscordPage_SidebarSecondaryShadow}"/>
+                    </Style>
+
+                    <!-- FriendsPage -->
+
+                    <SolidColorBrush x:Key="FriendsPage_RelationshipItem_Background" Color="Transparent"/>
+                    <SolidColorBrush x:Key="FriendsPage_RelationshipItem_BorderBrush" Color="Transparent"/>
+                    <CornerRadius x:Key="FriendsPage_RelationshipItem_CornerRadius">0</CornerRadius>
+
+                    <!-- ChannelPage -->
+
+                    <Style x:Key="ChannelPageHeaderButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                        <Setter Property="Margin" Value="2,0,0,0"/>
+                    </Style>
+
+                    <Style x:Key="ChannelPageHeaderToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource IconToggleButtonStyle}">
+                        <Setter Property="Margin" Value="2,0,0,0"/>
+                    </Style>
+
+                    <StaticResource x:Key="ChannelPage_Header_Background" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
+                    <SolidColorBrush x:Key="ChannelPage_Header_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="ChannelPage_Header_BorderThickness">0</Thickness>
+
+                    <StaticResource x:Key="ChannelPage_MessageInput_Background" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
+                    <SolidColorBrush x:Key="ChannelPage_MessageInput_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="ChannelPage_MessageInput_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="ChannelPage_MessageInput_CornerRadius">0</CornerRadius>
+                    <Thickness x:Key="ChannelPage_MessageInput_Margin">0</Thickness>
+
+                    <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="General_Page_BackgroundBrush"/>
+                </ResourceDictionary>
+            </lib:XamlControlsResources.MergedDictionaries>
+        </lib:XamlControlsResources>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
+    

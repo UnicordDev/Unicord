@@ -6,13 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.Toolkit.Uwp.Helpers;
-using Unicord.Universal.Commands;
-using Unicord.Universal.Commands.Messages;
+using CommunityToolkit.Mvvm.Input;
 using Unicord.Universal.Controls;
 using Unicord.Universal.Controls.Messages;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
@@ -22,7 +18,6 @@ using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.Media.Capture;
 using Windows.Storage;
@@ -34,7 +29,6 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -101,6 +95,7 @@ namespace Unicord.Universal.Pages
                 return;
 
             Application.Current.Suspending += OnSuspending;
+
             var navigation = SystemNavigationManager.GetForCurrentView();
             navigation.BackRequested += Navigation_BackRequested;
 
@@ -115,6 +110,7 @@ namespace Unicord.Universal.Pages
             var model = _channelHistory.FirstOrDefault(c => c.Channel.Id == chan.Id && !c.IsDisposed);
             if (ViewModel != null)
             {
+                await ViewModel.TruncateMessagesAsync();
                 _channelHistory.Add(ViewModel);
             }
 
@@ -129,7 +125,7 @@ namespace Unicord.Universal.Pages
             }
 
             WindowingService.Current.SetWindowChannel(windowHandle, chan.Id);
-            model.TruncateMessages();
+            await model.TruncateMessagesAsync();
 
             ViewModel = model;
             DataContext = ViewModel;
@@ -534,11 +530,11 @@ namespace Unicord.Universal.Pages
 
         private void MessageList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var page = this.FindParent<DiscordPage>();
-            if (page != null)
-            {
-                page.CloseSplitPane();
-            }
+            //var page = this.FindParent<DiscordPage>();
+            //if (page != null)
+            //{
+            //    page.CloseSplitPane();
+            //}
 
             if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
             {

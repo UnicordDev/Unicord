@@ -19,7 +19,7 @@ namespace Unicord.Universal.Models
         public static implicit operator DeviceInformationWrapper(DeviceInformation info) { return new DeviceInformationWrapper() { Info = info }; }
     }
 
-    public class VoiceSettingsModel : NotifyPropertyChangeImpl
+    public class VoiceSettingsModel : ViewModelBase
     {
         private DeviceInformationWrapper _inputDevice;
         private DeviceInformationWrapper _outputDevice;

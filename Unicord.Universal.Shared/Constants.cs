@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Unicord
 {
-    public static partial class Constants
+    internal static partial class Constants
     {
         public const string MAIN_URL = "https://wamwoowam.co.uk/unicord/";
 
@@ -63,6 +63,7 @@ namespace Unicord
         public const string MESSAGE_STYLE_DEFAULT = "DefaultMessageControlStyle";
 
         public const string TOAST_BACKGROUND_TASK_NAME = "ToastBackgroundTask";
+        public const string PERIODIC_BACKGROUND_TASK_NAME = "PeriodicNotificationsTask";
 
         public const string SHOW_HUGE_EMOJI = "ShowHugeEmoji";
         public const bool   SHOW_HUGE_EMOJI_DEFAULT = true;
@@ -76,8 +77,8 @@ namespace Unicord
         public const string MINIMUM_CONTRAST = "MinimumContrast";
         public const double MINIMUM_CONTRAST_DEFAULT = 3.5;
 
-        public const string ENABLE_WEBP = "EnableWebp";
-        public const bool   ENABLE_WEBP_DEFAULT = true;
+        public const string ENABLE_WEBP = "EnableWebp"; 
+        public const bool   ENABLE_WEBP_DEFAULT = false; // slow as balls
 
         public const string ENABLE_NOTIFICATIONS = "EnableNotifications";
         public const bool   ENABLE_NOTIFICATIONS_DEFAULT = true;
@@ -95,14 +96,14 @@ namespace Unicord
         public const bool   ENABLE_LIVE_TILES_DEFAULT = true;
     }
 
-    public enum MediaTranscodeOptions
+    internal enum MediaTranscodeOptions
     {
         Always,
         WhenNeeded,
         Never
     }
 
-    public enum TimestampStyle
+    internal enum TimestampStyle
     {
         Relative,
         Absolute,

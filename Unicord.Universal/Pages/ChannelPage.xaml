@@ -242,11 +242,11 @@
                 </Grid>
 
                 <Grid Grid.Row="2" 
-                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"                          
-                          BorderThickness="1"
-                          CornerRadius="4"
-                          Margin="12,0,12,12">
+                      Background="{ThemeResource ChannelPage_MessageInput_Background}"
+                      BorderBrush="{ThemeResource ChannelPage_MessageInput_BorderBrush}"                          
+                      BorderThickness="{ThemeResource ChannelPage_MessageInput_BorderThickness}"
+                      CornerRadius="{ThemeResource ChannelPage_MessageInput_CornerRadius}"
+                      Margin="{ThemeResource ChannelPage_MessageInput_Margin}">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

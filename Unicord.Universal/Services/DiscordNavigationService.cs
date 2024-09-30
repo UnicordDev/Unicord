@@ -92,14 +92,12 @@ namespace Unicord.Universal.Services
                         _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
                 }
 
-                _mainPage.HideUserOverlay();
                 _mainPage.HideCustomOverlay();
                 _mainPage.HideConnectingOverlay();
 
                 return;
             }
 
-            _mainPage.HideUserOverlay();
             _mainPage.HideCustomOverlay();
 
             var page = _discordPage.MainFrame.Content as ChannelPage;
@@ -134,7 +132,11 @@ namespace Unicord.Universal.Services
                 Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
 
                 _discordPageModel.Navigating = true;
-                _discordPage.CloseSplitPane(); // pane service?
+
+                SplitPaneService.GetForCurrentView()
+                    .CloseAllPanes();
+
+                //_discordPage.CloseSplitPane(); // pane service?
 
                 if (_discordPageModel.SelectedGuild != null)
                     _discordPageModel.SelectedGuild.IsSelected = false;

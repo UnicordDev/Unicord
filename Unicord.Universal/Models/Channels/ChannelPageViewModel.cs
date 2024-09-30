@@ -4,8 +4,8 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Windows;
 using Humanizer;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -33,9 +33,13 @@ using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Models
 {
-    public class ChannelPageViewModel : ChannelViewModel, IDisposable
+    public class ChannelPageViewModel : ChannelPageViewModelBase, IDisposable
     {
-        private const int INITIAL_LOAD_LIMIT = 50;
+#if ARM
+        private const int INITIAL_LOAD_LIMIT = 15;
+#else
+        private const int INITIAL_LOAD_LIMIT = 25;
+#endif
 
         private readonly DiscordChannel _channel;
         private readonly ConcurrentDictionary<ulong, CancellationTokenSource> _typingCancellation;
@@ -70,13 +74,13 @@ namespace Unicord.Universal.Models
             _typingLastSent = DateTime.Now - TimeSpan.FromSeconds(10);
 
             _channel = channel;
-            _currentUser = channel.Guild?.CurrentMember ?? App.Discord.CurrentUser;
+            _currentUser = channel.Guild?.CurrentMember ?? discord.CurrentUser;
             _messages = new ObservableCollection<MessageViewModel>();
 
-            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, TypingStartEventArgs>(this, (t, v) => t.OnTypingStarted(v.Event));
-            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
-            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, (t, v) => t.OnMessageDeleted(v.Event));
-            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, (t, v) => t.OnResumed(v.Event));
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, TypingStartEventArgs>(this, static (t, v) => t.OnTypingStarted(v.Event));
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageCreateEventArgs>(this, static (t, v) => t.OnMessageCreated(v.Event));
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, static (t, v) => t.OnMessageDeleted(v.Event));
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, static (t, v) => t.OnResumed(v.Event));
 
             TypingUsers = new ObservableCollection<UserViewModel>();
             FileUploads = new ObservableCollection<FileUploadModel>();
@@ -291,7 +295,7 @@ namespace Unicord.Universal.Models
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
 
         // TODO: "ChannelPageUploadViewModel"
-        public int UploadLimit => App.Discord.CurrentUser.UploadLimit();
+        public int UploadLimit => DiscordManager.Discord.CurrentUser.UploadLimit();
 
         public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
 
@@ -306,7 +310,7 @@ namespace Unicord.Universal.Models
 
         public bool ShowUploads => FileUploads.Any() || IsTranscoding;
 
-        public bool HasNitro => App.Discord.CurrentUser.HasNitro();
+        public bool HasNitro => DiscordManager.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
             => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
@@ -606,7 +610,6 @@ namespace Unicord.Universal.Models
                     ReplyPing = true;
                     MessageText = "";
                     FileUploads.Clear();
-                    IsUploading = true;
 
                     var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
                     if (replyPing && replyTo != null)
@@ -614,6 +617,7 @@ namespace Unicord.Universal.Models
 
                     if (models.Any())
                     {
+                        IsUploading = true;
                         var files = new Dictionary<string, IInputStream>();
                         foreach (var item in models)
                         {
@@ -675,11 +679,20 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public void TruncateMessages(int max = 50)
+        public async Task TruncateMessagesAsync(int max = INITIAL_LOAD_LIMIT)
         {
-            if (Messages.Count > max)
+            await _loadSemaphore.WaitAsync();
+
+            try
             {
-                Messages = new ObservableCollection<MessageViewModel>(Messages.TakeLast(max));
+                if (Messages.Count > max)
+                {
+                    Messages = new ObservableCollection<MessageViewModel>(Messages.TakeLast(max));
+                }
+            }
+            finally
+            {
+                _loadSemaphore.Release();
             }
         }
 

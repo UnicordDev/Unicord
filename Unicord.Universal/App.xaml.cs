@@ -5,11 +5,15 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using DSharpPlus;
 using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
@@ -51,12 +55,10 @@ namespace Unicord.Universal
         private static XboxGameBarWidget _friendsListWidget;
 #endif
 
-        private static SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
-        private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
-
-        internal static DiscordClient Discord { get; set; }
-        internal static ApplicationDataStorageHelper LocalSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
-        internal static ApplicationDataStorageHelper RoamingSettings { get; } = ApplicationDataStorageHelper.GetCurrent();
+        internal static ApplicationDataStorageHelper LocalSettings { get; }
+            = ApplicationDataStorageHelper.GetCurrent();
+        internal static ApplicationDataStorageHelper RoamingSettings { get; }
+            = ApplicationDataStorageHelper.GetCurrent();
 
         public App()
         {
@@ -74,6 +76,7 @@ namespace Unicord.Universal
             }
 
             Suspending += OnSuspending;
+            Resuming += OnResuming;
             UnhandledException += OnUnhandledException;
 
             Debug.WriteLine("Welcome to Unicord!");
@@ -117,7 +120,7 @@ namespace Unicord.Universal
             switch (args.TaskInstance.Task.Name)
             {
                 case TOAST_BACKGROUND_TASK_NAME:
-                    if (args.TaskInstance.TriggerDetails is not ToastNotificationActionTriggerDetail details || !TryGetToken(out var token))
+                    if (args.TaskInstance.TriggerDetails is not ToastNotificationActionTriggerDetail details || !DiscordManager.TryGetToken(out var token))
                         break;
 
                     var arguments = ParseArgs(details.Argument);
@@ -136,56 +139,29 @@ namespace Unicord.Universal
 
             deferral.Complete();
         }
-
-#if XBOX_GAME_BAR
-        private void OnXboxGameBarActivated(XboxGameBarWidgetActivatedEventArgs xbox)
-        {
-            Analytics.TrackEvent("Unicord_LaunchForGameBar");
-
-            if (xbox.IsLaunchActivation)
-            {
-                var name = xbox.Uri.LocalPath;
-                var frame = new Frame();
-                frame.NavigationFailed += OnNavigationFailed;
-                Window.Current.Content = frame;
-
-                Logger.Log(xbox.Uri.LocalPath);
-
-                if (name == "unicord-friendslist")
-                {
-                    _friendsListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
-                    Window.Current.Closed += OnFrendsListWidgetClosed;
-
-                    frame.Navigate(typeof(GameBarMainPage), new GameBarPageParameters(_friendsListWidget, typeof(GameBarFriendsPage), xbox.Uri));
-                }
-
-                if (name == "unicord-channel")
-                {
-                    _chatListWidget = new XboxGameBarWidget(xbox, Window.Current.CoreWindow, frame);
-                    Window.Current.Closed += OnChatListWidgetClosed;
-
-                    frame.Navigate(typeof(GameBarMainPage),  new GameBarPageParameters(_chatListWidget, typeof(GameBarChannelListPage), xbox.Uri));
-                }
-            }
-        }
-
-        private void OnChatListWidgetClosed(object sender, CoreWindowEventArgs e)
-        {
-            Window.Current.Closed -= OnChatListWidgetClosed;
-            _chatListWidget = null;
-        }
-
-        private void OnFrendsListWidgetClosed(object sender, CoreWindowEventArgs e)
-        {
-            Window.Current.Closed -= OnFrendsListWidgetClosed;
-            _friendsListWidget = null;
-        }
-#endif
-
         private void OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
         {
             if (protocol.Uri.IsAbsoluteUri)
                 Analytics.TrackEvent("Unicord_LaunchForProtocol", new Dictionary<string, string>() { ["protocol"] = protocol.Uri.GetLeftPart(UriPartial.Authority) });
+
+            if (protocol.Uri.Scheme == "ms-ipmessaging")
+            {
+                var queryString = HttpUtility.ParseQueryString(protocol.Uri.Query);
+                var ids = queryString.GetValues("ContactRemoteIds").FirstOrDefault();
+                if (ids != null)
+                {
+                    var id = ulong.Parse(ids.Split(',')[0].Split('_')[1]);
+                    if (!(Window.Current.Content is Frame rootFrame))
+                    {
+                        rootFrame = new Frame();
+                        Window.Current.Content = rootFrame;
+                    }
+
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, IsUriActivation = true });
+                    Window.Current.Activate();
+                    return;
+                }
+            }
 
             if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
             {
@@ -198,15 +174,13 @@ namespace Unicord.Universal
                         Window.Current.Content = rootFrame;
                     }
 
-                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, FullFrame = false, IsUriActivation = true });
+                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, IsUriActivation = true });
                     Window.Current.Activate();
                     return;
                 }
             }
-            else
-            {
-                OnLaunched(false, "");
-            }
+
+            OnLaunched(false, "");
         }
 
         private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
@@ -301,37 +275,9 @@ namespace Unicord.Universal
             return args;
         }
 
-        private bool TryGetToken(out string token)
-        {
-            try
-            {
-                var passwordVault = new PasswordVault();
-                var credential = passwordVault.Retrieve(TOKEN_IDENTIFIER, "Default");
-                credential.RetrievePassword();
-
-                token = credential.Password;
-                return true;
-            }
-            catch { }
-
-            token = null;
-            return false;
-        }
-
-        private static ApplicationView SetupCurrentView()
-        {
-            var view = ApplicationView.GetForCurrentView();
-            view.SetPreferredMinSize(new Size(480, 480));
-
-            var frame = new Frame();
-            Window.Current.Content = frame;
-            Window.Current.Activate();
-            return view;
-        }
-
         protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
         {
-            if (!(Window.Current.Content is Frame rootFrame))
+            if (Window.Current.Content is not Frame rootFrame)
             {
                 Analytics.TrackEvent("Unicord_LaunchForShare");
 
@@ -357,6 +303,8 @@ namespace Unicord.Universal
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
+        private DiscordClient temporaryCache;
+
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
@@ -364,145 +312,26 @@ namespace Unicord.Universal
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+
+            if (DiscordManager.Discord != null)
+            {
+                temporaryCache = DiscordManager.Discord;
+                await DiscordManager.Discord.DisconnectAsync(4002);
+            }
+
+            await Logger.OnSuspendingAsync();
             deferral.Complete();
         }
 
-        internal static async Task LoginAsync(string token, AsyncEventHandler<DiscordClient, ReadyEventArgs> onReady, Func<Exception, Task> onError, bool background, UserStatus status = UserStatus.Online)
+        private async void OnResuming(object sender, object e)
         {
-            Exception taskEx = null;
-
-            await _connectSemaphore.WaitAsync();
-            try
+            if (temporaryCache != null)
             {
-                var loader = ResourceLoader.GetForViewIndependentUse();
-
-                if (Discord != null)
-                {
-                    try
-                    {
-                        var res = await _readySource.Task;
-                        await onReady(App.Discord, res);
-                    }
-                    catch
-                    {
-                        await onError(taskEx);
-                    }
-
-                    return;
-                }
-
-                if (!background && !await WindowsHelloManager.VerifyAsync(VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
-                {
-                    await onError(null);
-                    return;
-                }
-
-                try
-                {
-                    async Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
-                    {
-                        // TODO: find a way to save this more securely, the background process can't retrieve from the credential locker?
-                        LocalSettings.Save("Token", token);
-                        sender.Ready -= ReadyHandler;
-                        sender.SocketErrored -= SocketErrored;
-                        sender.ClientErrored -= ClientErrored;
-                        _readySource.TrySetResult(e);
-                        if (onReady != null)
-                        {
-                            await onReady(sender, e);
-                        }
-                    }
-
-                    Task SocketErrored(DiscordClient sender, SocketErrorEventArgs e)
-                    {
-                        sender.Ready -= ReadyHandler;
-                        sender.SocketErrored -= SocketErrored;
-                        sender.ClientErrored -= ClientErrored;
-
-                        Logger.LogError(e.Exception);
-
-                        _readySource.SetException(e.Exception);
-                        return Task.CompletedTask;
-                    }
-
-                    Task ClientErrored(DiscordClient sender, ClientErrorEventArgs e)
-                    {
-                        sender.Ready -= ReadyHandler;
-                        sender.SocketErrored -= SocketErrored;
-                        sender.ClientErrored -= ClientErrored;
-
-                        Logger.LogError(e.Exception);
-
-                        _readySource.SetException(e.Exception);
-                        return Task.CompletedTask;
-                    }
-
-                    Discord = new DiscordClient(new DiscordConfiguration()
-                    {
-                        Token = token,
-                        TokenType = TokenType.User,
-                        LoggerFactory = Logger.LoggerFactory
-                    });
-
-                    Discord.Ready += ReadyHandler;
-                    Discord.SocketErrored += SocketErrored;
-                    Discord.ClientErrored += ClientErrored;
-                    Discord.CaptchaRequested += OnDiscordCaptchaRequested;
-                    Discord.AuthTokenUpdate += OnDiscordTokenUpdated;
-
-                    DiscordClientMessenger.Register(Discord);
-
-                    await Discord.ConnectAsync(status: status, 
-                        idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? null : DateTimeOffset.Now);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                    Tools.ResetPasswordVault();
-                    _readySource.TrySetException(ex);
-                    await onError(ex);
-                }
+                await temporaryCache.ConnectAsync();
             }
-            finally
-            {
-                _connectSemaphore.Release();
-            }
-        }
-
-        private static Task OnDiscordTokenUpdated(DiscordClient sender, AuthTokenUpdatedEventArgs args)
-        {
-            var vault = new PasswordVault();
-            try
-            {
-                foreach (var c in vault.FindAllByResource(TOKEN_IDENTIFIER))
-                    vault.Remove(c);
-            }
-            catch { }
-
-            var newToken = new PasswordCredential(TOKEN_IDENTIFIER, "Default", args.Token);
-            vault.Add(newToken);
-
-            // ditto above about the background process
-            LocalSettings.Save("Token", args.Token);
-
-            return Task.CompletedTask;
-        }
-
-        private static async Task OnDiscordCaptchaRequested(BaseDiscordClient sender, CaptchaRequestEventArgs args)
-        {
-            var tcs = new TaskCompletionSource<DiscordCaptchaResponse>();
-
-            await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
-            {
-                var dialog = new CaptchaRequestDialog(args.Request);
-                await dialog.ShowAsync();
-                tcs.SetResult(dialog.CaptchaResponse);
-            });
-
-            args.SetResponse(await tcs.Task);
         }
 
         internal static async Task LogoutAsync()
@@ -510,9 +339,7 @@ namespace Unicord.Universal
             await WebView.ClearTemporaryWebDataAsync();
             await WindowingService.Current.CloseAllWindowsAsync();
             await ImageCache.Instance.ClearAsync();
-            await Discord.DisconnectAsync();
-            Discord.Dispose();
-            Discord = null;
+            await DiscordManager.LogoutAsync();
 
             try
             {
@@ -552,7 +379,7 @@ namespace Unicord.Universal
                 RoamingSettings.Save(VERIFY_LOGIN, false);
             }
 
-            Discord = null;
+            await DiscordManager.LogoutAsync();
 
             var mainPage = Window.Current.Content.FindChild<MainPage>();
 
@@ -562,6 +389,16 @@ namespace Unicord.Universal
             }
 
             mainPage.HideConnectingOverlay();
+        }
+
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            base.OnWindowCreated(args);
+
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
+            {
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Analytics));
+            }
         }
     }
 }

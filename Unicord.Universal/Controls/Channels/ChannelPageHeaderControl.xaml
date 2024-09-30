@@ -24,8 +24,9 @@
 
     <Grid x:Name="TopGrid"
           VerticalAlignment="Top"
-          BorderThickness="0,0,0,1"
-          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+          Background="{ThemeResource ChannelPage_Header_Background}"
+          BorderBrush="{ThemeResource ChannelPage_Header_BorderBrush}"
+          BorderThickness="{StaticResource ChannelPage_Header_BorderThickness}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -54,9 +55,9 @@
                     <!--  because VisualStateManager is wank  -->
                     <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
                         <Button x:Name="ShowSidebarButton"
-                                    Click="ShowSidebarButton_Click"
-                                    Content="&#xE700;"
-                                    Style="{ThemeResource IconButtonStyle}" />
+                                Content="&#xE700;"
+                                Command="{x:Bind ViewModel.LeftPaneCommand}"
+                                Style="{ThemeResource IconButtonStyle}" />
                     </Grid>
 
                     <users:AvatarControl x:Name="UserImage"
@@ -121,18 +122,17 @@
                     <ToggleButton x:Name="MuteButton"
                                   x:Uid="/ChannelPage/MuteButton"
                                   Content="&#xE74F;"
-                                  Margin="2,4"
                                   IsChecked="{x:Bind ViewModel.Muted, Mode=OneWay}"
-                                  Style="{ThemeResource IconToggleButtonStyle}">
+                                  Style="{ThemeResource ChannelPageHeaderToggleButtonStyle}">
                         <w1709:ToggleButton.KeyboardAccelerators>
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
                         </w1709:ToggleButton.KeyboardAccelerators>
                     </ToggleButton>
                     <Button x:Name="SearchButton"
                             x:Uid="/ChannelPage/SearchButton"
+                            Command="{x:Bind ViewModel.SearchCommand}"
                             Content="&#xE721;"
-                            Margin="2,4"
-                            Style="{ThemeResource IconButtonStyle}">
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}">
                         <w1709:Button.KeyboardAccelerators>
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
                         </w1709:Button.KeyboardAccelerators>
@@ -140,9 +140,9 @@
                     <Button x:Name="PinsButton"
                             x:Uid="/ChannelPage/PinsButton"
                             x:Load="{x:Bind ViewModel.ShowPinsButton}"
+                            Command="{x:Bind ViewModel.PinsCommand}"
                             Content="&#xE718;"
-                            Margin="2,4"
-                            Style="{ThemeResource IconButtonStyle}">
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}">
                         <w1709:Button.KeyboardAccelerators>
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="P"/>
                         </w1709:Button.KeyboardAccelerators>
@@ -150,9 +150,9 @@
                     <Button x:Name="UserListButton"
                             x:Uid="/ChannelPage/UserListButton"
                             x:Load="{x:Bind ViewModel.ShowUserlistButton}"
+                            Command="{x:Bind ViewModel.UserListCommand}"
                             Content="&#xE716;"
-                            Margin="4"
-                            Style="{ThemeResource IconButtonStyle}">
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}">
                         <w1709:Button.KeyboardAccelerators>
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
                         </w1709:Button.KeyboardAccelerators>
@@ -163,8 +163,7 @@
                         x:Uid="/ChannelPage/MoreOptionsButton"
                         x:Load="{x:Bind ViewModel.ShowExtendedItems}"
                         Content="&#xE712;"
-                        Margin="2,4"
-                        Style="{ThemeResource IconButtonStyle}">
+                        Style="{ThemeResource ChannelPageHeaderButtonStyle}">
                         <lib:DropDownButton.Flyout>
                             <lib:MenuBarItemFlyout>
                                 <MenuFlyoutItem x:Name="PinToStartItem"
@@ -210,14 +209,12 @@
                             x:Uid="/ChannelPage/DeleteAllButton"
                             Command="{Binding MassDeleteCommand}"
                             Content="&#xE74D;"
-                            Margin="2,4"
-                            Style="{ThemeResource IconButtonStyle}"/>
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}"/>
                     <Button x:Name="CloseEditButton"
                             x:Uid="/ChannelPage/CloseEditButton"
                             Command="{Binding ExitEditModeCommand}"
                             Content="&#xE711;"
-                            Margin="2,4"
-                            Style="{ThemeResource IconButtonStyle}"/>
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}"/>
                 </StackPanel>
 
                 <Border Margin="0,8,-24,8" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,1,0" />

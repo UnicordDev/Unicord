@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Unicord.Universal.Controls.Messages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:wam="using:Unicord.Universal.Controls" xmlns:messages="using:Unicord.Universal.Models.Messages" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:wam="using:Unicord.Universal.Controls" 
+    xmlns:messages="using:Unicord.Universal.Models.Messages"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     MaxWidth="480"
     Margin="0,4,0,0"
@@ -19,7 +22,7 @@
             <Border Background="{x:Bind ViewModel.Color}" 
                     CornerRadius="3">
                 <Border.Clip>
-                    <RectangleGeometry Rect="0,0,4,9999" />
+                    <RectangleGeometry Rect="0,0,4,1000" />
                 </Border.Clip>
             </Border>
             <Grid Padding="16,12,12,12">
@@ -104,8 +107,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="messages:EmbedFieldViewModel">
                                 <StackPanel>
-                                    <wam:MarkdownTextBlock x:Name="title" Channel="{x:Bind Channel}" Text="{x:Bind Title}" FontWeight="Bold"/>
-                                    <wam:MarkdownTextBlock x:Name="content" Channel="{x:Bind Channel}" Grid.Row="1" Text="{x:Bind Text}" />
+                                    <wam:MarkdownTextBlock x:Name="EmbedFieldTitle" Channel="{x:Bind Channel}" Text="{x:Bind Title}" FontWeight="Bold"/>
+                                    <wam:MarkdownTextBlock x:Name="EmbedFieldContent" Channel="{x:Bind Channel}" Grid.Row="1" Text="{x:Bind Text}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

@@ -12,7 +12,10 @@
     xmlns:universal="using:Unicord.Universal"
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:settings="using:SettingsControl"
-    mc:Ignorable="d" x:DefaultBindMode="TwoWay" d:DesignWidth="450" Loaded="Page_Loaded">
+    mc:Ignorable="d" x:DefaultBindMode="TwoWay" d:DesignWidth="450">
+    <Page.DataContext>
+        <models:ThemesSettingsModel/>
+    </Page.DataContext>
 
     <StackPanel>
 
@@ -33,7 +36,6 @@
                            VerticalAlignment="Center"
                            Margin="4,4,12,4"/>
                 <TextBlock x:Uid="/ThemesSettingsPage/RelaunchRequired"
-                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
                            VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
@@ -42,10 +44,21 @@
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE771;"/>
             </settings:SettingsBlockControl.Icon>
-            <ComboBox SelectedIndex="{Binding ColourScheme}" MinWidth="200" >
+            <ComboBox x:Name="ColorSchemeComboBox" SelectedIndex="{Binding ColourScheme, Mode=TwoWay}" MinWidth="200" SelectionChanged="ColorSchemeComboBox_SelectionChanged">
                 <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDefault" />
                 <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeLight" />
                 <ComboBoxItem x:Uid="/ThemesSettingsPage/ColourSchemeDark" />
+            </ComboBox>
+        </settings:SettingsBlockControl>
+
+        <settings:SettingsBlockControl x:Uid="/ThemesSettingsPage/AppThemeBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ComboBox x:Name="ApplicationThemeComboBox" SelectedIndex="{Binding ApplicationTheme, Mode=TwoWay}" MinWidth="200" SelectionChanged="ApplicationThemeComboBox_SelectionChanged">
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/AppThemePerformance" />
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/AppThemeFluent" />
+                <ComboBoxItem x:Uid="/ThemesSettingsPage/AppThemeSunValley" IsEnabled="{Binding SunValleyThemeSupported}" />
             </ComboBox>
         </settings:SettingsBlockControl>
     </StackPanel>

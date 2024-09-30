@@ -21,10 +21,7 @@
         <models:FriendsPageViewModel/>
     </Page.DataContext>
 
-    <Page.Resources>
-        <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
-        <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Semibold</FontWeight>
-        
+    <Page.Resources>        
         <Style x:Key="RelationshipItemContainerStyle" BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -35,9 +32,9 @@
         <DataTemplate x:Key="FriendRelationshipTemplate" x:DataType="relationships:RelationshipViewModel">
             <Grid Padding="8"
                   HorizontalAlignment="Stretch" 
-                  CornerRadius="4"
-                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  CornerRadius="{ThemeResource FriendsPage_RelationshipItem_CornerRadius}"
+                  Background="{ThemeResource FriendsPage_RelationshipItem_Background}"
+                  BorderBrush="{ThemeResource FriendsPage_RelationshipItem_BorderBrush}"
                   BorderThickness="1"
                   PointerCanceled="Grid_PointerCanceled" 
                   PointerEntered="Grid_PointerEntered"
@@ -67,13 +64,13 @@
                         <presence:InlinePresenceControl Presence="{Binding User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
                     </Grid>
                     <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Margin="4,0">
                             <SymbolIcon Symbol="VideoChat"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Margin="4,0">
                             <SymbolIcon Symbol="Phone"/>
                         </Button>
-                        <Button Style="{ThemeResource IconButtonStyle}" Command="{Binding User.MessageCommand}" BorderThickness="0" Margin="4,0">
+                        <Button Style="{ThemeResource IconButtonStyle}" Command="{Binding User.MessageCommand}" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
                     </StackPanel>
