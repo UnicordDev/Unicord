@@ -25,6 +25,8 @@ namespace Unicord.Universal.Background.Tasks
                 var toastNotifier = ToastNotificationManager.CreateToastNotifier();
 
                 var restClient = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
+                await restClient.InitializeAsync();
+
                 var mentions = await restClient.GetUserMentionsAsync(25, true, true);
 
                 foreach (var mention in mentions)

@@ -113,7 +113,6 @@ namespace Unicord.Universal.Services
                     IsNetworkRequested = true
                 };
 
-                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 builder.SetTrigger(new TimeTrigger(15, false));
 
                 var registration = builder.Register();

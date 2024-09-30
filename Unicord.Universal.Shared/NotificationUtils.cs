@@ -25,7 +25,7 @@ namespace Unicord.Universal.Shared
             if (client is DiscordClient discord && discord.UserSettings?.Status == "dnd")
                 return false;
 
-            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()) || !message.Channel.IsUnread())
+            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()))
                 return false;
 
             bool willNotify = false;
@@ -41,7 +41,7 @@ namespace Unicord.Universal.Shared
             }
 
             if (message.Channel.Guild != null)
-            {
+            {   
                 var usr = message.Channel.Guild.CurrentMember;
                 if (message.MentionedRoleIds.Any(r => (usr.RoleIds.Contains(r))) == true)
                 {
