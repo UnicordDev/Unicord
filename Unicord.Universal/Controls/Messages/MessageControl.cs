@@ -4,10 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages;
 using Windows.System;
@@ -24,6 +20,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Controls.Messages
 {
+    [Obsolete]
     public class MessageControl : Control
     {
         private bool _addedEditHandlers;
@@ -113,34 +110,34 @@ namespace Unicord.Universal.Controls.Messages
             if (MessageViewModel == null || !IsEnabled)
                 return;
 
-            VisualStateManager.GoToState(this, "NotEditing", false);
-            VisualStateManager.GoToState(this, "NoMention", false);
+            //VisualStateManager.GoToState(this, "NotEditing", false);
+            //VisualStateManager.GoToState(this, "NoMention", false);
 
-            if (MessageViewModel.Parent == null)
-            {
-                VisualStateManager.GoToState(this, "None", false);
-                return;
-            }
+            //if (MessageViewModel.Parent == null)
+            //{
+            //    VisualStateManager.GoToState(this, "None", false);
+            //    return;
+            //}
 
-            if (MessageViewModel.Parent.IsEditMode)
-            {
-                VisualStateManager.GoToState(this, "EditMode", false);
-                return;
-            }
+            //if (MessageViewModel.Parent.IsEditMode)
+            //{
+            //    VisualStateManager.GoToState(this, "EditMode", false);
+            //    return;
+            //}
 
-            if (MessageViewModel.IsMention)
-            {
-                VisualStateManager.GoToState(this, "Mention", false);
-            }
+            //if (MessageViewModel.IsMention)
+            //{
+            //    VisualStateManager.GoToState(this, "Mention", false);
+            //}
 
-            if (MessageViewModel.IsCollapsed)
-            {
-                VisualStateManager.GoToState(this, "Collapsed", false);
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, "Normal", false);
-            }
+            //if (MessageViewModel.IsCollapsed)
+            //{
+            //    VisualStateManager.GoToState(this, "Collapsed", false);
+            //}
+            //else
+            //{
+            //    VisualStateManager.GoToState(this, "Normal", false);
+            //}
         }
 
         public virtual void BeginEdit()

@@ -35,7 +35,7 @@ namespace Unicord.Universal.Services
             _ = Task.Run(async () =>
             {
                 if (TryGetToken(out var token))
-                    await LoginAsync(token, null, null, false);
+                    await LoginAsync(token, null, null, true);
             });
         }
 
@@ -46,13 +46,9 @@ namespace Unicord.Universal.Services
             bool background,
             UserStatus status = UserStatus.Online)
         {
-            Exception taskEx = null;
-
             await _connectSemaphore.WaitAsync();
             try
             {
-                //var loader = ResourceLoader.GetForViewIndependentUse();
-
                 if (Discord != null)
                 {
                     try
@@ -61,21 +57,24 @@ namespace Unicord.Universal.Services
                         if (onReady != null)
                             await onReady(Discord, res);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         if (onError != null)
-                            await onError(taskEx);
+                            await onError(ex);
                     }
 
                     return;
                 }
 
-                //if (!background && !await WindowsHelloManager.VerifyAsync(Constants.VERIFY_LOGIN, loader.GetString("VerifyLoginDisplayReason")))
-                //{
-                //    if (onError != null)
-                //        await onError(null);
-                //    return;
-                //}
+                if (App.RoamingSettings.Read(Constants.VERIFY_LOGIN, false))
+                {
+                    if (background || !(await WindowsHelloManager.VerifyAsync(Constants.VERIFY_LOGIN, "VerifyLoginDisplayReason")))
+                    {
+                        if (onError != null)
+                            await onError(null);
+                        return;
+                    }
+                }
 
                 try
                 {
@@ -136,7 +135,7 @@ namespace Unicord.Universal.Services
                     DiscordClientMessenger.Register(Discord);
 
                     await Discord.ConnectAsync(status: status,
-                        idlesince: AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop" ? null : DateTimeOffset.Now);
+                        idlesince: SystemPlatform.Desktop ? null : DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
@@ -200,6 +199,7 @@ namespace Unicord.Universal.Services
                 Logger.LogError(ex);
             }
         }
+
         internal static bool TryGetToken(out string token)
         {
             try

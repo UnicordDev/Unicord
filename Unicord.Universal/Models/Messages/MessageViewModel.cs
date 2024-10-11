@@ -20,9 +20,18 @@ using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
 using Unicord.Universal.Services;
 using Windows.ApplicationModel.Resources;
+using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json.Bson;
 
 namespace Unicord.Universal.Models.Messages
 {
+    public enum MessageViewModelState
+    {
+        Normal,
+        Collapsed,
+        Editing
+    }
+
     public partial class MessageViewModel : ViewModelBase, ISnowflake
     {
         private static readonly ResourceLoader _strings
@@ -34,6 +43,7 @@ namespace Unicord.Universal.Models.Messages
         private bool _isEditing;
 
         private MessageViewModel _referencedMessage;
+        private MessageEditViewModel _editViewModel;
 
         public MessageViewModel(DiscordMessage discordMessage, ChannelPageViewModel parent = null, MessageViewModel parentMessage = null)
             : base((ViewModelBase)parentMessage ?? parent)
@@ -58,6 +68,7 @@ namespace Unicord.Universal.Models.Messages
                 PinCommand = new PinMessageCommand(this);
                 DeleteCommand = new DeleteMessageCommand(this);
                 ReactCommand = new ReactCommand(this);
+                EditCommand = new RelayCommand(() => this.IsEditing = true);
 
                 var embedModels = GetGroupedEmbeds(Message);
                 Embeds = new ObservableCollection<EmbedViewModel>(embedModels);
@@ -204,8 +215,34 @@ namespace Unicord.Universal.Models.Messages
         }
 
         public bool IsSelected { get => _isSelected; set => OnPropertySet(ref _isSelected, value); }
-        
-        public bool IsEditing { get => _isEditing; set => OnPropertySet(ref _isEditing, value); }
+
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set
+            {
+                OnPropertySet(ref _isEditing, value, nameof(IsEditing), nameof(State));
+                if (_isEditing)
+                    EditViewModel = new MessageEditViewModel(this);
+            }
+        }
+
+        public MessageEditViewModel EditViewModel
+        {
+            get => _editViewModel;
+            set => OnPropertySet(ref _editViewModel, value);
+        }
+
+        public MessageViewModelState State
+        {
+            get
+            {
+                if (IsEditing)
+                    return MessageViewModelState.Editing;
+
+                return IsCollapsed ? MessageViewModelState.Collapsed : MessageViewModelState.Normal;
+            }
+        }
 
         public ObservableCollection<EmbedViewModel> Embeds { get; }
         public ObservableCollection<AttachmentViewModel> Attachments { get; }
@@ -220,6 +257,7 @@ namespace Unicord.Universal.Models.Messages
         public ICommand PinCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand ReactCommand { get; }
+        public ICommand EditCommand { get; }
 
         private Task OnReactionAdded(MessageReactionAddEventArgs e)
         {

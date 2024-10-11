@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using DSharpPlus.Entities;
+using Unicord.Universal.Services;
+using Windows.ApplicationModel;
+using Windows.Foundation.Metadata;
 using Windows.Media.Transcoding;
 using Windows.System.Profile;
 using static Unicord.Constants;
@@ -8,12 +11,7 @@ namespace Unicord.Universal.Models
 {
     public class NotificationsSettingsModel : ViewModelBase
     {
-        private bool isPageEnabled;
-
-        public NotificationsSettingsModel()
-        {
-            IsPageEnabled = AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop";
-        }
+        private bool isPageEnabled = ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1);
 
         public bool IsPageEnabled
         {

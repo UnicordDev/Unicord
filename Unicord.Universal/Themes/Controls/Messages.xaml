@@ -12,6 +12,7 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
     xmlns:messages="using:Unicord.Universal.Models.Messages" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:extensions="using:Unicord.Universal.Extensions"
     xmlns:w1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)" xmlns:components="using:Unicord.Universal.Models.Messages.Components"
     x:DefaultBindMode="OneWay">
 
@@ -564,47 +565,62 @@
         </Setter>
     </Style>
 
+    <DataTemplate x:Key="MessageEditControlsTemplate" x:DataType="messages:MessageEditViewModel">
+        <Grid x:Name="EditTools"
+           Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+           BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+           BorderThickness="1"
+           CornerRadius="4"
+           Padding="4"
+           Margin="0,4,0,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Note to Theme Developers: -->
+            <!-- It's important to keep these tools setup about the same as they are here in order to add -->
+            <!-- event handlers and such. -->
+
+            <TextBox x:Name="MessageEditBox"
+                  extensions:FocusExtensions.IsFocused="{x:Bind IsFocused}"
+                  extensions:ShiftEnterExtensions.IsEnabled="True"
+                  extensions:ShiftEnterExtensions.EnterCommand="{x:Bind CommitCommand}"
+                  extensions:ShiftEnterExtensions.ShiftEnterCommand="{x:Bind InsertNewLineCommand}"
+                  extensions:ShiftEnterExtensions.EscapeCommand="{x:Bind DiscardCommand}"
+                  MaxHeight="100"
+                  AcceptsReturn="False"
+                  Style="{ThemeResource MessageTextBoxStyle}"
+                  Text="{x:Bind Content, Mode=TwoWay}"
+                  SelectionStart="{x:Bind SelectionStart, Mode=OneTime}"
+                  TextWrapping="Wrap" />
+
+            <Button x:Name="MessageEditFinishButton"
+                 Grid.Column="1"
+                 Content="&#xe8fb;"
+                 Margin="4,0,0,0"
+                 Style="{ThemeResource IconButtonStyle}"
+                 Command="{x:Bind CommitCommand}"/>
+
+            <Button x:Name="MessageEditCancelButton"       
+                 Grid.Column="2"
+                 Content="&#xe8bb;"                                            
+                 Margin="4,0,0,0"
+                 Style="{ThemeResource IconButtonStyle}"
+                 Command="{x:Bind DiscardCommand}"/>
+        </Grid>
+    </DataTemplate>
+
     <Style TargetType="local:MessageEditTools">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MessageEditTools">
-                    <Grid x:Name="EditTools"
-                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                          BorderThickness="1"
-                          CornerRadius="4"
-                          Padding="4"
-                          Margin="0,4,0,0">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Note to Theme Developers: -->
-                        <!-- It's important to keep these tools setup about the same as they are here in order to add -->
-                        <!-- event handlers and such. -->
-
-                        <TextBox x:Name="MessageEditBox"
-                                 MaxHeight="100"
-                                 AcceptsReturn="False"
-                                 Style="{ThemeResource MessageTextBoxStyle}"
-                                 Text="{Binding Content, Mode=OneWay}"
-                                 TextWrapping="Wrap" />
-
-                        <Button x:Name="MessageEditFinishButton"
-                                Grid.Column="1"
-                                Content="&#xe8fb;"
-                                Margin="4,0,0,0"
-                                Style="{ThemeResource IconButtonStyle}"/>
-
-                        <Button x:Name="MessageEditCancelButton"
-                                Grid.Column="2"
-                                Content="&#xe8bb;"
-                                Margin="4,0,0,0"
-                                Style="{ThemeResource IconButtonStyle}"/>
-                    </Grid>
+                    <ContentPresenter Content="{TemplateBinding ViewModel}"
+                                      ContentTemplate="{StaticResource MessageEditControlsTemplate}"
+                                      HorizontalAlignment="Stretch"
+                                      HorizontalContentAlignment="Stretch"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -645,61 +661,34 @@
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
-                    <VisualStateGroup x:Name="Edit">
-                        <VisualState x:Name="NotEditing">
-                            <VisualState.StateTriggers>
-                                <StateTrigger IsActive="{x:Bind converters:Static.Not(IsEditing)}"/>
-                            </VisualState.StateTriggers>
-                            <VisualState.Setters>
-                                <Setter Target="Markdown.Visibility" Value="Visible"/>
-                                <Setter Target="MessageEditTools.Visibility" Value="Collapsed"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                        <VisualState x:Name="Editing">
-                            <VisualState.StateTriggers>
-                                <StateTrigger IsActive="{x:Bind IsEditing}"/>
-                            </VisualState.StateTriggers>
-                            <VisualState.Setters>
-                                <Setter Target="Markdown.Visibility" Value="Collapsed"/>
-                                <Setter Target="MessageEditTools.Visibility" Value="Visible"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
                     <VisualStateGroup x:Name="Size">
-                        <VisualState x:Name="Normal">
+                        <VisualState x:Name="NormalState">
                             <VisualState.StateTriggers>
-                                <StateTrigger x:Name="NormalSizeTrigger" IsActive="{x:Bind converters:Static.Not(IsCollapsed), Mode=OneWay}"/>
+                                <StateTrigger x:Name="NormalSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Normal), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
                                 <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
                                 <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
-                        <VisualState x:Name="Collapsed">
+                        <VisualState x:Name="CollapsedState">
                             <VisualState.StateTriggers>
-                                <StateTrigger x:Name="CollapsedSizeTrigger" IsActive="{x:Bind IsCollapsed, Mode=OneWay}"/>
+                                <StateTrigger x:Name="CollapsedSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Collapsed), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
                                 <Setter Target="MainBorder.Padding" Value="8,2,16,0"/>
                                 <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
-                        <!--<VisualState x:Name="EditMode">
+                        <VisualState x:Name="EditingState">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="EditingSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Editing), Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="AdditionalContent.Visibility" Value="Collapsed"/>
-                                <Setter Target="MainBorder.Padding" Value="4,8,8,8"/>
-                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
                             </VisualState.Setters>
-                        </VisualState>-->
-                        <!--<VisualState x:Name="None">
-        <VisualState.Setters>
-            <Setter Target="AdditionalContent.Visibility" Value="Visible"/>
-            <Setter Target="MainBorder.Padding" Value="0,0,0,0"/>
-            <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
-        </VisualState.Setters>
-    </VisualState>-->
+                        </VisualState>
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
 
@@ -731,9 +720,9 @@
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
                                         <BitmapImage DecodePixelWidth="16"
-                                                 DecodePixelHeight="16"
-                                                 DecodePixelType="Logical" 
-                                                 UriSource="{x:Bind ReferencedMessage.Author.AvatarUrl}" />
+                                                     DecodePixelHeight="16"
+                                                     DecodePixelType="Logical" 
+                                                     UriSource="{x:Bind ReferencedMessage.Author.AvatarUrl}" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Ellipse.Fill>
@@ -762,17 +751,17 @@
                         </Grid.ColumnDefinitions>
 
                         <Ellipse x:Name="ImageContainer"
-                             x:Load="{x:Bind converters:Static.Not(IsCollapsed)}"   
-                             Width="36"
-                             Height="36"
-                             VerticalAlignment="Top">
+                                 x:Load="{x:Bind converters:Static.IsNot(State, messages:MessageViewModelState.Collapsed),Mode=OneWay}"   
+                                 Width="36"
+                                 Height="36"
+                                 VerticalAlignment="Top">
                             <Ellipse.Fill>
                                 <ImageBrush x:Name="ProfileImageBrush">
                                     <ImageBrush.ImageSource>
                                         <BitmapImage DecodePixelWidth="36"
-                                                        DecodePixelHeight="36"
-                                                        DecodePixelType="Logical" 
-                                                        UriSource="{x:Bind Author.AvatarUrl}" />
+                                                     DecodePixelHeight="36"
+                                                     DecodePixelType="Logical" 
+                                                     UriSource="{x:Bind Author.AvatarUrl}" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Ellipse.Fill>
@@ -785,8 +774,8 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel x:Name="AuthorContainer" 
-                                    x:Load="{x:Bind converters:Static.Not(IsCollapsed)}"     
-                                    Orientation="Horizontal" Grid.Row="0">
+                                        x:Load="{x:Bind converters:Static.IsNot(State, messages:MessageViewModelState.Collapsed),Mode=OneWay}"   
+                                        Orientation="Horizontal" Grid.Row="0">
                                 <controls:UsernameControl FontWeight="Bold" User="{x:Bind Author}" FontSize="14" IconSize="14" />
 
                                 <TextBlock Margin="8,1" 
@@ -798,47 +787,54 @@
                             </StackPanel>
 
                             <controls:MarkdownTextBlock x:Name="Markdown"
-                                                    Grid.Row="1"
-                                                    Channel="{x:Bind Channel.Channel}"
-                                                    Text="{x:Bind Content}" 
-                                                    AllowHugeEmoji="True"
-                                                    IsTextSelectionEnabled="True" 
-                                                    WrapCodeBlock="True" 
-                                                    Margin="0,0,2,0" />
+                                                        x:Load="{x:Bind converters:Static.IsNot(State, messages:MessageViewModelState.Editing),Mode=OneWay}"   
+                                                        Grid.Row="1"
+                                                        Channel="{x:Bind Channel.Channel}"
+                                                        Text="{x:Bind Content}" 
+                                                        AllowHugeEmoji="True"
+                                                        IsTextSelectionEnabled="True" 
+                                                        WrapCodeBlock="True" 
+                                                        Margin="0,0,2,0" />
 
-                            <local:MessageEditTools x:Name="MessageEditTools" x:DeferLoadStrategy="Lazy" Grid.Row="1" Visibility="Collapsed"/>
+                            <ContentControl x:Name="MessageEditTools" 
+                                             x:Load="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Editing),Mode=OneWay}"   
+                                             Content="{x:Bind EditViewModel, Mode=OneWay}"
+                                             ContentTemplate="{StaticResource MessageEditControlsTemplate}"
+                                             HorizontalAlignment="Stretch"
+                                             HorizontalContentAlignment="Stretch"
+                                             Grid.Row="1"/>
 
-                            <StackPanel x:Name="AdditionalContent"
-                                    Grid.Row="2">
+                            <StackPanel x:Name="AdditionalContent" 
+                                        Grid.Row="2">
                                 <ItemsControl x:Name="EmbedsContainer"
-                                          x:Phase="3"
-                                          ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
-                                          ItemsSource="{x:Bind Embeds}"
-                                          HorizontalAlignment="Left"/>
+                                              x:Phase="3"
+                                              ItemTemplateSelector="{ThemeResource EmbedTemplateSelector}" 
+                                              ItemsSource="{x:Bind Embeds}"
+                                              HorizontalAlignment="Left"/>
 
                                 <ItemsControl x:Name="AttachmentsContainer"
-                                          x:Phase="3"
-                                          ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
-                                          ItemsSource="{x:Bind Attachments}"
-                                          HorizontalAlignment="Left"/>
+                                              x:Phase="3"
+                                              ItemTemplate="{ThemeResource DefaultAttachmentTemplate}" 
+                                              ItemsSource="{x:Bind Attachments}"
+                                              HorizontalAlignment="Left"/>
 
                                 <ItemsControl x:Name="StickersContainer"
-                                          x:Phase="4"
-                                          ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
-                                          ItemsSource="{x:Bind Stickers}"
-                                          HorizontalAlignment="Left"/>
+                                              x:Phase="4"
+                                              ItemTemplate="{ThemeResource DefaultStickerTemplate}" 
+                                              ItemsSource="{x:Bind Stickers}"
+                                              HorizontalAlignment="Left"/>
 
                                 <ItemsControl x:Name="ComponentsContainer"
-                                          x:Phase="4"
-                                          ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
-                                          ItemsSource="{x:Bind Components}"
-                                          HorizontalAlignment="Left"/>
+                                              x:Phase="4"
+                                              ItemTemplateSelector="{StaticResource ComponentTemplateSelector}" 
+                                              ItemsSource="{x:Bind Components}"
+                                              HorizontalAlignment="Left"/>
 
                                 <ItemsControl x:Name="ReactionsContainer"
-                                          x:Phase="3"
-                                          Margin="0,4,0,0"
-                                          ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
-                                          ItemsSource="{x:Bind Reactions}">
+                                              x:Phase="3"
+                                              Margin="0,4,0,0"
+                                              ItemTemplate="{ThemeResource DefaultReactionTemplate}" 
+                                              ItemsSource="{x:Bind Reactions}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="4" VerticalSpacing="4"/>

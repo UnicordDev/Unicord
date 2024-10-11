@@ -41,7 +41,7 @@ namespace Unicord.Universal.Shared
             }
 
             if (message.Channel.Guild != null)
-            {   
+            {
                 var usr = message.Channel.Guild.CurrentMember;
                 if (message.MentionedRoleIds.Any(r => (usr.RoleIds.Contains(r))) == true)
                 {
@@ -136,7 +136,7 @@ namespace Unicord.Universal.Shared
             {
                 if (dmChannel.Type == ChannelType.Private)
                 {
-                    if (dmChannel.Recipients.Count == 0)
+                    if (dmChannel.Recipients == null || dmChannel.Recipients.Count == 0)
                         return "Invalid DM channel";
 
                     return $"@{dmChannel.Recipients[0].DisplayName}";

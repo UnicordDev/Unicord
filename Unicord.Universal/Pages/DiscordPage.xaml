@@ -331,13 +331,8 @@
                                                Tapped="Notification_Tapped"
                                                VerticalOffset="-120"
                                                MaxHeight="200"
-                                               Style="{ThemeResource CustomInAppNotificationsStyle}">
-                        <toolkit:InAppNotification.ContentTemplate>
-                            <DataTemplate x:DataType="messagesVMs:MessageViewModel">
-                                <messages:MessageControl MessageViewModel="{x:Bind}"/>
-                            </DataTemplate>
-                        </toolkit:InAppNotification.ContentTemplate>
-                    </toolkit:InAppNotification>
+                                               Style="{ThemeResource CustomInAppNotificationsStyle}"
+                                               ContentTemplate="{StaticResource MessageContentTemplate}"/>
                 </Grid>
             </Grid>
 
