@@ -39,7 +39,7 @@ namespace Unicord.Universal.Models.Channels
         {
             this._channelId = channelId;
 
-            // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
+            // BUGBUG: PERF, this doesn't appreciate being used by objects with short lifetimes
             if (!isTransient)
             {
                 AcknowledgeCommand = new AcknowledgeChannelCommand(this);

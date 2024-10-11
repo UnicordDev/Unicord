@@ -25,7 +25,8 @@
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
@@ -33,8 +34,7 @@
     <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>
-    </PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>001AA11011A8DE018049B0B614F2E6733355A7A1</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
     <IlcParameters>/ExtraNutcArguments:"/d2threads8"</IlcParameters>
   </PropertyGroup>
@@ -204,6 +204,7 @@
     <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
+    <Compile Include="Models\Channels\PinsPageViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
@@ -446,9 +447,8 @@
     <Compile Include="Models\Messages\StickerViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />
-    <Compile Include="Models\PinsPageViewModel.cs" />
     <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
-    <Compile Include="Models\SearchPageViewModel.cs" />
+    <Compile Include="Models\Channels\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\Settings\NotificationsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />

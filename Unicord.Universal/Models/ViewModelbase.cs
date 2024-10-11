@@ -59,8 +59,6 @@ namespace Unicord.Universal.Models
         }
 
 
-        // Holy hell is the C# Discord great.
-        // Y'all should join https://aka.ms/csharp-discord
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void UnsafeOnPropertySet<T>(ref T oldValue, T newValue, [CallerMemberName] string property = null)
         {
@@ -71,7 +69,6 @@ namespace Unicord.Universal.Models
             }
         }
 
-        // overload might avoid boxing?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void UnsafeOnPropertySet<T>(ref T oldValue, T newValue, params string[] additionalProperties)
         {

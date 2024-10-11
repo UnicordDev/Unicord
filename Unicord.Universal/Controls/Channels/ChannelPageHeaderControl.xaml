@@ -61,50 +61,50 @@
                     </Grid>
 
                     <users:AvatarControl x:Name="UserImage"
-                                        x:Load="{x:Bind ViewModel.IsDM}"
-                                        Source="{Binding ChannelIconUrl}"
-                                        Grid.Column="1"
-                                        Width="24"
-                                        Height="24"
-                                        Margin="12,0,0,0"
-                                        VerticalAlignment="Center"/>
+                                         x:Load="{x:Bind ViewModel.IsDM}"
+                                         Source="{Binding ChannelIconUrl}"
+                                         Grid.Column="1"
+                                         Width="24"
+                                         Height="24"
+                                         Margin="12,0,0,0"
+                                         VerticalAlignment="Center"/>
 
                     <TextBlock x:Name="Icon"
-                           x:Load="{x:Bind ViewModel.IsNotDM}"
-                           Grid.Column="1"
-                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                           Text="{x:Bind ViewModel.Channel, Converter={StaticResource ChannelSymbolConverter}}" 
-                           FontFamily="{StaticResource FluentSystemIcons}"
-                           VerticalAlignment="Center"
-                           Margin="16,0,8,0"
-                           FontSize="20"/>
+                               x:Load="{x:Bind ViewModel.IsNotDM}"
+                               Grid.Column="1"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                               Text="{x:Bind ViewModel.Channel, Converter={StaticResource ChannelSymbolConverter}}" 
+                               FontFamily="{StaticResource FluentSystemIcons}"
+                               VerticalAlignment="Center"
+                               Margin="16,0,8,0"
+                               FontSize="20"/>
 
                     <TextBlock x:Name="Header"
-                           Grid.Column="2"
-                           Margin="8,0,8,0"
-                           VerticalAlignment="Center"
-                           FontSize="15"
-                           FontWeight="Bold"
-                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                           TextTrimming="Clip"
-                           TextWrapping="NoWrap"
-                           Text="{x:Bind ViewModel.DisplayName}"/>
+                               Grid.Column="2"
+                               Margin="8,0,8,0"
+                               VerticalAlignment="Center"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                               TextTrimming="Clip"
+                               TextWrapping="NoWrap"
+                               Text="{x:Bind ViewModel.DisplayName}"/>
 
                     <presence:StatusIndicator x:Name="RecipientStatusIndicator" 
-                                          x:Load="{x:Bind ViewModel.IsDM}"
-                                          Grid.Column="3" 
-                                          Width="10" 
-                                          Height="10" 
-                                          Margin="-4,0,8,0"
-                                          Presence="{x:Bind ViewModel.Recipient.Presence}"/>
+                                              x:Load="{x:Bind ViewModel.IsDM}"
+                                              Grid.Column="3" 
+                                              Width="10" 
+                                              Height="10" 
+                                              Margin="-4,0,8,0"
+                                              Presence="{x:Bind ViewModel.Recipient.Presence}"/>
 
                     <controls:MarkdownTextBlock x:Name="TopicText"
-                                            Grid.Column="4"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Center"
-                                            Channel="{x:Bind ViewModel.Channel}"
-                                            Text="{x:Bind ViewModel.Topic}"
-                                            TextWrapping="NoWrap" />
+                                                Grid.Column="4"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Center"
+                                                Channel="{x:Bind ViewModel.Channel}"
+                                                Text="{x:Bind ViewModel.Topic}"
+                                                TextWrapping="NoWrap" />
                 </StackPanel>
             </Grid>
 

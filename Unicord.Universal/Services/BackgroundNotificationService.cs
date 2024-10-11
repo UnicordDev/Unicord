@@ -17,14 +17,25 @@ namespace Unicord.Universal.Services
 {
     class BackgroundNotificationService : BaseService<BackgroundNotificationService>
     {
+        private readonly ILogger<BackgroundNotificationService> _logger 
+            = Logger.GetLogger<BackgroundNotificationService>();
+
         private BadgeManager _badgeManager;
         private TileManager _tileManager;
         private SecondaryTileManager _secondaryTileManager;
-        private ILogger<BackgroundNotificationService> _logger = Logger.GetLogger<BackgroundNotificationService>();
 
         internal async Task StartupAsync()
         {
-            if (!await StartFullTrustBackgroundTaskAsync())
+            if (await StartFullTrustBackgroundTaskAsync())
+            {
+                var periodicTask = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME));
+                if (periodicTask != null)
+                {
+                    _logger.LogInformation("Disabling periodic background task because full-trust task is running.");
+                    periodicTask.Unregister(true);
+                }
+            }
+            else
             {
                 await RegisterPeriodicBackgroundTaskAsync();
                 await StartInProcTaskAsync();
@@ -74,7 +85,7 @@ namespace Unicord.Universal.Services
             if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5))
             {
                 _logger.LogDebug("Not starting full-trust notifications process, disabled by OS version check.");
-                return false; 
+                return false;
             }
 
             if (!await RegisterToastActivationBackgroundTaskAsync())

@@ -20,7 +20,6 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Controls.Messages
 {
-    [Obsolete]
     public class MessageControl : Control
     {
         private bool _addedEditHandlers;
@@ -63,7 +62,6 @@ namespace Unicord.Universal.Controls.Messages
             {
                 //this.DataContext = message;
                 this.UpdateProfileImage(message);
-                this.UpdateCollapsedState();
             }
             else
             {
@@ -101,43 +99,6 @@ namespace Unicord.Universal.Controls.Messages
                 DecodePixelWidth = 64,
                 DecodePixelType = DecodePixelType.Physical
             };
-        }
-
-        // TODO: Could prolly move this somewhere better
-        // bro what was i thinking :skull:
-        private void UpdateCollapsedState()
-        {
-            if (MessageViewModel == null || !IsEnabled)
-                return;
-
-            //VisualStateManager.GoToState(this, "NotEditing", false);
-            //VisualStateManager.GoToState(this, "NoMention", false);
-
-            //if (MessageViewModel.Parent == null)
-            //{
-            //    VisualStateManager.GoToState(this, "None", false);
-            //    return;
-            //}
-
-            //if (MessageViewModel.Parent.IsEditMode)
-            //{
-            //    VisualStateManager.GoToState(this, "EditMode", false);
-            //    return;
-            //}
-
-            //if (MessageViewModel.IsMention)
-            //{
-            //    VisualStateManager.GoToState(this, "Mention", false);
-            //}
-
-            //if (MessageViewModel.IsCollapsed)
-            //{
-            //    VisualStateManager.GoToState(this, "Collapsed", false);
-            //}
-            //else
-            //{
-            //    VisualStateManager.GoToState(this, "Normal", false);
-            //}
         }
 
         public virtual void BeginEdit()

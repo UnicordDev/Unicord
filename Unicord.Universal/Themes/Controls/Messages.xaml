@@ -464,7 +464,7 @@
     <DataTemplate x:Key="ButtonComponentContentTemplate"
                   x:DataType="components:ButtonComponentViewModel">
         <StackPanel Orientation="Horizontal">
-            <!--<emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
+            <emoji:EmojiControl x:Name="PART_ButtonEmoji" x:Load="{x:Bind Emoji.IsValid}" Emoji="{x:Bind Emoji}" Size="20" />
 
             <TextBlock x:Name="PART_ButtonLabel" x:Load="{x:Bind HasLabel}" VerticalAlignment="Center" Text="{x:Bind Label}" Padding="12,0"/>
 
@@ -472,7 +472,7 @@
                        x:Load="{x:Bind ShowExternalLinkIcon}"
                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                        FontSize="16" 
-                       VerticalAlignment="Center">&#xE8A7;</TextBlock>-->
+                       VerticalAlignment="Center">&#xE8A7;</TextBlock>
         </StackPanel>
     </DataTemplate>
 
@@ -579,11 +579,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
-            <!-- Note to Theme Developers: -->
-            <!-- It's important to keep these tools setup about the same as they are here in order to add -->
-            <!-- event handlers and such. -->
-
+            
             <TextBox x:Name="MessageEditBox"
                   extensions:FocusExtensions.IsFocused="{x:Bind IsFocused}"
                   extensions:ShiftEnterExtensions.IsEnabled="True"
@@ -627,10 +623,6 @@
     </Style>
 
     <SolidColorBrush x:Key="MentionedMessageBackgroundBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.16666"/>
-    <!--<LinearGradientBrush x:Key="MentionedMessageBackgroundBrush">
-        <GradientStop Color="#600078d7"/>
-        <GradientStop Color="#00000000" Offset="0.75"/>
-    </LinearGradientBrush>-->
 
     <DataTemplate x:Key="MessageContentTemplate" x:DataType="messages:MessageViewModel">
         <UserControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
@@ -662,6 +654,15 @@
                         </VisualState>
                     </VisualStateGroup>
                     <VisualStateGroup x:Name="Size">
+                        <VisualState x:Name="DefaultState">
+                            <VisualState.StateTriggers>
+                                <StateTrigger x:Name="DefaultSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Default), Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                            </VisualState.Setters>
+                        </VisualState>
                         <VisualState x:Name="NormalState">
                             <VisualState.StateTriggers>
                                 <StateTrigger x:Name="NormalSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Normal), Mode=OneWay}"/>
@@ -854,7 +855,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:MessageControl">
-                    <ContentPresenter Content="{TemplateBinding MessageViewModel}" Padding="{TemplateBinding Padding}" ContentTemplate="{StaticResource MessageContentTemplate}"/>
+                    <ContentControl ContentTemplate="{StaticResource MessageContentTemplate}"
+                                    Content="{TemplateBinding MessageViewModel}" 
+                                    Padding="{TemplateBinding Padding}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

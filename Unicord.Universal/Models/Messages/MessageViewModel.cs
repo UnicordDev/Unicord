@@ -27,6 +27,9 @@ namespace Unicord.Universal.Models.Messages
 {
     public enum MessageViewModelState
     {
+        // not in a channel list
+        Default = -1,
+        // in a channel list
         Normal,
         Collapsed,
         Editing
@@ -237,6 +240,9 @@ namespace Unicord.Universal.Models.Messages
         {
             get
             {
+                if (Parent == null)
+                    return MessageViewModelState.Default;
+
                 if (IsEditing)
                     return MessageViewModelState.Editing;
 
