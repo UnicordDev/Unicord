@@ -30,7 +30,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <PackageCertificateThumbprint>
@@ -711,7 +711,7 @@
     <PackageReference Include="TenMica">
       <Version>1.0.0-beta</Version>
     </PackageReference>
-    <PackageReference Include="Unicord.Universal.Voice">
+    <PackageReference Include="Unicord.Universal.Voice" Condition="'$(Platform)' != 'ARM64'">
       <Version>1.0.2</Version>
     </PackageReference>
   </ItemGroup>

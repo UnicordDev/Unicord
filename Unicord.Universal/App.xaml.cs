@@ -323,15 +323,17 @@ namespace Unicord.Universal
             }
 
             await Logger.OnSuspendingAsync();
+
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+
             deferral.Complete();
         }
 
         private async void OnResuming(object sender, object e)
         {
-            if (temporaryCache != null)
-            {
-                await temporaryCache.ConnectAsync();
-            }
+            var discord = Interlocked.Exchange(ref temporaryCache, null);
+            if (discord != null)
+                await discord.ConnectAsync();
         }
 
         internal static async Task LogoutAsync()

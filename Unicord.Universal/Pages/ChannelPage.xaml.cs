@@ -355,7 +355,7 @@ namespace Unicord.Universal.Pages
 
                 try
                 {
-                    var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, new string[] { ".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif" });
+                    var queryOption = new QueryOptions(CommonFileQuery.OrderByDate, [".jpg", ".jpeg", ".png", ".mp4", ".mov", ".gif"]);
                     queryOption.SetThumbnailPrefetch(ThumbnailMode.PicturesView, 256, ThumbnailOptions.UseCurrentScale);
                     queryOption.FolderDepth = FolderDepth.Deep;
                     queryOption.IndexerOption = IndexerOption.UseIndexerWhenAvailable;

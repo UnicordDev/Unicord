@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.36.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.42.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -85,8 +85,8 @@
         </uap:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.PeriodicNotificationsTask">
           <BackgroundTasks>
-            <Task Type="general"/>
             <Task Type="timer"/>
+            <Task Type="pushNotification"/>
           </BackgroundTasks>
         </Extension>
         <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
@@ -100,9 +100,6 @@
         <desktop:Extension Category="windows.fullTrustProcess" Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe">
           <desktop:FullTrustProcess />
         </desktop:Extension>
-        <uap:Extension Category="windows.appService">
-          <uap:AppService Name="com.wankerr.Unicord.Notifications" />
-        </uap:Extension>
         <uap5:Extension Category="windows.startupTask"
 						Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe"
 						EntryPoint="Windows.FullTrustApplication">
@@ -132,15 +129,5 @@
     <DeviceCapability Name="webcam" />
   </Capabilities>
   <Extensions>
-    <Extension Category="windows.activatableClass.inProcessServer">
-      <InProcessServer>
-        <Path>Unicord.Universal.Voice.dll</Path>
-        <ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClientStats" ThreadingModel="both"/>
-        <ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClientOptions" ThreadingModel="both"/>
-        <ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClient" ThreadingModel="both"/>
-        <ActivatableClass ActivatableClassId="Unicord.Universal.Voice.Background.VoiceBackgroundTask" ThreadingModel="both"/>
-        <ActivatableClass ActivatableClassId="Unicord.Universal.Voice.Background.ServiceBackgroundTask" ThreadingModel="both"/>
-      </InProcessServer>
-    </Extension>
   </Extensions>
 </Package>

@@ -34,7 +34,7 @@ namespace Unicord.Universal.Shared
 
             try
             {
-                await foreach (var msg in this.FetchUnreadMessages())
+                await foreach (var msg in FetchUnreadMessages(_discord))
                     _currentUnreads.Add(msg);
 
                 Update();
@@ -80,7 +80,7 @@ namespace Unicord.Universal.Shared
 
         private void Update()
         {
-            //_tileUpdater.EnableNotificationQueue(true);
+            _tileUpdater.EnableNotificationQueue(true);
             _tileUpdater.Clear();
 
             foreach (var message in _currentUnreads.OrderByDescending(d => d.CreationTimestamp).Take(5))
@@ -90,16 +90,16 @@ namespace Unicord.Universal.Shared
             }
         }
 
-        private async IAsyncEnumerable<DiscordMessage> FetchUnreadMessages()
+        internal static async IAsyncEnumerable<DiscordMessage> FetchUnreadMessages(DiscordClient discord)
         {
             var count = 0;
-            foreach (var (_, item) in _discord.PrivateChannels)
+            foreach (var (_, item) in discord.PrivateChannels)
             {
                 if (!item.IsUnread())
                     continue;
 
                 count++;
-                if (count > 5)
+                if (count > 10)
                     break;
 
                 var messages = await item.GetMessagesAroundAsync(item.ReadState.LastMessageId, 5);
@@ -107,7 +107,7 @@ namespace Unicord.Universal.Shared
                     yield return msg;
             }
 
-            var mentions = await _discord.GetMentionsAsync(5);
+            var mentions = await discord.GetMentionsAsync(10);
             foreach (var mention in mentions)
                 yield return mention;
         }

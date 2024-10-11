@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Windows.Devices.Enumeration;
-using Unicord.Universal.Voice;
 
 namespace Unicord.Universal.Models
 {
@@ -81,7 +80,7 @@ namespace Unicord.Universal.Models
 
         public uint SuppressionLevel
         {
-            get => App.LocalSettings.Read("NoiseSuppression", (uint)NoiseSuppressionLevel.Medium);
+            get => App.LocalSettings.Read("NoiseSuppression", /*(uint)NoiseSuppressionLevel.Medium*/ 2u);
             set => App.LocalSettings.Save("NoiseSuppression", value);
         }
 

@@ -21,6 +21,9 @@ namespace Unicord.Universal.Shared
 
         public void HandleMessage(DiscordClient client, DiscordMessage message, bool isSuppressed)
         {
+            var existingToast = _toastHistory.GetHistory().FirstOrDefault(t => t.Tag == message.Id.ToString());
+            if (existingToast != null) return;
+
             var notification = NotificationUtils.CreateToastNotificationForMessage(client, message, isSuppressed);
             _toastNotifier.Show(notification);
         }

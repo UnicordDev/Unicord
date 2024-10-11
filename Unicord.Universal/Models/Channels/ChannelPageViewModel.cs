@@ -75,15 +75,23 @@ namespace Unicord.Universal.Models
 
             _channel = channel;
             _currentUser = channel.Guild?.CurrentMember ?? discord.CurrentUser;
-            _messages = new ObservableCollection<MessageViewModel>();
+            _messages = [];
 
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, TypingStartEventArgs>(this, static (t, v) => t.OnTypingStarted(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageCreateEventArgs>(this, static (t, v) => t.OnMessageCreated(v.Event));
             WeakReferenceMessenger.Default.Register<ChannelPageViewModel, MessageDeleteEventArgs>(this, static (t, v) => t.OnMessageDeleted(v.Event));
-            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, static (t, v) => t.OnResumed(v.Event));
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ReadyEventArgs>(this, static (t, v) => t.OnResumed());
+            WeakReferenceMessenger.Default.Register<ChannelPageViewModel, ResumedEventArgs>(this, static (t, v) => t.OnResumed());
 
-            TypingUsers = new ObservableCollection<UserViewModel>();
-            FileUploads = new ObservableCollection<FileUploadModel>();
+            TypingUsers = [];
+            TypingUsers.CollectionChanged += (o, e) =>
+            {
+                InvokePropertyChanged(nameof(ShowTypingUsers));
+                InvokePropertyChanged(nameof(ShowTypingContainer));
+                InvokePropertyChanged(nameof(HideTypingContainer));
+            };
+
+            FileUploads = [];
             FileUploads.CollectionChanged += (o, e) =>
             {
                 InvokePropertyChanged(nameof(DisplayUploadSize));
@@ -178,7 +186,8 @@ namespace Unicord.Universal.Models
 
         public MessageViewModel ReplyTo
         {
-            get => _replyTo; set
+            get => _replyTo;
+            set
             {
                 OnPropertySet(ref _replyTo, value);
                 InvokePropertyChanged(nameof(ShowReply));
@@ -187,17 +196,17 @@ namespace Unicord.Universal.Models
 
         public bool ReplyPing { get => _replyPing; set => OnPropertySet(ref _replyPing, value); }
 
-        public bool ShowReply =>
-            ReplyTo != null;
+        public bool ShowReply
+            => ReplyTo != null;
 
         public override string Topic
-            => Channel.Topic != null ? Channel.Topic.Replace(new[] { "\r\n", "\r", "\n" }, " ").Truncate(512, "...") : string.Empty;
+            => Channel.Topic != null ? Channel.Topic.Replace(["\r\n", "\r", "\n"], " ").Truncate(512, "...") : string.Empty;
 
         /// <summary>
         /// The channel's symbol. (i.e. #, @ etc.)
         /// </summary>
-        public string ChannelPrefix =>
-            Channel.Guild != null && !Channel.IsThread ? "#"
+        public string ChannelPrefix
+            => Channel.Guild != null && !Channel.IsThread ? "#"
             : Channel.Type == ChannelType.Private ? "@"
             : string.Empty;
 
@@ -205,30 +214,31 @@ namespace Unicord.Universal.Models
         /// <summary>
         /// The suffix of the channel's display name. (i.e. #6402)
         /// </summary>
-        public string ChannelSuffix =>
-            string.Empty;
+        public string ChannelSuffix
+            => string.Empty;
 
         /// <summary>
         /// The full channel name (i.e. @WamWooWam#6402, #general, etc.)
         /// </summary>
-        public string FullChannelName =>
-            $"{ChannelPrefix}{DisplayName}{ChannelSuffix}";
+        public string FullChannelName
+            => $"{ChannelPrefix}{DisplayName}{ChannelSuffix}";
 
         /// <summary>
         /// The current placeholder to display in the message text box
         /// </summary>
-        public string ChannelPlaceholder =>
-           CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ?
+        public string ChannelPlaceholder
+            => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode) ?
             string.Format(_strings.GetString("MessageChannelFormat"), ChannelPrefix, DisplayName) :
             _strings.GetString("ChannelReadonlyText");
 
-        public bool CanType => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
+        public bool CanType
+            => CanSend || (SlowModeTimeout != 0 && !ImmuneToSlowMode);
 
         /// <summary>
         /// The title for the page displaying the channel
         /// </summary>
-        public string TitleText => Channel.Guild != null ? $"{FullChannelName} - {Channel.Guild.Name}" : FullChannelName;
-
+        public string TitleText
+            => Channel.Guild != null ? $"{FullChannelName} - {Channel.Guild.Name}" : FullChannelName;
 
         public bool CanSend
         {
@@ -286,31 +296,39 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public double PerUserRateLimit =>
-            (_channel.PerUserRateLimit ?? 0) * 1000;
+        public double PerUserRateLimit
+            => (_channel.PerUserRateLimit ?? 0) * 1000;
 
-        public bool ShowSlowModeTimeout =>
-            SlowModeTimeout > 0;
+        public bool ShowSlowModeTimeout
+            => SlowModeTimeout > 0;
 
         public double SlowModeTimeout { get => _slowModeTimeout; set => OnPropertySet(ref _slowModeTimeout, value); }
 
         // TODO: "ChannelPageUploadViewModel"
-        public int UploadLimit => DiscordManager.Discord.CurrentUser.UploadLimit();
+        public int UploadLimit
+            => DiscordManager.Discord.CurrentUser.UploadLimit();
 
-        public ulong UploadSize => (ulong)FileUploads.Sum(u => (double)u.Length);
+        public ulong UploadSize
+            => (ulong)FileUploads.Sum(u => (double)u.Length);
 
-        public string DisplayUploadSize => Tools.ToFileSizeString(UploadSize);
+        public string DisplayUploadSize
+            => Tools.ToFileSizeString(UploadSize);
 
-        public string DisplayUploadLimit => Tools.ToFileSizeString(UploadLimit);
+        public string DisplayUploadLimit
+            => Tools.ToFileSizeString(UploadLimit);
 
-        public double UploadProgressBarValue => Math.Min(UploadSize, (ulong)UploadLimit);
+        public double UploadProgressBarValue
+            => Math.Min(UploadSize, (ulong)UploadLimit);
 
         // TODO: refactor this
-        public Brush UploadInfoForeground => !CanSend ? (Brush)Application.Current.Resources["ErrorTextForegroundBrush"] : null;
+        public Brush UploadInfoForeground
+            => !CanSend ? (Brush)Application.Current.Resources["ErrorTextForegroundBrush"] : null;
 
-        public bool ShowUploads => FileUploads.Any() || IsTranscoding;
+        public bool ShowUploads
+            => FileUploads.Any() || IsTranscoding;
 
-        public bool HasNitro => DiscordManager.Discord.CurrentUser.HasNitro();
+        public bool HasNitro
+            => DiscordManager.Discord.CurrentUser.HasNitro();
 
         public bool ShowEditButton
             => Channel.Guild != null && Permissions.HasPermission(Permissions.ManageChannels);
@@ -327,10 +345,11 @@ namespace Unicord.Universal.Models
         public bool ShowTypingUsers
             => TypingUsers?.Any() == true;
 
-        public bool ShowTypingContainer =>
-            ShowSlowMode || ShowTypingUsers;
-        public bool HideTypingContainer =>
-            !ShowTypingContainer;
+        public bool ShowTypingContainer
+            => ShowSlowMode || ShowTypingUsers;
+
+        public bool HideTypingContainer
+            => !ShowTypingContainer;
 
         public DateTimeOffset LastAccessed { get; internal set; }
 
@@ -372,9 +391,6 @@ namespace Unicord.Universal.Models
                     syncContext.Post(a =>
                     {
                         TypingUsers.Remove(usr);
-                        InvokePropertyChanged(nameof(ShowTypingUsers));
-                        InvokePropertyChanged(nameof(ShowTypingContainer));
-                        InvokePropertyChanged(nameof(HideTypingContainer));
                     }, null);
                 }
 
@@ -390,7 +406,6 @@ namespace Unicord.Universal.Models
             {
                 _loadSemaphore.Release();
             }
-
         }
 
         private Task OnMessageDeleted(MessageDeleteEventArgs e)
@@ -413,7 +428,7 @@ namespace Unicord.Universal.Models
             }
         }
 
-        private async Task OnResumed(ResumedEventArgs e)
+        private async Task OnResumed()
         {
             await _loadSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -468,14 +483,14 @@ namespace Unicord.Universal.Models
                 {
                     var message = Messages.Last();
                     var index = Messages.IndexOf(message);
-                    var messages = await Channel.GetMessagesAfterAsync(message.Id, 100).ConfigureAwait(false);
-                    if (messages.Count < 100)
+                    var messages = await Channel.GetMessagesAfterAsync(message.Id, INITIAL_LOAD_LIMIT).ConfigureAwait(false);
+                    if (messages.Count < INITIAL_LOAD_LIMIT)
                     {
                         InsertMessages(index, messages);
                     }
                     else
                     {
-                        ClearAndAddMessages(await Channel.GetMessagesAsync());
+                        ClearAndAddMessages(await Channel.GetMessagesAsync(INITIAL_LOAD_LIMIT).ConfigureAwait(false));
                     }
                 }
             }
@@ -597,80 +612,79 @@ namespace Unicord.Universal.Models
             {
                 Analytics.TrackEvent("ChannelViewModel_SendMessage");
 
-                if ((!string.IsNullOrWhiteSpace(MessageText) || FileUploads.Any()) && CanSend)
+                if (string.IsNullOrWhiteSpace(MessageText) && !FileUploads.Any() || !CanSend)                
+                    return;
+                
+                var txt = MessageText ?? "";
+                txt = txt.Replace('\r', '\n'); // this is incredibly stupid
+
+                var replyTo = ReplyTo;
+                var replyPing = ReplyPing;
+                var models = FileUploads.ToArray();
+
+                ReplyTo = null;
+                ReplyPing = true;
+                MessageText = "";
+                FileUploads.Clear();
+
+                var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
+                if (replyPing && replyTo != null)
+                    mentions.Add(RepliedUserMention.All);
+
+                if (!models.Any())
                 {
-                    var txt = MessageText ?? "";
-                    txt = txt.Replace('\r', '\n'); // this is incredibly stupid
-
-                    var replyTo = ReplyTo;
-                    var replyPing = ReplyPing;
-                    var models = FileUploads.ToArray();
-
-                    ReplyTo = null;
-                    ReplyPing = true;
-                    MessageText = "";
-                    FileUploads.Clear();
-
-                    var mentions = new List<IMention> { UserMention.All, RoleMention.All, EveryoneMention.All };
-                    if (replyPing && replyTo != null)
-                        mentions.Add(RepliedUserMention.All);
-
-                    if (models.Any())
+                    await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                        .WithContent(txt)
+                        .WithReply(replyTo?.Id)
+                        .WithAllowedMentions(mentions)).ConfigureAwait(false);
+                }
+                else
+                {
+                    IsUploading = true;
+                    var files = new Dictionary<string, IInputStream>();
+                    foreach (var item in models)
                     {
-                        IsUploading = true;
-                        var files = new Dictionary<string, IInputStream>();
-                        foreach (var item in models)
-                        {
-                            files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
-                        }
-
-                        var progress = new Progress<double?>((p) =>
-                        {
-                            if (p == null && !IsUploadIndeterminate)
-                            {
-                                IsUploadIndeterminate = true;
-                            }
-                            else
-                            {
-                                IsUploadIndeterminate = false;
-                                UploadProgress = p.Value;
-                            }
-                        });
-
-                        await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
-                                   .ConfigureAwait(false);
-
-                        foreach (var item in files)
-                        {
-                            item.Value.Dispose();
-                        }
-
-                        foreach (var item in models)
-                        {
-                            if (item.IsTemporary && item.StorageFile != null)
-                            {
-                                await item.StorageFile.DeleteAsync();
-                            }
-
-                            item.Dispose();
-                        }
-                    }
-                    else
-                    {
-                        await Channel.SendMessageAsync(new DiscordMessageBuilder()
-                            .WithContent(txt)
-                            .WithReply(replyTo?.Id)
-                            .WithAllowedMentions(mentions)).ConfigureAwait(false);
+                        files.Add(item.Spoiler ? $"SPOILER_{item.FileName}" : item.FileName, await item.GetStreamAsync().ConfigureAwait(false));
                     }
 
-
-                    if (!ImmuneToSlowMode)
+                    var progress = new Progress<double?>((p) =>
                     {
-                        _messageLastSent = DateTimeOffset.Now;
-                        SlowModeTimeout = PerUserRateLimit;
-                        InvokePropertyChanged(nameof(CanSend));
-                        syncContext.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
+                        if (p == null && !IsUploadIndeterminate)
+                        {
+                            IsUploadIndeterminate = true;
+                        }
+                        else
+                        {
+                            IsUploadIndeterminate = false;
+                            UploadProgress = p.Value;
+                        }
+                    });
+
+                    await Channel.SendFilesWithProgressAsync(Tools.HttpClient, txt, mentions, replyTo?.Message, files, progress)
+                               .ConfigureAwait(false);
+
+                    foreach (var item in files)
+                    {
+                        item.Value.Dispose();
                     }
+
+                    foreach (var item in models)
+                    {
+                        if (item.IsTemporary && item.StorageFile != null)
+                        {
+                            await item.StorageFile.DeleteAsync();
+                        }
+
+                        item.Dispose();
+                    }
+                }
+
+                if (!ImmuneToSlowMode)
+                {
+                    _messageLastSent = DateTimeOffset.Now;
+                    SlowModeTimeout = PerUserRateLimit;
+                    InvokePropertyChanged(nameof(CanSend));
+                    syncContext.Post(o => ((DispatcherTimer)o).Start(), _slowModeTimer);
                 }
             }
             finally
@@ -724,9 +738,6 @@ namespace Unicord.Universal.Models
                 syncContext.Post(o =>
                 {
                     TypingUsers.Add(new UserViewModel(e.User, Channel.GuildId, this));
-                    InvokePropertyChanged(nameof(ShowTypingUsers));
-                    InvokePropertyChanged(nameof(ShowTypingContainer));
-                    InvokePropertyChanged(nameof(HideTypingContainer));
                 }, null);
 
                 HandleTypingStart(e);
@@ -742,9 +753,6 @@ namespace Unicord.Universal.Models
             {
                 foreach (var user in TypingUsers.Where(u => u.Id == e.User.Id).ToArray())
                     TypingUsers.Remove(user);
-                InvokePropertyChanged(nameof(ShowTypingUsers));
-                InvokePropertyChanged(nameof(ShowTypingContainer));
-                InvokePropertyChanged(nameof(HideTypingContainer));
             }, null));
 
             _typingCancellation[e.User.Id] = source;

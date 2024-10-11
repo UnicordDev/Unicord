@@ -42,6 +42,7 @@
 			  BackgroundColor="transparent">
 				<uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png"/>
 				<uap:SplashScreen Image="Assets\Store\SplashScreen.png" uap5:Optional="true" />
+				<uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png"/>
 			</uap:VisualElements>
 			<Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.PeriodicNotificationsTask">
@@ -113,15 +114,5 @@
 	</Capabilities>
 
 	<Extensions>
-		<Extension Category="windows.activatableClass.inProcessServer">
-			<InProcessServer>
-				<Path>Unicord.Universal.Voice.dll</Path>
-				<ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClientStats" ThreadingModel="both"/>
-				<ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClientOptions" ThreadingModel="both"/>
-				<ActivatableClass ActivatableClassId="Unicord.Universal.Voice.VoiceClient" ThreadingModel="both"/>
-				<ActivatableClass ActivatableClassId="Unicord.Universal.Voice.Background.VoiceBackgroundTask" ThreadingModel="both"/>
-				<ActivatableClass ActivatableClassId="Unicord.Universal.Voice.Background.ServiceBackgroundTask" ThreadingModel="both"/>
-			</InProcessServer>
-		</Extension>
 	</Extensions>
 </Package>

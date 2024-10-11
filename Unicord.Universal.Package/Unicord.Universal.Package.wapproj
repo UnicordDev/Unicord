@@ -62,13 +62,13 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundle>Always</AppxBundle>
     <AppInstallerUri>https://wamwoowam.co.uk/unicord/download</AppInstallerUri>
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
-    <PackageCertificateKeyFile>Unicord.Universal.Package_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>2C5F1F6080F0648BF786147323B846D8D0BA1638</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

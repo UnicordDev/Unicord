@@ -39,7 +39,7 @@ namespace Unicord.Universal.Shared
                     }
                 }
 
-                if (!unread)
+                if (!unread || mentions == 0)
                 {
                     _badgeUpdateManager.Clear();
                     return;
