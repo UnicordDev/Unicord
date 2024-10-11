@@ -58,16 +58,15 @@ namespace Unicord.Universal.Controls.Messages
 
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
         {
+            this.ApplyTemplate();
+
             if (e.NewValue is MessageViewModel message)
             {
-                //this.DataContext = message;
                 this.UpdateProfileImage(message);
             }
             else
             {
-                //this.DataContext = null;
                 this.ClearProfileImage();
-                // reset
             }
         }
 
@@ -99,98 +98,6 @@ namespace Unicord.Universal.Controls.Messages
                 DecodePixelWidth = 64,
                 DecodePixelType = DecodePixelType.Physical
             };
-        }
-
-        public virtual void BeginEdit()
-        {
-            VisualStateManager.GoToState(this, "Editing", true);
-
-            var control = GetTemplateChild("MessageEditTools") as MessageEditTools;
-            control.ApplyTemplate();
-
-            var editBox = control.FindChild<TextBox>("MessageEditBox");
-
-            if (!_addedEditHandlers)
-            {
-                var editFinishButton = control.FindChild<Button>("MessageEditFinishButton");
-                var editCancelButton = control.FindChild<Button>("MessageEditCancelButton");
-
-                editBox.KeyDown += this.OnEditKeyDown;
-                editFinishButton.Click += this.OnEditFinishClick;
-                editCancelButton.Click += this.OnEditCancelClick;
-
-                _addedEditHandlers = true;
-            }
-
-            editBox.Focus(FocusState.Keyboard);
-            editBox.SelectionStart = editBox.Text.Length;
-        }
-
-        private async Task SaveEditAsync()
-        {
-            try
-            {
-                // TODO: this is horrible
-                var control = this.FindChild<MessageEditTools>();
-                var editBox = control.FindChild<TextBox>("MessageEditBox");
-                var message = MessageViewModel.Message;
-                if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != message.Content)
-                {
-                    await message.ModifyAsync(editBox.Text);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        public virtual void EndEdit()
-        {
-            VisualStateManager.GoToState(this, "NotEditing", true);
-
-            var page = this.FindParent<ChannelPage>();
-            if (page != null)
-            {
-                page.FocusTextBox();
-            }
-        }
-
-        private async void OnEditKeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            var textBox = (sender as TextBox);
-            var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter)
-            {
-                e.Handled = true;
-                if (shift.HasFlag(CoreVirtualKeyStates.Down))
-                {
-                    var start = textBox.SelectionStart;
-                    textBox.Text = textBox.Text.Insert(start, "\r\n");
-                    textBox.SelectionStart = start + 1;
-                }
-                else
-                {
-                    EndEdit();
-                    await SaveEditAsync();
-                }
-            }
-
-            if (e.Key == VirtualKey.Escape)
-            {
-                EndEdit();
-            }
-        }
-
-        private async void OnEditFinishClick(object sender, RoutedEventArgs e)
-        {
-            EndEdit();
-            await SaveEditAsync();
-        }
-
-        private void OnEditCancelClick(object sender, RoutedEventArgs e)
-        {
-            EndEdit();
         }
     }
 }

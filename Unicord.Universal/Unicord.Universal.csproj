@@ -204,6 +204,8 @@
     <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
+    <Compile Include="Models\Channels\ForumThreadsCollection.cs" />
+    <Compile Include="Models\Channels\ForumThreadViewModel.cs" />
     <Compile Include="Models\Channels\PinsPageViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
