@@ -71,15 +71,15 @@ namespace Unicord.Universal.Pages.Subpages
             }
         }
 
-        private void UserList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void userList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var item = e.AddedItems.FirstOrDefault();
-            if (item != null)
-            {
-                var element = (sender as ListView).ContainerFromItem(item);
-                //AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
-                userList.SelectedItem = null;
-            }
+            //var item = e.ClickedItem;
+            //if (item != null)
+            //{
+            //    var element = (sender as ListView).ContainerFromItem(item);
+            //    //AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
+            //    userList.SelectedItem = null;
+            //}
         }
     }
 }

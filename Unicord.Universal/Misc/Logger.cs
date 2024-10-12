@@ -107,6 +107,9 @@ namespace Unicord.Universal
         private static readonly ILogger InternalLogger
             = LoggerFactory.CreateLogger("Unicord");
 
+        public static ILogger<T> GetLogger<T>() where T : class
+            => LoggerFactory.CreateLogger<T>();
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General")
         {

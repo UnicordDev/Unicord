@@ -14,7 +14,7 @@
     xmlns:models="using:Unicord.Universal.Models" 
     xmlns:presence="using:Unicord.Universal.Controls.Presence"
     xmlns:users="using:Unicord.Universal.Controls.Users"
-    xmlns:relationships="using:Unicord.Universal.Models.Relationships"
+    xmlns:relationships="using:Unicord.Universal.Models.Relationships" xmlns:converters="using:Unicord.Universal.Converters"
     NavigationCacheMode="Required"
     mc:Ignorable="d" x:DefaultBindMode="OneWay">
     <Page.DataContext>
@@ -35,11 +35,8 @@
                   CornerRadius="{ThemeResource FriendsPage_RelationshipItem_CornerRadius}"
                   Background="{ThemeResource FriendsPage_RelationshipItem_Background}"
                   BorderBrush="{ThemeResource FriendsPage_RelationshipItem_BorderBrush}"
-                  BorderThickness="1"
-                  PointerCanceled="Grid_PointerCanceled" 
-                  PointerEntered="Grid_PointerEntered"
-                  PointerExited="Grid_PointerExited">
-                <Grid.Resources>
+                  BorderThickness="1">
+                <!--<Grid.Resources>
                     <Storyboard x:Key="pointerEntered" Duration="00:00:00.20">
                         <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
                         <DoubleAnimation Storyboard.TargetName="overlayContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="1"/>
@@ -48,22 +45,22 @@
                         <DoubleAnimation Storyboard.TargetName="mainContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="1"/>
                         <DoubleAnimation Storyboard.TargetName="overlayContent" Storyboard.TargetProperty="Opacity" Duration="00:00:00.20" To="0"/>
                     </Storyboard>
-                </Grid.Resources>
+                </Grid.Resources>-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <users:AvatarControl Width="64" Height="64" Margin="0,0,12,0" Style="{ThemeResource MediumAvatarWithPresenceStyle}" Source="{Binding User.AvatarUrl}" Presence="{Binding User.Presence}" />
+                <users:AvatarControl x:Phase="1" Width="64" Height="64" Margin="0,0,12,0" Style="{ThemeResource MediumAvatarWithPresenceStyle}" Source="{x:Bind User.AvatarUrl}" Presence="{x:Bind User.Presence}" />
                 <Grid Grid.Column="1" HorizontalAlignment="Stretch">
                     <Grid x:Name="mainContent" VerticalAlignment="Center" Opacity="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Name="text" Text="{Binding User.DisplayName}" FontSize="16" FontWeight="SemiBold" />
-                        <presence:InlinePresenceControl Presence="{Binding User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
+                        <TextBlock Name="text" Text="{x:Bind User.DisplayName}" FontSize="16" FontWeight="SemiBold" />
+                        <presence:InlinePresenceControl x:Name="PresenceControl" x:Load="{x:Bind converters:Static.NotNull(User.Presence)}" x:Phase="3" Presence="{x:Bind User.Presence}" TextWrapping="Wrap" Grid.Row="1" />
                     </Grid>
-                    <StackPanel x:Name="overlayContent" DataContext="{Binding}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <!--<StackPanel x:Name="overlayContent" x:Phase="4" DataContext="{x:Bind}" Orientation="Horizontal" Opacity="0" VerticalAlignment="Center" HorizontalAlignment="Right">
                         <Button Style="{ThemeResource IconButtonStyle}" Margin="4,0">
                             <SymbolIcon Symbol="VideoChat"/>
                         </Button>
@@ -73,7 +70,7 @@
                         <Button Style="{ThemeResource IconButtonStyle}" Command="{Binding User.MessageCommand}" Margin="4,0">
                             <SymbolIcon Symbol="Message"/>
                         </Button>
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </Grid>
         </DataTemplate>

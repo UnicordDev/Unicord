@@ -171,7 +171,7 @@
         </DataTemplate>
 
         <converters:MessageTemplateSelector x:Key="MessageTemplateSelector" 
-                                            MessageTemplate="{StaticResource DefaultMessageTemplate}" 
+                                            MessageTemplate="{StaticResource MessageContentTemplate}" 
                                             SystemMessageTemplate="{StaticResource SystemMessageTemplate}"/>
 
         <converters:MessageTemplateSelector x:Key="EditingMessageTemplateSelector" 

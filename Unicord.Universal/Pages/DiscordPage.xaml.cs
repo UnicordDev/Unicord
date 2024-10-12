@@ -36,6 +36,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using MUXC = Microsoft.UI.Xaml.Controls;
+using Microsoft.Extensions.Logging;
 
 namespace Unicord.Universal.Pages
 {
@@ -45,9 +46,11 @@ namespace Unicord.Universal.Pages
         public Frame LeftSidebarFrame => leftSidebarFrame;
         public Frame RightSidebarFrame => rightSidebarFrame;
 
-
+        private ILogger<DiscordPage> _logger
+            = Logger.GetLogger<DiscordPage>();
         private MainPageArgs _args;
         private bool _loaded;
+        private bool _ready;
 
         internal DiscordPageViewModel Model { get; }
         internal bool IsWindowVisible { get; private set; }
@@ -60,6 +63,7 @@ namespace Unicord.Universal.Pages
             IsWindowVisible = Window.Current.Visible;
             Window.Current.VisibilityChanged += Current_VisibilityChanged;
 
+            WeakReferenceMessenger.Default.Register<DiscordPage, ReadyEventArgs>(this, (r, e) => r.OnReady(e.Event));
             WeakReferenceMessenger.Default.Register<DiscordPage, MessageCreateEventArgs>(this, (r, e) => r.Notification_MessageCreated(e.Event));
         }
 
@@ -78,7 +82,7 @@ namespace Unicord.Universal.Pages
             {
                 _args = args;
 
-                if (_loaded && _args.ChannelId != 0)
+                if (_loaded && _ready && _args.ChannelId != 0)
                 {
                     if (DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                     {
@@ -89,21 +93,11 @@ namespace Unicord.Universal.Pages
             }
         }
 
-        private void UpdateTitleBar()
+        private async Task OnReady(ReadyEventArgs e)
         {
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                WindowingService.Current.HandleTitleBarForControl(sidebarMainGrid, true);
-                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
-                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
-                TitleBarGrid.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
-                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
-                TitleBarGrid.Visibility = Visibility.Visible;
-            }
+            if (_ready) return;
+
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await LoadAsync());
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -113,18 +107,34 @@ namespace Unicord.Universal.Pages
 
             Analytics.TrackEvent("DiscordPage_Loaded");
 
+            if (_loaded) return;
+            _loaded = true;
+
             try
             {
                 UpdateTitleBar();
 
-                _loaded = true;
-
                 SplitPaneService.GetForCurrentView()
                     .ToggleLeftPane();
 
-                this.FindParent<MainPage>()
-                    .HideConnectingOverlay();
+                LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
+                MainFrame.Navigate(typeof(FriendsPage));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong when loading DiscordPage");
+                await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
+            }
+        }
 
+        private async Task LoadAsync()
+        {
+            _ready = true;
+
+            this.FindParent<MainPage>()
+                .HideConnectingOverlay();
+            try
+            {
                 var service = DiscordNavigationService.GetForCurrentView();
                 if (_args != null && _args.ChannelId != 0 && DiscordManager.Discord.TryGetCachedChannel(_args.ChannelId, out var channel))
                 {
@@ -135,8 +145,8 @@ namespace Unicord.Universal.Pages
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToFriendsPage");
                     Model.IsFriendsSelected = true;
-                    LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
-                    MainFrame.Navigate(typeof(FriendsPage));
+                    //LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
+                    //MainFrame.Navigate(typeof(FriendsPage));
                 }
 
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
@@ -152,7 +162,7 @@ namespace Unicord.Universal.Pages
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failure when processing READY");
                 await UIUtilities.ShowErrorDialogAsync("An error has occured.", ex.Message);
             }
         }
@@ -164,8 +174,8 @@ namespace Unicord.Universal.Pages
 
         private async Task Notification_MessageCreated(MessageCreateEventArgs e)
         {
-            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) && 
-                NotificationUtils.WillShowToast(DiscordManager.Discord, e.Message) && 
+            if (!WindowingService.Current.IsChannelVisible(e.Channel.Id) &&
+                NotificationUtils.WillShowToast(DiscordManager.Discord, e.Message) &&
                 IsWindowVisible)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShowNotification(e.Message));
@@ -179,7 +189,8 @@ namespace Unicord.Universal.Pages
 
         private async void Notification_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var message = (((InAppNotification)sender).Content as MessageControl)?.MessageViewModel;
+            //var message = (((InAppNotification)sender).Content as MessageControl)?.MessageViewModel;
+            var message = notification.Content as MessageViewModel;
             if (message != null)
             {
                 var service = DiscordNavigationService.GetForCurrentView();
@@ -259,16 +270,33 @@ namespace Unicord.Universal.Pages
             sender.SelectedItem = null;
         }
 
+        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            SplitPaneService.GetForCurrentView()
+                .ToggleLeftPane();
+        }
+
         internal void SetViewMode(ViewMode viewMode)
         {
             Debug.WriteLine(viewMode);
             VisualStateManager.GoToState(this, viewMode.ToString(), true);
         }
 
-        private void CloseItem_Tapped(object sender, TappedRoutedEventArgs e)
+        private void UpdateTitleBar()
         {
-            SplitPaneService.GetForCurrentView()
-                .ToggleLeftPane();
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                WindowingService.Current.HandleTitleBarForControl(sidebarMainGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
+                TitleBarGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                WindowingService.Current.HandleTitleBarForControl(sidebarSecondaryGrid, true);
+                WindowingService.Current.HandleTitleBarForControl(MainContent, true);
+                TitleBarGrid.Visibility = Visibility.Visible;
+            }
         }
     }
 }

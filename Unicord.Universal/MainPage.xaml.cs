@@ -103,6 +103,8 @@ namespace Unicord.Universal
 
                 if (result != null)
                 {
+                    rootFrame.Navigate(typeof(DiscordPage));
+
                     ConnectingOverlay.Visibility = Visibility.Visible;
                     ConnectingOverlay.Opacity = 1;
                     ContentRoot.Opacity = 0;

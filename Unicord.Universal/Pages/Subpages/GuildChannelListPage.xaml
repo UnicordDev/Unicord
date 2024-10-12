@@ -14,8 +14,8 @@
     <Page.Resources>
         <converters:ChannelTypeTemplateSelector x:Key="ChannelTemplateSelector" 
                                                 CategoryTemplate="{StaticResource ChannelListCategoryTemplate}" 
-                                                TextChannelTemplate="{StaticResource ChannelListTemplate}" 
-                                                ThreadTemplate="{StaticResource ChannelListThreadTemplate}"
+                                                TextChannelTemplate="{StaticResource ChannelListContentTemplate}" 
+                                                ThreadTemplate="{StaticResource ThreadChannelListContentTemplate}"
                                                 VoiceChannelTemplate="{StaticResource ChannelListVoiceTemplate}"/>
     </Page.Resources>
     <Grid>

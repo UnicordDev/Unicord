@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using Newtonsoft.Json.Bson;
 using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Models
@@ -57,10 +58,40 @@ namespace Unicord.Universal.Models
             }
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void UnsafeOnPropertySet<T>(ref T oldValue, T newValue, [CallerMemberName] string property = null)
+        {
+            if (oldValue == null || newValue == null || !newValue.Equals(oldValue))
+            {
+                oldValue = newValue;
+                UnsafeInvokePropertyChanged(property);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void UnsafeOnPropertySet<T>(ref T oldValue, T newValue, params string[] additionalProperties)
+        {
+            if (oldValue == null || newValue == null || !newValue.Equals(oldValue))
+            {
+                oldValue = newValue;
+                foreach (var property in additionalProperties)
+                {
+                    UnsafeInvokePropertyChanged(property);
+                }
+            }
+        }
+
         public virtual void InvokePropertyChanged([CallerMemberName] string property = null)
         {
             var args = new PropertyChangedEventArgs(property);
             syncContext.Post((o) => PropertyChanged?.Invoke(this, (PropertyChangedEventArgs)o), args);
+        }
+
+        protected void UnsafeInvokePropertyChanged([CallerMemberName] string property = null)
+        {
+            var args = new PropertyChangedEventArgs(property);
+            PropertyChanged?.Invoke(this, args);
         }
     }
 }

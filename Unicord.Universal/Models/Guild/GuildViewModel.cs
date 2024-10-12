@@ -47,11 +47,11 @@ namespace Unicord.Universal.Models.Guild
 
         public UserViewModel CurrentMember { get; }
 
-        public string Name =>
-            Guild.Name;
+        public string Name
+            => Guild.Name;
 
-        public string IconUrl =>
-            Guild.GetIconUrl(64);
+        public string IconUrl
+            => Guild.GetIconUrl(64);
 
         public ImageSource Icon
             => IconUrl != null ? new BitmapImage(new Uri(IconUrl)) : null;
@@ -59,8 +59,8 @@ namespace Unicord.Universal.Models.Guild
         public bool Muted
             => Guild.IsMuted();
 
-        public bool Unread =>
-            !Muted && AccessibleChannels.Any(r => !r.NotificationMuted && r.Unread);
+        public bool Unread
+            => !Muted && AccessibleChannels.Any(r => !r.NotificationMuted && r.Unread);
 
         internal IEnumerable<ChannelViewModel> AccessibleChannels
         {

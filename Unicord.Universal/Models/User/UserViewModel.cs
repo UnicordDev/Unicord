@@ -69,7 +69,7 @@ namespace Unicord.Universal.Models.User
             => id;
 
         public DiscordUser User
-            => discord.TryGetCachedUser(Id, out var user) ? user : _userCache;
+            => discord.TryGetCachedUser(Id, out var user) && !string.IsNullOrWhiteSpace(user.Username) ? user : _userCache;
 
         public DiscordMember Member
         {

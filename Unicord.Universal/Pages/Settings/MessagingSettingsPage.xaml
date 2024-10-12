@@ -10,6 +10,7 @@
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:settings="using:SettingsControl"
+    xmlns:converters="using:Unicord.Universal.Converters"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:MessagingSettingsModel />
@@ -94,10 +95,14 @@
                       HorizontalAlignment="Right"
                       MinWidth="200">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:TimestampStyleModel">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Style}" />
-                            <TextBlock Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, ConverterParameter={Binding Style}}"  Margin="4,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" />
+                            <TextBlock Text="{x:Bind Style}" />
+                            <TextBlock Text="{x:Bind converters:DateTimeConverter.Convert(Style, Timestamp)}" 
+                                       Margin="4,0" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="12"
+                                       Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

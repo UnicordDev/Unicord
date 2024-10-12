@@ -18,8 +18,8 @@ namespace Unicord.Universal.Models.Guild
         private GuildListFolderViewModel _parent;
         private bool _isSelected;
 
-        public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null) :
-            base(guild.Id)
+        public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null) 
+            : base(guild.Id)
         {
             _parent = parent;
         }

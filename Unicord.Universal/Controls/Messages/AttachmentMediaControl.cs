@@ -86,19 +86,9 @@ namespace Unicord.Universal.Controls.Messages
             //}
         }
 
-        private async void OnFullWindowRequested(object sender, EventArgs e)
+        private void OnFullWindowRequested(object sender, EventArgs e)
         {
-            var service = FullscreenService.GetForCurrentView();
-            if (_mediaPlayerElement.IsFullWindow)
-            {
-                _mediaPlayerElement.IsFullWindow = false;
-                await service.LeaveFullscreenAsync(_mediaPlayerElement, _mediaPlayerBorder);
-            }
-            else
-            {
-                await service.EnterFullscreenAsync(_mediaPlayerElement, _mediaPlayerBorder);
-                _mediaPlayerElement.IsFullWindow = true;
-            }
+            _mediaPlayerElement.IsFullWindow = !_mediaPlayerElement.IsFullWindow;
         }
     }
 }

@@ -25,12 +25,31 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e.Event));
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e.Event));
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e.Event));
+
+            WeakReferenceMessenger.Default.Register<DMChannelsViewModel, ReadyEventArgs>(this, (r, e) => r.OnReady(e.Event));
         }
 
         public ObservableCollection<DmChannelListViewModel> DMChannels { get; set; }
 
         public int SelectedIndex { get => _selectedItem; set => OnPropertySet(ref _selectedItem, value); }
         public bool UpdatingIndex { get; set; }
+
+        private Task OnReady(ReadyEventArgs e)
+        {
+            syncContext.Post((o) =>
+            {
+                DMChannels.Clear();
+                foreach (var vm in discord.PrivateChannels
+                    .OrderByDescending(r => r.Value.LastMessageId ?? 0)
+                    .Select(s => new DmChannelListViewModel(s.Value)))
+                {
+                    DMChannels.Add(vm);
+                }
+
+            }, null);
+
+            return Task.CompletedTask;
+        }
 
         private Task OnDmCreated(DmChannelCreateEventArgs e)
         {

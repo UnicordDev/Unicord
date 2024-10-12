@@ -41,36 +41,6 @@ namespace Unicord.Universal.Pages.Subpages
             }
         }
 
-        private void Grid_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            var grid = sender as FrameworkElement;
-            var enter = grid.Resources["pointerEntered"] as Storyboard;
-            var exited = grid.Resources["pointerLeft"] as Storyboard;
-
-            exited?.Stop();
-            enter?.Begin();
-        }
-
-        private void Grid_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            var grid = sender as FrameworkElement;
-            var enter = grid.Resources["pointerEntered"] as Storyboard;
-            var exited = grid.Resources["pointerLeft"] as Storyboard;
-
-            enter?.Stop();
-            exited?.Begin();
-        }
-
-        private void Grid_PointerCanceled(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            var grid = sender as FrameworkElement;
-            var enter = grid.Resources["pointerEntered"] as Storyboard;
-            var exited = grid.Resources["pointerLeft"] as Storyboard;
-
-            enter?.Stop();
-            exited?.Begin();
-        }
-
         private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
         {
             SplitPaneService.GetForCurrentView()

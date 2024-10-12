@@ -40,8 +40,8 @@ namespace Unicord.Universal.Controls.Channels
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             var windowHandle = WindowingService.Current.GetHandle(this);
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
-                WindowingService.Current.HandleTitleBarForControl(TopGrid);
+            //if (SystemPlatform.Mobile)
+            //    WindowingService.Current.HandleTitleBarForControl(TopGrid);
 
             if (!WindowingService.Current.IsMainWindow(windowHandle))
             {

@@ -112,6 +112,30 @@
 
                     <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
 
+                    <StaticResource x:Key="RichEmbed_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="RichEmbed_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="RichEmbed_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="RichEmbed_CornerRadius">4</CornerRadius>
+                    <CornerRadius x:Key="RichEmbed_Inner_CornerRadius">3</CornerRadius>
+
+                    <Thickness x:Key="RichEmbed_InnerPadding">16,12,12,12</Thickness>
+
+                    <StaticResource x:Key="ImageEmbed_Background" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
+                    <StaticResource x:Key="ImageEmbed_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="ImageEmbed_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="ImageEmbed_CornerRadius">2</CornerRadius>
+
+                    <StaticResource x:Key="Attachment_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="Attachment_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="Attachment_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="Attachment_CornerRadius">4</CornerRadius>
+
+                    <StaticResource x:Key="AudioMediaTransportControls_ControlPanel_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="AudioMediaTransportControls_ControlPanel_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="AudioMediaTransportControls_ControlPanel_CornerRadius">4</CornerRadius>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">4</Thickness>
+
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>

@@ -44,6 +44,13 @@
 				<uap:SplashScreen Image="Assets\Store\SplashScreen.png" uap5:Optional="true" />
 			</uap:VisualElements>
 			<Extensions>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.PeriodicNotificationsTask">
+          <BackgroundTasks>
+            <Task Type="general"/>
+            <Task Type="timer"/>
+          </BackgroundTasks>
+        </Extension>
+        
 				<uap:Extension Category="windows.shareTarget">
 					<uap:ShareTarget Description="Share to Discord">
 						<uap:SupportedFileTypes>

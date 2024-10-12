@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Background.Tasks;
 using Unicord.Universal.Shared;
 using Windows.ApplicationModel;
@@ -16,39 +17,59 @@ namespace Unicord.Universal.Services
 {
     class BackgroundNotificationService : BaseService<BackgroundNotificationService>
     {
+        private readonly ILogger<BackgroundNotificationService> _logger 
+            = Logger.GetLogger<BackgroundNotificationService>();
+
         private BadgeManager _badgeManager;
         private TileManager _tileManager;
         private SecondaryTileManager _secondaryTileManager;
 
         internal async Task StartupAsync()
         {
-            if (!await StartFullTrustBackgroundTaskAsync())
+            if (await StartFullTrustBackgroundTaskAsync())
             {
-                await RegisterPeriodicBackgroundTaskAsync();
+                
+            }
+            else
+            {
+                //await RegisterPeriodicBackgroundTaskAsync();
                 await StartInProcTaskAsync();
+            }
+
+            var periodicTask = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME));
+            if (periodicTask != null)
+            {
+                _logger.LogInformation("Disabling periodic background task because full-trust task is running.");
+                periodicTask.Unregister(true);
             }
         }
 
-        private async Task<bool> RegisterBackgroundTaskAsync()
+        private async Task<bool> RegisterToastActivationBackgroundTaskAsync()
         {
             try
             {
                 if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(TOAST_BACKGROUND_TASK_NAME)))
                     return true;
 
+
                 var status = await BackgroundExecutionManager.RequestAccessAsync();
                 if (status is BackgroundAccessStatus.Denied or BackgroundAccessStatus.DeniedBySystemPolicy or BackgroundAccessStatus.DeniedByUser)
+                {
+                    _logger.LogError("Failed to register background task for toast notification because {Reason}", status.ToString());
                     return false;
+                }
 
                 var builder = new BackgroundTaskBuilder() { Name = TOAST_BACKGROUND_TASK_NAME };
                 builder.SetTrigger(new ToastNotificationActionTrigger());
-
                 var registration = builder.Register();
+
+                _logger.LogInformation("Registered background task for toast activation.");
+
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failed to register background task for toast activation.");
             }
 
             return false;
@@ -57,25 +78,22 @@ namespace Unicord.Universal.Services
         private async Task<bool> StartFullTrustBackgroundTaskAsync()
         {
             if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
-                return false;
-
-            if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5))
-                return false; // disable this prior to FCU because it seems to just crash, and inbuilt notifications work better
-
-            if (!await RegisterBackgroundTaskAsync())
-                return false;
-
-            try
             {
-                if (ApiInformation.IsApiContractPresent(typeof(StartupTaskContract).FullName, 1))
-                {
-                    var notifyTask = await StartupTask.GetAsync("UnicordBackgroundTask");
-                    await notifyTask.RequestEnableAsync();
-                }
+                _logger.LogDebug("Not starting full-trust notifications process, disabled by user.");
+                return false;
             }
-            catch (Exception ex)
+
+            // disable this prior to FCU because it seems to just crash, and inbuilt notifications work better
+            if (!ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5))
             {
-                Logger.LogError(ex);
+                _logger.LogDebug("Not starting full-trust notifications process, disabled by OS version check.");
+                return false;
+            }
+
+            if (!await RegisterToastActivationBackgroundTaskAsync())
+            {
+                _logger.LogDebug("Not starting full-trust notifications process, failed to register toast activation task.");
+                return false;
             }
 
             try
@@ -83,17 +101,32 @@ namespace Unicord.Universal.Services
                 if (ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1))
                 {
                     await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
-                    return true;
+                    _logger.LogInformation("Launched full-trust notifications process.");
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failed to launch full-trust notifications process.");
+                return false;
             }
 
-            return false;
-        }
+            try
+            {
+                if (ApiInformation.IsApiContractPresent(typeof(StartupTaskContract).FullName, 1))
+                {
+                    var notifyTask = await StartupTask.GetAsync("UnicordBackgroundTask");
+                    var state = await notifyTask.RequestEnableAsync();
 
+                    _logger.LogInformation("Full-trust notifications startup task state -> {State}", state);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to enable startup task for full-trust notifications process.");
+            }
+
+            return true;
+        }
 
         private async Task<bool> RegisterPeriodicBackgroundTaskAsync()
         {
@@ -113,7 +146,6 @@ namespace Unicord.Universal.Services
                     IsNetworkRequested = true
                 };
 
-                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 builder.SetTrigger(new TimeTrigger(15, false));
 
                 var registration = builder.Register();

@@ -46,7 +46,7 @@ namespace Unicord
 
         public const string GIF_AUTOPLAY = "AutoPlayGifs";
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
-        public const string TIMESTAMP_STYLE = "TimestampStyle1";
+        public const string TIMESTAMP_STYLE = "TimestampStyle_1";
 
         public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
 

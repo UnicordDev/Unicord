@@ -184,13 +184,13 @@ namespace Unicord.Universal.Models.Messages
             {
                 // discord doesn't return proper width/height information for some video formats
                 // as such, once the media is loaded this may change.
-                if (attachment.Width != 0 && attachment.Height != 0)
+                if (attachment.Width is (0 or null) && attachment.Height is (0 or null))
                     return AttachmentType.Video;
 
                 return AttachmentType.Audio;
             }
 
-            if (attachment.Width != 0 && attachment.Height != 0)
+            if (attachment.Width is not (0 or null) && attachment.Height is not (0 or null))
                 return AttachmentType.Image;
 
             return AttachmentType.Generic;

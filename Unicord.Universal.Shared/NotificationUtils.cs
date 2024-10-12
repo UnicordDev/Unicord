@@ -25,7 +25,7 @@ namespace Unicord.Universal.Shared
             if (client is DiscordClient discord && discord.UserSettings?.Status == "dnd")
                 return false;
 
-            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()) || !message.Channel.IsUnread())
+            if (message.Channel.IsMuted() || (message.Channel.Guild != null && message.Channel.Guild.IsMuted()))
                 return false;
 
             bool willNotify = false;
@@ -136,7 +136,7 @@ namespace Unicord.Universal.Shared
             {
                 if (dmChannel.Type == ChannelType.Private)
                 {
-                    if (dmChannel.Recipients.Count == 0)
+                    if (dmChannel.Recipients == null || dmChannel.Recipients.Count == 0)
                         return "Invalid DM channel";
 
                     return $"@{dmChannel.Recipients[0].DisplayName}";

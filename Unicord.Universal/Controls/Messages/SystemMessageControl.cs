@@ -19,15 +19,5 @@ namespace Unicord.Universal.Controls.Messages
         {
             this.DefaultStyleKey = typeof(SystemMessageControl);
         }
-
-        public override void BeginEdit()
-        {
-            // not editable
-        }
-
-        public override void EndEdit()
-        {
-            // not editable
-        }
     }
 }
