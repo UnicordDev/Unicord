@@ -35,14 +35,8 @@ namespace Unicord.Universal.Extensions
             var control = (Control)d;
             if ((bool)e.NewValue)
             {
-                if (!control.IsLoaded)
-                {
-                    control.Loaded += OnLoaded;
-                }
-                else
-                {
-                    control.Focus(FocusState.Programmatic);
-                }
+                control.Loaded += OnLoaded;
+                control.Focus(FocusState.Programmatic);
             }
         }
     }

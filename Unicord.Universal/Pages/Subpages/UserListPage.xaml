@@ -45,8 +45,8 @@
             ItemTemplate="{ThemeResource UserListTemplate}"
             IsSynchronizedWithCurrentItem="False"
             ItemsSource="{Binding Source={StaticResource ViewSource}}"
-            SelectionChanged="UserList_SelectionChanged"
-            SelectionMode="Single">
+            IsItemClickEnabled="True"
+            ItemClick="userList_ItemClick">
 
             <ListView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">

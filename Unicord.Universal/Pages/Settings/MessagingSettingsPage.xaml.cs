@@ -29,7 +29,7 @@ namespace Unicord.Universal.Pages.Settings
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // dirty hack to work around databinding fuckery
-            App.RoamingSettings.Save("TimestampStyle", (sender as ComboBox).SelectedIndex);
+            App.RoamingSettings.Save(Constants.TIMESTAMP_STYLE, (sender as ComboBox).SelectedIndex);
         }
 
         private async void ContrastLearnMoreButton_Click(object sender, RoutedEventArgs e)

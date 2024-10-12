@@ -214,7 +214,7 @@
                                     </LinearGradientBrush>
                                 </Grid.Background>
 
-                                <Grid VerticalAlignment="Bottom" Padding="4">
+                                <Grid VerticalAlignment="Bottom" Padding="{ThemeResource AudioMediaTransportControls_ControlPanel_Padding}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
@@ -292,7 +292,7 @@
                                             <Button Grid.Column="5" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="CCSelectionButton" Visibility="Collapsed">
                                                 <TextBlock Text="&#xED1F;" Style="{StaticResource SymbolTextBlockStyle}" />
                                             </Button>
-                                            <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="CustomFullWindowButton">
+                                            <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="FullWindowButton">
                                                 <TextBlock x:Name="FullWindowSymbol" Text="&#xE740;" Style="{StaticResource SymbolTextBlockStyle}" />
                                             </Button>
 
@@ -444,12 +444,12 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border x:Name="ControlPanel_ControlPanelVisibilityStates_Border"
-                                CornerRadius="4"
-                                BorderThickness="1"
-                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                CornerRadius="{ThemeResource AudioMediaTransportControls_ControlPanel_CornerRadius}"
+                                BorderThickness="{ThemeResource AudioMediaTransportControls_ControlPanel_BorderThickness}"
+                                BorderBrush="{ThemeResource AudioMediaTransportControls_ControlPanel_BorderBrush}"
+                                Background="{ThemeResource AudioMediaTransportControls_ControlPanel_Background}">
                             <Grid x:Name="ControlPanelGrid" RenderTransformOrigin="0.5,0.5">
-                                <Grid Padding="4">
+                                <Grid Padding="{ThemeResource AudioMediaTransportControls_ControlPanel_Padding}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
@@ -485,9 +485,7 @@
                                         </Button>
                                     </Border>
                                     <Border x:Name="MediaTransportControls_Command_Border" Grid.Column="1" Grid.Row="2">
-
                                         <Grid x:Name="MediaControlsCommandBar" Margin="0,0">
-
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -528,7 +526,6 @@
                                             <Button Grid.Column="6" Style="{ThemeResource IconButtonStyle}" Margin="2,0,0,0" x:Name="FullWindowButton">
                                                 <TextBlock x:Name="FullWindowSymbol" Text="&#xE740;" Style="{StaticResource SymbolTextBlockStyle}" />
                                             </Button>
-
                                         </Grid>
                                     </Border>
                                 </Grid>

@@ -424,7 +424,7 @@
     <Compile Include="Models\Emoji\EmojiViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsPageViewModel.cs" />
-    <Compile Include="Models\GuildChannelListViewModel.cs" />
+    <Compile Include="Models\Guild\GuildChannelListViewModel.cs" />
     <Compile Include="Models\Guild\GuildViewModel.cs" />
     <Compile Include="Models\Guild\GuildListFolderViewModel.cs" />
     <Compile Include="Models\Guild\GuildListViewModel.cs" />

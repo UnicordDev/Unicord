@@ -22,7 +22,6 @@ namespace Unicord.Universal.Controls.Messages
 {
     public class MessageControl : Control
     {
-        private bool _addedEditHandlers;
         private ImageBrush _imageBrush;
 
         #region Dependency Properties

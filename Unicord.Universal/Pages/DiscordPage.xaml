@@ -25,56 +25,6 @@
     </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
-
-        <Storyboard x:Key="OpenLeftPaneMobileStoryboard" 
-                    x:Name="OpenLeftPaneMobileStoryboard">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="292"
-                Duration="00:00:00.25" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CaptionTransform"
-                Storyboard.TargetProperty="X"
-                To="12"
-                Duration="00:00:00.25" />
-        </Storyboard>
-        
-        <Storyboard x:Key="OpenRightPaneMobileStoryboard" 
-                    x:Name="OpenRightPaneMobileStoryboard">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="-292"
-                Duration="00:00:00.25" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CaptionTransform"
-                Storyboard.TargetProperty="X"
-                To="12"
-                Duration="00:00:00.25" />
-        </Storyboard>
-
-        <Storyboard x:Key="ClosePaneMobileStoryboard"
-                    x:Name="ClosePaneMobileStoryboard">
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="MainGridTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.25" />
-            <DoubleAnimation
-                EasingFunction="{StaticResource EaseEnter}"
-                Storyboard.TargetName="CaptionTransform"
-                Storyboard.TargetProperty="X"
-                To="0"
-                Duration="00:00:00.25" />
-        </Storyboard>
-
-
     </Page.Resources>
     <Grid>
         <Grid x:Name="TitleBarGrid"

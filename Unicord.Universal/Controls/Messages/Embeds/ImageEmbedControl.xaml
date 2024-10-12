@@ -11,10 +11,10 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
-            BorderThickness="1"
-            CornerRadius="2">
+    <Border BorderBrush="{ThemeResource ImageEmbed_BorderBrush}"
+            Background="{ThemeResource ImageEmbed_Background}"
+            BorderThickness="{ThemeResource ImageEmbed_BorderThickness}"
+            CornerRadius="{ThemeResource ImageEmbed_CornerRadius}">
         <controls:ScaledContentControl TargetWidth="{x:Bind ViewModel.NaturalWidth}" TargetHeight="{x:Bind ViewModel.NaturalHeight}">
             <controls:ImageElement x:Name="Image"
                                    Tapped="Image_Tapped"

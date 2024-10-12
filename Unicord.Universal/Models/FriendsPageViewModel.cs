@@ -18,12 +18,27 @@ namespace Unicord.Universal.Models
     {
         public FriendsPageViewModel()
         {
-            All = new ObservableCollection<RelationshipViewModel>();
-            Online = new ObservableCollection<RelationshipViewModel>();
-            Blocked = new ObservableCollection<RelationshipViewModel>();
-            Pending = new ObservableCollection<RelationshipViewModel>();
+            All = [];
+            Online = [];
+            Blocked = [];
+            Pending = [];
 
-            foreach (var rel in discord.Relationships.Values.OrderBy(r => r.User?.DisplayName))
+            Load();
+
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, ReadyEventArgs>(this, (t, v) => t.OnReady(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipAddEventArgs>(this, (t, v) => t.OnRelationshipAdded(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipRemoveEventArgs>(this, (t, v) => t.OnRelationshipRemoved(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
+        }
+
+        private void Load()
+        {
+            All.Clear();
+            Online.Clear();
+            Blocked.Clear();
+            Pending.Clear();
+
+            foreach (var (id, rel) in discord.Relationships.OrderBy(r => r.Value.User?.DisplayName))
             {
                 var vm = new RelationshipViewModel(rel, this);
                 switch (rel.RelationshipType)
@@ -44,10 +59,6 @@ namespace Unicord.Universal.Models
                         break;
                 }
             }
-
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipAddEventArgs>(this, (t, v) => t.OnRelationshipAdded(v.Event));
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipRemoveEventArgs>(this, (t, v) => t.OnRelationshipRemoved(v.Event));
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
         }
 
         public DiscordUser CurrentUser => discord.CurrentUser;
@@ -119,6 +130,12 @@ namespace Unicord.Universal.Models
             var old = collection.FirstOrDefault(r => rel.Id == r.Id);
             if (old != null)
                 collection.Remove(old);
+        }
+
+        private Task OnReady(ReadyEventArgs e)
+        {
+            syncContext.Post((o) => Load(), null);
+            return Task.CompletedTask;
         }
 
         private Task OnPresenceUpdated(PresenceUpdateEventArgs e)
