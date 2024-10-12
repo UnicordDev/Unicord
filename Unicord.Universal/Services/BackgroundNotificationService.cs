@@ -28,17 +28,19 @@ namespace Unicord.Universal.Services
         {
             if (await StartFullTrustBackgroundTaskAsync())
             {
-                var periodicTask = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME));
-                if (periodicTask != null)
-                {
-                    _logger.LogInformation("Disabling periodic background task because full-trust task is running.");
-                    periodicTask.Unregister(true);
-                }
+                
             }
             else
             {
-                await RegisterPeriodicBackgroundTaskAsync();
+                //await RegisterPeriodicBackgroundTaskAsync();
                 await StartInProcTaskAsync();
+            }
+
+            var periodicTask = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME));
+            if (periodicTask != null)
+            {
+                _logger.LogInformation("Disabling periodic background task because full-trust task is running.");
+                periodicTask.Unregister(true);
             }
         }
 
