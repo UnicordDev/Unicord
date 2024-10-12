@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Subpages;
@@ -148,15 +149,16 @@ namespace Unicord.Universal.Services
                 if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
                     return;
 
+                GuildListViewModel guildVm;
                 if (channel is DiscordDmChannel dm)
                 {
                     _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm.Id);
                     _discordPageModel.IsFriendsSelected = true;
                     _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
-                else if (channel.Guild != null)
+                else if (channel.Guild != null && (guildVm = _discordPageModel.ViewModelFromGuild(channel.Guild)) != null)
                 {
-                    _discordPageModel.SelectedGuild = _discordPageModel.ViewModelFromGuild(channel.Guild);
+                    _discordPageModel.SelectedGuild = guildVm;
                     _discordPageModel.SelectedGuild.IsSelected = true;
 
                     if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
