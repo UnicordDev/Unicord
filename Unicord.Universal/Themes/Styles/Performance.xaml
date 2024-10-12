@@ -24,7 +24,7 @@
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
                     <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="ms-appx:///Themes/Styles/NavigationView_rs1.xaml"/>
+                        <ResourceDictionary Source="ms-appx:///Themes/Styles/Backport/NavigationView_rs1.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
 
                     <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>

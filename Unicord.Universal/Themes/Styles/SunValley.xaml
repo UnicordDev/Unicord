@@ -139,6 +139,7 @@
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>
+        <ResourceDictionary Source="ms-appx:///Themes/Styles/Backport/WinUIResources_21h1.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
     

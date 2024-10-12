@@ -64,7 +64,7 @@
             </ListView.GroupStyle>
 
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
                     <Setter Property="Padding" Value="8,4" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="MinHeight" Value="0" />

@@ -709,7 +709,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.7.3</Version>
+      <Version>2.7.2</Version>
     </PackageReference>
     <PackageReference Include="Shim.System.Numerics">
       <Version>6.0.0</Version>
@@ -1014,11 +1014,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Styles\Backport\WinUIResources_21h1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Styles\Fluent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Styles\NavigationView_rs1.xaml">
+    <Page Include="Themes\Styles\Backport\NavigationView_rs1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

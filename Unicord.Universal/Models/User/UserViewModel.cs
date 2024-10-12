@@ -91,9 +91,9 @@ namespace Unicord.Universal.Models.User
             => Member != null;
 
         public string DisplayName
-            => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?
-            Member.Nickname
-            : (User.GlobalName ?? User.Username);
+            => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) 
+            ? Member.Nickname
+            : (User?.GlobalName ?? User?.Username);
 
         public string Nickname
             => Member?.Nickname;
