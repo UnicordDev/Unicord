@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Shared;
-using Windows.ApplicationModel.AppService;
-using Windows.Media.Protection.PlayReady;
+using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Win32.Foundation;
+using static Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE;
+using static Windows.Win32.PInvoke;
 
 namespace Unicord.Universal.Background
 {
@@ -21,13 +25,15 @@ namespace Unicord.Universal.Background
         private ToastManager _toastManager = null;
 
         private readonly NotifyIcon _notifyIcon;
-        private readonly ContextMenuStrip _contextMenu;
-        private readonly ToolStripMenuItem _openMenuItem;
-        private readonly ToolStripMenuItem _closeMenuItem;
-        private readonly AppServiceConnection _connection;
+        private readonly ContextMenu _contextMenu;
+        private readonly MenuItem _openMenuItem;
+        private readonly MenuItem _closeMenuItem;
 
         private Task _connectTask;
         private string _token = null;
+
+        private static readonly FieldInfo _windowField
+            = typeof(NotifyIcon).GetField("window", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public NotificationApplicationContext()
         {
@@ -41,30 +47,63 @@ namespace Unicord.Universal.Background
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Icon = Properties.Resources.TrayIcon;
             _notifyIcon.Text = "Unicord";
+            _notifyIcon.DoubleClick += OnOpenMenuItemClicked;
 
-            _contextMenu = new ContextMenuStrip();
-            _contextMenu.SuspendLayout();
+            _contextMenu = new ContextMenu();
 
-            _openMenuItem = new ToolStripMenuItem("Open Unicord");
+            _openMenuItem = new MenuItem("Open Unicord");
             _openMenuItem.Click += OnOpenMenuItemClicked;
-            _contextMenu.Items.Add(_openMenuItem);
+            _contextMenu.MenuItems.Add(_openMenuItem);
 
-            _contextMenu.Items.Add(new ToolStripSeparator());
+            _contextMenu.MenuItems.Add("-");
 
-            _closeMenuItem = new ToolStripMenuItem("Close");
+            _closeMenuItem = new MenuItem("Close");
             _closeMenuItem.Click += OnCloseMenuItemClicked;
-            _contextMenu.Items.Add(_closeMenuItem);
+            _contextMenu.MenuItems.Add(_closeMenuItem);
 
-            _contextMenu.ResumeLayout(false);
-            _notifyIcon.ContextMenuStrip = _contextMenu;
+            _notifyIcon.ContextMenu = _contextMenu;
+            _notifyIcon.Visible = true;
+
+            EnableDarkMode(_notifyIcon);
 
             _connectTask = Task.Run(async () => await InitialiseAsync());
-            _notifyIcon.Visible = true;
         }
 
-        private void OnOpenMenuItemClicked(object sender, EventArgs e)
+        // here be dragons and awful hacks
+        private void EnableDarkMode(NotifyIcon notifyIcon)
         {
-            Process.Start("unicord:");
+            var osVersion = Environment.OSVersion.Version;
+
+            // Windows 10 1809 and later
+            if (osVersion.Major < 10 || osVersion.Build < 17763)
+                return;
+
+            try
+            {
+                var hwnd = new HWND(((NativeWindow)_windowField.GetValue(notifyIcon)).Handle);
+                if (osVersion.Build < 18362)
+                {
+                    UxThemePrivate.AllowDarkModeForWindow(hwnd, true);
+                }
+                else
+                {
+                    UxThemePrivate.SetPreferredAppMode(UxThemePrivate.PreferredAppMode.AllowDark);
+                }
+
+                UxThemePrivate.FlushMenuThemes();
+            }
+            catch
+            {
+                // ignore this, it doesn't matter
+            }
+        }
+
+        private async void OnOpenMenuItemClicked(object sender, EventArgs e)
+        {
+            var appListEntries = await Package.Current.GetAppListEntriesAsync();
+            var app = appListEntries.FirstOrDefault();
+            if (app != null)
+                await app.LaunchAsync();
         }
 
         private void OnCloseMenuItemClicked(object sender, EventArgs e)

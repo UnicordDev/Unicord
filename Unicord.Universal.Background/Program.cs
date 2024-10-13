@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Windows.Storage;
-using Windows.UI.Notifications;
 
 namespace Unicord.Universal.Background
 {
