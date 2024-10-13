@@ -169,13 +169,13 @@
     <value>このテーマは既にインストールされていますが、置き換えますか？</value>
   </data>
   <data name="ThemeAlreadyInstalledTitle" xml:space="preserve">
-    <value>テーマは既にインストールされています！</value>
+    <value>テーマは既にインストールされています!</value>
   </data>
   <data name="ThemeChangedMessage" xml:space="preserve">
-    <value>テーマを更新するには、Unicordを再起動する必要があります。 再起動しますか？?</value>
+    <value>テーマを更新するには、Unicordを再起動する必要があります。 再起動しますか?</value>
   </data>
   <data name="ThemeChangedTitle" xml:space="preserve">
-    <value>テーマを変更しました！</value>
+    <value>テーマを変更しました!</value>
   </data>
   <data name="ThemeInvalidDoesNotExist" xml:space="preserve">
     <value>ディスク上に存在しないテーマを読み込もうとしました。テーマはアンインストールされました。</value>
