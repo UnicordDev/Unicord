@@ -61,7 +61,6 @@ namespace Unicord.Universal.Background
             _closeMenuItem.Click += OnCloseMenuItemClicked;
             _contextMenu.MenuItems.Add(_closeMenuItem);
 
-            //_contextMenu.ResumeLayout(false);
             _notifyIcon.ContextMenu = _contextMenu;
             _notifyIcon.Visible = true;
 
