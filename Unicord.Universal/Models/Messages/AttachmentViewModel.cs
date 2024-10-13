@@ -27,7 +27,7 @@ namespace Unicord.Universal.Models.Messages
     {
         // a set of known media file extensions for use as a heuristic
         private static readonly HashSet<string> _mediaExtensions =
-              new HashSet<string> { ".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg" };
+              [".gifv", ".mp4", ".mov", ".webm", ".wmv", ".avi", ".mkv", ".ogv", ".mp3", ".m4a", ".aac", ".wav", ".wma", ".flac", ".ogg", ".oga", ".opus", ".mpg", ".mpeg"];
 
         private DiscordAttachment _attachment;
         private AttachmentType _type;
@@ -184,13 +184,13 @@ namespace Unicord.Universal.Models.Messages
             {
                 // discord doesn't return proper width/height information for some video formats
                 // as such, once the media is loaded this may change.
-                if (attachment.Width != 0 && attachment.Height != 0)
+                if (attachment.Width is (0 or null) && attachment.Height is (0 or null))
                     return AttachmentType.Video;
 
                 return AttachmentType.Audio;
             }
 
-            if (attachment.Width != 0 && attachment.Height != 0)
+            if (attachment.Width is not (0 or null) && attachment.Height is not (0 or null))
                 return AttachmentType.Image;
 
             return AttachmentType.Generic;

@@ -1,0 +1,145 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:toolkit_media="using:Microsoft.Toolkit.Uwp.UI.Media"
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
+    xmlns:w1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)">
+    <ResourceDictionary.MergedDictionaries>
+        <lib:XamlControlsResources lib:ControlsResourcesVersion="Version2">
+            <!-- Windows 11 Styling -->
+            <lib:XamlControlsResources.MergedDictionaries>
+                <ResourceDictionary>
+                    <!-- General -->
+
+                    <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="Transparent"/>
+
+                    <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
+                    <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Semibold</FontWeight>
+
+                    <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+
+                    <Style x:Key="StretchyIconButtonStyle" TargetType="Button" BasedOn="{StaticResource CleanButtonStyle}">
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                    </Style>
+
+                    <Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource StretchyIconButtonStyle}">
+                        <Setter Property="Padding" Value="8" />
+                    </Style>
+
+                    <Style x:Key="StretchyIconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource DefaultToggleButtonStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="UseLayoutRounding" Value="True"/>
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </Style>
+
+                    <Style x:Key="IconToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource StretchyIconToggleButtonStyle}">
+                        <Setter Property="Padding" Value="8" />
+                    </Style>
+
+                    <!-- DiscordPage -->
+
+                    <SolidColorBrush x:Key="DiscordPage_PrimarySidebar_BackgroundBrush" Color="Transparent"/>
+
+                    <Thickness x:Key="DiscordPage_SecondaryGridMargin">0,0,8,0</Thickness>
+                    <StaticResource x:Key="DiscordPage_SecondaryGrid_Background" ResourceKey="LayerFillColorDefaultBrush"/>
+                    <StaticResource x:Key="DiscordPage_SecondaryGrid_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_BorderThickness">1</Thickness>
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_BottomItem_BorderThickness">1,1,1,0</Thickness>
+
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">4</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_BottomItem_CornerRadius">4,4,0,0</CornerRadius>
+
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0,0,0,8</Thickness>
+
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness">0,1,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneLeft">1,1,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneRight">0,1,1,0</Thickness>
+                    <Thickness x:Key="DiscordPage_MainContent_BorderThickness_ThreePane">1,1,1,0</Thickness>
+
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius">4,4,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneLeft">4,0,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneRight">0,4,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_ThreePane">4,4,0,0</CornerRadius>
+
+                    <StaticResource x:Key="DiscordPage_MainContent_Background" ResourceKey="LayerFillColorDefaultBrush"/>
+                    <StaticResource x:Key="DiscordPage_MainContent_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+
+                    <Style x:Key="DiscordPage_RightMainGridStyle" TargetType="Grid"/>
+                    <Style x:Key="DiscordPage_SidebarSecondaryStyle" TargetType="Grid"/>
+                    <Style x:Key="DiscordPage_RightSplitPaneStyle" TargetType="Grid"/>
+
+                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_Margin">8,0,0,0</Thickness>
+                    <StaticResource x:Key="DiscordPage_RightSplitPaneGrid_Background" ResourceKey="LayerFillColorDefaultBrush"/>
+                    <StaticResource x:Key="DiscordPage_RightSplitPaneGrid_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_BorderThickness">1,1,0,0</Thickness>
+                    <CornerRadius x:Key="DiscordPage_RightSplitPaneGrid_CornerRadius">4,0,0,0</CornerRadius>
+
+                    <!-- FriendsPage -->
+
+                    <StaticResource x:Key="FriendsPage_RelationshipItem_Background" ResourceKey="LayerFillColorDefaultBrush"/>
+                    <StaticResource x:Key="FriendsPage_RelationshipItem_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <CornerRadius x:Key="FriendsPage_RelationshipItem_CornerRadius">4</CornerRadius>
+
+                    <!-- ChannelPage -->
+
+                    <Style x:Key="ChannelPageHeaderButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                        <Setter Property="Margin" Value="4,2"/>
+                    </Style>
+
+                    <Style x:Key="ChannelPageHeaderToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource IconToggleButtonStyle}">
+                        <Setter Property="Margin" Value="4,2"/>
+                    </Style>
+
+                    <SolidColorBrush x:Key="ChannelPage_Header_Background" Color="Transparent"/>
+                    <StaticResource x:Key="ChannelPage_Header_BorderBrush" ResourceKey="DividerStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="ChannelPage_Header_BorderThickness">0,0,0,1</Thickness>
+
+                    <StaticResource x:Key="ChannelPage_MessageInput_Background" ResourceKey="LayerFillColorDefaultBrush"/>
+                    <StaticResource x:Key="ChannelPage_MessageInput_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="ChannelPage_MessageInput_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="ChannelPage_MessageInput_CornerRadius">4</CornerRadius>
+                    <Thickness x:Key="ChannelPage_MessageInput_Margin">12,0,12,12</Thickness>
+
+                    <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
+
+                    <StaticResource x:Key="RichEmbed_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="RichEmbed_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="RichEmbed_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="RichEmbed_CornerRadius">4</CornerRadius>
+                    <CornerRadius x:Key="RichEmbed_Inner_CornerRadius">3</CornerRadius>
+
+                    <Thickness x:Key="RichEmbed_InnerPadding">16,12,12,12</Thickness>
+
+                    <StaticResource x:Key="ImageEmbed_Background" ResourceKey="CardBackgroundFillColorSecondaryBrush"/>
+                    <StaticResource x:Key="ImageEmbed_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="ImageEmbed_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="ImageEmbed_CornerRadius">2</CornerRadius>
+
+                    <StaticResource x:Key="Attachment_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="Attachment_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="Attachment_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="Attachment_CornerRadius">4</CornerRadius>
+
+                    <StaticResource x:Key="AudioMediaTransportControls_ControlPanel_Background" ResourceKey="CardBackgroundFillColorDefaultBrush"/>
+                    <StaticResource x:Key="AudioMediaTransportControls_ControlPanel_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_BorderThickness">1</Thickness>
+                    <CornerRadius x:Key="AudioMediaTransportControls_ControlPanel_CornerRadius">4</CornerRadius>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">4</Thickness>
+
+                </ResourceDictionary>
+            </lib:XamlControlsResources.MergedDictionaries>
+        </lib:XamlControlsResources>
+        <ResourceDictionary Source="ms-appx:///Themes/Styles/Backport/WinUIResources_21h1.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
+    

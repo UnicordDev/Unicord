@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Channel;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
 using Windows.ApplicationModel;
+using System.Collections.Frozen;
 
 namespace Unicord.Universal.Models
 {
@@ -32,12 +33,29 @@ namespace Unicord.Universal.Models
 
         public DiscordPageViewModel()
         {
-            Guilds = new ObservableCollection<IGuildListViewModel>();
-            UnreadDMs = new ObservableCollection<ChannelViewModel>();
-            CurrentUser = App.Discord.CurrentUser;
+            Guilds = [];
+            UnreadDMs = [];
 
-            var guilds = App.Discord.Guilds;
-            var folders = App.Discord.UserSettings?.GuildFolders;
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, ReadyEventArgs>(this, (t, v) => t.OnReady(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildDeleteEventArgs>(this, (t, v) => t.OnGuildDeleted(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageAcknowledgeEventArgs>(this, (t, v) => t.OnMessageAcknowledged(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, UserSettingsUpdateEventArgs>(this, (t, v) => t.OnUserSettingsUpdated(v.Event));
+
+            Load();
+        }
+
+        private void Load()
+        {
+            Guilds.Clear();
+            UnreadDMs.Clear();
+            CurrentUser = discord.CurrentUser;
+
+            var guilds = discord.Guilds.ToFrozenDictionary();
+            var dms = discord.PrivateChannels.ToFrozenDictionary();
+
+            var folders = discord.UserSettings?.GuildFolders;
             var ids = new HashSet<ulong>();
             if (folders != null)
             {
@@ -47,11 +65,11 @@ namespace Unicord.Universal.Models
                     {
                         foreach (var id in folder.GuildIds)
                         {
-                            if (guilds.TryGetValue(id, out var server))
-                            {
-                                Guilds.Add(new GuildListViewModel(server));
-                                ids.Add(id);
-                            }
+                            if (!guilds.TryGetValue(id, out var server))
+                                continue;
+
+                            Guilds.Add(new GuildListViewModel(server));
+                            ids.Add(id);
                         }
 
                         continue;
@@ -67,24 +85,17 @@ namespace Unicord.Universal.Models
                 }
             }
 
-            foreach (var guild in App.Discord.Guilds.Values)
+            foreach (var (id, guild) in guilds)
             {
-                if (!ids.Contains(guild.Id))
+                if (!ids.Contains(id))
                     Guilds.Insert(0, new GuildListViewModel(guild));
             }
 
-            var dms = App.Discord.PrivateChannels.Values;
-            foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0)
-                                  .OrderByDescending(d => d.ReadState?.LastMessageId))
+            foreach (var (id, dm) in dms.Where(d => d.Value.ReadState?.MentionCount > 0)
+                                        .OrderByDescending(d => d.Value.LastMessageId))
             {
-                UnreadDMs.Add(new ChannelViewModel(dm.Id));
+                UnreadDMs.Add(new ChannelViewModel(dm.Id, parent: this));
             }
-
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildDeleteEventArgs>(this, (t, v) => t.OnGuildDeleted(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageAcknowledgeEventArgs>(this, (t, v) => t.OnMessageAcknowledged(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, UserSettingsUpdateEventArgs>(this, (t, v) => t.OnUserSettingsUpdated(v.Event));
         }
 
         public bool Navigating { get; internal set; }
@@ -106,7 +117,7 @@ namespace Unicord.Universal.Models
             get
             {
                 var gitSha = "";
-                var versionedAssembly = typeof(VersionHelper).Assembly;
+                var versionedAssembly = typeof(DiscordPageViewModel).Assembly;
                 var attribute = versionedAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
                 var idx = -1;
                 if (attribute != null && (idx = attribute.InformationalVersion.IndexOf('+')) != -1)
@@ -127,6 +138,12 @@ namespace Unicord.Universal.Models
             }
 
             return null;
+        }
+
+        private Task OnReady(ReadyEventArgs e)
+        {
+            syncContext.Post((o) => Load(), null);
+            return Task.CompletedTask;
         }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)
@@ -202,7 +219,7 @@ namespace Unicord.Universal.Models
 
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
-            //var guildPositions = App.Discord.UserSettings?.GuildPositions;
+            //var guildPositions = DiscordManager.Discord.UserSettings?.GuildPositions;
             //if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
             //    return Task.CompletedTask;
 

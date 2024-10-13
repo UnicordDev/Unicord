@@ -13,6 +13,12 @@ using Lib = Microsoft.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Pages.Settings
 {
+    
+    public interface INotifyOnExit
+    {
+        void OnClosing();
+    }
+
     public sealed partial class SettingsPage : Page, IOverlay
     {
         // these should be kept in order as they appear in the UI,
@@ -63,10 +69,16 @@ namespace Unicord.Universal.Pages.Settings
         {
             var manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested -= OnBackRequested;
+
+            MainFrame.Navigate(typeof(Page));
         }
 
         private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
+            if (MainFrame.Content is INotifyOnExit notify)
+                notify.OnClosing();
+
+            OverlayService.GetForCurrentView().CloseOverlay();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -76,11 +88,17 @@ namespace Unicord.Universal.Pages.Settings
 
         private void SettingsCloseButton_Click(object sender, RoutedEventArgs e)
         {
+            if (MainFrame.Content is INotifyOnExit notify)
+                notify.OnClosing();
+
             OverlayService.GetForCurrentView().CloseOverlay();
         }
 
         private void NavView_BackRequested(Lib.NavigationView sender, Lib.NavigationViewBackRequestedEventArgs args)
         {
+            if (MainFrame.Content is INotifyOnExit notify)
+                notify.OnClosing();
+
             OverlayService.GetForCurrentView().CloseOverlay();
         }
 
@@ -90,7 +108,10 @@ namespace Unicord.Universal.Pages.Settings
                 !Enum.TryParse<SettingsPageType>(str, out var page) || 
                 !_pages.TryGetValue(page, out var type))
                 return;
-            
+
+            if (MainFrame.Content is INotifyOnExit notify)
+                notify.OnClosing();
+
             var transitionInfo = args.RecommendedNavigationTransitionInfo;
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
             {

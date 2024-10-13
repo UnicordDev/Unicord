@@ -65,6 +65,7 @@
 
                                 <Ellipse x:Name="ImageContainer"
                                          x:Load="{x:Bind HasValidCreator}"
+                                         x:Phase="2"
                                          Width="32"
                                          Height="32"
                                          Margin="0,4,8,0"
@@ -81,17 +82,18 @@
                                     </Ellipse.Fill>
                                 </Ellipse>
 
-                                
+
                                 <StackPanel Grid.Column="1">
                                     <controls:UsernameControl x:Name="Username"
+                                                              x:Phase="2"
                                                               x:Load="{x:Bind HasValidCreator}"
                                                               User="{x:Bind Creator}" 
                                                               FontSize="12"/>
                                     <TextBlock FontSize="16"
-                                           FontWeight="Bold"
-                                           TextWrapping="Wrap"
-                                           MaxLines="2"
-                                           Text="{x:Bind Name}"/>
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               MaxLines="2"
+                                               Text="{x:Bind Name}"/>
                                 </StackPanel>
                             </Grid>
 
@@ -102,11 +104,13 @@
                                      HorizontalAlignment="Center" 
                                      VerticalAlignment="Center">
                                 <messages:AttachmentControl x:Name="Attachment"
+                                                            x:Phase="3"
                                                             Visibility="{x:Bind DisplayAttachment, Converter={StaticResource HideOnNullConverter}}"
                                                             ViewModel="{x:Bind DisplayAttachment}" />
                             </Viewbox>
 
                             <ItemsControl x:Name="Reactions"
+                                          x:Phase="4"
                                           Visibility="{x:Bind FirstMessage.Reactions, Converter={StaticResource BoolVisibilityConverter}}"
                                           Grid.Row="2"
                                           Margin="0,8,0,0"

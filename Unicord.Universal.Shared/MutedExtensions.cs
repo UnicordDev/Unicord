@@ -8,7 +8,7 @@ using DSharpPlus.Entities;
 
 namespace Unicord.Universal.Extensions
 {
-    public static class MutedExtensions
+    internal static class MutedExtensions
     {
         public static bool IsMuted(this DiscordChannel channel)
         {
@@ -52,7 +52,9 @@ namespace Unicord.Universal.Extensions
 
         public static bool IsUnread(this DiscordChannel channel)
         {
-            var discord = (DiscordClient)channel.Discord;
+            if (!(channel.Discord is DiscordClient discord))
+                return false;
+
             var readState = channel.ReadState;
 
             // this shit should never happen but apparently it does sometimes, don't question it

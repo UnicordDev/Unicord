@@ -4,10 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages;
 using Windows.System;
@@ -26,7 +22,6 @@ namespace Unicord.Universal.Controls.Messages
 {
     public class MessageControl : Control
     {
-        private bool _addedEditHandlers;
         private ImageBrush _imageBrush;
 
         #region Dependency Properties
@@ -62,17 +57,15 @@ namespace Unicord.Universal.Controls.Messages
 
         protected virtual void OnMessageChanged(DependencyPropertyChangedEventArgs e)
         {
+            this.ApplyTemplate();
+
             if (e.NewValue is MessageViewModel message)
             {
-                this.DataContext = message;
                 this.UpdateProfileImage(message);
-                this.UpdateCollapsedState();
             }
             else
             {
-                this.DataContext = null;
                 this.ClearProfileImage();
-                // reset
             }
         }
 
@@ -104,135 +97,6 @@ namespace Unicord.Universal.Controls.Messages
                 DecodePixelWidth = 64,
                 DecodePixelType = DecodePixelType.Physical
             };
-        }
-
-        // TODO: Could prolly move this somewhere better
-        // bro what was i thinking :skull:
-        private void UpdateCollapsedState()
-        {
-            if (MessageViewModel == null || !IsEnabled)
-                return;
-
-            VisualStateManager.GoToState(this, "NotEditing", false);
-            VisualStateManager.GoToState(this, "NoMention", false);
-
-            if (MessageViewModel.Parent == null)
-            {
-                VisualStateManager.GoToState(this, "None", false);
-                return;
-            }
-
-            if (MessageViewModel.Parent.IsEditMode)
-            {
-                VisualStateManager.GoToState(this, "EditMode", false);
-                return;
-            }
-
-            if (MessageViewModel.IsMention)
-            {
-                VisualStateManager.GoToState(this, "Mention", false);
-            }
-
-            if (MessageViewModel.IsCollapsed)
-            {
-                VisualStateManager.GoToState(this, "Collapsed", false);
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, "Normal", false);
-            }
-        }
-
-        public virtual void BeginEdit()
-        {
-            VisualStateManager.GoToState(this, "Editing", true);
-
-            var control = GetTemplateChild("MessageEditTools") as MessageEditTools;
-            control.ApplyTemplate();
-
-            var editBox = control.FindChild<TextBox>("MessageEditBox");
-
-            if (!_addedEditHandlers)
-            {
-                var editFinishButton = control.FindChild<Button>("MessageEditFinishButton");
-                var editCancelButton = control.FindChild<Button>("MessageEditCancelButton");
-
-                editBox.KeyDown += this.OnEditKeyDown;
-                editFinishButton.Click += this.OnEditFinishClick;
-                editCancelButton.Click += this.OnEditCancelClick;
-
-                _addedEditHandlers = true;
-            }
-
-            editBox.Focus(FocusState.Keyboard);
-            editBox.SelectionStart = editBox.Text.Length;
-        }
-
-        private async Task SaveEditAsync()
-        {
-            try
-            {
-                // TODO: this is horrible
-                var control = this.FindChild<MessageEditTools>();
-                var editBox = control.FindChild<TextBox>("MessageEditBox");
-                var message = MessageViewModel.Message;
-                if (!string.IsNullOrWhiteSpace(editBox.Text) && editBox.Text != message.Content)
-                {
-                    await message.ModifyAsync(editBox.Text);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        public virtual void EndEdit()
-        {
-            VisualStateManager.GoToState(this, "NotEditing", true);
-
-            var page = this.FindParent<ChannelPage>();
-            if (page != null)
-            {
-                page.FocusTextBox();
-            }
-        }
-
-        private async void OnEditKeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            var textBox = (sender as TextBox);
-            var shift = Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift);
-            if (e.Key == VirtualKey.Enter)
-            {
-                e.Handled = true;
-                if (shift.HasFlag(CoreVirtualKeyStates.Down))
-                {
-                    var start = textBox.SelectionStart;
-                    textBox.Text = textBox.Text.Insert(start, "\r\n");
-                    textBox.SelectionStart = start + 1;
-                }
-                else
-                {
-                    EndEdit();
-                    await SaveEditAsync();
-                }
-            }
-
-            if (e.Key == VirtualKey.Escape)
-            {
-                EndEdit();
-            }
-        }
-
-        private async void OnEditFinishClick(object sender, RoutedEventArgs e)
-        {
-            EndEdit();
-            await SaveEditAsync();
-        }
-
-        private void OnEditCancelClick(object sender, RoutedEventArgs e)
-        {
-            EndEdit();
         }
     }
 }

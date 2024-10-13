@@ -9,8 +9,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
-using Microsoft.Toolkit.Mvvm.Messaging;
-using Microsoft.Toolkit.Uwp.UI.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Commands.Generic;
@@ -18,6 +17,7 @@ using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
 using Windows.UI.StartScreen;
+using Windows.Networking.Sockets;
 
 namespace Unicord.Universal.Models.Channels
 {
@@ -39,7 +39,7 @@ namespace Unicord.Universal.Models.Channels
         {
             this._channelId = channelId;
 
-            // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
+            // BUGBUG: PERF, this doesn't appreciate being used by objects with short lifetimes
             if (!isTransient)
             {
                 AcknowledgeCommand = new AcknowledgeChannelCommand(this);
@@ -51,8 +51,8 @@ namespace Unicord.Universal.Models.Channels
                 OpenInNewWindowCommand = new OpenInNewWindowCommand(this, false);
                 OpenInCompactOverlayWindowCommand = new OpenInNewWindowCommand(this, true);
 
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, (r, m) => r.OnChannelUpdated(m.Event));
-                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, (r, m) => r.OnReadStateUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ChannelUpdateEventArgs>(this, static (r, m) => r.OnChannelUpdated(m.Event));
+                WeakReferenceMessenger.Default.Register<ChannelViewModel, ReadStateUpdateEventArgs>(this, static (r, m) => r.OnReadStateUpdated(m.Event));
             }
         }
 
@@ -120,7 +120,7 @@ namespace Unicord.Universal.Models.Channels
         {
             get
             {
-                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private)
+                if (Channel is not DiscordDmChannel dm || dm.Type != ChannelType.Private || dm.Recipients.Count == 0)
                     return null;
 
                 return _recipientCache ??= new UserViewModel(dm.Recipients[0], null, this);
@@ -130,8 +130,7 @@ namespace Unicord.Universal.Models.Channels
         public bool Muted
             => Channel.IsMuted();
         public int? NullableMentionCount
-            => ReadState.MentionCount == 0 ? null : ReadState.MentionCount;
-
+            => ReadState.MentionCount == 0 ? -1 : ReadState.MentionCount;
         public double MutedOpacity
             => Muted ? 0.5 : 1.0;
         public bool HasTopic
@@ -143,25 +142,25 @@ namespace Unicord.Universal.Models.Channels
         public bool IsNotDM
             => !IsDM;
 
-        public string IconUrl
+        public Uri IconUrl
         {
             get
             {
                 if (Channel is not DiscordDmChannel dm)
-                    return "";
+                    return null;
 
                 if (dm.Type == ChannelType.Private && dm.Recipients.Count == 1 && dm.Recipients[0] != null)
                 {
-                    return dm.Recipients[0].GetAvatarUrl(64);
+                    return new Uri(dm.Recipients[0].GetAvatarUrl(64));
                 }
 
                 if (dm.Type == ChannelType.Group)
                 {
-                    if (dm.IconUrl != null) return dm.IconUrl + "?size=64";
+                    if (dm.IconUrl != null) return new Uri(dm.IconUrl + "?size=64");
                     // TODO: default icons?
                 }
 
-                return "";
+                return null;
             }
         }
 
@@ -192,7 +191,7 @@ namespace Unicord.Universal.Models.Channels
             {
                 if (Channel is DiscordDmChannel dm)
                 {
-                    return NullableMentionCount != null;
+                    return NullableMentionCount != -1;
                 }
 
                 return Unread;

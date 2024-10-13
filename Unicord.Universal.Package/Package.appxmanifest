@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.21.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.45.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -24,9 +24,16 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Unicord.Universal.App">
-      <uap:VisualElements DisplayName="ms-resource:AppDisplayName" Square150x150Logo="Assets\Store\Square150x150Logo.png" Square44x44Logo="Assets\Store\Square44x44Logo.png" Description="ms-resource:AppDisplayDescription" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="ms-resource:AppDisplayName" 
+                          Square150x150Logo="Assets\Store\Square150x150Logo.png" 
+                          Square44x44Logo="Assets\Store\Square44x44Logo.png" 
+                          Description="ms-resource:AppDisplayDescription" 
+                          BackgroundColor="transparent">
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png" />
-        <uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" Square310x310Logo="Assets\Store\LargeTile.png" Square71x71Logo="Assets\Store\SmallTile.png" ShortName="Unicord">
+        <uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png" 
+                         Square310x310Logo="Assets\Store\LargeTile.png" 
+                         Square71x71Logo="Assets\Store\SmallTile.png" 
+                         ShortName="Unicord">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
             <uap:ShowOn Tile="wide310x150Logo" />
@@ -42,9 +49,6 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <!--<uap5:Extension Category="windows.startupTask" StartPage="EntryPage">
-          <uap5:StartupTask TaskId="UnicordStartup" DisplayName="Unicord" />
-        </uap5:Extension>-->
         <uap:Extension Category="windows.voipCall">
         </uap:Extension>
         <uap4:Extension Category="windows.contactPanel">
@@ -79,6 +83,12 @@
             <uap:DisplayName>Unicord</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.PeriodicNotificationsTask">
+          <BackgroundTasks>
+            <Task Type="general"/>
+            <Task Type="timer"/>
+          </BackgroundTasks>
+        </Extension>
         <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
           <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
         </uap:Extension>
@@ -87,14 +97,6 @@
             <Task Type="systemEvent" />
           </BackgroundTasks>
         </Extension>
-        <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="uni-theme">
-            <uap:DisplayName>Unicord Theme</uap:DisplayName>
-            <uap:SupportedFileTypes>
-              <uap:FileType ContentType="application/x-unicord-theme">.uni-theme</uap:FileType>
-            </uap:SupportedFileTypes>
-          </uap:FileTypeAssociation>
-        </uap:Extension>
         <desktop:Extension Category="windows.fullTrustProcess" Executable="Unicord.Universal.Background/Unicord.Universal.Background.exe">
           <desktop:FullTrustProcess />
         </desktop:Extension>

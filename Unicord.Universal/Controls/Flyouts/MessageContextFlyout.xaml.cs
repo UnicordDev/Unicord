@@ -20,28 +20,12 @@ namespace Unicord.Universal.Controls.Flyouts
 {
     public sealed partial class MessageContextFlyout : MUXC.CommandBarFlyout
     {
-        public MessageControl Parent
-        {
-            get => (MessageControl)GetValue(ParentProperty);
-            set => SetValue(ParentProperty, value);
-        }
-
-        public static readonly DependencyProperty ParentProperty =
-            DependencyProperty.Register("Parent", typeof(MessageControl), typeof(MessageContextFlyout), new PropertyMetadata(null));
-
         public MessageContextFlyout()
         {
             this.InitializeComponent();
         }
 
         // todo: is there a less shit way of doing this?
-        private void EditFlyoutItem_Click(object sender, RoutedEventArgs e)
-        {
-            this.Hide();
-            this.Target.FindParent<MessageControl>().BeginEdit();
-        }
-
-        // ditto
         private void AddReactionButton_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();

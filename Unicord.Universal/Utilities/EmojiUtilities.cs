@@ -10,6 +10,7 @@ using NeoSmart.Unicode;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Utilities
 {
@@ -36,7 +37,7 @@ namespace Unicord.Universal.Utilities
 
         public static IEnumerable<EmojiGroup> GetAllowedEmotes(ChannelViewModel channel, string searchTerm = null)
         {
-            var hasNitro = App.Discord.CurrentUser.HasNitro();
+            var hasNitro = DiscordManager.Discord.CurrentUser.HasNitro();
             var culture = CultureInfo.InvariantCulture.CompareInfo;
             var hasSearchTerm = !string.IsNullOrWhiteSpace(searchTerm);
 
@@ -50,7 +51,7 @@ namespace Unicord.Universal.Utilities
                 // all availiable emoji 
                 var guildOrder = GetOrderedGuildsList();
 
-                return App.Discord.Guilds.Values
+                return DiscordManager.Discord.Guilds.Values
                     .OrderBy(g => guildOrder.IndexOf(g.Id))
                     .Select(g => new EmojiGroup(g, g.Emojis.Values.Where(FilterEmoji)))
                     .Where(g => g.Any());
@@ -68,8 +69,8 @@ namespace Unicord.Universal.Utilities
 
         public static List<ulong> GetOrderedGuildsList()
         {
-            var guilds = App.Discord.Guilds;
-            var folders = App.Discord.UserSettings?.GuildFolders;
+            var guilds = DiscordManager.Discord.Guilds;
+            var folders = DiscordManager.Discord.UserSettings?.GuildFolders;
             var ids = new List<ulong>();
             foreach (var folder in (folders ?? []))
             {
@@ -87,7 +88,7 @@ namespace Unicord.Universal.Utilities
                 }
             }
 
-            foreach (var guild in App.Discord.Guilds.Values)
+            foreach (var guild in DiscordManager.Discord.Guilds.Values)
             {
                 if (!ids.Contains(guild.Id))
                     ids.Add(guild.Id);

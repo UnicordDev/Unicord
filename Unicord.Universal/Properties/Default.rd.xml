@@ -21,6 +21,10 @@
     <Namespace Name="DSharpPlus.Entities" Serialize="Required PublicAndInternal" />
     <Namespace Name="DSharpPlus.Net" Serialize="Required PublicAndInternal" />
     <Namespace Name="DSharpPlus.Net.Abstractions" Serialize="Required PublicAndInternal" />
-    <!--<Type Name="Unicord.Universal.Theme" Serialize="Required Public" />-->
+    <Namespace Name="Microsoft.Extensions.Options" Activate="Required Public" />
+    <Namespace Name="Microsoft.Extensions.Logging" Activate="Required Public" />
+
+    <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider" Activate="Required All" />
+    <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider.WinRTLogger" Activate="Required All" />
   </Application>
 </Directives>

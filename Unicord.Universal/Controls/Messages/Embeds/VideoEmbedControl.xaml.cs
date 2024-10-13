@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.QueryStringDotNET;
+using System.Web;
+using KWebView2;
 using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models.Messages;
 using Windows.Foundation;
@@ -99,7 +100,7 @@ namespace Unicord.Universal.Controls.Messages
                 if (provider == "youtube")
                 {
                     var embedBuilder = new UriBuilder(uri);
-                    var query = QueryString.Parse(WebUtility.UrlDecode(embedBuilder.Query ?? "").Trim('?'));
+                    var query = HttpUtility.ParseQueryString(embedBuilder.Query ?? "");
                     query.Add("autoplay", "1");
                     embedBuilder.Query = query.ToString();
 

@@ -6,6 +6,7 @@ using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models.User;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Commands.Members
@@ -22,7 +23,7 @@ namespace Unicord.Universal.Commands.Members
 
             var member = viewModel.Member;
             var permissions = member.Guild.CurrentMember.PermissionsIn(null);
-            if (member.Id == App.Discord.CurrentUser.Id &&
+            if (member.Id == DiscordManager.Discord.CurrentUser.Id &&
                 (permissions.HasFlag(Permissions.ChangeNickname) || permissions.HasFlag(Permissions.ManageNicknames)))
             {
                 return true;

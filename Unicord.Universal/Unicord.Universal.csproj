@@ -25,22 +25,23 @@
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>5304CCE7E0FB38D53B4F3741DDD135917556ACB4</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>001AA11011A8DE018049B0B614F2E6733355A7A1</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
     <IlcParameters>/ExtraNutcArguments:"/d2threads8"</IlcParameters>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -51,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -65,7 +66,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -76,7 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -90,7 +91,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM64</PlatformTarget>
@@ -102,7 +103,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <OutputPath>bin\ARM64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -116,7 +117,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -124,10 +125,11 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -157,7 +159,6 @@
     <Compile Include="Commands\Messages\DeleteMessageCommand.cs" />
     <Compile Include="Commands\DiscordCommand.cs" />
     <Compile Include="Commands\EditChannelCommand.cs" />
-    <Compile Include="Commands\EditModeCommand.cs" />
     <Compile Include="Commands\Generic\DownloadCommand.cs" />
     <Compile Include="Commands\Generic\ShareCommand.cs" />
     <Compile Include="Commands\Member\KickCommand.cs" />
@@ -190,16 +191,22 @@
     <Compile Include="Controls\UniformGrid\UniformGrid.Helpers.cs" />
     <Compile Include="Controls\UniformGrid\UniformGrid.Properties.cs" />
     <Compile Include="Converters\Messages\EmbedTemplateSelector.cs" />
+    <Compile Include="Converters\Static.cs" />
     <Compile Include="Dialogs\CaptchaRequestDialog.xaml.cs">
       <DependentUpon>CaptchaRequestDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ChannelTypeExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
-    <Compile Include="Extensions\GuildExtensions.cs" />
-    <Compile Include="Extensions\UserExtensions.cs" />
+    <Compile Include="Extensions\AvatarExtensions.cs" />
+    <Compile Include="Extensions\ShiftEnterExtensions.cs" />
+    <Compile Include="Extensions\FocusExtensions.cs" />
+    <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
+    <Compile Include="Models\Channels\ForumThreadsCollection.cs" />
+    <Compile Include="Models\Channels\ForumThreadViewModel.cs" />
+    <Compile Include="Models\Channels\PinsPageViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
@@ -417,7 +424,7 @@
     <Compile Include="Models\Emoji\EmojiViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsPageViewModel.cs" />
-    <Compile Include="Models\GuildChannelListViewModel.cs" />
+    <Compile Include="Models\Guild\GuildChannelListViewModel.cs" />
     <Compile Include="Models\Guild\GuildViewModel.cs" />
     <Compile Include="Models\Guild\GuildListFolderViewModel.cs" />
     <Compile Include="Models\Guild\GuildListViewModel.cs" />
@@ -435,15 +442,15 @@
     <Compile Include="Models\Messages\Embeds\EmbedImageViewModel.cs" />
     <Compile Include="Models\Messages\Embeds\EmbedVideoViewModel.cs" />
     <Compile Include="Models\Messages\EmbedViewModel.cs" />
+    <Compile Include="Models\Messages\MessageEditViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
     <Compile Include="Models\Messages\ReactionViewModel.cs" />
     <Compile Include="Models\Messages\StickerViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />
-    <Compile Include="Models\PinsPageViewModel.cs" />
     <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
-    <Compile Include="Models\SearchPageViewModel.cs" />
+    <Compile Include="Models\Channels\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\Settings\NotificationsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />
@@ -452,6 +459,7 @@
     <Compile Include="Models\Settings\ThemesSettingsModel.cs" />
     <Compile Include="Models\Settings\RootSettingsModel.cs" />
     <Compile Include="Models\Settings\VoiceSettingsModel.cs" />
+    <Compile Include="Models\SharePageViewModel.cs" />
     <Compile Include="Models\User\PresenceViewModel.cs" />
     <Compile Include="Models\User\RoleViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
@@ -479,6 +487,9 @@
     </Compile>
     <Compile Include="Pages\Overlay\AttachmentOverlayPage.xaml.cs">
       <DependentUpon>AttachmentOverlayPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Overlay\UserInfoOverlayPage.xaml.cs">
+      <DependentUpon>UserInfoOverlayPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\AboutSettingsPage.xaml.cs">
       <DependentUpon>AboutSettingsPage.xaml</DependentUpon>
@@ -540,7 +551,15 @@
     <Compile Include="Pages\VideoEditor.xaml.cs">
       <DependentUpon>VideoEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DiscordManager.cs" />
+    <Compile Include="Services\Platform.cs" />
+    <Compile Include="Services\SplitPaneService.cs" />
+    <Compile Include="Services\ThemeService.cs" />
+    <Compile Include="Themes\Controls\Channels.xaml.cs">
+      <DependentUpon>Channels.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Themes\Controls\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>
@@ -559,6 +578,7 @@
     <Compile Include="Services\SwipeOpenService.cs" />
     <Compile Include="Services\Windowing\ApplicationViewWindowingService.cs" />
     <Compile Include="Services\Windowing\WindowingService.cs" />
+    <Compile Include="Themes\ThemeResources.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Utilities\AdaptiveFlyout.cs" />
     <Compile Include="Utilities\EmojiUtilities.cs" />
@@ -650,7 +670,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ColorCode.UWP">
-      <Version>2.0.6</Version>
+      <Version>2.0.12</Version>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm">
+      <Version>8.3.2</Version>
     </PackageReference>
     <PackageReference Include="Humanizer">
       <Version>2.8.2</Version>
@@ -679,17 +702,14 @@
     <PackageReference Include="Microsoft.Web.WebView2" Condition="'$(Platform)' != 'ARM'">
       <Version>1.0.2739.15</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Web.WebView2.Undocked">
+      <Version>1.0.2739.170</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
     </PackageReference>
-    <PackageReference Include="ObservableCollections">
-      <Version>2.2.2</Version>
-    </PackageReference>
-    <PackageReference Include="QueryString.NET">
-      <Version>1.0.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.2-prerelease.220830001</Version>
+      <Version>2.7.2</Version>
     </PackageReference>
     <PackageReference Include="Shim.System.Numerics">
       <Version>6.0.0</Version>
@@ -699,9 +719,6 @@
     </PackageReference>
     <PackageReference Include="Unicord.Universal.Voice">
       <Version>1.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="WindowsStateTriggers">
-      <Version>1.1.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -869,6 +886,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Overlay\UserInfoOverlayPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings\AboutSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -989,17 +1010,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\RS2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\RS2\ContentDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Controls\Flyouts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Styles\Backport\WinUIResources_21h1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Styles\Fluent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\Backport\NavigationView_rs1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\Performance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\SunValley.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Templates.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1160,9 +1193,6 @@
       <Project>{6e8e3c2c-a7d2-4971-a97d-fa831e3ecf15}</Project>
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Mvvm\Microsoft.Toolkit.Mvvm.csproj">
-      <Name>Microsoft.Toolkit.Mvvm</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.Notifications\Microsoft.Toolkit.Uwp.Notifications.csproj">
       <Name>Microsoft.Toolkit.Uwp.Notifications</Name>
     </ProjectReference>
@@ -1212,9 +1242,9 @@
       <Project>{58278e92-f06d-4585-a94a-ed3f98480e26}</Project>
       <Name>Microsoft.Toolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Unicord\Unicord.csproj">
-      <Project>{31e5688d-ae40-4b4b-8d99-132805a1082b}</Project>
-      <Name>Unicord</Name>
+    <ProjectReference Include="..\Unicord.Universal.Background.Tasks\Unicord.Universal.Background.Tasks.csproj">
+      <Project>{69f44648-37cd-4b20-8814-2baf85b4f624}</Project>
+      <Name>Unicord.Universal.Background.Tasks</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

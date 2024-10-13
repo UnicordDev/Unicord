@@ -6,39 +6,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml.Data;
 
-namespace Unicord.Universal.Models
+namespace Unicord.Universal.Models.Channels
 {
-    public class SearchMessageGrouping :
-        IGrouping<MessageViewModel, MessageViewModel>,
-        IReadOnlyCollection<MessageViewModel>,
-        IReadOnlyList<MessageViewModel>,
-        IEnumerable<MessageViewModel>
+    public class SearchPageViewModel : ViewModelBase
     {
-        private IReadOnlyList<MessageViewModel> _value;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly ChannelViewModel _channel;
+        private readonly ILogger<SearchPageViewModel> _logger
+            = Logger.GetLogger<SearchPageViewModel>();
 
-        public SearchMessageGrouping(MessageViewModel key, IReadOnlyList<MessageViewModel> value)
-        {
-            Key = key;
-            _value = value;
-        }
-
-        public MessageViewModel this[int index] => _value[index];
-
-        public MessageViewModel Key { get; }
-
-        public int Count => _value.Count;
-
-        public IEnumerator<MessageViewModel> GetEnumerator() => _value.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_value).GetEnumerator();
-    }
-
-    public class SearchPageViewModel : NotifyPropertyChangeImpl
-    {
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private DiscordChannel _channel;
         private int _currentPage = 1;
         private int _totalPages = 1;
         private bool _waitingForIndex;
@@ -86,11 +66,10 @@ namespace Unicord.Universal.Models
 
         public CollectionViewSource ViewSource { get; set; }
 
-        public SearchPageViewModel(DiscordChannel channel)
+        public SearchPageViewModel(ChannelViewModel channel)
         {
             _channel = channel;
-            ViewSource = new CollectionViewSource();
-            ViewSource.IsSourceGrouped = true;
+            ViewSource = new CollectionViewSource { IsSourceGrouped = false };
             WaitingForIndex = false;
         }
 
@@ -105,15 +84,14 @@ namespace Unicord.Universal.Models
             {
                 DiscordSearchResult result = null;
                 if (_channel.Guild != null)
-                    result = await App.Discord.SearchAsync(_channel.Guild, content, offset: (CurrentPage - 1) * 25);
+                    result = await discord.SearchAsync(_channel.Guild.Guild, content, offset: (CurrentPage - 1) * 25);
                 else
-                    result = await App.Discord.SearchAsync(_channel, content, offset: (CurrentPage - 1) * 25);
+                    result = await discord.SearchAsync(_channel.Channel, content, offset: (CurrentPage - 1) * 25);
 
                 if (!result.IsIndexed)
                 {
                     WaitingForIndex = true;
                     TotalMessages = 0;
-                    return;
                 }
                 else
                 {
@@ -121,13 +99,13 @@ namespace Unicord.Universal.Models
                     TotalMessages = result.TotalResults;
                     TotalPages = (int)Math.Ceiling(result.TotalResults / 25d);
                     ViewSource.Source = result.Messages
-                                              .Select(g => new SearchMessageGrouping(new MessageViewModel(g.FirstOrDefault(g => g.Hit.HasValue && g.Hit.Value)), g.Select(v => new MessageViewModel(v)).ToList()))
+                                              .Select(v => new MessageViewModel(v[0]))
                                               .ToList();
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failed to load search results");
             }
             finally
             {

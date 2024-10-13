@@ -172,8 +172,7 @@ namespace Unicord.Universal.Controls
             {
                 if (!(ex is TaskCanceledException))
                 {
-                    // TODO: port
-                    // HockeyClient.Current.TrackException(ex, new Dictionary<string, string> { ["type"] = "UploadFailure" });
+                    Logger.LogError(ex);
                 }
             }
 

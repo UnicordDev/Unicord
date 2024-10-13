@@ -15,16 +15,15 @@
     <UserControl.Resources>
         <ui:AttachedDropShadow x:Key="PlayButtonShadow" CastTo="{x:Bind posterImage}" BlurRadius="16" Opacity="1" Color="Black"/>
     </UserControl.Resources>
-    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
-            BorderThickness="1"
-            CornerRadius="2">
+    <Border BorderBrush="{ThemeResource ImageEmbed_BorderBrush}"
+            Background="{ThemeResource ImageEmbed_Background}"
+            BorderThickness="{ThemeResource ImageEmbed_BorderThickness}"
+            CornerRadius="{ThemeResource ImageEmbed_CornerRadius}">
         <Grid x:Name="content">
             <Grid x:Name="posterContainer" Tapped="Canvas_Tapped">
                 <controls:ImageEx x:Name="posterImage" 
                               IsCacheEnabled="True" 
                               Source="{x:Bind ViewModel.Thumbnail.Source}" 
-                              Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
                               VerticalContentAlignment="Center"
                               HorizontalContentAlignment="Center"
                               Stretch="UniformToFill"/>

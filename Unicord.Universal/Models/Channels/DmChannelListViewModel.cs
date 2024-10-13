@@ -15,11 +15,12 @@ namespace Unicord.Universal.Models.Channels
         private string _name;
         private string _avatarUrl;
 
-        public DmChannelListViewModel(DiscordDmChannel channel) : base(channel, false, null)
+        public DmChannelListViewModel(DiscordDmChannel channel) 
+            : base(channel, false, null)
         {
             _name = DmChannel.Name ?? DmChannel.Recipients.Select(s => s.DisplayName).Humanize();
             if (channel.Type == ChannelType.Private)
-                AvatarUrl = channel.Recipients.First().GetAvatarUrl(32);
+                AvatarUrl = channel.Recipients.FirstOrDefault()?.GetAvatarUrl(32);
         }
 
         public override DiscordChannel Channel 

@@ -44,15 +44,12 @@ namespace Unicord.Universal.Pages
 
         private async Task TryLoginAsync(string token)
         {
-            async Task OnReady(DiscordClient client, ReadyEventArgs e)
+            Task OnReady(DiscordClient client, ReadyEventArgs e)
             {
                 var vault = new PasswordVault();
                 vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, "Default", token));
 
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    Frame.Navigate(typeof(DiscordPage));
-                });
+                return Task.CompletedTask;
             }
 
             var mainPage = this.FindParent<MainPage>();
@@ -65,7 +62,8 @@ namespace Unicord.Universal.Pages
                     throw new ArgumentException("Your token cannot be empty! If you were logging in via the browser, try using your token.");
 
                 mainPage.ShowConnectingOverlay();
-                await App.LoginAsync(token, OnReady, App.LoginError, false);
+                Frame.Navigate(typeof(DiscordPage));
+                await DiscordManager.LoginAsync(token, OnReady, App.LoginError, false);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using Unicord.Universal.Models;
+using Unicord.Universal.Models.Channels;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,7 +20,7 @@ namespace Unicord.Universal.Pages.Subpages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is DiscordChannel channel)
+            if (e.Parameter is ChannelViewModel channel)
             {
                 ViewModel = new SearchPageViewModel(channel);
                 Root.DataContext = ViewModel;

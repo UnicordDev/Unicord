@@ -2,6 +2,7 @@
 using Unicord.Universal.Controls;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Parsers.Markdown;
+using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Resources;
 using Windows.System;
@@ -17,7 +18,7 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
 
-            email.Text = GetHiddenEmail(App.Discord.CurrentUser.Email);
+            email.Text = GetHiddenEmail(DiscordManager.Discord.CurrentUser.Email);
 
             MarkdownDocument.KnownSchemes.Add("ms-people");
 
@@ -60,7 +61,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void EmailRevealButton_Click(object sender, RoutedEventArgs e)
         {
-            email.Text = App.Discord.CurrentUser.Email;
+            email.Text = DiscordManager.Discord.CurrentUser.Email;
 
             EmailRevealButton.Visibility = Visibility.Collapsed;
             EmailHideButton.Visibility = Visibility.Visible;
@@ -68,7 +69,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void EmailHideButton_Click(object sender, RoutedEventArgs e)
         {
-            email.Text = GetHiddenEmail(App.Discord.CurrentUser.Email);
+            email.Text = GetHiddenEmail(DiscordManager.Discord.CurrentUser.Email);
 
             EmailHideButton.Visibility = Visibility.Collapsed;
             EmailRevealButton.Visibility = Visibility.Visible;

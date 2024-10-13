@@ -27,6 +27,6 @@ namespace Unicord.Universal.Models
         public StorageFile IconFile { get; set; }
 
         public IEnumerable<DiscordVoiceRegion> Regions
-            => App.Discord?.VoiceRegions.Values.Where(r => !r.IsDeprecated && !r.IsVIP).OrderBy(r => r.Name);
+            => discord?.VoiceRegions.Values.Where(r => !r.IsDeprecated && !r.IsVIP).OrderBy(r => r.Name);
     }
 }

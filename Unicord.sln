@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unicode", "Libraries\unicod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WamWooWam.Core", "Libraries\WamWooWam.Core\WamWooWam.Core\WamWooWam.Core.csproj", "{6E8E3C2C-A7D2-4971-A97D-FA831E3ECF15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unicord", "Unicord\Unicord.csproj", "{31E5688D-AE40-4B4B-8D99-132805A1082B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharpPlus.Rest", "Libraries\DSharpPlus\DSharpPlus.Rest\DSharpPlus.Rest.csproj", "{C01B8589-13FE-4A6D-B159-6644977F58DE}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Unicord.Universal.Shared", "Unicord.Universal.Shared\Unicord.Universal.Shared.shproj", "{118F9D67-9235-4FC6-BF23-9ABE0CD693DA}"
@@ -26,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository Items", "Reposit
 		.gitignore = .gitignore
 		.gitmodules = .gitmodules
 		azure-pipelines.yml = azure-pipelines.yml
+		nuget.config = nuget.config
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -72,6 +71,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Uwp.UI.Controls.Layout", "Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Layout\Microsoft.Toolkit.Uwp.UI.Controls.Layout.csproj", "{A26CBE8E-C713-4E2B-96DD-721E7EB7839F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Uwp.Notifications", "Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.Notifications\Microsoft.Toolkit.Uwp.Notifications.csproj", "{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Universal.Background.Tasks", "Unicord.Universal.Background.Tasks\Unicord.Universal.Background.Tasks.csproj", "{69F44648-37CD-4B20-8814-2BAF85B4F624}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,26 +198,6 @@ Global
 		{6E8E3C2C-A7D2-4971-A97D-FA831E3ECF15}.Release|x64.Build.0 = Release|x64
 		{6E8E3C2C-A7D2-4971-A97D-FA831E3ECF15}.Release|x86.ActiveCfg = Release|x86
 		{6E8E3C2C-A7D2-4971-A97D-FA831E3ECF15}.Release|x86.Build.0 = Release|x86
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|ARM.Build.0 = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|x64.Build.0 = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Debug|x86.Build.0 = Debug|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|ARM.ActiveCfg = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|ARM.Build.0 = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|ARM64.Build.0 = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|x64.ActiveCfg = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|x64.Build.0 = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|x86.ActiveCfg = Release|Any CPU
-		{31E5688D-AE40-4B4B-8D99-132805A1082B}.Release|x86.Build.0 = Release|Any CPU
 		{C01B8589-13FE-4A6D-B159-6644977F58DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C01B8589-13FE-4A6D-B159-6644977F58DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C01B8589-13FE-4A6D-B159-6644977F58DE}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -647,6 +628,26 @@ Global
 		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x64.Build.0 = Release|Any CPU
 		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x86.ActiveCfg = Release|Any CPU
 		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x86.Build.0 = Release|Any CPU
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|ARM.ActiveCfg = Debug|ARM
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|ARM.Build.0 = Debug|ARM
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|ARM64.Build.0 = Debug|ARM64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|x64.ActiveCfg = Debug|x64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|x64.Build.0 = Debug|x64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|x86.ActiveCfg = Debug|x86
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|x86.Build.0 = Debug|x86
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|ARM.ActiveCfg = Release|ARM
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|ARM.Build.0 = Release|ARM
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|ARM64.ActiveCfg = Release|ARM64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|ARM64.Build.0 = Release|ARM64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|x64.ActiveCfg = Release|x64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|x64.Build.0 = Release|x64
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|x86.ActiveCfg = Release|x86
+		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -656,7 +657,6 @@ Global
 		{8A4A933C-C579-4C36-9133-7D6721F99AEC} = {CCA36DCA-2EB5-487F-9F06-9B45323A457B}
 		{C5CA3873-BF6A-4711-ABED-F9D27D37FFB2} = {CCA36DCA-2EB5-487F-9F06-9B45323A457B}
 		{6E8E3C2C-A7D2-4971-A97D-FA831E3ECF15} = {CCA36DCA-2EB5-487F-9F06-9B45323A457B}
-		{31E5688D-AE40-4B4B-8D99-132805A1082B} = {CCA36DCA-2EB5-487F-9F06-9B45323A457B}
 		{C01B8589-13FE-4A6D-B159-6644977F58DE} = {B3B45B23-FC0D-4D4D-95D9-F25A6CC5CE45}
 		{1B172F49-372A-4F15-8353-9BDABA6E2331} = {B3B45B23-FC0D-4D4D-95D9-F25A6CC5CE45}
 		{3996E770-1EEA-4809-9229-9847A6E2BE20} = {CCA36DCA-2EB5-487F-9F06-9B45323A457B}
@@ -686,5 +686,6 @@ Global
 		Unicord.Universal.Shared\Unicord.Universal.Shared.projitems*{03b47fb9-96c6-414f-8d98-5bb6d08c6081}*SharedItemsImports = 5
 		Unicord.Universal.Shared\Unicord.Universal.Shared.projitems*{118f9d67-9235-4fc6-bf23-9abe0cd693da}*SharedItemsImports = 13
 		Unicord.Universal.Shared\Unicord.Universal.Shared.projitems*{67faea09-9d99-4adc-a6c3-610702b7a3da}*SharedItemsImports = 4
+		Unicord.Universal.Shared\Unicord.Universal.Shared.projitems*{69f44648-37cd-4b20-8814-2baf85b4f624}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

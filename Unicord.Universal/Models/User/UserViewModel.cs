@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Members;
 using Unicord.Universal.Commands.Users;
@@ -69,7 +69,7 @@ namespace Unicord.Universal.Models.User
             => id;
 
         public DiscordUser User
-            => discord.TryGetCachedUser(Id, out var user) ? user : _userCache;
+            => discord.TryGetCachedUser(Id, out var user) && !string.IsNullOrWhiteSpace(user.Username) ? user : _userCache;
 
         public DiscordMember Member
         {
@@ -91,9 +91,9 @@ namespace Unicord.Universal.Models.User
             => Member != null;
 
         public string DisplayName
-            => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) ?
-            Member.Nickname
-            : (User.GlobalName ?? User.Username);
+            => Member != null && !string.IsNullOrWhiteSpace(Member.Nickname) 
+            ? Member.Nickname
+            : (User?.GlobalName ?? User?.Username);
 
         public string Nickname
             => Member?.Nickname;

@@ -197,9 +197,9 @@ namespace Unicord.Universal.Controls
 
         public new void Focus(FocusState state = FocusState.Keyboard)
         {
-            if (_suggestBox != null)
+            if (_textBox != null)
             {
-                _suggestBox.Focus(state);
+                _textBox.Focus(state);
                 _textBox.SelectionStart = Text.Length;
             }
         }

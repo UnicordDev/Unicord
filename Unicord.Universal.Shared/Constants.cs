@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Unicord
 {
-    public static partial class Constants
+    internal static partial class Constants
     {
         public const string MAIN_URL = "https://wamwoowam.co.uk/unicord/";
 
@@ -46,7 +46,7 @@ namespace Unicord
 
         public const string GIF_AUTOPLAY = "AutoPlayGifs";
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
-        public const string TIMESTAMP_STYLE = "TimestampStyle1";
+        public const string TIMESTAMP_STYLE = "TimestampStyle_1";
 
         public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
 
@@ -63,6 +63,7 @@ namespace Unicord
         public const string MESSAGE_STYLE_DEFAULT = "DefaultMessageControlStyle";
 
         public const string TOAST_BACKGROUND_TASK_NAME = "ToastBackgroundTask";
+        public const string PERIODIC_BACKGROUND_TASK_NAME = "PeriodicNotificationsTask";
 
         public const string SHOW_HUGE_EMOJI = "ShowHugeEmoji";
         public const bool   SHOW_HUGE_EMOJI_DEFAULT = true;
@@ -76,8 +77,8 @@ namespace Unicord
         public const string MINIMUM_CONTRAST = "MinimumContrast";
         public const double MINIMUM_CONTRAST_DEFAULT = 3.5;
 
-        public const string ENABLE_WEBP = "EnableWebp";
-        public const bool   ENABLE_WEBP_DEFAULT = true;
+        public const string ENABLE_WEBP = "EnableWebp"; 
+        public const bool   ENABLE_WEBP_DEFAULT = false; // slow as balls
 
         public const string ENABLE_NOTIFICATIONS = "EnableNotifications";
         public const bool   ENABLE_NOTIFICATIONS_DEFAULT = true;
@@ -93,16 +94,23 @@ namespace Unicord
 
         public const string ENABLE_LIVE_TILES = "EnableLiveTiles";
         public const bool   ENABLE_LIVE_TILES_DEFAULT = true;
+
+        // old resource keys for migration
+        public const string TOKEN_IDENTIFIER_OLD = "Unicord_Token";
+        public const string AUTO_TRANSCODE_MEDIA_OLD = "AutoTranscodeMedia";
+        public const string VIDEO_PROCESSING_OLD = "VideoProcessingAlgorithm";
+        public const string TIMESTAMP_STYLE_OLD = "TimestampStyle";
+        public const string REQUESTED_COLOUR_SCHEME_OLD = "RequestedTheme";
     }
 
-    public enum MediaTranscodeOptions
+    internal enum MediaTranscodeOptions
     {
         Always,
         WhenNeeded,
         Never
     }
 
-    public enum TimestampStyle
+    internal enum TimestampStyle
     {
         Relative,
         Absolute,

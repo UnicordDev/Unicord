@@ -52,7 +52,7 @@
             <Grid x:Name="contentContainerOverlay" 
                   Grid.RowSpan="2" 
                   Visibility="Visible">
-                
+
                 <lib:ProgressRing x:Name="overlayProgressRing" Width="48" Height="48" VerticalAlignment="Center" HorizontalAlignment="Center" IsIndeterminate="False"/>
 
                 <TextBlock x:Name="FailurePanel"

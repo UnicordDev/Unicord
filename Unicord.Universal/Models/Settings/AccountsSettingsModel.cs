@@ -12,43 +12,41 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    public class AccountsSettingsModel : NotifyPropertyChangeImpl
+    public class AccountsSettingsModel : ViewModelBase
     {
         public AccountsSettingsModel()
         {
-            User = App.Discord?.CurrentUser;
+            User = discord?.CurrentUser;
 
             var strings = ResourceLoader.GetForCurrentView(nameof(AccountsSettingsPage));
             _loading = strings.GetString("Loading");
             _ = Task.Run(() =>
              {
-                 if (App.Discord == null)
+                 if (discord == null)
                      return;
 
-                 var client = App.Discord;
-
-                 _serverCount = client.Guilds.Count; 
+                 _serverCount = discord.Guilds.Count; 
                  InvokePropertyChanged(nameof(ServerCountString));
 
-                 _channelCount = client.Guilds.Values.Sum(c => c.Channels.Count) + client.PrivateChannels.Count;
+                 _channelCount = discord.Guilds.Values.Sum(c => c.Channels.Count) + discord.PrivateChannels.Count;
                  InvokePropertyChanged(nameof(ChannelsCountString));
 
-                 _memberCount = client.Guilds.Values.Sum(c => c.MemberCount);
+                 _memberCount = discord.Guilds.Values.Sum(c => c.MemberCount);
                  InvokePropertyChanged(nameof(MemberCountString));
 
-                 _friendCount = client.Relationships.Values.Count(r => r.RelationshipType == DiscordRelationshipType.Friend); 
+                 _friendCount = discord.Relationships.Values.Count(r => r.RelationshipType == DiscordRelationshipType.Friend); 
                  InvokePropertyChanged(nameof(FriendCountString));
 
-                 _openDMCount = client.PrivateChannels.Count;
+                 _openDMCount = discord.PrivateChannels.Count;
                  InvokePropertyChanged(nameof(OpenDMCountString));
 
-                 _synchedUserCount = client.UserCacheCount;
+                 _synchedUserCount = discord.UserCacheCount;
                  InvokePropertyChanged(nameof(SynchedUserCountString));
 
-                 _synchedPresenceCount = client.Presences.Count;
+                 _synchedPresenceCount = discord.Presences.Count;
                  InvokePropertyChanged(nameof(SynchedPresenceCountString));
 
-                 _emoteCount = client.Guilds.Values.Sum(c => c.Emojis.Count);
+                 _emoteCount = discord.Guilds.Values.Sum(c => c.Emojis.Count);
                  InvokePropertyChanged(nameof(EmoteCountString));
              });
         }

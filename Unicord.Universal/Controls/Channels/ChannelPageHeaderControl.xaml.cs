@@ -23,14 +23,14 @@ namespace Unicord.Universal.Controls.Channels
 {
     public sealed partial class ChannelPageHeaderControl : UserControl
     {
-        public ChannelViewModel ViewModel
+        public ChannelPageViewModelBase ViewModel
         {
-            get { return (ChannelViewModel)GetValue(ViewModelProperty); }
+            get { return (ChannelPageViewModelBase)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
 
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(ChannelViewModel), typeof(ChannelPageHeaderControl), new PropertyMetadata(null));
+            DependencyProperty.Register("ViewModel", typeof(ChannelPageViewModelBase), typeof(ChannelPageHeaderControl), new PropertyMetadata(null));
 
         public ChannelPageHeaderControl()
         {
@@ -40,8 +40,8 @@ namespace Unicord.Universal.Controls.Channels
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             var windowHandle = WindowingService.Current.GetHandle(this);
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Phone")
-                WindowingService.Current.HandleTitleBarForControl(TopGrid);
+            //if (SystemPlatform.Mobile)
+            //    WindowingService.Current.HandleTitleBarForControl(TopGrid);
 
             if (!WindowingService.Current.IsMainWindow(windowHandle))
             {
@@ -55,7 +55,7 @@ namespace Unicord.Universal.Controls.Channels
 
         private void ShowSidebarButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FindParent<DiscordPage>()?.ToggleSplitPane();
+
         }
     }
 }
