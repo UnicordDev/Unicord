@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppThemeBlock.Description" xml:space="preserve">
+    <value>Unicordは、より良いエクスペリエンスのために、様々なテーマをサポートしています。</value>
+  </data>
+  <data name="AppThemeBlock.Title" xml:space="preserve">
+    <value>アプリのテーマ</value>
+  </data>
+  <data name="AppThemeFluent.Content" xml:space="preserve">
+    <value>Fluent</value>
+  </data>
+  <data name="AppThemePerformance.Content" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="AppThemeSunValley.Content" xml:space="preserve">
+    <value>Sun Valley (Windows 11)</value>
+  </data>
   <data name="CloseButton.Content" xml:space="preserve">
     <value>閉じる</value>
   </data>
