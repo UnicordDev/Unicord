@@ -9,5 +9,6 @@ CloseHandle
 GetPackageFullName
 GetCurrentPackageFullName
 DwmGetWindowAttribute
+DwmSetWindowAttribute
 WIN32_ERROR
 MAX_PATH

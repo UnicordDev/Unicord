@@ -17,6 +17,7 @@ using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
 using Windows.ApplicationModel;
 using System.Collections.Frozen;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Models
 {
@@ -48,6 +49,8 @@ namespace Unicord.Universal.Models
 
         private void Load()
         {
+            if (discord == null) return;
+
             Guilds.Clear();
             UnreadDMs.Clear();
             CurrentUser = discord.CurrentUser;
@@ -142,6 +145,7 @@ namespace Unicord.Universal.Models
 
         private Task OnReady(ReadyEventArgs e)
         {
+            discord = DiscordManager.Discord;
             syncContext.Post((o) => Load(), null);
             return Task.CompletedTask;
         }
