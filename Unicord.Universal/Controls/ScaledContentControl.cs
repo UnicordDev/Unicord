@@ -61,8 +61,8 @@ namespace Unicord.Universal.Controls
             if (double.IsNaN(width) || double.IsNaN(height))
                 return base.MeasureOverride(constraint);
 
-            var maxWidth = Math.Min(root.Bounds.Width, MaxWidth);
-            var maxHeight = Math.Min(root.Bounds.Height - 32, MaxHeight);
+            var maxWidth = Math.Min(root.Bounds.Width, Math.Min(MaxWidth, constraint.Width));
+            var maxHeight = Math.Min(root.Bounds.Height - 32, Math.Min(MaxHeight, constraint.Height));
 
             Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
             Drawing.ScaleProportions(ref width, ref height, Math.Min(constraint.Width, maxWidth), Math.Min(constraint.Height, maxHeight));

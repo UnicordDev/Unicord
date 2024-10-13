@@ -81,6 +81,7 @@
 
                     <FontFamily x:Key="FluentSystemIcons">/Assets/FluentSystemIcons-Regular.ttf#FluentSystemIcons-Regular</FontFamily>
                     <FontFamily x:Key="SymbolThemeFontFamily">/Assets/SegoeIcons.ttf#Segoe Fluent Icons</FontFamily>
+                    <FontFamily x:Key="MonospaceFontFamily">/Assets/FiraCode-Regular.ttf#Fira Code</FontFamily>
                     <StaticResource x:Key="SegoeMDL2Assets" ResourceKey="SymbolThemeFontFamily"/>
                 </ResourceDictionary>
             </themes:ThemeResources.MergedDictionaries>

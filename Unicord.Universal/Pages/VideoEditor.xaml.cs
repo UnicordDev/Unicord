@@ -396,12 +396,11 @@ namespace Unicord.Universal.Pages
             if (_succeeded && _tempFile != null)
             {
                 await _model.UpdateFromStorageFileAsync(_tempFile, isTemporary: true);
-                await _model.Parent.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                _model.SyncContext.Post((o) =>
                 {
-                    var channelModel = _model.Parent.DataContext as ChannelPageViewModel;
-                    channelModel.FileUploads.Remove(_model);
-                    channelModel.FileUploads.Add(_model);
-                });
+                    _model.Parent.FileUploads.Remove(_model);
+                    _model.Parent.FileUploads.Add(_model);
+                }, null);
 
 
                 Close();

@@ -285,7 +285,8 @@
         <Grid Background="Transparent"
               ContextFlyout="{StaticResource GuildContextFlyout}"
               ToolTipService.ToolTip="{x:Bind Name}"
-              ToolTipService.Placement="Left">
+              ToolTipService.Placement="Left"
+              Loaded="OnGuildsListItemLoaded">
             <lib:PersonPicture x:Phase="1" Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
             <lib:InfoBadge x:Phase="2" VerticalAlignment="Top"
                            HorizontalAlignment="Right"
@@ -303,7 +304,7 @@
                           IsExpanded="{Binding IsExpanded}" >-->
         <Grid ToolTipService.ToolTip="{x:Bind Name}"
               ToolTipService.Placement="Left"
-              Loaded="OnGuildsListFolderLoaded">
+              Loaded="OnGuildsListFolderItemLoaded">
             <Ellipse Margin="0,4" 
                          Width="42" 
                          Height="42"

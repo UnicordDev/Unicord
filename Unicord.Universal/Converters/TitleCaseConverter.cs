@@ -10,7 +10,7 @@ namespace Unicord.Universal.Converters
         {
             if (value is string s)
             {
-                return s.Humanize(LetterCasing.AllCaps);
+                return s.ToUpper();
             }
 
             return value;

@@ -169,4 +169,19 @@
   <data name="TimestampStyleRelative.Text" xml:space="preserve">
     <value>Relative</value>
   </data>
+  <data name="EnableGuildBrowsingBlock.Title" xml:space="preserve">
+    <value>Restore Last Accessed Channel on Server Click</value>
+  </data>
+  <data name="EnableGuildBrowsingBlock.Description" xml:space="preserve">
+    <value>In previous versions of Unicord, clicking a server didn't return to the last accessed channel. Disable this setting to restore that behaviour.</value>
+  </data>
+  <data name="EnableWebPBlock.Title" xml:space="preserve">
+    <value>Use Webp Where Possible</value>
+  </data>
+  <data name="EnableWebPBlock.Description" xml:space="preserve">
+    <value>Reduce bandwidth with a more efficient image codec, may be slower on older devices!</value>
+  </data>
+  <data name="WebPDownloadButton.Content" xml:space="preserve">
+    <value>Get from the Microsoft Store</value>
+  </data>
 </root>

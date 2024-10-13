@@ -88,7 +88,7 @@ namespace Unicord.Universal.Services
                 else
                 {
                     if (channel is DiscordForumChannel forum)
-                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), channel);
+                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), forum);
                     else
                         _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
                 }
@@ -137,8 +137,6 @@ namespace Unicord.Universal.Services
                 SplitPaneService.GetForCurrentView()
                     .CloseAllPanes();
 
-                //_discordPage.CloseSplitPane(); // pane service?
-
                 if (_discordPageModel.SelectedGuild != null)
                     _discordPageModel.SelectedGuild.IsSelected = false;
 
@@ -161,7 +159,7 @@ namespace Unicord.Universal.Services
                     _discordPageModel.SelectedGuild = guildVm;
                     _discordPageModel.SelectedGuild.IsSelected = true;
 
-                    if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
+                    if (_discordPage.LeftSidebarFrame.Content is not GuildChannelListPage p || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
 
                     if (_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
@@ -170,9 +168,7 @@ namespace Unicord.Universal.Services
                     }
 
                     if (!channel.Guild.IsSynced)
-                    {
                         await channel.Guild.SyncAsync();
-                    }
                 }
 
                 if (channel.IsNSFW)
@@ -194,7 +190,7 @@ namespace Unicord.Universal.Services
                 {
                     if (channel is DiscordForumChannel forum)
                     {
-                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), channel);
+                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), forum);
                     }
                     else
                     {

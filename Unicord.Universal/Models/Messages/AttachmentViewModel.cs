@@ -52,7 +52,7 @@ namespace Unicord.Universal.Models.Messages
             ShareProgress = new ProgressInfo();
             ShareCommand = new ShareCommand(attachment.Url, attachment.FileName, ShareProgress);
 
-            if (_attachment.Width != 0)
+            if (_attachment.Width is not (null or 0))
             {
                 var thumbUrl = new UriBuilder(_attachment.ProxyUrl);
                 var query = HttpUtility.ParseQueryString(thumbUrl.Query);
@@ -74,9 +74,9 @@ namespace Unicord.Universal.Models.Messages
         public bool IsSpoiler =>
             _attachment.FileName.StartsWith("SPOILER_");
         public double NaturalWidth =>
-            _attachment.Width != null ? _attachment.Width.Value : _naturalSize?.Width ?? double.NaN;
+            _attachment.Width is not (null or 0) ? _attachment.Width.Value : _naturalSize?.Width ?? double.NaN;
         public double NaturalHeight =>
-            _attachment.Height != null ? _attachment.Height.Value : _naturalSize?.Height ?? double.NaN;
+            _attachment.Height is not (null or 0) ? _attachment.Height.Value : _naturalSize?.Height ?? double.NaN;
         public AttachmentType Type { get => _type; private set => OnPropertySet(ref _type, value); }
 
         public object Source =>
@@ -115,7 +115,7 @@ namespace Unicord.Universal.Models.Messages
                     _source = _attachment.ProxyUrl;
                     break;
                 case AttachmentType.Svg:
-                    _source = new SvgImageSource(new Uri(_attachment.Url)) { RasterizePixelWidth = 640 };
+                    _source = new SvgImageSource(new Uri(_attachment.Url)) { RasterizePixelWidth = 480 };
                     break;
                 case AttachmentType.Audio:
                 case AttachmentType.Video:
@@ -139,16 +139,26 @@ namespace Unicord.Universal.Models.Messages
             var track = sender.VideoTracks.OrderByDescending(d => { var props = d.GetEncodingProperties(); return props.Width * props.Height; })
                                             .FirstOrDefault();
 
-            if (track != null && _type != AttachmentType.Video)
+            if (track != null)
             {
                 var props = track.GetEncodingProperties();
 
-                _naturalSize = new Size(props.Width, props.Height);
-                _type = AttachmentType.Video;
                 syncContext.Post((_) =>
                 {
+                    _naturalSize = new Size(props.Width, props.Height);
+                    _type = AttachmentType.Video;
                     InvokePropertyChanged(nameof(NaturalWidth));
                     InvokePropertyChanged(nameof(NaturalHeight));
+                    InvokePropertyChanged(nameof(Type));
+                    InvokePropertyChanged(nameof(IsVideo));
+                    InvokePropertyChanged(nameof(IsAudio));
+                }, null);
+            }
+            else
+            {
+                syncContext.Post((_) =>
+                {
+                    _type = AttachmentType.Audio;
                     InvokePropertyChanged(nameof(Type));
                     InvokePropertyChanged(nameof(IsVideo));
                     InvokePropertyChanged(nameof(IsAudio));
@@ -185,9 +195,9 @@ namespace Unicord.Universal.Models.Messages
                 // discord doesn't return proper width/height information for some video formats
                 // as such, once the media is loaded this may change.
                 if (attachment.Width is (0 or null) && attachment.Height is (0 or null))
-                    return AttachmentType.Video;
+                    return AttachmentType.Audio;
 
-                return AttachmentType.Audio;
+                return AttachmentType.Video;
             }
 
             if (attachment.Width is not (0 or null) && attachment.Height is not (0 or null))

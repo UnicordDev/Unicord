@@ -82,8 +82,10 @@
                   FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
                   TintColor="{ThemeResource BackgroundSecondaryColour}" />
 
-                    <StaticResource x:Key="DefaultGridViewItemStyle" ResourceKey="GridViewItemRevealStyle"/>
-                    <StaticResource x:Key="DefaultListViewItemStyle" ResourceKey="ListViewItemRevealStyle"/>
+                    <!--<ThemeResource x:Key="DefaultGridViewItemStyle" ResourceKey="GridViewItemRevealStyle"/>
+                    <ThemeResource x:Key="UnicordListViewItemStyle" ResourceKey="ListViewItemRevealStyle"/>-->
+
+                    <Style x:Key="UnicordListViewItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}"/>
 
 
                     <SolidColorBrush x:Key="BackgroundPrimaryBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
@@ -147,6 +149,8 @@
                         BlurRadius="8"
                         CornerRadius="0"/>
 
+                    <StaticResource x:Key="DiscordPage_Separator_BorderBrush" ResourceKey="SystemControlForegroundBaseLowBrush"/>
+
                     <Style x:Key="DiscordPage_RightMainGridStyle" TargetType="Grid">
                         <Setter Property="ui:Effects.Shadow" Value="{StaticResource DiscordPage_SidebarSecondaryShadow}"/>
                     </Style>
@@ -209,7 +213,9 @@
                     <SolidColorBrush x:Key="AudioMediaTransportControls_ControlPanel_BorderBrush" Color="Transparent"/>
                     <Thickness x:Key="AudioMediaTransportControls_ControlPanel_BorderThickness">0</Thickness>
                     <CornerRadius x:Key="AudioMediaTransportControls_ControlPanel_CornerRadius">0</CornerRadius>
-                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">0</Thickness>                    
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">0</Thickness>
+
+                    <x:Double x:Key="MediaPlayer_AudioOnly_MaxHeight">52</x:Double>
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>

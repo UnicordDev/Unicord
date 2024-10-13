@@ -125,8 +125,8 @@ namespace Unicord.Universal.Controls.Messages
             double width = ViewModel.NaturalWidth;
             double height = ViewModel.NaturalHeight;
 
-            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 640, 480);
-            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 640 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
+            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, 480, 480);
+            WamWooWam.Core.Drawing.ScaleProportions(ref width, ref height, double.IsInfinity(constraint.Width) ? 480 : (int)constraint.Width, double.IsInfinity(constraint.Height) ? 480 : (int)constraint.Height);
 
             return new Size(width, height);
         }

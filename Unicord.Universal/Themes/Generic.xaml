@@ -48,8 +48,8 @@
         <Setter Property="QuotePadding" Value="8,2,0,2" />
         <Setter Property="InlineCodeBorderThickness" Value="1" />
         <Setter Property="InlineCodePadding" Value="4, 2, 4, 2" />
-        
-        <Setter Property="CodeFontFamily" Value="Consolas"/>
+
+        <Setter Property="CodeFontFamily" Value="{ThemeResource MonospaceFontFamily}"/>
         <Setter Property="CodeBackground" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
         <Setter Property="CodeBorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
         <Setter Property="CodeBorderThickness" Value="1" />
@@ -57,7 +57,7 @@
         
         <Setter Property="InlineCodeBackground" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
         <Setter Property="InlineCodeBorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
-        <Setter Property="InlineCodeFontFamily" Value="Consolas"/>
+        <Setter Property="InlineCodeFontFamily" Value="{ThemeResource MonospaceFontFamily}"/>
         <Setter Property="InlineCodeCornerRadius" Value="2"/>
         
         <Setter Property="CodeMargin" Value="0,4" />
@@ -236,7 +236,7 @@
     </Style>
 
     <Style TargetType="local:ScaledContentControl">
-        <Setter Property="MaxWidth" Value="640"/>
+        <Setter Property="MaxWidth" Value="480"/>
         <Setter Property="MaxHeight" Value="480"/>
         <Setter Property="Template">
             <Setter.Value>

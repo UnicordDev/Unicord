@@ -18,8 +18,8 @@
 
     <converters:AttachmentTemplateSelector x:Key="AttachmentTemplateSelector"
                                            ImageTemplate="{StaticResource DefaultAttachmentImageTemplate}"
-                                           VideoTemplate="{StaticResource VideoAttachmentMediaTemplate}"
-                                           AudioTemplate="{StaticResource AudioAttachmentMediaTemplate}"
+                                           VideoTemplate="{StaticResource AttachmentMediaContentTemplate}"
+                                           AudioTemplate="{StaticResource AttachmentMediaContentTemplate}"
                                            GenericTemplate="{StaticResource DefaultAttachmentGenericTemplate}"/>
 
     <converters:EmbedTemplateSelector x:Key="EmbedTemplateSelector"
@@ -64,121 +64,125 @@
         </Setter>
     </Style>
 
-    <Style TargetType="local:AttachmentMediaControl">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="local:AttachmentMediaControl">
-                    <Border>
-                        <Grid x:Name="Root">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+    <DataTemplate x:Key="AttachmentMediaContentTemplate" x:DataType="messages:AttachmentViewModel">
+        <UserControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Grid x:Name="Root" MaxHeight="480">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                            <Grid x:Name="AudioInfo" Margin="4,2,4,8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                <Grid x:Name="AudioInfo" Margin="4,2,4,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                                <TextBlock FontSize="32"
-                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                           Text="&#xe8d6;"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,8,0"/>
+                    <TextBlock x:Name="Icon" FontSize="32"
+                         FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                         Text="&#xe8d6;"
+                         VerticalAlignment="Center"
+                         Margin="0,0,12,0"/>
 
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Text="{Binding FileName}" Style="{ThemeResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
-                                    <TextBlock Text="{Binding FileSize}" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
-                                </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding FileName}" Style="{ThemeResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+                        <TextBlock Text="{Binding FileSize}" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                    </StackPanel>
 
-                                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="4,0,0,0">
-                                    <Button x:Name="DownloadButton"
-                                                Style="{ThemeResource IconButtonStyle}"
-                                                Margin="4,0,0,0"
-                                                Command="{Binding DownloadCommand}">
-                                        <Grid DataContext="{Binding DownloadProgress}">
-                                            <muxc:ProgressRing Width="16" Height="16" 
-                                                                   Opacity="{Binding ProgressOpacity}"
-                                                                   IsIndeterminate="{Binding IsIndeterminate}"
-                                                                   Value="{Binding Progress}"
-                                                                   Maximum="1" />
-                                            <TextBlock Text="&#xe896;" 
-                                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                                           FontSize="16"
-                                                           Opacity="{Binding IconOpacity}"/>
-                                        </Grid>
-                                    </Button>
-
-                                    <Button x:Name="CopyLinkButton"
-                                                Style="{ThemeResource IconButtonStyle}"
-                                                Content="&#xe71b;"
-                                                Margin="4,0,0,0"
-                                                Command="{Binding CopyCommand}"/>
-
-                                    <Button x:Name="ShareButton"
-                                                Style="{ThemeResource IconButtonStyle}"
-                                                Margin="4,0,0,0"
-                                                Command="{Binding ShareCommand}">
-                                        <Grid DataContext="{Binding ShareProgress}">
-                                            <muxc:ProgressRing Width="16" Height="16" 
-                                                               Opacity="{Binding ProgressOpacity}"
-                                                               IsIndeterminate="{Binding IsIndeterminate}"
-                                                               Value="{Binding Progress}"
-                                                               Maximum="1" />
-                                            <TextBlock Text="&#xe72d;" 
-                                                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                                       FontSize="16"
-                                                       Opacity="{Binding IconOpacity}"/>
-                                        </Grid>
-                                    </Button>
-                                </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="4,0,0,0">
+                        <Button x:Name="DownloadButton"
+                              Style="{ThemeResource IconButtonStyle}"
+                              Margin="4,0,0,0"
+                              Command="{Binding DownloadCommand}">
+                            <Grid DataContext="{Binding DownloadProgress}">
+                                <muxc:ProgressRing Width="16" Height="16" 
+                                                 Opacity="{Binding ProgressOpacity}"
+                                                 IsIndeterminate="{Binding IsIndeterminate}"
+                                                 Value="{Binding Progress}"
+                                                 Maximum="1" />
+                                <TextBlock Text="&#xe896;" 
+                                         FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                         FontSize="16"
+                                         Opacity="{Binding IconOpacity}"/>
                             </Grid>
+                        </Button>
 
-                            <Border x:Name="MediaPlayerBorder" Grid.Row="1">
-                                <controls:ScaledContentControl x:Name="MediaPlayerContainer" TargetWidth="{Binding NaturalWidth}" TargetHeight="{Binding NaturalHeight}">
-                                    <MediaPlayerElement x:Name="MediaPlayer" Source="{Binding Source}" PosterSource="{Binding PosterSource}" AreTransportControlsEnabled="True">
-                                        <MediaPlayerElement.TransportControls>
-                                            <controls:CustomMediaTransportControls/>
-                                        </MediaPlayerElement.TransportControls>
-                                    </MediaPlayerElement>
-                                </controls:ScaledContentControl>
-                            </Border>
-                        </Grid>
+                        <Button x:Name="CopyLinkButton"
+                              Style="{ThemeResource IconButtonStyle}"
+                              Content="&#xe71b;"
+                              Margin="4,0,0,0"
+                              Command="{Binding CopyCommand}"/>
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="MediaType">
-                                <VisualState x:Name="Video">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsVideo}"/>
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Margin" Value="0"/>
-                                        <Setter Target="MediaPlayer.MaxHeight" Value="480"/>
-                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="True"/>
-                                        <Setter Target="AudioInfo.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Audio">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsAudio}"/>
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Target="Root.Margin" Value="8"/>
-                                        <Setter Target="MediaPlayer.MaxHeight" Value="46"/>
-                                        <Setter Target="MediaPlayerContainer.ForceSize" Value="False"/>
-                                        <Setter Target="AudioInfo.Visibility" Value="Visible"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
+                        <Button x:Name="ShareButton"
+                              Style="{ThemeResource IconButtonStyle}"
+                              Margin="4,0,0,0"
+                              Command="{Binding ShareCommand}">
+                            <Grid DataContext="{Binding ShareProgress}">
+                                <muxc:ProgressRing Width="16" Height="16" 
+                                             Opacity="{Binding ProgressOpacity}"
+                                             IsIndeterminate="{Binding IsIndeterminate}"
+                                             Value="{Binding Progress}"
+                                             Maximum="1" />
+                                <TextBlock Text="&#xe72d;" 
+                                     FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                     FontSize="16"
+                                     Opacity="{Binding IconOpacity}"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Grid>
 
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                <Border x:Name="MediaPlayerBorder" Grid.Row="1">
+                    <controls:ScaledContentControl x:Name="MediaPlayerContainer" TargetWidth="{x:Bind NaturalWidth}" TargetHeight="{x:Bind NaturalHeight}" ForceSize="True">
+                        <MediaPlayerElement x:Name="MediaPlayer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Source="{Binding Source}" PosterSource="{x:Bind PosterSource}" AreTransportControlsEnabled="True"/>
+                    </controls:ScaledContentControl>
+                </Border>
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="MediaType">
+                        <VisualState x:Name="Video">
+                            <VisualState.StateTriggers>
+                                <StateTrigger IsActive="{Binding IsVideo, Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="Icon.Text" Value="&#xe714;"/>
+                                <Setter Target="Root.Margin" Value="0"/>
+                                <Setter Target="MediaPlayerContainer.MaxHeight" Value="430"/>
+                                <Setter Target="AudioInfo.Visibility" Value="Visible"/>
+                                <Setter Target="AudioInfo.Margin" Value="12,8,8,8"/>
+                                <Setter Target="MediaPlayer.TransportControls">
+                                    <Setter.Value>
+                                        <controls:CustomMediaTransportControls />
+                                    </Setter.Value>
+                                </Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Audio">
+                            <VisualState.StateTriggers>
+                                <StateTrigger IsActive="{Binding IsAudio, Mode=OneWay}"/>
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Target="Icon.Text" Value="&#xe8d6;"/>
+                                <Setter Target="Root.Margin" Value="8"/>
+                                <Setter Target="MediaPlayerContainer.MaxHeight" Value="{StaticResource MediaPlayer_AudioOnly_MaxHeight}"/>
+                                <Setter Target="AudioInfo.Visibility" Value="Visible"/>
+                                <Setter Target="AudioInfo.Margin" Value="4,2,0,4"/>
+                                <Setter Target="MediaPlayer.TransportControls">
+                                    <Setter.Value>
+                                        <controls:CustomMediaTransportControls Style="{StaticResource AudioMediaTransportControlsStyle}" IsFullWindowButtonVisible="False"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Grid>
+        </UserControl>
+    </DataTemplate>
+    
 
     <Style x:Key="AttachmentAudioControlStyle" TargetType="local:AttachmentMediaControl">
         <Setter Property="Template">
@@ -288,7 +292,7 @@
         </controls:ScaledContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="DefaultAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
+    <!--<DataTemplate x:Key="DefaultAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
         <local:AttachmentMediaControl ViewModel="{Binding}"/>
     </DataTemplate>
 
@@ -297,7 +301,7 @@
     </DataTemplate>
     <DataTemplate x:Key="AudioAttachmentMediaTemplate" x:DataType="messages:AttachmentViewModel">
         <local:AttachmentMediaControl ViewModel="{Binding}" Style="{StaticResource AttachmentAudioControlStyle}"/>
-    </DataTemplate>
+    </DataTemplate>-->
 
     <w1809:ScalarTransition x:Key="FadeTransition" Duration="00:00:00.2" />
 

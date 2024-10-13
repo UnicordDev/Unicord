@@ -112,6 +112,12 @@ namespace Unicord.Universal.Models
             set => App.LocalSettings.Save(ENABLE_WEBP, value);
         }
 
+        public bool EnableGuildBrowsing
+        {
+            get => !App.RoamingSettings.Read(ENABLE_GUILD_BROWSING, ENABLE_GUILD_BROWSING_DEFAULT);
+            set => App.RoamingSettings.Save(ENABLE_GUILD_BROWSING, !value);
+        }
+
         public bool CanUseWebP { get; }
         public ICommand OpenWebPStoreLinkCommand { get; }
     }

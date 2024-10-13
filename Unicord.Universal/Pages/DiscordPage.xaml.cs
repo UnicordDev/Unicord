@@ -244,20 +244,28 @@ namespace Unicord.Universal.Pages
 
                 if (!guildVM.Guild.IsUnavailable)
                 {
-                    var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
-                    if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
+                    if (App.LocalSettings.Read(Constants.ENABLE_GUILD_BROWSING, Constants.ENABLE_GUILD_BROWSING_DEFAULT))
                     {
-                        channel = guildVM.Guild.Channels.Values
-                            .Where(c => c.IsAccessible())
-                            .Where(c => c.IsText())
-                            .OrderBy(c => c.Position)
-                            .FirstOrDefault();
-                    }
-
-                    if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
                         LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                    }
                     else
-                        await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel);
+                    {
+                        var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
+                        if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
+                        {
+                            channel = guildVM.Guild.Channels.Values
+                                .Where(c => c.IsAccessible())
+                                .Where(c => c.IsText())
+                                .OrderBy(c => c.Position)
+                                .FirstOrDefault();
+                        }
+
+                        if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
+                            LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
+                        else
+                            await DiscordNavigationService.GetForCurrentView()
+                                .NavigateAsync(channel);
+                    }
 
                     Model.IsFriendsSelected = false;
                 }

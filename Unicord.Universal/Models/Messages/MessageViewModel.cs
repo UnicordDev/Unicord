@@ -119,11 +119,11 @@ namespace Unicord.Universal.Models.Messages
         public MessageViewModel ReferencedMessage
             => _referencedMessage;
         public ChannelViewModel Channel
-            => _channelViewModelCache ??=
-                (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this));
+            => Parent ?? (_channelViewModelCache ??=
+                (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this)));
 
         public UserViewModel Author
-            => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel.GuildId, this);
+            => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel?.GuildId, this);
         public DateTimeOffset Timestamp
             => Message.Timestamp;
         public string Content
