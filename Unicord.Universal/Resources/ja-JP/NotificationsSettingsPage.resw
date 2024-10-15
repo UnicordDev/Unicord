@@ -117,62 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-<data name="EnableWebPBlock.Title" xml:space="preserve">
-    <value>可能な場合にWebPコーデックを使用する</value>
+  <data name="DesktopNotificationsUnavailable.Text" xml:space="preserve">
+    <value>お使いの環境では通知機能は利用できません。</value>
   </data>
-  <data name="EnableWebPBlock.Description" xml:space="preserve">
-    <value>高効率な画像コーデックを使用して帯域幅を節約できます</value>
+  <data name="EnableBadgeCount.Description" xml:space="preserve">
+    <value>未読のメンション数をタスクバー上のバッジに表示します。</value>
   </data>
-  <data name="AdjustRoleColoursBlock.Title" xml:space="preserve">
-    <value>視認性向上のためユーザーカラーを使用する</value>
+  <data name="EnableBadgeCount.Title" xml:space="preserve">
+    <value>メンション数をバッジで表示する</value>
   </data>
-  <data name="AdjustRoleColoursHeader.Text" xml:space="preserve">
-    <value>コントラストの補正</value>
+  <data name="EnableBadgeUnread.Description" xml:space="preserve">
+    <value>未読のDMがある場合、タスクバー上にアイコンを表示します。</value>
   </data>
-  <data name="AutoPlayGIFsBlock.Title" xml:space="preserve">
-    <value>GIFを自動的に再生する</value>
+  <data name="EnableBadgeUnread.Title" xml:space="preserve">
+    <value>未読のDM数をバッジで表示する</value>
   </data>
-  <data name="ChatHeader.Text" xml:space="preserve">
-    <value>メッセージ</value>
+  <data name="EnableDesktopNotifications.Description" xml:space="preserve">
+    <value>メンションやDMが来た際に、デスクトップ上とアクションセンター内に通知を表示します。</value>
   </data>
-  <data name="EnableSpoilersBlock.Title" xml:space="preserve">
-    <value>ネタバレコンテンツを隠す</value>
+  <data name="EnableDesktopNotifications.Title" xml:space="preserve">
+    <value>デスクトップ通知を有効にする</value>
   </data>
-  <data name="LearnMoreButton.Content" xml:space="preserve">
-    <value>詳細</value>
+  <data name="EnableLiveTiles.Description" xml:space="preserve">
+    <value>スタート画面にピン留めされたタイルにDiscordのメッセージを表示します。</value>
   </data>
-  <data name="MessagingSettingsHeader.Text" xml:space="preserve">
-    <value>テキストと画像</value>
+  <data name="EnableLiveTiles.Title" xml:space="preserve">
+    <value>ライブタイルを有効にする</value>
   </data>
-  <data name="MinimumContrastSlider.Header" xml:space="preserve">
-    <value>コントラストの最小値</value>
+  <data name="EnableNotifications.Description" xml:space="preserve">
+    <value>スタート画面やアクションセンター、タスクバーにメッセージに関する通知を表示します。</value>
   </data>
-  <data name="PromptLinksBlock.Description" xml:space="preserve">
-    <value>この設定が有効な場合、 信頼されていないリンクを開く際にWindowsから確認が取られます。</value>
-    <comment>Tooltip for previous text</comment>
-  </data>
-  <data name="PromptLinksBlock.Title" xml:space="preserve">
-    <value>信頼されていないリンクをクリックした際に警告を表示する</value>
-  </data>
-  <data name="ShowHugeEmojiBlock.Title" xml:space="preserve">
-    <value>絵文字を大きく表示する</value>
-  </data>
-  <data name="ShowStatusGlyphsBlock.Title" xml:space="preserve">
-    <value>色覚異常の方に向けたステータスを表示する</value>
-  </data>
-  <data name="TimestampsSubheader.Text" xml:space="preserve">
-    <value>メッセージに表示されるタイムスタンプの形式を指定できます</value>
-  </data>
-  <data name="TimestampStyleAbsolute.Text" xml:space="preserve">
-    <value>絶対表示</value>
-  </data>
-  <data name="TimestampStyleBlock.Title" xml:space="preserve">
-    <value>タイムスタンプ</value>
-  </data>
-  <data name="TimestampStyleBoth.Text" xml:space="preserve">
-    <value>両方</value>
-  </data>
-  <data name="TimestampStyleRelative.Text" xml:space="preserve">
-    <value>相対表示</value>
+  <data name="EnableNotifications.Title" xml:space="preserve">
+    <value>通知を有効にする</value>
   </data>
 </root>

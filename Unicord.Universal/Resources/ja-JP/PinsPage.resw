@@ -132,4 +132,10 @@
   <data name="RatelimitedSubheader.Text" xml:space="preserve">
     <value>少し落ち着いてください！APIの利用制限に引っかかっています！</value>
   </data>
+  <data name="ErroredHeader.Text" xml:space="preserve">
+    <value>おっと!</value>
+  </data>
+  <data name="ErroredSubheader.Text" xml:space="preserve">
+    <value>ピン止めされたメッセージを読み込む際にエラーが発生しました。</value>
+  </data>
 </root>
