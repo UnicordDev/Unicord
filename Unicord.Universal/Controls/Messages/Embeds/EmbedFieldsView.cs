@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Controls;
-using Unicord.Universal.Models.Messages;
+﻿using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

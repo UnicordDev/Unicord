@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DSharpPlus.Entities;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

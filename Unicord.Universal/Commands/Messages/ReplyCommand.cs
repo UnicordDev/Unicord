@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Pages;

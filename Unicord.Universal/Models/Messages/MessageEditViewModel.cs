@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Microsoft.Extensions.Logging;
 using Unicord.Universal.Pages;
 using Windows.UI.Xaml;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Models.Messages
 {

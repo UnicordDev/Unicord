@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;

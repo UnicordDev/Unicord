@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -11,9 +8,7 @@ using DSharpPlus.EventArgs;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models.Messaging;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Resources;
 using Windows.Security.Credentials;
-using Windows.System.Profile;
 using Windows.UI.Core;
 
 namespace Unicord.Universal.Services

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Models.Channels
 {

@@ -1,19 +1,11 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Unicord.Universal.Controls.Messages;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
-using Windows.Management.Deployment;
 using Windows.System;
 using Windows.UI.Xaml;
 using static Unicord.Constants;
+using Unicord.Universal.Utilities;
 
 namespace Unicord.Universal.Models
 {
@@ -47,7 +39,7 @@ namespace Unicord.Universal.Models
 
         public MessagingSettingsModel()
         {
-            CanUseWebP = Tools.HasWebPSupport();
+            CanUseWebP = WebPHelpers.HasWebPSupport();
             OpenWebPStoreLinkCommand = new AsyncRelayCommand(async () => await Launcher.LaunchUriAsync(WebPStoreUri));
         } 
 

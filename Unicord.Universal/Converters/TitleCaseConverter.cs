@@ -1,5 +1,4 @@
 ﻿using System;
-using Humanizer;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters

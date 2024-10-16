@@ -1,15 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Newtonsoft.Json;
 using Unicord.Universal.Services;
-using Windows.Storage;
 using Windows.UI.Xaml;
 using static Unicord.Constants;
 

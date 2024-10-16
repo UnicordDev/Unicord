@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using DSharpPlus;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Toolkit.Uwp.UI.Controls;
-using Unicord.Universal.Controls.Messages;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
@@ -17,26 +14,17 @@ using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Models.Voice;
-using Unicord.Universal.Pages.Settings;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Shared;
 using Unicord.Universal.Utilities;
-//using Unicord.Universal.Voice;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
-using Windows.UI.ApplicationSettings;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using MUXC = Microsoft.UI.Xaml.Controls;
-using Microsoft.Extensions.Logging;
 
 namespace Unicord.Universal.Pages
 {

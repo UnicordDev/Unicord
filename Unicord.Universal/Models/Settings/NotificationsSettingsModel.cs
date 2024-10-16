@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using DSharpPlus.Entities;
-using Unicord.Universal.Services;
-using Windows.ApplicationModel;
+﻿using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
-using Windows.Media.Transcoding;
-using Windows.System.Profile;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Models

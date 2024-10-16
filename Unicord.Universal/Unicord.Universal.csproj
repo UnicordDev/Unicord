@@ -201,6 +201,7 @@
     <Compile Include="Extensions\AvatarExtensions.cs" />
     <Compile Include="Extensions\ShiftEnterExtensions.cs" />
     <Compile Include="Extensions\FocusExtensions.cs" />
+    <Compile Include="Extensions\MessengerExtensions.cs" />
     <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
@@ -586,6 +587,8 @@
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
+    <Compile Include="Utilities\WebPHelpers.cs" />
+    <Compile Include="Extensions\VisualTreeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -666,6 +669,7 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <Content Include="Controls\Markdown\About.txt" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="NativeMethods.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -704,6 +708,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2.Undocked">
       <Version>1.0.2739.170</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.CsWin32">
+      <Version>0.3.106</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>

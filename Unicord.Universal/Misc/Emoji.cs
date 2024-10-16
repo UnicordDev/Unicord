@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using NeoSmart.Unicode;
-using Newtonsoft.Json;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Emoji;
 

@@ -1,10 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DSharpPlus.Entities;
 using Unicord.Universal.Models.Guild;
 
 namespace Unicord.Universal.Models.Channels

@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.UI.Xaml.Controls;
 using TenMica;
-using Unicord.Universal.Dialogs;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
-using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
@@ -22,14 +15,12 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
-using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal

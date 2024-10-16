@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Controls;
 using MUXC = Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models.Guild;
 using System.ComponentModel;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Resources
 {

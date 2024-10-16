@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using NeoSmart.Unicode;
 using Unicord.Universal.Misc;
 using Unicord.Universal.Models.Channels;
-using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Utilities

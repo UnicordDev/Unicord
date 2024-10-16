@@ -6,6 +6,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
 using Unicord.Universal.Background.Tasks;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Shared;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;

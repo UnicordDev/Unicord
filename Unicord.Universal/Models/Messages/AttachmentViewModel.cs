@@ -6,6 +6,7 @@ using System.Web;
 using System.Windows.Input;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands.Generic;
+using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
@@ -56,7 +57,7 @@ namespace Unicord.Universal.Models.Messages
             {
                 var thumbUrl = new UriBuilder(_attachment.ProxyUrl);
                 var query = HttpUtility.ParseQueryString(thumbUrl.Query);
-                query["format"] = Tools.ShouldUseWebP ? "webp" : "jpeg";
+                query["format"] = WebPHelpers.ShouldUseWebP ? "webp" : "jpeg";
                 thumbUrl.Query = query.ToString();
 
                 _posterSource = thumbUrl.Uri.ToString();

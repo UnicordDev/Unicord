@@ -8,7 +8,6 @@ using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using CommunityToolkit.Mvvm.Input;
 using Unicord.Universal.Controls;
-using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
@@ -27,13 +26,13 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.Storage.Streams;
 using Windows.System;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using Windows.Foundation;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Pages
 {

@@ -9,7 +9,6 @@ using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Unicord.Universal.Controls.Markdown.Render;
 using Unicord.Universal.Converters;
-using Windows.Foundation.Metadata;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

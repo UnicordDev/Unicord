@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using Unicord.Universal.Extensions;
 using Humanizer;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Models.Channels
 {
