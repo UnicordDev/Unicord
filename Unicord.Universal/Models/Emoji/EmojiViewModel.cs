@@ -13,28 +13,25 @@ namespace Unicord.Universal.Models.Emoji
 
         public EmojiViewModel(DiscordComponentEmoji emoji) : this()
         {
-            if (emoji == null)            
+            if (emoji == null)
                 return;
-            
-            if (emoji.Id != 0)
+
+            if (emoji.Id == 0)
             {
-                if (DiscordEmoji.TryFromGuildEmote(DiscordManager.Discord, emoji.Id, out var discordEmoji))
-                {
-                    _emoji = discordEmoji;
-                    Name = discordEmoji.Name;
-                    Url = discordEmoji.Url + "?size=32";
-                    IsValid = true;
-                }
-                else
-                {
-                    Name = emoji.Name;
-                    Url = $"https://cdn.discordapp.com/emojis/{emoji.Id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
-                }
+                Name = emoji.Name;
+                Unicode = emoji.Name;
+            }
+            else if (DiscordEmoji.TryFromGuildEmote(DiscordManager.Discord, emoji.Id, out var discordEmoji))
+            {
+                _emoji = discordEmoji;
+                Name = discordEmoji.Name;
+                Url = discordEmoji.Url + "?size=32";
+                IsValid = true;
             }
             else
             {
                 Name = emoji.Name;
-                Unicode = emoji.Name;
+                Url = $"https://cdn.discordapp.com/emojis/{emoji.Id.ToString(CultureInfo.InvariantCulture)}.png?size=32";
             }
 
             IsValid = true;

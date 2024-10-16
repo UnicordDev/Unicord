@@ -191,10 +191,10 @@ namespace Unicord.Universal.Models.User
 
         private void OnPresenceUpdate(PresenceUpdateEventArgs e)
         {
-            if (User == null || e.User.Id != User.Id)
+            if (User == null || e.User.Id != User.Id || _presenceVmCache == null)
                 return;
 
-            _presenceVmCache?.OnPresenceUpdated();
+            _presenceVmCache.OnPresenceUpdated();
             InvokePropertyChanged(nameof(Presence));
         }
 

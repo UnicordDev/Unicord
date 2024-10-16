@@ -1,5 +1,8 @@
 ﻿using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
+#if DEBUG
+using Microsoft.Extensions.Logging.Debug;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

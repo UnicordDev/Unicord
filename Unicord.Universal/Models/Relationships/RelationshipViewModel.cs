@@ -5,9 +5,10 @@ using Unicord.Universal.Models.User;
 
 namespace Unicord.Universal.Models.Relationships
 {
-    public class RelationshipViewModel(DiscordRelationship rel, ViewModelBase owner) : ViewModelBase(owner), IEquatable<RelationshipViewModel>, IComparable<RelationshipViewModel>
+    public class RelationshipViewModel(DiscordRelationship rel, ViewModelBase owner) 
+        : ViewModelBase(owner), IEquatable<RelationshipViewModel>, IComparable<RelationshipViewModel>
     {
-        private DiscordRelationship rel = rel;
+        private readonly DiscordRelationship rel = rel;
 
         public ulong Id
             => rel.Id;
