@@ -806,10 +806,12 @@
         <UserControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                      VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid x:Name="MessageControl_MainBorder"
-                  ContextFlyout="{StaticResource MessageContextFlyout}"
                   Background="Transparent"
                   BorderBrush="Transparent"
                   BorderThickness="4,0,0,0">
+                <Grid.ContextFlyout>
+                    <flyouts:MessageContextFlyout/>
+                </Grid.ContextFlyout>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="Mentions">
                         <VisualState x:Name="NoMention">

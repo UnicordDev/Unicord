@@ -51,35 +51,35 @@ namespace Unicord.Universal.Resources.Controls
 
         private void Grid_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
+            var dc = ((FrameworkElement)sender).DataContext;
             var parent = sender.FindParent<Grid>("MessageControl_MainBorder");
             if (parent == null) return;
 
             // more of a guard, we're creating a new one anyway
-            if (parent.ContextFlyout is not MessageContextFlyout)
+            if (parent.ContextFlyout is not MessageContextFlyout flyout || parent.Tag == dc)
                 return;
 
-            var flyout = new MessageContextFlyout();
+            parent.Tag = dc;
+
+            var old = flyout.SecondaryCommands.OfType<FrameworkElement>().Where(c => (c.Tag as string) == "canary");
+            foreach (var c in old)
+                flyout.SecondaryCommands.Remove((ICommandBarElement)c);
+
             var separator = flyout.SecondaryCommands.LastOrDefault(c => c is AppBarSeparator);
             var index = flyout.SecondaryCommands.IndexOf(separator);
 
             var currentFlyout = (MenuFlyout)(((Grid)sender).Tag); // hate this
             foreach (var item in currentFlyout.Items.OfType<MenuFlyoutItem>().Reverse())
             {
-                var appbarItem = new AppBarButton() { Icon = item.Icon, Label = item.Text, Command = item.Command };
+                if (item == null) continue;
+
+                var appbarItem = new AppBarButton() { Icon = item.Icon, Label = item.Text, Command = item.Command, Tag = "canary", DataContext = dc };
                 flyout.SecondaryCommands.Insert(index, appbarItem);
             }
 
-            args.Handled = true;
+            flyout.SecondaryCommands.Insert(index, new AppBarSeparator() { Tag = "canary" });
 
-            if (args.TryGetPosition(parent, out var point)
-                && ApiInformation.IsTypePresent(typeof(FlyoutShowOptions).FullName))
-            {
-                flyout.ShowAt(parent, new FlyoutShowOptions() { Position = point });
-            }
-            else
-            {
-                flyout.ShowAt((FrameworkElement)parent);
-            }
+            args.Handled = false;
         }
     }
 }
