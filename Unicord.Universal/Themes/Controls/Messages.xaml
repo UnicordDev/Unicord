@@ -41,23 +41,36 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:AttachmentControl">
-                    <Grid HorizontalAlignment="Left">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{ThemeResource Attachment_CornerRadius}">
+                    <Grid HorizontalAlignment="Left"
+                          DataContext="{TemplateBinding ViewModel}">
+                        <Grid Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}"
+                              CornerRadius="{ThemeResource Attachment_CornerRadius}"
+                              ContextRequested="Grid_ContextRequested">
+                            <Grid.Tag>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Download" Icon="Download" Command="{Binding DownloadCommand}"/>
+                                    <MenuFlyoutItem Text="Share" Icon="Share" Command="{Binding ShareCommand}"/>
+                                    <MenuFlyoutItem Text="Copy URL" Icon="Link" Command="{Binding CopyCommand}"/>
+                                </MenuFlyout>
+                            </Grid.Tag>
 
                             <ContentControl ContentTemplateSelector="{StaticResource AttachmentTemplateSelector}"
-                                        Content="{TemplateBinding ViewModel}"
-                                        HorizontalContentAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top"
-                                        VerticalContentAlignment="Top"
-                                        MaxWidth="480"
-                                        MaxHeight="480"/>
+                                            Content="{TemplateBinding ViewModel}"
+                                            HorizontalContentAlignment="Stretch"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Top"
+                                            VerticalContentAlignment="Top"
+                                            MaxWidth="480"
+                                            MaxHeight="480"/>
 
-                            <!--<Border x:Name="PART_SpoilerOverlay" Background="{ThemeResource SpoilerBrush}" />-->
-                        </Border>
+                            <Border x:Name="PART_SpoilerOverlay"
+                                    Visibility="{Binding IsSpoiler, Converter={StaticResource BoolVisibilityConverter}}"
+                                    Background="{ThemeResource SpoilerBrush}">
+                                <Button Content="Spoiler! Click to reveal!" HorizontalAlignment="Center" Command="{Binding RevealSpoilerCommand}"/>
+                            </Border>
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -792,11 +805,11 @@
     <DataTemplate x:Key="MessageContentTemplate" x:DataType="messages:MessageViewModel">
         <UserControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                      VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
-            <Grid x:Name="MainBorder"
-                     ContextFlyout="{StaticResource MessageContextFlyout}"
-                     Background="Transparent"
-                     BorderBrush="Transparent"
-                     BorderThickness="4,0,0,0">
+            <Grid x:Name="MessageControl_MainBorder"
+                  ContextFlyout="{StaticResource MessageContextFlyout}"
+                  Background="Transparent"
+                  BorderBrush="Transparent"
+                  BorderThickness="4,0,0,0">
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="Mentions">
                         <VisualState x:Name="NoMention">
@@ -804,8 +817,8 @@
                                 <StateTrigger x:Name="NoMentionStateTrigger" IsActive="{x:Bind converters:Static.Not(IsMention), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.Background" Value="Transparent"/>
-                                <Setter Target="MainBorder.BorderBrush" Value="Transparent"/>
+                                <Setter Target="MessageControl_MainBorder.Background" Value="Transparent"/>
+                                <Setter Target="MessageControl_MainBorder.BorderBrush" Value="Transparent"/>
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState x:Name="Mention">
@@ -813,8 +826,8 @@
                                 <StateTrigger x:Name="MentionStateTrigger" IsActive="{x:Bind IsMention, Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                <Setter Target="MainBorder.Background" Value="{ThemeResource MentionedMessageBackgroundBrush}" />
+                                <Setter Target="MessageControl_MainBorder.BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                                <Setter Target="MessageControl_MainBorder.Background" Value="{ThemeResource MentionedMessageBackgroundBrush}" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -824,8 +837,8 @@
                                 <StateTrigger x:Name="DefaultSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Default), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
-                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                                <Setter Target="MessageControl_MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MessageControl_MainBorder.Margin" Value="0,0,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState x:Name="NormalState">
@@ -833,8 +846,8 @@
                                 <StateTrigger x:Name="NormalSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Normal), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
-                                <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
+                                <Setter Target="MessageControl_MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MessageControl_MainBorder.Margin" Value="0,12,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState x:Name="CollapsedState">
@@ -842,8 +855,8 @@
                                 <StateTrigger x:Name="CollapsedSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Collapsed), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.Padding" Value="8,2,16,0"/>
-                                <Setter Target="MainBorder.Margin" Value="0,0,0,0"/>
+                                <Setter Target="MessageControl_MainBorder.Padding" Value="8,2,16,0"/>
+                                <Setter Target="MessageControl_MainBorder.Margin" Value="0,0,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState x:Name="EditingState">
@@ -851,8 +864,8 @@
                                 <StateTrigger x:Name="EditingSizeTrigger" IsActive="{x:Bind converters:Static.Is(State, messages:MessageViewModelState.Editing), Mode=OneWay}"/>
                             </VisualState.StateTriggers>
                             <VisualState.Setters>
-                                <Setter Target="MainBorder.Padding" Value="8,8,16,0"/>
-                                <Setter Target="MainBorder.Margin" Value="0,12,0,0"/>
+                                <Setter Target="MessageControl_MainBorder.Padding" Value="8,8,16,0"/>
+                                <Setter Target="MessageControl_MainBorder.Margin" Value="0,12,0,0"/>
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using DSharpPlus.Entities;
 using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Utilities;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
@@ -37,6 +39,8 @@ namespace Unicord.Universal.Models.Messages
         private bool _sourceInvalidated;
         private string _posterSource = "";
 
+        private bool _spoilerRevealed;
+
         private MediaSource _mediaSource;
         private MediaPlaybackItem _mediaPlaybackItem;
 
@@ -47,11 +51,27 @@ namespace Unicord.Universal.Models.Messages
             _type = GetAttachmentType(attachment);
             _sourceInvalidated = false;
 
+            _spoilerRevealed = !App.RoamingSettings.Read(Constants.ENABLE_SPOILERS, true);
+
             DownloadProgress = new ProgressInfo();
             DownloadCommand = new DownloadCommand(attachment.Url, DownloadProgress);
 
             ShareProgress = new ProgressInfo();
             ShareCommand = new ShareCommand(attachment.Url, attachment.FileName, ShareProgress);
+
+            RevealSpoilerCommand = new RelayCommand(() =>
+            {
+                _spoilerRevealed = true;
+                InvokePropertyChanged(nameof(IsSpoiler));
+            });
+
+            CopyCommand = new RelayCommand(() =>
+            {
+                var dataPackage = new DataPackage();
+                dataPackage.SetText(this.Url);
+                dataPackage.SetWebLink(new Uri(this.Url));
+                Clipboard.SetContent(dataPackage);
+            });
 
             if (_attachment.Width is not (null or 0))
             {
@@ -73,7 +93,7 @@ namespace Unicord.Universal.Models.Messages
         public string ProxyUrl =>
             _attachment.ProxyUrl;
         public bool IsSpoiler =>
-            _attachment.FileName.StartsWith("SPOILER_");
+            !_spoilerRevealed && _attachment.FileName.StartsWith("SPOILER_");
         public double NaturalWidth =>
             _attachment.Width is not (null or 0) ? _attachment.Width.Value : _naturalSize?.Width ?? double.NaN;
         public double NaturalHeight =>
@@ -91,7 +111,8 @@ namespace Unicord.Universal.Models.Messages
 
         public ICommand DownloadCommand { get; }
         public ICommand ShareCommand { get; }
-        public ICommand CopyCommand { get; set; }
+        public ICommand CopyCommand { get; }
+        public ICommand RevealSpoilerCommand { get; }
 
         public ProgressInfo DownloadProgress { get; set; }
         public ProgressInfo ShareProgress { get; set; }

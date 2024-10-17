@@ -1,6 +1,13 @@
 ﻿using System;
+using System.Linq;
+using Unicord.Universal.Controls.Flyouts;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Messages;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
@@ -40,6 +47,39 @@ namespace Unicord.Universal.Resources.Controls
                 DecodePixelWidth = 36,
                 DecodePixelType = DecodePixelType.Logical
             };
+        }
+
+        private void Grid_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+        {
+            var parent = sender.FindParent<Grid>("MessageControl_MainBorder");
+            if (parent == null) return;
+
+            // more of a guard, we're creating a new one anyway
+            if (parent.ContextFlyout is not MessageContextFlyout)
+                return;
+
+            var flyout = new MessageContextFlyout();
+            var separator = flyout.SecondaryCommands.LastOrDefault(c => c is AppBarSeparator);
+            var index = flyout.SecondaryCommands.IndexOf(separator);
+
+            var currentFlyout = (MenuFlyout)(((Grid)sender).Tag); // hate this
+            foreach (var item in currentFlyout.Items.OfType<MenuFlyoutItem>().Reverse())
+            {
+                var appbarItem = new AppBarButton() { Icon = item.Icon, Label = item.Text, Command = item.Command };
+                flyout.SecondaryCommands.Insert(index, appbarItem);
+            }
+
+            args.Handled = true;
+
+            if (args.TryGetPosition(parent, out var point)
+                && ApiInformation.IsTypePresent(typeof(FlyoutShowOptions).FullName))
+            {
+                flyout.ShowAt(parent, new FlyoutShowOptions() { Position = point });
+            }
+            else
+            {
+                flyout.ShowAt((FrameworkElement)parent);
+            }
         }
     }
 }

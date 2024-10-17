@@ -34,8 +34,8 @@ namespace Unicord.Universal
         private const int UPLOAD_LIMIT = 26_214_400;
 
         public static HttpClient HttpClient => _httpClient.Value;
-
-        private static Lazy<HttpClient> _httpClient = new Lazy<HttpClient>(() => new HttpClient());
+        private static readonly Lazy<HttpClient> _httpClient 
+            = new Lazy<HttpClient>(() => new HttpClient());
 
         public static string ToFileSizeString(long size)
         {
@@ -45,9 +45,16 @@ namespace Unicord.Universal
                 return ToFileSizeString((ulong)size);
         }
 
-        public static string ToFileSizeString(ulong size)
+        public static unsafe string ToFileSizeString(ulong size)
         {
-            return ByteSize.FromBytes(size).ToString("#.##");
+            char[] chars = new char[32];
+            fixed (char* bufPtr = chars)
+            {
+                PInvoke.StrFormatByteSizeEx(size, SFBS_FLAGS.SFBS_FLAGS_TRUNCATE_UNDISPLAYED_DECIMAL_DIGITS, new PWSTR(bufPtr), 32)
+                    .ThrowOnFailure();
+
+                return new string(bufPtr);
+            }
         }
 
         public static Task DownloadToFileAsync(Uri url, StorageFile file)
@@ -127,12 +134,11 @@ namespace Unicord.Universal
             using (var bmp = await (await dataPackageView.GetBitmapAsync()).OpenReadAsync())
             {
                 var decoder = await BitmapDecoder.CreateAsync(bmp);
-                using (var softwareBmp = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight))
-                {
-                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-                    encoder.SetSoftwareBitmap(softwareBmp);
-                    await encoder.FlushAsync();
-                }
+                using var softwareBmp = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+                encoder.SetSoftwareBitmap(softwareBmp);
+                await encoder.FlushAsync();
             }
 
             return file;
@@ -140,17 +146,20 @@ namespace Unicord.Universal
 
         public static unsafe string GetItemTypeFromExtension(string extension, string fallback = null)
         {
+            ASSOCF assocFlags = ASSOCF.ASSOCF_NOTRUNCATE;
+            ASSOCSTR assocStr = ASSOCSTR.ASSOCSTR_FRIENDLYAPPNAME;
+
             try
             {
                 uint len = 0;
                 HRESULT hr;
-                if ((hr = PInvoke.AssocQueryString(ASSOCF.ASSOCF_NONE, ASSOCSTR.ASSOCSTR_FRIENDLYAPPNAME, extension, "", null, ref len)) != HRESULT.S_FALSE)
+                if ((hr = PInvoke.AssocQueryString(assocFlags, assocStr, extension, null, null, ref len)) != HRESULT.S_FALSE)
                     hr.ThrowOnFailure();
 
                 char[] buf = new char[len];
                 fixed (char* bufPtr = buf)
                 {
-                    PInvoke.AssocQueryString(ASSOCF.ASSOCF_NONE, ASSOCSTR.ASSOCSTR_FRIENDLYAPPNAME, extension, "", new PWSTR(bufPtr), ref len)
+                    PInvoke.AssocQueryString(assocFlags, assocStr, extension, null, new PWSTR(bufPtr), ref len)
                         .ThrowOnFailure();
 
                     return new string(bufPtr);
