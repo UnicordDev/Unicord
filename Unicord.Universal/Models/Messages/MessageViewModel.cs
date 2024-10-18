@@ -215,8 +215,6 @@ namespace Unicord.Universal.Models.Messages
 
         public bool IsSelected { get => _isSelected; set => OnPropertySet(ref _isSelected, value); }
         
-        public bool IsEditing { get => _isEditing; set => OnPropertySet(ref _isEditing, value); }
-
         public bool IsEditing
         {
             get => _isEditing;
