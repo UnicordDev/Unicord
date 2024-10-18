@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Unicord.Universal.Models.Messages;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
-using Windows.Web.Http;
 
 namespace Unicord.Universal.Commands.Generic
 {

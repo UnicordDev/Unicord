@@ -132,4 +132,10 @@
   <data name="RatelimitedSubheader.Text" xml:space="preserve">
     <value>Hey! Slow down there, you're being ratelimited!</value>
   </data>
+  <data name="ErroredHeader.Text" xml:space="preserve">
+    <value>Whoops!</value>
+  </data>
+  <data name="ErroredSubheader.Text" xml:space="preserve">
+    <value>Something went wrong loading pinned messages.</value>
+  </data>
 </root>

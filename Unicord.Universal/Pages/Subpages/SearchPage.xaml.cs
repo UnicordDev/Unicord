@@ -1,6 +1,4 @@
-﻿using DSharpPlus.Entities;
-using Unicord.Universal.Models;
-using Unicord.Universal.Models.Channels;
+﻿using Unicord.Universal.Models.Channels;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

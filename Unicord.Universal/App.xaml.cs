@@ -3,43 +3,33 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using DSharpPlus;
-using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-
 #if XBOX_GAME_BAR
 using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
 #endif
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
-using Unicord.Universal.Dialogs;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Integration;
-using Unicord.Universal.Misc;
 using Unicord.Universal.Models;
-using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
+using Windows.Media.Transcoding;
 using Windows.Security.Credentials;
-using Windows.System.Profile;
-using Windows.UI.Core;
+using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -54,7 +44,6 @@ namespace Unicord.Universal
         private static XboxGameBarWidget _chatListWidget;
         private static XboxGameBarWidget _friendsListWidget;
 #endif
-
         internal static ApplicationDataStorageHelper LocalSettings { get; }
             = ApplicationDataStorageHelper.GetCurrent();
         internal static ApplicationDataStorageHelper RoamingSettings { get; }
@@ -63,6 +52,7 @@ namespace Unicord.Universal
         public App()
         {
             InitializeComponent();
+            MigratePreV2Settings();
 
             var theme = (ElementTheme)LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
             switch (theme)
@@ -80,6 +70,57 @@ namespace Unicord.Universal
             UnhandledException += OnUnhandledException;
 
             Debug.WriteLine("Welcome to Unicord!");
+        }
+
+        private static void MigratePreV2Settings()
+        {
+            foreach (var item in ApplicationData.Current.RoamingSettings.Values)
+                ApplicationData.Current.LocalSettings.Values[item.Key] = item.Value;
+
+            if (LocalSettings.TryRead<string>(AUTO_TRANSCODE_MEDIA_OLD, out var autoTranscodeMedia))
+            {
+                if (Enum.TryParse<MediaTranscodeOptions>(autoTranscodeMedia, out var result))
+                    LocalSettings.Save(AUTO_TRANSCODE_MEDIA, (int)result);
+
+                LocalSettings.TryDelete(AUTO_TRANSCODE_MEDIA_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(VIDEO_PROCESSING_OLD, out var videoProcessingOptions))
+            {
+                if (Enum.TryParse<MediaVideoProcessingAlgorithm>(videoProcessingOptions, out var result))
+                    LocalSettings.Save(VIDEO_PROCESSING, (int)result);
+
+                LocalSettings.TryDelete(VIDEO_PROCESSING_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(TIMESTAMP_STYLE_OLD, out var timestampStyle))
+            {
+                if (Enum.TryParse<TimestampStyle>(timestampStyle, out var result))
+                    LocalSettings.Save(TIMESTAMP_STYLE, (int)result);
+
+                LocalSettings.TryDelete(TIMESTAMP_STYLE_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(REQUESTED_COLOUR_SCHEME_OLD, out var requestedScheme))
+            {
+                if (Enum.TryParse<ElementTheme>(requestedScheme, out var result))
+                    LocalSettings.Save(REQUESTED_COLOUR_SCHEME, (int)result);
+
+                LocalSettings.TryDelete(REQUESTED_COLOUR_SCHEME_OLD);
+            }
+
+            try
+            {
+                var passwordVault = new PasswordVault();
+                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER_OLD))
+                {
+                    c.RetrievePassword();
+                    passwordVault.Add(new PasswordCredential(TOKEN_IDENTIFIER, c.UserName, c.Password));
+
+                    passwordVault.Remove(c);
+                }
+            }
+            catch { }
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

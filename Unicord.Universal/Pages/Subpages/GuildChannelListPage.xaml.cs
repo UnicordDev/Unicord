@@ -1,12 +1,10 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-using System;
 using System.Linq;
-using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Services;
 using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;

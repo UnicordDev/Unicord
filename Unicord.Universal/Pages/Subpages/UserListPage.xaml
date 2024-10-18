@@ -45,8 +45,8 @@
             ItemTemplate="{ThemeResource UserListTemplate}"
             IsSynchronizedWithCurrentItem="False"
             ItemsSource="{Binding Source={StaticResource ViewSource}}"
-            SelectionChanged="UserList_SelectionChanged"
-            SelectionMode="Single">
+            IsItemClickEnabled="True"
+            ItemClick="userList_ItemClick">
 
             <ListView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">
@@ -64,7 +64,7 @@
             </ListView.GroupStyle>
 
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                     <Setter Property="Padding" Value="8,4" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="MinHeight" Value="0" />

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using DSharpPlus.Entities;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using DSharpPlus.Entities;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 

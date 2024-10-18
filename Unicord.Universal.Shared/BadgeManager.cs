@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using Unicord.Universal.Extensions;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;

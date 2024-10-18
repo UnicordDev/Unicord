@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Windows.Input;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models.User;

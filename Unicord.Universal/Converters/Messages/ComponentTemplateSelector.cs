@@ -1,6 +1,4 @@
-﻿using System;
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus;
 using Unicord.Universal.Models.Messages.Components;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

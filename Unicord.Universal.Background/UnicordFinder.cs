@@ -9,25 +9,26 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.ViewManagement.Core;
 using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Dwm;
-using Windows.Win32.System.Threading;
 using static Windows.Win32.PInvoke;
+using static Windows.Win32.Foundation.WIN32_ERROR;
+using static Windows.Win32.System.Threading.PROCESS_ACCESS_RIGHTS;
+using static Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE;
 
 namespace Unicord.Universal.Background
 {
     internal class UnicordFinder
     {
-        public static unsafe (HWND hWndUnicord, HWND hWndApplicationFrameHost) FindUnicordWindow()
+        private static unsafe (HWND hWndUnicord, HWND hWndApplicationFrameHost) FindUnicordWindow()
         {
             uint packageNameLen;
-            if (GetCurrentPackageFullName(&packageNameLen, null) == WIN32_ERROR.APPMODEL_ERROR_NO_PACKAGE)
+            if (GetCurrentPackageFullName(&packageNameLen, null) == APPMODEL_ERROR_NO_PACKAGE)
                 throw new InvalidOperationException();
 
             string packageName;
             char[] packageNameChars = new char[packageNameLen];
             fixed (char* packageNameCharsPtr = packageNameChars)
             {
-                if (GetCurrentPackageFullName(&packageNameLen, packageNameCharsPtr) != WIN32_ERROR.ERROR_SUCCESS)
+                if (GetCurrentPackageFullName(&packageNameLen, packageNameCharsPtr) != ERROR_SUCCESS)
                     throw new InvalidOperationException();
 
                 packageName = new string(packageNameCharsPtr);
@@ -58,21 +59,21 @@ namespace Unicord.Universal.Background
                 if (GetWindowThreadProcessId(hWndChild, &procId) == 0)
                     return true;
 
-                HANDLE hProcess = OpenProcess(PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION, false, procId);
+                HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, procId);
                 if (hProcess == null)
                     return true;
 
                 try
                 {
                     uint fullNameLen;
-                    if (GetPackageFullName(hProcess, &fullNameLen, null) != WIN32_ERROR.ERROR_INSUFFICIENT_BUFFER)
+                    if (GetPackageFullName(hProcess, &fullNameLen, null) != ERROR_INSUFFICIENT_BUFFER)
                         return true;
 
                     string fullName;
                     char[] fullNameChars = new char[fullNameLen];
                     fixed (char* fullNameCharsPtr = fullNameChars)
                     {
-                        if (GetPackageFullName(hProcess, &fullNameLen, fullNameCharsPtr) != WIN32_ERROR.ERROR_SUCCESS)
+                        if (GetPackageFullName(hProcess, &fullNameLen, fullNameCharsPtr) != ERROR_SUCCESS)
                             return true;
 
                         fullName = new string(fullNameCharsPtr);
@@ -113,11 +114,11 @@ namespace Unicord.Universal.Background
 
             uint dwIsCloaked;
 
-            if (DwmGetWindowAttribute(hWndUnicord, DWMWINDOWATTRIBUTE.DWMWA_CLOAKED, &dwIsCloaked, sizeof(uint)).Succeeded
+            if (DwmGetWindowAttribute(hWndUnicord, DWMWA_CLOAKED, &dwIsCloaked, sizeof(uint)).Succeeded
                 && dwIsCloaked != 0)
                 return false;
 
-            if (DwmGetWindowAttribute(hWndApplicationFrameHost, DWMWINDOWATTRIBUTE.DWMWA_CLOAKED, &dwIsCloaked, sizeof(uint)).Succeeded
+            if (DwmGetWindowAttribute(hWndApplicationFrameHost, DWMWA_CLOAKED, &dwIsCloaked, sizeof(uint)).Succeeded
                 && dwIsCloaked != 0)
                 return false;
 

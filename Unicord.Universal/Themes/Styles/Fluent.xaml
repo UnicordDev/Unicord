@@ -82,8 +82,10 @@
                   FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
                   TintColor="{ThemeResource BackgroundSecondaryColour}" />
 
-                    <StaticResource x:Key="DefaultGridViewItemStyle" ResourceKey="GridViewItemRevealStyle"/>
-                    <StaticResource x:Key="DefaultListViewItemStyle" ResourceKey="ListViewItemRevealStyle"/>
+                    <!--<ThemeResource x:Key="DefaultGridViewItemStyle" ResourceKey="GridViewItemRevealStyle"/>
+                    <ThemeResource x:Key="UnicordListViewItemStyle" ResourceKey="ListViewItemRevealStyle"/>-->
+
+                    <Style x:Key="UnicordListViewItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}"/>
 
 
                     <SolidColorBrush x:Key="BackgroundPrimaryBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
@@ -147,6 +149,8 @@
                         BlurRadius="8"
                         CornerRadius="0"/>
 
+                    <StaticResource x:Key="DiscordPage_Separator_BorderBrush" ResourceKey="SystemControlForegroundBaseLowBrush"/>
+
                     <Style x:Key="DiscordPage_RightMainGridStyle" TargetType="Grid">
                         <Setter Property="ui:Effects.Shadow" Value="{StaticResource DiscordPage_SidebarSecondaryShadow}"/>
                     </Style>
@@ -186,6 +190,32 @@
                     <Thickness x:Key="ChannelPage_MessageInput_Margin">0</Thickness>
 
                     <StaticResource x:Key="SettingsPage_MainBorder_Background" ResourceKey="General_Page_BackgroundBrush"/>
+
+                    <StaticResource x:Key="RichEmbed_Background" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
+                    <SolidColorBrush x:Key="RichEmbed_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="RichEmbed_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="RichEmbed_CornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="RichEmbed_Inner_CornerRadius">0</CornerRadius>
+
+                    <Thickness x:Key="RichEmbed_InnerPadding">12,8,8,8</Thickness>
+
+                    <StaticResource x:Key="ImageEmbed_Background" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
+                    <SolidColorBrush x:Key="ImageEmbed_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="ImageEmbed_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="ImageEmbed_CornerRadius">0</CornerRadius>
+
+                    <StaticResource x:Key="Attachment_Background" ResourceKey="SystemControlBackgroundChromeMediumBrush"/>
+                    <SolidColorBrush x:Key="Attachment_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="Attachment_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="Attachment_CornerRadius">0</CornerRadius>
+
+                    <SolidColorBrush x:Key="AudioMediaTransportControls_ControlPanel_Background" Color="Transparent"/>
+                    <SolidColorBrush x:Key="AudioMediaTransportControls_ControlPanel_BorderBrush" Color="Transparent"/>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_BorderThickness">0</Thickness>
+                    <CornerRadius x:Key="AudioMediaTransportControls_ControlPanel_CornerRadius">0</CornerRadius>
+                    <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">0</Thickness>
+
+                    <x:Double x:Key="MediaPlayer_AudioOnly_MaxHeight">52</x:Double>
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>

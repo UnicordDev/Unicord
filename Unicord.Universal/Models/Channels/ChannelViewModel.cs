@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
-using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Commands.Generic;
@@ -39,7 +37,7 @@ namespace Unicord.Universal.Models.Channels
         {
             this._channelId = channelId;
 
-            // BUGBUG: PERF, this doesn't appreciate being used objects with short lifetimes
+            // BUGBUG: PERF, this doesn't appreciate being used by objects with short lifetimes
             if (!isTransient)
             {
                 AcknowledgeCommand = new AcknowledgeChannelCommand(this);

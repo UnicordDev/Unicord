@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Unicord
 {
@@ -46,7 +45,7 @@ namespace Unicord
 
         public const string GIF_AUTOPLAY = "AutoPlayGifs";
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
-        public const string TIMESTAMP_STYLE = "TimestampStyle1";
+        public const string TIMESTAMP_STYLE = "TimestampStyle_1";
 
         public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
 
@@ -94,6 +93,16 @@ namespace Unicord
 
         public const string ENABLE_LIVE_TILES = "EnableLiveTiles";
         public const bool   ENABLE_LIVE_TILES_DEFAULT = true;
+
+        public const string ENABLE_GUILD_BROWSING = "EnableGuildBrowsing";
+        public const bool   ENABLE_GUILD_BROWSING_DEFAULT = false;
+
+        // old resource keys for migration
+        public const string TOKEN_IDENTIFIER_OLD = "Unicord_Token";
+        public const string AUTO_TRANSCODE_MEDIA_OLD = "AutoTranscodeMedia";
+        public const string VIDEO_PROCESSING_OLD = "VideoProcessingAlgorithm";
+        public const string TIMESTAMP_STYLE_OLD = "TimestampStyle";
+        public const string REQUESTED_COLOUR_SCHEME_OLD = "RequestedTheme";
     }
 
     internal enum MediaTranscodeOptions

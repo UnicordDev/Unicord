@@ -11,7 +11,7 @@
     <AssemblyName>Unicord.Universal</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -25,7 +25,8 @@
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <PackageCertificateKeyFile>Unicord.Universal_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
@@ -33,8 +34,7 @@
     <AppxBundlePlatforms>arm64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateThumbprint>
-    </PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>001AA11011A8DE018049B0B614F2E6733355A7A1</PackageCertificateThumbprint>
     <IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
     <IlcParameters>/ExtraNutcArguments:"/d2threads8"</IlcParameters>
   </PropertyGroup>
@@ -199,9 +199,15 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DiscordColorExtensions.cs" />
     <Compile Include="Extensions\AvatarExtensions.cs" />
+    <Compile Include="Extensions\ShiftEnterExtensions.cs" />
+    <Compile Include="Extensions\FocusExtensions.cs" />
+    <Compile Include="Extensions\MessengerExtensions.cs" />
     <Compile Include="Models\Channels\ChannelPageViewModelBase.cs" />
     <Compile Include="Models\Channels\ChannelViewModel.cs" />
     <Compile Include="Models\Channels\ForumChannelViewModel.cs" />
+    <Compile Include="Models\Channels\ForumThreadsCollection.cs" />
+    <Compile Include="Models\Channels\ForumThreadViewModel.cs" />
+    <Compile Include="Models\Channels\PinsPageViewModel.cs" />
     <Compile Include="Models\Channels\ReadStateViewModel.cs" />
     <Compile Include="Controls\CustomMediaTransportControls.cs" />
     <Compile Include="Controls\Emoji\EmojiControl.cs" />
@@ -419,7 +425,7 @@
     <Compile Include="Models\Emoji\EmojiViewModel.cs" />
     <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FriendsPageViewModel.cs" />
-    <Compile Include="Models\GuildChannelListViewModel.cs" />
+    <Compile Include="Models\Guild\GuildChannelListViewModel.cs" />
     <Compile Include="Models\Guild\GuildViewModel.cs" />
     <Compile Include="Models\Guild\GuildListFolderViewModel.cs" />
     <Compile Include="Models\Guild\GuildListViewModel.cs" />
@@ -437,15 +443,15 @@
     <Compile Include="Models\Messages\Embeds\EmbedImageViewModel.cs" />
     <Compile Include="Models\Messages\Embeds\EmbedVideoViewModel.cs" />
     <Compile Include="Models\Messages\EmbedViewModel.cs" />
+    <Compile Include="Models\Messages\MessageEditViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.cs" />
     <Compile Include="Models\Messages\MessageViewModel.WelcomeStrings.cs" />
     <Compile Include="Models\Messages\ReactionViewModel.cs" />
     <Compile Include="Models\Messages\StickerViewModel.cs" />
     <Compile Include="Models\Messaging\DiscordClientMessenger.cs" />
     <Compile Include="Models\Messaging\DiscordMessages.cs" />
-    <Compile Include="Models\PinsPageViewModel.cs" />
     <Compile Include="Models\Relationships\RelationshipViewModel.cs" />
-    <Compile Include="Models\SearchPageViewModel.cs" />
+    <Compile Include="Models\Channels\SearchPageViewModel.cs" />
     <Compile Include="Models\Settings\AccountsSettingsModel.cs" />
     <Compile Include="Models\Settings\NotificationsSettingsModel.cs" />
     <Compile Include="Models\Settings\MediaSettingsModel.cs" />
@@ -549,6 +555,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DiscordManager.cs" />
+    <Compile Include="Services\Platform.cs" />
     <Compile Include="Services\SplitPaneService.cs" />
     <Compile Include="Services\ThemeService.cs" />
     <Compile Include="Themes\Controls\Channels.xaml.cs">
@@ -580,6 +587,8 @@
     <Compile Include="Utilities\NetworkHelper.cs" />
     <Compile Include="Utilities\SwipeOpenHelper.cs" />
     <Compile Include="Utilities\UIUtilities.cs" />
+    <Compile Include="Utilities\WebPHelpers.cs" />
+    <Compile Include="Extensions\VisualTreeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -660,6 +669,7 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <Content Include="Controls\Markdown\About.txt" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="NativeMethods.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -698,6 +708,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2.Undocked">
       <Version>1.0.2739.170</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.CsWin32">
+      <Version>0.3.106</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
@@ -1008,11 +1023,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Styles\Backport\WinUIResources_21h1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Styles\Fluent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Styles\NavigationView_rs1.xaml">
+    <Page Include="Themes\Styles\Backport\NavigationView_rs1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1238,10 +1257,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.22621.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.22000.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.22621.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>

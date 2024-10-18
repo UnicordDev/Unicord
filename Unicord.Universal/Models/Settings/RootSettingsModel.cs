@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Unicord.Universal.Extensions;
 using Windows.ApplicationModel;
-using Windows.Media.Transcoding;
-using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {

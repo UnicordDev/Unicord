@@ -2,7 +2,6 @@
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using System;
-using System.Windows.Input;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml.Controls;

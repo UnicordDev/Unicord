@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
-using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models.Guild
 {
@@ -18,8 +8,8 @@ namespace Unicord.Universal.Models.Guild
         private GuildListFolderViewModel _parent;
         private bool _isSelected;
 
-        public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null) :
-            base(guild.Id)
+        public GuildListViewModel(DiscordGuild guild, GuildListFolderViewModel parent = null) 
+            : base(guild.Id)
         {
             _parent = parent;
         }

@@ -10,6 +10,7 @@
     xmlns:models="using:Unicord.Universal.Models"
     xmlns:messages="using:Unicord.Universal.Controls.Messages"
     xmlns:settings="using:SettingsControl"
+    xmlns:converters="using:Unicord.Universal.Converters"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:MessagingSettingsModel />
@@ -64,15 +65,13 @@
         </settings:SettingsBlockControl>
 
 
-        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/EnableWebPBlock"   
-                                       Title="Use Webp where possible"
-                                       Description="Reduce bandwidth with a more efficient image codec">
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/EnableWebPBlock">
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE158;"/>
             </settings:SettingsBlockControl.Icon>
 
             <Grid>
-                <Button Content="Get from the Microsoft Store"
+                <Button x:Uid="/MessagingSettingsPage/WebPDownloadButton"
                         Command="{Binding OpenWebPStoreLinkCommand}"
                         Style="{ThemeResource AccentButtonStyle}"
                         Visibility="{Binding CanUseWebP, Converter={StaticResource InverseBoolVisibilityConverter}}"/>
@@ -80,10 +79,16 @@
                               IsOn="{Binding EnableWebP, Mode=TwoWay}"
                               Visibility="{Binding CanUseWebP, Converter={StaticResource BoolVisibilityConverter}}"/>
             </Grid>
-            
+
+        </settings:SettingsBlockControl>
+        
+        <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/EnableGuildBrowsingBlock">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xec4a;"/>
+            </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableGuildBrowsing, Mode=TwoWay}" />
         </settings:SettingsBlockControl>
 
-        
         <settings:SettingsBlockControl x:Uid="/MessagingSettingsPage/TimestampStyleBlock">
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC92;"/>
@@ -94,10 +99,14 @@
                       HorizontalAlignment="Right"
                       MinWidth="200">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:TimestampStyleModel">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Style}" />
-                            <TextBlock Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}, ConverterParameter={Binding Style}}"  Margin="4,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" />
+                            <TextBlock Text="{x:Bind Style}" />
+                            <TextBlock Text="{x:Bind converters:DateTimeConverter.Convert(Style, Timestamp)}" 
+                                       Margin="4,0" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="12"
+                                       Foreground="{StaticResource ApplicationSecondaryForegroundThemeBrush}" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

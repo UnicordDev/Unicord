@@ -4,7 +4,6 @@ using DSharpPlus.Entities;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages.Management.Channel;
 using Unicord.Universal.Services;
-using Unicord.Universal.Utilities;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

@@ -69,7 +69,7 @@
         </AppBarButton>
 
         <AppBarButton Label="Edit"
-                      Click="EditFlyoutItem_Click"
+                      Command="{Binding EditCommand}"
                       IsEnabled="{Binding Author.IsCurrent}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe70f;" />

@@ -8,8 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ColorCode;
-using Unicord;
-using Unicord.Universal;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Controls.Markdown.Render;
 using Windows.System;

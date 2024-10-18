@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
 using Windows.Devices.Enumeration;
 
 namespace Unicord.Universal.Models

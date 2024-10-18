@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
-using Unicord.Universal.Misc;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Emoji;
 using Unicord.Universal.Utilities;
-using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

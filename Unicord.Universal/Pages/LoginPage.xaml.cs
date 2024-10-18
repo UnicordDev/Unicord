@@ -3,17 +3,12 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using Windows.UI.Composition;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
 {
@@ -44,15 +39,12 @@ namespace Unicord.Universal.Pages
 
         private async Task TryLoginAsync(string token)
         {
-            async Task OnReady(DiscordClient client, ReadyEventArgs e)
+            Task OnReady(DiscordClient client, ReadyEventArgs e)
             {
                 var vault = new PasswordVault();
                 vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, "Default", token));
 
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    Frame.Navigate(typeof(DiscordPage));
-                });
+                return Task.CompletedTask;
             }
 
             var mainPage = this.FindParent<MainPage>();
@@ -65,6 +57,7 @@ namespace Unicord.Universal.Pages
                     throw new ArgumentException("Your token cannot be empty! If you were logging in via the browser, try using your token.");
 
                 mainPage.ShowConnectingOverlay();
+                Frame.Navigate(typeof(DiscordPage));
                 await DiscordManager.LoginAsync(token, OnReady, App.LoginError, false);
             }
             catch (Exception ex)

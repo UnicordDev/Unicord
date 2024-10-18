@@ -3,6 +3,7 @@ using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Management;

@@ -1,5 +1,4 @@
 ﻿using System;
-using WamWooWam.Core;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters

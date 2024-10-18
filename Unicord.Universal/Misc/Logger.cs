@@ -1,15 +1,13 @@
 ﻿using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
+#if DEBUG
 using Microsoft.Extensions.Logging.Debug;
+#endif
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation.Diagnostics;
-using Windows.Storage;
 
 namespace Unicord.Universal
 {
@@ -106,6 +104,9 @@ namespace Unicord.Universal
 
         private static readonly ILogger InternalLogger
             = LoggerFactory.CreateLogger("Unicord");
+
+        public static ILogger<T> GetLogger<T>() where T : class
+            => LoggerFactory.CreateLogger<T>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(object message, [CallerMemberName] string source = "General")

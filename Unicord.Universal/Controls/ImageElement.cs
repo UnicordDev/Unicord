@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Globalization;
-using System.Net.Mail;
 using System.Web;
 using Unicord.Universal.Utilities;
 using WamWooWam.Core;
@@ -84,7 +83,7 @@ namespace Unicord.Universal.Controls
 
             var thumbUrl = new UriBuilder(element.ImageUri);
             var query = HttpUtility.ParseQueryString(thumbUrl.Query);
-            if (Tools.ShouldUseWebP)
+            if (WebPHelpers.ShouldUseWebP)
                 query["format"] = "webp";
             query["width"] = ((int)width).ToString(CultureInfo.InvariantCulture);
             query["height"] = ((int)height).ToString(CultureInfo.InvariantCulture);

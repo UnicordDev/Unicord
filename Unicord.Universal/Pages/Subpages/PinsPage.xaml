@@ -9,8 +9,14 @@
     xmlns:insider="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:local="using:Unicord.Universal.Pages.Subpages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:messages="using:Unicord.Universal.Controls.Messages" xmlns:lib="using:Microsoft.UI.Xaml.Controls" xmlns:messages1="using:Unicord.Universal.Models.Messages"
+    xmlns:messages="using:Unicord.Universal.Controls.Messages" 
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:messages1="using:Unicord.Universal.Models.Messages"
+    xmlns:models="using:Unicord.Universal.Models.Channels"
     mc:Ignorable="d">
+    <d:Page.DataContext>
+        <models:PinsPageViewModel/>
+    </d:Page.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -27,38 +33,46 @@
                 FontWeight="Bold"/>
         </Grid>
 
-        <StackPanel
-            x:Name="noMessages"
-            Grid.Row="1"
-            Margin="15"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
+        <StackPanel x:Name="noMessages"
+                    Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding NoMessages, Converter={StaticResource BoolVisibilityConverter}}">
             <TextBlock FontSize="110" Text=":(" />
             <TextBlock x:Uid="/PinsPage/NoPinsHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
             <TextBlock x:Uid="/PinsPage/NoPinsSubheader" TextWrapping="Wrap"/>
         </StackPanel>
 
-        <StackPanel
-            x:Name="ratelimited"
-            Grid.Row="1"
-            Margin="15"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
+        <StackPanel x:Name="ratelimited"
+                    Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding IsRateLimited, Converter={StaticResource BoolVisibilityConverter}}">
             <TextBlock FontSize="110" Text=":/" />
             <TextBlock x:Uid="/PinsPage/RatelimitedHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
             <TextBlock x:Uid="/PinsPage/RatelimitedSubheader" TextWrapping="Wrap"/>
         </StackPanel>
 
-        <ListView
-            x:Name="messages"
-            Grid.Row="1"
-            Padding="0,0,0,20"
-            SelectionMode="None">
+        <StackPanel x:Name="errored"
+                    Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding IsErrored, Converter={StaticResource BoolVisibilityConverter}}">
+            <TextBlock FontSize="110" Text=":/" />
+            <TextBlock x:Uid="/PinsPage/ErroredHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <TextBlock x:Uid="/PinsPage/ErroredSubheader" TextWrapping="Wrap"/>
+        </StackPanel>
 
+        <ListView Grid.Row="1"
+                  Padding="0,0,0,20"
+                  IsItemClickEnabled="True"
+                  SelectionMode="None"
+                  ItemsSource="{Binding Messages}">
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="MinHeight" Value="0" />
@@ -72,18 +86,17 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         IsEnabled="False"
-                        Margin="4,8"
                         MessageViewModel="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <lib:ProgressRing
-            x:Name="progress"
-            Grid.Row="1"
-            Width="48"
-            Height="48"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
+        <lib:ProgressRing x:Name="progress"
+                          Grid.Row="1"
+                          Width="48"
+                          Height="48"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          IsActive="{Binding IsLoading}"/>
     </Grid>
 </Page>

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Web;
-using System.Windows.Input;
-using DSharpPlus;
-using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models.Messages;
 using Windows.ApplicationModel.DataTransfer;

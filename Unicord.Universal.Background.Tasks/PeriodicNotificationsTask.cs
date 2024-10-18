@@ -30,7 +30,22 @@ namespace Unicord.Universal.Background.Tasks
                 _client.SocketErrored += OnSocketErrored;
                 _client.SocketClosed += OnSocketClosed;
 
-                await _client.ConnectAsync(status: UserStatus.Invisible);
+                var restClient = new DiscordRestClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
+                await restClient.InitializeAsync();
+
+                var mentions = await restClient.GetUserMentionsAsync(25, true, true);
+
+                foreach (var mention in mentions)
+                {
+                    if (!NotificationUtils.WillShowToast(restClient, mention))
+                        continue;
+
+                    var tileNotification = NotificationUtils.CreateTileNotificationForMessage(restClient, mention);
+                    var toastNotification = NotificationUtils.CreateToastNotificationForMessage(restClient, mention);
+
+                    tileUpdateManager.Update(tileNotification);
+                    toastNotifier.Show(toastNotification);
+                }
             }
             catch
             {

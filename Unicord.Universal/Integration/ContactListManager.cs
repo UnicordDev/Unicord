@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Enums;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.Contacts;
-using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Unicord.Universal.Services;
+using System.Collections.Frozen;
+using Microsoft.Extensions.Logging;
 
 namespace Unicord.Universal.Integration
 {
-    internal static class ContactListManager
+    internal class ContactListManager
     {
 #if RELEASE
         private const string REMOTE_ID_PREFIX = "Unicord_";
@@ -47,6 +46,9 @@ namespace Unicord.Universal.Integration
 
         public static async Task UpdateContactsListAsync()
         {
+            var logger = Logger.GetLogger<ContactListManager>();
+            var relationships = DiscordManager.Discord.Relationships.ToFrozenDictionary();
+
             try
             {
                 var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
@@ -62,7 +64,7 @@ namespace Unicord.Universal.Integration
                     var allContacts = await store.FindContactsAsync();
 
                     // remove all contacts no longer in the user's friends list
-                    var removed = allContacts.Where(c => c.RemoteId.StartsWith(REMOTE_ID_PREFIX) && !DiscordManager.Discord.Relationships.ContainsKey(ulong.TryParse(c.RemoteId.Split('_').Last(), out var id) ? id : 0));
+                    var removed = allContacts.Where(c => c.RemoteId.StartsWith(REMOTE_ID_PREFIX) && !relationships.ContainsKey(ulong.TryParse(c.RemoteId.Split('_').Last(), out var id) ? id : 0));
                     foreach (var cont in removed)
                     {
                         try
@@ -73,57 +75,40 @@ namespace Unicord.Universal.Integration
                     }
 
                     // update all contacts
-                    var relationships = DiscordManager.Discord.Relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend);
-                    foreach (var relationship in relationships)
+                    //var relationships = DiscordManager.Discord.Relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend);
+                    foreach (var relationship in relationships.Values.Where(r => r.RelationshipType == DiscordRelationshipType.Friend))
                     {
-                        await AddOrUpdateContactAsync(relationship, list, annotationList, folder);
+                        await AddOrUpdateContactAsync(logger, relationship, list, annotationList, folder);
                     }
 
-                    App.LocalSettings.Save<string>("ContactAvatarHashes", relationships.ToDictionary(k => k.User.Id.ToString(), v => v.User.AvatarHash));
+                    App.LocalSettings.Save<string>("ContactAvatarHashes", relationships.ToDictionary(k => k.Key.ToString(), v => v.Value.User.AvatarHash));
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
-                Logger.Log("Failed to sync contacts!");
-                Logger.Log(ex.ToString());
+                logger.LogError(ex, "Failde to sync contacts!");
             }
         }
 
-        public static async Task<Contact> AddOrUpdateContactAsync(DiscordRelationship relationship, ContactList list = null, ContactAnnotationList annotationList = null, StorageFolder folder = null)
+        private static async Task<Contact> AddOrUpdateContactAsync(ILogger<ContactListManager> logger, DiscordRelationship relationship, ContactList list, ContactAnnotationList annotationList, StorageFolder folder)
         {
-            if (list == null)
-            {
-                var store = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite); // requests contact permissions
-                var lists = await store.FindContactListsAsync();
-                list = lists.FirstOrDefault(l => l.DisplayName == CONTACT_LIST_NAME) ?? (await store.CreateContactListAsync(CONTACT_LIST_NAME));
-            }
-
-            if (annotationList == null)
-            {
-                var annotationStore = await ContactManager.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType.AppAnnotationsReadWrite);
-                annotationList = await GetAnnotationListAsync(annotationStore);
-            }
-
-            folder = folder ?? await ApplicationData.Current.LocalFolder.CreateFolderAsync("AvatarCache", CreationCollisionOption.OpenIfExists);
-
             Contact contact;
             if ((contact = await list.GetContactFromRemoteIdAsync(string.Format(REMOTE_ID_FORMAT, relationship.User.Id))) == null)
             {
-                Logger.Log($"Creating new contact for user {relationship.User}");
+                logger.LogInformation("Creating new contact for user {User}", relationship.User);
                 contact = new Contact { RemoteId = string.Format(REMOTE_ID_FORMAT, relationship.User.Id) };
             }
 
             if (contact.Name != relationship.User.DisplayName)
             {
-                Logger.Log($"Updating contact username for {relationship.User} ({contact.Name} => {relationship.User.DisplayName})");
+                logger.LogDebug("Updating contact username for {User} ({OldName} => {NewName})", relationship.User, contact.Name, relationship.User.DisplayName);
                 contact.Name = relationship.User.DisplayName;
             }
 
             var currentHash = App.LocalSettings.Read<string>("ContactAvatarHashes", relationship.User.Id.ToString(), null);
-            if (currentHash == null || relationship.User.AvatarHash != currentHash)
+            if ((currentHash == null && relationship.User.AvatarHash != null) || relationship.User.AvatarHash != currentHash)
             {
-                Logger.Log($"Updating contact avatar for {relationship.User}");
+                logger.LogDebug("Updating contact avatar for {User}", relationship.User);
                 contact.SourceDisplayPicture = await GetAvatarReferenceAsync(relationship.User, folder);
             }
 
@@ -132,13 +117,18 @@ namespace Unicord.Universal.Integration
             var annotations = await annotationList.FindAnnotationsByRemoteIdAsync(contact.RemoteId);
             if (!annotations.Any())
             {
-                Logger.Log($"Creating new contact annotation for user {relationship.User}");
+                logger.LogDebug("Creating new contact annotation for user {User}", relationship.User);
 
                 var annotation = new ContactAnnotation()
                 {
                     ContactId = contact.Id,
                     RemoteId = string.Format(REMOTE_ID_FORMAT, relationship.User.Id),
-                    SupportedOperations = ContactAnnotationOperations.Share | ContactAnnotationOperations.AudioCall | ContactAnnotationOperations.Message | ContactAnnotationOperations.ContactProfile | ContactAnnotationOperations.SocialFeeds | ContactAnnotationOperations.VideoCall,
+                    SupportedOperations = ContactAnnotationOperations.Share |
+                        ContactAnnotationOperations.AudioCall | 
+                        ContactAnnotationOperations.Message | 
+                        ContactAnnotationOperations.ContactProfile | 
+                        ContactAnnotationOperations.SocialFeeds |
+                        ContactAnnotationOperations.VideoCall,
                     ProviderProperties = { ["ContactPanelAppID"] = APP_ID, ["ContactShareAppID"] = APP_ID }
                 };
 
@@ -165,16 +155,19 @@ namespace Unicord.Universal.Integration
 
         private static async Task<RandomAccessStreamReference> GetAvatarReferenceAsync(DiscordUser user, StorageFolder folder)
         {
-            var tempFile = await folder.TryGetItemAsync($"{user.AvatarHash}.jpeg") as StorageFile;
+            if (string.IsNullOrWhiteSpace(user.AvatarHash))
+            {
+                return RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/example-avatar.png"));
+            }
+
+            var tempFile = await folder.TryGetItemAsync($"{user.AvatarHash}.jpg") as StorageFile;
             if (tempFile == null)
             {
-                tempFile = await folder.CreateFileAsync($"{user.AvatarHash}.jpeg", CreationCollisionOption.FailIfExists);
+                tempFile = await folder.CreateFileAsync($"{user.AvatarHash}.jpg", CreationCollisionOption.FailIfExists);
 
-                using (var fileStream = await tempFile.OpenAsync(FileAccessMode.ReadWrite))
-                using (var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(user.GetAvatarUrl(ImageFormat.Jpeg, 256))))
-                {
-                    await RandomAccessStream.CopyAndCloseAsync(stream, fileStream);
-                }
+                var fileStream = await tempFile.OpenAsync(FileAccessMode.ReadWrite);
+                var stream = await Tools.HttpClient.GetInputStreamAsync(new Uri(user.GetAvatarUrl(ImageFormat.Jpeg, 256)));
+                await RandomAccessStream.CopyAndCloseAsync(stream, fileStream);
             }
 
             return RandomAccessStreamReference.CreateFromFile(tempFile);

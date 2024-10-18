@@ -32,35 +32,35 @@
                              Storyboard.TargetName="ConnectingOverlay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="1" To="0"
                              Storyboard.TargetName="ContentRoot"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0.50"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
             <DoubleAnimation From="1" To="0.85" 
                              Storyboard.TargetName="MainScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseExit}"/>
 
             <DoubleAnimation From="1.15" To="1" 
                              Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
             <DoubleAnimation From="1.15" To="1" 
                              Storyboard.TargetName="ConnectingScale"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              Duration="0:0:0.40"
-                             EasingFunction="{StaticResource CircleEase}"/>
+                             EasingFunction="{StaticResource EaseEnter}"/>
 
         </Storyboard>
         <Storyboard x:Name="hideConnecting" x:Key="hideConnecting"

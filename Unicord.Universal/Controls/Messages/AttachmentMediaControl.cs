@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Unicord.Universal.Models.Messages;
-using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
 namespace Unicord.Universal.Controls.Messages
 {
+    [Obsolete]
     public sealed class AttachmentMediaControl : Control, INotifyPropertyChanged
     {
         private MediaPlayerElement _mediaPlayerElement;
@@ -58,46 +51,24 @@ namespace Unicord.Universal.Controls.Messages
 
             if (mediaPlayerElement.TransportControls is not CustomMediaTransportControls transportControls)
                 return;
-
-            //mediaPlayerBorder.DataContext = this.ViewModel;
-            transportControls.FullWindowRequested += OnFullWindowRequested;
         }
 
         private void OnAttachmentChanged(DependencyPropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ViewModel)));
 
-            //if (e.NewValue != null && e.NewValue is AttachmentViewModel vm)
-            //{
-            //    if (!ApplyTemplate()) return;
-
-            //    if (GetTemplateChild("MediaPlayer") is not MediaPlayerElement mediaPlayerElement)
-            //        return;
-
-            //    if (vm.Type == AttachmentType.Audio)
-            //    {
-            //        mediaPlayerElement.TransportControls.Style = (Style)Application.Current.Resources["AudioMediaTransportControlsStyle"];
-            //        mediaPlayerElement.TransportControls.IsCompact = true;
-            //    }
-            //    //else if (vm.Type == AttachmentType.Video)
-            //    //{
-            //    //    mediaPlayerElement.TransportControls.Style = (Style)Application.Current.Resources[typeof(CustomMediaTransportControls)];
-            //    //}
-            //}
-        }
-
-        private async void OnFullWindowRequested(object sender, EventArgs e)
-        {
-            var service = FullscreenService.GetForCurrentView();
-            if (_mediaPlayerElement.IsFullWindow)
+            if (e.NewValue != null && e.NewValue is AttachmentViewModel vm)
             {
-                _mediaPlayerElement.IsFullWindow = false;
-                await service.LeaveFullscreenAsync(_mediaPlayerElement, _mediaPlayerBorder);
-            }
-            else
-            {
-                await service.EnterFullscreenAsync(_mediaPlayerElement, _mediaPlayerBorder);
-                _mediaPlayerElement.IsFullWindow = true;
+                if (!ApplyTemplate()) return;
+
+                //if (vm.Type == AttachmentType.Audio)
+                //{
+                //    GoToElementStateCore("Audio", false);
+                //}
+                //else if(vm.Type == AttachmentType.Video)
+                //{
+                //    GoToElementStateCore("Video", false);
+                //}
             }
         }
     }

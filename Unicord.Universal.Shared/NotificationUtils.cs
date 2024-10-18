@@ -136,7 +136,7 @@ namespace Unicord.Universal.Shared
             {
                 if (dmChannel.Type == ChannelType.Private)
                 {
-                    if (dmChannel.Recipients.Count == 0)
+                    if (dmChannel.Recipients == null || dmChannel.Recipients.Count == 0)
                         return "Invalid DM channel";
 
                     return $"@{dmChannel.Recipients[0].DisplayName}";

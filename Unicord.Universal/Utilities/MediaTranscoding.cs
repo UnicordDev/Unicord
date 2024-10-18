@@ -1,13 +1,9 @@
 ﻿using Microsoft.AppCenter.Analytics;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unicord.Universal;
 using WamWooWam.Core;
-using Windows.Foundation;
 using Windows.Graphics.Imaging;
-using Windows.Media.Core;
 using Windows.Media.MediaProperties;
 using Windows.Media.Transcoding;
 using Windows.Storage;

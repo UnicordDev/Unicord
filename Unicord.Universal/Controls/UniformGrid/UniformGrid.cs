@@ -83,8 +83,8 @@ namespace Unicord.Universal.Controls
             double columnSpacingSize = 0;
             double rowSpacingSize = 0;
 
-            columnSpacingSize = ColumnSpacing * (columns - 1);
-            rowSpacingSize = RowSpacing * (rows - 1);
+            columnSpacingSize = 0 * (columns - 1);
+            rowSpacingSize = 0 * (rows - 1);
 
             Size childSize = new Size(
                 (availableSize.Width - columnSpacingSize) / columns,

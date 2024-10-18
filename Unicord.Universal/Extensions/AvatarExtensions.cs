@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Unicord.Universal.Utilities;
 using Windows.Graphics.Display;
 
 namespace Unicord.Universal.Extensions
@@ -35,7 +32,7 @@ namespace Unicord.Universal.Extensions
 
             size = (int)BitOperations.RoundUpToPowerOf2((uint)(size * (logicalDpi / 96.0f)));
 
-            var fmt = Tools.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
+            var fmt = WebPHelpers.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
             var sfmt = fmt switch
             {
                 ImageFormat.Gif => "gif",
@@ -59,7 +56,7 @@ namespace Unicord.Universal.Extensions
 
         public static string GetBannerUrl(this DiscordGuild guild)
         {
-            var fmt = Tools.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
+            var fmt = WebPHelpers.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
             var sfmt = fmt switch
             {
                 ImageFormat.Gif => "gif",
@@ -82,7 +79,7 @@ namespace Unicord.Universal.Extensions
 
         public static string GetSplashUrl(this DiscordGuild guild)
         {
-            var fmt = Tools.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
+            var fmt = WebPHelpers.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
             var sfmt = fmt switch
             {
                 ImageFormat.Gif => "gif",
@@ -117,7 +114,7 @@ namespace Unicord.Universal.Extensions
 
             size = (ushort)BitOperations.RoundUpToPowerOf2((uint)(size * (logicalDpi / 96.0f)));
 
-            var fmt = Tools.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
+            var fmt = WebPHelpers.ShouldUseWebP ? ImageFormat.WebP : ImageFormat.Png;
 
             var sfmt = "";
             switch (fmt)

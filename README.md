@@ -1,17 +1,20 @@
 # Unicord
-A free, open source Discord Client for Windows 10 and Windows 10 Mobile, that tries to provide a fast, efficient, native feeling Discord experience, while adding handy extras along the way. Built on [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus/)!
+A free, open source Discord Client for Windows 10 and Windows 10 Mobile, providing a fast, efficient, native feeling Discord experience, while adding handy extras along the way. Built on [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus/)!
 
 [![Build Status](https://dev.azure.com/WanKerrCoLtd/Unicord/_apis/build/status/WamWooWam.Unicord?branchName=master)](https://dev.azure.com/WanKerrCoLtd/Unicord/_build/latest?definitionId=4&branchName=master)
 
-![promo](https://raw.githubusercontent.com/WamWooWam/Unicord/master/Assets/promo1.png)
+![promo](Assets/promo1.png)
+
+## Downloads
+See the [latest release](https://github.com/UnicordDev/Unicord/releases)!
 
 ## Getting Started
 So you wanna build Unicord, well you're gonna need to have a few things handy.
 
 ### Prerequisites
  - Windows 11 (Build 22000+)
- - Visual Studio 2019 or later, with the Universal Windows Platform workload.
- - Windows 11 SDK Build 22000
+ - Windows 11 SDK Build 26100
+ - Visual Studio 2022 or later, with the Universal Windows Platform workload.
 
 ### Building and Installing
 Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:

@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Controls;
-using Unicord.Universal.Models.Messages;
+﻿using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -11,10 +10,10 @@ namespace Unicord.Universal.Controls.Messages
     {
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
+            base.PrepareContainerForItemOverride(element, item);
+
             if (item is EmbedFieldViewModel field)
                 Grid.SetColumnSpan((FrameworkElement)element, field.ColumnSpan);
-
-            base.PrepareContainerForItemOverride(element, item);
         }
     }
 }

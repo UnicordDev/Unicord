@@ -1,16 +1,15 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.Enums;
-using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Unicord.Universal.Models.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
+using DSharpPlus.Entities;
+using DSharpPlus.Enums;
+using DSharpPlus.EventArgs;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Relationships;
+using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Models
 {
@@ -18,12 +17,29 @@ namespace Unicord.Universal.Models
     {
         public FriendsPageViewModel()
         {
-            All = new ObservableCollection<RelationshipViewModel>();
-            Online = new ObservableCollection<RelationshipViewModel>();
-            Blocked = new ObservableCollection<RelationshipViewModel>();
-            Pending = new ObservableCollection<RelationshipViewModel>();
+            All = [];
+            Online = [];
+            Blocked = [];
+            Pending = [];
 
-            foreach (var rel in discord.Relationships.Values.OrderBy(r => r.User?.DisplayName))
+            Load();
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, ReadyEventArgs>(this, (t, v) => t.OnReady(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipAddEventArgs>(this, (t, v) => t.OnRelationshipAdded(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipRemoveEventArgs>(this, (t, v) => t.OnRelationshipRemoved(v.Event));
+            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
+        }
+
+        private void Load()
+        {
+            if (discord == null)
+                return;
+
+            All.Clear();
+            Online.Clear();
+            Blocked.Clear();
+            Pending.Clear();
+
+            foreach (var (id, rel) in discord.Relationships.OrderBy(r => r.Value.User?.DisplayName))
             {
                 var vm = new RelationshipViewModel(rel, this);
                 switch (rel.RelationshipType)
@@ -44,17 +60,13 @@ namespace Unicord.Universal.Models
                         break;
                 }
             }
-
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipAddEventArgs>(this, (t, v) => t.OnRelationshipAdded(v.Event));
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, RelationshipRemoveEventArgs>(this, (t, v) => t.OnRelationshipRemoved(v.Event));
-            WeakReferenceMessenger.Default.Register<FriendsPageViewModel, PresenceUpdateEventArgs>(this, (t, v) => t.OnPresenceUpdated(v.Event));
         }
 
         public DiscordUser CurrentUser => discord.CurrentUser;
-        public ObservableCollection<RelationshipViewModel> All { get; set; }
-        public ObservableCollection<RelationshipViewModel> Online { get; set; }
-        public ObservableCollection<RelationshipViewModel> Blocked { get; set; }
-        public ObservableCollection<RelationshipViewModel> Pending { get; set; }
+        public ObservableCollection<RelationshipViewModel> All { get; private set; }
+        public ObservableCollection<RelationshipViewModel> Online { get; private set; }
+        public ObservableCollection<RelationshipViewModel> Blocked { get; private set; }
+        public ObservableCollection<RelationshipViewModel> Pending { get; private set; }
 
         private void SortRelationship(DiscordRelationship rel, bool skipAll = false)
         {
@@ -66,36 +78,30 @@ namespace Unicord.Universal.Models
                 case DiscordRelationshipType.Friend:
                     if (!skipAll)
                     {
-                        syncContext.Post(a =>
-                        {
-                            var i = All.BinarySearch(viewModel);
-                            if (i < 0)
-                                i = ~i;
+                        var i = All.BinarySearch(viewModel);
+                        if (i < 0)
+                            i = ~i;
 
-                            i = Math.Min(i, All.Count - 1);
-                            All.Insert(i, viewModel);
-                        }, null);
+                        i = Math.Min(i, All.Count - 1);
+                        All.Insert(i, viewModel);
                     }
 
                     if (viewModel.User.Presence != null && viewModel.User.Presence.Status != UserStatus.Offline)
                     {
-                        syncContext.Post(a =>
-                        {
-                            var i = Online.BinarySearch(viewModel);
-                            if (i < 0)
-                                i = ~i;
+                        var i = Online.BinarySearch(viewModel);
+                        if (i < 0)
+                            i = ~i;
 
-                            i = Math.Min(i, Online.Count);
-                            Online.Insert(i, viewModel);
-                        }, null);
+                        i = Math.Min(i, Online.Count);
+                        Online.Insert(i, viewModel);
                     }
                     break;
                 case DiscordRelationshipType.Blocked:
-                    syncContext.Post(a => Blocked.Add(viewModel), null);
+                    Blocked.Add(viewModel);
                     break;
                 case DiscordRelationshipType.IncomingRequest:
                 case DiscordRelationshipType.OutgoingRequest:
-                    syncContext.Post(a => Pending.Add(viewModel), null);
+                    Pending.Add(viewModel);
                     break;
                 default:
                     break;
@@ -104,21 +110,27 @@ namespace Unicord.Universal.Models
 
         private void RemoveRelationship(DiscordRelationship rel, bool skipAll = false)
         {
-            if (!skipAll)
-            {
-                syncContext.Post(a => RemoreRelationship(All, rel), null);
-            }
-
-            syncContext.Post(a => RemoreRelationship(Online, rel), null);
-            syncContext.Post(a => RemoreRelationship(Pending, rel), null);
-            syncContext.Post(a => RemoreRelationship(Blocked, rel), null);
+            RemoveRelationship(All, rel);
+            RemoveRelationship(Online, rel);
+            RemoveRelationship(Pending, rel);
+            RemoveRelationship(Blocked, rel);
         }
 
-        private void RemoreRelationship(ICollection<RelationshipViewModel> collection, DiscordRelationship rel)
+        private void RemoveRelationship(ICollection<RelationshipViewModel> collection, DiscordRelationship rel)
         {
             var old = collection.FirstOrDefault(r => rel.Id == r.Id);
             if (old != null)
                 collection.Remove(old);
+        }
+
+        private Task OnReady(ReadyEventArgs e)
+        {
+            syncContext.Post((o) =>
+            {
+                discord = DiscordManager.Discord;
+                Load();
+            }, null);
+            return Task.CompletedTask;
         }
 
         private Task OnPresenceUpdated(PresenceUpdateEventArgs e)
@@ -128,7 +140,7 @@ namespace Unicord.Universal.Models
                 if (discord.Relationships.TryGetValue(e.User.Id, out var rel) &&
                     rel.RelationshipType == DiscordRelationshipType.Friend)
                 {
-                    SortRelationship(rel, true);
+                    syncContext.Post(_ => SortRelationship(rel, true), null);
                 }
             }
 
@@ -137,13 +149,13 @@ namespace Unicord.Universal.Models
 
         private Task OnRelationshipAdded(RelationshipAddEventArgs e)
         {
-            SortRelationship(e.Relationship);
+            syncContext.Post(_ => SortRelationship(e.Relationship), null);
             return Task.CompletedTask;
         }
 
         private Task OnRelationshipRemoved(RelationshipRemoveEventArgs e)
         {
-            RemoveRelationship(e.Relationship);
+            syncContext.Post(_ => RemoveRelationship(e.Relationship), null);
             return Task.CompletedTask;
         }
     }

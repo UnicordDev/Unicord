@@ -1,20 +1,18 @@
-﻿using System;
+﻿using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter.Channel;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
-using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
+using Unicord.Universal.Services;
 using Windows.ApplicationModel;
 
 namespace Unicord.Universal.Models
@@ -32,11 +30,30 @@ namespace Unicord.Universal.Models
 
         public DiscordPageViewModel()
         {
-            Guilds = new ObservableCollection<IGuildListViewModel>();
-            UnreadDMs = new ObservableCollection<ChannelViewModel>();
+            Guilds = [];
+            UnreadDMs = [];
+
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, ReadyEventArgs>(this, (t, v) => t.OnReady(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildDeleteEventArgs>(this, (t, v) => t.OnGuildDeleted(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageAcknowledgeEventArgs>(this, (t, v) => t.OnMessageAcknowledged(v.Event));
+            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, UserSettingsUpdateEventArgs>(this, (t, v) => t.OnUserSettingsUpdated(v.Event));
+
+            Load();
+        }
+
+        private void Load()
+        {
+            if (discord == null) return;
+
+            Guilds.Clear();
+            UnreadDMs.Clear();
             CurrentUser = discord.CurrentUser;
 
-            var guilds = discord.Guilds;
+            var guilds = discord.Guilds.ToFrozenDictionary();
+            var dms = discord.PrivateChannels.ToFrozenDictionary();
+
             var folders = discord.UserSettings?.GuildFolders;
             var ids = new HashSet<ulong>();
             if (folders != null)
@@ -47,11 +64,11 @@ namespace Unicord.Universal.Models
                     {
                         foreach (var id in folder.GuildIds)
                         {
-                            if (guilds.TryGetValue(id, out var server))
-                            {
-                                Guilds.Add(new GuildListViewModel(server));
-                                ids.Add(id);
-                            }
+                            if (!guilds.TryGetValue(id, out var server))
+                                continue;
+
+                            Guilds.Add(new GuildListViewModel(server));
+                            ids.Add(id);
                         }
 
                         continue;
@@ -67,24 +84,17 @@ namespace Unicord.Universal.Models
                 }
             }
 
-            foreach (var guild in discord.Guilds.Values)
+            foreach (var (id, guild) in guilds)
             {
-                if (!ids.Contains(guild.Id))
+                if (!ids.Contains(id))
                     Guilds.Insert(0, new GuildListViewModel(guild));
             }
 
-            var dms = discord.PrivateChannels.Values;
-            foreach (var dm in dms.Where(d => d.ReadState?.MentionCount > 0)
-                                  .OrderByDescending(d => d.LastMessageId))
+            foreach (var (id, dm) in dms.Where(d => d.Value.ReadState?.MentionCount > 0)
+                                        .OrderByDescending(d => d.Value.LastMessageId))
             {
-                UnreadDMs.Add(new ChannelViewModel(dm.Id));
+                UnreadDMs.Add(new ChannelViewModel(dm.Id, parent: this));
             }
-
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildCreateEventArgs>(this, (t, v) => t.OnGuildCreated(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, GuildDeleteEventArgs>(this, (t, v) => t.OnGuildDeleted(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageCreateEventArgs>(this, (t, v) => t.OnMessageCreated(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, MessageAcknowledgeEventArgs>(this, (t, v) => t.OnMessageAcknowledged(v.Event));
-            WeakReferenceMessenger.Default.Register<DiscordPageViewModel, UserSettingsUpdateEventArgs>(this, (t, v) => t.OnUserSettingsUpdated(v.Event));
         }
 
         public bool Navigating { get; internal set; }
@@ -127,6 +137,13 @@ namespace Unicord.Universal.Models
             }
 
             return null;
+        }
+
+        private Task OnReady(ReadyEventArgs e)
+        {
+            discord = DiscordManager.Discord;
+            syncContext.Post((o) => Load(), null);
+            return Task.CompletedTask;
         }
 
         private Task OnMessageCreated(MessageCreateEventArgs e)

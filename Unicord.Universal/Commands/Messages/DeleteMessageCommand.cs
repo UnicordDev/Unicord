@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Input;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;

@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
-using Unicord.Universal.Models.Channels;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Models.Messages;
 using Windows.UI.Xaml.Data;
 
-namespace Unicord.Universal.Models
+namespace Unicord.Universal.Models.Channels
 {
     public class SearchPageViewModel : ViewModelBase
     {
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        private ChannelViewModel _channel;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly ChannelViewModel _channel;
+        private readonly ILogger<SearchPageViewModel> _logger
+            = Logger.GetLogger<SearchPageViewModel>();
+
         private int _currentPage = 1;
         private int _totalPages = 1;
         private bool _waitingForIndex;
@@ -66,8 +66,7 @@ namespace Unicord.Universal.Models
         public SearchPageViewModel(ChannelViewModel channel)
         {
             _channel = channel;
-            ViewSource = new CollectionViewSource();
-            ViewSource.IsSourceGrouped = false;
+            ViewSource = new CollectionViewSource { IsSourceGrouped = false };
             WaitingForIndex = false;
         }
 
@@ -90,7 +89,6 @@ namespace Unicord.Universal.Models
                 {
                     WaitingForIndex = true;
                     TotalMessages = 0;
-                    return;
                 }
                 else
                 {
@@ -104,7 +102,7 @@ namespace Unicord.Universal.Models
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failed to load search results");
             }
             finally
             {

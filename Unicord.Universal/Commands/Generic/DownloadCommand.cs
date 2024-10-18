@@ -1,18 +1,11 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Unicord.Universal.Models;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage.Pickers;
-using Windows.UI.Xaml.Input;
 using Windows.Web.Http;
 
 namespace Unicord.Universal.Commands.Generic

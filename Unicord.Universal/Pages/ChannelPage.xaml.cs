@@ -8,7 +8,6 @@ using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using CommunityToolkit.Mvvm.Input;
 using Unicord.Universal.Controls;
-using Unicord.Universal.Controls.Messages;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Interop;
 using Unicord.Universal.Models;
@@ -27,12 +26,13 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.Storage.Streams;
 using Windows.System;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using Windows.Foundation;
+using Unicord.Universal.Extensions;
 
 namespace Unicord.Universal.Pages
 {
@@ -63,9 +63,9 @@ namespace Unicord.Universal.Pages
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5))
+            if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 5))
             {
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 6))
+                if (ApiInformation.IsApiContractPresent(typeof(UniversalApiContract).FullName, 6))
                     KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
 
                 this.AddAccelerator(VirtualKey.D, VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, EditMode_Invoked);
@@ -130,7 +130,8 @@ namespace Unicord.Universal.Pages
             ViewModel = model;
             DataContext = ViewModel;
 
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Desktop")
+            // TODO: this check should be for the input method, not platform
+            if (SystemPlatform.Desktop)
                 MessageTextBox.Focus(FocusState.Keyboard);
 
             while (_channelHistory.Count > 10)
@@ -186,8 +187,11 @@ namespace Unicord.Universal.Pages
 
                 _channelHistory.Remove(last);
 
+                var old = ViewModel;
                 ViewModel = last;
                 DataContext = ViewModel;
+
+                old.Dispose();
 
                 await Load().ConfigureAwait(false);
             }
@@ -224,7 +228,7 @@ namespace Unicord.Universal.Pages
                 }
             });
 
-            await JumpListManager.AddToListAsync(_viewModel.Channel);
+            await JumpListManager.AddToListAsync(_viewModel);
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -560,13 +564,8 @@ namespace Unicord.Universal.Pages
             var lastMessage = _viewModel.Messages.LastOrDefault(m => m.Author.IsCurrent);
             if (lastMessage != null)
             {
-                var container = MessageList.ContainerFromItem(lastMessage);
-                if (container != null)
-                {
-                    MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
-                    var viewer = container.FindChild<MessageControl>();
-                    viewer?.BeginEdit();
-                }
+                MessageList.ScrollIntoView(lastMessage, ScrollIntoViewAlignment.Leading);
+                lastMessage.IsEditing = true;
             }
         }
 

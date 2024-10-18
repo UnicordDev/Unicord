@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.Voice;
 using Unicord.Universal.Pages;
 using Unicord.Universal.Pages.Subpages;
@@ -87,7 +87,7 @@ namespace Unicord.Universal.Services
                 else
                 {
                     if (channel is DiscordForumChannel forum)
-                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), channel);
+                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), forum);
                     else
                         _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
                 }
@@ -136,8 +136,6 @@ namespace Unicord.Universal.Services
                 SplitPaneService.GetForCurrentView()
                     .CloseAllPanes();
 
-                //_discordPage.CloseSplitPane(); // pane service?
-
                 if (_discordPageModel.SelectedGuild != null)
                     _discordPageModel.SelectedGuild.IsSelected = false;
 
@@ -148,18 +146,19 @@ namespace Unicord.Universal.Services
                 if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
                     return;
 
+                GuildListViewModel guildVm;
                 if (channel is DiscordDmChannel dm)
                 {
                     _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm.Id);
                     _discordPageModel.IsFriendsSelected = true;
                     _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
                 }
-                else if (channel.Guild != null)
+                else if (channel.Guild != null && (guildVm = _discordPageModel.ViewModelFromGuild(channel.Guild)) != null)
                 {
-                    _discordPageModel.SelectedGuild = _discordPageModel.ViewModelFromGuild(channel.Guild);
+                    _discordPageModel.SelectedGuild = guildVm;
                     _discordPageModel.SelectedGuild.IsSelected = true;
 
-                    if (!(_discordPage.LeftSidebarFrame.Content is GuildChannelListPage p) || p.Guild != channel.Guild)
+                    if (_discordPage.LeftSidebarFrame.Content is not GuildChannelListPage p || p.Guild != channel.Guild)
                         _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
 
                     if (_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
@@ -168,9 +167,7 @@ namespace Unicord.Universal.Services
                     }
 
                     if (!channel.Guild.IsSynced)
-                    {
                         await channel.Guild.SyncAsync();
-                    }
                 }
 
                 if (channel.IsNSFW)
@@ -192,7 +189,7 @@ namespace Unicord.Universal.Services
                 {
                     if (channel is DiscordForumChannel forum)
                     {
-                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), channel);
+                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), forum);
                     }
                     else
                     {

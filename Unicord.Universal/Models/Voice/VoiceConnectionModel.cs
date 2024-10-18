@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.Abstractions;
 using Microsoft.AppCenter.Analytics;
-using Newtonsoft.Json;
 using Unicord.Universal.Services;
 using Unicord.Universal.Voice;
 using Unicord.Universal.Voice.Background;
@@ -16,7 +15,6 @@ using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 
 namespace Unicord.Universal.Models.Voice
 {
@@ -195,8 +193,8 @@ namespace Unicord.Universal.Models.Voice
 
             ConnectionStatus = _strings.GetString("ConnectionState3");
 
-            DiscordManager.Discord.VoiceStateUpdated += OnVoiceStateUpdated;
-            DiscordManager.Discord.VoiceServerUpdated += OnVoiceServerUpdated;
+            discord.VoiceStateUpdated += OnVoiceStateUpdated;
+            discord.VoiceServerUpdated += OnVoiceServerUpdated;
             await SendVoiceStateUpdateAsync(_state, Channel.Id);
 
             var vstu = await _voiceStateUpdateCompletion.Task.ConfigureAwait(false);
@@ -211,7 +209,7 @@ namespace Unicord.Universal.Models.Voice
                 ["req"] = (uint)VoiceServiceRequest.GuildConnectRequest,
                 ["channel_id"] = Channel.Id,
                 ["guild_id"] = Channel.Guild.Id,
-                ["user_id"] = DiscordManager.Discord.CurrentUser.Id,
+                ["user_id"] = discord.CurrentUser.Id,
                 ["endpoint"] = vsru.Endpoint,
                 ["token"] = vsru.VoiceToken,
                 ["session_id"] = vstu.SessionId,
@@ -237,6 +235,7 @@ namespace Unicord.Universal.Models.Voice
             }
             catch (Exception ex)
             {
+                // ERROR_ALREADY_EXISTS
                 if (ex.HResult == -2147024713)
                     return VoipPhoneCallResourceReservationStatus.Success;
                 else
