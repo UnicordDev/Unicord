@@ -56,18 +56,18 @@ namespace Unicord.Universal.Background.Tasks
             }
         }
 
-        private Task OnSocketClosed(DiscordClient sender, SocketCloseEventArgs args)
+        private async Task OnSocketClosed(DiscordClient sender, SocketCloseEventArgs args)
         {
+            await Logger.OnSuspendingAsync();
+            _logger.LogInformation("Socket closed! Finished in {Time}!", Runtime);
             _deferral.Complete();
-            return Task.CompletedTask;
         }
 
-        private Task OnSocketErrored(DiscordClient sender, SocketErrorEventArgs args)
+        private async Task OnSocketErrored(DiscordClient sender, SocketErrorEventArgs args)
         {
+            await Logger.OnSuspendingAsync();
             _logger.LogInformation("Socket errored! Failed in {Time}!", Runtime);
             _deferral.Complete();
-
-            return Task.CompletedTask;
         }
 
         private async Task OnReady(DiscordClient sender, ReadyEventArgs args)
@@ -93,7 +93,7 @@ namespace Unicord.Universal.Background.Tasks
                 tileManager.Update(tileContent);
             }
 
-            _logger.LogInformation("All done! Finished in {Time}!", Runtime);
+            _logger.LogInformation("All done!");
             await sender.DisconnectAsync();
         }
 
