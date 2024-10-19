@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Shared;
 using Windows.ApplicationModel.Background;
 using Windows.Security.Credentials;
@@ -14,18 +16,34 @@ namespace Unicord.Universal.Background.Tasks
 {
     public sealed class PeriodicNotificationsTask : IBackgroundTask
     {
+        private readonly ILogger<PeriodicNotificationsTask> _logger
+            = Logger.GetLogger<PeriodicNotificationsTask>();
+
         private DiscordClient _client;
         private BackgroundTaskDeferral _deferral;
 
+        private long _startTimestamp;
+        private TimeSpan Runtime 
+            => TimeSpan.FromSeconds((double)(Stopwatch.GetTimestamp() - _startTimestamp) / Stopwatch.Frequency);
+
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+            _logger.LogInformation("Starting periodic notification task...");
+            _startTimestamp = Stopwatch.GetTimestamp();
             _deferral = taskInstance.GetDeferral();
             try
             {
                 if (!TryGetToken(out string token))
                     return;
 
-                _client = new DiscordClient(new DiscordConfiguration() { Token = token, TokenType = TokenType.User });
+                _client = new DiscordClient(new DiscordConfiguration()
+                {
+                    Token = token,
+                    TokenType = TokenType.User,
+                    AutoReconnect = false,
+                    MessageCacheSize = 128,
+                    LoggerFactory = Logger.LoggerFactory
+                });
                 _client.Ready += OnReady;
                 _client.SocketErrored += OnSocketErrored;
                 _client.SocketClosed += OnSocketClosed;
@@ -46,12 +64,15 @@ namespace Unicord.Universal.Background.Tasks
 
         private Task OnSocketErrored(DiscordClient sender, SocketErrorEventArgs args)
         {
+            _logger.LogInformation("Socket errored! Failed in {Time}!", Runtime);
             _deferral.Complete();
+
             return Task.CompletedTask;
         }
 
         private async Task OnReady(DiscordClient sender, ReadyEventArgs args)
         {
+            _logger.LogInformation("Got ready, updating tiles, badge...");
             var badgeManager = new BadgeManager(_client);
             badgeManager.Update();
 
@@ -72,6 +93,7 @@ namespace Unicord.Universal.Background.Tasks
                 tileManager.Update(tileContent);
             }
 
+            _logger.LogInformation("All done! Finished in {Time}!", Runtime);
             await sender.DisconnectAsync();
         }
 

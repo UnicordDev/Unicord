@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.pub.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MutedExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondaryTileManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TileManager.cs" />

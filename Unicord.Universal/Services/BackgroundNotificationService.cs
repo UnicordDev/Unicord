@@ -18,7 +18,7 @@ namespace Unicord.Universal.Services
 {
     class BackgroundNotificationService : BaseService<BackgroundNotificationService>
     {
-        private readonly ILogger<BackgroundNotificationService> _logger 
+        private readonly ILogger<BackgroundNotificationService> _logger
             = Logger.GetLogger<BackgroundNotificationService>();
 
         private BadgeManager _badgeManager;
@@ -132,11 +132,17 @@ namespace Unicord.Universal.Services
             try
             {
                 if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME)))
+                {
+                    _logger.LogDebug("Not registering periodic notifications task: already registered.");
                     return true;
+                }
 
                 var status = await BackgroundExecutionManager.RequestAccessAsync();
                 if (status is BackgroundAccessStatus.Denied or BackgroundAccessStatus.DeniedBySystemPolicy or BackgroundAccessStatus.DeniedByUser)
+                {
+                    _logger.LogDebug("Not registering periodic notifications task: {Status}", status);
                     return false;
+                }
 
                 var builder = new BackgroundTaskBuilder()
                 {
@@ -148,11 +154,13 @@ namespace Unicord.Universal.Services
                 builder.SetTrigger(new TimeTrigger(15, false));
 
                 var registration = builder.Register();
+
+                _logger.LogDebug("Registered periodic notifications task!");
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Failed to register periodic notifications task.");
             }
 
             return false;
@@ -171,6 +179,8 @@ namespace Unicord.Universal.Services
                 (r, e) => r.OnMessageAcknowledged(e.Event));
             WeakReferenceMessenger.Default.Register<BackgroundNotificationService, MessageCreateEventArgs>(this,
                 (r, e) => r.OnMessageCreated(e.Event));
+
+            _logger.LogDebug("Initialized in-process notifications.");
         }
 
         private async Task OnMessageCreated(MessageCreateEventArgs e)

@@ -413,7 +413,6 @@
     </Compile>
     <Compile Include="Misc\Emoji.cs" />
     <Compile Include="Misc\ListViewBehaviour.cs" />
-    <Compile Include="Misc\Logger.cs" />
     <Compile Include="Models\ChannelEditViewModel.cs" />
     <Compile Include="Models\ChannelPermissionEditViewModel.cs" />
     <Compile Include="Models\Channels\ChannelListViewModel.cs" />
@@ -669,7 +668,7 @@
     <Content Include="Assets\Store\Wide310x150Logo.scale-400.png" />
     <Content Include="Controls\Markdown\About.txt" />
     <None Include="Package.StoreAssociation.xml" />
-    <Content Include="NativeMethods.txt" />
+    <None Include="NativeMethods.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
