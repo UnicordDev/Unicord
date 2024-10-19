@@ -24,7 +24,13 @@
     <Namespace Name="Microsoft.Extensions.Options" Activate="Required Public" />
     <Namespace Name="Microsoft.Extensions.Logging" Activate="Required Public" />
 
-    <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider" Activate="Required All" />
-    <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider.WinRTLogger" Activate="Required All" />
+    <Assembly Name="Unicord.Universal">
+      <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider" Activate="Required All" />
+      <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider.WinRTLogger" Activate="Required All" />
+    </Assembly>
+    <Assembly Name="Unicord.Universal.Background.Tasks">
+      <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider" Activate="Required All" />
+      <Type Name="Unicord.Universal.Logger.WinRTLoggerProvider.WinRTLogger" Activate="Required All" />
+    </Assembly>
   </Application>
 </Directives>
