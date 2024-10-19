@@ -354,7 +354,7 @@
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
                                 <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                                         <Setter Property="Padding" Value="4"/>
                                     </Style>
                                 </ListView.ItemContainerStyle>

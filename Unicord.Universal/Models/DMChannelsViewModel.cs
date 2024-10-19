@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 
@@ -25,7 +23,6 @@ namespace Unicord.Universal.Models
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelCreateEventArgs>(this, (r, e) => r.OnDmCreated(e.Event));
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, DmChannelDeleteEventArgs>(this, (r, e) => r.OnDmDeleted(e.Event));
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, MessageCreateEventArgs>(this, (r, e) => r.OnMessageCreated(e.Event));
-
             WeakReferenceMessenger.Default.Register<DMChannelsViewModel, ReadyEventArgs>(this, (r, e) => r.OnReady(e.Event));
         }
 

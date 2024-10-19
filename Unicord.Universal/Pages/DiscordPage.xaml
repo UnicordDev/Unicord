@@ -25,6 +25,12 @@
     </Page.DataContext>
     <Page.Resources>
         <CircleEase x:Key="Ease" EasingMode="EaseInOut" />
+
+        <Style x:Key="SeparatorStyle" TargetType="Border">
+            <Setter Property="Margin" Value="16,8"/>
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource DiscordPage_Separator_BorderBrush}"/>
+        </Style>
     </Page.Resources>
     <Grid>
         <Grid x:Name="TitleBarGrid"
@@ -90,7 +96,7 @@
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
                                           Tapped="CloseItem_Tapped"
-                                          Style="{StaticResource DefaultListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}">
                                 <FontIcon Width="36" Height="36" Glyph="&#xE700;" />
                             </ListViewItem>
                             <ListViewItem x:Name="FriendsItem"
@@ -99,7 +105,7 @@
                                               IsSelected="{Binding IsFriendsSelected}"
                                               HorizontalContentAlignment="Stretch"
                                               Tapped="friendsItem_Tapped"
-                                              Style="{StaticResource DefaultListViewItemStyle}">
+                                              Style="{StaticResource UnicordListViewItemStyle}">
                                 <SymbolIcon Width="36" Height="36" Symbol="People" />
                             </ListViewItem>
 
@@ -111,11 +117,11 @@
                                       SelectionChanged="UnreadDms_SelectionChanged">
                                 <ListView.HeaderTemplate>
                                     <DataTemplate>
-                                        <lib:NavigationViewItemSeparator Margin="16,0" />
+                                        <Border Style="{StaticResource SeparatorStyle}"/>
                                     </DataTemplate>
                                 </ListView.HeaderTemplate>
                                 <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                                         <Setter Property="MinWidth" Value="0" />
                                         <Setter Property="Padding" Value="0" />
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -141,7 +147,7 @@
                                 </ListView.ItemTemplate>
                             </ListView>
 
-                            <lib:NavigationViewItemSeparator Margin="16,0" />
+                            <Border Style="{StaticResource SeparatorStyle}"/>
 
                             <lib:TreeView x:Name="GuildsView"
                                           ItemsSource="{Binding Guilds}"
@@ -152,7 +158,7 @@
                                                                           GuildFolderTemplate="{StaticResource GuildsListFolderTemplate}"/>
                                 </lib:TreeView.ItemTemplateSelector>
                                 <lib:TreeView.ItemContainerStyle>
-                                    <Style TargetType="lib:TreeViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Style TargetType="lib:TreeViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                                         <Setter Property="MinWidth" Value="0" />
                                         <Setter Property="Padding" Value="0" />
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -160,32 +166,33 @@
                                 </lib:TreeView.ItemContainerStyle>
                             </lib:TreeView>
 
-                            <lib:NavigationViewItemSeparator Margin="16,0" />
+                            <Border Style="{StaticResource SeparatorStyle}"/>
 
                             <ListViewItem x:Name="createServerItem"
                                           MinWidth="0"
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
-                                          Style="{StaticResource DefaultListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}">
                                 <SymbolIcon Width="36" Height="36" Symbol="Add" />
                             </ListViewItem>
                             <ListViewItem x:Name="findServerIcon"
                                           MinWidth="0"
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
-                                          Style="{StaticResource DefaultListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}">
                                 <SymbolIcon Width="36" Height="36" Symbol="Find" />
                             </ListViewItem>
-                            <lib:NavigationViewItemSeparator Margin="16,0" />
+
+                            <Border Style="{StaticResource SeparatorStyle}"/>
+
                             <ListViewItem x:Name="settingsItem"
                                           MinWidth="0"
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
                                           Tapped="SettingsItem_Tapped"
-                                          Style="{StaticResource DefaultListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}">
                                 <SymbolIcon Width="36" Height="36" Symbol="Setting" />
                             </ListViewItem>
-
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

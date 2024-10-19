@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Windows.Input;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Services;
 using Unicord.Universal.Models.User;
-using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Controls;
 
 namespace Unicord.Universal.Commands.Members

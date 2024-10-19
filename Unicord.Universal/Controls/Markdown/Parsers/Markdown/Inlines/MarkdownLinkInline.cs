@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Toolkit;
-using Microsoft.Toolkit.Extensions;
 using Unicord.Universal.Parsers.Core;
 using Unicord.Universal.Parsers.Markdown.Helpers;
 

@@ -1,11 +1,9 @@
-﻿using DSharpPlus;
+﻿using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Unicord.Universal.Extensions;
+// ?? why do i need this suddenly
+using WeakReferenceMessenger = CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger;
 
 namespace Unicord.Universal.Models.Messaging
 {

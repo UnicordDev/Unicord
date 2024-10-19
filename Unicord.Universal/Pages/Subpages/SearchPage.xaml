@@ -75,7 +75,7 @@
                   ItemsSource="{Binding ViewSource.View}">
 
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource UnicordListViewItemStyle}">
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="MinHeight" Value="0" />

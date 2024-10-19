@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using Humanizer.Bytes;
-using CommunityToolkit.Mvvm.Messaging;
-using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Extensions;
 using WamWooWam.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -20,9 +18,10 @@ using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
-
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Shell;
 using static Unicord.Constants;
 
 namespace Unicord.Universal
@@ -99,82 +98,6 @@ namespace Unicord.Universal
             }
             catch { }
         }
-        /// <summary>
-        /// Sends a message of the specified type to all registered recipients.
-        /// </summary>
-        /// <typeparam name="TMessage">The type of message to send.</typeparam>
-        /// <param name="messenger">The <see cref="IMessenger"/> instance to use to send the message.</param>
-        /// <param name="message">The message to send.</param>
-        /// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
-        public static DiscordEventMessage<TMessage> Send<TMessage>(this IMessenger messenger, TMessage message)
-            where TMessage : AsyncEventArgs
-        {
-            return messenger.Send(new DiscordEventMessage<TMessage>(message));
-        }
-
-        /// <summary>
-        /// Registers a recipient for a given type of message.
-        /// </summary>
-        /// <typeparam name="TRecipient">The type of recipient for the message.</typeparam>
-        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
-        /// <param name="messenger">The <see cref="IMessenger"/> instance to use to register the recipient.</param>
-        /// <param name="recipient">The recipient that will receive the messages.</param>
-        /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
-        /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
-        /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
-        public static void Register<TRecipient, TMessage>(this IMessenger messenger, TRecipient recipient, MessageHandler<TRecipient, DiscordEventMessage<TMessage>> handler)
-            where TRecipient : class
-            where TMessage : AsyncEventArgs
-        {
-            messenger.Register<TRecipient, DiscordEventMessage<TMessage>>(recipient, handler);
-        }
-
-        public delegate Task AsyncMessageHandler<in TRecipient, in TMessage>(TRecipient recipient, TMessage message) 
-            where TRecipient : class where TMessage : class;
-
-        /// <summary>
-        /// Registers a recipient for a given type of message.
-        /// </summary>
-        /// <typeparam name="TRecipient">The type of recipient for the message.</typeparam>
-        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
-        /// <param name="messenger">The <see cref="IMessenger"/> instance to use to register the recipient.</param>
-        /// <param name="recipient">The recipient that will receive the messages.</param>
-        /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
-        /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
-        /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
-        public static void Register<TRecipient, TMessage>(this IMessenger messenger, TRecipient recipient, AsyncMessageHandler<TRecipient, DiscordEventMessage<TMessage>> handler)
-            where TRecipient : class
-            where TMessage : AsyncEventArgs
-        {
-            messenger.Register<TRecipient, DiscordEventMessage<TMessage>>(recipient, (t, v) => v.Reply(handler(t, v)));
-        }
-
-        public static T FindParent<T>(this DependencyObject obj, string controlName = null) where T : FrameworkElement
-        {
-            var parent = VisualTreeHelper.GetParent(obj);
-            if (parent == null)
-                return default;
-
-            return parent is T found && (controlName == null || found.Name == controlName) ? found : parent.FindParent<T>(controlName);
-        }
-
-        public static T FindChild<T>(this DependencyObject parent, string controlName = null) where T : FrameworkElement
-        {
-            for (var index = 0; index < VisualTreeHelper.GetChildrenCount(parent); ++index)
-            {
-                var child = VisualTreeHelper.GetChild(parent, index);
-                if (child is T t && (controlName == null || t.Name == controlName))
-                {
-                    return t;
-                }
-                else if ((child = FindChild<T>(child, controlName)) != null)
-                {
-                    return child as T;
-                }
-            }
-
-            return default;
-        }
 
         public static void AddAccelerator(this UIElement element, VirtualKey key, VirtualKeyModifiers modifiers, TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> handler)
         {
@@ -215,12 +138,23 @@ namespace Unicord.Universal
             return file;
         }
 
-
-        internal static string GetItemTypeFromExtension(string extension, string fallback = null)
+        public static unsafe string GetItemTypeFromExtension(string extension, string fallback = null)
         {
             try
             {
-                //return Shlwapi.AssocQueryString(ASSOCF.NONE, ASSOCSTR.FRIENDLYAPPNAME, extension, "");
+                uint len = 0;
+                HRESULT hr;
+                if ((hr = PInvoke.AssocQueryString(ASSOCF.ASSOCF_NONE, ASSOCSTR.ASSOCSTR_FRIENDLYAPPNAME, extension, "", null, ref len)) != HRESULT.S_FALSE)
+                    hr.ThrowOnFailure();
+
+                char[] buf = new char[len];
+                fixed (char* bufPtr = buf)
+                {
+                    PInvoke.AssocQueryString(ASSOCF.ASSOCF_NONE, ASSOCSTR.ASSOCSTR_FRIENDLYAPPNAME, extension, "", new PWSTR(bufPtr), ref len)
+                        .ThrowOnFailure();
+
+                    return new string(bufPtr);
+                }
             }
             catch (Exception ex)
             {
@@ -269,25 +203,9 @@ namespace Unicord.Universal
             return false;
         }
 
-        public static void InvertTheme(ElementTheme requestedTheme, FrameworkElement preview)
-        {
-            switch (requestedTheme)
-            {
-                case ElementTheme.Light:
-                    preview.RequestedTheme = ElementTheme.Dark;
-                    break;
-                case ElementTheme.Dark:
-                    preview.RequestedTheme = ElementTheme.Light;
-                    break;
-                default:
-                    preview.RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
-                    break;
-            }
-        }
-
         // adapted from corefx
         // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Array.cs
-        public static int BinarySearch<TCollection>(this IList<TCollection> collection, TCollection item) 
+        public static int BinarySearch<TCollection>(this IList<TCollection> collection, TCollection item)
             where TCollection : IComparable<TCollection>
         {
             var lo = 0;
@@ -324,28 +242,6 @@ namespace Unicord.Universal
             PremiumType.NitroBasic => NITRO_BASIC_UPLOAD_LIMIT,
             _ => UPLOAD_LIMIT
         };
-
-        private static Lazy<bool> hasWebPSupport = new Lazy<bool>(() => CheckWebPSupport());
-
-        private static bool CheckWebPSupport()
-        {
-            if (!ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7, 0))
-                return false;
-
-            foreach (var item in BitmapDecoder.GetDecoderInformationEnumerator())
-            {
-                if (item.CodecId == BitmapDecoder.WebpDecoderId)
-                    return true;
-            }
-
-            return false;
-        }
-
-        public static bool HasWebPSupport()
-            => hasWebPSupport.Value;
-
-        public static bool ShouldUseWebP
-            => HasWebPSupport() && App.LocalSettings.Read(ENABLE_WEBP, ENABLE_WEBP_DEFAULT);
     }
 
 }

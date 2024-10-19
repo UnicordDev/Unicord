@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
-using Unicord.Universal.Models.Channels;
 
 namespace Unicord.Universal.Models.Guild
 {

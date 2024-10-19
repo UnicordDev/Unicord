@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using Unicord.Universal.Dialogs;
 using Unicord.Universal.Models.Messaging;
 using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Resources;
 using Windows.Security.Credentials;
-using Windows.System.Profile;
 using Windows.UI.Core;
 
 namespace Unicord.Universal.Services
@@ -21,14 +17,17 @@ namespace Unicord.Universal.Services
     internal class DiscordManager
     {
         private static DiscordClient _discord;
+        private static ILogger<DiscordManager> _logger
+            = Logger.GetLogger<DiscordManager>();
 
+        private static readonly SemaphoreSlim _connectSemaphore
+            = new SemaphoreSlim(1);
+        private static TaskCompletionSource<ReadyEventArgs> _readySource
+            = new TaskCompletionSource<ReadyEventArgs>();
         public static DiscordClient Discord
         {
             get => _discord;
         }
-
-        private static readonly SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1);
-        private static TaskCompletionSource<ReadyEventArgs> _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
         internal static void KickoffConnectionAsync()
         {
@@ -47,6 +46,7 @@ namespace Unicord.Universal.Services
             UserStatus status = UserStatus.Online)
         {
             await _connectSemaphore.WaitAsync();
+            _readySource = new TaskCompletionSource<ReadyEventArgs>();
             try
             {
                 if (Discord != null)
@@ -139,7 +139,7 @@ namespace Unicord.Universal.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex);
+                    _logger.LogError(ex, "Failure when logging in!");
                     Tools.ResetPasswordVault();
                     _readySource.TrySetException(ex);
                     if (onError != null)
@@ -189,14 +189,20 @@ namespace Unicord.Universal.Services
         {
             if (Discord == null) return;
 
+            var discord = _discord;
             try
             {
-                await Discord.DisconnectAsync();
-                Discord.Dispose();
+                DiscordClientMessenger.Unregister(discord);
+                await discord.DisconnectAsync();
+                discord.Dispose();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex, "Error when disposing of DiscordClient!");
+            }
+            finally
+            {
+                _discord = null;
             }
         }
 

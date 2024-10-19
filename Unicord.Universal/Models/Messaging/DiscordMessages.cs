@@ -1,12 +1,5 @@
-﻿using DSharpPlus;
-using DSharpPlus.AsyncEvents;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+﻿using DSharpPlus.AsyncEvents;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Unicord.Universal.Models.Messaging

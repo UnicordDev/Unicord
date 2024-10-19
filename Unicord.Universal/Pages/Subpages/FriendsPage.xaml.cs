@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using Unicord.Universal.Behaviours;
 using Unicord.Universal.Models.Relationships;
@@ -8,7 +6,6 @@ using Unicord.Universal.Pages.Overlay;
 using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace Unicord.Universal.Pages.Subpages
 {

@@ -1,7 +1,4 @@
-﻿using DSharpPlus.Entities;
-using Unicord.Universal.Utilities;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿using Unicord.Universal.Utilities;
 using Windows.UI.Xaml.Input;
 
 namespace Unicord.Universal.Controls.Flyouts

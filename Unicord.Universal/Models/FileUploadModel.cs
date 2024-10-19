@@ -1,19 +1,26 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Analytics;
-using Unicord.Universal.Controls;
-using WamWooWam.Core;
+using Unicord.Universal.Pages;
+using Unicord.Universal.Services;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation.Collections;
 using Windows.Media.Editing;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media;
+using Windows.System;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models
 {
-    public class FileUploadModel : IDisposable
+    public class FileUploadModel : ViewModelBase, IDisposable
     {
+        public ChannelPageViewModel Parent { get; }
+
         public IStorageFile StorageFile { get; set; }
         public BitmapImage Thumbnail { get; set; }
         public string FileName { get; set; }
@@ -27,11 +34,21 @@ namespace Unicord.Universal.Models
         public bool Spoiler { get; set; } = false;
         public string DisplayLength => Tools.ToFileSizeString(Length);
 
-        public static async Task<FileUploadModel> FromStorageFileAsync(IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
+        internal FileUploadModel(ChannelPageViewModel viewModel)
+        {
+            Parent = viewModel;
+            EditCommand = new AsyncRelayCommand(EditAsync);
+            CropCommand = new AsyncRelayCommand(CropAsync);
+        }
+
+        public ICommand EditCommand { get; }
+        public ICommand CropCommand { get; }
+
+        public static async Task<FileUploadModel> FromStorageFileAsync(ChannelPageViewModel viewModel, IStorageFile file, BasicProperties prop = null, bool isTemporary = false, bool transcodeFailed = false)
         {
             Analytics.TrackEvent("FileUploadModel_CreateFromStorageFile");
 
-            var model = new FileUploadModel();
+            var model = new FileUploadModel(viewModel);
             await model.UpdateFromStorageFileAsync(file, prop, isTemporary, transcodeFailed);
             return model;
         }
@@ -75,8 +92,45 @@ namespace Unicord.Universal.Models
         {
             if (StorageFile != null)
                 return await StorageFile.OpenReadAsync();
-
             return null;
+        }
+
+        private async Task EditAsync()
+        {
+            var newModel = new EditedFileUploadModel(this, Parent);
+            Parent.FileUploads.Remove(this);
+            Parent.FileUploads.Add(newModel);
+
+            await OverlayService.GetForCurrentView()
+                .ShowOverlayAsync<VideoEditor>(newModel);
+        }
+
+        private async Task CropAsync()
+        {
+            var newFile = await StorageFile.CopyAsync(ApplicationData.Current.LocalFolder, FileName, NameCollisionOption.GenerateUniqueName);
+            var props = await newFile.Properties.GetImagePropertiesAsync();
+
+            var sourceToken = SharedStorageAccessManager.AddFile(StorageFile);
+            var destinationToken = SharedStorageAccessManager.AddFile(newFile);
+
+            var options = new LauncherOptions { TargetApplicationPackageFamilyName = "Microsoft.Windows.Photos_8wekyb3d8bbwe" };
+
+            var parameters = new ValueSet
+            {
+                { "EllipticalCrop", false },
+                { "ShowCamera", false },
+                { "InputToken", sourceToken },
+                { "DestinationToken", destinationToken }
+            };
+
+            var result = await Launcher.LaunchUriForResultsAsync(new Uri("microsoft.windows.photos.crop:"), options, parameters);
+            if (result.Status != LaunchUriStatus.Success)
+            {
+                // TODO: Dialog
+                return;
+            }
+
+            await UpdateFromStorageFileAsync(newFile);
         }
 
         public virtual void Dispose()
@@ -87,7 +141,8 @@ namespace Unicord.Universal.Models
 
     public class EditedFileUploadModel : FileUploadModel, IDisposable
     {
-        public EditedFileUploadModel(FileUploadModel original)
+        public EditedFileUploadModel(FileUploadModel original, ChannelPageViewModel viewModel)
+            : base(viewModel)
         {
             StorageFile = original.StorageFile;
             Thumbnail = original.Thumbnail;
@@ -99,7 +154,9 @@ namespace Unicord.Universal.Models
             CanCrop = original.CanCrop;
         }
 
-        public UploadItemsControl Parent { get; set; }
+        public SynchronizationContext SyncContext
+            => syncContext;
+
         public MediaComposition Composition { get; set; }
         public MediaClip Clip { get; set; }
         public StorageFile CompositionFile { get; internal set; }

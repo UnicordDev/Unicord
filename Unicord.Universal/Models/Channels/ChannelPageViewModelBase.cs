@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using DSharpPlus.Entities;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using DSharpPlus.Entities;
 using Unicord.Universal.Pages.Subpages;
 using Unicord.Universal.Services;
 
@@ -28,9 +23,9 @@ namespace Unicord.Universal.Models.Channels
         private void CreateCommands()
         {
             LeftPaneCommand = new RelayCommand(() => SplitPaneService.GetForCurrentView().ToggleLeftPane());
-            SearchCommand = new RelayCommand(() => { SplitPaneService.GetForCurrentView().ToggleRightPane<SearchPage>(this); });
-            PinsCommand = new RelayCommand(() => { SplitPaneService.GetForCurrentView().ToggleRightPane<PinsPage>(this); });
-            UserListCommand = new RelayCommand(() => { SplitPaneService.GetForCurrentView().ToggleRightPane<UserListPage>(this); });
+            SearchCommand = new RelayCommand(() => SplitPaneService.GetForCurrentView().ToggleRightPane<SearchPage>(this));
+            PinsCommand = new RelayCommand(() => SplitPaneService.GetForCurrentView().ToggleRightPane<PinsPage>(this));
+            UserListCommand = new RelayCommand(() => SplitPaneService.GetForCurrentView().ToggleRightPane<UserListPage>(this));
         }
 
         public ICommand LeftPaneCommand { get; private set; }

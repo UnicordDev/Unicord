@@ -1,9 +1,7 @@
 ﻿using Microsoft.AppCenter.Analytics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Unicord.Universal.Extensions;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;

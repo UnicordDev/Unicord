@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DSharpPlus.Entities;
 using Windows.Media.Transcoding;
 using static Unicord.Constants;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using Humanizer;
 using Windows.UI.Xaml.Data;
 
 namespace Unicord.Universal.Converters
@@ -10,7 +9,7 @@ namespace Unicord.Universal.Converters
         {
             if (value is string s)
             {
-                return s.Humanize(LetterCasing.AllCaps);
+                return s.ToUpper();
             }
 
             return value;

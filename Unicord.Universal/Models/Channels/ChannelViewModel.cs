@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Humanizer;
-using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Channels;
 using Unicord.Universal.Commands.Generic;
@@ -17,7 +15,6 @@ using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Guild;
 using Unicord.Universal.Models.User;
 using Windows.UI.StartScreen;
-using Windows.Networking.Sockets;
 
 namespace Unicord.Universal.Models.Channels
 {

@@ -37,21 +37,20 @@ namespace Unicord.Universal.Models.User
         {
             id = user;
             this.guildId = guildId;
-            WeakReferenceMessenger.Default.Register<UserViewModel, UserUpdateEventArgs>(this,
-                (t, e) => t.OnUserUpdate(e.Event));
-            WeakReferenceMessenger.Default.Register<UserViewModel, PresenceUpdateEventArgs>(this,
-                (t, e) => t.OnPresenceUpdate(e.Event));
+            WeakReferenceMessenger.Default.Register(this,
+                            (MessageHandler<UserViewModel, Messaging.DiscordEventMessage<UserUpdateEventArgs>>)((t, e) => t.OnUserUpdate(e.Event)));
+            WeakReferenceMessenger.Default.Register(this,
+                            (MessageHandler<UserViewModel, Messaging.DiscordEventMessage<PresenceUpdateEventArgs>>)((t, e) => t.OnPresenceUpdate(e.Event)));
 
             OpenOverlayCommand = new ShowUserOverlayCommand(this);
             MessageCommand = new SendMessageCommand(this);
 
             if (this.guildId != null)
             {
-                // TODO: idk if this should be here?
-                WeakReferenceMessenger.Default.Register<UserViewModel, GuildMemberUpdateEventArgs>(this,
-                    (t, e) => t.OnGuildMemberUpdate(e.Event));
-                WeakReferenceMessenger.Default.Register<UserViewModel, GuildMembersChunkEventArgs>(this,
-                    (t, e) => t.OnGuildMemberChunk(e.Event));
+                WeakReferenceMessenger.Default.Register(this,
+                                    (MessageHandler<UserViewModel, Messaging.DiscordEventMessage<GuildMemberUpdateEventArgs>>)((t, e) => t.OnGuildMemberUpdate(e.Event)));
+                WeakReferenceMessenger.Default.Register(this,
+                                    (MessageHandler<UserViewModel, Messaging.DiscordEventMessage<GuildMembersChunkEventArgs>>)((t, e) => t.OnGuildMemberChunk(e.Event)));
 
                 KickCommand = new KickCommand(this);
                 BanCommand = new BanCommand(this);
@@ -192,10 +191,10 @@ namespace Unicord.Universal.Models.User
 
         private void OnPresenceUpdate(PresenceUpdateEventArgs e)
         {
-            if (User == null || e.User.Id != User.Id)
+            if (User == null || e.User.Id != User.Id || _presenceVmCache == null)
                 return;
 
-            _presenceVmCache?.OnPresenceUpdated();
+            _presenceVmCache.OnPresenceUpdated();
             InvokePropertyChanged(nameof(Presence));
         }
 

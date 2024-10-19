@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Unicord.Universal.Models;
-using Unicord.Universal.Pages;
-using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Unicord.Universal.Controls
 {
@@ -93,7 +84,7 @@ namespace Unicord.Universal.Controls
                     transcodeOverlay.Visibility = Visibility.Collapsed;
                 }
 
-                var fileModel = await FileUploadModel.FromStorageFileAsync(file, props, temporary, transcodeFailed);
+                var fileModel = await FileUploadModel.FromStorageFileAsync(model, file, props, temporary, transcodeFailed);
                 model.FileUploads.Add(fileModel);
 
                 model.IsTranscoding = false;
@@ -197,48 +188,6 @@ namespace Unicord.Universal.Controls
             await UIUtilities.ShowErrorDialogAsync(
                 "Failed to transcode!",
                 "This file failed to transcode, it may have been a format I don't understand, or your PC might not have the needed codecs. Sorry!");
-        }
-
-        private async void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            var bigModel = DataContext as ChannelPageViewModel;
-
-            var model = (sender as FrameworkElement).DataContext as FileUploadModel;
-            var newModel = new EditedFileUploadModel(model) { Parent = this };
-            bigModel.FileUploads.Remove(model);
-            bigModel.FileUploads.Add(newModel);
-
-            await OverlayService.GetForCurrentView()
-                .ShowOverlayAsync<VideoEditor>(newModel);
-        }
-
-        private async void CropButton_Click(object sender, RoutedEventArgs e)
-        {
-            var model = (sender as FrameworkElement).DataContext as FileUploadModel;
-            var newFile = await model.StorageFile.CopyAsync(ApplicationData.Current.LocalFolder, model.FileName, NameCollisionOption.GenerateUniqueName);
-            var props = await newFile.Properties.GetImagePropertiesAsync();
-
-            var sourceToken = SharedStorageAccessManager.AddFile(model.StorageFile);
-            var destinationToken = SharedStorageAccessManager.AddFile(newFile);
-
-            var options = new LauncherOptions { TargetApplicationPackageFamilyName = "Microsoft.Windows.Photos_8wekyb3d8bbwe" };
-
-            var parameters = new ValueSet
-            {
-                { "EllipticalCrop", false },
-                { "ShowCamera", false },
-                { "InputToken", sourceToken },
-                { "DestinationToken", destinationToken }
-            };
-
-            var result = await Launcher.LaunchUriForResultsAsync(new Uri("microsoft.windows.photos.crop:"), options, parameters);
-            if (result.Status != LaunchUriStatus.Success)
-            {
-                // TODO: Dialog
-                return;
-            }
-
-            await model.UpdateFromStorageFileAsync(newFile);
         }
     }
 }

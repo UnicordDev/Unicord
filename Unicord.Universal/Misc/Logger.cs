@@ -1,15 +1,13 @@
 ﻿using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
+#if DEBUG
 using Microsoft.Extensions.Logging.Debug;
+#endif
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation.Diagnostics;
-using Windows.Storage;
 
 namespace Unicord.Universal
 {

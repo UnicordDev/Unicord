@@ -1,6 +1,5 @@
 ﻿using DSharpPlus.Entities;
 using Microsoft.Toolkit.Uwp;
-using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Collections.Generic;
 using Windows.UI;

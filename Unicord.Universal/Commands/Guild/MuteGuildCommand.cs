@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unicord.Universal.Models.Guild;
+﻿using Unicord.Universal.Models.Guild;
 
 namespace Unicord.Universal.Commands.Guild
 {

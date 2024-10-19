@@ -1,7 +1,6 @@
 ﻿using System;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
 using Windows.UI.Xaml.Data;
 

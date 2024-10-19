@@ -3,17 +3,12 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Unicord.Universal.Dialogs;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
-using Windows.Foundation.Metadata;
 using Windows.Security.Credentials;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using Windows.UI.Composition;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 namespace Unicord.Universal.Pages
 {

@@ -1,15 +1,11 @@
 ﻿#define HAS_WEBVIEW_2
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation.Metadata;
 using Unicord.Universal.Services;
+using Unicord.Universal.Extensions;
+
 
 
 #if HAS_WEBVIEW_2

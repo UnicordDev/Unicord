@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DSharpPlus.Entities;
-using DSharpPlus.Net;
 using Unicord.Universal.Extensions;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models.Messages
 {

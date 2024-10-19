@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;

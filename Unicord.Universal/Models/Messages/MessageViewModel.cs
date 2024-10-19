@@ -1,27 +1,23 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Unicord.Universal.Commands;
 using Unicord.Universal.Commands.Generic;
 using Unicord.Universal.Commands.Messages;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Messages.Components;
-using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
 using Unicord.Universal.Services;
 using Windows.ApplicationModel.Resources;
-using CommunityToolkit.Mvvm.Input;
-using Newtonsoft.Json.Bson;
 
 namespace Unicord.Universal.Models.Messages
 {
@@ -119,11 +115,11 @@ namespace Unicord.Universal.Models.Messages
         public MessageViewModel ReferencedMessage
             => _referencedMessage;
         public ChannelViewModel Channel
-            => _channelViewModelCache ??=
-                (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this));
+            => Parent ?? (_channelViewModelCache ??=
+                (Message.Channel != null ? new ChannelViewModel(Message.Channel, true, this) : new ChannelViewModel(Message.ChannelId, true, this)));
 
         public UserViewModel Author
-            => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel.GuildId, this);
+            => _userViewModelCache ??= new UserViewModel(Message.Author, Channel.Channel?.GuildId, this);
         public DateTimeOffset Timestamp
             => Message.Timestamp;
         public string Content

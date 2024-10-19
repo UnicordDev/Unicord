@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using DSharpPlus.Entities;
-using Unicord.Universal.Commands.Messages;
 using Unicord.Universal.Models.Emoji;
 
 namespace Unicord.Universal.Models.Messages

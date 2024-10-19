@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Unicord
 {
@@ -94,6 +93,9 @@ namespace Unicord
 
         public const string ENABLE_LIVE_TILES = "EnableLiveTiles";
         public const bool   ENABLE_LIVE_TILES_DEFAULT = true;
+
+        public const string ENABLE_GUILD_BROWSING = "EnableGuildBrowsing";
+        public const bool   ENABLE_GUILD_BROWSING_DEFAULT = false;
 
         // old resource keys for migration
         public const string TOKEN_IDENTIFIER_OLD = "Unicord_Token";

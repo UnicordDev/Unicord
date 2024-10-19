@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using DSharpPlus;
-using Newtonsoft.Json.Bson;
 using Unicord.Universal.Services;
 
 namespace Unicord.Universal.Models

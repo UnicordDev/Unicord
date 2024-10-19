@@ -15,6 +15,7 @@ using Unicord.Universal.Pages.GameBar;
 #endif
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
 using Unicord.Universal.Pages;

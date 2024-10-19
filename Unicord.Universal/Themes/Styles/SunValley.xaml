@@ -12,6 +12,7 @@
             <lib:XamlControlsResources.MergedDictionaries>
                 <ResourceDictionary>
                     <!-- General -->
+                    <Style x:Key="UnicordListViewItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}"/>
 
                     <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="Transparent"/>
 
@@ -84,6 +85,8 @@
                     <Thickness x:Key="DiscordPage_RightSplitPaneGrid_BorderThickness">1,1,0,0</Thickness>
                     <CornerRadius x:Key="DiscordPage_RightSplitPaneGrid_CornerRadius">4,0,0,0</CornerRadius>
 
+                    <StaticResource x:Key="DiscordPage_Separator_BorderBrush" ResourceKey="DividerStrokeColorDefaultBrush"/>
+                    
                     <!-- FriendsPage -->
 
                     <StaticResource x:Key="FriendsPage_RelationshipItem_Background" ResourceKey="LayerFillColorDefaultBrush"/>
@@ -93,11 +96,11 @@
                     <!-- ChannelPage -->
 
                     <Style x:Key="ChannelPageHeaderButtonStyle" TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
-                        <Setter Property="Margin" Value="4,2"/>
+                        <Setter Property="Margin" Value="2"/>
                     </Style>
 
                     <Style x:Key="ChannelPageHeaderToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource IconToggleButtonStyle}">
-                        <Setter Property="Margin" Value="4,2"/>
+                        <Setter Property="Margin" Value="2"/>
                     </Style>
 
                     <SolidColorBrush x:Key="ChannelPage_Header_Background" Color="Transparent"/>
@@ -136,6 +139,7 @@
                     <CornerRadius x:Key="AudioMediaTransportControls_ControlPanel_CornerRadius">4</CornerRadius>
                     <Thickness x:Key="AudioMediaTransportControls_ControlPanel_Padding">4</Thickness>
 
+                    <x:Double x:Key="MediaPlayer_AudioOnly_MaxHeight">44</x:Double>
                 </ResourceDictionary>
             </lib:XamlControlsResources.MergedDictionaries>
         </lib:XamlControlsResources>

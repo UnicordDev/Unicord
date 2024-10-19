@@ -1,23 +1,19 @@
-﻿using System;
+﻿using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.AppCenter.Channel;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.Guild;
-using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.Voice;
-using Windows.ApplicationModel;
-using System.Collections.Frozen;
 using Unicord.Universal.Services;
+using Windows.ApplicationModel;
 
 namespace Unicord.Universal.Models
 {

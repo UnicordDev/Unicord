@@ -6,23 +6,19 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Unicord;
-using Unicord.Universal;
 using Unicord.Universal.Controls.Emoji;
 using Unicord.Universal.Converters;
+using Unicord.Universal.Extensions;
 using Unicord.Universal.Models.Emoji;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Parsers.Markdown.Inlines;
 using Unicord.Universal.Parsers.Markdown.Render;
-using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Controls.Markdown.Render
 {

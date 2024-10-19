@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models.Channels;
@@ -11,7 +10,6 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.Storage.FileProperties;
 using Windows.Storage;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Unicord.Universal.Models

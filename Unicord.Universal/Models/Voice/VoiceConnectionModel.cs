@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.Abstractions;
 using Microsoft.AppCenter.Analytics;
-using Newtonsoft.Json;
 using Unicord.Universal.Services;
 using Unicord.Universal.Voice;
 using Unicord.Universal.Voice.Background;
@@ -16,7 +15,6 @@ using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Calls;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 
 namespace Unicord.Universal.Models.Voice
 {
