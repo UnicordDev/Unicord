@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+<data name="EnableWebPBlock.Title" xml:space="preserve">
+    <value>可能な場合にWebPコーデックを使用する</value>
+  </data>
+  <data name="EnableWebPBlock.Description" xml:space="preserve">
+    <value>高効率な画像コーデックを使用して帯域幅を節約できます</value>
+  </data>
   <data name="AdjustRoleColoursBlock.Title" xml:space="preserve">
     <value>視認性向上のためユーザーカラーを使用する</value>
   </data>
@@ -168,5 +174,20 @@
   </data>
   <data name="TimestampStyleRelative.Text" xml:space="preserve">
     <value>相対表示</value>
+  </data>
+<data name="EnableGuildBrowsingBlock.Title" xml:space="preserve">
+    <value>最後に閲覧したチャンネルを記憶する</value>
+  </data>
+  <data name="EnableGuildBrowsingBlock.Description" xml:space="preserve">
+    <value>以前のUnicordでは、サーバーをクリックしても最後に閲覧していたチャンネルへは推移していませんでした。 このオプションを無効にすると従来の挙動に戻ります。</value>
+  </data>
+  <data name="EnableWebPBlock.Title" xml:space="preserve">
+    <value>可能な場合にWebPコーデックを使用する</value>
+  </data>
+  <data name="EnableWebPBlock.Description" xml:space="preserve">
+    <value>高効率な画像コーデックを使用して帯域幅を節約できますが、古い端末では動作が遅くなる可能性があります。</value>
+  </data>
+  <data name="WebPDownloadButton.Content" xml:space="preserve">
+    <value>Microsoft Storeから入手</value>
   </data>
 </root>
