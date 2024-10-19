@@ -117,86 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppThemeBlock.Description" xml:space="preserve">
-    <value>Unicordは、より良いエクスペリエンスのために、様々なテーマをサポートしています。</value>
+  <data name="DesktopNotificationsUnavailable.Text" xml:space="preserve">
+    <value>お使いの環境では通知機能は利用できません。</value>
   </data>
-  <data name="AppThemeBlock.Title" xml:space="preserve">
-    <value>アプリのテーマ</value>
+  <data name="EnableBadgeCount.Description" xml:space="preserve">
+    <value>未読のメンション数をタスクバー上のバッジに表示します。</value>
   </data>
-  <data name="AppThemeFluent.Content" xml:space="preserve">
-    <value>Fluent</value>
+  <data name="EnableBadgeCount.Title" xml:space="preserve">
+    <value>メンション数をバッジで表示する</value>
   </data>
-  <data name="AppThemePerformance.Content" xml:space="preserve">
-    <value>Performance</value>
+  <data name="EnableBadgeUnread.Description" xml:space="preserve">
+    <value>未読のDMがある場合、タスクバー上にアイコンを表示します。</value>
   </data>
-  <data name="AppThemeSunValley.Content" xml:space="preserve">
-    <value>Sun Valley (Windows 11)</value>
+  <data name="EnableBadgeUnread.Title" xml:space="preserve">
+    <value>未読のDM数をバッジで表示する</value>
   </data>
-  <data name="CloseButton.Content" xml:space="preserve">
-    <value>閉じる</value>
+  <data name="EnableDesktopNotifications.Description" xml:space="preserve">
+    <value>メンションやDMが来た際に、デスクトップ上とアクションセンター内に通知を表示します。</value>
   </data>
-  <data name="ColourSchemeBlock.Description" xml:space="preserve">
-    <value>この設定はDiscordとは同期されません。</value>
+  <data name="EnableDesktopNotifications.Title" xml:space="preserve">
+    <value>デスクトップ通知を有効にする</value>
   </data>
-  <data name="ColourSchemeBlock.Title" xml:space="preserve">
-    <value>カラースキーム</value>
+  <data name="EnableLiveTiles.Description" xml:space="preserve">
+    <value>スタート画面にピン留めされたタイルにDiscordのメッセージを表示します。</value>
   </data>
-  <data name="ColourSchemeDark.Content" xml:space="preserve">
-    <value>ダーク</value>
+  <data name="EnableLiveTiles.Title" xml:space="preserve">
+    <value>ライブタイルを有効にする</value>
   </data>
-  <data name="ColourSchemeDefault.Content" xml:space="preserve">
-    <value>Windowsの設定と同期</value>
+  <data name="EnableNotifications.Description" xml:space="preserve">
+    <value>スタート画面やアクションセンター、タスクバーにメッセージに関する通知を表示します。</value>
   </data>
-  <data name="ColourSchemeLight.Content" xml:space="preserve">
-    <value>ライト</value>
-  </data>
-  <data name="EnableAfterInstallationCheckBox.Content" xml:space="preserve">
-    <value>インストール後すぐにテーマを有効にする</value>
-  </data>
-  <data name="InstallButton.Content" xml:space="preserve">
-    <value>インストール</value>
-  </data>
-  <data name="MainThemeHeader.Text" xml:space="preserve">
-    <value>テーマ</value>
-  </data>
-  <data name="MainThemeSubheader.Text" xml:space="preserve">
-    <value>アクセントを加えたいですか？ テーマを入手して適用してみましょう!</value>
-  </data>
-  <data name="RelaunchRequired.Text" xml:space="preserve">
-    <value>今回加えた変更はUnicordの再起動後から有効になります。</value>
-  </data>
-  <data name="ThemeAlreadyInstalledMessage" xml:space="preserve">
-    <value>このテーマは既にインストールされていますが、置き換えますか？</value>
-  </data>
-  <data name="ThemeAlreadyInstalledTitle" xml:space="preserve">
-    <value>テーマは既にインストールされています!</value>
-  </data>
-  <data name="ThemeChangedMessage" xml:space="preserve">
-    <value>テーマを更新するには、Unicordを再起動する必要があります。 再起動しますか?</value>
-  </data>
-  <data name="ThemeChangedTitle" xml:space="preserve">
-    <value>テーマを変更しました!</value>
-  </data>
-  <data name="ThemeInvalidDoesNotExist" xml:space="preserve">
-    <value>ディスク上に存在しないテーマを読み込もうとしました。テーマはアンインストールされました。</value>
-  </data>
-  <data name="ThemeInvalidNoJson" xml:space="preserve">
-    <value>theme.jsonが存在しないため、このファイルはUnicordのテーマファイルではないと思われます。!</value>
-  </data>
-  <data name="ThemeInvalidNoLogo" xml:space="preserve">
-    <value>このテーマは存在しないロゴファイルを指定しています。</value>
-  </data>
-  <data name="ThemeLoadFailedFormat" xml:space="preserve">
-    <value>指定されたテーマの読み込みに失敗しました。
-{0}</value>
-  </data>
-  <data name="ThemePreInstallCheckFailed" xml:space="preserve">
-    <value>インストール前のテストに失敗しました！ このテーマはあなたのデバイス、あるいは現在動作しているバージョンのWindowsをサポートしていません。</value>
-  </data>
-  <data name="ThemesSettingsHeader.Text" xml:space="preserve">
-    <value>外観</value>
-  </data>
-  <data name="ThemeUnsupportedWindowsVersion" xml:space="preserve">
-    <value>このテーマは現在動作しているバージョンのWindowsをサポートしていません。</value>
+  <data name="EnableNotifications.Title" xml:space="preserve">
+    <value>通知を有効にする</value>
   </data>
 </root>
