@@ -133,7 +133,7 @@
     <value>Copy ID</value>
   </data>
   <data name="CopyLink.Text" xml:space="preserve">
-    <value>Copy URL</value>
+    <value>Copy Link</value>
   </data>
   <data name="CreateServerSubtitle.Text" xml:space="preserve">
     <value>It's free!</value>
@@ -194,5 +194,59 @@
   </data>
   <data name="Unmute.Text" xml:space="preserve">
     <value>Unmute</value>
+  </data>
+
+  
+  <data name="AddReactionButton.Label" xml:space="preserve">
+    <value>Add Reaction</value>
+  </data>
+  <data name="AddReactionButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Add Reaction</value>
+  </data>
+  <data name="ViewProfileButton.Label" xml:space="preserve">
+    <value>View Profile</value>
+  </data>
+  <data name="ViewProfileButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>View Profile</value>
+  </data>
+  <data name="ReplyButton.Label" xml:space="preserve">
+    <value>Reply</value>
+  </data>
+  <data name="ReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Reply</value>
+  </data>
+  <data name="CopyMessageButton.Label" xml:space="preserve">
+    <value>Copy Message</value>
+  </data>
+  <data name="CopyMessageButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy Message</value>
+  </data>
+  <data name="CopyLinkButton.Label" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
+  <data name="CopyLinkButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
+  
+  <data name="ChangeNicknameButton.Label" xml:space="preserve">
+    <value>Change Nickname</value>
+  </data>
+  <data name="PinButton.Label" xml:space="preserve">
+    <value>Pin</value>
+  </data>
+  <data name="EditButton.Label" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteButton.Label" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KickButton.Label" xml:space="preserve">
+    <value>Kick</value>
+  </data>
+  <data name="BanButton.Label" xml:space="preserve">
+    <value>Ban</value>
+  </data>
+  <data name="CopyIDButton.Label" xml:space="preserve">
+    <value>Copy ID</value>
   </data>
 </root>

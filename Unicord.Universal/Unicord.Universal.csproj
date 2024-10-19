@@ -1093,6 +1093,7 @@
     <PRIResource Include="Resources\ru-RU\Permissions.resw" />
     <PRIResource Include="Resources\ru-RU\PinsPage.resw" />
     <PRIResource Include="Resources\en-GB\NotificationsSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\NotificationsSettingsPage.resw" />
     <None Include="Resources\ru-RU\Readme" />
     <PRIResource Include="Resources\ru-RU\Resources.resw" />
     <PRIResource Include="Resources\ru-RU\SearchPage.resw" />

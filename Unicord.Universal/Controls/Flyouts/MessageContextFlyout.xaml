@@ -11,14 +11,19 @@
     AlwaysExpanded="True">
 
     <AppBarButton x:Name="AddReactionButton" 
-                  Click="AddReactionButton_Click"
-                  ToolTipService.ToolTip="Add Reaction">
+                  x:Uid="/Flyouts/AddReactionButton"
+                  Command="{Binding AddReactionCommand}"
+                  Label="Add Reaction"
+                  ToolTipService.ToolTip="Add Reaction"
+                  Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE899;" />
         </AppBarButton.Icon>
     </AppBarButton>
 
-    <AppBarButton ToolTipService.ToolTip="View Profile"
+    <AppBarButton x:Uid="/Flyouts/ViewProfileButton"
+                  Label="View Profile"
+                  ToolTipService.ToolTip="View Profile"
                   Command="{Binding Author.OpenOverlayCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
@@ -26,15 +31,17 @@
         </AppBarButton.Icon>
     </AppBarButton>
 
-    <AppBarButton ToolTipService.ToolTip="Reply"
+    <AppBarButton x:Uid="/Flyouts/ReplyButton"
+                  ToolTipService.ToolTip="Reply"
                   Command="{Binding ReplyCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE97A;" />
         </AppBarButton.Icon>
     </AppBarButton>
-    
-    <AppBarButton ToolTipService.ToolTip="Copy Message"
+
+    <AppBarButton x:Uid="/Flyouts/CopyMessageButton"
+                  ToolTipService.ToolTip="Copy Message"
                   Command="{Binding CopyMessageCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
@@ -42,7 +49,8 @@
         </AppBarButton.Icon>
     </AppBarButton>
 
-    <AppBarButton ToolTipService.ToolTip="Copy Link"
+    <AppBarButton x:Uid="/Flyouts/CopyLinkButton"
+                  ToolTipService.ToolTip="Copy Link"
                   Command="{Binding CopyUrlCommand}"
                   Click="HideOnClick">
         <AppBarButton.Icon>
@@ -52,7 +60,8 @@
 
     <lib:CommandBarFlyout.SecondaryCommands>
 
-        <AppBarButton Label="Change Nickname"
+        <AppBarButton x:Uid="/Flyouts/ChangeNicknameButton"
+                      Label="Change Nickname"
                       Command="{Binding Author.ChangeNicknameCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe8ac;" />
@@ -61,14 +70,16 @@
 
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
 
-        <AppBarButton Label="Pin"
+        <AppBarButton x:Uid="/Flyouts/PinButton"
+                      Label="Pin"
                       Command="{Binding PinCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE718;" />
             </AppBarButton.Icon>
         </AppBarButton>
 
-        <AppBarButton Label="Edit"
+        <AppBarButton x:Uid="/Flyouts/EditButton"
+                      Label="Edit"
                       Command="{Binding EditCommand}"
                       IsEnabled="{Binding Author.IsCurrent}">
             <AppBarButton.Icon>
@@ -76,7 +87,8 @@
             </AppBarButton.Icon>
         </AppBarButton>
 
-        <AppBarButton Label="Delete"
+        <AppBarButton x:Uid="/Flyouts/DeleteButton"
+                      Label="Delete"
                       Command="{Binding DeleteCommand}">
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe74d;" />
@@ -85,7 +97,8 @@
 
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
 
-        <AppBarButton Label="Kick"
+        <AppBarButton x:Uid="/Flyouts/KickButton"
+                      Label="Kick"
                       Foreground="{ThemeResource SystemFillColorCautionBrush}"
                       Command="{Binding Author.KickCommand}">
             <AppBarButton.Icon>
@@ -93,7 +106,8 @@
             </AppBarButton.Icon>
         </AppBarButton>
 
-        <AppBarButton Label="Ban"
+        <AppBarButton x:Uid="/Flyouts/BanButton"
+                      Label="Ban"
                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"                      
                       Command="{Binding Author.BanCommand}">
             <AppBarButton.Icon>
@@ -103,7 +117,8 @@
 
         <AppBarSeparator Foreground="{ThemeResource LayerFillColorAltBrush}"/>
 
-        <AppBarButton Label="Copy ID"
+        <AppBarButton x:Uid="/Flyouts/CopyIDButton"
+                      Label="Copy ID"
                       Command="{Binding CopyIdCommand}" >
             <AppBarButton.Icon>
                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xec7a;" />
