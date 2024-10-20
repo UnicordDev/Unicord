@@ -1,5 +1,6 @@
 using System;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.ViewManagement;
 
 namespace Unicord.Universal.Models
@@ -10,8 +11,7 @@ namespace Unicord.Universal.Models
         public bool IsUriActivation { get; internal set; }
         public ulong UserId { get; set; }
         public bool FullFrame { get; set; }
-        public ApplicationViewMode ViewMode { get; internal set; }
         public SplashScreen SplashScreen { get; internal set; }
-        public Exception ThemeLoadException { get; internal set; }
+        public ShareOperation ShareOperation { get; internal set; }
     }
 }

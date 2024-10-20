@@ -41,9 +41,9 @@ namespace Unicord.Universal.Models.Guild
             }
         }
 
-        public bool TryGetModelForGuild(DiscordGuild guild, out GuildListViewModel model)
+        public bool TryGetModelForGuild(ulong guildId, out GuildListViewModel model)
         {
-            if (Guild == guild)
+            if (Guild.Id == guildId)
             {
                 model = this;
                 return true;

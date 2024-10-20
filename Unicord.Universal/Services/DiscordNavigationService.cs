@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Utils.Synchronization;
 using Unicord.Universal.Extensions;
 using Unicord.Universal.Models;
 using Unicord.Universal.Models.Channels;
@@ -15,15 +20,36 @@ using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace Unicord.Universal.Services
 {
-    internal class NavigationEvent
+    [Flags]
+    internal enum NavigationFlags
     {
-        public object args;
-        public Action<NavigationEvent> action;
+        /// <summary>
+        /// If we're navigating from within another navigation, e.g. guild channel shows the guild channels list, etc.
+        /// </summary>
+        IsSubNavigation = 1,
+        /// <summary>
+        /// If we're navigating from the age gate page
+        /// </summary>
+        IsFromAgeGatePage = 2,
+        /// <summary>
+        /// Go directly to the friends page, not the last accessed DM channel
+        /// </summary>
+        GoDirectlyToFriendsPage = 4
     }
+
+    internal enum NavigationType
+    {
+        Friends,
+        Guild,
+        Channel
+    }
+
+    internal record NavigationEvent(NavigationType Type, ulong? Id, NavigationFlags Flags);
 
     /// <summary>
     /// A service to handle navigation between channels and servers
@@ -31,205 +57,301 @@ namespace Unicord.Universal.Services
     internal class DiscordNavigationService : BaseService<DiscordNavigationService>
     {
         private MainPage _mainPage;
+        private RootViewModel _rootViewModel;
         private DiscordPage _discordPage;
         private DiscordPageViewModel _discordPageModel;
+
         private SystemNavigationManager _navigation;
         private Stack<NavigationEvent> _navigationStack;
 
+        private bool _navigating = false;
+
+        private Frame LeftFrame
+            => _discordPage?.LeftSidebarFrame;
+        private Frame MainFrame
+            => _discordPage?.MainFrame ?? _mainPage.RootFrame;
+
+        private NavigationTransitionInfo LeftFrameTransition
+            => new DrillInNavigationTransitionInfo();
+        private NavigationTransitionInfo MainFrameTransition
+            => new EntranceNavigationTransitionInfo();
+
+        private ulong? channelId;
+        private ulong? guildId;
+        private ulong? previousDmId;
+        private NavigationEvent _lastEvent;
+
         protected override void Initialise()
         {
-            base.Initialise();
-
             _mainPage = Window.Current.Content.FindChild<MainPage>();
-            if (!(_mainPage.Arguments?.FullFrame ?? false))
+            _rootViewModel = RootViewModel.GetForCurrentView();
+            if (!_rootViewModel.IsFullFrame)
             {
                 _discordPage = Window.Current.Content.FindChild<DiscordPage>();
-                _discordPageModel = _discordPage.DataContext as DiscordPageViewModel;
-
-                _navigationStack = new Stack<NavigationEvent>();
-                _navigation = SystemNavigationManager.GetForCurrentView();
-                _navigation.BackRequested += OnBackRequested;
+                _discordPageModel = (DiscordPageViewModel)_discordPage.DataContext;
             }
+
+            _navigationStack = new Stack<NavigationEvent>();
+            _navigation = SystemNavigationManager.GetForCurrentView();
+            _navigation.BackRequested += OnBackRequested;
         }
 
-        // TODO: this is kinda bad and should really be more in DiscordPageModel
-        internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
+        public async Task NavigateAsync(NavigationFlags flags = 0)
         {
-            // TODO: handle this navigation in the main window
-            var window = WindowingService.Current.GetHandle(_mainPage);
-            if (_discordPage == null)
-            {
-                if (_mainPage.Arguments?.FullFrame != true)
-                    return;
+            await NavigateAsync(NavigationType.Friends, null, flags);
+        }
 
-                if (channel.Type == ChannelType.Voice)
-                    throw new InvalidOperationException();
+        public async Task NavigateAsync(DiscordChannel channel, NavigationFlags flags = 0)
+        {
+            await NavigateAsync(NavigationType.Channel, channel.Id, flags);
+        }
 
-                Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
+        public async Task NavigateAsync(DiscordGuild guild, NavigationFlags flags = 0)
+        {
+            await NavigateAsync(NavigationType.Guild, guild.Id, flags);
+        }
 
-                if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
-                    return;
-
-                if (channel.Guild != null)
-                    await channel.Guild.SyncAsync();
-
-                if (channel.IsNSFW)
-                {
-                    var loader = ResourceLoader.GetForViewIndependentUse();
-                    if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, loader.GetString("VerifyNSFWDisplayReason")))
-                    {
-                        if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
-                            _mainPage.RootFrame.Navigate(typeof(AgeGatePage), channel);
-                        else
-                            _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
-                    }
-                }
-                else
-                {
-                    if (channel is DiscordForumChannel forum)
-                        _mainPage.RootFrame.Navigate(typeof(ForumChannelPage), forum);
-                    else
-                        _mainPage.RootFrame.Navigate(typeof(ChannelPage), channel);
-                }
-
-                _mainPage.HideCustomOverlay();
-                _mainPage.HideConnectingOverlay();
-
+        public async Task NavigateAsync(NavigationType type, ulong? id, NavigationFlags flags)
+        {
+            // to prevent duplicate navigations            
+            if (_navigating)
                 return;
-            }
 
+            _navigating = true;
             _mainPage.HideCustomOverlay();
 
-            var page = _discordPage.MainFrame.Content as ChannelPage;
-            if (channel == null)
+            var channelBefore = this.channelId;
+
+            if (flags.HasFlag(NavigationFlags.IsFromAgeGatePage))
+                _navigationStack.TryPop(out _); // we're going to overwrite this navigation event
+
+            try
             {
-                Analytics.TrackEvent("DiscordNavigationService_NavigateToFriendsPage");
-
-                if (_discordPageModel.SelectedGuild != null)
-                    _discordPageModel.SelectedGuild.IsSelected = false;
-                _discordPageModel.SelectedGuild = null;
-                _discordPageModel.IsFriendsSelected = true;
-                _discordPageModel.CurrentChannel = null;
-
-                if (_discordPageModel.PreviousDM != null && (page?.ViewModel.Channel != _discordPageModel.PreviousDM.Channel) && !skipPreviousDm)
+                if (_rootViewModel.IsFullFrame)
                 {
-                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM;
-                    _discordPage.MainFrame.Navigate(typeof(ChannelPage), _discordPageModel.PreviousDM);
-                    _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), _discordPageModel.PreviousDM, new DrillInNavigationTransitionInfo());
-                }
-                else if (page != null || !(_discordPage.LeftSidebarFrame.Content is DMChannelsPage))
-                {
-                    _discordPageModel.PreviousDM = null;
-                    _discordPage.MainFrame.Navigate(typeof(FriendsPage));
-                    _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), null, new DrillInNavigationTransitionInfo());
-                }
-
-                return;
-            }
-
-            if (_discordPageModel.CurrentChannel != channel && channel.Type != ChannelType.Voice)
-            {
-                Analytics.TrackEvent("DiscordNavigationService_NavigateToTextChannel");
-
-                _discordPageModel.Navigating = true;
-
-                SplitPaneService.GetForCurrentView()
-                    .CloseAllPanes();
-
-                if (_discordPageModel.SelectedGuild != null)
-                    _discordPageModel.SelectedGuild.IsSelected = false;
-
-                _discordPageModel.SelectedGuild = null;
-                _discordPageModel.SelectedDM = null;
-                _discordPageModel.IsFriendsSelected = false;
-
-                if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
-                    return;
-
-                GuildListViewModel guildVm;
-                if (channel is DiscordDmChannel dm)
-                {
-                    _discordPageModel.SelectedDM = _discordPageModel.PreviousDM = new ChannelViewModel(dm.Id);
-                    _discordPageModel.IsFriendsSelected = true;
-                    _discordPage.LeftSidebarFrame.Navigate(typeof(DMChannelsPage), channel, new DrillInNavigationTransitionInfo());
-                }
-                else if (channel.Guild != null && (guildVm = _discordPageModel.ViewModelFromGuild(channel.Guild)) != null)
-                {
-                    _discordPageModel.SelectedGuild = guildVm;
-                    _discordPageModel.SelectedGuild.IsSelected = true;
-
-                    if (_discordPage.LeftSidebarFrame.Content is not GuildChannelListPage p || p.Guild != channel.Guild)
-                        _discordPage.LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), channel.Guild, new DrillInNavigationTransitionInfo());
-
-                    if (_discordPage.LeftSidebarFrame.Content is GuildChannelListPage g)
-                    {
-                        g.SetSelectedChannel(channel);
-                    }
-
-                    if (!channel.Guild.IsSynced)
-                        await channel.Guild.SyncAsync();
-                }
-
-                if (channel.IsNSFW)
-                {
-                    var loader = ResourceLoader.GetForViewIndependentUse();
-                    if (await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, loader.GetString("VerifyNSFWDisplayReason")))
-                    {
-                        if (App.RoamingSettings.Read($"NSFW_{channel.Id}", false) == false || !App.RoamingSettings.Read($"NSFW_All", false))
-                        {
-                            _discordPage.MainFrame.Navigate(typeof(AgeGatePage), channel);
-                        }
-                        else
-                        {
-                            _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel);
-                        }
-                    }
+                    // TODO: 
+                    await DoFullFrameNavigationAsync(type, id, flags);
+                    _mainPage.HideConnectingOverlay();
                 }
                 else
                 {
-                    if (channel is DiscordForumChannel forum)
+                    if (await DoRegularNavigationAsync(type, id, flags))
                     {
-                        _discordPage.MainFrame.Navigate(typeof(ForumChannelPage), forum);
-                    }
-                    else
-                    {
-                        _discordPage.MainFrame.Navigate(typeof(ChannelPage), channel);
+                        if (type == NavigationType.Guild && (channelId != null && channelBefore != channelId))
+                        {
+                            // rewrite these to channel navigations 
+                            type = NavigationType.Channel;
+                            id = channelId;
+                        }
+
+                        _lastEvent = new NavigationEvent(type, id, flags);
+                        _navigationStack.Push(_lastEvent);
                     }
                 }
-
-                _discordPageModel.Navigating = false;
-                _discordPageModel.CurrentChannel = channel;
             }
-            else if (channel?.Type == ChannelType.Voice)
+            finally
             {
-                Analytics.TrackEvent("DiscordNavigationService_NavigateToVoiceChannel");
-
-                if (_discordPageModel.VoiceModel != null)
-                    await _discordPageModel.VoiceModel.DisconnectAsync();
-
-                try
-                {
-                    var voice = new VoiceConnectionModel(channel);
-                    _discordPageModel.VoiceModel = voice;
-                    await voice.ConnectAsync();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex);
-                    await UIUtilities.ShowErrorDialogAsync("Failed to connect to voice!", ex.Message);
-                }
+                _discordPageModel?.UpdateSelection(channelId, guildId);
+                _navigating = false;
             }
-
-            if (_mainPage.IsOverlayShown)
-                _mainPage.HideConnectingOverlay();
         }
 
-        private void OnBackRequested(object sender, BackRequestedEventArgs e)
+        private async Task<bool> DoRegularNavigationAsync(NavigationType type, ulong? id, NavigationFlags flags)
         {
-            if (_navigationStack.TryPop(out var ev))
+            return type switch
             {
-                ev.action(ev);
+                NavigationType.Friends => await NavigateToFriendsAsync(flags),
+                NavigationType.Guild => await NavigateToGuildAsync(id.Value, flags),
+                NavigationType.Channel => await NavigateToChannelAsync(id.Value, flags),
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
+        private async Task<bool> DoFullFrameNavigationAsync(NavigationType type, ulong? id, NavigationFlags flags)
+        {
+            return type switch
+            {
+                NavigationType.Channel => await NavigateToChannelAsync(id.Value, flags),
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
+        private async Task<bool> NavigateToFriendsAsync(NavigationFlags flags)
+        {
+            Analytics.TrackEvent("DiscordNavigationService_NavigateToFriendsPage");
+
+            if (LeftFrame?.Content is not DMChannelsPage)
+                LeftFrame?.Navigate(typeof(DMChannelsPage), null, LeftFrameTransition);
+
+            if (previousDmId != null && (channelId != previousDmId) && !flags.HasFlag(NavigationFlags.GoDirectlyToFriendsPage))
+            {
+                channelId = previousDmId;
+
+                await NavigateToChannelAsync(previousDmId.Value, NavigationFlags.IsSubNavigation);
             }
+            else
+            {
+                if (MainFrame?.Content is not FriendsPage)
+                    MainFrame.Navigate(typeof(FriendsPage), null, MainFrameTransition);
+
+                channelId = null;
+                guildId = null;
+            }
+
+            previousDmId = null;
+            return true;
+        }
+
+        private async Task<bool> NavigateToGuildAsync(ulong id, NavigationFlags flags)
+        {
+            if (!DiscordManager.Discord.Guilds.TryGetValue(id, out var guild) || guild.IsUnavailable)
+            {
+                await UIUtilities.ShowErrorDialogAsync("ServerUnavailableTitle", "ServerUnavailableMessage");
+                return false;
+            }
+
+            if (LeftFrame != null && (LeftFrame.Content is not GuildChannelListPage p || p.Guild != guild))
+                LeftFrame.Navigate(typeof(GuildChannelListPage), guild, LeftFrameTransition);
+
+            if (!guild.IsSynced)
+                await guild.SyncAsync();
+
+            guildId = guild.Id;
+
+            if (!flags.HasFlag(NavigationFlags.IsSubNavigation)
+                && !App.LocalSettings.Read(Constants.ENABLE_GUILD_BROWSING, Constants.ENABLE_GUILD_BROWSING_DEFAULT))
+            {
+                var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guild.Id}", 0UL);
+                if (!guild.Channels.TryGetValue(channelId, out var channel))
+                {
+                    if (guild.Threads.TryGetValue(channelId, out var thread))
+                        channel = thread;
+                }
+
+                if (channel == null || !channel.IsAccessible() || !channel.IsText())
+                {
+                    channel = guild.Channels.Values
+                        .Where(c => c.IsAccessible())
+                        .Where(c => c.IsText())
+                        .OrderBy(c => c.Position)
+                        .FirstOrDefault();
+                }
+
+                return await NavigateToChannelAsync(channel.Id, flags | NavigationFlags.IsSubNavigation);
+            }
+
+            return true;
+        }
+
+        private async Task<bool> NavigateToChannelAsync(ulong id, NavigationFlags flags)
+        {
+            var channel = TryGetChannel(id);
+            var window = WindowingService.Current.GetHandle(_mainPage);
+
+            if (channel.Type == ChannelType.Voice)
+                return false;
+
+            if (await WindowingService.Current.ActivateOtherWindowAsync(channel, window))
+                return false;
+
+            if (channel is DiscordDmChannel directMessage)
+            {
+                guildId = null;
+
+                if (!flags.HasFlag(NavigationFlags.IsSubNavigation))
+                    LeftFrame?.Navigate(typeof(DMChannelsPage), directMessage, LeftFrameTransition);
+            }
+            else if (channel.GuildId != null)
+            {
+                guildId = channel.GuildId;
+
+                if (!flags.HasFlag(NavigationFlags.IsSubNavigation))
+                    await NavigateToGuildAsync(channel.GuildId.Value, flags | NavigationFlags.IsSubNavigation);
+
+                if (LeftFrame?.Content is GuildChannelListPage g)
+                    g.SetSelectedChannel(channel);
+            }
+
+            channelId = channel.Id;
+
+            if (channel.IsNSFW && !flags.HasFlag(NavigationFlags.IsFromAgeGatePage))
+            {
+                if (!await WindowsHelloManager.VerifyAsync(Constants.VERIFY_NSFW, "VerifyNSFWDisplayReason"))
+                    return false;
+
+                if (!App.RoamingSettings.Read($"NSFW_{channel.Id}", false) ||
+                    !App.RoamingSettings.Read($"NSFW_All", false))
+                {
+                    MainFrame.Navigate(typeof(AgeGatePage), channel, MainFrameTransition);
+                    return true;
+                }
+            }
+
+            if (channel is DiscordForumChannel forum)
+            {
+                MainFrame.Navigate(typeof(ForumChannelPage), forum, MainFrameTransition);
+            }
+            else
+            {
+                MainFrame.Navigate(typeof(ChannelPage), channel, MainFrameTransition);
+            }
+
+            return true;
+        }
+
+        private DiscordChannel TryGetChannel(ulong id)
+        {
+            if (DiscordManager.Discord.TryGetCachedChannel(id, out var channel))
+                return channel;
+
+            if (DiscordManager.Discord.TryGetCachedThread(id, out var thread))
+                return thread;
+
+            return null;
+        }
+
+        private async void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (e.Handled) return;
+
+            var overlayService = OverlayService.GetForCurrentView();
+            if (overlayService.IsOverlayVisible)
+            {
+                overlayService.CloseOverlay();
+            }
+
+            // top of the stack is always the current channel
+            NavigationEvent ev;
+            while (_navigationStack.TryPop(out ev) && _lastEvent == ev) ;
+            if (ev != null)
+            {
+                e.Handled = true;
+                await NavigateAsync(ev.Type, ev.Id, ev.Flags);
+            }
+            else
+            {
+                e.Handled = true;
+                await NavigateAsync(NavigationFlags.GoDirectlyToFriendsPage);
+            }
+        }
+
+        internal async void GoBack()
+        {
+            NavigationEvent ev;
+            while (_navigationStack.TryPop(out ev) && _lastEvent == ev) ;
+            if (ev != null)
+            {
+                await NavigateAsync(ev.Type, ev.Id, ev.Flags);
+            }
+            else
+            {
+                await NavigateAsync(NavigationFlags.GoDirectlyToFriendsPage);
+            }
+        }
+
+        internal void GoForwards()
+        {
+
         }
     }
 }

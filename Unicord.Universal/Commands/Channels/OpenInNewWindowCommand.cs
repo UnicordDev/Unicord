@@ -36,7 +36,7 @@ namespace Unicord.Universal.Commands.Channels
             {
                 WindowingService.Current.SetWindowChannel(WindowingService.Current.CurrentWindow, 0);
                 var service = DiscordNavigationService.GetForCurrentView();
-                await service.NavigateAsync(null, true);
+                await service.NavigateAsync();
             }
         }
     }

@@ -50,7 +50,8 @@ namespace Unicord.Universal.Pages.Settings
             var loader = ResourceLoader.GetForCurrentView("AccountsSettingsPage");
             if (await UIUtilities.ShowYesNoDialogAsync(loader.GetString("LogoutPromptTitle"), loader.GetString("LogoutPromptMessage"), "\xF3B1"))
             {
-                await App.LogoutAsync();
+                await LoginService.GetForCurrentView()
+                    .LogoutAsync();
             }
         }
 

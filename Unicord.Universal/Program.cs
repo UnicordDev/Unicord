@@ -1,4 +1,5 @@
 ﻿using Unicord.Universal.Services;
+using Windows.Globalization;
 using Windows.UI.Xaml;
 
 namespace Unicord.Universal

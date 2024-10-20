@@ -18,6 +18,9 @@ namespace Unicord.Universal.Services
         private SystemNavigationManager _systemNavigationManager;
         private bool _overlayVisible;
 
+        public bool IsOverlayVisible
+            => _overlayVisible;
+
         protected override void Initialise()
         {
             _mainPage = Window.Current.Content.FindChild<MainPage>();
@@ -34,6 +37,7 @@ namespace Unicord.Universal.Services
                 var t = default(T);
                 await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
+                    var appView = ApplicationView.GetForCurrentView();
                     var frame = new Frame();
                     frame.Navigate(typeof(T), model);
 
@@ -42,19 +46,19 @@ namespace Unicord.Universal.Services
                         frame.Navigate(typeof(Page), null);
                     };
 
-                    Window.Current.SizeChanged += (o, e) =>
-                    {
-                        App.LocalSettings.Save($"{typeof(T).Name}_SavedWindowSize", e.Size);
-                    };
+                    //Window.Current.SizeChanged += (o, e) =>
+                    //{
+                    //    App.LocalSettings.Save($"{typeof(T).Name}_SavedWindowSize", e.Size);
+                    //};
 
                     Window.Current.Content = frame;
                     Window.Current.Activate();
 
                     t = (T)frame.Content;
-                    newViewId = ApplicationView.GetForCurrentView().Id;
-                });
+                    newViewId = appView.Id;
+                });                
 
-                var size = App.LocalSettings.Read($"{typeof(T).Name}_SavedWindowSize", t.PreferredSize);
+                //var size = App.LocalSettings.Read($"{typeof(T).Name}_SavedWindowSize", t.PreferredSize);
                 await ApplicationViewSwitcher.TryShowAsStandaloneAsync(newViewId);
             }
             else
@@ -69,7 +73,7 @@ namespace Unicord.Universal.Services
             }
         }
 
-        internal void CloseOverlay()
+        public void CloseOverlay()
         {
             if (App.LocalSettings.Read("WindowedOverlays", false))
             {
@@ -88,7 +92,13 @@ namespace Unicord.Universal.Services
 
         private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
-            CloseOverlay();
+            if (e.Handled) return;
+
+            if (_overlayVisible)
+            {
+                e.Handled = true;
+                CloseOverlay();
+            }
         }
     }
 

@@ -50,11 +50,11 @@ namespace Unicord.Universal.Models.Guild
         public string Icon3 => Children.ElementAtOrDefault(2)?.IconUrl;
         public string Icon4 => Children.ElementAtOrDefault(3)?.IconUrl;
 
-        public bool TryGetModelForGuild(DiscordGuild guild, out GuildListViewModel model)
+        public bool TryGetModelForGuild(ulong guildId, out GuildListViewModel model)
         {
             foreach (var child in Children)
             {
-                if (child.TryGetModelForGuild(guild, out model))
+                if (child.TryGetModelForGuild(guildId, out model))
                     return true;
             }
 

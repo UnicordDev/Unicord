@@ -7,6 +7,6 @@ namespace Unicord.Universal.Models.Guild
         string Name { get; }
         bool Unread { get; }
         int MentionCount { get; }
-        bool TryGetModelForGuild(DiscordGuild guild, out GuildListViewModel model);
+        bool TryGetModelForGuild(ulong guildId, out GuildListViewModel model);
     }
 }

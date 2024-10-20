@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.AppCenter;
@@ -15,25 +12,15 @@ using Microsoft.Gaming.XboxGameBar;
 using Unicord.Universal.Pages.GameBar;
 #endif
 using Microsoft.Toolkit.Uwp.Helpers;
-using Microsoft.Toolkit.Uwp.UI;
-using Unicord.Universal.Extensions;
-using Unicord.Universal.Integration;
 using Unicord.Universal.Models;
-using Unicord.Universal.Pages;
 using Unicord.Universal.Services;
-using Unicord.Universal.Utilities;
 using WamWooWam.Core;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Resources;
-using Windows.Media.Transcoding;
-using Windows.Security.Credentials;
-using Windows.Storage;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Notifications;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using static Unicord.Constants;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
@@ -53,7 +40,7 @@ namespace Unicord.Universal
         public App()
         {
             InitializeComponent();
-            MigratePreV2Settings();
+            Tools.MigratePreV2Settings();
 
             var theme = (ElementTheme)LocalSettings.Read(REQUESTED_COLOUR_SCHEME, (int)ElementTheme.Default);
             switch (theme)
@@ -73,86 +60,11 @@ namespace Unicord.Universal
             Debug.WriteLine("Welcome to Unicord!");
         }
 
-        private static void MigratePreV2Settings()
-        {
-            foreach (var item in ApplicationData.Current.RoamingSettings.Values)
-                ApplicationData.Current.LocalSettings.Values[item.Key] = item.Value;
-
-            if (LocalSettings.TryRead<string>(AUTO_TRANSCODE_MEDIA_OLD, out var autoTranscodeMedia))
-            {
-                if (Enum.TryParse<MediaTranscodeOptions>(autoTranscodeMedia, out var result))
-                    LocalSettings.Save(AUTO_TRANSCODE_MEDIA, (int)result);
-
-                LocalSettings.TryDelete(AUTO_TRANSCODE_MEDIA_OLD);
-            }
-
-            if (LocalSettings.TryRead<string>(VIDEO_PROCESSING_OLD, out var videoProcessingOptions))
-            {
-                if (Enum.TryParse<MediaVideoProcessingAlgorithm>(videoProcessingOptions, out var result))
-                    LocalSettings.Save(VIDEO_PROCESSING, (int)result);
-
-                LocalSettings.TryDelete(VIDEO_PROCESSING_OLD);
-            }
-
-            if (LocalSettings.TryRead<string>(TIMESTAMP_STYLE_OLD, out var timestampStyle))
-            {
-                if (Enum.TryParse<TimestampStyle>(timestampStyle, out var result))
-                    LocalSettings.Save(TIMESTAMP_STYLE, (int)result);
-
-                LocalSettings.TryDelete(TIMESTAMP_STYLE_OLD);
-            }
-
-            if (LocalSettings.TryRead<string>(REQUESTED_COLOUR_SCHEME_OLD, out var requestedScheme))
-            {
-                if (Enum.TryParse<ElementTheme>(requestedScheme, out var result))
-                    LocalSettings.Save(REQUESTED_COLOUR_SCHEME, (int)result);
-
-                LocalSettings.TryDelete(REQUESTED_COLOUR_SCHEME_OLD);
-            }
-
-            try
-            {
-                var passwordVault = new PasswordVault();
-                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER_OLD))
-                {
-                    c.RetrievePassword();
-                    passwordVault.Add(new PasswordCredential(TOKEN_IDENTIFIER, c.UserName, c.Password));
-
-                    passwordVault.Remove(c);
-                }
-            }
-            catch { }
-        }
-
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.LogError(e.Exception);
             Logger.Log(e.Message);
             e.Handled = true;
-        }
-
-        protected override async void OnActivated(IActivatedEventArgs e)
-        {
-            switch (e)
-            {
-                case ContactPanelActivatedEventArgs cont:
-                    await OnContactPanelActivated(cont);
-                    return;
-                case ToastNotificationActivatedEventArgs toast:
-                    OnLaunched(false, toast.Argument);
-                    return;
-                case ProtocolActivatedEventArgs protocol:
-                    OnProtocolActivatedAsync(protocol);
-                    return;
-#if XBOX_GAME_BAR
-                case XboxGameBarWidgetActivatedEventArgs xbox:
-                    OnXboxGameBarActivated(xbox);
-                    return;
-#endif
-                default:
-                    Debug.WriteLine(e.Kind);
-                    break;
-            }
         }
 
         protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
@@ -162,7 +74,7 @@ namespace Unicord.Universal
             switch (args.TaskInstance.Task.Name)
             {
                 case TOAST_BACKGROUND_TASK_NAME:
-                    if (args.TaskInstance.TriggerDetails is not ToastNotificationActionTriggerDetail details || !DiscordManager.TryGetToken(out var token))
+                    if (args.TaskInstance.TriggerDetails is not ToastNotificationActionTriggerDetail details || !LoginService.TryGetToken(out var token))
                         break;
 
                     var arguments = ParseArgs(details.Argument);
@@ -181,80 +93,6 @@ namespace Unicord.Universal
 
             deferral.Complete();
         }
-        private void OnProtocolActivatedAsync(ProtocolActivatedEventArgs protocol)
-        {
-            if (protocol.Uri.IsAbsoluteUri)
-                Analytics.TrackEvent("Unicord_LaunchForProtocol", new Dictionary<string, string>() { ["protocol"] = protocol.Uri.GetLeftPart(UriPartial.Authority) });
-
-            if (protocol.Uri.Scheme == "ms-ipmessaging")
-            {
-                var queryString = HttpUtility.ParseQueryString(protocol.Uri.Query);
-                var ids = queryString.GetValues("ContactRemoteIds").FirstOrDefault();
-                if (ids != null)
-                {
-                    var id = ulong.Parse(ids.Split(',')[0].Split('_')[1]);
-                    if (!(Window.Current.Content is Frame rootFrame))
-                    {
-                        rootFrame = new Frame();
-                        Window.Current.Content = rootFrame;
-                    }
-
-                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, IsUriActivation = true });
-                    Window.Current.Activate();
-                    return;
-                }
-            }
-
-            if (protocol.Uri.AbsolutePath.Trim('/').StartsWith("channels"))
-            {
-                var path = protocol.Uri.AbsolutePath.Split('/').Skip(1).ToArray();
-                if (path.Length > 1 && ulong.TryParse(path[2], out var channel))
-                {
-                    if (!(Window.Current.Content is Frame rootFrame))
-                    {
-                        rootFrame = new Frame();
-                        Window.Current.Content = rootFrame;
-                    }
-
-                    rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channel, IsUriActivation = true });
-                    Window.Current.Activate();
-                    return;
-                }
-            }
-
-            OnLaunched(false, "");
-        }
-
-        private static async Task OnContactPanelActivated(ContactPanelActivatedEventArgs task)
-        {
-            Analytics.TrackEvent("Unicord_LaunchForMyPeople");
-
-            if (!(Window.Current.Content is Frame rootFrame))
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-
-                try
-                {
-                    var id = await ContactListManager.TryGetChannelIdAsync(task.Contact);
-                    if (id != 0)
-                    {
-                        rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { UserId = id, FullFrame = true, IsUriActivation = false });
-                    }
-                }
-                catch
-                {
-                    Analytics.TrackEvent("Unicord_MyPeopleFailedToFindPerson");
-                    var dialog = new MessageDialog("Something went wrong trying to find this person, sorry!", "Whoops!");
-                    await dialog.ShowAsync();
-                }
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
-
-            Window.Current.Activate();
-        }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -266,39 +104,56 @@ namespace Unicord.Universal
             OnLaunched(e.PrelaunchActivated, e.Arguments, e.PreviousExecutionState);
         }
 
-        private void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            base.OnWindowCreated(args);
+
+            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
+            {
+                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Analytics));
+            }
+        }
+
+        private async void OnLaunched(bool preLaunch, string arguments, ApplicationExecutionState previousState = ApplicationExecutionState.NotRunning)
         {
             var channelId = 0ul;
-            Exception themeLoadException = null;
             var args = ParseArgs(arguments);
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (!(Window.Current.Content is Frame rootFrame))
+            if (Window.Current.Content is not Frame rootFrame)
             {
                 Analytics.TrackEvent("Unicord_Launch");
 
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-                rootFrame.NavigationFailed += OnNavigationFailed;
-
                 if (previousState == ApplicationExecutionState.Terminated)
                     channelId = LocalSettings.Read("LastViewedChannel", 0ul);
+
+                // Create a Frame to act as the navigation context and navigate to the first page
+                rootFrame = new Frame();
 
                 WindowingService.Current.SetMainWindow(rootFrame);
                 Window.Current.Content = rootFrame;
             }
 
             if (args.TryGetValue("channelId", out var id) && ulong.TryParse(id, out var pId))
-            {
                 channelId = pId;
+
+            if (!preLaunch)
+            {
+                CoreApplication.EnablePrelaunch(true);
+
+                if (rootFrame.Content == null)
+                    rootFrame.Navigate(typeof(MainPage));
+
+                if (channelId != 0)
+                {
+                    await DiscordNavigationService.GetForCurrentView()
+                        .NavigateAsync(NavigationType.Channel, channelId, 0);
+                }
+
+                // Ensure the current window is active
+                Window.Current.Activate();
             }
-
-            if (rootFrame.Content == null || channelId != 0)
-                rootFrame.Navigate(typeof(MainPage), new MainPageArgs() { ChannelId = channelId, ThemeLoadException = themeLoadException });
-
-            // Ensure the current window is active
-            Window.Current.Activate();
         }
 
         private static Dictionary<string, string> ParseArgs(string arguments)
@@ -315,34 +170,6 @@ namespace Unicord.Universal
             }
 
             return args;
-        }
-
-        protected override void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
-        {
-            if (Window.Current.Content is not Frame rootFrame)
-            {
-                Analytics.TrackEvent("Unicord_LaunchForShare");
-
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-
-                rootFrame.Navigate(typeof(MainPage), args.ShareOperation);
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
-
-            Window.Current.Activate();
-        }
-
-        /// <summary>
-        /// Invoked when Navigation to a certain page fails
-        /// </summary>
-        /// <param name="sender">The Frame which failed navigation</param>
-        /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         private DiscordClient temporaryCache;
@@ -378,71 +205,6 @@ namespace Unicord.Universal
                 await discord.ConnectAsync();
         }
 
-        internal static async Task LogoutAsync()
-        {
-            await WebView.ClearTemporaryWebDataAsync();
-            await WindowingService.Current.CloseAllWindowsAsync();
-            await ImageCache.Instance.ClearAsync();
-            await DiscordManager.LogoutAsync();
 
-            try
-            {
-                var passwordVault = new PasswordVault();
-                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER))
-                {
-                    passwordVault.Remove(c);
-                }
-            }
-            catch { }
-
-            // ditto above about the background process
-            LocalSettings.TryDelete("Token");
-
-            DiscordNavigationService.Reset();
-            FullscreenService.Reset();
-            OverlayService.Reset();
-            SettingsService.Reset();
-            SwipeOpenService.Reset();
-
-            var frame = (Window.Current.Content as Frame);
-            frame.Navigate(typeof(Page));
-            frame.BackStack.Clear();
-            frame.ForwardStack.Clear();
-
-            frame = new Frame();
-            frame.Navigate(typeof(MainPage));
-            Window.Current.Content = frame;
-        }
-
-        internal static async Task LoginError(Exception ex)
-        {
-            if (ex != null)
-            {
-                var loader = ResourceLoader.GetForViewIndependentUse();
-                await UIUtilities.ShowErrorDialogAsync(loader.GetString("LoginFailedDialogTitle"), loader.GetString("LoginFailedDialogMessage"));
-                RoamingSettings.Save(VERIFY_LOGIN, false);
-            }
-
-            await DiscordManager.LogoutAsync();
-
-            var mainPage = Window.Current.Content.FindChild<MainPage>();
-
-            if (mainPage.FindChild<LoginPage>() == null)
-            {
-                mainPage.Nagivate(typeof(LoginPage));
-            }
-
-            mainPage.HideConnectingOverlay();
-        }
-
-        protected override void OnWindowCreated(WindowCreatedEventArgs args)
-        {
-            base.OnWindowCreated(args);
-
-            if (RoamingSettings.Read(ENABLE_ANALYTICS, true) && APPCENTER_IDENTIFIER != null)
-            {
-                AppCenter.Start(APPCENTER_IDENTIFIER, typeof(Analytics));
-            }
-        }
     }
 }

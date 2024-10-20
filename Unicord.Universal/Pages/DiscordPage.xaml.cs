@@ -132,9 +132,7 @@ namespace Unicord.Universal.Pages
                 else
                 {
                     Analytics.TrackEvent("DiscordPage_NavigateToFriendsPage");
-                    Model.IsFriendsSelected = true;
-                    //LeftSidebarFrame.Navigate(typeof(DMChannelsPage));
-                    //MainFrame.Navigate(typeof(FriendsPage));
+                    await service.NavigateAsync();
                 }
 
                 var possibleConnection = await VoiceConnectionModel.FindExistingConnectionAsync();
@@ -188,12 +186,10 @@ namespace Unicord.Universal.Pages
 
         private async void UnreadDms_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Model.Navigating)
-                return;
-
             if (e.AddedItems.FirstOrDefault() is ChannelViewModel c)
             {
-                await DiscordNavigationService.GetForCurrentView().NavigateAsync(c.Channel);
+                await DiscordNavigationService.GetForCurrentView()
+                    .NavigateAsync(c.Channel);
             }
         }
 
@@ -209,7 +205,7 @@ namespace Unicord.Universal.Pages
         private async void friendsItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var service = DiscordNavigationService.GetForCurrentView();
-            await service.NavigateAsync(null);
+            await service.NavigateAsync();
         }
 
         private async void SettingsItem_Tapped(object sender, TappedRoutedEventArgs e)
@@ -227,40 +223,8 @@ namespace Unicord.Universal.Pages
 
             if (args.InvokedItem is GuildListViewModel guildVM)
             {
-                if (Model.Navigating)
-                    return;
-
-                if (!guildVM.Guild.IsUnavailable)
-                {
-                    if (App.LocalSettings.Read(Constants.ENABLE_GUILD_BROWSING, Constants.ENABLE_GUILD_BROWSING_DEFAULT))
-                    {
-                        LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
-                    }
-                    else
-                    {
-                        var channelId = App.RoamingSettings.Read($"GuildPreviousChannels::{guildVM.Guild.Id}", 0UL);
-                        if (!guildVM.Guild.Channels.TryGetValue(channelId, out var channel) || (!channel.IsAccessible() || !channel.IsText()))
-                        {
-                            channel = guildVM.Guild.Channels.Values
-                                .Where(c => c.IsAccessible())
-                                .Where(c => c.IsText())
-                                .OrderBy(c => c.Position)
-                                .FirstOrDefault();
-                        }
-
-                        if (await WindowingService.Current.ActivateOtherWindowAsync(channel))
-                            LeftSidebarFrame.Navigate(typeof(GuildChannelListPage), guildVM.Guild);
-                        else
-                            await DiscordNavigationService.GetForCurrentView()
-                                .NavigateAsync(channel);
-                    }
-
-                    Model.IsFriendsSelected = false;
-                }
-                else
-                {
-                    await UIUtilities.ShowErrorDialogAsync("ServerUnavailableTitle", "ServerUnavailableMessage");
-                }
+                await DiscordNavigationService.GetForCurrentView()
+                    .NavigateAsync(guildVM.Guild);
             }
 
             sender.SelectedItem = null;

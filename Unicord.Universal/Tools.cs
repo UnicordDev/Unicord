@@ -11,6 +11,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Imaging;
+using Windows.Media.Transcoding;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -242,6 +243,60 @@ namespace Unicord.Universal
             PremiumType.NitroBasic => NITRO_BASIC_UPLOAD_LIMIT,
             _ => UPLOAD_LIMIT
         };
+
+        // todo: should be in some kind of "settings migration" class
+        internal static void MigratePreV2Settings()
+        {
+            foreach (var item in ApplicationData.Current.RoamingSettings.Values)
+                ApplicationData.Current.LocalSettings.Values[item.Key] = item.Value;
+
+            var LocalSettings = App.LocalSettings;
+
+            if (LocalSettings.TryRead<string>(AUTO_TRANSCODE_MEDIA_OLD, out var autoTranscodeMedia))
+            {
+                if (Enum.TryParse<MediaTranscodeOptions>(autoTranscodeMedia, out var result))
+                    LocalSettings.Save(AUTO_TRANSCODE_MEDIA, (int)result);
+
+                LocalSettings.TryDelete(AUTO_TRANSCODE_MEDIA_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(VIDEO_PROCESSING_OLD, out var videoProcessingOptions))
+            {
+                if (Enum.TryParse<MediaVideoProcessingAlgorithm>(videoProcessingOptions, out var result))
+                    LocalSettings.Save(VIDEO_PROCESSING, (int)result);
+
+                LocalSettings.TryDelete(VIDEO_PROCESSING_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(TIMESTAMP_STYLE_OLD, out var timestampStyle))
+            {
+                if (Enum.TryParse<TimestampStyle>(timestampStyle, out var result))
+                    LocalSettings.Save(TIMESTAMP_STYLE, (int)result);
+
+                LocalSettings.TryDelete(TIMESTAMP_STYLE_OLD);
+            }
+
+            if (LocalSettings.TryRead<string>(REQUESTED_COLOUR_SCHEME_OLD, out var requestedScheme))
+            {
+                if (Enum.TryParse<ElementTheme>(requestedScheme, out var result))
+                    LocalSettings.Save(REQUESTED_COLOUR_SCHEME, (int)result);
+
+                LocalSettings.TryDelete(REQUESTED_COLOUR_SCHEME_OLD);
+            }
+
+            try
+            {
+                var passwordVault = new PasswordVault();
+                foreach (var c in passwordVault.FindAllByResource(TOKEN_IDENTIFIER_OLD))
+                {
+                    c.RetrievePassword();
+                    passwordVault.Add(new PasswordCredential(TOKEN_IDENTIFIER, c.UserName, c.Password));
+
+                    passwordVault.Remove(c);
+                }
+            }
+            catch { }
+        }
     }
 
 }

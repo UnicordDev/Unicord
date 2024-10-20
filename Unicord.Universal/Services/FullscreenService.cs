@@ -65,7 +65,7 @@ namespace Unicord.Universal.Services
 
         private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (_canvas.Visibility == Visibility.Visible)
+            if (_canvas != null && _canvas.Visibility == Visibility.Visible)
             {
                 if (_fullscreenElement != null && _fullscreenParent != null)
                 {

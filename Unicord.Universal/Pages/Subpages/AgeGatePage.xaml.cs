@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using Unicord.Universal.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -25,22 +26,25 @@ namespace Unicord.Universal.Pages.Subpages
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Frame.CanGoBack)
-            {
-                Frame.GoBack();
-            }
+            //if (Frame.CanGoBack)
+            //{
+            //    Frame.GoBack();
+            //}
+
+            DiscordNavigationService.GetForCurrentView()
+                .GoBack();
         }
 
-        private void ContinueButton_Click(object sender, RoutedEventArgs e)
+        private async void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
             App.RoamingSettings.Save($"NSFW_{_channel.Id}", true);
-
             if (notAgain.IsChecked == true)
             {
                 App.RoamingSettings.Save("NSFW_All", true);
             }
 
-            Frame.Navigate(typeof(ChannelPage), _channel, new DrillInNavigationTransitionInfo());
+            await DiscordNavigationService.GetForCurrentView()
+                .NavigateAsync(_channel, NavigationFlags.IsFromAgeGatePage);
         }
     }
 }

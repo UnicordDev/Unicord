@@ -21,9 +21,6 @@ namespace Unicord.Universal.Pages
 
         private async void TokenLoginButton_Click(object sender, RoutedEventArgs e)
         {
-            var mainPage = this.FindParent<MainPage>();
-            mainPage?.ShowConnectingOverlay();
-
             var dialog = new TokenDialog();
             await dialog.ShowAsync();
 
@@ -31,22 +28,10 @@ namespace Unicord.Universal.Pages
             {
                 await TryLoginAsync(dialog.Token);
             }
-            else
-            {
-                mainPage?.HideConnectingOverlay();
-            }
         }
 
         private async Task TryLoginAsync(string token)
         {
-            Task OnReady(DiscordClient client, ReadyEventArgs e)
-            {
-                var vault = new PasswordVault();
-                vault.Add(new PasswordCredential(Constants.TOKEN_IDENTIFIER, "Default", token));
-
-                return Task.CompletedTask;
-            }
-
             var mainPage = this.FindParent<MainPage>();
 
             try
@@ -56,9 +41,9 @@ namespace Unicord.Universal.Pages
                 if (string.IsNullOrWhiteSpace(token))
                     throw new ArgumentException("Your token cannot be empty! If you were logging in via the browser, try using your token.");
 
-                mainPage.ShowConnectingOverlay();
-                Frame.Navigate(typeof(DiscordPage));
-                await DiscordManager.LoginAsync(token, OnReady, App.LoginError, false);
+                await LoginService.GetForCurrentView()
+                    .LoginWithTokenAsync(token)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {

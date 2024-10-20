@@ -1,4 +1,5 @@
-﻿using System.Collections.Frozen;
+﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,11 +23,9 @@ namespace Unicord.Universal.Models
     {
         private VoiceConnectionModel _voiceModel;
         private DiscordUser _currentUser;
-        private DiscordChannel _currentChannel;
-        private ChannelViewModel _selectedDM;
-        private GuildListViewModel _selectedGuild;
-        private bool _isFriendsSelected;
-        private bool _isRightPaneOpen;
+        private DiscordNavigationService _navigationService;
+        private ulong? _selectedGuildId;
+        private ulong? _selectedChannelId;
 
         public DiscordPageViewModel()
         {
@@ -97,19 +96,18 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public bool Navigating { get; internal set; }
         public ObservableCollection<IGuildListViewModel> Guilds { get; }
         public ObservableCollection<ChannelViewModel> UnreadDMs { get; }
 
         public DiscordUser CurrentUser { get => _currentUser; set => OnPropertySet(ref _currentUser, value); }
         public VoiceConnectionModel VoiceModel { get => _voiceModel; set => OnPropertySet(ref _voiceModel, value); }
 
-        public DiscordChannel CurrentChannel { get => _currentChannel; set => OnPropertySet(ref _currentChannel, value); }
-        public ChannelViewModel SelectedDM { get => _selectedDM; set => OnPropertySet(ref _selectedDM, value); }
-        public GuildListViewModel SelectedGuild { get => _selectedGuild; set => OnPropertySet(ref _selectedGuild, value); }
-        public bool IsFriendsSelected { get => _isFriendsSelected; set => OnPropertySet(ref _isFriendsSelected, value); }
-        public bool IsRightPaneOpen { get => _isRightPaneOpen; set => OnPropertySet(ref _isRightPaneOpen, value); }
-        public ChannelViewModel PreviousDM { get; set; }
+        public ChannelViewModel SelectedDM
+            => UnreadDMs.FirstOrDefault(d => d.Id == _selectedChannelId);
+        public GuildListViewModel SelectedGuild
+            => _selectedGuildId != null ? ViewModelFromGuild(_selectedGuildId.Value) : null;
+        public bool IsFriendsSelected
+            => _selectedGuildId == null;
 
         public string DisplayVersion
         {
@@ -128,11 +126,27 @@ namespace Unicord.Universal.Models
             }
         }
 
-        public GuildListViewModel ViewModelFromGuild(DiscordGuild guild)
+        public void UpdateSelection(ulong? channelId, ulong? guildId)
+        {
+            if (SelectedGuild != null)
+                SelectedGuild.IsSelected = false;
+
+            _selectedChannelId = channelId;
+            _selectedGuildId = guildId;
+
+            UnsafeInvokePropertyChanged(nameof(SelectedDM));
+            UnsafeInvokePropertyChanged(nameof(SelectedGuild));
+            UnsafeInvokePropertyChanged(nameof(IsFriendsSelected));
+
+            if (SelectedGuild != null)
+                SelectedGuild.IsSelected = true;
+        }
+
+        public GuildListViewModel ViewModelFromGuild(ulong guildId)
         {
             foreach (var guildVM in Guilds)
             {
-                if (guildVM.TryGetModelForGuild(guild, out var model))
+                if (guildVM.TryGetModelForGuild(guildId, out var model))
                     return model;
             }
 
@@ -193,7 +207,7 @@ namespace Unicord.Universal.Models
 
         private Task OnGuildCreated(GuildCreateEventArgs e)
         {
-            var vm = this.ViewModelFromGuild(e.Guild);
+            var vm = this.ViewModelFromGuild(e.Guild.Id);
             if (vm == null)
             {
                 syncContext.Post(d => Guilds.Insert(0, new GuildListViewModel(e.Guild)), null);
@@ -204,7 +218,7 @@ namespace Unicord.Universal.Models
 
         private Task OnGuildDeleted(GuildDeleteEventArgs e)
         {
-            var vm = this.ViewModelFromGuild(e.Guild);
+            var vm = this.ViewModelFromGuild(e.Guild.Id);
             if (vm == null)
             {
                 syncContext.Post(d =>
@@ -219,21 +233,8 @@ namespace Unicord.Universal.Models
 
         private Task OnUserSettingsUpdated(UserSettingsUpdateEventArgs e)
         {
-            //var guildPositions = DiscordManager.Discord.UserSettings?.GuildPositions;
-            //if (guildPositions == null || Guilds.Select(g => g.Id).SequenceEqual(guildPositions))
-            //    return Task.CompletedTask;
-
-            //for (var i = 0; i < guildPositions.Count; i++)
-            //{
-            //    var id = guildPositions[i];
-            //    var guild = Guilds[i];
-            //    if (id != guild.Id)
-            //    {
-            //        _synchronisation.Post((o) => Guilds.Move(Guilds.IndexOf(Guilds.First(g => g.Id == id)), i), null);
-            //    }
-            //}
-
             return Task.CompletedTask;
         }
+
     }
 }

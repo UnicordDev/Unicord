@@ -24,74 +24,45 @@ namespace Unicord.Universal.Services
             = new SemaphoreSlim(1);
         private static TaskCompletionSource<ReadyEventArgs> _readySource
             = new TaskCompletionSource<ReadyEventArgs>();
-        public static DiscordClient Discord
-        {
-            get => _discord;
-        }
 
-        internal static void KickoffConnectionAsync()
+        public static DiscordClient Discord => _discord;
+
+        public static void KickoffConnectionAsync()
         {
             _ = Task.Run(async () =>
             {
-                if (TryGetToken(out var token))
-                    await LoginAsync(token, null, null, true);
+                if (LoginService.TryGetToken(out var token))
+                    await ConnectAsync(token);
             });
         }
 
-        internal static async Task LoginAsync(
+        public static async Task WaitForReadyAsync()
+            => await _readySource.Task;
+
+        public static async Task ConnectAsync(
             string token,
-            AsyncEventHandler<DiscordClient, ReadyEventArgs> onReady,
-            Func<Exception, Task> onError,
-            bool background,
             UserStatus status = UserStatus.Online)
         {
             await _connectSemaphore.WaitAsync();
-            _readySource = new TaskCompletionSource<ReadyEventArgs>();
             try
             {
                 if (Discord != null)
-                {
-                    try
-                    {
-                        var res = await _readySource.Task;
-                        if (onReady != null)
-                            await onReady(Discord, res);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (onError != null)
-                            await onError(ex);
-                    }
-
                     return;
-                }
 
-                if (App.RoamingSettings.Read(Constants.VERIFY_LOGIN, false))
-                {
-                    if (background || !(await WindowsHelloManager.VerifyAsync(Constants.VERIFY_LOGIN, "VerifyLoginDisplayReason")))
-                    {
-                        if (onError != null)
-                            await onError(null);
-                        return;
-                    }
-                }
+                _readySource = new TaskCompletionSource<ReadyEventArgs>();
 
                 try
                 {
-                    async Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
+                    Task ReadyHandler(DiscordClient sender, ReadyEventArgs e)
                     {
                         // TODO: find a way to save this more securely, the background process can't retrieve from the credential locker?
                         App.LocalSettings.Save("Token", token);
+
                         sender.Ready -= ReadyHandler;
                         sender.SocketErrored -= SocketErrored;
                         sender.ClientErrored -= ClientErrored;
                         _readySource.TrySetResult(e);
-                        if (onReady != null)
-                        {
-                            await onReady(sender, e);
-                        }
-
-                        onError = null;
+                        return Task.CompletedTask;
                     }
 
                     Task SocketErrored(DiscordClient sender, SocketErrorEventArgs e)
@@ -99,9 +70,7 @@ namespace Unicord.Universal.Services
                         sender.Ready -= ReadyHandler;
                         sender.SocketErrored -= SocketErrored;
                         sender.ClientErrored -= ClientErrored;
-
-                        Logger.LogError(e.Exception);
-
+                        _logger.LogError(e.Exception, "Socket errored!");
                         _readySource.SetException(e.Exception);
                         return Task.CompletedTask;
                     }
@@ -112,7 +81,7 @@ namespace Unicord.Universal.Services
                         sender.SocketErrored -= SocketErrored;
                         sender.ClientErrored -= ClientErrored;
 
-                        Logger.LogError(e.Exception);
+                        _logger.LogError(e.Exception, "Client errored!");
 
                         _readySource.SetException(e.Exception);
                         return Task.CompletedTask;
@@ -140,10 +109,7 @@ namespace Unicord.Universal.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failure when logging in!");
-                    Tools.ResetPasswordVault();
-                    _readySource.TrySetException(ex);
-                    if (onError != null)
-                        await onError(ex);
+                    throw;
                 }
             }
             finally
@@ -204,23 +170,6 @@ namespace Unicord.Universal.Services
             {
                 _discord = null;
             }
-        }
-
-        internal static bool TryGetToken(out string token)
-        {
-            try
-            {
-                var passwordVault = new PasswordVault();
-                var credential = passwordVault.Retrieve(Constants.TOKEN_IDENTIFIER, "Default");
-                credential.RetrievePassword();
-
-                token = credential.Password;
-                return true;
-            }
-            catch { }
-
-            token = null;
-            return false;
         }
     }
 }

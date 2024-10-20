@@ -16,7 +16,7 @@ using static Unicord.Constants;
 
 namespace Unicord.Universal.Services
 {
-    class BackgroundNotificationService : BaseService<BackgroundNotificationService>
+    class BackgroundNotificationService : BaseService<BackgroundNotificationService>, IDisposable
     {
         private readonly ILogger<BackgroundNotificationService> _logger
             = Logger.GetLogger<BackgroundNotificationService>();
@@ -213,6 +213,12 @@ namespace Unicord.Universal.Services
             {
                 Crashes.TrackError(ex);
             }
+        }
+
+        public void Dispose()
+        {
+            // TODO: dispose of all the managers
+            WeakReferenceMessenger.Default.UnregisterAll(this);
         }
     }
 }
