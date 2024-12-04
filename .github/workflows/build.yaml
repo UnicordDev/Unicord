@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: Unicord.Universal.sln
+      Solution_Name: Unicord.sln
       Project_Name: Unicord.Universal.Package
       ProjectFile_Name: Unicord.Universal.Package/Unicord.Universal.Package.wapproj
 
@@ -28,7 +28,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 2
+        submodules: recursive
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
