@@ -30,6 +30,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
+        fetch-depth: 0
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
@@ -44,13 +45,13 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    - name: Build Background Task
-      run: |
-        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x86
-        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x64
-        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-arm
-      env:
-        Configuration: ${{ matrix.configuration }}
+    # - name: Build Background Task
+    #   run: |
+    #     msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x86
+    #     msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x64
+    #     msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-arm
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Load Certificate
