@@ -76,6 +76,12 @@ namespace Unicord.Universal.Models.User
                 case ActivityType.Custom:
                     {
                         var custom = activity.CustomStatus;
+                        if (custom == null)
+                        {
+                            HasActivity = false;
+                            break;
+                        }
+
                         if (!string.IsNullOrWhiteSpace(custom.Name))
                         {
                             // swapped so we have the text in not-bold

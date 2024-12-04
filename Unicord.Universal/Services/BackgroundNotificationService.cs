@@ -18,7 +18,7 @@ namespace Unicord.Universal.Services
 {
     class BackgroundNotificationService : BaseService<BackgroundNotificationService>
     {
-        private readonly ILogger<BackgroundNotificationService> _logger 
+        private readonly ILogger<BackgroundNotificationService> _logger
             = Logger.GetLogger<BackgroundNotificationService>();
 
         private BadgeManager _badgeManager;
@@ -29,19 +29,18 @@ namespace Unicord.Universal.Services
         {
             if (await StartFullTrustBackgroundTaskAsync())
             {
-                
+                foreach (var task in BackgroundTaskRegistration.AllTasks.Values.Where(i =>
+                    i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME) ||
+                    i.Name.Equals(REALTIME_BACKGROUND_TASK_NAME)))
+                {
+                    _logger.LogInformation("Disabling {TaskName} task because full-trust task is running.", task.Name);
+                    task.Unregister(true);
+                }
             }
             else
             {
-                //await RegisterPeriodicBackgroundTaskAsync();
+                // await RegisterRealtimeBackgroundTaskAsync();
                 await StartInProcTaskAsync();
-            }
-
-            var periodicTask = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(i => i.Name.Equals(PERIODIC_BACKGROUND_TASK_NAME));
-            if (periodicTask != null)
-            {
-                _logger.LogInformation("Disabling periodic background task because full-trust task is running.");
-                periodicTask.Unregister(true);
             }
         }
 
@@ -51,7 +50,6 @@ namespace Unicord.Universal.Services
             {
                 if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(TOAST_BACKGROUND_TASK_NAME)))
                     return true;
-
 
                 var status = await BackgroundExecutionManager.RequestAccessAsync();
                 if (status is BackgroundAccessStatus.Denied or BackgroundAccessStatus.DeniedBySystemPolicy or BackgroundAccessStatus.DeniedByUser)
@@ -78,7 +76,7 @@ namespace Unicord.Universal.Services
 
         private async Task<bool> StartFullTrustBackgroundTaskAsync()
         {
-            if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true))
+            if (!App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS_FULL_TRUST, true))
             {
                 _logger.LogDebug("Not starting full-trust notifications process, disabled by user.");
                 return false;
@@ -148,6 +146,40 @@ namespace Unicord.Universal.Services
                 };
 
                 builder.SetTrigger(new TimeTrigger(15, false));
+
+                var registration = builder.Register();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> RegisterRealtimeBackgroundTaskAsync()
+        {
+            try
+            {
+                if (BackgroundTaskRegistration.AllTasks.Values.Any(i => i.Name.Equals(REALTIME_BACKGROUND_TASK_NAME)))
+                    return true;
+
+                var status = await BackgroundExecutionManager.RequestAccessAsync();
+                if (status is BackgroundAccessStatus.Denied or BackgroundAccessStatus.DeniedBySystemPolicy or BackgroundAccessStatus.DeniedByUser)
+                    return false;
+
+                var builder = new BackgroundTaskBuilder()
+                {
+                    Name = REALTIME_BACKGROUND_TASK_NAME,
+                    TaskEntryPoint = typeof(RealtimeNotificationsTask).FullName,
+                    IsNetworkRequested = true
+                };
+
+                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                // builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
+
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
 
                 var registration = builder.Register();
                 return true;

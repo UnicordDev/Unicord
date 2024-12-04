@@ -1,0 +1,83 @@
+# This workflow will build, sign, and package a WinUI 3 MSIX desktop application
+# built on .NET.
+
+name: Build
+
+on:
+  push:
+    branches: [ redesign ]
+  pull_request:
+    branches: [ redesign ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: Unicord.Universal.sln
+      Project_Name: Unicord.Universal.Package
+      ProjectFile_Name: Unicord.Universal.Package/Unicord.Universal.Package.wapproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore NuGet Packages
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Load Certificate
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
+
+    - name: Adjust Package Version
+      run: |
+        $epoch = (Get-Date) - ([System.DateTime]::new(2024, 11, 01))
+        $file = (Resolve-Path "Unicord.Universal.Package/Package.appxmanifest")
+        $xml = [System.Xml.XmlDocument]::new()
+        $xml.Load($file)
+
+        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $version = [System.Version]::Parse($node.GetAttribute("Version"))
+        $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
+        $node.SetAttribute("Version", $version.ToString())
+
+        $xml.Save($file)
+
+    # Create the app package by building and packaging the project
+    - name: Build App Packages
+      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      env:
+        Appx_Bundle: Always
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: Packages\
+        Configuration: ${{ matrix.configuration }}
+
+    # Remove the pfx
+    - name: Cleanup
+      run: Remove-Item -path Unicord.Universal.Package/GitHubActionsWorkflow.pfx
+
+    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload Appx Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: AppxPackage-${{ matrix.configuration }}
+        path: |
+          ${{ env.Project_Name }}\\Packages

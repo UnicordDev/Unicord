@@ -18,6 +18,8 @@
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Application>
     <!-- Add your application specific runtime directives here. -->
+    <Assembly Name="Microsoft.Toolkit.Uwp.Notifications" Dynamic="Required All" />
+
     <Namespace Name="DSharpPlus.Entities" Serialize="Required PublicAndInternal" />
     <Namespace Name="DSharpPlus.Net" Serialize="Required PublicAndInternal" />
     <Namespace Name="DSharpPlus.Net.Abstractions" Serialize="Required PublicAndInternal" />

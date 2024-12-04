@@ -47,7 +47,7 @@ namespace Unicord
         public const string SAVE_CAPTURED_PHOTOS = "SavedPhotos";
         public const string TIMESTAMP_STYLE = "TimestampStyle_1";
 
-        public const string BACKGROUND_NOTIFICATIONS = "BackgroundNotifications";
+        public const string BACKGROUND_NOTIFICATIONS_FULL_TRUST = "BackgroundNotifications";
 
         [Obsolete("Use new theme system (SELECTED_THEME_NAMES) instead.")]
         public const string SELECTED_THEME_NAME = "SelectedThemeName";
@@ -63,6 +63,7 @@ namespace Unicord
 
         public const string TOAST_BACKGROUND_TASK_NAME = "ToastBackgroundTask";
         public const string PERIODIC_BACKGROUND_TASK_NAME = "PeriodicNotificationsTask";
+        public const string REALTIME_BACKGROUND_TASK_NAME = "RealtimeNotificationsTask";
 
         public const string SHOW_HUGE_EMOJI = "ShowHugeEmoji";
         public const bool   SHOW_HUGE_EMOJI_DEFAULT = true;

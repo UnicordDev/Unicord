@@ -6,14 +6,15 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
-  IgnorableNamespaces="uap uap4 uap5 mp">
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap4 uap5 mp rescap">
 
 	<Identity Name="24101WamWooWamRD.UnicordCanary"
 			  Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B"
-			  Version="2.0.0.0" />
+			  Version="2.0.3.0" />
 
 	<mp:PhoneIdentity PhoneProductId="e8adef53-9a75-41ce-88eb-b971a1ee9d57"
-					  PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+					  PhonePublisherId="0F22111D-EDF0-42F0-B58D-26C4C5C5054B" />
 
 	<Properties>
 		<DisplayName>ms-resource:DevAppDisplayName</DisplayName>
@@ -42,12 +43,21 @@
 			  BackgroundColor="transparent">
 				<uap:DefaultTile Wide310x150Logo="Assets\Store\Wide310x150Logo.png"/>
 				<uap:SplashScreen Image="Assets\Store\SplashScreen.png" uap5:Optional="true" />
+				<uap:LockScreen Notification="badge" BadgeLogo="Assets\Store\BadgeLogo.png"/>
 			</uap:VisualElements>
 			<Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.PeriodicNotificationsTask">
           <BackgroundTasks>
             <Task Type="general"/>
             <Task Type="timer"/>
+          </BackgroundTasks>
+        </Extension>
+        
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.RealtimeNotificationsTask">
+          <BackgroundTasks>
+            <Task Type="general"/>
+            <Task Type="systemEvent"/>
+            <Task Type="pushNotification"/>
           </BackgroundTasks>
         </Extension>
         
@@ -78,18 +88,11 @@
 						<uap:DisplayName>Unicord</uap:DisplayName>
 					</uap:Protocol>
 				</uap:Extension>
-              
-        <uap:Extension Category="windows.appService">
-          <uap:AppService Name="com.wankerr.Unicord.IPC" />
-        </uap:Extension>
 
 				<!-- voice background tasks -->
 				<uap:Extension Category="windows.voipCall"/>
 				<uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
 					<uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
-				</uap:Extension>
-				<uap:Extension Category="windows.appService">
-					<uap:AppService Name="com.wankerr.Unicord.Notifications"/>
 				</uap:Extension>
 				<Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Voice.Background.VoiceBackgroundTask">
 					<BackgroundTasks ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
@@ -108,8 +111,9 @@
 		<uap:Capability Name="contacts" />
 		<uap:Capability Name="voipCall" />
 		<uap:Capability Name="phoneCall" />
-		<DeviceCapability Name="microphone" />
-		<DeviceCapability Name="webcam" />
+    <rescap:Capability Name="extendedBackgroundTaskTime"/>
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="webcam" />
 	</Capabilities>
 
 	<Extensions>

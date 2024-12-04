@@ -12,7 +12,11 @@ namespace Unicord.Universal.Shared
 
         public ToastManager()
         {
+#if WINDOWS_UWP
+            _toastNotifier = ToastNotificationManager.CreateToastNotifier();
+#else
             _toastNotifier = ToastNotificationManager.CreateToastNotifier("App");
+#endif
             _toastHistory = ToastNotificationManager.History;
         }
 

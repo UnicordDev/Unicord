@@ -275,7 +275,6 @@ namespace Unicord.Universal.Shared
                 NotificationMirroring = NotificationMirroring.Allowed,
                 Tag = message.Id.ToString(),
                 Group = message.Channel.Id.ToString(CultureInfo.InvariantCulture),
-                RemoteId = message.Id.ToString(CultureInfo.InvariantCulture),
                 SuppressPopup = isSuppressed
             };
         }

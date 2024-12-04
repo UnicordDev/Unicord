@@ -1094,6 +1094,7 @@
     <PRIResource Include="Resources\ru-RU\Permissions.resw" />
     <PRIResource Include="Resources\ru-RU\PinsPage.resw" />
     <PRIResource Include="Resources\en-GB\NotificationsSettingsPage.resw" />
+    <PRIResource Include="Resources\ja-JP\NotificationsSettingsPage.resw" />
     <None Include="Resources\ru-RU\Readme" />
     <PRIResource Include="Resources\ru-RU\Resources.resw" />
     <PRIResource Include="Resources\ru-RU\SearchPage.resw" />
@@ -1203,6 +1204,7 @@
       <Name>WamWooWam.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.Notifications\Microsoft.Toolkit.Uwp.Notifications.csproj">
+      <Project>{921c4ba1-7a60-43a5-950f-0d72d5ed64e3}</Project>
       <Name>Microsoft.Toolkit.Uwp.Notifications</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Animations\Microsoft.Toolkit.Uwp.UI.Animations.csproj">

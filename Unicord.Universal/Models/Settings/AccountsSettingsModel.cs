@@ -67,8 +67,8 @@ namespace Unicord.Universal.Models
 
         public bool BackgroundNotifications
         {
-            get => App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS, true);
-            set => App.LocalSettings.Save(BACKGROUND_NOTIFICATIONS, value);
+            get => App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS_FULL_TRUST, true);
+            set => App.LocalSettings.Save(BACKGROUND_NOTIFICATIONS_FULL_TRUST, value);
         }
 
         public string ServerCountString => _serverCount == null ? _loading : $"{_serverCount:N0}";

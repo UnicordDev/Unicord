@@ -9,7 +9,7 @@
          xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
 				 IgnorableNamespaces="uap mp uap2 uap3 uap4 uap5 rescap">
-  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.48.0" />
+  <Identity Name="24101WamWooWamRD.Unicord" Publisher="CN=0F22111D-EDF0-42F0-B58D-26C4C5C5054B" Version="2.0.49.0" />
   <mp:PhoneIdentity PhoneProductId="5783aabf-3049-421f-ae1d-e88bd89018f2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
@@ -90,6 +90,12 @@
             <Task Type="timer"/>
           </BackgroundTasks>
         </Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Unicord.Universal.Background.Tasks.RealtimeNotificationsTask">
+          <BackgroundTasks>
+            <Task Type="general"/>
+            <Task Type="timer"/>
+          </BackgroundTasks>
+        </Extension>
         <uap:Extension Category="windows.appService" EntryPoint="Unicord.Universal.Voice.Background.ServiceBackgroundTask">
           <uap:AppService Name="com.wankerr.Unicord.Voice" ServerName="Unicord.Universal.Voice.Background.ServiceBackgroundTask" />
         </uap:Extension>
@@ -129,6 +135,7 @@
     <uap:Capability Name="voipCall" />
     <uap:Capability Name="phoneCall" />
     <rescap:Capability Name="runFullTrust"/>
+    <rescap:Capability Name="extendedBackgroundTaskTime"/>
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
   </Capabilities>

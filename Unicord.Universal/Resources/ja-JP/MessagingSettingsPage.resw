@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-<data name="EnableWebPBlock.Title" xml:space="preserve">
-    <value>可能な場合にWebPコーデックを使用する</value>
-  </data>
-  <data name="EnableWebPBlock.Description" xml:space="preserve">
-    <value>高効率な画像コーデックを使用して帯域幅を節約できます</value>
-  </data>
   <data name="AdjustRoleColoursBlock.Title" xml:space="preserve">
     <value>視認性向上のためユーザーカラーを使用する</value>
   </data>
