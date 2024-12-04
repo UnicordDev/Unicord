@@ -70,8 +70,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Uwp.UI", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Uwp.UI.Controls.Layout", "Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.UI.Controls.Layout\Microsoft.Toolkit.Uwp.UI.Controls.Layout.csproj", "{A26CBE8E-C713-4E2B-96DD-721E7EB7839F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Uwp.Notifications", "Libraries\WindowsCommunityToolkit\Microsoft.Toolkit.Uwp.Notifications\Microsoft.Toolkit.Uwp.Notifications.csproj", "{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicord.Universal.Background.Tasks", "Unicord.Universal.Background.Tasks\Unicord.Universal.Background.Tasks.csproj", "{69F44648-37CD-4B20-8814-2BAF85B4F624}"
 EndProject
 Global
@@ -608,26 +606,6 @@ Global
 		{A26CBE8E-C713-4E2B-96DD-721E7EB7839F}.Release|x64.Build.0 = Release|Any CPU
 		{A26CBE8E-C713-4E2B-96DD-721E7EB7839F}.Release|x86.ActiveCfg = Release|Any CPU
 		{A26CBE8E-C713-4E2B-96DD-721E7EB7839F}.Release|x86.Build.0 = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|ARM.Build.0 = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|x64.Build.0 = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Debug|x86.Build.0 = Debug|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|ARM.ActiveCfg = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|ARM.Build.0 = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|ARM64.Build.0 = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x64.ActiveCfg = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x64.Build.0 = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x86.ActiveCfg = Release|Any CPU
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3}.Release|x86.Build.0 = Release|Any CPU
 		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69F44648-37CD-4B20-8814-2BAF85B4F624}.Debug|ARM.ActiveCfg = Debug|ARM
@@ -677,7 +655,6 @@ Global
 		{70274A56-341B-490D-8CEB-5BF6E9B819AB} = {3996E770-1EEA-4809-9229-9847A6E2BE20}
 		{BCEF3A53-5965-49EC-9C7D-E700EBFB93B6} = {3996E770-1EEA-4809-9229-9847A6E2BE20}
 		{A26CBE8E-C713-4E2B-96DD-721E7EB7839F} = {3996E770-1EEA-4809-9229-9847A6E2BE20}
-		{921C4BA1-7A60-43A5-950F-0D72D5ED64E3} = {3996E770-1EEA-4809-9229-9847A6E2BE20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C626B6A-B15B-4ECF-9695-05B4FE30973C}
