@@ -77,7 +77,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj"/
+    <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj" />
     <ProjectReference Include="..\Unicord.Universal\Unicord.Universal.csproj" />
   </ItemGroup>
   <ItemGroup>

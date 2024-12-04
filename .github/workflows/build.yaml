@@ -23,6 +23,7 @@ jobs:
       Solution_Name: Unicord.sln
       Project_Name: Unicord.Universal.Package
       ProjectFile_Name: Unicord.Universal.Package/Unicord.Universal.Package.wapproj
+      BackgroundProjectFile_Name: Unicord.Universal.Background/Unicord.Universal.Background.csproj
 
     steps:
     - name: Checkout
@@ -41,6 +42,17 @@ jobs:
         msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=win-x64
         msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:RuntimeIdentifier=win-arm
       env:
+        Configuration: ${{ matrix.configuration }}
+
+    - name: Build Background Task
+      run: |
+        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x86
+        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x64
+        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-arm
+      env:
+        Appx_Bundle: Always
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
