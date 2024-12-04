@@ -22,6 +22,7 @@ jobs:
     env:
       Solution_Name: Unicord.sln
       Project_Name: Unicord.Universal.Package
+      Project_Name_2: Unicord.Universal
       ProjectFile_Name: Unicord.Universal.Package/Unicord.Universal.Package.wapproj
       BackgroundProjectFile_Name: Unicord.Universal.Background/Unicord.Universal.Background.csproj
 
@@ -59,6 +60,7 @@ jobs:
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$env:Project_Name/$certificatePath", $pfx_cert_byte)
+        [IO.File]::WriteAllBytes("$env:Project_Name_2/$certificatePath", $pfx_cert_byte)
 
     - name: Adjust Package Version
       run: |
@@ -76,12 +78,13 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateThumbprint=$env:AppxThumbprint
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
+        AppxThumbprint: ${{ secrets.PFX_THUMBPRINT }}
 
     # Remove the pfx
     - name: Cleanup
