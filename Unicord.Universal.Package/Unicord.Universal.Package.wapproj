@@ -66,6 +66,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundle>Always</AppxBundle>
     <AppInstallerUri>https://wamwoowam.co.uk/unicord/download</AppInstallerUri>
+    <RuntimeIdentifiers>win10-x64;win10-x86;win10-arm</RuntimeIdentifiers>
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
     <PackageCertificateThumbprint>2C5F1F6080F0648BF786147323B846D8D0BA1638</PackageCertificateThumbprint>
@@ -76,9 +77,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj">
-      <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
-    </ProjectReference>
+    <ProjectReference Include="..\Unicord.Universal.Background\Unicord.Universal.Background.csproj"/
     <ProjectReference Include="..\Unicord.Universal\Unicord.Universal.csproj" />
   </ItemGroup>
   <ItemGroup>
