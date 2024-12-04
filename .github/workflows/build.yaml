@@ -36,7 +36,10 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore NuGet Packages
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+      run: -
+        msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x86
+        msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=x64
+        msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /p:Platform=ARM
       env:
         Configuration: ${{ matrix.configuration }}
 
@@ -63,7 +66,7 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Build App Packages
-      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM|ARM64" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
