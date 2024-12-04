@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RuntimeIdentifiers>win10-x64;win10-x86;win10-arm</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;win-x86;win-arm</RuntimeIdentifiers>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <LangVersion>9</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

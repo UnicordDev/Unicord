@@ -46,13 +46,10 @@ jobs:
 
     - name: Build Background Task
       run: |
-        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x86
-        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x64
-        msbuild $env:BackgroundProjectFile_Name /t:Restore /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-arm
+        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x86
+        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-x64
+        msbuild $env:BackgroundProjectFile_Name /p:Configuration=$env:Configuration /p:TargetFramework=net472 /p:RuntimeIdentifier=win-arm
       env:
-        Appx_Bundle: Always
-        Appx_Package_Build_Mode: SideloadOnly
-        Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
