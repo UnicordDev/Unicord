@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.ViewManagement.Core;
 using Windows.Win32.Foundation;
-using static Windows.Win32.PInvoke;
 using static Windows.Win32.Foundation.WIN32_ERROR;
-using static Windows.Win32.System.Threading.PROCESS_ACCESS_RIGHTS;
 using static Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE;
+using static Windows.Win32.PInvoke;
+using static Windows.Win32.System.Threading.PROCESS_ACCESS_RIGHTS;
 
 namespace Unicord.Universal.Background
 {

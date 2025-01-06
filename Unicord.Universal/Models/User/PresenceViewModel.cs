@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DSharpPlus.Entities;
 using Unicord.Universal.Converters;
 using Unicord.Universal.Models.Emoji;
@@ -38,63 +39,73 @@ namespace Unicord.Universal.Models.User
         //
         internal void OnPresenceUpdated()
         {
-            if (Presence == null)
+            try
             {
-                HasActivity = false;
-                return;
-            }
+                if (Presence == null || Presence.Activities == null)
+                {
+                    HasActivity = false;
+                    return;
+                }
 
-            InvokePropertyChanged(nameof(Colour));
-            InvokePropertyChanged(nameof(PresenceGeometry));
-            InvokePropertyChanged(nameof(Status));
+                InvokePropertyChanged(nameof(Colour));
+                InvokePropertyChanged(nameof(PresenceGeometry));
+                InvokePropertyChanged(nameof(Status));
 
-            var activity = Presence.Activities?.Where(p => p != null)
-                .OrderByDescending(p => p.ActivityType)
-                .FirstOrDefault();
+                var activity = Presence.Activities?
+                    .Where(p => p != null)
+                    .OrderByDescending(p => p.ActivityType)
+                    .FirstOrDefault();
 
-            HasActivity = activity != null;
-            if (activity == null) return;
+                HasActivity = activity != null;
+                if (activity == null) return;
 
-            switch (activity.ActivityType)
-            {
-                case ActivityType.Playing:
-                    CondensedTitle = strings.GetString("PlayingStatus");
-                    CondensedText = activity.Name;
-                    break;
-                case ActivityType.Streaming:
-                    CondensedTitle = strings.GetString("StreamingStatus");
-                    CondensedText = activity.RichPresence?.Details ?? activity.Name;
-                    break;
-                case ActivityType.ListeningTo:
-                    CondensedTitle = strings.GetString("ListeningStatus");
-                    CondensedText = activity.Name;
-                    break;
-                case ActivityType.Watching:
-                    CondensedTitle = strings.GetString("WatchingStatus");
-                    CondensedText = activity.Name;
-                    break;
-                case ActivityType.Custom:
-                    {
-                        var custom = activity.CustomStatus;
-                        if (custom == null)
+                switch (activity.ActivityType)
+                {
+                    case ActivityType.Playing:
+                        CondensedTitle = strings.GetString("PlayingStatus");
+                        CondensedText = activity.Name;
+                        break;
+                    case ActivityType.Streaming:
+                        CondensedTitle = strings.GetString("StreamingStatus");
+                        CondensedText = activity.RichPresence?.Details ?? activity.Name;
+                        break;
+                    case ActivityType.ListeningTo:
+                        CondensedTitle = strings.GetString("ListeningStatus");
+                        CondensedText = activity.Name;
+                        break;
+                    case ActivityType.Watching:
+                        CondensedTitle = strings.GetString("WatchingStatus");
+                        CondensedText = activity.Name;
+                        break;
+                    case ActivityType.Custom:
                         {
-                            HasActivity = false;
+                            var custom = activity.CustomStatus;
+                            if (custom == null)
+                            {
+                                HasActivity = false;
+                                break;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(custom.Name))
+                            {
+                                // swapped so we have the text in not-bold
+                                CondensedText = null;
+                                CondensedTitle = custom.Name;
+                            }
+
+                            if (custom.Emoji != null)
+                                Emoji = new EmojiViewModel(custom.Emoji);
+
                             break;
                         }
-
-                        if (!string.IsNullOrWhiteSpace(custom.Name))
-                        {
-                            // swapped so we have the text in not-bold
-                            CondensedText = null;
-                            CondensedTitle = custom.Name;
-                        }
-
-                        if (custom.Emoji != null)
-                            Emoji = new EmojiViewModel(custom.Emoji);
+                    default:
                         break;
-                    }
-                default:
-                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                HasActivity = false;
+                Logger.LogError(ex);
             }
         }
 

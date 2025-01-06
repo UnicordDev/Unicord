@@ -12,7 +12,7 @@
     <Color x:Key="FallbackPresenceColour">#FF000000</Color>
 
     <!-- src: https://www.youtube.com/about/brand-resources/ -->
-    <Color x:Key="StreamingYouTubePresenceColour">#FFFF0000</Color>
+    <Color x:Key="StreamingYouTubePresenceColour">#FFfd0036</Color>
 
     <!-- src: https://brand.twitch.tv/ -->
     <Color x:Key="StreamingTwitchPresenceColour">#FF9146FF</Color>
