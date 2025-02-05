@@ -154,7 +154,7 @@
     <value>Statystyki</value>
   </data>
   <data name="SyncContactsBlock.Description" xml:space="preserve">
-    <value>Sync your Discord friends with the People app. Synchronizuj swoich znajomych z aplikacji Discord do kontaktów.</value>
+    <value>Synchronizuj swoich znajomych z aplikacji Discord z kontaktami.</value>
   </data>
   <data name="SyncContactsBlock.Title" xml:space="preserve">
     <value>Synchronizuj kontakty</value>
