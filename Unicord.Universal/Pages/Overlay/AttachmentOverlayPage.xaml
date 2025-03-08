@@ -68,7 +68,7 @@
         </Grid>
 
         <Grid Margin="8" VerticalAlignment="Top">
-            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click">
+            <Button Style="{ThemeResource IconButtonStyle}" Foreground="White" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click">
                 <w1709:Button.KeyboardAccelerators>
                     <w1709:KeyboardAccelerator Key="Escape"/>
                 </w1709:Button.KeyboardAccelerators>
