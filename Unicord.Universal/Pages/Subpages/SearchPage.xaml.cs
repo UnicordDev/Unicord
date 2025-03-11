@@ -1,4 +1,5 @@
 ﻿using Unicord.Universal.Models.Channels;
+using Unicord.Universal.Services;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -9,6 +10,7 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class SearchPage : Page
     {
+        private ChannelViewModel _channel;
         public SearchPageViewModel ViewModel { get; set; }
 
         public SearchPage()
@@ -20,11 +22,13 @@ namespace Unicord.Universal.Pages.Subpages
         {
             if (e.Parameter is ChannelViewModel channel)
             {
+                _channel = channel;
                 ViewModel = new SearchPageViewModel(channel);
                 Root.DataContext = ViewModel;
             }
             else
             {
+                _channel = null;
                 ViewModel = null;
                 Root.DataContext = null;
             }
@@ -56,6 +60,11 @@ namespace Unicord.Universal.Pages.Subpages
                 ViewModel.CurrentPage = 1;
                 await ViewModel.SearchAsync(SearchBox.Text);
             }
+        }
+
+        private void CloseSearch_Click(object sender, RoutedEventArgs e)
+        {
+            SplitPaneService.GetForCurrentView().ToggleRightPane<SearchPage>(_channel);
         }
     }
 }
