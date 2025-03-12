@@ -53,7 +53,8 @@ namespace Unicord.Universal.Services
         }
 
         // TODO: this is kinda bad and should really be more in DiscordPageModel
-        internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false)
+        // TODO: messageID currently unused, here for forward compatbility
+        internal async Task NavigateAsync(DiscordChannel channel, bool skipPreviousDm = false, ulong messageID = 0)
         {
             // TODO: handle this navigation in the main window
             var window = WindowingService.Current.GetHandle(_mainPage);

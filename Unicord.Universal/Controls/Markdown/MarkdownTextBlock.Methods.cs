@@ -407,18 +407,20 @@ namespace Unicord.Universal.Controls
             //}
 
             // Capture if URL links to a Discord message
-            var match = System.Text.RegularExpressions.Regex.Match(url, @"https://discord\.com/channels/(\d+)\/(\d+)\/(\d+)");
+            var match = System.Text.RegularExpressions.Regex.Match(url, @"https://discord\.com/channels/(@me|\d+)\/(\d+)(?:\/(\d+))?");
             if (match != null)
             {
-                ulong.TryParse(match.Groups[1].Value, out var serverID);
+                ulong messageID = 0;
                 ulong.TryParse(match.Groups[2].Value, out var channelID);
-                ulong.TryParse(match.Groups[3].Value, out var messageID);
+                if (match.Groups.Count > 3)
+                {
+                    ulong.TryParse(match.Groups[3].Value, out messageID);
+                }
 
                 var channel = await DiscordManager.Discord.GetChannelAsync(channelID);
                 if (channel != null)
                 {
-                    // TODO: Currently only opens the correct channel but doesn't navigate to the correct message
-                    await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel);
+                    await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel, false, messageID);
                     return;
                 }
             }
