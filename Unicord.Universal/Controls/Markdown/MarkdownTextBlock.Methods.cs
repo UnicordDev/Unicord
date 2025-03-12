@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ColorCode;
 using Unicord.Universal.Parsers.Markdown;
 using Unicord.Universal.Controls.Markdown.Render;
+using Unicord.Universal.Services;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -404,6 +405,25 @@ namespace Unicord.Universal.Controls
             //{
             //    ImageClicked?.Invoke(this, eventArgs);
             //}
+
+            // Capture if URL links to a Discord message
+            var match = System.Text.RegularExpressions.Regex.Match(url, @"https://discord\.com/channels/(@me|\d+)\/(\d+)(?:\/(\d+))?");
+            if (match != null)
+            {
+                ulong messageID = 0;
+                ulong.TryParse(match.Groups[2].Value, out var channelID);
+                if (match.Groups.Count > 3)
+                {
+                    ulong.TryParse(match.Groups[3].Value, out messageID);
+                }
+
+                var channel = await DiscordManager.Discord.GetChannelAsync(channelID);
+                if (channel != null)
+                {
+                    await DiscordNavigationService.GetForCurrentView().NavigateAsync(channel, false, messageID);
+                    return;
+                }
+            }
 
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
