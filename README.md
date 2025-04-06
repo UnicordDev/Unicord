@@ -14,7 +14,10 @@ So you wanna build Unicord, well you're gonna need to have a few things handy.
 ### Prerequisites
  - Windows 11 (Build 22000+)
  - Windows 11 SDK Build 26100
- - Visual Studio 2022 or later, with the Universal Windows Platform workload.
+ - Visual Studio 2022 or later
+   - Universal Windows Platform tools
+     - For Visual Studio < `17.10`, Select `Universal Windows Platform Workload`
+     - For Visual Studio >= `17.10`, Select `WinUI Application Development Workload` and `Installation details`->`WinUI application development`->`Optional`->`Universal Windows Platform tools`
 
 ### Building and Installing
 Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:
