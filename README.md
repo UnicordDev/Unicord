@@ -20,7 +20,8 @@ So you wanna build Unicord, well you're gonna need to have a few things handy.
      - For Visual Studio >= `17.10`, Select `WinUI Application Development Workload` and `Installation details`->`WinUI application development`->`Optional`->`Universal Windows Platform tools`
 
 ### Building and Installing
-Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:
+By default, cloning a repository through Visual Studio should handle submodules, but for the sake of completeness and as with all GitHub projects, you'll also need to pull submodules.
+To do this, use:
 
 ```sh
 $ git submodule update --init --recursive
