@@ -30,12 +30,12 @@ $ git submodule update --init --recursive
 From here, building should be as simple as double clicking `Unicord.sln`, ensuring your targets are appropriate to your testing platform (i.e. Debug x64), and hitting F5. 
 Once built and deployed, it should show in your start menu as "Unicord Canary", data and settings are kept separate from the Store version, so they can be installed side by side.
 
-![Canary](https://i.imgur.com/NaMdkZ4.png)
+![Canary](Assets/canarylauncher.png)
 
 ## Testing
 Unicord currently lacks any kind of unit testing. This will likely change as I adopt a more sane workflow, but for now, I suggest going around the app and making sure everything you'd use regularly works, and ensuring all configurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
 
-![batch build](https://i.imgur.com/8bvkRRv.png)
+![batch build](Assets/batchbuildmenu.png)
 
 On one specific note, while the project technically targets a minimum of Windows 10 version 1709 (Fall Creators Update), all code should compile and run on version 170**3** (Creators Update) to maintain Windows Phone support. Please pay special attention to the minimum required Windows version when consuming UWP APIs, and be careful when consuming .NET Standard 2.0 APIs, which may require a newer Windows version.
 
