@@ -408,7 +408,7 @@ namespace Unicord.Universal.Controls
 
             // Capture if URL links to a Discord message
             var match = System.Text.RegularExpressions.Regex.Match(url, @"https://discord\.com/channels/(@me|\d+)\/(\d+)(?:\/(\d+))?");
-            if (match != null)
+            if (match != null && match.Success)
             {
                 ulong messageID = 0;
                 ulong.TryParse(match.Groups[2].Value, out var channelID);
@@ -432,3 +432,4 @@ namespace Unicord.Universal.Controls
         }
     }
 }
+
