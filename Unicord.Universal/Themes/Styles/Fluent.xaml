@@ -145,6 +145,7 @@
                   FallbackColor="{ThemeResource BackgroundSecondaryColour}" 
                   TintColor="{ThemeResource BackgroundSecondaryColour}" />
                     <CornerRadius x:Key="DiscordPage_UserPill_CornerRadius">0</CornerRadius>
+                    <x:String x:Key="DiscordPage_UserPill_SecondaryFontFamily">Segoe UI</x:String>
 
                     <media:AcrylicBrush x:Key="DiscordPage_RightSplitPaneGrid_Background" 
                   BackgroundSource="HostBackdrop" 

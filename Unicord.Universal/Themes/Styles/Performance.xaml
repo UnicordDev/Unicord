@@ -144,8 +144,9 @@
 
                     <!-- User Pill specific resources -->
                     <SolidColorBrush x:Key="DiscordPage_UserPill_Background" 
-                     Color="{ThemeResource BackgroundSecondaryColour}" />
+                    Color="{ThemeResource BackgroundSecondaryColour}" />
                     <CornerRadius x:Key="DiscordPage_UserPill_CornerRadius">0</CornerRadius>
+                    <x:String x:Key="DiscordPage_UserPill_SecondaryFontFamily">Segoe UI</x:String>
 
                     <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0</Thickness>
 

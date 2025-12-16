@@ -67,6 +67,7 @@
                   FallbackColor="{ThemeResource LayerFillColorDefault}" 
                   TintColor="{ThemeResource LayerFillColorDefault}" />
                     <CornerRadius x:Key="DiscordPage_UserPill_CornerRadius">8</CornerRadius>
+                    <x:String x:Key="DiscordPage_UserPill_SecondaryFontFamily">Segoe UI Variable Small</x:String>
 
                     <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0,0,0,0</Thickness>
 
