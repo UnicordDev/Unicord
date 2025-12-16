@@ -57,7 +57,7 @@
                     <Thickness x:Key="DiscordPage_SecondaryGrid_BorderThickness">1</Thickness>
                     <Thickness x:Key="DiscordPage_SecondaryGrid_BottomItem_BorderThickness">1,1,1,0</Thickness>
 
-                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">4</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">4,4,0,0</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_SecondaryGrid_BottomItem_CornerRadius">4,4,0,0</CornerRadius>
 
                     <!-- User Pill specific resources -->
