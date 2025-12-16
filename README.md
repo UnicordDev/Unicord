@@ -14,10 +14,14 @@ So you wanna build Unicord, well you're gonna need to have a few things handy.
 ### Prerequisites
  - Windows 11 (Build 22000+)
  - Windows 11 SDK Build 26100
- - Visual Studio 2022 or later, with the Universal Windows Platform workload.
+ - Visual Studio 2022 or later
+   - Universal Windows Platform tools
+     - For Visual Studio < `17.10`, Select `Universal Windows Platform Workload`
+     - For Visual Studio >= `17.10`, Select `WinUI Application Development Workload` and `Installation details`->`WinUI application development`->`Optional`->`Universal Windows Platform tools`
 
 ### Building and Installing
-Firstly, as with all GitHub projects, you'll want to clone the repo, but you will also need to pull submodules, to do this, use:
+By default, cloning a repository through Visual Studio should handle submodules, but for the sake of completeness and as with all GitHub projects, you'll also need to pull submodules.
+To do this, use:
 
 ```sh
 $ git submodule update --init --recursive
@@ -26,12 +30,12 @@ $ git submodule update --init --recursive
 From here, building should be as simple as double clicking `Unicord.sln`, ensuring your targets are appropriate to your testing platform (i.e. Debug x64), and hitting F5. 
 Once built and deployed, it should show in your start menu as "Unicord Canary", data and settings are kept separate from the Store version, so they can be installed side by side.
 
-![Canary](https://i.imgur.com/NaMdkZ4.png)
+![Canary](Assets/canarylauncher.png)
 
 ## Testing
 Unicord currently lacks any kind of unit testing. This will likely change as I adopt a more sane workflow, but for now, I suggest going around the app and making sure everything you'd use regularly works, and ensuring all configurations build. A handy way of doing this, is Visual Studio's Batch Build feature, accessible like so:
 
-![batch build](https://i.imgur.com/8bvkRRv.png)
+![batch build](Assets/batchbuildmenu.png)
 
 On one specific note, while the project technically targets a minimum of Windows 10 version 1709 (Fall Creators Update), all code should compile and run on version 170**3** (Creators Update) to maintain Windows Phone support. Please pay special attention to the minimum required Windows version when consuming UWP APIs, and be careful when consuming .NET Standard 2.0 APIs, which may require a newer Windows version.
 
