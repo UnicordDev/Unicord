@@ -38,7 +38,7 @@
               Height="32"
               Background="{ThemeResource DiscordPage_PrimarySidebar_BackgroundBrush}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="72"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -90,7 +90,7 @@
                       Margin="0,32,0,0"
                       Background="{ThemeResource DiscordPage_PrimarySidebar_BackgroundBrush}">
                     <ScrollViewer IsVerticalScrollChainingEnabled="True">
-                        <StackPanel>
+                        <StackPanel Padding="0,0,0,68">
                             <ListViewItem x:Name="CloseItem"
                                           MinWidth="0"
                                           Padding="0"
@@ -102,6 +102,7 @@
                             <ListViewItem x:Name="FriendsItem"
                                               MinWidth="0"
                                               Padding="0"
+                                              Height="54"
                                               IsSelected="{Binding IsFriendsSelected}"
                                               HorizontalContentAlignment="Stretch"
                                               Tapped="friendsItem_Tapped"
@@ -172,14 +173,16 @@
                                           MinWidth="0"
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
-                                          Style="{StaticResource UnicordListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}"
+                                          Height="56">
                                 <SymbolIcon Width="36" Height="36" Symbol="Add" />
                             </ListViewItem>
                             <ListViewItem x:Name="findServerIcon"
                                           MinWidth="0"
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
-                                          Style="{StaticResource UnicordListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}"
+                                          Height="56">
                                 <SymbolIcon Width="36" Height="36" Symbol="Find" />
                             </ListViewItem>
 
@@ -190,7 +193,8 @@
                                           Padding="0"
                                           HorizontalContentAlignment="Stretch"
                                           Tapped="SettingsItem_Tapped"
-                                          Style="{StaticResource UnicordListViewItemStyle}">
+                                          Style="{StaticResource UnicordListViewItemStyle}"
+                                          Height="56">
                                 <SymbolIcon Width="36" Height="36" Symbol="Setting" />
                             </ListViewItem>
                         </StackPanel>
@@ -200,10 +204,9 @@
                 <Grid x:Name="sidebarSecondaryGrid"
                       Style="{StaticResource DiscordPage_SidebarSecondaryStyle}"
                       Grid.Column="1">
-                    <Grid Margin="{ThemeResource DiscordPage_SecondaryGridMargin}">
+                    <Grid Margin="{StaticResource DiscordPage_SecondaryGridMargin}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
 
@@ -224,37 +227,49 @@
                               Visibility="{Binding VoiceModel, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
                             <voice:VoiceConnectionControl ConnectionModel="{Binding VoiceModel}"/>
                         </Grid>
-
-                        <Grid Grid.Row="2"
-                              Background="{ThemeResource DiscordPage_SecondaryGrid_Background}"
-                              BorderBrush="{ThemeResource DiscordPage_SecondaryGrid_BorderBrush}"
-                              BorderThickness="{ThemeResource DiscordPage_SecondaryGrid_BottomItem_BorderThickness}"
-                              CornerRadius="{ThemeResource DiscordPage_SecondaryGrid_BottomItem_CornerRadius}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <lib:PersonPicture Margin="8" Width="36" Height="36" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
-
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding CurrentUser.DisplayName}"/>
-                                <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" 
-                                           FontSize="10" 
-                                           FontFamily="Segoe UI Variable Small" 
-                                           Margin="0,-2,0,0" 
-                                           Text="{Binding CurrentUser.Username}"/>
-                            </StackPanel>
-
-                            <Button x:Name="SettingsButton"
-                                    Grid.Column="2"
-                                    Style="{StaticResource IconButtonStyle}"
-                                    Margin="4"
-                                    Content="&#xE713;"
-                                    Command="{StaticResource SettingsCommand}"/>
-                        </Grid>
                     </Grid>
+                </Grid>
+
+                <!-- Floating user panel pill spanning both columns -->
+                <Grid Grid.ColumnSpan="2"
+                      VerticalAlignment="Bottom"
+                      Margin="8"
+                      Background="{ThemeResource DiscordPage_UserPill_Background}"
+                      BorderBrush="{ThemeResource DiscordPage_SecondaryGrid_BorderBrush}"
+                      BorderThickness="{ThemeResource DiscordPage_SecondaryGrid_BorderThickness}"
+                      CornerRadius="{ThemeResource DiscordPage_UserPill_CornerRadius}"
+                      Padding="8,6"
+                      Height="52">
+                    <Grid.Shadow>
+                        <ThemeShadow />
+                    </Grid.Shadow>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <lib:PersonPicture Width="32" Height="32" ProfilePicture="{Binding CurrentUser.AvatarUrl}" DisplayName="{Binding CurrentUser.DisplayName}" />
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0">
+                        <TextBlock Text="{Binding CurrentUser.DisplayName}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" 
+                                   FontSize="11" 
+                                   FontFamily="Segoe UI Variable Small" 
+                                   Margin="0,-2,0,0" 
+                                   Text="{Binding CurrentUser.Username}"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <Button x:Name="SettingsButton"
+                            Grid.Column="2"
+                            Style="{StaticResource IconButtonStyle}"
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            Content="&#xE713;"
+                            FontSize="16"
+                            Command="{StaticResource SettingsCommand}"/>
                 </Grid>
             </Grid>
 
