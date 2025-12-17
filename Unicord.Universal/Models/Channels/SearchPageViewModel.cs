@@ -21,24 +21,28 @@ namespace Unicord.Universal.Models.Channels
         private bool _waitingForIndex;
         private bool _isSearching;
         private int _totalMessages;
+        private bool _hasSearched;
 
         public bool IsSearching
         {
             get => _isSearching;
-            set => OnPropertySet(ref _isSearching, value);
+            set => OnPropertySet(ref _isSearching, value, nameof(IsSearching), nameof(NoResults));
         }
 
         public bool WaitingForIndex
         {
             get => _waitingForIndex;
-            set => OnPropertySet(ref _waitingForIndex, value);
+            set => OnPropertySet(ref _waitingForIndex, value, nameof(WaitingForIndex), nameof(NoResults));
         }
 
         public int TotalMessages
         {
             get => _totalMessages;
-            set => OnPropertySet(ref _totalMessages, value, nameof(TotalMessages), nameof(TotalMessagesString), nameof(CanGoBack), nameof(CanGoForward));
+            set => OnPropertySet(ref _totalMessages, value, nameof(TotalMessages), nameof(TotalMessagesString), nameof(CanGoBack), nameof(CanGoForward), nameof(NoResults));
         }
+
+        public bool NoResults =>
+            _hasSearched && !IsSearching && TotalMessages == 0 && !WaitingForIndex;
 
         public int CurrentPage
         {
@@ -74,6 +78,7 @@ namespace Unicord.Universal.Models.Channels
         {
             await _semaphore.WaitAsync();
 
+            _hasSearched = true;
             IsSearching = true;
             ViewSource.Source = Array.Empty<object>();
 
