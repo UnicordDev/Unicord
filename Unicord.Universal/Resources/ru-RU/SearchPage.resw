@@ -120,6 +120,12 @@
     <data name="ResultsText.Text" xml:space="preserve">
     <value>Результаты</value>
     </data>
+  <data name="NoResultsHeader.Text" xml:space="preserve">
+    <value>Мы искали повсюду.</value>
+  </data>
+  <data name="NoResultsSubheader.Text" xml:space="preserve">
+    <value>К сожалению, результаты не найдены.</value>
+  </data>
 <data name="SearchBox.PlaceholderText" xml:space="preserve">
   <value>Поиск...</value>
 </data>
