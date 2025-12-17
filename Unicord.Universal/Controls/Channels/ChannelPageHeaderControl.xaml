@@ -55,7 +55,7 @@
                     <!--  because VisualStateManager is wank  -->
                     <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
                         <Button x:Name="ShowSidebarButton"
-                                Content="&#xE700;"
+                                Content="&#xE72B;"
                                 Command="{x:Bind ViewModel.LeftPaneCommand}"
                                 Style="{ThemeResource IconButtonStyle}" />
                     </Grid>
@@ -128,15 +128,6 @@
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="M"/>
                         </w1709:ToggleButton.KeyboardAccelerators>
                     </ToggleButton>
-                    <Button x:Name="SearchButton"
-                            x:Uid="/ChannelPage/SearchButton"
-                            Command="{x:Bind ViewModel.SearchCommand}"
-                            Content="&#xE721;"
-                            Style="{ThemeResource ChannelPageHeaderButtonStyle}">
-                        <w1709:Button.KeyboardAccelerators>
-                            <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
-                        </w1709:Button.KeyboardAccelerators>
-                    </Button>
                     <Button x:Name="PinsButton"
                             x:Uid="/ChannelPage/PinsButton"
                             x:Load="{x:Bind ViewModel.ShowPinsButton}"
@@ -155,6 +146,15 @@
                             Style="{ThemeResource ChannelPageHeaderButtonStyle}">
                         <w1709:Button.KeyboardAccelerators>
                             <w1709:KeyboardAccelerator Modifiers="Control" Key="U"/>
+                        </w1709:Button.KeyboardAccelerators>
+                    </Button>
+                    <Button x:Name="SearchButton"
+                            x:Uid="/ChannelPage/SearchButton"
+                            Command="{x:Bind ViewModel.SearchCommand}"
+                            Content="&#xE721;"
+                            Style="{ThemeResource ChannelPageHeaderButtonStyle}">
+                        <w1709:Button.KeyboardAccelerators>
+                            <w1709:KeyboardAccelerator Modifiers="Control" Key="S"/>
                         </w1709:Button.KeyboardAccelerators>
                     </Button>
 
