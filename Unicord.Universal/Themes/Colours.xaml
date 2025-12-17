@@ -20,7 +20,7 @@
             <Color x:Key="BackgroundPrimaryColour">#FF0F0F0F</Color>
             <Color x:Key="BackgroundSecondaryColour">#FF181818</Color>
             <Color x:Key="BackgroundTertiaryColour">#FF1C1C1C</Color>
-            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFFFF000"/>
+            <SolidColorBrush x:Key="ErrorTextForegroundBrush" Color="#FFF23F42"/>
             <LinearGradientBrush x:Key="BackgroundGradientBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="#00000000" Offset="0.0" />
                 <GradientStop Color="#00000000" Offset="0.65" />
