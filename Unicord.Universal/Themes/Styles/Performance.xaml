@@ -141,6 +141,13 @@
                     <Thickness x:Key="DiscordPage_SecondaryGrid_BottomItem_BorderThickness">0</Thickness>
                     <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">0</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_SecondaryGrid_BottomItem_CornerRadius">0</CornerRadius>
+
+                    <!-- User Pill specific resources -->
+                    <SolidColorBrush x:Key="DiscordPage_UserPill_Background" 
+                    Color="{ThemeResource BackgroundSecondaryColour}" />
+                    <CornerRadius x:Key="DiscordPage_UserPill_CornerRadius">0</CornerRadius>
+                    <x:String x:Key="DiscordPage_UserPill_SecondaryFontFamily">Segoe UI</x:String>
+
                     <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0</Thickness>
 
                     <Thickness x:Key="DiscordPage_MainContent_BorderThickness">0,0,0,0</Thickness>

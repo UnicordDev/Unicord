@@ -50,24 +50,33 @@
 
                     <SolidColorBrush x:Key="DiscordPage_PrimarySidebar_BackgroundBrush" Color="Transparent"/>
 
-                    <Thickness x:Key="DiscordPage_SecondaryGridMargin">0,0,8,0</Thickness>
+                    <Thickness x:Key="DiscordPage_SecondaryGridMargin">0,0,4,0</Thickness>
                     <StaticResource x:Key="DiscordPage_SecondaryGrid_Background" ResourceKey="LayerFillColorDefaultBrush"/>
                     <StaticResource x:Key="DiscordPage_SecondaryGrid_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
 
                     <Thickness x:Key="DiscordPage_SecondaryGrid_BorderThickness">1</Thickness>
                     <Thickness x:Key="DiscordPage_SecondaryGrid_BottomItem_BorderThickness">1,1,1,0</Thickness>
 
-                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">4</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_SecondaryGrid_CornerRadius">4,4,0,0</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_SecondaryGrid_BottomItem_CornerRadius">4,4,0,0</CornerRadius>
 
-                    <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0,0,0,8</Thickness>
+                    <!-- User Pill specific resources -->
+                    <media:AcrylicBrush x:Key="DiscordPage_UserPill_Background" 
+                  BackgroundSource="Backdrop" 
+                  TintOpacity="0.70" 
+                  FallbackColor="{ThemeResource LayerFillColorDefault}" 
+                  TintColor="{ThemeResource LayerFillColorDefault}" />
+                    <CornerRadius x:Key="DiscordPage_UserPill_CornerRadius">8</CornerRadius>
+                    <x:String x:Key="DiscordPage_UserPill_SecondaryFontFamily">Segoe UI Variable Small</x:String>
+
+                    <Thickness x:Key="DiscordPage_SecondaryGrid_SplitMargin">0,0,0,0</Thickness>
 
                     <Thickness x:Key="DiscordPage_MainContent_BorderThickness">0,1,0,0</Thickness>
                     <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneLeft">1,1,0,0</Thickness>
                     <Thickness x:Key="DiscordPage_MainContent_BorderThickness_TwoPaneRight">0,1,1,0</Thickness>
                     <Thickness x:Key="DiscordPage_MainContent_BorderThickness_ThreePane">1,1,1,0</Thickness>
 
-                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius">4,4,0,0</CornerRadius>
+                    <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius">4</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneLeft">4,0,0,0</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_TwoPaneRight">0,4,0,0</CornerRadius>
                     <CornerRadius x:Key="DiscordPage_MainContent_CornerRadius_ThreePane">4,4,0,0</CornerRadius>
@@ -79,7 +88,7 @@
                     <Style x:Key="DiscordPage_SidebarSecondaryStyle" TargetType="Grid"/>
                     <Style x:Key="DiscordPage_RightSplitPaneStyle" TargetType="Grid"/>
 
-                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_Margin">8,0,0,0</Thickness>
+                    <Thickness x:Key="DiscordPage_RightSplitPaneGrid_Margin">4,0,0,0</Thickness>
                     <StaticResource x:Key="DiscordPage_RightSplitPaneGrid_Background" ResourceKey="LayerFillColorDefaultBrush"/>
                     <StaticResource x:Key="DiscordPage_RightSplitPaneGrid_BorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
                     <Thickness x:Key="DiscordPage_RightSplitPaneGrid_BorderThickness">1,1,0,0</Thickness>

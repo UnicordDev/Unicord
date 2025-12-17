@@ -286,8 +286,9 @@
               ContextFlyout="{StaticResource GuildContextFlyout}"
               ToolTipService.ToolTip="{x:Bind Name}"
               ToolTipService.Placement="Left"
-              Loaded="OnGuildsListItemLoaded">
-            <lib:PersonPicture x:Phase="1" Margin="0,4" Width="42" Height="42" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
+              Loaded="OnGuildsListItemLoaded"
+              Height="55">
+            <lib:PersonPicture x:Phase="1" Margin="0,4" Width="38" Height="38" DisplayName="{x:Bind Name}" ProfilePicture="{Binding IconUrl}"/>
             <lib:InfoBadge x:Phase="2" VerticalAlignment="Top"
                            HorizontalAlignment="Right"
                            Margin="8,4"
