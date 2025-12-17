@@ -16,6 +16,7 @@
     xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
     xmlns:messagesVMs="using:Unicord.Universal.Models.Messages"
+    xmlns:w1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)"
     NavigationCacheMode="Required"
     Loaded="Page_Loaded"
     Unloaded="Page_Unloaded"
@@ -233,16 +234,16 @@
                 <!-- Floating user panel pill spanning both columns -->
                 <Grid Grid.ColumnSpan="2"
                       VerticalAlignment="Bottom"
-                      Margin="8"
+                      Margin="8,8,12,8"
                       Background="{ThemeResource DiscordPage_UserPill_Background}"
                       BorderBrush="{ThemeResource DiscordPage_SecondaryGrid_BorderBrush}"
                       BorderThickness="{ThemeResource DiscordPage_SecondaryGrid_BorderThickness}"
                       CornerRadius="{ThemeResource DiscordPage_UserPill_CornerRadius}"
                       Padding="8,6"
                       Height="52">
-                    <Grid.Shadow>
-                        <ThemeShadow />
-                    </Grid.Shadow>
+                    <w1903:Grid.Shadow>
+                        <w1903:ThemeShadow />
+                    </w1903:Grid.Shadow>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -255,7 +256,7 @@
                         <TextBlock Text="{Binding CurrentUser.DisplayName}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                         <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" 
                                    FontSize="11" 
-                                   FontFamily="Segoe UI Variable Small" 
+                                   FontFamily="{ThemeResource DiscordPage_UserPill_SecondaryFontFamily}" 
                                    Margin="0,-2,0,0" 
                                    Text="{Binding CurrentUser.Username}"
                                    TextTrimming="CharacterEllipsis"/>
