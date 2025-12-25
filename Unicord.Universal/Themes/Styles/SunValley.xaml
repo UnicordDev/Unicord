@@ -19,6 +19,9 @@
                     <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable</FontFamily>
                     <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Semibold</FontWeight>
 
+                    <CornerRadius x:Key="AccountsSettings_ProfileCard_CornerRadius">8</CornerRadius>
+                    <CornerRadius x:Key="AccountsSettings_ProfileCard_BannerCornerRadius">8,8,0,0</CornerRadius>
+
                     <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>
                     </Style>
