@@ -8,59 +8,161 @@
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:models="using:Unicord.Universal.Models"
+    xmlns:presence="using:Unicord.Universal.Controls.Presence"
+    xmlns:users="using:Unicord.Universal.Controls.Users"
     xmlns:settings="using:SettingsControl"
     mc:Ignorable="d">
     <Page.DataContext>
         <models:AccountsSettingsModel />
     </Page.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="1"
-                CornerRadius="4">
-            <Grid Margin="16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <lib:PersonPicture ProfilePicture="{Binding User.AvatarUrl}" Width="96" Height="96" Margin="0,0,16,0"/>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
-                        <Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding User.Username, Mode=OneWay}"/>#<Run Text="{Binding User.Discriminator, Mode=OneWay}"/>
-                    </TextBlock>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="email" VerticalAlignment="Center"/>
-                        <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
-                        <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
-                    </StackPanel>
-                </StackPanel>
+            CornerRadius="{ThemeResource AccountsSettings_ProfileCard_CornerRadius}"
+                MaxWidth="650">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!-- Banner -->
+                    <RowDefinition Height="120"/>
+                    <!-- Content -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Banner area (visual only) -->
+                <Border Grid.Row="0"
+                        Background="{ThemeResource LayerFillColorAltBrush}"
+                    CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
+
+                <!-- Content area -->
+                <Grid Grid.Row="1" Margin="16">
+                    <Grid.RowDefinitions>
+                        <!-- Avatar + name row (avatar overlaps banner) -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Details grid -->
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Width="88" Height="88" Margin="0,-44,0,0">
+                            <Border CornerRadius="44"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+
+                            <users:AvatarControl Margin="3"
+                                    Style="{ThemeResource LargeAvatarWithPresenceStyle}"
+                                    Source="{Binding User.AvatarUrl}"
+                                    Presence="{Binding UserPresence, Mode=OneWay}" />
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,-4,0,0">
+                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                                       Text="{Binding User.GlobalName, Mode=OneWay}"
+                                       Visibility="{Binding User.GlobalName, Converter={StaticResource BoolVisibilityConverter}}"
+                                       TextTrimming="CharacterEllipsis"
+                                       IsTextSelectionEnabled="True"/>
+                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                                       Text="{Binding User.Username, Mode=OneWay}"
+                                       Visibility="{Binding User.GlobalName, Converter={StaticResource InverseBoolVisibilityConverter}}"
+                                       TextTrimming="CharacterEllipsis"
+                                       IsTextSelectionEnabled="True"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1" RowSpacing="16" Margin="5,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" ColumnSpacing="12" Visibility="{Binding User.GlobalName, Converter={StaticResource BoolVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Display Name"
+                                           FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                           Text="{Binding User.GlobalName, Mode=OneWay}"
+                                           IsTextSelectionEnabled="True"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Username"
+                                           FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                           Text="{Binding User.Username, Mode=OneWay}"
+                                           IsTextSelectionEnabled="True"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="2" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Email"
+                                           FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           Margin="0,0,0,4"/>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="email" VerticalAlignment="Center" IsTextSelectionEnabled="True"/>
+                                    <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
+                                    <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         </Border>
 
         <TextBlock x:Uid="/AccountsSettingsPage/FriendsText" Grid.Row="1" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
 
         <StackPanel Grid.Row="2">
-            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock">
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock"
+                                           Visibility="{Binding IsSyncContactsVisible, Converter={StaticResource BoolVisibilityConverter}}">
                 <settings:SettingsBlockControl.Icon>
                     <SymbolIcon Symbol="People"/>
                 </settings:SettingsBlockControl.Icon>
                 <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" />
             </settings:SettingsBlockControl>
 
-            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock">
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock"
+                                           Description="{Binding BackgroundNotificationDescription}">
                 <settings:SettingsBlockControl.Icon>
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE7E7;"/>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding BackgroundNotificationIcon}"/>
                 </settings:SettingsBlockControl.Icon>
                 <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" />
             </settings:SettingsBlockControl>
@@ -68,62 +170,69 @@
 
         <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
         
-        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Grid.Row="4"
-                Padding="16,12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/StatisticsBlock"
+                           Grid.Row="4"
+                           IsExpanded="True">
+            <settings:SettingsBlockControl.Icon>
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9D9;"/>
+            </settings:SettingsBlockControl.Icon>
+            <Button x:Name="CopyStatisticsButton"
+                    x:Uid="/AccountsSettingsPage/CopyStatisticsButton"
+                    Click="CopyStatisticsButton_Click">
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="16"/>
+            </Button>
+            <settings:SettingsBlockControl.ExpandableContent>
+                <Grid Padding="20,8" ColumnSpacing="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Friends" FontWeight="Bold" />
-                <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Right" Text="{Binding FriendCountString}"/>
+                    <TextBlock Grid.Row="0" Text="Friends" FontWeight="Normal" IsTextSelectionEnabled="False" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding FriendCountString}"/>
 
-                <TextBlock Grid.Row="1" Text="Servers" FontWeight="Bold" />
-                <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{Binding ServerCountString}"/>
+                    <TextBlock Grid.Row="1" Text="Servers" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ServerCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Bold" />
-                <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Right" Text="{Binding ChannelsCountString}"/>
+                    <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ChannelsCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Bold" />
-                <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Right" Text="{Binding MemberCountString}"/>
+                    <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding MemberCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Bold" />
-                <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Right" Text="{Binding OpenDMCountString}"/>
+                    <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding OpenDMCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Bold" />
-                <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedUserCountString}"/>
+                    <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedUserCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Bold" />
-                <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Right" Text="{Binding SynchedPresenceCountString}"/>
+                    <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedPresenceCountString}" Margin="0,8,0,0"/>
 
-                <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Bold" />
-                <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Right" Text="{Binding EmoteCountString}"/>
-            </Grid>
-        </Border>
+                    <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                    <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding EmoteCountString}" Margin="0,8,0,0"/>
+                </Grid>
+            </settings:SettingsBlockControl.ExpandableContent>
+        </settings:SettingsBlockControl>
 
         <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/LogoutBlock"
-                                       IsClickable="True"
-                                       Click="LogoutButton_Click"
                                        Grid.Row="6">
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF3B1;"/>
             </settings:SettingsBlockControl.Icon>
+            <Button x:Uid="/AccountsSettingsPage/LogoutButton" Click="LogoutButton_Click" Foreground="Red" />
         </settings:SettingsBlockControl>
     </Grid>
+    </ScrollViewer>
 </Page>
