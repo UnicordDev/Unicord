@@ -6,8 +6,9 @@
     xmlns:local="using:Unicord.Universal.Pages.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Unicord.Universal.Models"
-    xmlns:settings="using:SettingsControl" 
+    xmlns:settings="using:SettingsControl"
     xmlns:controls="using:Unicord.Universal.Controls"
+    xmlns:lib="using:Microsoft.UI.Xaml.Controls"
     x:DefaultBindMode="TwoWay"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
@@ -17,6 +18,18 @@
 
     <StackPanel>
 
+        <lib:InfoBar
+            x:Name="unavailableText"
+            Margin="0,4"
+            Severity="Warning"
+            IsClosable="False"
+            IsOpen="False"
+            Title="">
+            <lib:InfoBar.ActionButton>
+                <Button x:Name="OpenSettingsButton" x:Uid="/SecuritySettingsPage/OpenSettingsButton" Click="OpenSettingsButton_Click" HorizontalAlignment="Right"/>
+            </lib:InfoBar.ActionButton>
+        </lib:InfoBar>
+
         <settings:SettingsBlockControl x:Uid="/SecuritySettingsPage/DiagnosticDataBlock">
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>
@@ -24,16 +37,6 @@
             <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableAnalytics, Mode=TwoWay}" />
         </settings:SettingsBlockControl>
         
-        <controls:MarkdownTextBlock
-            x:Name="unavailableText"
-            x:Uid="/SecuritySettingsPage/WindowsHelloUnavailable"
-            Grid.Row="4"
-            Margin="0,4"
-            FontSize="12"
-            Background="Transparent"
-            Foreground="{StaticResource ErrorTextForegroundBrush}"
-            TextWrapping="Wrap"
-            LinkClicked="unavailableText_LinkClicked"/>
 
         <StackPanel Margin="4,16">
             <TextBlock x:Uid="/SecuritySettingsPage/WindowsHelloHeader"
