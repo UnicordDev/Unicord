@@ -1,7 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.Enums;
+using DSharpPlus.EventArgs;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Unicord.Universal.Models.Messaging;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages.Settings;
 using Windows.ApplicationModel.Resources;
 using static Unicord.Constants;
@@ -10,9 +15,19 @@ namespace Unicord.Universal.Models
 {
     public class AccountsSettingsModel : ViewModelBase
     {
+        private static readonly bool _isWindows11 = SystemInformation.Instance.OperatingSystemVersion.Build >= 22000;
+        private static readonly ResourceLoader _resourceLoader = ResourceLoader.GetForViewIndependentUse("AccountsSettingsPage");
+
         public AccountsSettingsModel()
         {
             User = discord?.CurrentUser;
+
+            if (User != null)
+            {
+                UserPresence = new PresenceViewModel(User, this);
+                WeakReferenceMessenger.Default.Register<AccountsSettingsModel, DiscordEventMessage<PresenceUpdateEventArgs>>(this,
+                    (t, e) => t.OnPresenceUpdate(e.Event));
+            }
 
             var strings = ResourceLoader.GetForCurrentView(nameof(AccountsSettingsPage));
             _loading = strings.GetString("Loading");
@@ -50,6 +65,8 @@ namespace Unicord.Universal.Models
         private DiscordUser _user;
         private string _loading;
 
+        public PresenceViewModel UserPresence { get; }
+
         private int? _serverCount;
         private int? _channelCount;
         private int? _memberCount;
@@ -65,11 +82,30 @@ namespace Unicord.Universal.Models
             set => OnPropertySet(ref _user, value);
         }
 
+        private void OnPresenceUpdate(PresenceUpdateEventArgs e)
+        {
+            if (User == null || UserPresence == null || e.User.Id != User.Id)
+                return;
+
+            UserPresence.OnPresenceUpdated();
+        }
+
         public bool BackgroundNotifications
         {
             get => App.LocalSettings.Read(BACKGROUND_NOTIFICATIONS_FULL_TRUST, true);
             set => App.LocalSettings.Save(BACKGROUND_NOTIFICATIONS_FULL_TRUST, value);
         }
+
+        public string BackgroundNotificationIcon
+            => _isWindows11 ? "\uEA8F" : "\uE7E7";
+
+        public string BackgroundNotificationDescription
+            => _isWindows11
+                ? _resourceLoader.GetString("BackgroundNotificationsDescriptionWin11")
+                : _resourceLoader.GetString("BackgroundNotificationsDescriptionWin10");
+
+        public bool IsSyncContactsVisible
+            => !_isWindows11;
 
         public string ServerCountString => _serverCount == null ? _loading : $"{_serverCount:N0}";
         public string ChannelsCountString => _channelCount == null ? _loading : $"{_channelCount:N0}";
