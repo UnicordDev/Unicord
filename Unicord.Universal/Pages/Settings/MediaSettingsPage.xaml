@@ -36,6 +36,9 @@
                         <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPrioritySpeed" />
                         <ComboBoxItem x:Uid="/MediaSettingsPage/EncoderPriorityQuality" />
                     </ComboBox>
+                    
+                    <Border Background="{ThemeResource ExpanderHeaderBorderBrush}" Height="1.5" Margin="-28,16,-28,16"/>
+                    
                     <TextBlock Style="{ThemeResource BaseTextBlockStyle}" x:Uid="/MediaSettingsPage/AudioOptionsHeader" Margin="0,0,0,12"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
