@@ -27,6 +27,9 @@
                     <CornerRadius x:Key="ControlCornerRadius">0,0,0,0</CornerRadius>
                     <CornerRadius x:Key="OverlayCornerRadius">0,0,0,0</CornerRadius>
 
+                    <CornerRadius x:Key="AccountsSettings_ProfileCard_CornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="AccountsSettings_ProfileCard_BannerCornerRadius">0</CornerRadius>
+
                     <!-- General -->
 
                     <SolidColorBrush x:Key="General_Page_BackgroundBrush" Color="{ThemeResource BackgroundPrimaryColour}"/>
