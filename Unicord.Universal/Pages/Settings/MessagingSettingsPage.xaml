@@ -130,6 +130,18 @@
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;"/>
             </settings:SettingsBlockControl.Icon>
+            <settings:SettingsBlockControl.AdditionalDescriptionContent>
+                <Button x:Name="ContrastLearnMoreButton"
+                        x:Uid="/MessagingSettingsPage/LearnMoreButton"
+                        HorizontalAlignment="Left"
+                        Style="{ThemeResource TextBlockButtonStyle}"
+                        Margin="0"
+                        Padding="0"
+                        MinHeight="0"
+                        MinWidth="0"
+                        VerticalAlignment="Center"
+                        Click="ContrastLearnMoreButton_Click"/>
+            </settings:SettingsBlockControl.AdditionalDescriptionContent>
             <settings:SettingsBlockControl.ExpandableContent>
                 <Grid Padding="20,8">
                     <Grid.RowDefinitions>
@@ -150,15 +162,6 @@
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
                             Margin="0,8,0,0"/>
-
-                    <Button x:Name="ContrastLearnMoreButton"
-                            x:Uid="/MessagingSettingsPage/LearnMoreButton"
-                            Content="Learn More"
-                            HorizontalAlignment="Right"
-                            Grid.Row="2"
-                            Grid.ColumnSpan="2"
-                            Style="{ThemeResource TextBlockButtonStyle}"
-                            Click="ContrastLearnMoreButton_Click"/>
                 </Grid>
             </settings:SettingsBlockControl.ExpandableContent>
             <ToggleSwitch Grid.Column="1" Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding AdjustRoleColours, Mode=TwoWay}" Margin="0,0,-24,0" />
