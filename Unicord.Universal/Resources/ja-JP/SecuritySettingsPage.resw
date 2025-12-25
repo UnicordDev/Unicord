@@ -151,6 +151,9 @@
     <value />
   </data>
   <data name="WindowsHelloUnavailable.Text" xml:space="preserve">
-    <value>Windows Helloはこのデバイスでは利用できません。[有効にする](ms-settings:signinoptions)</value>
+    <value>このデバイスでは Windows Hello が利用できません。有効にしますか?</value>
+  </data>
+  <data name="OpenSettingsButton.Content" xml:space="preserve">
+    <value>設定を開く</value>
   </data>
 </root>

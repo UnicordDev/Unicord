@@ -140,5 +140,9 @@
   </data>
   <data name="VoiceItem.Content" xml:space="preserve">
     <value>通話</value>
+  </data>  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>検索</value>
   </data>
-</root>
+  <data name="EditProfileText.Text" xml:space="preserve">
+    <value>プロフィール編集</value>
+  </data></root>

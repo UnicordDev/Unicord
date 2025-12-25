@@ -157,7 +157,7 @@
     <value>はい</value>
   </data>
   <data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
-    <value>いいえ</value>
+    <value>キャンセル</value>
   </data>
   <data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
     <value>はい</value>
