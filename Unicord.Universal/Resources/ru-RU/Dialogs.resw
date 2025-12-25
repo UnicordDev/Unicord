@@ -157,7 +157,7 @@
     <value>Да</value>
   </data>
   <data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
-    <value>Нет</value>
+    <value>Отмена</value>
   </data>
   <data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
     <value>Да!</value>

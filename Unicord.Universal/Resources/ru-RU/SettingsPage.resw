@@ -138,4 +138,10 @@
   <data name="VoiceItem.Content" xml:space="preserve">
     <value>Голосовые звонки</value>
   </data>
+  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="EditProfileText.Text" xml:space="preserve">
+    <value>Редактировать профили</value>
+  </data>
 </root>

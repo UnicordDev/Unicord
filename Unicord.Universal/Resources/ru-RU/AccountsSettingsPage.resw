@@ -120,8 +120,11 @@
   <data name="AccountsSettingsPage.Tag" xml:space="preserve">
     <value>Аккаунты</value>
   </data>
-  <data name="BackgroundNotificationsBlock.Description" xml:space="preserve">
+  <data name="BackgroundNotificationsDescriptionWin10" xml:space="preserve">
     <value>Разрешить Unicord работать в фоновом режиме для отображения уведомлений и обновления живых плиток.</value>
+  </data>
+  <data name="BackgroundNotificationsDescriptionWin11" xml:space="preserve">
+    <value>Разрешить Unicord работать в фоновом режиме для отображения уведомлений.</value>
   </data>
   <data name="BackgroundNotificationsBlock.Title" xml:space="preserve">
     <value>Фоновые уведомления</value>
@@ -144,6 +147,9 @@
   <data name="LogoutBlock.Title" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
   <data name="LogoutPromptMessage" xml:space="preserve">
     <value>Вы уверены, что хотите выйти?</value>
   </data>
@@ -152,6 +158,18 @@
   </data>
   <data name="StatisticsText.Text" xml:space="preserve">
     <value>Статистика</value>
+  </data>
+  <data name="StatisticsBlock.Title" xml:space="preserve">
+    <value>Статистика</value>
+  </data>
+  <data name="StatisticsBlock.Description" xml:space="preserve">
+    <value>Просмотр подробной статистики вашего аккаунта</value>
+  </data>
+  <data name="CopyStatisticsButton.Content" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="CopyStatisticsButtonText.Text" xml:space="preserve">
+    <value>Копировать</value>
   </data>
   <data name="SyncContactsBlock.Description" xml:space="preserve">
     <value>Синхронизируйте своих друзей в Discord с приложением Люди.</value>
