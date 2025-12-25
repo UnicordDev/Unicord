@@ -138,4 +138,10 @@
   <data name="VoiceItem.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Voix</value>
   </data>
+  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="EditProfileText.Text" xml:space="preserve">
+    <value>Modifier les profils</value>
+  </data>
 </root>

@@ -157,7 +157,7 @@
     <value>Oui</value>
   </data>
   <data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
-    <value>Non</value>
+    <value>Annuler</value>
   </data>
   <data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
     <value>Super !</value>

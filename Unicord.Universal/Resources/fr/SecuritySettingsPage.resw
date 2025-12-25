@@ -148,6 +148,9 @@
     <value></value>
   </data>
   <data name="WindowsHelloUnavailable.Text" xml:space="preserve">
-    <value>Windows Hello n'est pas disponible sur cet appareil. Voulez-vous [changer cela?] (ms-settings:signinoptions)</value>
+    <value>Windows Hello n'est pas disponible sur cet appareil. Voulez-vous changer cela?</value>
+  </data>
+  <data name="OpenSettingsButton.Content" xml:space="preserve">
+    <value>Ouvrir les paramétres</value>
   </data>
 </root>

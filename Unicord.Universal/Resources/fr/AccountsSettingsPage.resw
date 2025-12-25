@@ -132,6 +132,21 @@
   <data name="LogoutPromptTitle" xml:space="preserve">
     <value>Êtes-vous sûr?</value>
   </data>
+  <data name="StatisticsText.Text" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="StatisticsBlock.Title" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="StatisticsBlock.Description" xml:space="preserve">
+    <value>Voir les statistiques détaillées de votre compte</value>
+  </data>
+  <data name="CopyStatisticsButton.Content" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  <data name="CopyStatisticsButtonText.Text" xml:space="preserve">
+    <value>Copier</value>
+  </data>
   <data name="SyncPeopleText.Text" xml:space="preserve">
     <value>Synchroniser mes amis avec [Windows People](ms-people:)</value>
     <comment>Markdown capable</comment>
