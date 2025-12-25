@@ -1,4 +1,6 @@
-﻿using Windows.ApplicationModel;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using static Unicord.Constants;
 
@@ -7,6 +9,8 @@ namespace Unicord.Universal.Models
     public class NotificationsSettingsModel : ViewModelBase
     {
         private bool isPageEnabled = ApiInformation.IsApiContractPresent(typeof(FullTrustAppContract).FullName, 1);
+        private static readonly bool _isWindows11 = SystemInformation.Instance.OperatingSystemVersion.Build >= 22000;
+        private static readonly ResourceLoader _resourceLoader = ResourceLoader.GetForViewIndependentUse("NotificationsSettingsPage");
 
         public bool IsPageEnabled
         {
@@ -54,5 +58,18 @@ namespace Unicord.Universal.Models
             get => App.RoamingSettings.Read(ENABLE_LIVE_TILES, ENABLE_LIVE_TILES_DEFAULT);
             set => App.RoamingSettings.Save(ENABLE_LIVE_TILES, value);
         }
+
+        public string EnableNotificationsDescription
+            => _isWindows11 
+                ? _resourceLoader.GetString("EnableNotificationsDescriptionWin11")
+                : _resourceLoader.GetString("EnableNotificationsDescriptionWin10");
+
+        public string EnableDesktopNotificationsDescription
+            => _isWindows11
+                ? _resourceLoader.GetString("EnableDesktopNotificationsDescriptionWin11")
+                : _resourceLoader.GetString("EnableDesktopNotificationsDescriptionWin10");
+
+        public bool IsLiveTilesVisible
+            => !_isWindows11;
     }
 }
