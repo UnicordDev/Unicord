@@ -133,7 +133,7 @@
     <value>Enable Unread Badge</value>
   </data>
   <data name="EnableDesktopNotifications.Description" xml:space="preserve">
-    <value>Show notifications for Mentions and Direct Messages in on the Desktop, and in Action Centre</value>
+    <value>Show notifications for Mentions and Direct Messages on the Desktop and in Notification Center</value>
   </data>
   <data name="EnableDesktopNotifications.Title" xml:space="preserve">
     <value>Enable Desktop Notifications</value>
@@ -144,10 +144,19 @@
   <data name="EnableLiveTiles.Title" xml:space="preserve">
     <value>Enable Live Tiles</value>
   </data>
-  <data name="EnableNotifications.Description" xml:space="preserve">
-    <value>Show notifications for Discord messages in Start, Action Centre and the Taskbar</value>
+  <data name="EnableNotificationsDescriptionWin10" xml:space="preserve">
+    <value>Show notifications for Discord messages in Start, Action Centre, and the Taskbar</value>
+  </data>
+  <data name="EnableNotificationsDescriptionWin11" xml:space="preserve">
+    <value>Show notifications for Discord messages in Notification Center and on the Taskbar</value>
   </data>
   <data name="EnableNotifications.Title" xml:space="preserve">
     <value>Enable Notifications</value>
+  </data>
+  <data name="EnableDesktopNotificationsDescriptionWin10" xml:space="preserve">
+    <value>Show notifications for Mentions and Direct Messages on the Desktop and in Action Centre</value>
+  </data>
+  <data name="EnableDesktopNotificationsDescriptionWin11" xml:space="preserve">
+    <value>Show notifications for Mentions and Direct Messages on the Desktop and in Notification Center</value>
   </data>
 </root>
