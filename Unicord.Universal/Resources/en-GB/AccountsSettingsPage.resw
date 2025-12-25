@@ -120,8 +120,11 @@
   <data name="AccountsSettingsPage.Tag" xml:space="preserve">
     <value>Accounts</value>
   </data>
-  <data name="BackgroundNotificationsBlock.Description" xml:space="preserve">
+  <data name="BackgroundNotificationsDescriptionWin10" xml:space="preserve">
     <value>Allow Unicord to run in the background to show notifications &amp; update live tiles.</value>
+  </data>
+  <data name="BackgroundNotificationsDescriptionWin11" xml:space="preserve">
+    <value>Allow Unicord to run in the background to show notifications.</value>
   </data>
   <data name="BackgroundNotificationsBlock.Title" xml:space="preserve">
     <value>Background Notifications</value>
@@ -144,6 +147,9 @@
   <data name="LogoutBlock.Title" xml:space="preserve">
     <value>Log out</value>
   </data>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Log out</value>
+  </data>
   <data name="LogoutPromptMessage" xml:space="preserve">
     <value>Are you sure you want to logout?</value>
   </data>
@@ -152,6 +158,18 @@
   </data>
   <data name="StatisticsText.Text" xml:space="preserve">
     <value>Statistics</value>
+  </data>
+  <data name="StatisticsBlock.Title" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="StatisticsBlock.Description" xml:space="preserve">
+    <value>View detailed statistics about your account</value>
+  </data>
+  <data name="CopyStatisticsButton.Content" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="CopyStatisticsButtonText.Text" xml:space="preserve">
+    <value>Copy</value>
   </data>
   <data name="SyncContactsBlock.Description" xml:space="preserve">
     <value>Sync your Discord friends with the People app.</value>
