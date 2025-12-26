@@ -36,7 +36,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <!-- Banner -->
-                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="100"/>
                     <!-- Content -->
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
