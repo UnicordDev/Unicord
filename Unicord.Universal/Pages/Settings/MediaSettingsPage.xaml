@@ -52,7 +52,7 @@
                     </Grid>
                 </StackPanel>
             </settings:SettingsBlockControl.ExpandableContent>
-            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AutoTranscodeMedia, Mode=TwoWay}" MinWidth="200">
+            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AutoTranscodeMedia, Mode=TwoWay}" MinWidth="200" Margin="0,0,-12,0">
                 <ComboBoxItem x:Uid="/MediaSettingsPage/AlwaysCompress"/>
                 <ComboBoxItem x:Uid="/MediaSettingsPage/CompressIfNeeded"/>
                 <ComboBoxItem x:Uid="/MediaSettingsPage/NeverCompress"/>

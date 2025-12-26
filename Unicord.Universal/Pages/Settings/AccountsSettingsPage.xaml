@@ -178,7 +178,8 @@
             </settings:SettingsBlockControl.Icon>
             <Button x:Name="CopyStatisticsButton"
                     x:Uid="/AccountsSettingsPage/CopyStatisticsButton"
-                    Click="CopyStatisticsButton_Click">
+                    Click="CopyStatisticsButton_Click"
+                    Margin="0,0,-12,0">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="16"/>
             </Button>
             <settings:SettingsBlockControl.ExpandableContent>

@@ -28,10 +28,13 @@
             <settings:SettingsBlockControl.Icon>
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{x:Bind NotificationGlyph, Mode=OneWay}"/>
             </settings:SettingsBlockControl.Icon>
+            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableNotifications, Mode=TwoWay}" Margin="0,0,-24,0"/>
             <settings:SettingsBlockControl.ExpandableContent>
                 <StackPanel Margin="-16,-16,-16,-20">
                     <StackPanel.Resources>
-                        <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="Transparent"/>                        <StaticResource x:Key="ExpanderHeaderBorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>                        <Thickness x:Key="ExpanderHeaderBorderThickness">0,0,0,1.5</Thickness>
+                        <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="Transparent"/>
+                        <StaticResource x:Key="ExpanderHeaderBorderBrush" ResourceKey="CardStrokeColorDefaultBrush"/>
+                        <Thickness x:Key="ExpanderHeaderBorderThickness">0,0,0,1.5</Thickness>
                         <CornerRadius x:Key="ControlCornerRadius">0</CornerRadius>
                     </StackPanel.Resources>
                     <settings:SettingsBlockControl x:Uid="/NotificationsSettingsPage/EnableDesktopNotifications"
@@ -57,7 +60,6 @@
                     </settings:SettingsBlockControl>
                 </StackPanel>
             </settings:SettingsBlockControl.ExpandableContent>
-            <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding EnableNotifications, Mode=TwoWay}" />
         </settings:SettingsBlockControl>
 
     </StackPanel>
