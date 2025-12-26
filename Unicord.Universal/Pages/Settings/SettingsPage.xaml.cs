@@ -209,8 +209,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void UpdateSearchDisplayMode()
         {
-            // We want icon-only UI when the pane is collapsed via the hamburger.
-            // Note: DisplayMode may still be Expanded when the pane is closed.
+            // Icon-only UI when the pane is collapsed via the hamburger.
             var paneOpen = NavView.IsPaneOpen;
             var paneOpening = _isPaneOpening && !paneOpen;
             var showCompact = !paneOpen && !paneOpening;
@@ -230,13 +229,11 @@ namespace Unicord.Universal.Pages.Settings
                 ProfileDetails.Visibility = Visibility.Collapsed;
                 ProfileItem.Visibility = Visibility.Visible;
 
-                // Keep compact icons aligned with the theme's default nav icons.
-                // SunValley already matches; Fluent/Performance need a slight left nudge.
+                // Top (Sun Valley) Bottom (Fluent/Performance)
                 SearchIconContainer.Margin = theme == AppTheme.SunValley
                     ? new Thickness(-8, 0, 0, 0)
                     : new Thickness(-16, 0, 0, 0);
                 
-                // Compact pane: center avatar inside the full row (avoid large right-side empty space)
                 Grid.SetColumnSpan(UserProfilePicture, 2);
                 UserProfilePicture.HorizontalAlignment = HorizontalAlignment.Center;
                 UserProfilePicture.Width = 24;
@@ -302,7 +299,7 @@ namespace Unicord.Universal.Pages.Settings
             switch (theme)
             {
                 case AppTheme.SunValley:
-                    // SunValley uses different NavigationView paddings; keep the tuned layout.
+                    // SunValley
                     SearchBoxContainer.Margin = new Thickness(0, 0, -6.5, 0);
                     ProfileContainer.Margin = new Thickness(0);
                     break;
@@ -310,7 +307,7 @@ namespace Unicord.Universal.Pages.Settings
                 case AppTheme.Fluent:
                 case AppTheme.Performance:
                 default:
-                    // Win10-era NavigationView has more built-in insets; reintroduce them for the special rows.
+                    // Fluent/Performance
                     SearchBoxContainer.Margin = new Thickness(-5, 0, 11, 0);
                     ProfileContainer.Margin = new Thickness(-5, 0, 11, 0);
                     break;
@@ -350,7 +347,6 @@ namespace Unicord.Universal.Pages.Settings
 
         private void ProfileItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            // Clicking the profile row should not keep the AutoSuggestBox focused/selected.
             if (SearchBox != null)
             {
                 SearchBox.IsSuggestionListOpen = false;
