@@ -56,17 +56,6 @@ namespace Unicord.Universal.Pages.Settings
         {
             InitializeComponent();
             SelectNavItem(SettingsPageType.Accounts);
-            
-            // Load user info
-            var user = DiscordManager.Discord?.CurrentUser;
-            if (user != null)
-            {
-                UserDisplayName.Text = user.GlobalName ?? user.Username;
-                if (!string.IsNullOrEmpty(user.AvatarUrl))
-                {
-                    UserProfilePicture.ProfilePicture = new BitmapImage(new Uri(user.AvatarUrl));
-                }
-            }
 
             // Set initial display mode state
             Loaded += (s, e) =>
