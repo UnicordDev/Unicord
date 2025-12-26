@@ -19,6 +19,12 @@ namespace Unicord.Universal.Models
         public string AccountDisplayName =>
             discord.CurrentUser.Username;
 
+        public string ProfileDisplayName =>
+            discord.CurrentUser?.GlobalName ?? discord.CurrentUser?.Username;
+
+        public string ProfileAvatarUrl =>
+            discord.CurrentUser?.GetAvatarUrl(256);
+
         public string DisplayVersion
         {
             get
