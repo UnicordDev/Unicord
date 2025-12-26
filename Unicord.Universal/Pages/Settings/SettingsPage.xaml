@@ -51,11 +51,13 @@
                                           Width="24"
                                           Height="24"
                                           Margin="10,8,10,8"
-                                          HorizontalAlignment="Center"/>
+                                          HorizontalAlignment="Center"
+                                          ProfilePicture="{Binding ProfileAvatarUrl}"/>
                         <StackPanel x:Name="ProfileDetails" Grid.Column="1" VerticalAlignment="Center" Margin="0,8,16,8">
                             <TextBlock x:Name="UserDisplayName"
                                       FontWeight="SemiBold"
-                                      TextTrimming="CharacterEllipsis"/>
+                                      TextTrimming="CharacterEllipsis"
+                                      Text="{Binding ProfileDisplayName}"/>
                             <TextBlock x:Uid="/SettingsPage/EditProfileText"
                                       Text="Edit Profiles"
                                       FontSize="12"
