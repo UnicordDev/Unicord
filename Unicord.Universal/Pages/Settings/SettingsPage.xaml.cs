@@ -209,6 +209,7 @@ namespace Unicord.Universal.Pages.Settings
 
         private void UpdateSearchDisplayMode()
         {
+            // We want icon-only UI when the pane is collapsed via the hamburger.
             // Note: DisplayMode may still be Expanded when the pane is closed.
             var paneOpen = NavView.IsPaneOpen;
             var paneOpening = _isPaneOpening && !paneOpen;
@@ -232,7 +233,7 @@ namespace Unicord.Universal.Pages.Settings
                 // Keep compact icons aligned with the theme's default nav icons.
                 // SunValley already matches; Fluent/Performance need a slight left nudge.
                 SearchIconContainer.Margin = theme == AppTheme.SunValley
-                    ? new Thickness(0)
+                    ? new Thickness(-8, 0, 0, 0)
                     : new Thickness(-16, 0, 0, 0);
                 
                 // Compact pane: center avatar inside the full row (avoid large right-side empty space)
