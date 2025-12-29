@@ -28,101 +28,101 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="1"
             CornerRadius="{ThemeResource AccountsSettings_ProfileCard_CornerRadius}"
                 MaxWidth="650">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <!-- Banner -->
-                    <RowDefinition Height="100"/>
-                    <!-- Content -->
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- Banner area (visual only) -->
-                <Border Grid.Row="0"
-                        Background="{ThemeResource LayerFillColorAltBrush}"
-                    CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
-
-                <Button Grid.Row="0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Margin="0,8,8,0"
-                        Padding="4"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        ToolTipService.ToolTip="More">
-                    <Button.Content>
-                        <FontIcon Glyph="&#xE10C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
-                    </Button.Content>
-                    <Button.Flyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
-                        </MenuFlyout>
-                    </Button.Flyout>
-                </Button>
-
-                <!-- Content area -->
-                <Grid Grid.Row="1" Margin="16">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <!-- Avatar + name row (avatar overlaps banner) -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- Details grid -->
+                        <!-- Banner -->
+                        <RowDefinition Height="100"/>
+                        <!-- Content -->
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <!-- Banner area (visual only) -->
+                    <Border Grid.Row="0"
+                        Background="{ThemeResource LayerFillColorAltBrush}"
+                    CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
 
-                        <Grid Width="88" Height="88" Margin="0,-44,0,0">
-                            <Border CornerRadius="44"
+                    <Button Grid.Row="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Margin="0,8,8,0"
+                            Padding="4"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            ToolTipService.ToolTip="More">
+                        <Button.Content>
+                            <FontIcon Glyph="&#xE10C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                        </Button.Content>
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+
+                    <!-- Content area -->
+                    <Grid Grid.Row="1" Margin="16">
+                        <Grid.RowDefinitions>
+                            <!-- Avatar + name row (avatar overlaps banner) -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Details grid -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Width="88" Height="88" Margin="0,-44,0,0">
+                                <Border CornerRadius="44"
                                 BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                 BorderThickness="6"
                                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
 
-                            <users:AvatarControl Margin="6"
+                                <users:AvatarControl Margin="6"
                                     Style="{ThemeResource LargeAvatarWithPresenceStyle}"
                                     Source="{Binding User.AvatarUrl}"
                                     Presence="{Binding UserPresence, Mode=OneWay}" />
-                        </Grid>
+                            </Grid>
 
-                        <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,-4,0,0">
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,-4,0,0">
+                                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
                                        Text="{Binding User.GlobalName, Mode=OneWay}"
                                        Visibility="{Binding User.GlobalName, Converter={StaticResource BoolVisibilityConverter}}"
                                        TextTrimming="CharacterEllipsis"
                                        IsTextSelectionEnabled="True"/>
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
                                        Text="{Binding User.Username, Mode=OneWay}"
                                        Visibility="{Binding User.GlobalName, Converter={StaticResource InverseBoolVisibilityConverter}}"
                                        TextTrimming="CharacterEllipsis"
                                        IsTextSelectionEnabled="True"/>
-                        </StackPanel>
-                    </Grid>
+                            </StackPanel>
+                        </Grid>
 
-                    <Grid Grid.Row="1" RowSpacing="16" Margin="5,16,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="1" RowSpacing="16" Margin="5,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" ColumnSpacing="12" Visibility="{Binding User.GlobalName, Converter={StaticResource BoolVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Display Name"
+                            <Grid Grid.Row="0" ColumnSpacing="12" Visibility="{Binding User.GlobalName, Converter={StaticResource BoolVisibilityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Display Name"
                                            Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
@@ -131,16 +131,16 @@
                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                            Text="{Binding User.GlobalName, Mode=OneWay}"
                                            IsTextSelectionEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
+                                </StackPanel>
+                            </Grid>
 
-                        <Grid Grid.Row="1" ColumnSpacing="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Username"
+                            <Grid Grid.Row="1" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Username"
                                            Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
@@ -149,70 +149,70 @@
                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                            Text="{Binding User.Username, Mode=OneWay}"
                                            IsTextSelectionEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
+                                </StackPanel>
+                            </Grid>
 
-                        <Grid Grid.Row="2" ColumnSpacing="12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="Email"
+                            <Grid Grid.Row="2" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Email"
                                            Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock x:Name="email" VerticalAlignment="Center" IsTextSelectionEnabled="True" 
                                            Style="{ThemeResource BodyTextBlockStyle}"
                                            FontWeight="SemiBold"
                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                    <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
-                                    <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
+                                        <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
+                                        <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </Border>
+            </Border>
 
-        <TextBlock x:Uid="/AccountsSettingsPage/FriendsText" Grid.Row="1" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
+            <TextBlock x:Uid="/AccountsSettingsPage/FriendsText" Grid.Row="1" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
 
-        <StackPanel Grid.Row="2">
-            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock"
+            <StackPanel Grid.Row="2">
+                <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock"
                                            Visibility="{Binding IsSyncContactsVisible, Converter={StaticResource BoolVisibilityConverter}}">
-                <settings:SettingsBlockControl.Icon>
-                    <SymbolIcon Symbol="People"/>
-                </settings:SettingsBlockControl.Icon>
-                <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" />
-            </settings:SettingsBlockControl>
+                    <settings:SettingsBlockControl.Icon>
+                        <SymbolIcon Symbol="People"/>
+                    </settings:SettingsBlockControl.Icon>
+                    <ToggleSwitch x:Name="syncContactsSwitch" Style="{ThemeResource NoTextToggleSwitchStyle}" />
+                </settings:SettingsBlockControl>
 
-            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock"
+                <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock"
                                            Description="{Binding BackgroundNotificationDescription}">
-                <settings:SettingsBlockControl.Icon>
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding BackgroundNotificationIcon}"/>
-                </settings:SettingsBlockControl.Icon>
-                <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" />
-            </settings:SettingsBlockControl>
-        </StackPanel>
+                    <settings:SettingsBlockControl.Icon>
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding BackgroundNotificationIcon}"/>
+                    </settings:SettingsBlockControl.Icon>
+                    <ToggleSwitch Style="{ThemeResource NoTextToggleSwitchStyle}" IsOn="{Binding BackgroundNotifications, Mode=TwoWay}" />
+                </settings:SettingsBlockControl>
+            </StackPanel>
 
-        <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
-        
-        <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/StatisticsBlock"
+            <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
+
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/StatisticsBlock"
                            Grid.Row="4"
                            IsExpanded="True">
-            <settings:SettingsBlockControl.Icon>
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9D9;"/>
-            </settings:SettingsBlockControl.Icon>
-            <Button x:Name="CopyStatisticsButton"
+                <settings:SettingsBlockControl.Icon>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9D9;"/>
+                </settings:SettingsBlockControl.Icon>
+                <Button x:Name="CopyStatisticsButton"
                     x:Uid="/AccountsSettingsPage/CopyStatisticsButton"
                     Click="CopyStatisticsButton_Click"
                     Margin="0,0,-12,0">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="16"/>
-            </Button>
-            <settings:SettingsBlockControl.ExpandableContent>
-                <Grid Padding="20,8" ColumnSpacing="24">
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="16"/>
+                </Button>
+                <settings:SettingsBlockControl.ExpandableContent>
+                    <Grid Padding="20,8" ColumnSpacing="24">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -229,40 +229,40 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Friends" FontWeight="Normal" IsTextSelectionEnabled="False" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding FriendCountString}"/>
+                        <TextBlock Grid.Row="0" Text="Friends" FontWeight="Normal" IsTextSelectionEnabled="False" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding FriendCountString}"/>
 
-                    <TextBlock Grid.Row="1" Text="Servers" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ServerCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="1" Text="Servers" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ServerCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ChannelsCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="2" Text="Server Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding ChannelsCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding MemberCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="3" Text="Server Members" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding MemberCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding OpenDMCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="4" Text="DM Channels" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding OpenDMCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedUserCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="5" Text="Synced Users" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedUserCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedPresenceCountString}" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="6" Text="Synced Presences" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding SynchedPresenceCountString}" Margin="0,8,0,0"/>
 
-                    <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
-                    <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding EmoteCountString}" Margin="0,8,0,0"/>
-                </Grid>
-            </settings:SettingsBlockControl.ExpandableContent>
-        </settings:SettingsBlockControl>
+                        <TextBlock Grid.Row="7" Text="Emotes" FontWeight="Normal" IsTextSelectionEnabled="False" Margin="0,8,0,0" />
+                        <TextBlock Grid.Row="7" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Left" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" IsTextSelectionEnabled="True" Text="{Binding EmoteCountString}" Margin="0,8,0,0"/>
+                    </Grid>
+                </settings:SettingsBlockControl.ExpandableContent>
+            </settings:SettingsBlockControl>
 
-        <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/LogoutBlock"
+            <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/LogoutBlock"
                                        Grid.Row="6">
-            <settings:SettingsBlockControl.Icon>
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF3B1;"/>
-            </settings:SettingsBlockControl.Icon>
-            <Button x:Uid="/AccountsSettingsPage/LogoutButton" Click="LogoutButton_Click" Foreground="Red" />
-        </settings:SettingsBlockControl>
-    </Grid>
+                <settings:SettingsBlockControl.Icon>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF3B1;"/>
+                </settings:SettingsBlockControl.Icon>
+                <Button x:Uid="/AccountsSettingsPage/LogoutButton" Click="LogoutButton_Click" Foreground="Red" />
+            </settings:SettingsBlockControl>
+        </Grid>
     </ScrollViewer>
 </Page>
