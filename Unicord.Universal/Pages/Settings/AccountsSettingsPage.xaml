@@ -63,11 +63,11 @@
 
                         <Grid Width="88" Height="88" Margin="0,-44,0,0">
                             <Border CornerRadius="44"
-                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                BorderThickness="1"
+                                BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderThickness="6"
                                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
 
-                            <users:AvatarControl Margin="3"
+                            <users:AvatarControl Margin="6"
                                     Style="{ThemeResource LargeAvatarWithPresenceStyle}"
                                     Source="{Binding User.AvatarUrl}"
                                     Presence="{Binding UserPresence, Mode=OneWay}" />
@@ -101,10 +101,12 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock Text="Display Name"
-                                           FontSize="12"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
-                                <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                            Text="{Binding User.GlobalName, Mode=OneWay}"
                                            IsTextSelectionEnabled="True"/>
                             </StackPanel>
@@ -117,10 +119,12 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock Text="Username"
-                                           FontSize="12"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
-                                <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                            Text="{Binding User.Username, Mode=OneWay}"
                                            IsTextSelectionEnabled="True"/>
                             </StackPanel>
@@ -133,11 +137,14 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock Text="Email"
-                                           FontSize="12"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock x:Name="email" VerticalAlignment="Center" IsTextSelectionEnabled="True"/>
+                                        <TextBlock x:Name="email" VerticalAlignment="Center" IsTextSelectionEnabled="True" 
+                                           Style="{ThemeResource BodyTextBlockStyle}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
                                     <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
                                 </StackPanel>
