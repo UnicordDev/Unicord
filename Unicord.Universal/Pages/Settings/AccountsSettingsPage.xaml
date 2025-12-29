@@ -46,6 +46,28 @@
                         Background="{ThemeResource LayerFillColorAltBrush}"
                     CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
 
+                <Button Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,8,8,0"
+                        Padding="4"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        ToolTipService.ToolTip="More">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE10C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </Button.Content>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+
                 <!-- Content area -->
                 <Grid Grid.Row="1" Margin="16">
                     <Grid.RowDefinitions>

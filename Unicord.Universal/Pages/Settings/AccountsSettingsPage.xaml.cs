@@ -105,5 +105,15 @@ namespace Unicord.Universal.Pages.Settings
             dataPackage.SetText(sb.ToString());
             Clipboard.SetContent(dataPackage);
         }
+
+        private void CopyUserId_Click(object sender, RoutedEventArgs e)
+        {
+            var userId = DiscordManager.Discord.CurrentUser?.Id;
+            if (userId == null) return;
+
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(userId.Value.ToString());
+            Clipboard.SetContent(dataPackage);
+        }
     }
 }
