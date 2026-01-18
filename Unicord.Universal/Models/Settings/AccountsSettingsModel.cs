@@ -1,19 +1,25 @@
 ﻿using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DSharpPlus.Entities;
 using DSharpPlus.Enums;
 using DSharpPlus.EventArgs;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Newtonsoft.Json.Bson;
 using Unicord.Universal.Models.Messaging;
 using Unicord.Universal.Models.User;
 using Unicord.Universal.Pages.Settings;
+using Unicord.Universal.Services;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using static Unicord.Constants;
 
 namespace Unicord.Universal.Models
 {
-    public class AccountsSettingsModel : ViewModelBase
+    public partial class AccountsSettingsModel : ViewModelBase
     {
         private static readonly bool _isWindows11 = SystemInformation.Instance.OperatingSystemVersion.Build >= 22000;
         private static readonly ResourceLoader _resourceLoader = ResourceLoader.GetForViewIndependentUse("AccountsSettingsPage");
@@ -115,5 +121,34 @@ namespace Unicord.Universal.Models
         public string SynchedUserCountString => _synchedUserCount == null ? _loading : $"{_synchedUserCount:N0}";
         public string SynchedPresenceCountString => _synchedPresenceCount == null ? _loading : $"{_synchedPresenceCount:N0}";
         public string EmoteCountString => _emoteCount == null ? _loading : $"{_emoteCount:N0}";
+
+        [RelayCommand]
+        private void CopyStatistics()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Friends\t\t\t{FriendCountString}");
+            sb.AppendLine($"Servers\t\t\t{ServerCountString}");
+            sb.AppendLine($"Server Channels\t\t{ChannelsCountString}");
+            sb.AppendLine($"Server Members\t\t{MemberCountString}");
+            sb.AppendLine($"DM Channels\t\t{OpenDMCountString}");
+            sb.AppendLine($"Synced Users\t\t{SynchedUserCountString}");
+            sb.AppendLine($"Synced Presences\t{SynchedPresenceCountString}");
+            sb.AppendLine($"Emotes\t\t\t{EmoteCountString}");
+
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(sb.ToString());
+            Clipboard.SetContent(dataPackage);
+        }
+
+        [RelayCommand]
+        private void CopyUserId()
+        { 
+            var userId = DiscordManager.Discord.CurrentUser?.Id;
+            if (userId == null) return;
+
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(userId.Value.ToString());
+            Clipboard.SetContent(dataPackage);
+        }
     }
 }

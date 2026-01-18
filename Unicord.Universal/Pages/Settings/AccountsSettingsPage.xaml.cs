@@ -85,35 +85,5 @@ namespace Unicord.Universal.Pages.Settings
 
             return $"{new string('●', start.Length)}@{domain}";
         }
-
-        private void CopyStatisticsButton_Click(object sender, RoutedEventArgs e)
-        {
-            var model = DataContext as Models.AccountsSettingsModel;
-            if (model == null) return;
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"Friends\t\t\t{model.FriendCountString}");
-            sb.AppendLine($"Servers\t\t\t{model.ServerCountString}");
-            sb.AppendLine($"Server Channels\t\t{model.ChannelsCountString}");
-            sb.AppendLine($"Server Members\t\t{model.MemberCountString}");
-            sb.AppendLine($"DM Channels\t\t{model.OpenDMCountString}");
-            sb.AppendLine($"Synced Users\t\t{model.SynchedUserCountString}");
-            sb.AppendLine($"Synced Presences\t{model.SynchedPresenceCountString}");
-            sb.AppendLine($"Emotes\t\t\t{model.EmoteCountString}");
-
-            var dataPackage = new DataPackage();
-            dataPackage.SetText(sb.ToString());
-            Clipboard.SetContent(dataPackage);
-        }
-
-        private void CopyUserId_Click(object sender, RoutedEventArgs e)
-        {
-            var userId = DiscordManager.Discord.CurrentUser?.Id;
-            if (userId == null) return;
-
-            var dataPackage = new DataPackage();
-            dataPackage.SetText(userId.Value.ToString());
-            Clipboard.SetContent(dataPackage);
-        }
     }
 }

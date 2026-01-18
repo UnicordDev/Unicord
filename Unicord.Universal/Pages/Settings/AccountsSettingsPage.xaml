@@ -31,8 +31,7 @@
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="1"
-            CornerRadius="{ThemeResource AccountsSettings_ProfileCard_CornerRadius}"
-                MaxWidth="650">
+                CornerRadius="{ThemeResource AccountsSettings_ProfileCard_CornerRadius}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!-- Banner -->
@@ -44,7 +43,7 @@
                     <!-- Banner area (visual only) -->
                     <Border Grid.Row="0"
                         Background="{ThemeResource LayerFillColorAltBrush}"
-                    CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
+                        CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
 
                     <Button Grid.Row="0"
                             HorizontalAlignment="Right"
@@ -59,7 +58,7 @@
                         </Button.Content>
                         <Button.Flyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
+                                <MenuFlyoutItem Text="Copy User ID" Command="{Binding CopyUserIdCommand}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
                                     </MenuFlyoutItem.Icon>
@@ -85,9 +84,9 @@
 
                             <Grid Width="88" Height="88" Margin="0,-44,0,0">
                                 <Border CornerRadius="44"
-                                BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                BorderThickness="6"
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                                    BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderThickness="6"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
 
                                 <users:AvatarControl Margin="6"
                                     Style="{ThemeResource LargeAvatarWithPresenceStyle}"
@@ -163,10 +162,12 @@
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Margin="0,0,0,4"/>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock x:Name="email" VerticalAlignment="Center" IsTextSelectionEnabled="True" 
-                                           Style="{ThemeResource BodyTextBlockStyle}"
-                                           FontWeight="SemiBold"
-                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock x:Name="email" 
+                                                   VerticalAlignment="Center" 
+                                                   IsTextSelectionEnabled="True" 
+                                                   Style="{ThemeResource BodyTextBlockStyle}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                         <HyperlinkButton Name="EmailRevealButton" x:Uid="/AccountsSettingsPage/EmailRevealButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Visible" Click="EmailRevealButton_Click"/>
                                         <HyperlinkButton Name="EmailHideButton" x:Uid="/AccountsSettingsPage/EmailHideButton" Style="{ThemeResource TextBlockButtonStyle}" VerticalAlignment="Center" Padding="2" Visibility="Collapsed" Click="EmailHideButton_Click"/>
                                     </StackPanel>
@@ -181,7 +182,7 @@
 
             <StackPanel Grid.Row="2">
                 <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/SyncContactsBlock"
-                                           Visibility="{Binding IsSyncContactsVisible, Converter={StaticResource BoolVisibilityConverter}}">
+                                               Visibility="{Binding IsSyncContactsVisible, Converter={StaticResource BoolVisibilityConverter}}">
                     <settings:SettingsBlockControl.Icon>
                         <SymbolIcon Symbol="People"/>
                     </settings:SettingsBlockControl.Icon>
@@ -189,7 +190,7 @@
                 </settings:SettingsBlockControl>
 
                 <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/BackgroundNotificationsBlock"
-                                           Description="{Binding BackgroundNotificationDescription}">
+                                               Description="{Binding BackgroundNotificationDescription}">
                     <settings:SettingsBlockControl.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding BackgroundNotificationIcon}"/>
                     </settings:SettingsBlockControl.Icon>
@@ -200,15 +201,15 @@
             <TextBlock x:Uid="/AccountsSettingsPage/StatisticsText" Grid.Row="3" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,16"/>
 
             <settings:SettingsBlockControl x:Uid="/AccountsSettingsPage/StatisticsBlock"
-                           Grid.Row="4"
-                           IsExpanded="True">
+                                           Grid.Row="4"
+                                           IsExpanded="True">
                 <settings:SettingsBlockControl.Icon>
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9D9;"/>
                 </settings:SettingsBlockControl.Icon>
                 <Button x:Name="CopyStatisticsButton"
-                    x:Uid="/AccountsSettingsPage/CopyStatisticsButton"
-                    Click="CopyStatisticsButton_Click"
-                    Margin="0,0,-12,0">
+                        x:Uid="/AccountsSettingsPage/CopyStatisticsButton"
+                        Command="{Binding CopyStatisticsCommand}"
+                        Margin="0,0,-12,0">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="16"/>
                 </Button>
                 <settings:SettingsBlockControl.ExpandableContent>
