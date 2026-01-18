@@ -64,17 +64,32 @@ jobs:
 
     - name: Adjust Package Version
       run: |
-        $epoch = (Get-Date) - ([System.DateTime]::new(2024, 11, 01))
-        $file = (Resolve-Path "Unicord.Universal.Package/Package.appxmanifest")
+        $appx = 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
+        $file = (Resolve-Path "$env:Project_Name/Package.appxmanifest")
         $xml = [System.Xml.XmlDocument]::new()
         $xml.Load($file)
 
-        $node = $xml.GetElementsByTagName("Identity", "http://schemas.microsoft.com/appx/manifest/foundation/windows10")[0]
+        $nsmgr = [System.Xml.XmlNamespaceManager]::new($xml.NameTable)
+        $nsmgr.AddNamespace("appx", $appx);
+
+        # adjust package version
+        $node = $xml.GetElementsByTagName("Identity", $appx)[0]
         $version = [System.Version]::Parse($node.GetAttribute("Version"))
-        $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
-        $node.SetAttribute("Version", $version.ToString())
+
+        if ($env:Version -ne "Store") {
+          $commitDate = Get-Date (git show -s --format=%ci)
+          $epoch = ($commitDate - (Get-Date $commitDate.Date -Day 1))
+          $version = [System.Version]::new($version.Major, $version.Minor, $version.Build, $epoch.TotalMinutes);
+          $node.SetAttribute("Version", $version.ToString())
+        }
 
         $xml.Save($file)
+
+        echo "Appx_Bundle_Version=$($version.ToString())" >> $env:GITHUB_ENV
+      env: 
+        Appx_Bundle_Version: ''
+        # Version: ${{ matrix.version }}
+        Version: ''
 
     - name: Install legacy SDK (10.0.22621.2428)
       run: |
@@ -104,6 +119,7 @@ jobs:
     - name: Upload Appx Package
       uses: actions/upload-artifact@v4
       with:
-        name: AppxPackage-${{ matrix.configuration }}
+        # name: AppxPackage-${{ env.Appx_Bundle_Version }}-${{ matrix.configuration }}-${{ matrix.version }}
+        name: AppxPackage-${{ env.Appx_Bundle_Version }}-${{ matrix.configuration }}
         path: |
           ${{ env.Project_Name }}\\Packages
