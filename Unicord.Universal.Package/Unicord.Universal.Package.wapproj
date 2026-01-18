@@ -69,7 +69,8 @@
     <RuntimeIdentifiers>win10-x64;win10-x86;win10-arm</RuntimeIdentifiers>
     <!-- lol, lmao -->
     <SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
-    <PackageCertificateThumbprint>2C5F1F6080F0648BF786147323B846D8D0BA1638</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>3170C79384D8E3CC9B1BB941485392BC58100230</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>Unicord.Universal.Package_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
