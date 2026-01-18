@@ -93,7 +93,7 @@
                     Click="ShowSidebarButton_Click" 
                     VerticalAlignment="Center"
                     Style="{ThemeResource IconButtonStyle}" 
-                    Content="&#xE72B;"/>
+                    Content="&#xE700;"/>
 
             <TextBlock x:Uid="/FriendsPage/FriendsHeader" 
                        FontFamily="XamlAutoFontFamily"

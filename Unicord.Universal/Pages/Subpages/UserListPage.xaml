@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="CloseButton" 
                     Grid.Column="0" 
-                    Content="&#xE89F;"
+                    Content="&#xE711;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Style="{ThemeResource IconButtonStyle}"
                     Margin="{ThemeResource RightPaneCloseButton_Margin}"

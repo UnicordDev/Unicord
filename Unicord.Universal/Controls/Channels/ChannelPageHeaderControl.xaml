@@ -55,7 +55,7 @@
                     <!--  because VisualStateManager is wank  -->
                     <Grid x:Name="ShowSidebarButtonContainer" Margin="4,0,-4,0">
                         <Button x:Name="ShowSidebarButton"
-                                Content="&#xE72B;"
+                                Content="&#xE700;"
                                 Command="{x:Bind ViewModel.LeftPaneCommand}"
                                 Style="{ThemeResource IconButtonStyle}" />
                     </Grid>
