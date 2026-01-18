@@ -29,15 +29,16 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="CloseButton" 
                     Grid.Column="0" 
-                    Content="&#xE700;"
+                    Content="&#xE711;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Style="{ThemeResource IconButtonStyle}"
+                    Margin="{ThemeResource RightPaneCloseButton_Margin}"
                     Padding="8"
                     Click="CloseSearch_Click" />
             <TextBlock x:Uid="/SearchPage/SearchHeader"
                        Grid.Column="1"
                        Text="Search"
-                       Margin="12,0"
+                       Margin="{ThemeResource RightPaneHeader_Margin}"
                        VerticalAlignment="Center"
                        FontSize="16"
                        FontWeight="Bold"/>
@@ -51,10 +52,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="SearchBox" 
+            <AutoSuggestBox x:Name="SearchBox" 
                      x:Uid="/SearchPage/SearchBox" 
-                     InputScope="Search" 
-                     VerticalAlignment="Center" 
+                     VerticalAlignment="Center"
+                     QueryIcon="Find"
+                     QuerySubmitted="SearchBox_QuerySubmitted"
                      KeyDown="SearchBox_KeyDown" />
 
             <Button x:Name="SearchButton" 
@@ -63,6 +65,7 @@
                     Content="&#xE721;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Padding="8"
+                    Visibility="Collapsed"
                     Click="SearchButton_Click" />
 
             <Button x:Name="ExpandOptionsButton" 
@@ -77,6 +80,17 @@
         <Grid x:Name="ExtraOptionsGrid"
               Grid.Row="2">
         </Grid>
+
+        <StackPanel x:Name="noResults"
+                    Grid.Row="3"
+                    Margin="15"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding NoResults, Converter={StaticResource BoolVisibilityConverter}}">
+            <TextBlock FontSize="110" Text=":(" />
+            <TextBlock x:Uid="/SearchPage/NoResultsHeader" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <TextBlock x:Uid="/SearchPage/NoResultsSubheader" TextWrapping="Wrap"/>
+        </StackPanel>
 
         <ListView x:Name="SearchResultsView"
                   BorderThickness="0,1"

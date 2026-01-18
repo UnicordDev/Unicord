@@ -3,6 +3,7 @@ using System.Linq;
 using DSharpPlus.Entities;
 using Unicord.Universal.Models.Channels;
 using Unicord.Universal.Models.User;
+using Unicord.Universal.Services;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -11,6 +12,8 @@ namespace Unicord.Universal.Pages.Subpages
 {
     public sealed partial class UserListPage : Page
     {
+        private ChannelViewModel _channel;
+
         public UserListPage()
         {
             InitializeComponent();
@@ -25,6 +28,7 @@ namespace Unicord.Universal.Pages.Subpages
 
                 if (e.Parameter is ChannelViewModel channel)
                 {
+                    _channel = channel;
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         if (channel.Channel is DiscordDmChannel dm)
@@ -63,6 +67,11 @@ namespace Unicord.Universal.Pages.Subpages
             //    //AdaptiveFlyoutUtilities.ShowAdaptiveFlyout<UserFlyout>(item, element as FrameworkElement);
             //    userList.SelectedItem = null;
             //}
+        }
+
+        private void CloseButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            SplitPaneService.GetForCurrentView().ToggleRightPane<UserListPage>(_channel);
         }
     }
 }

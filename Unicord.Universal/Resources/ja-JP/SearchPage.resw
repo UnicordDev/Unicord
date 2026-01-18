@@ -120,6 +120,12 @@
   <data name="ResultsText.Text" xml:space="preserve">
     <value>検索結果</value>
   </data>
+  <data name="NoResultsHeader.Text" xml:space="preserve">
+    <value>あちこち探しました。</value>
+  </data>
+  <data name="NoResultsSubheader.Text" xml:space="preserve">
+    <value>残念ながら、結果が見つかりませんでした。</value>
+  </data>
   <data name="SearchBox.PlaceholderText" xml:space="preserve">
     <value>検索...</value>
   </data>

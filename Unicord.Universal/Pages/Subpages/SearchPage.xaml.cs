@@ -66,5 +66,10 @@ namespace Unicord.Universal.Pages.Subpages
         {
             SplitPaneService.GetForCurrentView().ToggleRightPane<SearchPage>(_channel);
         }
+
+        private async void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            await ViewModel.SearchAsync(SearchBox.Text);
+        }
     }
 }

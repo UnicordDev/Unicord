@@ -256,6 +256,12 @@ namespace Unicord.Universal.Pages
                     }
 
                     Model.IsFriendsSelected = false;
+
+                    // Close sidebar in narrow mode after guild selection
+                    if (Window.Current.Bounds.Width <= SplitPaneService.TWO_PANE_BREAKPOINT)
+                    {
+                        SplitPaneService.GetForCurrentView().ToggleLeftPane();
+                    }
                 }
                 else
                 {

@@ -22,9 +22,22 @@
         </Grid.RowDefinitions>
 
         <Grid x:Name="topGrid" Height="42">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="CloseButton" 
+                    Grid.Column="0" 
+                    Content="&#xE711;"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    Style="{ThemeResource IconButtonStyle}"
+                    Margin="{ThemeResource RightPaneCloseButton_Margin}"
+                    Padding="8"
+                    Click="CloseButton_Click" />
             <TextBlock
                 x:Uid="/UserListPage/UserListHeader"
-                Margin="12,0"
+                Grid.Column="1"
+                Margin="{ThemeResource RightPaneHeader_Margin}"
                 VerticalAlignment="Center"
                 FontSize="16"
                 FontWeight="Bold"/>
