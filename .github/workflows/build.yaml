@@ -76,6 +76,16 @@ jobs:
 
         $xml.Save($file)
 
+    - name: Install legacy SDK (10.0.22621.2428)
+      run: |
+        echo Downloading...
+        curl -L https://go.microsoft.com/fwlink/?linkid=2250105 -o winsdksetup.exe
+        echo Installing...
+        ./winsdksetup.exe /features + /q
+        echo "Waiting for SDK to finish installing..."
+        Wait-Process -Name "winsdksetup"
+        echo Done!
+
     # Create the app package by building and packaging the project
     - name: Build App Packages
       run: msbuild $env:ProjectFile_Name /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxBundlePlatforms="x86|x64|ARM" /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:PackageCertificateThumbprint=$env:AppxThumbprint
