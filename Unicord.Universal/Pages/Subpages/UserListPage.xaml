@@ -23,11 +23,11 @@
 
         <Grid x:Name="topGrid" Height="42">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="CloseButton" 
-                    Grid.Column="0" 
+                    Grid.Column="1" 
                     Content="&#xE711;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Style="{ThemeResource IconButtonStyle}"
@@ -36,7 +36,7 @@
                     Click="CloseButton_Click" />
             <TextBlock
                 x:Uid="/UserListPage/UserListHeader"
-                Grid.Column="1"
+                Grid.Column="0"
                 Margin="{ThemeResource RightPaneHeader_Margin}"
                 VerticalAlignment="Center"
                 FontSize="16"

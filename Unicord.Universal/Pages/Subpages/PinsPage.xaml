@@ -26,24 +26,24 @@
 
         <Grid x:Name="TopGrid" Height="42">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            <TextBlock
+                x:Uid="/PinsPage/PinsHeader"
+                Grid.Column="0"
+                Margin="{ThemeResource RightPaneHeader_Margin}"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontWeight="Bold"/>
             <Button x:Name="CloseButton" 
-                    Grid.Column="0" 
+                    Grid.Column="1" 
                     Content="&#xE711;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Style="{ThemeResource IconButtonStyle}"
                     Margin="{ThemeResource RightPaneCloseButton_Margin}"
                     Padding="8"
                     Click="CloseButton_Click" />
-            <TextBlock
-                x:Uid="/PinsPage/PinsHeader"
-                Grid.Column="1"
-                Margin="{ThemeResource RightPaneHeader_Margin}"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontWeight="Bold"/>
         </Grid>
 
         <StackPanel x:Name="noMessages"

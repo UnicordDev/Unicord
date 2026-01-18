@@ -24,11 +24,11 @@
 
         <Grid x:Name="TopGrid" Height="42">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="CloseButton" 
-                    Grid.Column="0" 
+                    Grid.Column="1" 
                     Content="&#xE711;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     Style="{ThemeResource IconButtonStyle}"
@@ -36,7 +36,7 @@
                     Padding="8"
                     Click="CloseSearch_Click" />
             <TextBlock x:Uid="/SearchPage/SearchHeader"
-                       Grid.Column="1"
+                       Grid.Column="0"
                        Text="Search"
                        Margin="{ThemeResource RightPaneHeader_Margin}"
                        VerticalAlignment="Center"

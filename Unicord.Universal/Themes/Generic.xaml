@@ -811,4 +811,7 @@
         <Setter Property="AutomationProperties.LiveSetting" Value="Assertive" />
         <Setter Property="Template" Value="{StaticResource CustomNotificationTemplate}" />
     </Style>
+
+    <Thickness x:Key="RightPaneCloseButton_Margin">2,0</Thickness>
+    <Thickness x:Key="RightPaneHeader_Margin">12,0</Thickness>
 </ResourceDictionary>
