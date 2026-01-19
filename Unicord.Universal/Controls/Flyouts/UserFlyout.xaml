@@ -11,60 +11,288 @@
     xmlns:user="using:Unicord.Universal.Controls.Users"
     mc:Ignorable="d">
 
-    <Grid x:Name="Root" Width="256" Margin="-12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <utilities:AdaptiveFlyout.Resources>
+        <Flyout x:Name="EmoteFlyout" x:Key="EmoteFlyout" Opening="EmoteFlyout_Opening" Closed="EmoteFlyout_Closed">
+            <controls:EmotePicker x:Name="EmotePicker"
+                                  Width="300"
+                                  Height="300"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  EmojiPicked="EmotePicker_EmojiPicked" />
+        </Flyout>
+    </utilities:AdaptiveFlyout.Resources>
 
-        <Grid RequestedTheme="Dark" Background="{ThemeResource SystemControlAccentDark1AcrylicElementAccentDark1Brush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid x:Name="Root" Width="300" Margin="-12">
+        <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="{ThemeResource AccountsSettings_ProfileCard_CornerRadius}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <user:AvatarControl Style="{ThemeResource HugeAvatarWithPresenceStyle}"
-                                Width="128"
-                                Height="128"
-                                Margin="24,24,24,8"
-                                Source="{Binding AvatarUrl}"
-                                Presence="{Binding Presence}"/>
-            <StackPanel Grid.Row="1" RequestedTheme="Dark" >
-                <controls:UsernameControl User="{Binding}" FontSize="24" IconSize="24" HorizontalAlignment="Center" Margin="12,0" />
-                <TextBlock Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextAlignment="Center" FontSize="16" Margin="0,0,0,24">
-                    @<Run Foreground="{ThemeResource ApplicationForegroundThemeBrush}" Text="{Binding Username}"/>#<Run Text="{Binding Discriminator}"/>
-                </TextBlock>
-            </StackPanel>
-        </Grid>
-        
-        <!--<Grid Grid.Row="1" RequestedTheme="Dark" Visibility="{Binding Presence.Activity.Name, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}" >
-            <controls:RichPresenceControl DataContext="{Binding Presence.Activity}" Margin="8" />
-        </Grid>-->
-        
-        <Grid Grid.Row="2" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
-            <StackPanel Margin="12,8,12,12" Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
-                <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource BaseTextBlockStyle}" Margin="0,0,0,8"/>
-                <ItemsControl ItemTemplate="{ThemeResource RoleTemplate}" ItemsSource="{Binding Roles}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <controls1:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </StackPanel>
-        </Grid>
+                <!-- Banner -->
+                <Border Grid.Row="0"
+                        Background="{ThemeResource LayerFillColorAltBrush}"
+                        CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
 
-        <StackPanel HorizontalAlignment="Stretch" Grid.Row="3" Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}">
-            <controls:IconLabelButton Icon="&#xE7EE;" Tapped="IconLabelButton_Tapped" Command="{Binding OpenOverlayCommand}">
-                <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/ShowFullProfile"/>
-            </controls:IconLabelButton>
-            <controls:IconLabelButton Icon="&#xE724;" Command="{Binding SendMessageCommand}">
-                <TextBlock TextTrimming="CharacterEllipsis" x:Uid="/Flyouts/SendMessage"/>
-            </controls:IconLabelButton>
-        </StackPanel>
-       
+                <Button Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,8,8,0"
+                        Padding="4"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        ToolTipService.ToolTip="More">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE10C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                    </Button.Content>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="View Full Profile" Click="ViewFullProfile_Click" Command="{Binding OpenOverlayCommand}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE7EE;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+
+                <!-- Header + actions -->
+                <Grid Grid.Row="1" Margin="16,0,16,12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Avatar overlapping banner -->
+                    <Grid Width="72" Height="72" Margin="0,-36,0,0" HorizontalAlignment="Left">
+                        <Border CornerRadius="36"
+                                BorderBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                BorderThickness="6"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" />
+
+                        <user:AvatarControl Margin="6"
+                                           Style="{ThemeResource LargeAvatarWithPresenceStyle}"
+                                           Source="{Binding AvatarUrl}"
+                                           Presence="{Binding Presence}" />
+                    </Grid>
+
+                    <!-- Names -->
+                    <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                   Text="{Binding DisplayName}"
+                                       TextTrimming="Clip"
+                                   IsTextSelectionEnabled="True"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2" />
+                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Text="{Binding Username}"
+                                   TextTrimming="CharacterEllipsis"
+                                   IsTextSelectionEnabled="True"
+                                   TextWrapping="NoWrap" />
+                    </StackPanel>
+
+                    <!-- Mutual Friends / Servers (wraps like role pills when too wide) -->
+                    <controls1:WrapPanel Grid.Row="2"
+                                         Orientation="Horizontal"
+                                         Margin="0,8,0,12"
+                                         VerticalSpacing="2"
+                                         Visibility="{Binding HasMutualInfo, Converter={StaticResource BoolVisibilityConverter}}">
+
+                        <!-- Friends group (icons + link + dot) -->
+                        <StackPanel x:Name="MutualFriendsGroup" Orientation="Horizontal" Margin="0,0,12,0" Visibility="Collapsed">
+                            <!-- Friend Icons (up to 3, shown when mutual friends exist) -->
+                            <StackPanel x:Name="MutualFriendIcons" Orientation="Horizontal" Spacing="-6" Visibility="Collapsed" Margin="0,0,12,0">
+                                <lib:PersonPicture x:Name="FriendIcon1"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                                <lib:PersonPicture x:Name="FriendIcon2"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                                <lib:PersonPicture x:Name="FriendIcon3"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                            </StackPanel>
+
+                            <!-- Mutual Friends (priority display when > 0) -->
+                            <HyperlinkButton x:Name="MutualFriendsButton"
+                                             Padding="0"
+                                             Margin="0,0,8,0"
+                                             VerticalAlignment="Center"
+                                             Visibility="Collapsed"
+                                             Click="MutualFriends_Click">
+                                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">
+                                    <Run Text="{Binding MutualFriendsCount}"/>
+                                    <Run Text="Mutual Friends"/>
+                                </TextBlock>
+                            </HyperlinkButton>
+
+                            <!-- Separator dot -->
+                            <Ellipse x:Name="MutualSeparator"
+                                     Width="5"
+                                     Height="5"
+                                     Margin="3,0,0,0"
+                                     Fill="{ThemeResource TextFillColorTertiaryBrush}"
+                                     VerticalAlignment="Center"
+                                     Visibility="Collapsed" />
+                        </StackPanel>
+
+                        <!-- Servers group (icons + link) -->
+                        <StackPanel x:Name="MutualServersGroup" Orientation="Horizontal" Visibility="Collapsed">
+                            <!-- Server Icons (up to 3, hidden if mutual friends exist) -->
+                            <StackPanel x:Name="MutualServerIcons"
+                                        Orientation="Horizontal"
+                                        Spacing="-6"
+                                        Visibility="Collapsed"
+                                        Margin="0,0,6,0">
+                                <lib:PersonPicture x:Name="ServerIcon1"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                                <lib:PersonPicture x:Name="ServerIcon2"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                                <lib:PersonPicture x:Name="ServerIcon3"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Visibility="Collapsed" />
+                            </StackPanel>
+
+                            <!-- Mutual Servers Text -->
+                            <HyperlinkButton x:Name="MutualServersButton"
+                                             Padding="0"
+                                             VerticalAlignment="Center"
+                                             Click="MutualServers_Click">
+                                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">
+                                    <Run Text="{Binding MutualGuilds.Count}"/>
+                                    <Run Text="Mutual Servers"/>
+                                </TextBlock>
+                            </HyperlinkButton>
+                        </StackPanel>
+                    </controls1:WrapPanel>
+                </Grid>
+
+                <!-- Roles (if guild member) -->
+                <StackPanel x:Name="RolesSection"
+                            Grid.Row="2"
+                            Margin="16,0,16,12"
+                            Visibility="{Binding Roles, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Uid="/Dialogs/ProfileRoles"
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        <Button x:Name="RolesExpandButton"
+                                Grid.Column="1"
+                                Margin="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                Visibility="Collapsed"
+                                Click="RolesExpandButton_Click">
+                            <ToolTipService.ToolTip>
+                                <TextBlock x:Name="RolesExpandTooltip" Text="Show All Roles"/>
+                            </ToolTipService.ToolTip>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock x:Name="RolesMoreCount"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <FontIcon x:Name="RolesExpandIcon"
+                                          Glyph="&#xE70D;"
+                                          FontSize="12"
+                                          FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <ItemsControl x:Name="RolesItemsControl"
+                                  ItemTemplate="{ThemeResource RoleTemplate}"
+                                  ItemsSource="{Binding Roles}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls1:WrapPanel x:Name="RolesWrapPanel" VerticalSpacing="4" HorizontalSpacing="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- Message Textbox -->
+                <Grid Grid.Row="3" Margin="0,0,0,0">
+                    <!-- Composer (other users) -->
+                    <Border Margin="12,12,12,12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource ChannelPage_MessageInput_BorderBrush}"
+                            BorderThickness="{ThemeResource ChannelPage_MessageInput_BorderThickness}"
+                            CornerRadius="{ThemeResource ChannelPage_MessageInput_CornerRadius}"
+                            Visibility="{Binding IsCurrent, Converter={StaticResource InverseBoolVisibilityConverter}, FallbackValue=Visible}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <ScrollViewer Grid.Column="0"
+                                          MaxHeight="200"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <TextBox x:Name="MessageTextBox"
+                                         Style="{ThemeResource MessageTextBoxStyle}"
+                                         MaxLength="2000"
+                                         AcceptsReturn="False"
+                                         TextWrapping="Wrap"
+                                         Loaded="MessageTextBox_Loaded"
+                                         KeyDown="MessageTextBox_KeyDown" />
+                            </ScrollViewer>
+                            
+                            <ToggleButton x:Name="EmoteButton"
+                                          Grid.Column="1"
+                                          Content="&#xED54;"
+                                          Margin="4,4,0,4"
+                                          VerticalAlignment="Bottom"
+                                          Style="{ThemeResource IconToggleButtonStyle}"
+                                          Click="EmoteButton_Click" />
+
+                            <Button x:Name="SendButton"
+                                Grid.Column="2"
+                                Content="&#xE724;"
+                                Margin="4"
+                                VerticalAlignment="Bottom"
+                                Style="{ThemeResource IconButtonStyle}"
+                                Click="SendButton_Click" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Edit Profile (current user) -->
+                    <Grid Margin="12,12,12,12"
+                          Visibility="{Binding IsCurrent, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}">
+                        <Button Content="Edit Profile"
+                                HorizontalAlignment="Stretch"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                Click="EditProfile_Click" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
     </Grid>
 </utilities:AdaptiveFlyout>
