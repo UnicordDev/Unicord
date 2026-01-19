@@ -150,7 +150,6 @@ namespace Unicord.Universal.Controls.Flyouts
             const double collapsedMaxHeight = 60; // ~2 rows at approximately 30px per row
 
             // Determine whether content actually overflows the collapsed height.
-            // The previous implementation used a fixed role count estimate, which can be wrong
             // depending on wrap width and role pill sizes.
             var availableWidth = RolesItemsControl.ActualWidth;
             if (availableWidth <= 0)
@@ -177,7 +176,6 @@ namespace Unicord.Universal.Controls.Flyouts
             // Many roles (or narrow layout): show expander
             RolesExpandButton.Visibility = Visibility.Visible;
             
-            // FORCE collapsed state - roles expander ALWAYS starts collapsed
             RolesItemsControl.MaxHeight = collapsedMaxHeight;
             RolesExpandIcon.Glyph = "\uE70D"; // ChevronDown
             var hiddenCount = GetHiddenRolesCount(collapsedMaxHeight, user.Roles.Count);
