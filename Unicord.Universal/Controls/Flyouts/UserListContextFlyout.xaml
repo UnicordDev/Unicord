@@ -16,7 +16,7 @@
 
     <MenuFlyoutSeparator/>
 
-    <MenuFlyoutItem x:Uid="/Flyouts/Profile" Icon="OtherUser" Command="{Binding OpenUserOverlayCommand}" />
+    <MenuFlyoutItem x:Name="ProfileItem" x:Uid="/Flyouts/Profile" Icon="OtherUser" Click="ProfileItem_Click" />
     <MenuFlyoutItem x:Uid="/Flyouts/Message" Icon="Message" Command="{Binding MessageCommand}"/>
     
     <MenuFlyoutSeparator x:Name="managementSeparator" />

@@ -15,6 +15,13 @@
 
     <MenuFlyoutSeparator/>
 
+    <MenuFlyoutItem x:Name="ProfileItem"
+                    x:Uid="/Flyouts/Profile"
+                    Text="Profile"
+                    Icon="OtherUser"
+                    Visibility="{Binding Recipient, Converter={StaticResource HideOnNullConverter}}"
+                    Click="ProfileItem_Click" />
+
     <MenuFlyoutItem x:Uid="/Flyouts/MarkAsRead" Command="{Binding AcknowledgeCommand}">
         <MenuFlyoutItem.Icon>
             <FontIcon Glyph="&#xE930;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
