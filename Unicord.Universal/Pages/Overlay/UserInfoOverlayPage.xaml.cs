@@ -1,4 +1,5 @@
-﻿using Unicord.Universal.Models.User;
+﻿using System;
+using Unicord.Universal.Models.User;
 using Unicord.Universal.Services;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
@@ -25,7 +26,17 @@ namespace Unicord.Universal.Pages.Overlay
         {
             base.OnNavigatedTo(e);
 
-            userInfoOverlay.User = (UserViewModel)e.Parameter;
+            if (e.Parameter is UserViewModel user)
+            {
+                userInfoOverlay.User = user;
+                return;
+            }
+
+            if (e.Parameter is System.ValueTuple<UserViewModel, string> tuple)
+            {
+                userInfoOverlay.User = tuple.Item1;
+                userInfoOverlay.NavigateToSection(tuple.Item2);
+            }
         }
     }
 }
