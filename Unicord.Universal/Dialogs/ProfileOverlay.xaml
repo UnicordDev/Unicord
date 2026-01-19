@@ -61,7 +61,7 @@
                 </lib:NavigationViewItem>
                 
                 <lib:NavigationViewItem x:Name="MutualServersItem"
-                                        x:Uid="/Dialogs/ProfileMutualServers"
+                                        Content="Mutual Servers"
                                         Tag="mutual">
                     <lib:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE902;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
@@ -80,7 +80,7 @@
                         <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
-                                CornerRadius="{ThemeResource ProfileOverlay_ProfileCard_CornerRadius}"
+                            CornerRadius="{ThemeResource ProfileOverlay_ProfileCard_CornerRadius}"
                                 VerticalAlignment="Stretch">
                         <Grid>
                             <Grid.RowDefinitions>
