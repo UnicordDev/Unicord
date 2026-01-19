@@ -881,7 +881,8 @@
                                         Width="16"
                                         Height="16"
                                         Margin="0,0,4,0"
-                                        Grid.Column="1">
+                                        Grid.Column="1"
+                                        Tapped="Avatar_Tapped">
                             <Ellipse.Fill>
                                 <ImageBrush>
                                     <ImageBrush.ImageSource>
@@ -894,7 +895,12 @@
                             </Ellipse.Fill>
                         </Ellipse>
 
-                        <controls:UsernameControl Grid.Column="2" FontWeight="Bold" User="{x:Bind ReferencedMessage.Author}" FontSize="12" IconSize="12"/>
+                        <controls:UsernameControl Grid.Column="2"
+                                                  FontWeight="Bold"
+                                                  User="{x:Bind ReferencedMessage.Author}"
+                                                  FontSize="12"
+                                                  IconSize="12"
+                                                  Tapped="UsernameControl_Tapped" />
 
                         <controls:MarkdownTextBlock x:Name="ReplyMarkdown"
                                                 Grid.Column="3"
@@ -921,6 +927,7 @@
                                  DataContextChanged="ImageContainer_DataContextChanged"
                                  Width="36"
                                  Height="36"
+                                 Tapped="Avatar_Tapped"
                                  VerticalAlignment="Top">
                             <Ellipse.Fill>
                                 <ImageBrush x:Name="ProfileImageBrush">
@@ -943,7 +950,11 @@
                             <StackPanel x:Name="AuthorContainer" 
                                         x:Load="{x:Bind converters:Static.IsNot(State, messages:MessageViewModelState.Collapsed),Mode=OneWay}"   
                                         Orientation="Horizontal" Grid.Row="0">
-                                <controls:UsernameControl FontWeight="Bold" User="{x:Bind Author}" FontSize="14" IconSize="14" />
+                                <controls:UsernameControl FontWeight="Bold"
+                                                          User="{x:Bind Author}"
+                                                          FontSize="14"
+                                                          IconSize="14"
+                                                          Tapped="UsernameControl_Tapped" />
 
                                 <TextBlock Margin="8,1" 
                                            x:Phase="4"                               
