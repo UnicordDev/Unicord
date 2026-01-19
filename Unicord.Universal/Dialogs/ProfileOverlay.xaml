@@ -9,122 +9,407 @@
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:lib="using:Microsoft.UI.Xaml.Controls"
-    xmlns:users="using:Unicord.Universal.Controls.Users" xmlns:guild="using:Unicord.Universal.Models.Guild"
-    x:DefaultBindMode="OneWay" mc:Ignorable="d" MaxWidth="550">
-
-    <UserControl.Resources>
-        <FontFamily x:Key="PivotHeaderItemFontFamily">Segoe UI Variable Display</FontFamily>
-        <FontWeight x:Key="PivotHeaderItemThemeFontWeight">Medium</FontWeight>
-    </UserControl.Resources>
+    xmlns:users="using:Unicord.Universal.Controls.Users"
+    xmlns:guild="using:Unicord.Universal.Models.Guild"
+    xmlns:user="using:Unicord.Universal.Models.User"
+    x:DefaultBindMode="OneWay" 
+    mc:Ignorable="d" 
+    MaxWidth="645"
+    Height="600">
 
     <Border VerticalAlignment="Center"
+            MinHeight="600"
             Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
-            BorderThickness="1,1,1,1"
-            CornerRadius="8">
-        <StackPanel>
-            <Border Background="{ThemeResource LayerFillColorAltBrush}"
-                    CornerRadius="8,8,0,0">
-                <Grid Padding="20">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            BorderThickness="1"
+            CornerRadius="{ThemeResource ProfileOverlay_Dialog_CornerRadius}">
+        <Grid>
+            <lib:NavigationView x:Name="NavView"
+                                PaneDisplayMode="LeftCompact"
+                                IsPaneOpen="False"
+                                IsBackButtonVisible="Collapsed"
+                                IsSettingsVisible="False"
+                                IsPaneToggleButtonVisible="False"
+                                CompactPaneLength="48"
+                                OpenPaneLength="190"
+                                SelectionChanged="NavView_SelectionChanged">
 
-                        <users:AvatarControl Width="96" Height="96"
-                                         Style="{StaticResource LargeAvatarWithPresenceStyle}"
-                                         Source="{x:Bind User.AvatarUrl}" 
-                                         Presence="{x:Bind User.Presence}"/>
-                        <StackPanel Margin="20,0,0,0" Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Style="{ThemeResource TitleTextBlockStyle}" 
-                                       TextTrimming="CharacterEllipsis" 
-                                       TextWrapping="NoWrap"
-                                       FontFamily="Segoe UI Variable Display" 
-                                       Text="{x:Bind User.DisplayName, TargetNullValue='DisplayName'}">
+            <lib:NavigationView.MenuItems>
+                <lib:NavigationViewItem x:Name="OverviewItem"
+                                        Content="Overview"
+                                        Tag="overview">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+                
+                <lib:NavigationViewItem x:Name="ActivitiesItem"
+                                        Visibility="{x:Bind User.IsBot, Converter={StaticResource InverseBoolVisibilityConverter}, Mode=OneWay}"
+                                        Content="Activities"
+                                        Tag="activities">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE163;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+                
+                <lib:NavigationViewItem x:Name="MutualFriendsItem"
+                                        Content="Mutual Friends"
+                                        Tag="mutualfriends">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE716;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+                
+                <lib:NavigationViewItem x:Name="MutualServersItem"
+                                        x:Uid="/Dialogs/ProfileMutualServers"
+                                        Tag="mutual">
+                    <lib:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE902;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                    </lib:NavigationViewItem.Icon>
+                </lib:NavigationViewItem>
+            </lib:NavigationView.MenuItems>
 
-                            </TextBlock>
-                            <TextBlock x:Name="nicknameTextBlock"
-                                   Margin="0,0,4,0" 
-                                   TextWrapping="NoWrap" 
-                                   Visibility="{x:Bind User.Nickname, Converter={StaticResource BoolVisibilityConverter}, FallbackValue=Collapsed}"
-                                   Foreground="{x:Bind User.Color, Converter={StaticResource ColourBrushConverter}}" 
-                                   Text="{x:Bind User.DisplayName}"
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   FontFamily="Segoe UI Variable Display">
-                            </TextBlock>
-                        </StackPanel>
-                        <Grid Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
+            <lib:NavigationView.FooterMenuItems>
+            </lib:NavigationView.FooterMenuItems>
+
+            <!-- Content Frame -->
+            <ScrollViewer Padding="20,20,20,0" VerticalScrollBarVisibility="Auto">
+                <Grid x:Name="ContentGrid" VerticalAlignment="Stretch">
+                    <!-- Overview / Profile Card -->
+                    <Grid x:Name="OverviewContent" Visibility="Collapsed">
+                        <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{ThemeResource ProfileOverlay_ProfileCard_CornerRadius}"
+                                VerticalAlignment="Stretch">
+                        <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
+                                <!-- Banner -->
+                                <RowDefinition Height="135"/>
+                                <!-- Content -->
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE8BD;" Command="{Binding MessageCommand}" />
-                            <Button Style="{ThemeResource IconButtonStyle}" VerticalAlignment="Stretch" Content="&#xE717;" Grid.Row="1" />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Border>
-            <!--<Border Background="{ThemeResource LayerFillColorAltBrush}">
-                <Grid Grid.Row="1" 
-                      Visibility="{x:Bind User.Presence.Status, Converter={StaticResource HideOnNullConverter}, FallbackValue=Collapsed}">
-                    --><!--<controls:RichPresenceControl DataContext="{x:Bind _user.Presence.Activity}" Margin="8" />--><!--
-                </Grid>
-            </Border>-->
-            <Border>
-                <Grid MinHeight="200"
-                      Padding="0,0,0,20"
-                      BorderThickness="0,1,0,0"
-                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
-                    <Pivot SelectedIndex="0">
-                        <Pivot.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                            </DataTemplate>
-                        </Pivot.HeaderTemplate>
-                        <PivotItem x:Name="guildOverlay" x:Load="{x:Bind User.IsMember, Mode=OneTime}" Header="{x:Bind User.Guild.Name}">
-                            <StackPanel>
-                                <StackPanel x:Name="rolesList" 
-                                            Visibility="{x:Bind User.Roles, Converter={StaticResource BoolVisibilityConverter}}">
-                                    <TextBlock x:Uid="/Dialogs/ProfileRoles" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
-                                    <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" ItemsSource="{x:Bind User.Roles}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <toolkit:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
+
+                            <!-- Banner area -->
+                            <Border Grid.Row="0"
+                                    Background="{ThemeResource LayerFillColorAltBrush}"
+                                    CornerRadius="{ThemeResource AccountsSettings_ProfileCard_BannerCornerRadius}" />
+
+                            <Button Grid.Row="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Margin="0,8,8,0"
+                                    Padding="4"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    ToolTipService.ToolTip="More"
+                                    Visibility="{x:Bind User.IsBot, Converter={StaticResource InverseBoolVisibilityConverter}, Mode=OneWay}">
+                                <Button.Content>
+                                    <FontIcon Glyph="&#xE10C;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                </Button.Content>
+                                <Button.Flyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Copy User ID" Click="CopyUserId_Click">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                            </Button>
+
+                            <!-- Avatar + Name + Info -->
+                            <Grid Grid.Row="1" Margin="16,0,16,16">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Avatar overlapping banner -->
+                                <Grid Width="92" Height="92" Margin="0,-46,0,0" HorizontalAlignment="Left">
+                                    <Border CornerRadius="46"
+                                            BorderBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderThickness="6"
+                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+
+                                    <users:AvatarControl Margin="6"
+                                                        Style="{ThemeResource LargeAvatarWithPresenceStyle}"
+                                                        Source="{x:Bind User.AvatarUrl}"
+                                                        Presence="{x:Bind User.Presence}" />
+                                </Grid>
+
+                                <!-- Names -->
+                                <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                                            <TextBlock Style="{ThemeResource TitleTextBlockStyle}"
+                                              Text="{x:Bind User.DisplayName, TargetNullValue='DisplayName'}"
+                                                                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                              TextTrimming="CharacterEllipsis"
+                                              IsTextSelectionEnabled="True"
+                                              TextWrapping="NoWrap"/>
+                                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                              Text="{x:Bind User.Username}"
+                                              IsTextSelectionEnabled="True"
+                                              Style="{ThemeResource CaptionTextBlockStyle}"
+                                              TextTrimming="CharacterEllipsis"
+                                              TextWrapping="NoWrap"/>
                                 </StackPanel>
 
-                                <TextBlock x:Uid="/Dialogs/ProfileJoinedServer" Style="{ThemeResource FlyoutPickerTitleTextBlockStyle}" Margin="0,4"/>
-                                <TextBlock Text="{x:Bind User.JoinedAt, Converter={StaticResource DateTimeConverter}}"/>
-                            </StackPanel>
-                        </PivotItem>
-                        <PivotItem x:Uid="/Dialogs/ProfileMutualServers">
-                            <PivotItem.Content>
-                                <ListView x:Name="mutualServers" MaxHeight="180" SelectionMode="None" ItemsSource="{x:Bind User.MutualGuilds}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="guild:GuildViewModel">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
+                                <!-- Info section -->
+                                <StackPanel Grid.Row="2" Margin="0,16,0,0" Spacing="12">
+                                        <!-- Action buttons -->
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Button Style="{ThemeResource AccentButtonStyle}" Content="&#xE717;" HorizontalAlignment="Stretch" Command="{Binding AddFriendCommand}">
+                                                <Button.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <FontIcon Glyph="&#xE8FA;" FontSize="16"/>
+                                                            <TextBlock Text="Add Friend"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </Button.ContentTemplate>
+                                            </Button>
+                                            <Button Content="&#xE8BD;" Command="{Binding MessageCommand}" HorizontalAlignment="Stretch">
+                                                <Button.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <FontIcon Glyph="&#xE8BD;" FontSize="16"/>
+                                                            <TextBlock Text="Message"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </Button.ContentTemplate>
+                                            </Button>
+                                        </StackPanel>
+                                        <!-- Member Since -->
+                                        <StackPanel>
+                                            <TextBlock Text="Member Since"
+                                                  Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                            
+                                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                                                <!-- Account creation date -->
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Image Source="{StaticResource DiscordClyde}" 
+                                                           Width="16"
+                                                           Height="16"
+                                                           VerticalAlignment="Center"
+                                                           ToolTipService.ToolTip="Discord"/>
+                                                    <TextBlock Text="{x:Bind User.User.CreationTimestamp, Converter={StaticResource DateTimeConverter}}"
+                                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                              IsTextSelectionEnabled="True"
+                                                              VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                
+                                                <!-- Separator dot (if guild member) -->
+                                                <Ellipse Width="4" 
+                                                        Height="4" 
+                                                        Fill="{ThemeResource TextFillColorSecondaryBrush}"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{x:Bind User.IsMember, Converter={StaticResource BoolVisibilityConverter}, Mode=OneWay}"/>
+                                                
+                                                <!-- Server join date (if guild member) -->
+                                                <StackPanel Orientation="Horizontal" 
+                                                           Spacing="6"
+                                                           Visibility="{x:Bind User.IsMember, Converter={StaticResource BoolVisibilityConverter}, Mode=OneWay}">
+                                                    <lib:PersonPicture DisplayName="{x:Bind User.Guild.Name}" 
+                                                                      ProfilePicture="{x:Bind User.Guild.Icon}" 
+                                                                      Width="16" 
+                                                                      Height="16"
+                                                                      ToolTipService.ToolTip="{x:Bind User.Guild.Name}"/>
+                                                    <TextBlock Text="{x:Bind User.JoinedAt, Converter={StaticResource DateTimeConverter}}"
+                                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                              IsTextSelectionEnabled="True"
+                                                              VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
 
-                                                <lib:PersonPicture DisplayName="{x:Bind Name}" ProfilePicture="{x:Bind Icon}" Width="36" Height="36" Margin="0,4"/>
-                                                <TextBlock Grid.Column="1" Margin="12,0" Text="{x:Bind Name}" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </PivotItem.Content>
-                        </PivotItem>
-                        <PivotItem x:Uid="/Dialogs/ProfileConnections">
-                        </PivotItem>
-                    </Pivot>
+                                        <!-- Roles (if guild member) -->
+                                        <StackPanel Visibility="{x:Bind User.Roles, Converter={StaticResource BoolVisibilityConverter}}">
+                                            <TextBlock x:Uid="/Dialogs/ProfileRoles" 
+                                                  Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                                                  Margin="0,0,0,8"/>
+                                            <ItemsControl ItemTemplate="{StaticResource RoleTemplate}" 
+                                                     ItemsSource="{x:Bind User.Roles}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <toolkit:WrapPanel VerticalSpacing="4" HorizontalSpacing="4"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
-        </StackPanel>
+
+                    <!-- Activities -->
+                    <Grid x:Name="ActivitiesContent" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Activities"
+                                  Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                        <StackPanel Grid.Row="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    MaxWidth="360"
+                                    Spacing="12">
+                            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                                <Run Text=""/>
+                                <Run Text="{x:Bind User.DisplayName, TargetNullValue='This user'}"/>
+                                <Run Text=" doesn't have any activity to share"/>
+                                <LineBreak/>
+                                <Run Text="here"/>
+                                <LineBreak/>
+                                <LineBreak/>
+                                <Run Text="No activity shared yet - drop them a friendly hello to"/>
+                                <LineBreak/>
+                                <Run Text="start chatting"/>
+                            </TextBlock>
+
+                            <Button Command="{Binding MessageCommand}"
+                                    HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE8BD;" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16"/>
+                                    <TextBlock Text="Message"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Mutual Friends -->
+                    <Grid x:Name="MutualFriendsContent" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Mutual Friends"
+                                  Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                        <StackPanel Grid.Row="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    MaxWidth="360"
+                                    Spacing="12"
+                                    Visibility="{x:Bind User.MutualFriends, Converter={StaticResource InverseBoolVisibilityConverter}, Mode=OneWay}">
+                            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                                <Run Text="You don't have any friends in common"/>
+                                <LineBreak/>
+                                <LineBreak/>
+                                <Run Text="Your friends haven't met their friends yet - time for a"/>
+                                <LineBreak/>
+                                <Run Text="legendary crossover!⚡"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <ListView Grid.Row="1"
+                                 SelectionMode="None"
+                                 IsItemClickEnabled="True"
+                                 ItemClick="MutualFriendsList_ItemClick"
+                                 Margin="0,8"
+                                 ItemsSource="{x:Bind User.MutualFriends}"
+                                 Visibility="{x:Bind User.MutualFriends, Converter={StaticResource BoolVisibilityConverter}, Mode=OneWay}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="Margin" Value="0,2"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="CornerRadius" Value="{ThemeResource RoleTemplate_CornerRadius}"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="user:UserViewModel">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <users:AvatarControl Source="{x:Bind AvatarUrl}"
+                                                           Width="40"
+                                                           Height="40"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Margin="12,0,0,0"
+                                                   Text="{x:Bind DisplayName}"
+                                                   VerticalAlignment="Center"
+                                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+
+                        <!-- Mutual Servers -->
+                        <Grid x:Name="MutualServersContent" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock x:Uid="/Dialogs/ProfileMutualServersTitle"
+                                  Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                        <StackPanel Grid.Row="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    MaxWidth="360"
+                                    Spacing="12"
+                                    Visibility="{x:Bind User.MutualGuilds, Converter={StaticResource InverseBoolVisibilityConverter}, Mode=OneWay}">
+                            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                                <Run Text="You don't have any servers in common"/>
+                                <LineBreak/>
+                                <LineBreak/>
+                                <Run Text="Join the same servers to unlock shared emotes and more VC channels to hang in"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <ListView Grid.Row="1"
+                                 SelectionMode="None"
+                                 IsItemClickEnabled="True"
+                                 ItemClick="MutualServersList_ItemClick"
+                                 Margin="0,8"
+                                 ItemsSource="{x:Bind User.MutualGuilds}"
+                                 Visibility="{x:Bind User.MutualGuilds, Converter={StaticResource BoolVisibilityConverter}, Mode=OneWay}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="Margin" Value="0,2"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="CornerRadius" Value="{ThemeResource RoleTemplate_CornerRadius}"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="guild:GuildViewModel">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <lib:PersonPicture DisplayName="{x:Bind Name}" 
+                                                          ProfilePicture="{x:Bind Icon}" 
+                                                          Width="40" 
+                                                          Height="40"/>
+                                        <TextBlock Grid.Column="1" 
+                                                  Margin="12,0,0,0" 
+                                                  Text="{x:Bind Name}" 
+                                                  VerticalAlignment="Center"
+                                                  Style="{ThemeResource BodyTextBlockStyle}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        </Grid>
+                    </Grid>
+            </ScrollViewer>
+            </lib:NavigationView>
+        </Grid>
     </Border>
 </UserControl>
