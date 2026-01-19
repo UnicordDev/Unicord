@@ -7,8 +7,10 @@ using Unicord.Universal.Services;
 using Unicord.Universal.Utilities;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -31,6 +33,7 @@ namespace Unicord.Universal.Controls.Flyouts
         }
 
         private bool _rolesExpanded = false;
+        private bool _rolesAutoExpanded = false;
 
         public UserFlyout(object param) : base(param)
         {
@@ -41,6 +44,7 @@ namespace Unicord.Universal.Controls.Flyouts
 
         private void UserFlyout_Loaded(object sender, RoutedEventArgs e)
         {
+            _rolesAutoExpanded = false;
             UpdateRolesDisplay();
         }
 
@@ -48,51 +52,188 @@ namespace Unicord.Universal.Controls.Flyouts
         {
             UpdateMutualDisplay();
             _rolesExpanded = false;
+            _rolesAutoExpanded = false;
             UpdateRolesDisplay();
+        }
+
+        private static T FindDescendant<T>(DependencyObject root) where T : DependencyObject
+        {
+            if (root == null)
+                return null;
+
+            var count = VisualTreeHelper.GetChildrenCount(root);
+            for (var i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(root, i);
+                if (child is T typed)
+                    return typed;
+
+                var result = FindDescendant<T>(child);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
+        private static Panel FindItemsHostPanel(ItemsControl itemsControl, int expectedChildCount)
+        {
+            if (itemsControl == null)
+                return null;
+
+            Panel best = null;
+
+            void Walk(DependencyObject node)
+            {
+                if (node == null)
+                    return;
+
+                if (node is Panel panel)
+                {
+                    // Prefer the panel that actually hosts the items
+                    if (panel.Children?.Count == expectedChildCount)
+                    {
+                        best = panel;
+                        return;
+                    }
+                }
+
+                var childCount = VisualTreeHelper.GetChildrenCount(node);
+                for (var i = 0; i < childCount && best == null; i++)
+                    Walk(VisualTreeHelper.GetChild(node, i));
+            }
+
+            Walk(itemsControl);
+            return best;
+        }
+
+        private int GetHiddenRolesCount(double collapsedMaxHeight, int roleCount)
+        {
+            // Ensure the visual tree is ready
+            RolesItemsControl.UpdateLayout();
+
+            var host = FindItemsHostPanel(RolesItemsControl, roleCount);
+            if (host == null || host.Children == null || host.Children.Count == 0)
+                return Math.Max(1, roleCount - 5);
+
+            var visibleCount = 0;
+
+            foreach (var child in host.Children.OfType<FrameworkElement>())
+            {
+                if (child.ActualHeight <= 0)
+                    continue;
+
+                // Position relative to the host panel
+                var topLeft = child.TransformToVisual(host).TransformPoint(new Point(0, 0));
+                var bottom = topLeft.Y + child.ActualHeight;
+
+                if (bottom <= collapsedMaxHeight + 0.5)
+                    visibleCount++;
+            }
+
+            var hidden = roleCount - visibleCount;
+            return hidden <= 0 ? 1 : hidden;
         }
 
         private void UpdateRolesDisplay()
         {
-            if (DataContext is not Unicord.Universal.Models.User.UserViewModel user || user.Roles == null)
+            if (RolesItemsControl == null || RolesExpandButton == null)
                 return;
 
-            var roleCount = user.Roles.Count;
-            
-            // Estimate ~5 roles fit in 2 rows
-            const int visibleRolesInCollapsedMode = 5;
-            
-            if (roleCount <= visibleRolesInCollapsedMode)
+            if (DataContext is not Unicord.Universal.Models.User.UserViewModel user || user.Roles == null)
             {
-                // Few roles, show all and hide expander
                 RolesExpandButton.Visibility = Visibility.Collapsed;
                 RolesItemsControl.MaxHeight = double.PositiveInfinity;
                 return;
             }
 
-            // Many roles, show expander
-            RolesExpandButton.Visibility = Visibility.Visible;
+            const double collapsedMaxHeight = 60; // ~2 rows at approximately 30px per row
 
-            if (_rolesExpanded)
+            // Determine whether content actually overflows the collapsed height.
+            // The previous implementation used a fixed role count estimate, which can be wrong
+            // depending on wrap width and role pill sizes.
+            var availableWidth = RolesItemsControl.ActualWidth;
+            if (availableWidth <= 0)
+                availableWidth = Root?.ActualWidth > 0 ? Root.ActualWidth : 280;
+
+            // Measure full (unclipped) desired height
+            var previousMaxHeight = RolesItemsControl.MaxHeight;
+            RolesItemsControl.MaxHeight = double.PositiveInfinity;
+            RolesItemsControl.Measure(new Windows.Foundation.Size(availableWidth, double.PositiveInfinity));
+            var fullHeight = RolesItemsControl.DesiredSize.Height;
+
+            var needsExpander = fullHeight > (collapsedMaxHeight + 0.5);
+
+            if (!needsExpander)
             {
+                // Everything fits already; show all and hide expander.
+                _rolesExpanded = true;
+                _rolesAutoExpanded = true;
+                RolesExpandButton.Visibility = Visibility.Collapsed;
                 RolesItemsControl.MaxHeight = double.PositiveInfinity;
-                RolesExpandIcon.Glyph = "\uE70E"; // ChevronUp
-                RolesMoreCount.Text = "Show less";
-                RolesExpandTooltip.Text = "Collapse Roles";
+                return;
             }
-            else
-            {
-                RolesItemsControl.MaxHeight = 60; // ~2 rows at approximately 30px per row
-                RolesExpandIcon.Glyph = "\uE70D"; // ChevronDown
-                var hiddenCount = roleCount - visibleRolesInCollapsedMode;
-                RolesMoreCount.Text = $"+{hiddenCount} more";
-                RolesExpandTooltip.Text = "Show All Roles";
-            }
+
+            // Many roles (or narrow layout): show expander
+            RolesExpandButton.Visibility = Visibility.Visible;
+            
+            // FORCE collapsed state - roles expander ALWAYS starts collapsed
+            RolesItemsControl.MaxHeight = collapsedMaxHeight;
+            RolesExpandIcon.Glyph = "\uE70D"; // ChevronDown
+            var hiddenCount = GetHiddenRolesCount(collapsedMaxHeight, user.Roles.Count);
+            RolesMoreCount.Text = $"+{hiddenCount} more";
+            RolesExpandTooltip.Text = "Show All Roles";
         }
 
         private void RolesExpandButton_Click(object sender, RoutedEventArgs e)
         {
-            _rolesExpanded = !_rolesExpanded;
-            UpdateRolesDisplay();
+            if (RolesItemsControl == null || RolesExpandButton == null)
+                return;
+
+            if (DataContext is not Unicord.Universal.Models.User.UserViewModel user || user.Roles == null)
+                return;
+
+            const double collapsedMaxHeight = 60;
+
+            // Toggle between collapsed and expanded
+            var isCurrentlyExpanded = RolesItemsControl.MaxHeight == double.PositiveInfinity;
+            
+            if (isCurrentlyExpanded)
+            {
+                // Currently expanded, collapse it
+                RolesItemsControl.MaxHeight = collapsedMaxHeight;
+                AnimateChevron(0); // Rotate to 0 degrees (down)
+                var hiddenCount = GetHiddenRolesCount(collapsedMaxHeight, user.Roles.Count);
+                RolesMoreCount.Text = $"+{hiddenCount} more";
+                RolesExpandTooltip.Text = "Show All Roles";
+            }
+            else
+            {
+                // Currently collapsed, expand it
+                RolesItemsControl.MaxHeight = double.PositiveInfinity;
+                AnimateChevron(-180); // Rotate to -180 degrees (up, clockwise)
+                RolesMoreCount.Text = "Show less";
+                RolesExpandTooltip.Text = "Collapse Roles";
+            }
+        }
+
+        private void AnimateChevron(double toAngle)
+        {
+            if (RolesExpandIconRotation == null)
+                return;
+
+            var storyboard = new Windows.UI.Xaml.Media.Animation.Storyboard();
+            var animation = new Windows.UI.Xaml.Media.Animation.DoubleAnimation
+            {
+                To = toAngle,
+                Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+                EasingFunction = new Windows.UI.Xaml.Media.Animation.CubicEase { EasingMode = Windows.UI.Xaml.Media.Animation.EasingMode.EaseOut }
+            };
+            
+            Windows.UI.Xaml.Media.Animation.Storyboard.SetTarget(animation, RolesExpandIconRotation);
+            Windows.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(animation, "Angle");
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
         }
 
         private void UpdateMutualDisplay()

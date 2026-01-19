@@ -221,7 +221,12 @@
                                 <FontIcon x:Name="RolesExpandIcon"
                                           Glyph="&#xE70D;"
                                           FontSize="12"
-                                          FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                                          RenderTransformOrigin="0.5,0.5"
+                                          FontFamily="{StaticResource SymbolThemeFontFamily}">
+                                    <FontIcon.RenderTransform>
+                                        <RotateTransform x:Name="RolesExpandIconRotation" Angle="0"/>
+                                    </FontIcon.RenderTransform>
+                                </FontIcon>
                             </StackPanel>
                         </Button>
                     </Grid>
