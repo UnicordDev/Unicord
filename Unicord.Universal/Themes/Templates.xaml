@@ -251,12 +251,17 @@
 
     <DataTemplate x:Key="RoleTemplate" x:DataType="userVMs:RoleViewModel">
         <Border BorderThickness="1"
-                BorderBrush="{x:Bind Color}" 
-                Padding="4,4,4,4"
-                CornerRadius="2"
-                MinWidth="24">
-            <TextBlock Foreground="{x:Bind Color}" 
-                       FontSize="12" Text="{x:Bind Name}" VerticalAlignment="Center" TextAlignment="Center"/>
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" 
+                Padding="6,4,8,4"
+                CornerRadius="{ThemeResource RoleTemplate_CornerRadius}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Ellipse Width="12" Height="12" 
+                         Fill="{x:Bind Color}"
+                         VerticalAlignment="Center"/>
+                <TextBlock FontSize="12" 
+                           Text="{x:Bind Name}" 
+                           VerticalAlignment="Center"/>
+            </StackPanel>
         </Border>
     </DataTemplate>
 
@@ -380,8 +385,7 @@
 
             <i:Interaction.Behaviors>
                 <core:DataTriggerBehavior Binding="{x:Bind IsExpanded}"
-                                              ComparisonCondition="Equal"
-                                              Value="True">
+                                          Value="True">
                     <media1:ControlStoryboardAction>
                         <media1:ControlStoryboardAction.Storyboard>
                             <Storyboard>
@@ -404,8 +408,7 @@
                     </media1:ControlStoryboardAction>
                 </core:DataTriggerBehavior>
                 <core:DataTriggerBehavior Binding="{x:Bind IsExpanded}"
-                                              ComparisonCondition="Equal"
-                                              Value="False">
+                                          Value="False">
                     <media1:ControlStoryboardAction>
                         <media1:ControlStoryboardAction.Storyboard>
                             <Storyboard>
