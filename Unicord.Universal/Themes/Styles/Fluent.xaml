@@ -28,7 +28,10 @@
                     <CornerRadius x:Key="OverlayCornerRadius">0,0,0,0</CornerRadius>
 
                     <CornerRadius x:Key="AccountsSettings_ProfileCard_CornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="ProfileOverlay_Dialog_CornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="ProfileOverlay_ProfileCard_CornerRadius">0</CornerRadius>
                     <CornerRadius x:Key="AccountsSettings_ProfileCard_BannerCornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="RoleTemplate_CornerRadius">0</CornerRadius>
 
                     <!-- General -->
 

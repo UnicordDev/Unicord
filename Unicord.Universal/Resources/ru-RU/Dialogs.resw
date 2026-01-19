@@ -210,13 +210,19 @@
   <data name="PinMessageDialog.Title" xml:space="preserve">
     <value>Закрепить это сообщение?</value>
   </data>
-  <data name="ProfileConnections.Header" xml:space="preserve">
+  <data name="ProfileConnections.Content" xml:space="preserve">
     <value>Связи</value>
   </data>
   <data name="ProfileJoinedServer.Text" xml:space="preserve">
     <value>Присоединился к серверу</value>
   </data>
+  <data name="ProfileMutualServers.Content" xml:space="preserve">
+    <value>Общие серверы</value>
+  </data>
   <data name="ProfileMutualServers.Header" xml:space="preserve">
+    <value>Общие серверы</value>
+  </data>
+  <data name="ProfileMutualServersTitle.Text" xml:space="preserve">
     <value>Общие серверы</value>
   </data>
   <data name="ProfileRoles.Text" xml:space="preserve">
