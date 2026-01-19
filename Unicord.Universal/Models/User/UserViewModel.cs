@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using DSharpPlus.Entities;
+using DSharpPlus.Enums;
 using DSharpPlus.EventArgs;
 using CommunityToolkit.Mvvm.Messaging;
 using Unicord.Universal.Commands;
@@ -149,6 +150,16 @@ namespace Unicord.Universal.Models.User
                 return _mutualGuilds;
             }
         }
+
+        // Mutual friends placeholder since its currently not populated in Unicord.
+        public List<UserViewModel> MutualFriends
+            => null;
+
+        public int MutualFriendsCount
+            => MutualFriends?.Count ?? 0;
+
+        public bool HasMutualInfo
+            => !IsCurrent && (MutualGuilds?.Count ?? 0) > 0;
 
         public List<RoleViewModel> Roles
             => Member != null ?

@@ -348,6 +348,24 @@ namespace Unicord.Universal
                 HideOverlayStoryboard.Begin();
         }
 
+        public Task HideCustomOverlayAsync()
+        {
+            if (CustomOverlayGrid.Visibility == Visibility.Collapsed)
+                return Task.CompletedTask;
+
+            var tcs = new TaskCompletionSource<object>();
+
+            void Handler(object sender, object e)
+            {
+                HideOverlayStoryboard.Completed -= Handler;
+                tcs.TrySetResult(null);
+            }
+
+            HideOverlayStoryboard.Completed += Handler;
+            HideOverlayStoryboard.Begin();
+            return tcs.Task;
+        }
+
         private void OverlayBackdrop_Tapped(object sender, TappedRoutedEventArgs e)
         {
             OverlayService.GetForCurrentView()
