@@ -1055,7 +1055,7 @@
     <Content Include="Assets\FiraCode-Regular.ttf" />
     <Content Include="Assets\FluentSystemIcons-Regular.ttf" />
     <Content Include="Assets\segmdl2.ttf" />
-    <Content Include="Assets\SegoeIcons.ttf" />
+    <Content Include="Assets\SegoeFluentIcons.ttf" />
     <PRIResource Include="Resources\ja-JP\AboutSettingsPage.resw" />
     <PRIResource Include="Resources\ja-JP\AccountsSettingsPage.resw" />
     <PRIResource Include="Resources\ja-JP\AgeGatePage.resw" />
