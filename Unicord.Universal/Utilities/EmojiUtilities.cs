@@ -42,7 +42,7 @@ namespace Unicord.Universal.Utilities
                 e.IsAvailable
                 && (!hasSearchTerm || culture.IndexOf(e.Name, searchTerm, CompareOptions.IgnoreCase) >= 0);
 
-            if (hasNitro && (channel.Channel.IsPrivate || channel.Channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)))
+            if (hasNitro && (channel == null || channel.Channel.IsPrivate || channel.Channel.CurrentPermissions.HasPermission(Permissions.UseExternalEmojis)))
             {
                 // all availiable emoji 
                 var guildOrder = GetOrderedGuildsList();
@@ -55,7 +55,7 @@ namespace Unicord.Universal.Utilities
             else
             {
                 // just this server's emoji
-                if (channel.Guild == null)
+                if (channel == null || channel.Guild == null)
                     return [];
                 var group = new EmojiGroup(channel.Guild.Guild, channel.Guild.Guild.Emojis.Values.Where(FilterEmoji));
 
