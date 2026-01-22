@@ -21,6 +21,9 @@
 
                     <CornerRadius x:Key="AccountsSettings_ProfileCard_CornerRadius">8</CornerRadius>
                     <CornerRadius x:Key="AccountsSettings_ProfileCard_BannerCornerRadius">8,8,0,0</CornerRadius>
+                    <CornerRadius x:Key="ProfileOverlay_Dialog_CornerRadius">8</CornerRadius>
+                    <CornerRadius x:Key="ProfileOverlay_ProfileCard_CornerRadius">8,8,0,0</CornerRadius>
+                    <CornerRadius x:Key="RoleTemplate_CornerRadius">4</CornerRadius>
 
                     <Style x:Key="CleanButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                         <Setter Property="Background" Value="Transparent"/>

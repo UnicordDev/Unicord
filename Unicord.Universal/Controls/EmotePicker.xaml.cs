@@ -35,7 +35,12 @@ namespace Unicord.Universal.Controls
         {
             try
             {
-                Source.Source = EmojiUtilities.GetEmoji(new ChannelViewModel(Channel.Id, true), searchBox.Text);
+                ChannelViewModel channelVm = null;
+                if (Channel != null)
+                {
+                    channelVm = new ChannelViewModel(Channel.Id, true);
+                }
+                Source.Source = EmojiUtilities.GetEmoji(channelVm, searchBox.Text);
             }
             catch { }
         }

@@ -69,6 +69,30 @@ namespace Unicord.Universal.Services
             }
         }
 
+        public async Task ReplaceOverlayWithAnimationAsync<T>(object model = null) where T : Page, IOverlay, new()
+        {
+            if (App.LocalSettings.Read("WindowedOverlays", false))
+            {
+                // In a separate window overlay, just navigate within the window to get a page transition.
+                if (Window.Current.Content is Frame frame)
+                {
+                    frame.Navigate(typeof(T), model, new EntranceNavigationTransitionInfo());
+                }
+
+                return;
+            }
+
+            if (_overlayVisible)
+            {
+                _systemNavigationManager.BackRequested -= OnBackRequested;
+                await _mainPage.HideCustomOverlayAsync();
+                _overlayVisible = false;
+            }
+
+            // Re-open (plays the overlay open storyboard)
+            await ShowOverlayAsync<T>(model);
+        }
+
         internal void CloseOverlay()
         {
             if (App.LocalSettings.Read("WindowedOverlays", false))
