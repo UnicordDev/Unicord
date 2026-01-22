@@ -275,6 +275,7 @@
                                           Content="&#xED54;"
                                           Margin="4,4,0,4"
                                           VerticalAlignment="Bottom"
+                                          VerticalAlignment="Center"
                                           Style="{ThemeResource IconToggleButtonStyle}"
                                           Click="EmoteButton_Click" />
 
@@ -282,7 +283,7 @@
                                 Grid.Column="2"
                                 Content="&#xE724;"
                                 Margin="4"
-                                VerticalAlignment="Bottom"
+                                VerticalAlignment="Center"
                                 Style="{ThemeResource IconButtonStyle}"
                                 Click="SendButton_Click" />
                         </Grid>
