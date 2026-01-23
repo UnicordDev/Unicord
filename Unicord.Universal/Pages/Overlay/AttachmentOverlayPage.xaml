@@ -46,6 +46,36 @@
                                                    MaxWidth="Infinity" 
                                                    MaxHeight="Infinity">
                         <Image x:Name="attachmentImage" Tapped="attachmentImage_Tapped" DoubleTapped="attachmentImage_DoubleTapped">
+                            <Image.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyImagesMenuItem" Click="CopyImages_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8C8;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_SaveAsMenuItem" Click="SaveAs_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE74E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_ShareMenuItem" Click="Share_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyLinkMenuItem" Click="CopyLink_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE71B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_OpenInBrowserMenuItem" Click="OpenInBrowser_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Image.ContextFlyout>
                             <Image.Source>
                                 <BitmapImage x:Name="AttachmentSource" 
                                              DownloadProgress="AttachmentSource_DownloadProgress" 
