@@ -159,4 +159,37 @@
 <data name="VerifySettingsDisplayReason" xml:space="preserve">
   <value>Подтвердите свою личность, чтобы открыть настройки!</value>
 </data>
+<data name="AttachmentOverlay_ZoomModeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Переключить режим масштабирования</value>
+</data>
+<data name="AttachmentOverlay_ZoomInButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Увеличить</value>
+</data>
+<data name="AttachmentOverlay_ZoomOutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Уменьшить</value>
+</data>
+<data name="AttachmentOverlay_MoreButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <value>Дополнительно</value>
+</data>
+<data name="AttachmentOverlay_SaveAsMenuItem.Text" xml:space="preserve">
+  <value>Сохранить как</value>
+</data>
+<data name="AttachmentOverlay_ShareMenuItem.Text" xml:space="preserve">
+  <value>Поделиться</value>
+</data>
+<data name="AttachmentOverlay_OpenInBrowserMenuItem.Text" xml:space="preserve">
+  <value>Открыть в браузере</value>
+</data>
+<data name="AttachmentOverlay_CopyImagesMenuItem.Text" xml:space="preserve">
+  <value>Копировать изображения</value>
+</data>
+<data name="AttachmentOverlay_CopyLinkMenuItem.Text" xml:space="preserve">
+  <value>Копировать ссылку</value>
+</data>
+<data name="AttachmentOverlay_CopyAttachmentIdMenuItem.Text" xml:space="preserve">
+  <value>Копировать ID вложения</value>
+</data>
+<data name="AttachmentOverlay_SaveSuccessMessage" xml:space="preserve">
+  <value>Файл успешно сохранён</value>
+</data>
 </root>

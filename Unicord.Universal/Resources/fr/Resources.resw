@@ -159,4 +159,37 @@
   <data name="VerifySettingsDisplayReason" xml:space="preserve">
     <value>Vérifiez votre identité pour ouvrir les paramètres!</value>
   </data>
+  <data name="AttachmentOverlay_ZoomModeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Basculer le mode zoom</value>
+  </data>
+  <data name="AttachmentOverlay_ZoomInButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zoom avant</value>
+  </data>
+  <data name="AttachmentOverlay_ZoomOutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zoom arrière</value>
+  </data>
+  <data name="AttachmentOverlay_MoreButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Plus</value>
+  </data>
+  <data name="AttachmentOverlay_SaveAsMenuItem.Text" xml:space="preserve">
+    <value>Enregistrer sous</value>
+  </data>
+  <data name="AttachmentOverlay_ShareMenuItem.Text" xml:space="preserve">
+    <value>Partager</value>
+  </data>
+  <data name="AttachmentOverlay_OpenInBrowserMenuItem.Text" xml:space="preserve">
+    <value>Ouvrir dans le navigateur</value>
+  </data>
+  <data name="AttachmentOverlay_CopyImagesMenuItem.Text" xml:space="preserve">
+    <value>Copier les images</value>
+  </data>
+  <data name="AttachmentOverlay_CopyLinkMenuItem.Text" xml:space="preserve">
+    <value>Copier le lien</value>
+  </data>
+  <data name="AttachmentOverlay_CopyAttachmentIdMenuItem.Text" xml:space="preserve">
+    <value>Copier l'ID de la pièce jointe</value>
+  </data>
+  <data name="AttachmentOverlay_SaveSuccessMessage" xml:space="preserve">
+    <value>Fichier enregistré avec succès</value>
+  </data>
 </root>

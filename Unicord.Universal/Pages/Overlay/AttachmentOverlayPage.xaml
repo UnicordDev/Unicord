@@ -1,52 +1,91 @@
 ﻿<Page
-    x:Class="Unicord.Universal.Pages.Overlay.AttachmentOverlayPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Unicord.Universal.Pages.Overlay"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:controls="using:Unicord.Universal.Controls" 
-    xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
-    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
-    xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-    mc:Ignorable="d">
+x:Class="Unicord.Universal.Pages.Overlay.AttachmentOverlayPage"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:local="using:Unicord.Universal.Pages.Overlay"
+xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:lib="using:Microsoft.UI.Xaml.Controls" 
+xmlns:controls="using:Unicord.Universal.Controls" 
+xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media" 
+xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+xmlns:w1709="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+RequestedTheme="Dark"
+mc:Ignorable="d">
     <Page.Resources>
         <ui:AttachedDropShadow x:Key="ErrorShadow" CastTo="{x:Bind background}" BlurRadius="16" Opacity="1" Color="Black"/>
     </Page.Resources>
 
     <Grid x:Name="contentContainer">
         <Border x:Name="background"
-                Tapped="contentContainer_Tapped"
-                Background="Transparent"/>
+            Tapped="contentContainer_Tapped"
+            Background="#B8000000"/>
 
         <Grid>
-            <ScrollViewer MinZoomFactor="1" 
+            <ScrollViewer x:Name="imageScrollViewer"
+                          MinZoomFactor="1" 
+                          MaxZoomFactor="10"
                           IsVerticalRailEnabled="False"
-                          VerticalScrollBarVisibility="Auto"
-                          VerticalScrollMode="Enabled"
+                          VerticalScrollBarVisibility="Hidden"
+                         VerticalScrollMode="Auto"
                           IsHorizontalRailEnabled="False"
-                          HorizontalScrollBarVisibility="Auto"
-                          HorizontalScrollMode="Enabled" 
+                          HorizontalScrollBarVisibility="Hidden"
+                         HorizontalScrollMode="Auto" 
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
-                          HorizontalContentAlignment="Stretch"
-                          VerticalContentAlignment="Stretch"
-                          ZoomMode="Enabled"
-                          Tapped="contentContainer_Tapped">
+                         ZoomMode="Enabled"
+                          Tapped="contentContainer_Tapped"
+                          PointerPressed="imageScrollViewer_PointerPressed"
+                          PointerMoved="imageScrollViewer_PointerMoved"
+                          PointerReleased="imageScrollViewer_PointerReleased"
+                          PointerCanceled="imageScrollViewer_PointerReleased">
 
-                <controls:ScaledContentControl x:Name="scaledControl" MaxWidth="Infinity" MaxHeight="Infinity">
-                    <Image x:Name="attachmentImage"
-                           Tapped="attachmentImage_Tapped">
-                        <Image.Source>
-                            <BitmapImage x:Name="AttachmentSource" 
-                                         DownloadProgress="AttachmentSource_DownloadProgress" 
-                                         ImageOpened="AttachmentSource_ImageOpened"
-                                         ImageFailed="AttachmentSource_ImageFailed"/>
-                        </Image.Source>
-                    </Image>
-                </controls:ScaledContentControl>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <controls:ScaledContentControl x:Name="scaledControl" 
+                                                   ForceSize="True" 
+                                                   MaxWidth="Infinity" 
+                                                   MaxHeight="Infinity">
+                        <Image x:Name="attachmentImage" Tapped="attachmentImage_Tapped" DoubleTapped="attachmentImage_DoubleTapped">
+                            <Image.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyImagesMenuItem" Click="CopyImages_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8C8;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_SaveAsMenuItem" Click="SaveAs_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE74E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_ShareMenuItem" Click="Share_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyLinkMenuItem" Click="CopyLink_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE71B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem x:Uid="AttachmentOverlay_OpenInBrowserMenuItem" Click="OpenInBrowser_Click">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Image.ContextFlyout>
+                            <Image.Source>
+                                <BitmapImage x:Name="AttachmentSource" 
+                                             DownloadProgress="AttachmentSource_DownloadProgress" 
+                                             ImageOpened="AttachmentSource_ImageOpened"
+                                             ImageFailed="AttachmentSource_ImageFailed"/>
+                            </Image.Source>
+                        </Image>
+                    </controls:ScaledContentControl>
+                </Grid>
             </ScrollViewer>
 
             <Grid x:Name="contentContainerOverlay" 
@@ -65,14 +104,98 @@
                         &#xE783;
                 </TextBlock>
             </Grid>
+
+            <lib:InfoBar x:Name="successInfoBar" 
+                         Severity="Success"
+                         IsOpen="False"
+                         HorizontalAlignment="Center" 
+                         VerticalAlignment="Bottom" 
+                         Margin="16"
+                         MaxWidth="400"/>
         </Grid>
 
         <Grid Margin="8" VerticalAlignment="Top">
-            <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click">
-                <w1709:Button.KeyboardAccelerators>
-                    <w1709:KeyboardAccelerator Key="Escape"/>
-                </w1709:Button.KeyboardAccelerators>
-            </Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Style="{ThemeResource IconButtonStyle}" Content="&#xE72B;" x:Name="backButton" Click="backButton_Click">
+                    <w1709:Button.KeyboardAccelerators>
+                        <w1709:KeyboardAccelerator Key="Escape"/>
+                    </w1709:Button.KeyboardAccelerators>
+                </Button>
+                <Ellipse Width="32" Height="32" Margin="12,0,0,0" VerticalAlignment="Center">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="avatarBrush" Stretch="UniformToFill"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="senderNameText" FontWeight="SemiBold" Foreground="White" FontSize="14"/>
+                    <TextBlock x:Name="timestampText" Foreground="#CCCCCC" FontSize="12" Opacity="0.8"/>
+                </StackPanel>
+            </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <ComboBox x:Name="zoomComboBox" IsEditable="True" Width="Auto" MinWidth="80" VerticalAlignment="Center" 
+                              SelectionChanged="ZoomComboBox_SelectionChanged" 
+                              TextSubmitted="ZoomComboBox_TextSubmitted"
+                              LostFocus="ZoomComboBox_LostFocus"
+                              KeyDown="ZoomComboBox_KeyDown"
+                              Margin="0,0,4,0">
+                        <ComboBoxItem Content="100%" Tag="1" IsSelected="True"/>
+                        <ComboBoxItem Content="200%" Tag="2"/>
+                        <ComboBoxItem Content="300%" Tag="3"/>
+                        <ComboBoxItem Content="400%" Tag="4"/>
+                        <ComboBoxItem Content="500%" Tag="5"/>
+                        <ComboBoxItem Content="600%" Tag="6"/>
+                        <ComboBoxItem Content="700%" Tag="7"/>
+                        <ComboBoxItem Content="800%" Tag="8"/>
+                        <ComboBoxItem Content="900%" Tag="9"/>
+                        <ComboBoxItem Content="1000%" Tag="10"/>
+                    </ComboBox>
+                        <Button x:Uid="AttachmentOverlay_ZoomModeButton" x:Name="zoomModeButton" Style="{ThemeResource IconButtonStyle}" Click="ZoomModeButton_Click">
+                            <Grid Width="16" Height="16">
+                                <TextBlock x:Name="zoomBackIcon" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Text="&#xE9A6;" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1"/>
+                                <TextBlock x:Name="zoomFrontIcon" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Text="&#xE915;" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1"/>
+                            </Grid>
+                        </Button>
+                    <Button x:Uid="AttachmentOverlay_ZoomInButton" x:Name="zoomInButton" Style="{ThemeResource IconButtonStyle}" Content="&#xE8A3;" Click="ZoomIn_Click" Margin="4,0,0,0" />
+                    <Button x:Uid="AttachmentOverlay_ZoomOutButton" x:Name="zoomOutButton" Style="{ThemeResource IconButtonStyle}" Content="&#xE71F;" Click="ZoomOut_Click" Margin="4,0,0,0" />
+                    <Button x:Uid="AttachmentOverlay_MoreButton" x:Name="zoomMoreButton" Style="{ThemeResource IconButtonStyle}" Content="&#xE712;" Margin="4,0,0,0">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_SaveAsMenuItem" Click="SaveAs_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE74E;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_ShareMenuItem" Click="Share_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE72D;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_OpenInBrowserMenuItem" Click="OpenInBrowser_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8A7;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyImagesMenuItem" Click="CopyImages_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8C8;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyLinkMenuItem" Click="CopyLink_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE71B;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Uid="AttachmentOverlay_CopyAttachmentIdMenuItem" Click="CopyAttachmentId_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xEC7A;" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>
