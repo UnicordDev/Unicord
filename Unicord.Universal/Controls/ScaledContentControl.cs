@@ -35,6 +35,15 @@ namespace Unicord.Universal.Controls
         public static readonly DependencyProperty ForceSizeProperty =
             DependencyProperty.Register("ForceSize", typeof(bool), typeof(ScaledContentControl), new PropertyMetadata(false, OnWidthHeightPropertyChanged));
 
+        public bool UseFullscreen
+        {
+            get { return (bool)GetValue(UseFullscreenProperty); }
+            set { SetValue(UseFullscreenProperty, value); }
+        }
+
+        public static readonly DependencyProperty UseFullscreenProperty =
+            DependencyProperty.Register("UseFullscreen", typeof(bool), typeof(ScaledContentControl), new PropertyMetadata(false, OnWidthHeightPropertyChanged));
+
         private static void OnWidthHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (ScaledContentControl)d;
@@ -58,19 +67,49 @@ namespace Unicord.Universal.Controls
             double width = TargetWidth;
             double height = TargetHeight;
 
-            if (double.IsNaN(width) || double.IsNaN(height))
+            if (double.IsNaN(width) || double.IsNaN(height) || width <= 0 || height <= 0)
                 return base.MeasureOverride(constraint);
 
-            var maxWidth = Math.Min(root.Bounds.Width, Math.Min(MaxWidth, constraint.Width));
-            var maxHeight = Math.Min(root.Bounds.Height - 32, Math.Min(MaxHeight, constraint.Height));
+            var horizontalMargin = UseFullscreen ? 0 : 80;
+            var verticalMargin = UseFullscreen ? 0 : 160;
 
-            Drawing.ScaleProportions(ref width, ref height, maxWidth, maxHeight);
-            Drawing.ScaleProportions(ref width, ref height, Math.Min(constraint.Width, maxWidth), Math.Min(constraint.Height, maxHeight));
+            var maxWidth = Math.Min(root.Bounds.Width - horizontalMargin, Math.Min(MaxWidth, constraint.Width));
+            var maxHeight = Math.Min(root.Bounds.Height - verticalMargin, Math.Min(MaxHeight, constraint.Height));
+
+            if (UseFullscreen)
+            {
+                // Scale to cover the available area (fill both width and height) so panning can traverse full image
+                var scaleX = maxWidth / width;
+                var scaleY = maxHeight / height;
+                var scale = Math.Max(scaleX, scaleY);
+
+                // Apply scale
+                width = width * scale;
+                height = height * scale;
+            }
+            else
+            {
+                // Normal mode: Fit within maxWidth/maxHeight (contain)
+                // only scale down if the image is larger than the available space
+                if (width > maxWidth || height > maxHeight)
+                {
+                    var scaleX = maxWidth / width;
+                    var scaleY = maxHeight / height;
+                    var scale = Math.Min(scaleX, scaleY);
+                    width *= scale;
+                    height *= scale;
+                }
+            }
 
             if (ForceSize && Content is FrameworkElement element)
             {
                 element.Width = width;
                 element.Height = height;
+            }
+
+            if (Content is UIElement child)
+            {
+                child.Measure(new Size(width, height));
             }
 
             return new Size(width, height);
