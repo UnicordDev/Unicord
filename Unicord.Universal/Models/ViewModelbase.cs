@@ -14,11 +14,14 @@ namespace Unicord.Universal.Models
 
         public ViewModelBase(ViewModelBase parent = null)
         {
+            Parent = parent;
             discord = DiscordManager.Discord; // capture the discord client
             syncContext = parent?.syncContext ?? SynchronizationContext.Current;
             Debug.Assert(discord != null);
             Debug.Assert(syncContext != null);
         }
+
+        public ViewModelBase Parent { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
