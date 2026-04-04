@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdjustRoleColours.Text" xml:space="preserve">
+    <value>調整使用者顏色以提高可讀性</value>
+  </data>
+  <data name="AdjustRoleColoursHeader.Text" xml:space="preserve">
+    <value>對比調整</value>
+  </data>
+  <data name="AutoPlayGIFs.Text" xml:space="preserve">
+    <value>自動播放GIFs</value>
+  </data>
+  <data name="ChatHeader.Text" xml:space="preserve">
+    <value>聊天</value>
+  </data>
+  <data name="EnableSpoilers.Text" xml:space="preserve">
+    <value>啟用劇透</value>
+  </data>
+  <data name="LearnMoreButton.Content" xml:space="preserve">
+    <value>有關對比度的更多信息</value>
+  </data>
+  <data name="MessagingSettingsHeader.Text" xml:space="preserve">
+    <value>文字與圖像</value>
+  </data>
+  <data name="MinimumContrastSlider.Header" xml:space="preserve">
+    <value>最低對比度</value>
+  </data>
+  <data name="PromptLinks.Text" xml:space="preserve">
+    <value>提示不受信任的鏈接</value>
+  </data>
+  <data name="PromptLinks.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>啟用此選項後，Windows 將在開啟不安全連結之前提示您。</value>
+    <comment>Tooltip for previous text</comment>
+  </data>
+  <data name="ShowHugeEmoji.Text" xml:space="preserve">
+    <value>巨大的表情符號</value>
+  </data>
+  <data name="ShowStatusGlyphs.Text" xml:space="preserve">
+    <value>色盲友善狀態指示器</value>
+  </data>
+  <data name="TimestampsHeader.Text" xml:space="preserve">
+    <value>時間戳</value>
+  </data>
+  <data name="TimestampsSubheader.Text" xml:space="preserve">
+    <value>您希望訊息上的時間戳記如何顯示？</value>
+  </data>
+  <data name="TimestampStyleAbsolute.Text" xml:space="preserve">
+    <value>絕對</value>
+  </data>
+  <data name="TimestampStyleBoth.Text" xml:space="preserve">
+    <value>兩個都</value>
+  </data>
+  <data name="TimestampStyleRelative.Text" xml:space="preserve">
+    <value>相對的</value>
+  </data>
+</root>

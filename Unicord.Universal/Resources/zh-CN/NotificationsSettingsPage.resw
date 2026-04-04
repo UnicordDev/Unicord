@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DesktopNotificationsUnavailable.Text" xml:space="preserve">
+    <value>该平台不支持通知。</value>
+  </data>
+  <data name="EnableBadgeCount.Description" xml:space="preserve">
+    <value>在任务栏中显示未读提及的数量</value>
+  </data>
+  <data name="EnableBadgeCount.Title" xml:space="preserve">
+    <value>启用提及徽章</value>
+  </data>
+  <data name="EnableBadgeUnread.Description" xml:space="preserve">
+    <value>在任务栏中显示图标以指示未读消息</value>
+  </data>
+  <data name="EnableBadgeUnread.Title" xml:space="preserve">
+    <value>启用未读徽章</value>
+  </data>
+  <data name="EnableDesktopNotifications.Description" xml:space="preserve">
+    <value>在桌面和通知中心显示提及和 Direct Messages 的通知</value>
+  </data>
+  <data name="EnableDesktopNotifications.Title" xml:space="preserve">
+    <value>启用桌面通知</value>
+  </data>
+  <data name="EnableLiveTiles.Description" xml:space="preserve">
+    <value>在固定到“开始”的图块上显示 Discord 消息</value>
+  </data>
+  <data name="EnableLiveTiles.Title" xml:space="preserve">
+    <value>启用动态磁贴</value>
+  </data>
+  <data name="EnableNotificationsDescriptionWin10" xml:space="preserve">
+    <value>在“开始”、操作中心和任务栏中显示 Discord 消息的通知</value>
+  </data>
+  <data name="EnableNotificationsDescriptionWin11" xml:space="preserve">
+    <value>在通知中心和任务栏上显示 Discord 消息的通知</value>
+  </data>
+  <data name="EnableNotifications.Title" xml:space="preserve">
+    <value>启用通知</value>
+  </data>
+  <data name="EnableDesktopNotificationsDescriptionWin10" xml:space="preserve">
+    <value>在桌面和操作中心显示提及和 Direct Messages 的通知</value>
+  </data>
+  <data name="EnableDesktopNotificationsDescriptionWin11" xml:space="preserve">
+    <value>在桌面和通知中心显示提及和 Direct Messages 的通知</value>
+  </data>
+</root>

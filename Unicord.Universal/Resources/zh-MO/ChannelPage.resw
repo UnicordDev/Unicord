@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ChannelReadonlyText" xml:space="preserve">
+    <value>該頻道是唯讀的。</value>
+  </data>
+  <data name="CloseEditButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="DeleteAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="ImmuneSlowModeFormat" xml:space="preserve">
+    <value>您在此頻道中不受 {0} 慢速模式的影響！</value>
+  </data>
+  <data name="MassDeleteMessage" xml:space="preserve">
+    <value>您確定要刪除所有這些訊息嗎？</value>
+  </data>
+  <data name="MassDeleteTitle" xml:space="preserve">
+    <value>刪除這些訊息嗎？</value>
+  </data>
+  <data name="MessageChannelFormat" xml:space="preserve">
+    <value>訊息 {0}{1}</value>
+    <comment>Message {ChannelPrefix}{ChannelName}</comment>
+  </data>
+  <data name="MoreOptionsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>更多的</value>
+  </data>
+  <data name="MuteButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>沉默的</value>
+  </data>
+  <data name="NewWindowItem.Text" xml:space="preserve">
+    <value>在新視窗中開啟</value>
+  </data>
+  <data name="NewWindowNormal.Text" xml:space="preserve">
+    <value>在普通視窗中開啟</value>
+  </data>
+  <data name="NewWindowOverlay.Text" xml:space="preserve">
+    <value>在覆蓋視窗中打開</value>
+  </data>
+  <data name="NoMessagesHeader.Text" xml:space="preserve">
+    <value>這裡沒什麼好看的！</value>
+  </data>
+  <data name="NoMessagesSubheader.Text" xml:space="preserve">
+    <value>我無法加載該頻道的任何訊息，抱歉！</value>
+  </data>
+  <data name="OpenLocalButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>打開</value>
+  </data>
+  <data name="OpenPopoutButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>拍攝照片或視頻</value>
+  </data>
+  <data name="PinsButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>釘選訊息</value>
+  </data>
+  <data name="PinToStart.Text" xml:space="preserve">
+    <value>固定到開始</value>
+  </data>
+  <data name="ReplyCancel.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ReplyingTo.Text" xml:space="preserve">
+    <value>正在回覆</value>
+  </data>
+  <data name="ReplyPingToggle.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>切換 ping 原作者。</value>
+  </data>
+  <data name="SearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>搜尋</value>
+  </data>
+  <data name="SlowModeFormat" xml:space="preserve">
+    <value>每個{0}都可以發送訊息！</value>
+  </data>
+  <data name="UnpinFromStart.Text" xml:space="preserve">
+    <value>從開始取消固定</value>
+  </data>
+  <data name="UserListButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>使用者列表</value>
+  </data>
+</root>
