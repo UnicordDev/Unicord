@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CloseButton.Content" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="ColourScheme.Text" xml:space="preserve">
+    <value>配色方案</value>
+  </data>
+  <data name="ColourSchemeCaption.Text" xml:space="preserve">
+    <value>此設定不會與 Discord 同步。</value>
+  </data>
+  <data name="ColourSchemeDark.Content" xml:space="preserve">
+    <value>黑暗的</value>
+  </data>
+  <data name="ColourSchemeDefault.Content" xml:space="preserve">
+    <value>系統預設值</value>
+  </data>
+  <data name="ColourSchemeLight.Content" xml:space="preserve">
+    <value>光</value>
+  </data>
+  <data name="EnableAfterInstallationCheckBox.Content" xml:space="preserve">
+    <value>安裝後啟用主題</value>
+  </data>
+  <data name="InstallButton.Content" xml:space="preserve">
+    <value>安裝</value>
+  </data>
+  <data name="MainThemeHeader.Text" xml:space="preserve">
+    <value>主題</value>
+  </data>
+  <data name="MainThemeSubheader.Text" xml:space="preserve">
+    <value>想要調味嗎？下載一些主題或學習如何製作自己的主題！</value>
+  </data>
+  <data name="RelaunchRequired.Text" xml:space="preserve">
+    <value>要套用主題更改，Unicord 將需要重新啟動。</value>
+  </data>
+  <data name="ThemeAlreadyInstalledMessage" xml:space="preserve">
+    <value>該主題已安裝。您想覆蓋它嗎？</value>
+  </data>
+  <data name="ThemeAlreadyInstalledTitle" xml:space="preserve">
+    <value>主題已安裝！</value>
+  </data>
+  <data name="ThemeChangedMessage" xml:space="preserve">
+    <value>為了更新您的主題，Unicord 必須重新啟動。您想現在重新啟動嗎？</value>
+  </data>
+  <data name="ThemeChangedTitle" xml:space="preserve">
+    <value>主題變了！</value>
+  </data>
+  <data name="ThemeInvalidDoesNotExist" xml:space="preserve">
+    <value>嘗試載入磁碟上不存在的主題。主題已卸載。</value>
+  </data>
+  <data name="ThemeInvalidNoJson" xml:space="preserve">
+    <value>該檔案似乎不是 Unicord 主題，缺少 theme.json！</value>
+  </data>
+  <data name="ThemeInvalidNoLogo" xml:space="preserve">
+    <value>該主題指定的徽標檔案不存在！</value>
+  </data>
+  <data name="ThemeLoadFailedFormat" xml:space="preserve">
+    <value>載入目前選擇的主題失敗！
+{0}</value>
+  </data>
+  <data name="ThemePreInstallCheckFailed" xml:space="preserve">
+    <value>預安裝檢查失敗！這可能意味著您的裝置或您正在執行的 Windows 版本不受此主題支援。對不起！</value>
+  </data>
+  <data name="ThemesSettingsHeader.Text" xml:space="preserve">
+    <value>外觀</value>
+  </data>
+  <data name="ThemeUnsupportedWindowsVersion" xml:space="preserve">
+    <value>此主題不支援您正在執行的 Windows 版本。對不起！</value>
+  </data>
+</root>

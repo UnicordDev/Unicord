@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BanDeleteFromLastDay.Content" xml:space="preserve">
+    <value>過去 24 小時</value>
+  </data>
+  <data name="BanDeleteFromLastWeek.Content" xml:space="preserve">
+    <value>過去 7 天</value>
+  </data>
+  <data name="BanDeleteMessagesBox.Header" xml:space="preserve">
+    <value>刪除訊息</value>
+  </data>
+  <data name="BanDeleteNoMessages.Content" xml:space="preserve">
+    <value>不刪除訊息</value>
+  </data>
+  <data name="BanDialog.PrimaryButtonText" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="BanDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="BanDialogHeaderFormat" xml:space="preserve">
+    <value>要封鎖 @{0}#{1} 嗎？</value>
+  </data>
+  <data name="BanReason.Header" xml:space="preserve">
+    <value>封鎖原因</value>
+  </data>
+  <data name="ChangeNicknameDialog.PrimaryButtonText" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="ChangeNicknameDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ChangeNicknameSubtitle.Text" xml:space="preserve">
+    <value>暱稱對所有人都可見，所以請不要亂取名字。</value>
+  </data>
+  <data name="ChangeNicknameTitle.Text" xml:space="preserve">
+    <value>變更暱稱</value>
+  </data>
+  <data name="ConfirmationDialog.PrimaryButtonText" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="ConfirmationDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DeleteMessageDialog.PrimaryButtonText" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="DeleteMessageDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DeleteMessageDialog.Title" xml:space="preserve">
+    <value>要刪除這則訊息嗎？</value>
+  </data>
+  <data name="ErrorDialog.PrimaryButtonText" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="InstallThemeBy.Text" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="InstallThemeDialog.PrimaryButtonText" xml:space="preserve">
+    <value>安裝</value>
+  </data>
+  <data name="InstallThemeDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="InvalidThemeFileNotFound" xml:space="preserve">
+    <value>找不到提供的主題檔案！</value>
+  </data>
+  <data name="InvalidThemeFileNoThemesFound" xml:space="preserve">
+    <value>提供的主題檔案似乎實際上並不包含任何主題！</value>
+  </data>
+  <data name="InvalidThemeFileTitle" xml:space="preserve">
+    <value>無效的主題檔案！</value>
+  </data>
+  <data name="KickDialog.PrimaryButtonText" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="KickDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="KickDialogHeaderFormat" xml:space="preserve">
+    <value>要將 @{0}#{1} 踢出嗎？</value>
+  </data>
+  <data name="KickReason.Header" xml:space="preserve">
+    <value>踢出原因</value>
+  </data>
+  <data name="PinMessageDialog.PrimaryButtonText" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="PinMessageDialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="PinMessageDialog.Title" xml:space="preserve">
+    <value>要將這則訊息釘選嗎？</value>
+  </data>
+  <data name="ProfileConnections.Header" xml:space="preserve">
+    <value>連結帳號</value>
+  </data>
+  <data name="ProfileJoinedServer.Text" xml:space="preserve">
+    <value>已加入伺服器</value>
+  </data>
+  <data name="ProfileMutualServers.Header" xml:space="preserve">
+    <value>共同伺服器</value>
+  </data>
+  <data name="ProfileRoles.Text" xml:space="preserve">
+    <value>身分組</value>
+  </data>
+  <data name="ThemeInstallFailure" xml:space="preserve">
+    <value>安裝主題失敗！</value>
+  </data>
+</root>

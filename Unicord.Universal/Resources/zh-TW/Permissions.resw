@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccessChannelsSubtitle" xml:space="preserve">
+    <value>預設允許成員查看此頻道。停用後，此頻道將成為私人頻道。</value>
+  </data>
+  <data name="AccessChannelsTitle" xml:space="preserve">
+    <value>查看頻道</value>
+  </data>
+  <data name="AddReactionsSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道中的訊息上新增回應。</value>
+  </data>
+  <data name="AddReactionsTitle" xml:space="preserve">
+    <value>允許反應</value>
+  </data>
+  <data name="AttachFilesSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道上傳檔案或媒體。</value>
+  </data>
+  <data name="AttachFilesTitle" xml:space="preserve">
+    <value>附加檔案</value>
+  </data>
+  <data name="CreateInstantInviteSubtitle" xml:space="preserve">
+    <value>允許成員為此頻道建立邀請連結。</value>
+  </data>
+  <data name="CreateInstantInviteTitle" xml:space="preserve">
+    <value>建立邀請</value>
+  </data>
+  <data name="DeafenMembersSubtitle" xml:space="preserve">
+    <value>允許成員在此語音頻道中讓其他成員被伺服器禁聽。</value>
+  </data>
+  <data name="DeafenMembersTitle" xml:space="preserve">
+    <value>禁聽成員</value>
+  </data>
+  <data name="EmbedLinksSubtitle" xml:space="preserve">
+    <value>允許為此頻道中發布的連結生成嵌入內容。</value>
+  </data>
+  <data name="EmbedLinksTitle" xml:space="preserve">
+    <value>嵌入連結</value>
+  </data>
+  <data name="ManageChannelsSubtitle" xml:space="preserve">
+    <value>允許成員刪除該頻道，以及更改其名稱、描述和設定。</value>
+  </data>
+  <data name="ManageChannelsTitle" xml:space="preserve">
+    <value>管理頻道</value>
+  </data>
+  <data name="ManageMessagesSubtitle" xml:space="preserve">
+    <value>允許成員刪除和釘選訊息。</value>
+  </data>
+  <data name="ManageMessagesTitle" xml:space="preserve">
+    <value>管理訊息</value>
+  </data>
+  <data name="ManageRolesSubtitle" xml:space="preserve">
+    <value>允許成員更改此頻道的權限。</value>
+  </data>
+  <data name="ManageRolesTitle" xml:space="preserve">
+    <value>管理權限</value>
+  </data>
+  <data name="ManageWebhooksSubtitle" xml:space="preserve">
+    <value>允許成員管理此頻道中的 Webhook。</value>
+  </data>
+  <data name="ManageWebhooksTitle" xml:space="preserve">
+    <value>管理 Webhook</value>
+  </data>
+  <data name="MentionEveryoneSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道中使用@everyone和@here，並@提及所有身分組。</value>
+  </data>
+  <data name="MentionEveryoneTitle" xml:space="preserve">
+    <value>提及 @everyone、@here 和所有身分組</value>
+  </data>
+  <data name="MoveMembersSubtitle" xml:space="preserve">
+    <value>允許成員將其他成員移入或移出此語音頻道，或斷開他們的連線。</value>
+  </data>
+  <data name="MoveMembersTitle" xml:space="preserve">
+    <value>移動成員</value>
+  </data>
+  <data name="MuteMembersSubtitle" xml:space="preserve">
+    <value>允許成員將此語音頻道中的其他成員靜音。</value>
+  </data>
+  <data name="MuteMembersTitle" xml:space="preserve">
+    <value>將成員靜音</value>
+  </data>
+  <data name="PrioritySpeakerSubtitle" xml:space="preserve">
+    <value>允許成員在使用按鍵發話（優先）快捷鍵時，在此語音頻道中更容易被聽見。</value>
+  </data>
+  <data name="PrioritySpeakerTitle" xml:space="preserve">
+    <value>優先發言者</value>
+  </data>
+  <data name="ReadMessageHistorySubtitle" xml:space="preserve">
+    <value>允許成員閱讀此頻道中先前發送的訊息。如果沒有此權限，成員只能看到在查看此頻道時發送的訊息。</value>
+  </data>
+  <data name="ReadMessageHistoryTitle" xml:space="preserve">
+    <value>讀取訊息記錄</value>
+  </data>
+  <data name="SendMessagesSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道中傳送訊息。</value>
+  </data>
+  <data name="SendMessagesTitle" xml:space="preserve">
+    <value>傳送訊息</value>
+  </data>
+  <data name="SendTtsMessagesSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道中傳送文字轉語音訊息。</value>
+  </data>
+  <data name="SendTtsMessagesTitle" xml:space="preserve">
+    <value>傳送文字轉語音訊息</value>
+  </data>
+  <data name="SpeakSubtitle" xml:space="preserve">
+    <value>允許成員在此語音頻道中發言。停用此項並停用存取頻道即可建立私人語音頻道。</value>
+  </data>
+  <data name="SpeakTitle" xml:space="preserve">
+    <value>發言</value>
+  </data>
+  <data name="StreamSubtitle" xml:space="preserve">
+    <value>允許成員在此頻道中使用網路攝影機、螢幕分享或直播。</value>
+  </data>
+  <data name="StreamTitle" xml:space="preserve">
+    <value>影片</value>
+  </data>
+  <data name="UseExternalEmojisSubtitle" xml:space="preserve">
+    <value>允許 Discord Nitro 會員使用其他伺服器的表情符號。</value>
+  </data>
+  <data name="UseExternalEmojisTitle" xml:space="preserve">
+    <value>使用外部表情符號</value>
+  </data>
+  <data name="UseVoiceDetectionSubtitle" xml:space="preserve">
+    <value>停用此權限會強制在此頻道中使用一鍵通。</value>
+  </data>
+  <data name="UseVoiceDetectionTitle" xml:space="preserve">
+    <value>使用語音活動</value>
+  </data>
+  <data name="UseVoiceSubtitle" xml:space="preserve">
+    <value>允許成員加入此語音頻道並聽見其他人。</value>
+  </data>
+  <data name="UseVoiceTitle" xml:space="preserve">
+    <value>連線</value>
+  </data>
+</root>

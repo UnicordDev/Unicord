@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppDisplayDescription" xml:space="preserve">
+    <value>适用于 Windows 10 和 Windows 10 Mobile 的免费开源 Discord 客户端，致力于提供快速、高效且原生的 Discord 使用体验。</value>
+  </data>
+  <data name="AppDisplayDescriptionText.Text" xml:space="preserve">
+    <value>适用于通用 Windows 平台的 Discord 客户端</value>
+  </data>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>Unicord</value>
+  </data>
+  <data name="AppDisplayNameText.Text" xml:space="preserve">
+    <value>Unicord</value>
+  </data>
+  <data name="DevAppDisplayName" xml:space="preserve">
+    <value>Unicord Canary</value>
+  </data>
+  <data name="LoginFailedDialogMessage" xml:space="preserve">
+    <value>登录时出了点问题！请检查你的信息后重试！</value>
+  </data>
+  <data name="LoginFailedDialogTitle" xml:space="preserve">
+    <value>无法登录！</value>
+  </data>
+  <data name="RecentChannelsJumpListGroup" xml:space="preserve">
+    <value>最近的频道</value>
+  </data>
+  <data name="RecentPeopleJumpListGroup" xml:space="preserve">
+    <value>最近的联系人</value>
+  </data>
+  <data name="ServerUnavailableMessage" xml:space="preserve">
+    <value>这个服务器似乎出了点问题，目前暂时不可用。</value>
+  </data>
+  <data name="ServerUnavailableTitle" xml:space="preserve">
+    <value>此服务器不可用！</value>
+  </data>
+  <data name="VerifyLoginDisplayReason" xml:space="preserve">
+    <value>请验证你的身份以登录 Unicord！</value>
+  </data>
+  <data name="VerifyNSFWDisplayReason" xml:space="preserve">
+    <value>请验证你的身份才能访问此频道！</value>
+  </data>
+  <data name="VerifySettingsDisplayReason" xml:space="preserve">
+    <value>请验证你的身份以打开设置！</value>
+  </data>
+</root>

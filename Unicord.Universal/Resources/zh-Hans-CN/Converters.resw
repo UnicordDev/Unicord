@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ListeningStatus" xml:space="preserve">
+    <value>正在听</value>
+  </data>
+  <data name="ListeningStatusFormat" xml:space="preserve">
+    <value>聆听 {0}</value>
+  </data>
+  <data name="PlayingStatus" xml:space="preserve">
+    <value>演奏</value>
+  </data>
+  <data name="PlayingStatusFormat" xml:space="preserve">
+    <value>玩{0}</value>
+    <comment>these don't localize well</comment>
+  </data>
+  <data name="StreamingStatus" xml:space="preserve">
+    <value>流媒体</value>
+  </data>
+  <data name="StreamingStatusFormat" xml:space="preserve">
+    <value>流媒体 {0}</value>
+    <comment>i'll refactor this at some point i promise</comment>
+  </data>
+  <data name="UserChannelIconChangeFormat" xml:space="preserve">
+    <value>{0} 更改了频道图标。</value>
+  </data>
+  <data name="UserChannelNameChangeFormat" xml:space="preserve">
+    <value>{0} 更改了频道名称。</value>
+  </data>
+  <data name="UserJoinedGroupFormat" xml:space="preserve">
+    <value>{0} 加入了该小组。</value>
+  </data>
+  <data name="UserLeftGroupFormat" xml:space="preserve">
+    <value>{0} 离开了群组。</value>
+  </data>
+  <data name="UserMessagePinFormat" xml:space="preserve">
+    <value>{0} 将消息固定到该频道。</value>
+  </data>
+  <data name="UserPremiumGuildSubscriptionFormat" xml:space="preserve">
+    <value>{0} 提升了服务器！</value>
+  </data>
+  <data name="UserPremiumGuildSubscriptionTierFormat" xml:space="preserve">
+    <value>{0} 将服务器提升至 {2} 级别！</value>
+    <comment>user, boost level (number)</comment>
+  </data>
+  <data name="UserPremiumMultiGuildSubscriptionFormat" xml:space="preserve">
+    <value>{0} 使服务器 **{1}** 倍增！</value>
+  </data>
+  <data name="UserPremiumMultiGuildSubscriptionTierFormat" xml:space="preserve">
+    <value>{0} 将服务器 **{1}** 倍提升至 {2} 级别！</value>
+  </data>
+  <data name="UserStartedCallFormat" xml:space="preserve">
+    <value>{0} 开始通话。</value>
+  </data>
+  <data name="WatchingStatus" xml:space="preserve">
+    <value>观看</value>
+  </data>
+  <data name="WatchingStatusFormat" xml:space="preserve">
+    <value>观看 {0}</value>
+  </data>
+</root>

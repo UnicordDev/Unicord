@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:schema id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdvancedHeader.Header" xml:space="preserve">
+    <value>先进的</value>
+  </data>
+  <data name="AlwaysCompress.Content" xml:space="preserve">
+    <value>发送前始终进行压缩</value>
+  </data>
+  <data name="AudioOptionsHeader.Text" xml:space="preserve">
+    <value>音频选项</value>
+  </data>
+  <data name="BitrateSlider.Header" xml:space="preserve">
+    <value>比特率</value>
+  </data>
+  <data name="CompressIfNeeded.Content" xml:space="preserve">
+    <value>如果文件超出上传限制，则进行压缩</value>
+  </data>
+  <data name="EncoderPriorityBox.Header" xml:space="preserve">
+    <value>编码器优先级</value>
+  </data>
+  <data name="EncoderPriorityQuality.Content" xml:space="preserve">
+    <value>优先考虑质量，较小的文件大小</value>
+  </data>
+  <data name="EncoderPrioritySpeed.Content" xml:space="preserve">
+    <value>优先考虑速度、较大的文件大小</value>
+  </data>
+  <data name="LargePresetItem.Text" xml:space="preserve">
+    <value>大的</value>
+  </data>
+  <data name="LargePresetSubheader.Text" xml:space="preserve">
+    <value>720p，~1536kbps</value>
+  </data>
+  <data name="MediaCompressionHeader.Text" xml:space="preserve">
+    <value>媒体压缩</value>
+  </data>
+  <data name="MediaCompressionSubheader.Text" xml:space="preserve">
+    <value>Unicord 可以自动压缩视频以适应您的上传限制！</value>
+  </data>
+  <data name="MediumPresetItem.Text" xml:space="preserve">
+    <value>中等的</value>
+  </data>
+  <data name="MediumPresetSubheader.Text" xml:space="preserve">
+    <value>480p，~768kbps</value>
+  </data>
+  <data name="NeverCompress.Content" xml:space="preserve">
+    <value>切勿压缩媒体</value>
+  </data>
+  <data name="ResolutionBox.Header" xml:space="preserve">
+    <value>解决</value>
+  </data>
+  <data name="SmallPresetItem.Text" xml:space="preserve">
+    <value>小的</value>
+  </data>
+  <data name="SmallPresetSubheader.Text" xml:space="preserve">
+    <value>360p，~512kbps</value>
+  </data>
+  <data name="TinyPresetItem.Text" xml:space="preserve">
+    <value>微小的</value>
+  </data>
+  <data name="TinyPresetSubheader.Text" xml:space="preserve">
+    <value>144p，~256kbps</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>音频和视频</value>
+  </data>
+  <data name="VideoOptionsHeader.Text" xml:space="preserve">
+    <value>视频选项</value>
+  </data>
+  <data name="VideoOptionsSubheader.Text" xml:space="preserve">
+    <value>如果需要，您可以在此处调整压缩视频的输出分辨率和质量。</value>
+  </data>
+</root>
